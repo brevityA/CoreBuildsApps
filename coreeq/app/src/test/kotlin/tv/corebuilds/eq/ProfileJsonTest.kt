@@ -13,6 +13,8 @@ import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.export.MicrophoneResponsePoint
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
+import tv.corebuilds.eq.export.RepeatabilityCheck
+import tv.corebuilds.eq.export.RepeatabilityMetrics
 
 /**
  * The 1.3.0 quality score survives the trip every profile takes: written by
@@ -92,6 +94,51 @@ class ProfileJsonTest {
         assertEquals(44_100, captureJson.getInt("input_sample_rate_hz"))
         assertEquals(2, captureJson.getJSONArray("microphone_frequency_response").length())
         assertEquals(capture, ProfileStore.parseProfile(json).captureInfo)
+    }
+
+    @Test
+    fun `repeat comparison saves both measured traces and capture provenance`() {
+        val check = RepeatabilityCheck(
+            metrics = RepeatabilityMetrics(
+                comparedBands = 28,
+                lowFrequencyHz = 40.0,
+                highFrequencyHz = 6_300.0,
+                levelOffsetDb = 0.8,
+                medianAbsDifferenceDb = 0.25,
+                rmsDifferenceDb = 0.42,
+                p95AbsDifferenceDb = 0.91
+            ),
+            comparisonCurve = listOf(CurvePoint(40.0, -3.2, 1.1), CurvePoint(63.0, -2.7, 0.6)),
+            captureInfo = CaptureInfo(
+                inputSampleRateHz = 16_000,
+                analysisSampleRateHz = 16_000,
+                inputDeviceType = "remote microphone"
+            ),
+            outputKind = "speaker",
+            outputName = "TV speakers",
+            snrDb = 36.5,
+            driftPpm = -18.0,
+            note = "Descriptive same-position comparison only; captures are not averaged."
+        )
+        val back = roundTrip(profile(78).copy(repeatabilityCheck = check))
+        assertEquals(check, back.repeatabilityCheck)
+        assertEquals(28, back.repeatabilityCheck!!.metrics!!.comparedBands)
+        assertEquals(2, back.repeatabilityCheck!!.comparisonCurve.size)
+    }
+
+    @Test
+    fun `legacy profile omits repeat check and malformed optional metrics are ignored`() {
+        val base = JSONObject(Formats.exportProfileJson(profile(78)))
+        assertFalse(base.has("repeatability"))
+        assertNull(ProfileStore.parseProfile(base).repeatabilityCheck)
+
+        base.put("repeatability", JSONObject()
+            .put("metrics", JSONObject()
+                .put("compared_bands", 900)
+                .put("comparison_range_hz", JSONArray().put(100.0).put(50.0)))
+            .put("curve", JSONArray().put(JSONObject()
+                .put("hz", -1.0).put("measured_db", 0.0).put("correction_db", 0.0))))
+        assertNull(ProfileStore.parseProfile(base).repeatabilityCheck)
     }
 
     @Test

@@ -192,20 +192,24 @@ class CurveGraphView @JvmOverloads constructor(
                 var started = false
                 for (i in frequencies.indices) {
                     val f = frequencies[i]
-                    if (f in fLo..fHi && i < s.values.size) {
+                    val value = s.values.getOrNull(i)
+                    if (f in fLo..fHi && value != null && value.isFinite()) {
                         val x = fx(f)
-                        val y = fy(s.values[i])
+                        val y = fy(value)
                         if (!started) {
                             path.moveTo(x, y)
                             started = true
                         } else {
                             path.lineTo(x, y)
                         }
+                    } else {
+                        // Missing/low-SNR repeat bands should create a gap,
+                        // not a line across frequencies the comparison did not use.
+                        started = false
                     }
                 }
-                if (started) {
-                    canvas.drawPath(path, linePaint)
-                }
+                // Draw every completed subpath even if the final band is missing.
+                canvas.drawPath(path, linePaint)
             }
         }
 

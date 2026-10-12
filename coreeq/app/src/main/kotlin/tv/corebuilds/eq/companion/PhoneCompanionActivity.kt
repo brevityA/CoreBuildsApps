@@ -10,6 +10,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ProgressBar
@@ -60,6 +61,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
     private lateinit var cancelMeasureButton: Button
     private lateinit var targetButton: Button
     private lateinit var roomButton: Button
+    private lateinit var repeatCheck: CheckBox
     private lateinit var measureProgress: ProgressBar
 
     private var dashboard: Dashboard? = null
@@ -71,6 +73,8 @@ class PhoneCompanionActivity : AppCompatActivity() {
     @Volatile private var measurementInProgress = false
     @Volatile private var measurementCancelled = false
     @Volatile private var activeSessionId: String? = null
+    /** Server-retained first sweep; cancelling the optional repeat must not cancel this session. */
+    @Volatile private var repeatFallbackSessionId: String? = null
     @Volatile private var operationInProgress = false
 
     private val targets = listOf(
@@ -200,6 +204,18 @@ class PhoneCompanionActivity : AppCompatActivity() {
         roomButton = actionButton("", primary = false)
         parent.addView(targetButton, matchWrap(top = 6))
         parent.addView(roomButton, matchWrap(top = 6))
+        repeatCheck = CheckBox(this).apply {
+            text = getString(R.string.phone_repeat_option)
+            setTextColor(color(R.color.cb_ink))
+            buttonTintList = android.content.res.ColorStateList.valueOf(color(R.color.cb_signal_cyan))
+            setPadding(0, dp(4), 0, dp(4))
+            isChecked = getSharedPreferences(PREFS, MODE_PRIVATE).getBoolean(KEY_REPEAT, false)
+            setOnCheckedChangeListener { _, checked ->
+                getSharedPreferences(PREFS, MODE_PRIVATE).edit().putBoolean(KEY_REPEAT, checked).apply()
+            }
+        }
+        parent.addView(repeatCheck, matchWrap(top = 8))
+        parent.addView(cardText(getString(R.string.phone_repeat_explanation)), matchWrap(top = 2))
         targetButton.setOnClickListener {
             targetIndex = (targetIndex + 1) % targets.size
             getSharedPreferences(PREFS, MODE_PRIVATE).edit().putInt(KEY_TARGET, targetIndex).apply()
@@ -211,7 +227,11 @@ class PhoneCompanionActivity : AppCompatActivity() {
             refreshMeasurementChoices()
         }
         measureButton = actionButton(getString(R.string.phone_measure_button), primary = true)
-        measureButton.setOnClickListener { withLocalNetwork { requestMicrophoneThenMeasure() } }
+        measureButton.setOnClickListener {
+            withLocalNetwork {
+                if (repeatFallbackSessionId != null) retrySaveFirstCapture() else requestMicrophoneThenMeasure()
+            }
+        }
         parent.addView(measureButton, matchWrap(top = 8))
         measureProgress = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {
             max = PROGRESS_MAX
@@ -238,7 +258,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
     }
 
     private fun pairWithTv() {
-        if (operationInProgress || measurementInProgress) return
+        if (operationInProgress || measurementInProgress || repeatFallbackSessionId != null) return
         val host = parsePrivateIpv4(hostField.text?.toString().orEmpty())
         if (host == null) {
             setStatus(getString(R.string.phone_invalid_tv_ip), error = true)
@@ -286,7 +306,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
     }
 
     private fun refreshDashboard() {
-        if (operationInProgress || measurementInProgress) return
+        if (operationInProgress || measurementInProgress || repeatFallbackSessionId != null) return
         val credentials = credentialStore.load()
         if (credentials == null) {
             remotePanel.visibility = View.GONE
@@ -404,7 +424,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
     }
 
     private fun runControl(request: JSONObject) {
-        if (operationInProgress || measurementInProgress) return
+        if (operationInProgress || measurementInProgress || repeatFallbackSessionId != null) return
         val credentials = credentialStore.load() ?: return
         setOperationBusy(true)
         setStatus(getString(R.string.phone_sending_command), error = false)
@@ -430,7 +450,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
     }
 
     private fun requestMicrophoneThenMeasure() {
-        if (measurementInProgress || operationInProgress) return
+        if (measurementInProgress || operationInProgress || repeatFallbackSessionId != null) return
         val engine = PhoneCaptureEngine(this)
         if (!engine.hasPermission()) {
             pendingMicrophoneAction = { startPhoneMeasurement() }
@@ -441,7 +461,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
     }
 
     private fun startPhoneMeasurement() {
-        if (measurementInProgress || operationInProgress) return
+        if (measurementInProgress || operationInProgress || repeatFallbackSessionId != null) return
         val credentials = credentialStore.load()
         if (credentials == null) {
             setStatus(getString(R.string.phone_pair_first), error = true)
@@ -456,20 +476,31 @@ class PhoneCompanionActivity : AppCompatActivity() {
         measurementInProgress = true
         measurementCancelled = false
         activeSessionId = null
+        repeatFallbackSessionId = null
         captureEngine = engine
+        val repeatRequested = repeatCheck.isChecked
         setMeasurementUi(true)
         measureProgress.progress = 0
         setStatus(getString(R.string.phone_measure_preparing), error = false)
         val selectedTarget = targets[targetIndex]
         val selectedRoom = rooms[roomIndex]
         thread(name = "CoreEqPhoneMeasurement") {
+            var firstRecording: PhoneRecording? = null
+            var repeatSessionId: String? = null
             try {
-                val recording = engine.capture(
+                fun recordPass(pass: Int, sessionId: String? = null): PhoneRecording = engine.capture(
                     onRecordingReady = { captureInfo ->
-                        val startRequest = JSONObject()
-                            .put("op", "start_measurement")
-                            .put("target", selectedTarget.first)
-                        selectedRoom.volumeM3?.let { startRequest.put("volume_m3", it) }
+                        val startRequest = if (pass == 1) {
+                            JSONObject()
+                                .put("op", "start_measurement")
+                                .put("target", selectedTarget.first)
+                                .put("repeatability", repeatRequested)
+                        } else {
+                            JSONObject()
+                                .put("op", "repeat_measurement")
+                                .put("session_id", sessionId ?: throw IllegalStateException("No repeat session is available."))
+                        }
+                        if (pass == 1) selectedRoom.volumeM3?.let { startRequest.put("volume_m3", it) }
                         val response = requireOk(clientFor(credentials).rpc(startRequest))
                         val start = PhoneCaptureStart(
                             sessionId = response.optString("session_id", ""),
@@ -481,63 +512,158 @@ class PhoneCompanionActivity : AppCompatActivity() {
                     onProgress = { fraction ->
                         runOnUiThread {
                             if (!measurementCancelled && !isDestroyed) {
-                                measureProgress.progress = (fraction * PROGRESS_MAX).roundToInt().coerceIn(0, PROGRESS_MAX)
-                                setStatus(getString(R.string.phone_measure_recording, (fraction * 100).roundToInt()), error = false)
+                                val totalFraction = if (repeatRequested) (pass - 1 + fraction) / 2.0 else fraction.toDouble()
+                                measureProgress.progress = (totalFraction * PROGRESS_MAX).roundToInt().coerceIn(0, PROGRESS_MAX)
+                                if (repeatRequested) {
+                                    setStatus(
+                                        getString(R.string.phone_measure_recording_pass, pass, 2, (fraction * 100).roundToInt()),
+                                        error = false
+                                    )
+                                } else {
+                                    setStatus(getString(R.string.phone_measure_recording, (fraction * 100).roundToInt()), error = false)
+                                }
                             }
                         }
                     }
                 )
-                if (measurementCancelled) throw InterruptedException("Phone measurement cancelled.")
-                runOnUiThread {
-                    if (!isDestroyed) setStatus(getString(R.string.phone_measure_uploading), error = false)
+
+                fun upload(recording: PhoneRecording): JSONObject {
+                    if (measurementCancelled) throw InterruptedException("Phone measurement cancelled.")
+                    runOnUiThread {
+                        if (!isDestroyed) setStatus(getString(R.string.phone_measure_uploading), error = false)
+                    }
+                    val request = JSONObject()
+                        .put("op", "upload_measurement")
+                        .put("session_id", recording.sessionId)
+                        .put("sample_rate_hz", recording.sampleRateHz)
+                        .put("pcm16_le_base64", encodePcm16Le(recording.pcm))
+                        .put("capture", recording.captureInfo)
+                    return requireOk(clientFor(credentials).rpc(request))
                 }
-                val upload = JSONObject()
-                    .put("op", "upload_measurement")
-                    .put("session_id", recording.sessionId)
-                    .put("sample_rate_hz", recording.sampleRateHz)
-                    .put("pcm16_le_base64", encodePcm16Le(recording.pcm))
-                    .put("capture", recording.captureInfo)
-                val result = requireOk(clientFor(credentials).rpc(upload))
+
+                val first = recordPass(1)
+                firstRecording = first
+                if (measurementCancelled) throw InterruptedException("Phone measurement cancelled.")
+                val firstResponse = upload(first)
+                val result = if (firstResponse.optBoolean("awaiting_repeat", false)) {
+                    repeatFallbackSessionId = first.sessionId
+                    repeatSessionId = first.sessionId
+                    runOnUiThread {
+                        if (!isDestroyed) setStatus(getString(R.string.phone_measure_repeat_waiting), error = false)
+                    }
+                    if (measurementCancelled) throw InterruptedException("Phone measurement cancelled.")
+                    val repeated = recordPass(2, first.sessionId)
+                    if (measurementCancelled) throw InterruptedException("Phone measurement cancelled.")
+                    upload(repeated)
+                } else {
+                    firstResponse
+                }
                 activeSessionId = null
-                val newDashboard = loadDashboard(credentials)
+                repeatSessionId = null
+                repeatFallbackSessionId = null
+                val newDashboard = runCatching { loadDashboard(credentials) }.getOrNull()
                 runOnUiThread {
                     measurementInProgress = false
                     captureEngine = null
                     setMeasurementUi(false)
                     measureProgress.progress = PROGRESS_MAX
-                    showDashboard(newDashboard)
-                    setStatus(
-                        getString(
-                            R.string.phone_measure_saved,
-                            result.optString("profile_name", "Phone measurement"),
-                            result.optDouble("snr_db", Double.NaN).takeIf { it.isFinite() }?.let { String.format(java.util.Locale.US, "%.1f", it) }
-                                ?: getString(R.string.phone_value_unreported),
-                            captureSummary(recording.captureInfo, recording.sampleRateHz)
-                        ),
-                        error = false
+                    newDashboard?.let(::showDashboard)
+                    val saved = getString(
+                        R.string.phone_measure_saved,
+                        result.optString("profile_name", "Phone measurement"),
+                        result.optDouble("snr_db", Double.NaN).takeIf { it.isFinite() }?.let {
+                            String.format(java.util.Locale.US, "%.1f", it)
+                        } ?: getString(R.string.phone_value_unreported),
+                        captureSummary(first.captureInfo, first.sampleRateHz)
                     )
+                    setStatus(listOfNotNull(saved, repeatabilityMessage(result)).joinToString("\n"), error = false)
                 }
             } catch (e: Exception) {
-                val sessionId = activeSessionId
-                if (!sessionId.isNullOrBlank()) {
+                val pending = repeatSessionId ?: repeatFallbackSessionId
+                val firstSaveAttempt = if (pending != null && firstRecording != null) {
                     runCatching {
-                        clientFor(credentials).rpc(JSONObject().put("op", "cancel_measurement").put("session_id", sessionId))
+                        requireOk(clientFor(credentials).rpc(
+                            JSONObject().put("op", "save_first_capture").put("session_id", pending)
+                        ))
                     }
-                }
-                activeSessionId = null
-                runOnUiThread {
-                    measurementInProgress = false
-                    captureEngine = null
-                    setMeasurementUi(false)
-                    measureProgress.progress = 0
-                    if (e is InterruptedException || measurementCancelled) {
-                        setStatus(getString(R.string.phone_measure_cancelled), error = false)
-                    } else {
-                        setStatus(getString(R.string.phone_measure_failed, readableError(e)), error = true)
+                } else null
+                val keepFirst = firstSaveAttempt?.getOrNull()
+
+                if (keepFirst != null) {
+                    activeSessionId = null
+                    repeatFallbackSessionId = null
+                    val newDashboard = runCatching { loadDashboard(credentials) }.getOrNull()
+                    runOnUiThread {
+                        measurementInProgress = false
+                        captureEngine = null
+                        setMeasurementUi(false)
+                        measureProgress.progress = PROGRESS_MAX
+                        newDashboard?.let(::showDashboard)
+                        val first = firstRecording!!
+                        val saved = getString(
+                            R.string.phone_measure_saved,
+                            keepFirst.optString("profile_name", "Phone measurement"),
+                            keepFirst.optDouble("snr_db", Double.NaN).takeIf { it.isFinite() }?.let {
+                                String.format(java.util.Locale.US, "%.1f", it)
+                            } ?: getString(R.string.phone_value_unreported),
+                            captureSummary(first.captureInfo, first.sampleRateHz)
+                        )
+                        val why = getString(R.string.phone_measure_repeat_unscored, readableError(e))
+                        setStatus("$saved\n$why\nThe first sweep was saved on its own; no repeat was averaged.", error = false)
+                    }
+                } else {
+                    val sessionId = activeSessionId
+                    if (pending == null && repeatFallbackSessionId == null && !sessionId.isNullOrBlank()) {
+                        runCatching {
+                            clientFor(credentials).rpc(JSONObject().put("op", "cancel_measurement").put("session_id", sessionId))
+                        }
+                    }
+                    activeSessionId = null
+                    runOnUiThread {
+                        measurementInProgress = false
+                        captureEngine = null
+                        setMeasurementUi(false)
+                        measureProgress.progress = 0
+                        if (pending != null && firstRecording != null) {
+                            val saveError = firstSaveAttempt?.exceptionOrNull() ?: e
+                            setStatus(
+                                getString(R.string.phone_measure_repeat_save_failed, readableError(saveError)),
+                                error = true
+                            )
+                        } else if (e is InterruptedException || measurementCancelled) {
+                            setStatus(getString(R.string.phone_measure_cancelled), error = false)
+                        } else {
+                            setStatus(getString(R.string.phone_measure_failed, readableError(e)), error = true)
+                        }
                     }
                 }
             }
         }
+    }
+
+    private fun repeatabilityMessage(result: JSONObject): String? {
+        val check = result.optJSONObject("repeatability") ?: return null
+        val metrics = check.optJSONObject("metrics")
+        if (metrics == null) {
+            val note = check.optString("note", "The captures did not share enough clean bands.")
+            return getString(R.string.phone_measure_repeat_unscored, note)
+        }
+        val range = metrics.optJSONArray("comparison_range_hz")
+        val summary = String.format(
+            java.util.Locale.US,
+            getString(R.string.phone_measure_repeat_summary),
+            metrics.optInt("compared_bands", 0),
+            metrics.optDouble("median_abs_difference_db", Double.NaN),
+            metrics.optDouble("rms_difference_db", Double.NaN),
+            metrics.optDouble("p95_abs_difference_db", Double.NaN),
+            metrics.optDouble("level_offset_db", Double.NaN)
+        )
+        val rangeNote = if (range != null && range.length() >= 2) {
+            "Compared ${range.optDouble(0).toInt()} Hz–${(range.optDouble(1) / 1000.0)} kHz."
+        } else ""
+        val note = check.optString("note", "")
+        return listOfNotNull(summary, rangeNote.takeIf(String::isNotBlank), note.takeIf(String::isNotBlank))
+            .joinToString("\n")
     }
 
     private fun cancelCapture(sendRemote: Boolean) {
@@ -545,7 +671,8 @@ class PhoneCompanionActivity : AppCompatActivity() {
         measurementCancelled = true
         captureEngine?.cancel()
         val sessionId = activeSessionId
-        if (sendRemote && !sessionId.isNullOrBlank()) {
+        val firstCaptureCanBeSaved = repeatFallbackSessionId != null
+        if (sendRemote && !firstCaptureCanBeSaved && !sessionId.isNullOrBlank()) {
             val credentials = credentialStore.load()
             if (credentials != null) {
                 thread(name = "CoreEqPhoneCancel") {
@@ -558,8 +685,50 @@ class PhoneCompanionActivity : AppCompatActivity() {
         setStatus(getString(R.string.phone_measure_cancelling), error = false)
     }
 
-    private fun revokePairing() {
+    /** Retry the TV-side first-sweep save without recording another sweep. */
+    private fun retrySaveFirstCapture() {
         if (operationInProgress || measurementInProgress) return
+        val sessionId = repeatFallbackSessionId ?: return
+        val credentials = credentialStore.load()
+        if (credentials == null) {
+            setStatus(getString(R.string.phone_pair_first), error = true)
+            return
+        }
+        setOperationBusy(true)
+        setStatus(getString(R.string.phone_measure_saving_first), error = false)
+        thread(name = "CoreEqPhoneSaveFirst") {
+            try {
+                val response = requireOk(clientFor(credentials).rpc(
+                    JSONObject().put("op", "save_first_capture").put("session_id", sessionId)
+                ))
+                repeatFallbackSessionId = null
+                activeSessionId = null
+                val newDashboard = runCatching { loadDashboard(credentials) }.getOrNull()
+                runOnUiThread {
+                    setOperationBusy(false)
+                    newDashboard?.let(::showDashboard)
+                    setStatus(
+                        getString(
+                            R.string.phone_measure_first_saved,
+                            response.optString("profile_name", "Phone measurement")
+                        ),
+                        error = false
+                    )
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    setOperationBusy(false)
+                    setStatus(
+                        getString(R.string.phone_measure_repeat_save_failed, readableError(e)),
+                        error = true
+                    )
+                }
+            }
+        }
+    }
+
+    private fun revokePairing() {
+        if (operationInProgress || measurementInProgress || repeatFallbackSessionId != null) return
         val credentials = credentialStore.load() ?: return
         setOperationBusy(true)
         setStatus(getString(R.string.phone_unpairing), error = false)
@@ -586,7 +755,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
     }
 
     private fun forgetLocally() {
-        if (measurementInProgress || operationInProgress) return
+        if (measurementInProgress || operationInProgress || repeatFallbackSessionId != null) return
         credentialStore.clear()
         dashboard = null
         remotePanel.visibility = View.GONE
@@ -634,31 +803,46 @@ class PhoneCompanionActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    private fun refreshMeasureButtonLabel() {
+        if (::measureButton.isInitialized) {
+            measureButton.setText(
+                if (repeatFallbackSessionId == null) R.string.phone_measure_button else R.string.phone_save_first_capture
+            )
+        }
+    }
+
     private fun setMeasurementUi(active: Boolean) {
+        refreshMeasureButtonLabel()
+        val savePending = repeatFallbackSessionId != null
+        val controlsEnabled = !active && !operationInProgress && !savePending
         measureButton.isEnabled = !active && !operationInProgress && dashboard != null
-        targetButton.isEnabled = !active && !operationInProgress
-        roomButton.isEnabled = !active && !operationInProgress
+        targetButton.isEnabled = controlsEnabled
+        roomButton.isEnabled = controlsEnabled
+        repeatCheck.isEnabled = controlsEnabled
         cancelMeasureButton.visibility = if (active) View.VISIBLE else View.GONE
         measureProgress.visibility = if (active) View.VISIBLE else View.GONE
-        correctionButton.isEnabled = !active && !operationInProgress && dashboard != null
-        pairButton.isEnabled = !active && !operationInProgress
-        connectButton.isEnabled = !active && !operationInProgress
-        revokeButton.isEnabled = !active && !operationInProgress && credentialStore.load() != null
-        forgetButton.isEnabled = !active && !operationInProgress && credentialStore.load() != null
-        setProfileButtonsEnabled(!active && !operationInProgress)
+        correctionButton.isEnabled = controlsEnabled && dashboard != null
+        pairButton.isEnabled = controlsEnabled
+        connectButton.isEnabled = controlsEnabled
+        revokeButton.isEnabled = controlsEnabled && credentialStore.load() != null
+        forgetButton.isEnabled = controlsEnabled && credentialStore.load() != null
+        setProfileButtonsEnabled(controlsEnabled)
     }
 
     private fun setOperationBusy(busy: Boolean) {
         operationInProgress = busy
-        pairButton.isEnabled = !busy && !measurementInProgress
-        connectButton.isEnabled = !busy && !measurementInProgress
-        correctionButton.isEnabled = !busy && !measurementInProgress && dashboard != null
-        revokeButton.isEnabled = !busy && !measurementInProgress && credentialStore.load() != null
-        forgetButton.isEnabled = !busy && !measurementInProgress && credentialStore.load() != null
-        targetButton.isEnabled = !busy && !measurementInProgress
-        roomButton.isEnabled = !busy && !measurementInProgress
+        refreshMeasureButtonLabel()
+        val controlsEnabled = !busy && !measurementInProgress && repeatFallbackSessionId == null
+        pairButton.isEnabled = controlsEnabled
+        connectButton.isEnabled = controlsEnabled
+        correctionButton.isEnabled = controlsEnabled && dashboard != null
+        revokeButton.isEnabled = controlsEnabled && credentialStore.load() != null
+        forgetButton.isEnabled = controlsEnabled && credentialStore.load() != null
+        targetButton.isEnabled = controlsEnabled
+        roomButton.isEnabled = controlsEnabled
+        repeatCheck.isEnabled = controlsEnabled
         measureButton.isEnabled = !busy && !measurementInProgress && dashboard != null
-        setProfileButtonsEnabled(!busy && !measurementInProgress)
+        setProfileButtonsEnabled(controlsEnabled)
     }
 
     private fun setRemoteEnabled(enabled: Boolean) {
@@ -755,7 +939,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
         }
     }
 
-    private fun readableError(error: Exception): String =
+    private fun readableError(error: Throwable): String =
         error.message?.trim()?.takeIf(String::isNotEmpty)?.take(180) ?: error.javaClass.simpleName
 
     private fun editField(hintText: String, type: Int): EditText = EditText(this).apply {
@@ -815,5 +999,6 @@ class PhoneCompanionActivity : AppCompatActivity() {
         private const val PREFS = "core_eq_phone_measurement"
         private const val KEY_TARGET = "target_index"
         private const val KEY_ROOM = "room_index"
+        private const val KEY_REPEAT = "repeat_measurement_check"
     }
 }

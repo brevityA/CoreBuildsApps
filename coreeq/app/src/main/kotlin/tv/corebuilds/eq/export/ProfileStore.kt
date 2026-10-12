@@ -383,7 +383,7 @@ class ProfileStore(context: Context) {
                 }
             }
 
-            val captureInfo = obj.optJSONObject("capture")?.let { capture ->
+            fun parseCaptureInfo(capture: JSONObject): CaptureInfo {
                 val descriptions = mutableListOf<String>()
                 capture.optJSONArray("microphone_descriptions")?.let { a ->
                     for (i in 0 until a.length()) {
@@ -417,7 +417,7 @@ class ProfileStore(context: Context) {
                     }
                     else -> null
                 }
-                CaptureInfo(
+                return CaptureInfo(
                     requestedSampleRateHz = capture.optInt("requested_sample_rate_hz", 0).takeIf { it > 0 },
                     inputSampleRateHz = capture.optInt("input_sample_rate_hz", 0).takeIf { it > 0 },
                     analysisSampleRateHz = capture.optInt("analysis_sample_rate_hz", 0).takeIf { it > 0 },
@@ -433,6 +433,52 @@ class ProfileStore(context: Context) {
                     microphoneResponse = response
                 )
             }
+            val captureInfo = obj.optJSONObject("capture")?.let { capture -> parseCaptureInfo(capture) }
+
+            fun parseRepeatability(repeat: JSONObject): RepeatabilityCheck? {
+                val metricsObject = repeat.optJSONObject("metrics")
+                val metricRange = metricsObject?.optJSONArray("comparison_range_hz")
+                val metricBands = metricsObject?.optInt("compared_bands", 0) ?: 0
+                val lowHz = metricRange?.optDouble(0, Double.NaN) ?: Double.NaN
+                val highHz = metricRange?.optDouble(1, Double.NaN) ?: Double.NaN
+                val offset = metricsObject?.optDouble("level_offset_db", Double.NaN) ?: Double.NaN
+                val medianAbs = metricsObject?.optDouble("median_abs_difference_db", Double.NaN) ?: Double.NaN
+                val rms = metricsObject?.optDouble("rms_difference_db", Double.NaN) ?: Double.NaN
+                val p95 = metricsObject?.optDouble("p95_abs_difference_db", Double.NaN) ?: Double.NaN
+                val metrics = if (
+                    metricBands in 1..512 && lowHz > 0.0 && lowHz.isFinite() && highHz > lowHz && highHz.isFinite() &&
+                    offset.isFinite() && medianAbs >= 0.0 && medianAbs.isFinite() && rms >= 0.0 && rms.isFinite() &&
+                    p95 >= 0.0 && p95.isFinite()
+                ) RepeatabilityMetrics(metricBands, lowHz, highHz, offset, medianAbs, rms, p95) else null
+
+                val repeatCurve = mutableListOf<CurvePoint>()
+                repeat.optJSONArray("curve")?.let { array ->
+                    for (index in 0 until minOf(array.length(), 512)) {
+                        val point = array.optJSONObject(index) ?: continue
+                        val hz = point.optDouble("hz", Double.NaN)
+                        val measured = point.optDouble("measured_db", Double.NaN)
+                        val correction = point.optDouble("correction_db", Double.NaN)
+                        if (hz > 0.0 && hz.isFinite() && measured.isFinite() && correction.isFinite()) {
+                            repeatCurve += CurvePoint(hz, measured, correction)
+                        }
+                    }
+                }
+                val repeatOutput = repeat.optJSONObject("output")
+                val note = repeat.optString("note", "").trim().takeIf { it.isNotEmpty() }
+                if (metrics == null && repeatCurve.isEmpty() && note == null) return null
+                return RepeatabilityCheck(
+                    metrics = metrics,
+                    comparisonCurve = repeatCurve,
+                    captureInfo = repeat.optJSONObject("capture")?.let { capture -> parseCaptureInfo(capture) },
+                    outputKind = repeatOutput?.optString("kind", "")?.takeIf { it.isNotBlank() },
+                    outputName = repeatOutput?.let { if (it.isNull("name")) null else it.optString("name") }
+                        ?.takeIf { it.isNotBlank() },
+                    snrDb = repeat.optDouble("snr_db", Double.NaN).takeIf { it.isFinite() },
+                    driftPpm = repeat.optDouble("drift_ppm", Double.NaN).takeIf { it.isFinite() },
+                    note = note
+                )
+            }
+            val repeatabilityCheck = obj.optJSONObject("repeatability")?.let { repeat -> parseRepeatability(repeat) }
 
             return Profile(
                 id = obj.getString("id"),
@@ -441,6 +487,7 @@ class ProfileStore(context: Context) {
                 target = obj.optString("target", "dialogue"),
                 micType = obj.optString("microphone", "microphone"),
                 captureInfo = captureInfo,
+                repeatabilityCheck = repeatabilityCheck,
                 deviceName = obj.optString("device", "Android TV"),
                 stimulus = obj.optString("stimulus", "sweep_10s"),
                 captureSeconds = obj.optDouble("capture_seconds", 10.0),

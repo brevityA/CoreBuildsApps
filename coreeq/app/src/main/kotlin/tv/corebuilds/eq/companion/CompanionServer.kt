@@ -14,6 +14,8 @@ import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.dsp.Correction
 import tv.corebuilds.eq.dsp.MeasurementQuality
 import tv.corebuilds.eq.dsp.MeasurementException
+import tv.corebuilds.eq.dsp.RepeatabilityAnalysis
+import tv.corebuilds.eq.dsp.RepeatabilityComparison
 import tv.corebuilds.eq.dsp.Sweep
 import tv.corebuilds.eq.dsp.SweepAnalysis
 import tv.corebuilds.eq.dsp.SweepResult
@@ -23,6 +25,7 @@ import tv.corebuilds.eq.export.MicrophoneResponsePoint
 import tv.corebuilds.eq.export.PlatformBand
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
+import tv.corebuilds.eq.export.RepeatabilityCheck
 import tv.corebuilds.eq.measure.StimulusPlayer
 import tv.corebuilds.eq.mode.ContentMode
 import tv.corebuilds.eq.mode.ContentModeStore
@@ -88,12 +91,22 @@ internal class CompanionServer(
     @Volatile private var measurementTimeout: Runnable? = null
     @Volatile private var lastError: String? = null
 
+    private enum class MeasurementPhase { FIRST_SWEEP, WAITING_FOR_REPEAT, REPEAT_SWEEP }
+
     private data class MeasurementSession(
         val id: String,
         val target: String,
         val volumeM3: Double?,
-        val startedElapsedMs: Long,
-        @Volatile var output: OutputRoute.Output?
+        @Volatile var startedElapsedMs: Long,
+        val repeatRequested: Boolean,
+        /** Output reported for the first sweep; this remains the profile's route. */
+        @Volatile var output: OutputRoute.Output?,
+        @Volatile var activeOutput: OutputRoute.Output? = output,
+        @Volatile var repeatOutput: OutputRoute.Output? = null,
+        @Volatile var phase: MeasurementPhase = MeasurementPhase.FIRST_SWEEP,
+        @Volatile var firstResult: SweepResult? = null,
+        @Volatile var firstCaptureInfo: CaptureInfo? = null,
+        @Volatile var firstCaptureSeconds: Double? = null
     )
 
     fun start(): Int {
@@ -445,7 +458,9 @@ internal class CompanionServer(
             "set_enabled" -> setEnabled(request.getBoolean("enabled"))
             "set_mode" -> setMode(request.getString("mode"))
             "start_measurement" -> startMeasurement(request)
+            "repeat_measurement" -> startRepeatMeasurement(request)
             "upload_measurement" -> uploadMeasurement(request)
+            "save_first_capture" -> saveFirstCapture(request)
             "cancel_measurement" -> cancelMeasurement(request)
             "revoke" -> {
                 val response = JSONObject().put("ok", true)
@@ -455,11 +470,38 @@ internal class CompanionServer(
             else -> JSONObject().put("ok", false).put("error", "Unknown Core EQ command")
         }
     } catch (e: MeasurementException) {
-        failMeasurement(e.message ?: "The measurement could not be trusted.")
-        JSONObject().put("ok", false).put("error", e.message ?: "The measurement could not be trusted.")
+        val message = e.message ?: "The measurement could not be trusted."
+        val measurementOperation = isMeasurementOperation(request.optString("op"))
+        val preserved = measurementOperation && preserveFirstForRepeatRetry(message)
+        if (measurementOperation && !preserved) failMeasurement(message)
+        JSONObject().put("ok", false).put("error", message.take(180))
     } catch (e: Exception) {
-        Log.w(TAG, "Core EQ companion command failed", e)
-        JSONObject().put("ok", false).put("error", (e.message ?: "Command failed").take(180))
+        val message = (e.message ?: "Command failed").take(180)
+        val measurementOperation = isMeasurementOperation(request.optString("op"))
+        if (!measurementOperation || !preserveFirstForRepeatRetry(message)) {
+            Log.w(TAG, "Core EQ companion command failed", e)
+        }
+        JSONObject().put("ok", false).put("error", message)
+    }
+
+    private fun isMeasurementOperation(operation: String): Boolean = operation in setOf(
+        "start_measurement", "repeat_measurement", "upload_measurement", "save_first_capture", "cancel_measurement"
+    )
+
+    @Synchronized
+    private fun preserveFirstForRepeatRetry(reason: String): Boolean {
+        val session = measurement ?: return false
+        if (session.phase !in setOf(MeasurementPhase.WAITING_FOR_REPEAT, MeasurementPhase.REPEAT_SWEEP) ||
+            session.firstResult == null
+        ) return false
+        stimulusPlayer.stop()
+        clearMeasurementTimeout()
+        session.phase = MeasurementPhase.WAITING_FOR_REPEAT
+        session.startedElapsedMs = SystemClock.elapsedRealtime()
+        lastError = null
+        scheduleMeasurementTimeout(session)
+        updateStatus("The optional repeat operation was not completed ($reason). The first capture remains available to save or compare again.")
+        return true
     }
 
     private fun statusResponse(): JSONObject {
@@ -534,6 +576,7 @@ internal class CompanionServer(
         return JSONObject().put("ok", true).put("mode", mode.key).put("title", mode.title)
     }
 
+    @Synchronized
     private fun startMeasurement(request: JSONObject): JSONObject {
         check(running) { "Local phone link is stopped." }
         val target = request.optString("target", "dialogue")
@@ -542,52 +585,113 @@ internal class CompanionServer(
         if (room != null && (!room.isFinite() || room !in MIN_ROOM_VOLUME_M3..MAX_ROOM_VOLUME_M3)) {
             throw MeasurementException("Room size is outside the supported range.")
         }
-        synchronized(this) {
-            check(running) { "Local phone link is stopped." }
-            val prior = measurement
-            if (prior != null && SystemClock.elapsedRealtime() - prior.startedElapsedMs < MEASUREMENT_TIMEOUT_MS) {
-                throw MeasurementException("A phone measurement is already waiting for its capture.")
+        val prior = measurement
+        if (prior != null && SystemClock.elapsedRealtime() - prior.startedElapsedMs < MEASUREMENT_TIMEOUT_MS) {
+            throw MeasurementException("A phone measurement is already waiting for its capture.")
+        }
+        if (prior != null) {
+            if (hasRetainedFirstCapture(prior)) {
+                try {
+                    stimulusPlayer.stop()
+                    val profile = saveRetainedFirstCapture(prior)
+                    finishPhoneMeasurement()
+                    updateStatus("A previous phone repeat expired; its first sweep was saved as ${profile.name} without comparison or averaging.")
+                } catch (_: Exception) {
+                    failMeasurement("A previous phone repeat expired and its first sweep could not be saved; correction resumed.")
+                }
+            } else {
+                failMeasurement("A previous phone measurement expired; correction resumed.")
             }
-            val id = UUID.randomUUID().toString()
-            val session = MeasurementSession(id, target, room, SystemClock.elapsedRealtime(), OutputRoute.current(appContext))
-            measurement = session
-            lastError = null
-            // Do not let the correction being measured colour its own sweep.
-            EqService.send(appContext, EqService.ACTION_SUSPEND)
-            try {
-                // The phone is already recording before it sends this RPC. Keep
-                // the same half-second acoustic lead as the TV's own capture
-                // screen so AudioTrack setup does not eat the sweep tail.
-                Thread.sleep(CAPTURE_LEAD_MS)
-                check(running && measurement?.id == id) { "Measurement stopped before playback started" }
-                stimulusPlayer.playSweep(
-                    onError = { message ->
-                        if (measurement?.id == id) {
-                            lastError = message
-                            updateStatus(message)
-                        }
-                    },
-                    onRouted = { device ->
-                        if (measurement?.id == id) {
-                            session.output = OutputRoute.tag(session.output, device?.type, device?.productName?.toString())
-                            updateStatus("Playing the calibration sweep to ${session.output?.name ?: "the TV audio output"}.")
-                        }
+        }
+        val initialOutput = OutputRoute.current(appContext)
+        val session = MeasurementSession(
+            id = UUID.randomUUID().toString(),
+            target = target,
+            volumeM3 = room,
+            startedElapsedMs = SystemClock.elapsedRealtime(),
+            repeatRequested = request.optBoolean("repeatability", false),
+            output = initialOutput,
+            activeOutput = initialOutput
+        )
+        measurement = session
+        lastError = null
+        // Do not let the correction being measured colour its own sweep.
+        EqService.send(appContext, EqService.ACTION_SUSPEND)
+        startSweep(session)
+        updateStatus("The phone is recording; the TV has started the calibration sweep.")
+        return measurementStartResponse(session)
+    }
+
+    @Synchronized
+    private fun startRepeatMeasurement(request: JSONObject): JSONObject {
+        check(running) { "Local phone link is stopped." }
+        val session = measurement ?: throw MeasurementException("No repeat is waiting on the TV.")
+        if (request.optString("session_id") != session.id) {
+            throw MeasurementException("That repeat session expired; start a new phone measurement.")
+        }
+        if (!session.repeatRequested || session.phase != MeasurementPhase.WAITING_FOR_REPEAT || session.firstResult == null) {
+            throw MeasurementException("The TV is not waiting for a repeat capture.")
+        }
+        if (SystemClock.elapsedRealtime() - session.startedElapsedMs > MEASUREMENT_TIMEOUT_MS) {
+            throw MeasurementException("The repeat window expired. The first capture remains available to save on its own.")
+        }
+        session.phase = MeasurementPhase.REPEAT_SWEEP
+        session.startedElapsedMs = SystemClock.elapsedRealtime()
+        session.activeOutput = OutputRoute.current(appContext)
+        session.repeatOutput = session.activeOutput
+        lastError = null
+        startSweep(session)
+        updateStatus("The phone is recording the same-position repeat sweep.")
+        return measurementStartResponse(session).put("pass", 2)
+    }
+
+    private fun measurementStartResponse(session: MeasurementSession): JSONObject = JSONObject()
+        .put("ok", true)
+        .put("session_id", session.id)
+        .put("capture_seconds", CAPTURE_LEAD_SECONDS + Sweep.STIMULUS_SECONDS + SweepAnalysis.TAIL_SECONDS)
+        .put("stimulus_seconds", Sweep.STIMULUS_SECONDS)
+
+    /** The phone is recording before this is called, so its clock markers bracket the TV sweep. */
+    private fun startSweep(session: MeasurementSession) {
+        val id = session.id
+        val sweepPhase = session.phase
+        if (sweepPhase == MeasurementPhase.FIRST_SWEEP) {
+            session.activeOutput = session.output
+        }
+        try {
+            // Keep the same acoustic lead as the TV's own capture screen so
+            // AudioTrack setup does not eat the sweep tail.
+            Thread.sleep(CAPTURE_LEAD_MS)
+            check(running && measurement?.id == id) { "Measurement stopped before playback started" }
+            stimulusPlayer.playSweep(
+                onError = { message ->
+                    if (measurement?.id == id && session.phase == sweepPhase) {
+                        lastError = message
+                        updateStatus(message)
                     }
-                )
-                scheduleMeasurementTimeout(session)
-            } catch (e: Exception) {
-                if (measurement?.id == id) measurement = null
+                },
+                onRouted = { device ->
+                    if (measurement?.id == id && session.phase == sweepPhase) {
+                        val tagged = OutputRoute.tag(session.activeOutput, device?.type, device?.productName?.toString())
+                        session.activeOutput = tagged
+                        when (sweepPhase) {
+                            MeasurementPhase.FIRST_SWEEP -> session.output = tagged
+                            MeasurementPhase.REPEAT_SWEEP -> session.repeatOutput = tagged
+                            MeasurementPhase.WAITING_FOR_REPEAT -> Unit
+                        }
+                        updateStatus("Playing the calibration sweep to ${tagged?.name ?: "the TV audio output"}.")
+                    }
+                }
+            )
+            scheduleMeasurementTimeout(session)
+        } catch (e: Exception) {
+            if (measurement?.id == id && session.phase == MeasurementPhase.FIRST_SWEEP) {
+                measurement = null
                 clearMeasurementTimeout()
                 stimulusPlayer.stop()
                 EqService.send(appContext, EqService.ACTION_RESUME)
-                throw e
             }
-            updateStatus("The phone is recording; the TV has started the calibration sweep.")
-            return JSONObject()
-                .put("ok", true)
-                .put("session_id", id)
-                .put("capture_seconds", CAPTURE_LEAD_SECONDS + Sweep.STIMULUS_SECONDS + SweepAnalysis.TAIL_SECONDS)
-                .put("stimulus_seconds", Sweep.STIMULUS_SECONDS)
+            throw e
         }
     }
 
@@ -598,8 +702,13 @@ internal class CompanionServer(
         val sessionId = request.optString("session_id", "")
         if (sessionId != session.id) throw MeasurementException("That measurement session expired; start a new one.")
         if (SystemClock.elapsedRealtime() - session.startedElapsedMs > MEASUREMENT_TIMEOUT_MS) {
-            measurement = null
             throw MeasurementException("The phone capture arrived too late. Start the measurement again.")
+        }
+        if (session.phase == MeasurementPhase.WAITING_FOR_REPEAT) {
+            throw MeasurementException("The TV is waiting for the repeat sweep to start.")
+        }
+        if (session.phase == MeasurementPhase.REPEAT_SWEEP && session.firstResult == null) {
+            throw MeasurementException("The first sweep is no longer available for comparison.")
         }
         lastError?.let { throw MeasurementException(it) }
         val rate = request.optInt("sample_rate_hz", 0)
@@ -635,29 +744,181 @@ internal class CompanionServer(
             Log.e(TAG, "Phone capture analysis failed", e)
             throw MeasurementException("Analysis failed: ${e.javaClass.simpleName}.")
         }
-        try {
+        val captureSeconds = samples.size.toDouble() / rate
+        if (session.phase == MeasurementPhase.FIRST_SWEEP && session.repeatRequested) {
             stimulusPlayer.stop()
-            val output = session.output
-            val now = System.currentTimeMillis()
-            val profile = profileFromMeasurement(result, session, output, captureInfo, samples.size.toDouble() / rate, now)
-            profileStore.saveProfile(profile, setAsActive = true)
-            updateStatus("Phone measurement saved as ${profile.name}.")
+            session.firstResult = result
+            session.firstCaptureInfo = captureInfo
+            session.firstCaptureSeconds = captureSeconds
+            session.output = session.activeOutput
+            session.phase = MeasurementPhase.WAITING_FOR_REPEAT
+            session.startedElapsedMs = SystemClock.elapsedRealtime()
+            lastError = null
+            scheduleMeasurementTimeout(session)
+            updateStatus("First phone sweep analysed; waiting for the same-position repeat.")
             return JSONObject()
                 .put("ok", true)
-                .put("profile_id", profile.id)
-                .put("profile_name", profile.name)
+                .put("awaiting_repeat", true)
+                .put("session_id", session.id)
                 .put("snr_db", result.snrDb)
                 .put("quality_score", MeasurementQuality.score(result))
-                .put("output_kind", profile.outputKind)
-                .put("output_name", profile.outputName ?: "")
-        } finally {
-            measurement = null
-            lastError = null
-            clearMeasurementTimeout()
-            // Resume applies the just-saved profile (or the previous one if
-            // saving failed) and clears the measurement suspension.
-            EqService.send(appContext, EqService.ACTION_RESUME)
         }
+
+        val isRepeat = session.phase == MeasurementPhase.REPEAT_SWEEP
+        val primaryResult = if (isRepeat) session.firstResult
+            ?: throw MeasurementException("The first sweep was lost; start a new phone measurement.") else result
+        val primaryCapture = if (isRepeat) session.firstCaptureInfo
+            ?: throw MeasurementException("The first microphone metadata was lost; start a new phone measurement.") else captureInfo
+        val primarySeconds = if (isRepeat) session.firstCaptureSeconds
+            ?: throw MeasurementException("The first capture duration was lost; start a new phone measurement.") else captureSeconds
+        val primaryOutput = if (isRepeat) session.output else session.activeOutput
+        val repeatCheck = if (isRepeat) buildRepeatabilityCheck(
+            session = session,
+            repeatedResult = result,
+            repeatedCaptureInfo = captureInfo
+        ) else null
+        val now = System.currentTimeMillis()
+        val profile = profileFromMeasurement(
+            primaryResult,
+            session,
+            primaryOutput,
+            primaryCapture,
+            primarySeconds,
+            now,
+            repeatabilityCheck = repeatCheck
+        )
+        profileStore.saveProfile(profile, setAsActive = true)
+        updateStatus("Phone measurement saved as ${profile.name}.")
+        val response = JSONObject()
+            .put("ok", true)
+            .put("profile_id", profile.id)
+            .put("profile_name", profile.name)
+            .put("snr_db", primaryResult.snrDb)
+            .put("quality_score", MeasurementQuality.score(primaryResult))
+            .put("output_kind", profile.outputKind)
+            .put("output_name", profile.outputName ?: "")
+        if (repeatCheck != null) response.put("repeatability", repeatabilityJson(repeatCheck))
+        finishPhoneMeasurement()
+        return response
+    }
+
+    @Synchronized
+    private fun saveFirstCapture(request: JSONObject): JSONObject {
+        check(running) { "Local phone link is stopped." }
+        val session = measurement ?: throw MeasurementException("No first phone capture is waiting to save.")
+        if (request.optString("session_id") != session.id) {
+            throw MeasurementException("That repeat session expired; start a new phone measurement.")
+        }
+        if (!session.repeatRequested || session.firstResult == null ||
+            session.phase !in setOf(MeasurementPhase.WAITING_FOR_REPEAT, MeasurementPhase.REPEAT_SWEEP)
+        ) {
+            throw MeasurementException("There is no complete first phone capture to save.")
+        }
+        val result = session.firstResult!!
+        stimulusPlayer.stop()
+        val profile = saveRetainedFirstCapture(session)
+        updateStatus("First phone sweep saved as ${profile.name}; the repeat was not compared.")
+        val response = JSONObject()
+            .put("ok", true)
+            .put("profile_id", profile.id)
+            .put("profile_name", profile.name)
+            .put("snr_db", result.snrDb)
+            .put("quality_score", MeasurementQuality.score(result))
+            .put("output_kind", profile.outputKind)
+            .put("output_name", profile.outputName ?: "")
+            .put("repeatability_note", "Only the first capture was saved; no repeat comparison or averaging was applied.")
+        finishPhoneMeasurement()
+        return response
+    }
+
+    private fun hasRetainedFirstCapture(session: MeasurementSession): Boolean =
+        session.repeatRequested && session.firstResult != null && session.firstCaptureInfo != null &&
+            session.firstCaptureSeconds != null &&
+            session.phase in setOf(MeasurementPhase.WAITING_FOR_REPEAT, MeasurementPhase.REPEAT_SWEEP)
+
+    /** Persist the retained first sweep unchanged when an optional repeat cannot finish. */
+    private fun saveRetainedFirstCapture(session: MeasurementSession): Profile {
+        val result = session.firstResult ?: throw MeasurementException("The first capture is no longer available.")
+        val captureInfo = session.firstCaptureInfo
+            ?: throw MeasurementException("The first microphone metadata was lost; start a new phone measurement.")
+        val captureSeconds = session.firstCaptureSeconds
+            ?: throw MeasurementException("The first capture duration was lost; start a new phone measurement.")
+        val profile = profileFromMeasurement(
+            result,
+            session,
+            session.output,
+            captureInfo,
+            captureSeconds,
+            System.currentTimeMillis(),
+            repeatabilityCheck = null
+        )
+        profileStore.saveProfile(profile, setAsActive = true)
+        return profile
+    }
+
+    private fun buildRepeatabilityCheck(
+        session: MeasurementSession,
+        repeatedResult: SweepResult,
+        repeatedCaptureInfo: CaptureInfo
+    ): RepeatabilityCheck {
+        val firstResult = session.firstResult ?: throw MeasurementException("The first capture was lost.")
+        val firstCaptureInfo = session.firstCaptureInfo
+        val repeatOutput = session.repeatOutput ?: session.activeOutput
+        val routeMismatch = RepeatabilityAnalysis.reportedOutputMismatch(
+            OutputRoute.keyFor(session.output), session.output?.name,
+            OutputRoute.keyFor(repeatOutput), repeatOutput?.name
+        )
+        val inputMismatch = RepeatabilityAnalysis.reportedInputMismatch(firstCaptureInfo, repeatedCaptureInfo)
+        val mismatch = routeMismatch ?: inputMismatch
+        val comparison = RepeatabilityAnalysis.compare(firstResult, repeatedResult)
+        val metrics = if (mismatch == null) comparison.metrics else null
+        val inputUnknown = listOf(firstCaptureInfo, repeatedCaptureInfo).any { info ->
+            info == null || (info.inputDeviceType.isNullOrBlank() && info.inputDeviceName.isNullOrBlank())
+        }
+        val routeUnknown = session.output == null || repeatOutput == null ||
+            OutputRoute.keyFor(session.output) == OutputRoute.UNKNOWN || OutputRoute.keyFor(repeatOutput) == OutputRoute.UNKNOWN
+        val note = when {
+            mismatch != null -> "$mismatch No same-path repeatability summary was calculated."
+            metrics == null -> comparison.reason ?: "There were not enough comparable bands for a repeatability summary."
+            inputUnknown || routeUnknown -> "Android did not report enough input/output route detail for both sweeps; treat the comparison as provisional. No pass/fail threshold has been physically qualified."
+            else -> "Descriptive same-position comparison only; no physically qualified pass/fail threshold. Captures are not averaged."
+        }
+        return RepeatabilityCheck(
+            metrics = metrics,
+            comparisonCurve = repeatedResult.centresHz.indices.map { index ->
+                CurvePoint(repeatedResult.centresHz[index], repeatedResult.measuredDb[index], repeatedResult.correctionDb[index])
+            },
+            captureInfo = repeatedCaptureInfo,
+            outputKind = OutputRoute.keyFor(repeatOutput),
+            outputName = repeatOutput?.name,
+            snrDb = repeatedResult.snrDb,
+            driftPpm = repeatedResult.driftPpm,
+            note = note
+        )
+    }
+
+    private fun repeatabilityJson(check: RepeatabilityCheck): JSONObject {
+        val output = JSONObject()
+        check.metrics?.let { metrics ->
+            output.put("metrics", JSONObject()
+                .put("compared_bands", metrics.comparedBands)
+                .put("comparison_range_hz", JSONArray().put(metrics.lowFrequencyHz).put(metrics.highFrequencyHz))
+                .put("level_offset_db", metrics.levelOffsetDb)
+                .put("median_abs_difference_db", metrics.medianAbsDifferenceDb)
+                .put("rms_difference_db", metrics.rmsDifferenceDb)
+                .put("p95_abs_difference_db", metrics.p95AbsDifferenceDb))
+        }
+        check.note?.let { output.put("note", it.take(400)) }
+        return output
+    }
+
+    @Synchronized
+    private fun finishPhoneMeasurement() {
+        measurement = null
+        lastError = null
+        clearMeasurementTimeout()
+        // Resume applies the saved profile (or the previous one if saving failed).
+        EqService.send(appContext, EqService.ACTION_RESUME)
     }
 
     private fun profileFromMeasurement(
@@ -666,7 +927,8 @@ internal class CompanionServer(
         output: OutputRoute.Output?,
         captureInfo: CaptureInfo,
         captureSeconds: Double,
-        now: Long
+        now: Long,
+        repeatabilityCheck: RepeatabilityCheck? = null
     ): Profile {
         val displayBandsHz = doubleArrayOf(60.0, 230.0, 910.0, 3_600.0, 14_000.0)
         val platformBands = Correction.collapseToBands(
@@ -684,6 +946,7 @@ internal class CompanionServer(
             target = session.target,
             micType = captureInfo.captureDeviceModel?.let { "$it microphone" } ?: "phone microphone",
             captureInfo = captureInfo,
+            repeatabilityCheck = repeatabilityCheck,
             deviceName = "${Build.MANUFACTURER} ${Build.MODEL}".trim(),
             stimulus = "sweep_${Sweep.SECONDS.toInt()}s_phone_capture",
             captureSeconds = captureSeconds,
@@ -703,9 +966,15 @@ internal class CompanionServer(
             },
             outputKind = OutputRoute.keyFor(output),
             outputName = outputName,
-            measurementNotes = listOf(
-                "Phone microphone capture: device response and Android audio processing may vary by model; Android microphone metadata is stored, not applied as calibration."
-            )
+            measurementNotes = buildList {
+                add("Phone microphone capture: device response and Android audio processing may vary by model; Android microphone metadata is stored, not applied as calibration.")
+                if (repeatabilityCheck != null) {
+                    add("Optional same-position repeat retained as a separate trace; captures are never averaged, no physically qualified pass/fail threshold is applied, and results do not generalize to other seats or rooms.")
+                    repeatabilityCheck.note?.let { note -> add(note) }
+                } else if (session.repeatRequested) {
+                    add("Optional same-position repeat did not complete; only the first sweep was saved, with no comparison or averaging.")
+                }
+            }
         )
     }
 
@@ -785,13 +1054,26 @@ internal class CompanionServer(
         clearMeasurementTimeout()
         val task = object : Runnable {
             override fun run() {
-                val current = measurement
-                if (current?.id != session.id) return
-                val remaining = MEASUREMENT_TIMEOUT_MS - (SystemClock.elapsedRealtime() - current.startedElapsedMs)
-                if (remaining <= 0L) {
-                    failMeasurement("Phone measurement timed out; the sweep stopped and correction resumed.")
-                } else {
-                    mainHandler.postDelayed(this, remaining)
+                synchronized(this@CompanionServer) {
+                    val current = measurement
+                    if (current?.id != session.id) return
+                    val remaining = MEASUREMENT_TIMEOUT_MS - (SystemClock.elapsedRealtime() - current.startedElapsedMs)
+                    if (remaining <= 0L) {
+                        if (hasRetainedFirstCapture(current)) {
+                            stimulusPlayer.stop()
+                            try {
+                                val profile = saveRetainedFirstCapture(current)
+                                finishPhoneMeasurement()
+                                updateStatus("Phone repeat timed out; the first sweep was saved as ${profile.name} without comparison or averaging.")
+                            } catch (e: Exception) {
+                                failMeasurement("Phone measurement timed out and the first sweep could not be saved (${e.message ?: e.javaClass.simpleName}); correction resumed.")
+                            }
+                        } else {
+                            failMeasurement("Phone measurement timed out; the sweep stopped and correction resumed.")
+                        }
+                    } else {
+                        mainHandler.postDelayed(this, remaining)
+                    }
                 }
             }
         }
@@ -881,6 +1163,17 @@ internal class CompanionServer(
         synchronized(this) {
             pairingKey = null
             pairingExpiresElapsed = 0L
+            val currentMeasurement = measurement
+            val retainedSession = currentMeasurement?.takeIf { session -> hasRetainedFirstCapture(session) }
+            if (retainedSession != null) {
+                try {
+                    stimulusPlayer.stop()
+                    val profile = saveRetainedFirstCapture(retainedSession)
+                    updateStatus("Phone link closed during the optional repeat; the first sweep was saved as ${profile.name} without comparison or averaging.")
+                } catch (e: Exception) {
+                    Log.w(TAG, "Could not save the retained phone sweep while closing", e)
+                }
+            }
             val hadMeasurement = measurement != null
             measurement = null
             lastError = null

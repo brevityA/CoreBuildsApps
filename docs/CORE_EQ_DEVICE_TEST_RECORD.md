@@ -56,8 +56,12 @@ over HDMI or ARC.
 | `getAudioDevicesForAttributes(USAGE_MEDIA)` before and during playback | | |
 | Session-0 effect construct / control / read-back | | |
 | Equalizer or DynamicsProcessing applies (clamped to device range) | | |
+| Backend centre-gain fit report (configured/read-back gains, headroom, clamped bands) | | |
+| Compare backend fit report with a separate loopback/acoustic measurement (do not treat the report as acoustic evidence) | | |
 | Acoustic before and after measurement, TV speakers | | |
 | Acoustic before and after measurement, soundbar (ARC or eARC) | | |
+| TV same-position repeat keeps traces separate and retains the first correction | | |
+| Phone repeat success/cancel/failure retains or saves the first sweep without averaging | | |
 | Passthrough: PCM versus bitstream compared | | |
 
 ## 5. Presets

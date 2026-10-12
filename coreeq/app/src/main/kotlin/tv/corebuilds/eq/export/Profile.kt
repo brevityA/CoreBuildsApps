@@ -13,6 +13,30 @@ data class CurvePoint(
     val correctionDb: Double
 )
 
+/** Shape-only difference after removing the repeat sweep's broadband level offset. */
+data class RepeatabilityMetrics(
+    val comparedBands: Int,
+    val lowFrequencyHz: Double,
+    val highFrequencyHz: Double,
+    /** dB added to the repeat trace to align it to the reference over 500 Hz–2 kHz. */
+    val levelOffsetDb: Double,
+    val medianAbsDifferenceDb: Double,
+    val rmsDifferenceDb: Double,
+    val p95AbsDifferenceDb: Double
+)
+
+/** The second trace and its provenance; metrics may be absent when paths/bands were not comparable. */
+data class RepeatabilityCheck(
+    val metrics: RepeatabilityMetrics?,
+    val comparisonCurve: List<CurvePoint>,
+    val captureInfo: CaptureInfo? = null,
+    val outputKind: String? = null,
+    val outputName: String? = null,
+    val snrDb: Double? = null,
+    val driftPpm: Double? = null,
+    val note: String? = null
+)
+
 /** A microphone response point reported by Android; it is metadata, not a correction applied by Core EQ. */
 data class MicrophoneResponsePoint(
     val microphone: String,
@@ -104,6 +128,8 @@ data class Profile(
     val micType: String,
     /** Capture provenance from Android, absent on old profiles, REW imports and manual-only profiles. */
     val captureInfo: CaptureInfo? = null,
+    /** Optional second same-position capture; curves are retained separately and never averaged. */
+    val repeatabilityCheck: RepeatabilityCheck? = null,
     val deviceName: String = "Android TV",
     val stimulus: String = "sweep_10s",
     val captureSeconds: Double = 10.0,

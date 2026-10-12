@@ -161,29 +161,36 @@ object Formats {
         val measurementNotes = JSONArray()
         for (note in profile.measurementNotes) measurementNotes.put(note)
         root.put("measurement_notes", measurementNotes)
-        profile.captureInfo?.let { capture ->
-            val captureObj = JSONObject()
-            capture.requestedSampleRateHz?.let { captureObj.put("requested_sample_rate_hz", it) }
-            capture.inputSampleRateHz?.let { captureObj.put("input_sample_rate_hz", it) }
-            capture.analysisSampleRateHz?.let { captureObj.put("analysis_sample_rate_hz", it) }
-            capture.audioSource?.let { captureObj.put("audio_source", it) }
-            capture.inputDeviceName?.let { captureObj.put("input_device_name", it) }
-            capture.inputDeviceType?.let { captureObj.put("input_device_type", it) }
-            capture.activeMicrophoneCount?.let { captureObj.put("active_microphone_count", it) }
-            capture.captureDeviceModel?.let { captureObj.put("capture_device_model", it) }
-            capture.captureOsVersion?.let { captureObj.put("capture_os_version", it) }
-            captureObj.put("microphone_descriptions", JSONArray(capture.microphoneDescriptions))
-            captureObj.put("processing", JSONArray(capture.processing))
-            capture.unprocessedAudioSourceSupported?.let { captureObj.put("unprocessed_audio_source_supported", it) }
-            val response = JSONArray()
-            for (point in capture.microphoneResponse) {
-                response.put(JSONObject()
-                    .put("microphone", point.microphone)
-                    .put("frequency_hz", point.frequencyHz)
-                    .put("response_db", point.responseDb))
+        profile.captureInfo?.let { root.put("capture", captureInfoJson(it)) }
+        profile.repeatabilityCheck?.let { check ->
+            val repeat = JSONObject()
+            check.metrics?.let { metrics ->
+                repeat.put("metrics", JSONObject()
+                    .put("compared_bands", metrics.comparedBands)
+                    .put("comparison_range_hz", JSONArray().put(metrics.lowFrequencyHz).put(metrics.highFrequencyHz))
+                    .put("level_offset_db", metrics.levelOffsetDb)
+                    .put("median_abs_difference_db", metrics.medianAbsDifferenceDb)
+                    .put("rms_difference_db", metrics.rmsDifferenceDb)
+                    .put("p95_abs_difference_db", metrics.p95AbsDifferenceDb))
             }
-            captureObj.put("microphone_frequency_response", response)
-            root.put("capture", captureObj)
+            if (check.comparisonCurve.isNotEmpty()) {
+                val repeatCurve = JSONArray()
+                for (point in check.comparisonCurve) {
+                    repeatCurve.put(JSONObject()
+                        .put("hz", point.hz)
+                        .put("measured_db", point.measuredDb)
+                        .put("correction_db", point.correctionDb))
+                }
+                repeat.put("curve", repeatCurve)
+            }
+            check.captureInfo?.let { repeat.put("capture", captureInfoJson(it)) }
+            check.outputKind?.let { kind ->
+                repeat.put("output", JSONObject().put("kind", kind).put("name", check.outputName ?: JSONObject.NULL))
+            }
+            check.snrDb?.takeIf { it.isFinite() }?.let { repeat.put("snr_db", it) }
+            check.driftPpm?.takeIf { it.isFinite() }?.let { repeat.put("drift_ppm", it) }
+            check.note?.takeIf { it.isNotBlank() }?.let { repeat.put("note", it.take(400)) }
+            root.put("repeatability", repeat)
         }
         // sample_rate remains the generated stimulus/DSP rate (48 kHz). The
         // actual recorder and analysis rates live separately in `capture`.
@@ -281,6 +288,31 @@ object Formats {
         root.put("curve", curveArr)
 
         return root.toString(2) + "\n"
+    }
+
+    private fun captureInfoJson(capture: CaptureInfo): JSONObject {
+        val captureObj = JSONObject()
+        capture.requestedSampleRateHz?.let { captureObj.put("requested_sample_rate_hz", it) }
+        capture.inputSampleRateHz?.let { captureObj.put("input_sample_rate_hz", it) }
+        capture.analysisSampleRateHz?.let { captureObj.put("analysis_sample_rate_hz", it) }
+        capture.audioSource?.let { captureObj.put("audio_source", it) }
+        capture.inputDeviceName?.let { captureObj.put("input_device_name", it) }
+        capture.inputDeviceType?.let { captureObj.put("input_device_type", it) }
+        capture.activeMicrophoneCount?.let { captureObj.put("active_microphone_count", it) }
+        capture.captureDeviceModel?.let { captureObj.put("capture_device_model", it) }
+        capture.captureOsVersion?.let { captureObj.put("capture_os_version", it) }
+        captureObj.put("microphone_descriptions", JSONArray(capture.microphoneDescriptions))
+        captureObj.put("processing", JSONArray(capture.processing))
+        capture.unprocessedAudioSourceSupported?.let { captureObj.put("unprocessed_audio_source_supported", it) }
+        val response = JSONArray()
+        for (point in capture.microphoneResponse) {
+            response.put(JSONObject()
+                .put("microphone", point.microphone)
+                .put("frequency_hz", point.frequencyHz)
+                .put("response_db", point.responseDb))
+        }
+        captureObj.put("microphone_frequency_response", response)
+        return captureObj
     }
 
     /** Where an export landed, or why it did not, in words for the user. */

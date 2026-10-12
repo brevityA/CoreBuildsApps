@@ -86,6 +86,7 @@ class EqService : Service() {
         val effect: AudioEffect,
         val engine: String,
         val bands: List<PlatformBand>,
+        val fitReport: BackendFitReport,
         /** Opt-in BassBoost/LoudnessEnhancer on the same session; created and released with [effect]. */
         val extras: ExtraEffects? = null
     )
@@ -397,7 +398,7 @@ class EqService : Service() {
                 globalEffect = configured
                 syncRuntimeBands()
                 report(
-                    "Output-mix effect configured · $modeName · ${configured.engine} · ${profile.name}$via · ${configured.bands.size} bands${extrasNote(listOf(configured), profile)} · coverage depends on TV routing${where(output)}",
+                    "Output-mix effect configured · $modeName · ${configured.engine} · ${profile.name}$via · ${configured.bands.size} bands${fitNote(listOf(configured))}${extrasNote(listOf(configured), profile)} · coverage depends on TV routing${where(output)}",
                     isError = false
                 )
                 announceApplied(profile, modeName, listOf(configured), output)
@@ -475,7 +476,8 @@ class EqService : Service() {
                     engine = ENGINE_DYNAMICS_PROCESSING,
                     bands = dp.bandCentresHz.zip(dp.bandGainsDb).map { (hz, db) ->
                         PlatformBand(hz, (db * 100.0).roundToInt())
-                    }
+                    },
+                    fitReport = dp.fitReport
                 )
             } catch (e: Exception) {
                 dpFailure = e.message ?: e.javaClass.simpleName
@@ -533,7 +535,8 @@ class EqService : Service() {
             engine = ENGINE_DYNAMICS_PROCESSING,
             bands = dp.bandCentresHz.zip(dp.bandGainsDb).map { (hz, db) ->
                 PlatformBand(hz, (db * 100.0).roundToInt())
-            }
+            },
+            fitReport = dp.fitReport
         )
     }
 
@@ -544,10 +547,15 @@ class EqService : Service() {
         val range = eq.bandLevelRange
         check(range != null && range.size >= 2) { "Equalizer reports no gain range" }
         val centres = List(n) { eq.getCenterFreq(it.toShort()) / 1000.0 }
-        val mbs = BandMapping.millibels(
-            BandMapping.gainsDb(profile, centres, activeLayers),
-            range[0].toInt()..range[1].toInt()
+        val rangeMb = range[0].toInt()..range[1].toInt()
+        val fit = BandMapping.fitToBackend(
+            profile,
+            centres,
+            activeLayers,
+            minGainDb = rangeMb.first / 100.0,
+            maxGainDb = rangeMb.last / 100.0
         )
+        val mbs = BandMapping.millibels(fit.targetDb, rangeMb)
         for (i in 0 until n) eq.setBandLevel(i.toShort(), mbs[i])
         eq.enabled = true
         check(eq.hasControl()) { "another equaliser app has priority over this audio" }
@@ -555,7 +563,13 @@ class EqService : Service() {
             val millibels = eq.getBandLevel(index.toShort()).toInt()
             PlatformBand(centres[index], millibels)
         }
-        return AppliedEffect(eq, ENGINE_PLATFORM_EQUALIZER, actual)
+        val readBackDb = DoubleArray(n) { actual[it].millibels / 100.0 }
+        return AppliedEffect(
+            effect = eq,
+            engine = ENGINE_PLATFORM_EQUALIZER,
+            bands = actual,
+            fitReport = fit.report(readBackDb)
+        )
     }
 
     private fun releaseApplied(applied: AppliedEffect) {
@@ -736,7 +750,15 @@ class EqService : Service() {
         val names = held.joinToString { label(it.pkg) }
         val engines = held.map { it.applied.engine }.distinct().joinToString(" + ")
         val marker = if (held.any { it.discovered }) " · found by DUMP discovery" else ""
-        return "Effect attached to $names · ${modeStore.currentDecision().mode.title} · $engines · ${profile?.name ?: "the active profile"}$via${extrasNote(held.map { it.applied }, profile)}$marker${where(output)}"
+        val applied = held.map { it.applied }
+        return "Effect attached to $names · ${modeStore.currentDecision().mode.title} · $engines · ${profile?.name ?: "the active profile"}$via${fitNote(applied)}${extrasNote(applied, profile)}$marker${where(output)}"
+    }
+
+    /** Configuration-level fit evidence only; AudioEffect read-back is not acoustic verification. */
+    private fun fitNote(applied: List<AppliedEffect>): String {
+        val reports = applied.map { "${it.engine}: ${it.fitReport.statusSummary()}" }.distinct()
+        return reports.takeIf { it.isNotEmpty() }?.joinToString(" + ", prefix = " · ")
+            ?.plus(" · backend gains only; not a measured speaker response") ?: ""
     }
 
     /** What the Extra effects screen added on [applied], one entry per effect or layer. */

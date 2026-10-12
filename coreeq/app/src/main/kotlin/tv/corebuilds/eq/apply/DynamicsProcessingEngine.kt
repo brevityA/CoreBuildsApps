@@ -12,7 +12,8 @@ import kotlin.math.abs
 data class DynamicsProcessingApplied(
     val effect: DynamicsProcessing,
     val bandCentresHz: List<Double>,
-    val bandGainsDb: List<Double>
+    val bandGainsDb: List<Double>,
+    val fitReport: BackendFitReport
 )
 
 /**
@@ -42,8 +43,8 @@ object DynamicsProcessingEngine {
     ): DynamicsProcessingApplied {
         check(limiter.isProtectionOnly()) { "Limiter settings must only protect, never boost" }
         val layout = DpBandLayout.specs()
-        val gains = BandMapping.gainsDb(profile, layout.map { it.centerHz }, layers)
-        val config = buildConfig(layout, gains, limiter)
+        val initialFit = BandMapping.fitToBackend(profile, layout.map { it.centerHz }, layers)
+        val config = buildConfig(layout, initialFit.targetDb, limiter)
         val effect = DynamicsProcessing(PRIORITY, sessionId, config)
         try {
             check(effect.hasControl()) { "DynamicsProcessing did not obtain control" }
@@ -93,7 +94,8 @@ object DynamicsProcessingEngine {
             }
         }
         val centres = DpBandLayout.centresFromCutoffs(cutoffs)
-        val gains = BandMapping.gainsDb(profile, centres, layers)
+        val fit = BandMapping.fitToBackend(profile, centres, layers)
+        val gains = fit.targetDb
         check(gains.size == cutoffs.size) { "DynamicsProcessing band layout changed unexpectedly" }
 
         for (channel in 0 until channelCount) {
@@ -120,10 +122,15 @@ object DynamicsProcessingEngine {
         check(effect.hasControl()) { "DynamicsProcessing lost control after enabling" }
         check(effect.getEnabled()) { "DynamicsProcessing reports disabled after enabling" }
 
-        val readBackGains = (0 until cutoffs.size).map { band ->
+        val readBackGains = DoubleArray(cutoffs.size) { band ->
             effect.getPreEqBandByChannelIndex(0, band).gain.toDouble()
         }
-        return DynamicsProcessingApplied(effect, centres, readBackGains)
+        return DynamicsProcessingApplied(
+            effect = effect,
+            bandCentresHz = centres,
+            bandGainsDb = readBackGains.toList(),
+            fitReport = fit.report(readBackGains)
+        )
     }
 
     private fun buildConfig(
