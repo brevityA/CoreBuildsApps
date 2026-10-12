@@ -880,6 +880,7 @@ class MeasureActivity : TvActivity() {
             DISPLAY_BANDS_HZ, { hz -> interpolate(hz, r.centresHz, r.correctionDb) }, -1500, 1500
         ).map { PlatformBand(it.first, it.second) }
         val output = measuredOutput
+        val savedRepeatability = repeatabilityCheck
         val baseName = getString(R.string.measure_profile_name, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(now)))
         val profile = Profile(
             id = "profile-$now",
@@ -888,7 +889,7 @@ class MeasureActivity : TvActivity() {
             target = TARGETS[targetIndex].key,
             micType = micName ?: "microphone",
             captureInfo = captureInfo,
-            repeatabilityCheck = repeatabilityCheck,
+            repeatabilityCheck = savedRepeatability,
             deviceName = "${Build.MANUFACTURER} ${Build.MODEL}".trim(),
             stimulus = "sweep_${Sweep.SECONDS.roundToInt()}s",
             captureSeconds = LEAD_SECONDS + Sweep.STIMULUS_SECONDS + SweepAnalysis.TAIL_SECONDS,
@@ -907,9 +908,9 @@ class MeasureActivity : TvActivity() {
             outputKind = OutputRoute.keyFor(output),
             outputName = output?.name,
             measurementNotes = buildList {
-                if (repeatabilityCheck != null) {
+                if (savedRepeatability != null) {
                     add("Optional same-position repeat retained as a separate trace; captures are never averaged. The comparison is descriptive only, with no qualified pass/fail threshold, and does not generalize to other seats or rooms.")
-                    repeatabilityCheck.note?.let { add(it) }
+                    savedRepeatability.note?.let { add(it) }
                 }
             }
         )

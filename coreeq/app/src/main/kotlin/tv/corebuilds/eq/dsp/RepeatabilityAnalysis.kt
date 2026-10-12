@@ -142,7 +142,7 @@ object RepeatabilityAnalysis {
         result.centresHz.isNotEmpty() &&
             result.centresHz.size == result.measuredDb.size &&
             result.centresHz.all { it.isFinite() && it > 0.0 } &&
-            result.centresHz.zipWithNext().all { (a, b) -> b > a } &&
+            result.centresHz.asList().zipWithNext().all { (a, b) -> b > a } &&
             result.floorHz.isFinite() &&
             (result.bandSnrDb.isEmpty() || result.bandSnrDb.size == result.centresHz.size)
 
