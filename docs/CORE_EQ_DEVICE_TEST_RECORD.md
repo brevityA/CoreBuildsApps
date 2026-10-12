@@ -8,6 +8,8 @@ route is an estimate until a measurement backs it.
 
 Do not paste private dump text. Record only the fields below.
 
+A green CI build, unit-test and emulator-install result verifies the software build and package installation only. It does not qualify TV audio-effect routing/control, playback coverage, acoustic before/after response, phone microphone routing, or same-position repeat behaviour. Complete the checks below on each physical TV/output/phone setup before release.
+
 ## 1. Identity
 
 | Field | Value |
