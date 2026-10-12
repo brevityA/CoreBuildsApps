@@ -1,13 +1,13 @@
 {
-  "versionCode": 49,
-  "versionName": "2.3.1",
+  "versionCode": 50,
+  "versionName": "2.3.2",
   "iconCount": 986,
   "componentCount": 1221,
-  "releaseDate": "2026-10-10",
+  "releaseDate": "2026-10-12",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "ARD Sounds icon"
+    "Updating from a D-pad"
   ]
 }
