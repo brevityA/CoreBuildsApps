@@ -442,9 +442,28 @@ class MainActivity : TvActivity() {
                 checkForUpdate()
             }
             downloadedApk?.let { file ->
-                if (file.exists() && UpdateInstaller.canInstall(this) && !installOffered) {
-                    installOffered = true
-                    startInstall(file)
+                if (!file.exists()) {
+                    downloadedApk = null
+                    return@let
+                }
+                // The update flow is mid-round-trip: the APK is downloaded
+                // and verified, and this resume is either back from the
+                // permission screen or the installer's task returning.
+                val bar = findViewById<View>(R.id.update_bar)
+                if (bar.visibility == View.VISIBLE) {
+                    val button = findViewById<TextView>(R.id.update_button)
+                    if (UpdateInstaller.canInstall(this) && !installOffered) {
+                        // The permission was granted: open the installer
+                        // without a second press and park the remote on the
+                        // button underneath.
+                        installOffered = true
+                        button.requestFocus()
+                        startInstall(file)
+                    } else if (!UpdateInstaller.canInstall(this)) {
+                        // Back without granting: the sub-line says what is
+                        // owed; the remote lands on the button, not the grid.
+                        button.requestFocus()
+                    }
                 }
             }
         }
@@ -965,18 +984,20 @@ class MainActivity : TvActivity() {
         button.isEnabled = true
         button.text = getString(R.string.update_download, update.versionName)
         button.setOnClickListener { startDownload(update) }
-        // Reveal, do not grab. This runs on a network callback, which resolves
-        // whenever it likes — a second after launch is normal, and a second
-        // after launch is exactly when someone has reached the search field and
-        // started typing. The unconditional requestFocus() this replaces took
-        // the cursor out of the field mid-word and closed the keyboard with it,
-        // which from the sofa looks like the search box losing focus for no
-        // reason. The bar is a stop on the vertical D-pad chain (apply_targets
-        // → update_bar → chip_row), so it is reachable without the grab; the
-        // grab is kept only for the case it was for, a screen nobody has
-        // touched yet.
+        // Hand the remote to the button. This used to be "reveal, do not
+        // grab": an unconditional focus stole the cursor out of the search
+        // field mid-word and closed the keyboard, because the check resolves
+        // a second after launch - exactly when someone has reached the field
+        // and started typing. The counter-case is a D-pad user who does not
+        // know the bar is there: the bar sits between the apply button and
+        // the chips, and "I keep pressing but nothing updates" is what that
+        // looks like from the sofa (issue from a Shield, 2026-10). So the bar
+        // now takes focus whenever it appears, with the one carve-out the
+        // regression was about - never while the user is typing.
         val current = currentFocus
-        if (current == null || current === window.decorView || current.id == R.id.apply_button) {
+        val typingInSearch = current is EditText && current.id == R.id.search
+            && current.text.isNotEmpty()
+        if (!typingInSearch) {
             button.requestFocus()
         }
     }
@@ -1036,6 +1057,15 @@ class MainActivity : TvActivity() {
     private fun startInstall(file: File) {
         if (!UpdateInstaller.canInstall(this)) {
             installOffered = false
+            // A toast is gone before the permission toggle has been found
+            // and flipped, so the bar's sub-line carries the instruction
+            // persistently: it is still there when the user is back. onResume
+            // re-offers the install the moment the permission is granted, so
+            // there is no second press to remember.
+            findViewById<TextView>(R.id.update_highlights).visibility = View.GONE
+            val sub = findViewById<TextView>(R.id.update_sub)
+            sub.visibility = View.VISIBLE
+            sub.text = getString(R.string.update_need_permission)
             toast(getString(R.string.update_need_permission))
             if (!UpdateInstaller.requestInstallPermission(this)) {
                 toast(getString(R.string.update_permission_missing))
@@ -1044,7 +1074,16 @@ class MainActivity : TvActivity() {
         }
         try {
             UpdateInstaller.install(this, file)
+        } catch (e: android.content.ActivityNotFoundException) {
+            // No APK receiver on this build at all: the download is still
+            // verified and on disk, but this intent will never resolve. Keep
+            // the offer live and name the door that does work.
+            installOffered = false
+            toast(getString(R.string.update_no_installer))
         } catch (e: Exception) {
+            // A refused start is not a verdict: keep the offer live so the
+            // next press or resume tries again.
+            installOffered = false
             toast(getString(R.string.update_failed_fmt, e.message ?: "installer refused"))
         }
     }
