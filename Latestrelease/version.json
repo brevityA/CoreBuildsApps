@@ -1,13 +1,20 @@
 {
-  "versionCode": 50,
-  "versionName": "2.3.2",
-  "iconCount": 986,
-  "componentCount": 1221,
+  "versionCode": 51,
+  "versionName": "2.3.3",
+  "iconCount": 988,
+  "componentCount": 1224,
   "releaseDate": "2026-10-12",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Updating from a D-pad"
+    "MovieBoxTV icon",
+    "AIOStreams icon",
+    "Icon Echo wallpaper series",
+    "Three Icon Echo live loops",
+    "Launcher compatibility summary",
+    "Coverage and mapping-reliability report",
+    "Wallpaper colours sit on the icon palette",
+    "Nuvio on the `com.nuvio.app` package"
   ]
 }
