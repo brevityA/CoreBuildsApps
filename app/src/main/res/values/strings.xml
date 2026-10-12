@@ -73,6 +73,29 @@
     <string name="setup_open_fmt">Open %1$s</string>
     <string name="setup_open_failed_fmt">%1$s wouldn\'t open. Start it from your Home screen, then follow the steps above.</string>
     <string name="setup_footer">Reversible — pick another pack any time. Nothing is changed until you do.</string>
+
+    <!-- Launcher compatibility: one row per known launcher, showing what art
+         it applies and how the pack reaches it. The data is ApplyIconPack's
+         (art, applyMode, notes); this screen only displays it, so the screen
+         cannot drift from what the apply flow would have done. The facts the
+         notes paraphrase: docs/research/launcher-style-audit-2026-09.md,
+         docs/MONET_LAUNCHER.md, the ApplyIconPack comments. -->
+    <string name="launcher_compat_label">Launcher compatibility</string>
+    <string name="launcher_compat_kicker">COMPATIBILITY</string>
+    <string name="launcher_compat_title">Launcher compatibility</string>
+    <string name="launcher_compat_here_fmt">On this TV: %1$s — %2$s</string>
+    <string name="launcher_compat_here_unknown">This TV\'s launcher isn\'t in the list below. Pick it from the list, and name it in a report.</string>
+    <string name="launcher_compat_sub_fmt">How each launcher on this TV applies the pack — %1$d known</string>
+    <string name="launcher_compat_art_banners">applies the 16:9 banners from the appfilter</string>
+    <string name="launcher_compat_art_glyphs">applies the square glyphs — use Core Builds Glyphs</string>
+    <string name="launcher_compat_art_none">applies no pack art</string>
+    <string name="launcher_compat_mode_auto">Auto-apply</string>
+    <string name="launcher_compat_mode_walk">Launcher settings</string>
+    <string name="launcher_compat_mode_per_app">Per app</string>
+    <string name="launcher_compat_mode_none">Not supported</string>
+    <string name="launcher_compat_active">active on this TV</string>
+    <string name="launcher_compat_installed">installed</string>
+    <string name="launcher_compat_note_cd">This TV\'s launcher and what it applies - opens the launcher compatibility screen</string>
     <string name="cta_set_up_fmt">Set up in %1$s</string>
     <string name="glyphs_downloading">Downloading Core Builds Glyphs Pack, the square art your launcher applies</string>
     <string name="glyphs_install_permission">Allow installs from Core Builds, then switch to Glyphs again to fetch Core Builds Glyphs Pack</string>
@@ -313,6 +336,7 @@
     <string name="about_links">LINKS</string>
     <string name="about_source_label">Source &amp; issues</string>
     <string name="about_settings_label">Settings</string>
+    <string name="about_launcher_label">Launcher compatibility</string>
     <string name="about_source_url">https://github.com/brevityA/CoreBuildsApps</string>
     <string name="about_no_browser">No app on this device can open %1$s</string>
     <string name="about_footer">Built for Projectivy\nLauncher on Android TV</string>

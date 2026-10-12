@@ -65,6 +65,9 @@ class ManifestTests(unittest.TestCase):
             # A half unit on purpose: every Cinema wall is also drawn as a
             # 60 fps live loop, so the set grows six at a time.
             "series-10-cinema": 6,
+            # Icon Echo: the companion series lit by icon accents. Three of
+            # its six walls (103-105) also ship as live loops 29-31.
+            "series-11-icon-echo": 6,
         })
 
     def test_entries_are_https_github(self):

@@ -1139,13 +1139,32 @@ def audit_section(draw, y: int, title: str, sub: str) -> int:
     return dp(DIMENS["cb_space_md"]) + dp(40)
 
 
+def audit_launcher_line(img, y: int, draw) -> int:
+    """The detected-launcher line the auditor shows before the list (a ghost
+    chip, focusable in the layout): which launcher this TV is on and what
+    art it applies. The mockup shows the detected-home case, Projectivy -
+    the same one the launcher-compat frame focuses."""
+    g = dp(DIMENS["cb_gutter_side"])
+    pad_x, pad_y = dp(DIMENS["cb_space_md"]), dp(DIMENS["cb_space_xs"])
+    text = fmt(STRINGS["launcher_compat_here_fmt"], "Projectivy Launcher",
+               art_sentence("BANNERS"))
+    f = font("sans", DIMENS["cb_text_data"])
+    h = dp(DIMENS["cb_text_data"]) + 2 * pad_y
+    box = [g, y, W - g, y + h]
+    draw = ImageDraw.Draw(img, "RGBA")
+    rrect(draw, box, dp(DIMENS["cb_radius_card"]),
+          fill=colour("cb_card"), outline=(255, 255, 255, 0x0F), width=1)
+    draw_text(draw, (g + pad_x, y + pad_y), text, f, colour("cb_slate"))
+    return y + h + dp(DIMENS["cb_space_sm"])
+
+
 def auditor_frames() -> list[tuple[Image.Image, str]]:
     checked = 41
     img = new_frame()
     draw = ImageDraw.Draw(img, "RGBA")
     top = header(img, STRINGS["audit_kicker"], STRINGS["audit_title"],
                  fmt(STRINGS["audit_count_fmt"], checked))
-    y = top
+    y = audit_launcher_line(img, top + dp(6), draw)
     first = True
     for kind, title_key, sub_key in (
         ("not_applying", "audit_section_not_applying_fmt", "audit_section_not_applying_sub"),
@@ -1163,8 +1182,11 @@ def auditor_frames() -> list[tuple[Image.Image, str]]:
 
     # QR panel: the same generated deep link the screen builds, really
     # scannable, beside the request's identity - two columns, as the layout.
+    # The device line carries the detected launcher, as AuditorActivity's
+    # deviceNote() appends it.
     label, component = AUDIT_EXAMPLES[1][0], AUDIT_EXAMPLES[1][1]
-    note_text = f"Scanned on Example TV, Android 14, pack {VERSION['versionName']}"
+    note_text = (f"Scanned on Example TV, Android 14, "
+                 f"pack {VERSION['versionName']}, Projectivy Launcher")
     url = fmt(
         STRINGS["audit_issue_url_fmt"],
         urllib.parse.quote(label), urllib.parse.quote(component),
@@ -1176,7 +1198,9 @@ def auditor_frames() -> list[tuple[Image.Image, str]]:
     g = dp(DIMENS["cb_gutter_side"])
     size = dp(DIMENS["cb_qr_size"])
     qx = W - g - size
-    panel_top = top + dp(DIMENS["cb_space_md"])
+    # The launcher line stays up in the QR state (only the count goes away),
+    # so the panel clears it.
+    panel_top = audit_launcher_line(img, top + dp(6), draw)
     panel_h = H - dp(16) - panel_top
     qy = panel_top + (panel_h - size) // 2
     qr = qrcode.QRCode(error_correction=ERROR_CORRECT_M, box_size=8, border=4)
@@ -1292,6 +1316,126 @@ def suite_frame() -> tuple[Image.Image, str]:
     return img, note
 
 
+# ---------------------------------------------------------------------------
+# Launcher compatibility (activity_launcher_compat.xml)
+# ---------------------------------------------------------------------------
+
+def launcher_entries() -> list[dict]:
+    """ApplyIconPack's compatibility list in COMPATIBILITY order: display name,
+    art, apply mode, first note. The frame renders the data the screen
+    renders, so it parses the same Kotlin (art/applyMode defaults BANNERS/AUTO
+    mirror the data class)."""
+    text = (ROOT / "app/src/main/java/tv/corebuilds/iconpack/ApplyIconPack.kt"
+            ).read_text(encoding="utf-8")
+    consts = {m.group(1): m.group(2) for m in re.finditer(
+        r"private val (\w+)\s*=\s*(?:\n\s*)?\"((?:[^\"\\]|\\.)*)\"", text, re.S)}
+    entry_re = re.compile(r"^\s{4}val (\w+) = Launcher\(", re.M)
+    matches = list(entry_re.finditer(text))
+    entries = {}
+    for i, m in enumerate(matches):
+        end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
+        body = text[m.end():end]
+        notes_m = re.search(r"notes = listOf\((.*?)\)\s*\n", body, re.S)
+        note = ""
+        if notes_m:
+            # The entry's comment lines sit inside the listOf(...) and carry
+            # capitalised words, so a name only counts as a constant when it
+            # is actually defined in consts.
+            const = re.search(r"\b[A-Z][A-Z_0-9]+\b", notes_m.group(1))
+            inline = re.search(r"\"([^\"]*)\"", notes_m.group(1))
+            note = (consts[const.group(0)] if const and const.group(0) in consts
+                    else inline.group(1) if inline else "")
+        entries[m.group(1)] = {
+            "display": (re.search(r'displayName = "([^"]*)"', body) or [None, ""])[1],
+            "art": (re.search(r"art = Art\.(\w+)", body) or [None, "BANNERS"])[1],
+            "mode": (re.search(r"applyMode = ApplyMode\.(\w+)", body) or [None, "AUTO"])[1],
+            "note": note,
+        }
+
+    def members(list_name: str) -> list[str]:
+        m = re.search(rf"val {list_name} = listOf\(([^)]*)\)", text, re.S)
+        return [t for t in re.findall(r"\b([A-Z]\w*)\b", m.group(1))] if m else []
+    ordered = members("ALL") + members("NOT_SUPPORTED")
+    return [entries[n] for n in ordered if n in entries]
+
+
+def launcher_compat_frame() -> tuple[Image.Image, str]:
+    img = new_frame()
+    draw = ImageDraw.Draw(img, "RGBA")
+    top = header(img, STRINGS["launcher_compat_kicker"],
+                 STRINGS["launcher_compat_title"])
+    g = dp(DIMENS["cb_gutter_side"])
+    y = top + dp(6)
+
+    # The detected-launcher line and the count, as the screen builds them.
+    entries = launcher_entries()
+    home = next(e for e in entries if e["display"].startswith("Projectivy"))
+    fs = font("sans", DIMENS["cb_text_data"])
+    draw_text(draw, (g, y), fmt(STRINGS["launcher_compat_here_fmt"],
+                                home["display"],
+                                art_sentence(home["art"])), fs,
+              colour("cb_signal_cyan"))
+    y += dp(20)
+    draw_text(draw, (g, y), fmt(STRINGS["launcher_compat_sub_fmt"],
+                                len(entries)), fs, colour("cb_slate"))
+    # The RecyclerView's top padding plus room for the focus ring's glow.
+    y += dp(24)
+
+    f_name = font("sans", DIMENS["cb_text_body"], bold=True)
+    f_mono = font("mono", DIMENS["cb_text_kicker"], bold=True)
+    f_line = font("sans", DIMENS["cb_text_data"])
+    pad = dp(DIMENS["cb_card_padding"])
+    inset = dp(DIMENS["cb_focus_inset"])
+    mode_strings = {"AUTO": STRINGS["launcher_compat_mode_auto"],
+                    "WALK": STRINGS["launcher_compat_mode_walk"],
+                    "PER_APP": STRINGS["launcher_compat_mode_per_app"],
+                    "NONE": STRINGS["launcher_compat_mode_none"]}
+    bottom = H - CAPTION_H - dp(16)
+    shown = 0
+    for entry in entries:
+        note_lines = wrap(draw, entry["note"], f_line,
+                          W - 2 * g - 2 * pad - 2 * dp(8)) if entry["note"] else []
+        # name (17sp) + art (14sp) + the note's wrapped lines.
+        row_h = (2 * pad + dp(22) + dp(16)
+                 + (dp(3) + len(note_lines) * dp(19) if note_lines else 0))
+        if y + row_h > bottom:
+            break
+        active = entry is home
+        (focus_ring if active else card)(img, [g, y, W - g, y + row_h])
+        x = g + inset + dp(8)
+        draw_text(draw, (x, y + pad), entry["display"], f_name, colour("cb_ink"))
+        mode_w = text_width(draw, mode_strings[entry["mode"]], f_mono)
+        if active:
+            status_w = text_width(draw, STRINGS["launcher_compat_active"], f_mono)
+            draw_text(draw, (W - g - inset - dp(8) - mode_w - dp(16) - status_w,
+                             y + pad + dp(2)),
+                      STRINGS["launcher_compat_active"], f_mono,
+                      colour("cb_signal_cyan"))
+        draw_text(draw, (W - g - inset - dp(8) - mode_w, y + pad + dp(2)),
+                  mode_strings[entry["mode"]], f_mono, colour("cb_signal_cyan"))
+        draw_text(draw, (x, y + pad + dp(22)), art_sentence(entry["art"]),
+                  f_line, colour("cb_slate"))
+        for i, line in enumerate(note_lines):
+            draw_text(draw, (x, y + pad + dp(38) + i * dp(19)), line, f_line,
+                      colour("cb_slate"))
+        y += row_h + dp(6)
+        shown += 1
+    if shown < len(entries):
+        draw_text(draw, (g, y), f"… {len(entries) - shown} more", fs,
+                  colour("cb_slate", 0x88))
+    note = (f"MOCKUP - launcher-compat frame from activity_launcher_compat.xml + "
+            f"item_launcher_compat.xml + strings.xml + ApplyIconPack.kt; {shown} of "
+            f"{len(entries)} rows fit the panel, focus on this TV's launcher "
+            "(Projectivy), the detected-home case")
+    return img, note
+
+
+def art_sentence(art: str) -> str:
+    return {"BANNERS": STRINGS["launcher_compat_art_banners"],
+            "GLYPHS": STRINGS["launcher_compat_art_glyphs"],
+            "NONE": STRINGS["launcher_compat_art_none"]}[art]
+
+
 FRAMES = [
     ("app-ui-catalogue.png", lambda: catalogue_frame(False)),
     ("app-ui-catalogue-update.png", lambda: catalogue_frame(True)),
@@ -1303,6 +1447,7 @@ FRAMES = [
     ("app-ui-auditor-qr.png", lambda: auditor_frames()[1]),
     ("app-ui-inspector.png", inspector_frame),
     ("app-ui-suite.png", suite_frame),
+    ("app-ui-launcher-compat.png", launcher_compat_frame),
 ]
 
 

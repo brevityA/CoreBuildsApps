@@ -1,6 +1,15 @@
 # Icon-colour wallpaper study — 2026-10
 
-**Status:** concept exploration only. The board is not a release set and is not in the wallpaper manifest.
+**Status:** carried to production. The direction shipped as
+`series-11-icon-echo` (walls 103–108, `tools/build_icon_echo_wallpapers.py`):
+Thermal Bloom, Signal Red, Green Current and Molten Orbit at full resolution,
+plus two further curated catalogue accents (TiviMate `#97C1FF`, ARD
+`#2D92FF`). Walls 103–105 also ship as live loops 29–31
+(`tools/build_icon_echo_loops.py`). The current 102-wallpaper collection was
+not touched; the same "shift a step" idea retuned the generated series' house
+accents onto the icon palette (see `Wallpapers/README.md`).
+
+_(Below: the original study, kept as the record of the direction.)_
 
 ![Four abstract wallpaper colourway concepts](icon-wallpaper-palette-study-2026-10.png)
 

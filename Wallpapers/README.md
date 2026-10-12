@@ -1,9 +1,11 @@
-# Core Builds — Wallpaper Collection v5.2
+# Core Builds — Wallpaper Collection v5.3
 
-102 wallpapers · 3840×2160 (series 1–3, 7–10) and 1376×768 (series 6) · 128 MB ·
-Core Builds palette:
-Core Cyan #00e5ff · Signal #00d4ff · Glow #7eeeff · Build Blue #4facfe ·
-Dusk Violet #8a4890 · Ember #c03a20 · Night #0d1117 · Void #04070f.
+108 wallpapers · 3840×2160 (series 1–3, 7–11) and 1376×768 (series 6) ·
+Core Builds palette, icon-echo retuned (2026-10-11):
+Core Cyan #00d4ff (the icon pack's own Signal cyan) · Glow #7eeeff ·
+Build Blue #4facfe · Dusk Violet #9754a8 (nudged toward the icon violet
+family) · Ember #d2482a (nudged toward the icon coral family) ·
+Night #0d1117 · Void #04070f.
 
 `manifest.json` indexes every wallpaper with a raw GitHub `url`, a bundled
 `thumb` URL, its `series`, and `resolution`. Both the repo's README and the
@@ -27,6 +29,7 @@ and the wallpaper research behind earlier series is in
 | `series-8-amoled` | 69–78, 83–84 | **AMOLED.** Twelve minimalist 4K walls on exact `#000000`: sparse cyan, violet, and ember geometry with 92.4–99.8% true-black coverage. `tools/build_amoled_wallpapers.py` asserts the ≥50% contract and writes the [contact sheet](../docs/amoled-wallpapers.png). |
 | `series-9-deep-space` | 85–96 | **Deep Space.** Twelve 4K space walls in the house palette — event horizon, nebulae, ringed planet, spiral galaxy, comets, novae — all procedural and seeded (`tools/build_deep_space_wallpapers.py`, [contact sheet](../docs/deep-space-wallpapers.png)). Smooth gradients ship grain-free like series 7/8: the full-frame dither cost ~9 MB per PNG for a texture invisible at TV distance. |
 | `series-10-cinema` | 97–102 | **Cinema.** Six 4K night-time cinema scenes in neon and marquee light — marquee frontage, velvet stage, projector beam, neon lounge, late-night rentals, box office. Each is drawn once as layers and animated by weighting them, so every wall has a seamless 60 fps loop that is the same drawing (`tools/build_cinema_wallpapers.py`, [contact sheet](../docs/cinema-wallpapers.png)). |
+| `series-11-icon-echo` | 103–108 | **Icon Echo.** The companion series the [2026-10 concept study](../docs/research/icon-wallpaper-palette-study-2026-10.md) pointed at: each wall is lit by one accent taken straight from the icon catalogue — HeatLive `#EB1E54`, YouTube `#FF0033`, Spotify `#1ED760`, MaxPlayer `#F8A000`, TiviMate `#97C1FF`, ARD `#2D92FF` — and shifted a step toward the night ground (`wall_tones` in `tools/build_icon_echo_wallpapers.py`: deep wash, main light, bright core), so a wall and the icons it backs glow the same colour a shade apart. Palette cues only: no logos, no icon geometry. Walls 103–105 also ship as live loops 29–31 (`tools/build_icon_echo_loops.py`, `Motion/live/`). [Contact sheet](../docs/icon-echo-wallpapers.png). |
 
 Retired: `series-4-core-mark` (41–70, 30 × 4K PNGs of the lit hex + faceted core
 diamond) shipped in v1.7.0 and was removed in v1.8.6. Series index 4 stays empty
@@ -86,6 +89,19 @@ calm bottom third for launcher cards, film-grain dither baked in to prevent
 gradient banding on TV panels. Do not run lossy/palette PNG optimizers over them.
 Series 8 is stricter: its untouched ground must remain exact `#000000`, and every
 wall must retain at least 50% true-black pixels.
+
+**Icon-echo retune (2026-10-11).** The house accents now sit on the icon
+pack's own accent families: the cyan light is the pack's most-used icon
+accent, Signal `#00D4FF`; Dusk Violet and Ember are nudged slightly toward
+the icon violet and coral families. The retune lives in the palette
+constants of `tools/build_classic_wallpapers.py` (shared by series 2–3 and
+9), `tools/build_amoled_wallpapers.py` (series 8),
+`tools/build_cinema_wallpapers.py` (series 10) and
+`tools/build_motion_feed.py` (the motion loops). The walls each generator's
+list currently owns were re-rendered with it; earlier committed walls and
+the genre-palette sets (series 0, 1, 6, 7) keep their original colours.
+Series 11 takes the other direction of the same idea: the icon accents,
+shifted a step toward the wall.
 
 ```
 https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/manifest.json

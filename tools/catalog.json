@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "2.3.2",
+    "version": "2.3.3",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 986
+    "count": 988
   },
   "icons": [
     {
@@ -267,6 +267,20 @@
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
+    },
+    {
+      "name": "AIOStreams",
+      "drawable": "aiostreams",
+      "color": "#E6EDF3",
+      "glyph": "aiostreams_a",
+      "components": [
+        "io.github.viren070.aiostreams/io.github.viren070.aiostreams.MainActivity"
+      ],
+      "category": "STREAM",
+      "mapping_source": "issue #293 (device-reported on onn 4K Plus Streaming, Android 14, pack 2.3.1; #290 is its package-only duplicate): io.github.viren070.aiostreams.MainActivity is the activity the launcher opened for AIOStreams on that device. Not confirmed on a second TV",
+      "color_source": "monochrome brand: the AIOStreams mark is a white gradient on black, and its launcher icon is a white mark on black (GitHub Viren070/AIOStreams branding assets and ic_launcher, checked 2026-10-11); drawn in the pack's off-white per the white-ink convention",
+      "color_reviewed": "2026-10-11",
+      "glyph_source": "original Core monoline mark: a diagonal stroke rising to the right with the circle at its upper right - the app's A cue - in Core stroke geometry, after the brand's own two-shape mark, not a trace (2026-10-11)"
     },
     {
       "name": "Local 10+",
@@ -6456,6 +6470,20 @@
       "style": "core_monoline"
     },
     {
+      "name": "MovieBoxTV",
+      "drawable": "movieboxtv",
+      "color": "#89FF5A",
+      "glyph": "movieboxtv_strip",
+      "components": [
+        "com.community.mbox.tv/com.transsion.subroom.activity.SplashActivity"
+      ],
+      "category": "STREAM",
+      "mapping_source": "issue #294 (device-reported on onn 4K Plus Streaming, Android 14, pack 2.3.1; #291 is its package-only duplicate): com.transsion.subroom.activity.SplashActivity is the activity the launcher opened for MovieBoxTV on that device. Not confirmed on a second TV",
+      "color_source": "sampled arrow green #89FF5A from the current Play Store icon of the same brand family (MovieBox: Movies & TV Shows, com.community.mbox.ng - the developer's flagship beside com.community.mbox.tv on apkmb.com); the TV build shares the film-strip + play + arrow mark. The triangle blue #31C7FD was recorded, not used (2026-10-11)",
+      "color_reviewed": "2026-10-11",
+      "glyph_source": "original Core monoline mark: a film strip with its sprockets beside a play triangle - the app's download-and-play cue - in Core stroke geometry, not a trace of the vendor icon (2026-10-11)"
+    },
+    {
       "name": "MovieLab",
       "drawable": "movielab",
       "color": "#FED12F",
@@ -7284,7 +7312,8 @@
         "com.nuvio.tv/.launcher.AppIconEmerald",
         "com.nuvio.tv/.launcher.AppIconRoseGold",
         "com.nuvio.tv/.launcher.AppIconCopper",
-        "com.nuvio.tv/.launcher.AppIconGraphite"
+        "com.nuvio.tv/.launcher.AppIconGraphite",
+        "com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault"
       ],
       "category": "STREAM",
       "color_source": "brand reference — nuvio lockup gradient, violet end (sampled 2026-09-14)",
@@ -7292,7 +7321,8 @@
       "gradient": [
         "#2FCCE6",
         "#A238F0"
-      ]
+      ],
+      "mapping_source": "existing set per docs/research/community-input-icons-2026-09.md P0 (official com.nuvio.tv manifest, six launcher activities, read 2026-09-14); com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault added from issue #288 (device-reported on Smart TV Pro, Android 14, pack 2.3.0): the com.nuvio.app package variant ships the same AppIconDefault activity, which the P0 pass mapped only under com.nuvio.tv. Not confirmed on a second TV"
     },
     {
       "name": "NV Player",

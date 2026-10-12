@@ -38,10 +38,21 @@ body:
     id: launcher
     attributes:
       label: Launcher
+      description: |
+        The one your home screen runs. The pack names it in the device line
+        when it recognises it — pick it here when the TV's launcher is not in
+        the known list, or when you run more than one.
       options:
         - Projectivy
+        - Monet
+        - AT4K
+        - Leanback on Fire
+        - L TV Launcher
+        - ChillHub
         - Nova
         - Lawnchair
+        - Apex
+        - ADW
         - FLauncher
         - Other
     validations:

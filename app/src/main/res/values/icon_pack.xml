@@ -21,6 +21,7 @@
         <item>aerialviews</item>
         <item>aicamview</item>
         <item>finalwire</item>
+        <item>aiostreams</item>
         <item>airattack2tv</item>
         <item>aircast</item>
         <item>airpin_pro</item>
@@ -468,6 +469,7 @@
         <item>moviehd</item>
         <item>movieark</item>
         <item>movieboxpro</item>
+        <item>movieboxtv</item>
         <item>movielab</item>
         <item>moviesanywhere</item>
         <item>moviesbyfawesomeandroidtv</item>
@@ -1009,6 +1011,7 @@
         <item>Aerial Views</item>
         <item>AI Cam View</item>
         <item>AIDA64</item>
+        <item>AIOStreams</item>
         <item>Air Attack 2</item>
         <item>Aircast</item>
         <item>AirPin Pro</item>
@@ -1456,6 +1459,7 @@
         <item>Movie HD</item>
         <item>Movieark</item>
         <item>MovieBox Pro</item>
+        <item>MovieBoxTV</item>
         <item>MovieLab</item>
         <item>Movies Anywhere</item>
         <item>Movies By Fawesome</item>
@@ -1997,6 +2001,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>STREAM</item>
         <item>GAMING</item>
         <item>APP</item>
         <item>APP</item>
@@ -2443,6 +2448,7 @@
         <item>APP</item>
         <item>STREAM</item>
         <item>APP</item>
+        <item>STREAM</item>
         <item>STREAM</item>
         <item>STREAM</item>
         <item>STREAM</item>
@@ -2993,20 +2999,6 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>0</item>
         <item>1</item>
         <item>0</item>
         <item>1</item>
@@ -3021,245 +3013,9 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
         <item>0</item>
         <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
+        <item>0</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3346,6 +3102,257 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3395,6 +3402,7 @@
         <item>1</item>
         <item>1</item>
         <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3953,5 +3961,5 @@
         <item>1</item>
         <item>1</item>
     </integer-array>
-    <integer name="icon_count">986</integer>
+    <integer name="icon_count">988</integer>
 </resources>

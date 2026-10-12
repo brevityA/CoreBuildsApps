@@ -30,8 +30,11 @@ BLACK = (0, 0, 0)
 CYAN = (0, 212, 255)
 GLOW = (126, 238, 255)
 BLUE = (79, 172, 254)
-VIOLET = (138, 72, 144)
-EMBER = (192, 58, 32)
+# Icon-echo retune (2026-10-11): the violet and ember accents sit on the
+# icon pack's violet/coral accent families, a step apart in tone (see
+# build_classic_wallpapers.py and Wallpapers/README.md).
+VIOLET = (151, 84, 168)
+EMBER = (210, 72, 42)
 WHITE = (216, 236, 242)
 MIN_TRUE_BLACK = 0.50
 

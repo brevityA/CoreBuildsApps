@@ -1,6 +1,6 @@
 # Supported applications
 
-`986` icons · `1221` mapped components · pack v2.3.2
+`988` icons · `1224` mapped components · pack v2.3.3
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -27,6 +27,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Aerial Views | `aerialviews` | `#34EB7A` | `#34EB7A` | `com.neilturner.aerialviews/com.neilturner.aerialviews.ui.MainActivity` |
 | AI Cam View | `aicamview` | `#024D39` | `#036E51` | `com.kapron.ap.aicamview.tv/com.kapron.ap.aicamview.tv.CameraListActivityTv` |
 | AIDA64 | `finalwire` | `#FFB020` | `#FFB020` | `com.finalwire.aida64/com.finalwire.aida64.HHMainActivity`<br>`com.finalwire.aida64/com.finalwire.aida64.TVMainActivity` |
+| AIOStreams | `aiostreams` | `#E6EDF3` | `#E6EDF3` | `io.github.viren070.aiostreams/io.github.viren070.aiostreams.MainActivity` |
 | Air Attack 2 | `airattack2tv` | `#E3BD91` | `#E3BD91` | `com.ArtInGames.AirAttack2tv/com.unity3d.player.UnityPlayerActivity` |
 | Aircast | `aircast` | `#8353FB` | `#8353FB` | `com.smartdevice.tv.aircast/com.coocaa.icast.ui.home.SplashActivity` |
 | AirPin Pro | `airpin_pro` | `#85F7AB` | `#85F7AB` | `com.waxrain.airplaydmr/com.waxrain.ui.WaxPlayerSetting` |
@@ -474,6 +475,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Movie HD | `moviehd` | `#DBA608` | `#DBA608` | `com.ggateam.moviehd.ui/com.ggateam.moviehd.ui.FrmSplash` |
 | Movieark | `movieark` | `#00C1D2` | `#00C1D2` | `com.tcl.movieark/com.tcl.waterfall.overseas.main.MainActivity` |
 | MovieBox Pro | `movieboxpro` | `#FFDE45` | `#FFDE45` | `com.movieboxpro.androidtv/com.movieboxpro.android.view.activity.SplashActivity` |
+| MovieBoxTV | `movieboxtv` | `#89FF5A` | `#89FF5A` | `com.community.mbox.tv/com.transsion.subroom.activity.SplashActivity` |
 | MovieLab | `movielab` | `#FED12F` | `#FED12F` | `com.movielab.tv/com.movielab.MainActivity` |
 | Movies Anywhere | `moviesanywhere` | `#082E5B` | `#105EBA` | `com.moviesanywhere.goo/com.disney.brooklyn.tv.ui.signin.TVSignInActivity` |
 | Movies By Fawesome | `moviesbyfawesomeandroidtv` | `#FF001B` | `#FF001B` | `com.future.moviesByFawesomeAndroidTV/com.future.moviesByFawesomeAndroidTV.SplashActivity` |
@@ -537,7 +539,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | NPO Start | `npo_start` | `#F86800` | `#F86800` | `nl.uitzendinggemist/nl.uitzendinggemist.tv.presentation.activities.main.MainActivity` |
 | NRK TV | `nrk_tv` | `#B0C8F0` | `#B0C8F0` | `no.nrk.tv/no.nrk.tv.view.MobileSplashScreenActivity`<br>`no.nrk.tv/no.nrk.tv.view.TvSplashScreenActivity` |
 | NT at Home | `ntathome` | `#F04DE0` | `#F04DE0` | `com.ntathome/tv.vhx.LauncherActivity`<br>`com.ntathome/tv.vhx.tv.home.TvHomeActivity` |
-| Nuvio TV | `nuvio` | `#A238F0` | `#A238F0` | `com.nuvio.app/com.nuvio.tv.MainActivity`<br>`com.nuvio.tv/.MainActivity`<br>`com.nuvio.tv/com.nuvio.tv.MainActivity`<br>`com.nuviodebug.com/com.nuvio.tv.MainActivity`<br>`com.nuvio.tv/.launcher.AppIconDefault`<br>`com.nuvio.tv/.launcher.AppIconArcticBlue`<br>`com.nuvio.tv/.launcher.AppIconEmerald`<br>`com.nuvio.tv/.launcher.AppIconRoseGold`<br>`com.nuvio.tv/.launcher.AppIconCopper`<br>`com.nuvio.tv/.launcher.AppIconGraphite` |
+| Nuvio TV | `nuvio` | `#A238F0` | `#A238F0` | `com.nuvio.app/com.nuvio.tv.MainActivity`<br>`com.nuvio.tv/.MainActivity`<br>`com.nuvio.tv/com.nuvio.tv.MainActivity`<br>`com.nuviodebug.com/com.nuvio.tv.MainActivity`<br>`com.nuvio.tv/.launcher.AppIconDefault`<br>`com.nuvio.tv/.launcher.AppIconArcticBlue`<br>`com.nuvio.tv/.launcher.AppIconEmerald`<br>`com.nuvio.tv/.launcher.AppIconRoseGold`<br>`com.nuvio.tv/.launcher.AppIconCopper`<br>`com.nuvio.tv/.launcher.AppIconGraphite`<br>`com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault` |
 | NV Player | `nvplayer` | `#50D8F8` | `#50D8F8` | `com.acb.nvplayer/com.ae.video.bplayer.ui.SplashActivity` |
 | Nxsha | `nxsha` | `#F8C828` | `#F8C828` | `com.nxsha/com.nxsha.MainActivity` |
 | NZR+ | `nzrplus` | `#5214D6` | `#6E32EC` | `com.nzrplus.app/com.nzrplus.app.MainActivity` |
