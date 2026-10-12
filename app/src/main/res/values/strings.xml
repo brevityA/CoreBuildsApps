@@ -89,8 +89,9 @@
     <string name="update_progress_of_fmt">Downloading… %1$s of %2$s</string>
     <string name="update_install">Install v%1$s</string>
     <string name="update_sub_install">APK saved. Press to open the system installer.</string>
-    <string name="update_need_permission">Allow installs from this app, then press Install again.</string>
+    <string name="update_need_permission">Allow installs from this app in the settings screen that just opened, then come back — the installer opens by itself.</string>
     <string name="update_permission_missing">Could not open install permission. Enable unknown sources for Core Builds, then retry.</string>
+    <string name="update_no_installer">No app on this device can install an APK. Download the release from github.com/brevityA/CoreBuildsApps and install it with a files app instead.</string>
 
     <!-- Wallpapers -->
     <!-- Title and subtitle are separate: the button reads "Wallpapers" and

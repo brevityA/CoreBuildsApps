@@ -6,6 +6,21 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.3.2] — 2026-10-12
+
+### Fixed
+
+- **Updating from a D-pad.** The update button takes focus the moment the
+  update bar appears (the one carve-out: not while you are mid-word in the
+  search field, which the old unconditional focus used to break), so a
+  remote user who has not noticed the bar is handed the button instead of
+  pressing nothing. After you flip the "allow installs" permission the
+  installer opens by itself when you come back — no second press to find —
+  and the bar's sub-line carries the instruction persistently instead of
+  only in a toast that is gone before the toggle is found. If the device
+  has no APK installer at all, the failure now says so and points at the
+  GitHub release instead of dying on a toast.
+
 ## [2.3.1] — 2026-10-11
 
 ### Added
