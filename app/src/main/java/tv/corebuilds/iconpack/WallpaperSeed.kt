@@ -45,6 +45,31 @@ object WallpaperSeed {
         return fromSample(bitmap)
     }
 
+    /**
+     * How much of the lower third is dark enough for launcher cards to sit on
+     * - the share of its pixels at or under 14% luma, the same threshold the
+     * repo's wallpaper generators hold their "dark coverage" floor to. 1.0 is
+     * a black floor, 0.0 a bright one. Sampled at 64x12 from the bottom
+     * third; cheap enough to run beside the seed extraction.
+     */
+    fun cardFloor(bitmap: Bitmap): Float {
+        val w = 64
+        val h = 12
+        val third = bitmap.height / 3
+        val bottom = Bitmap.createBitmap(bitmap, 0, bitmap.height - third, bitmap.width, third)
+        val scaled = Bitmap.createScaledBitmap(bottom, w, h, true)
+        try {
+            val pixels = IntArray(w * h)
+            scaled.getPixels(pixels, 0, w, 0, 0, w, h)
+            var dark = 0
+            for (p in pixels) if (luma(p) <= 0.14f) dark++
+            return dark.toFloat() / pixels.size
+        } finally {
+            if (scaled !== bottom) scaled.recycle()
+            if (bottom !== bitmap) bottom.recycle()
+        }
+    }
+
     private fun fromSample(bitmap: Bitmap): Palette {
         val w = 32
         val h = 32

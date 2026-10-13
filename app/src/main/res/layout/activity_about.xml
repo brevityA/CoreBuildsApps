@@ -120,6 +120,21 @@
                         android:textColor="@color/cb_ink"
                         android:textSize="@dimen/cb_text_title"
                         android:textStyle="bold" />
+
+                    <!-- Verdict of the last Check for updates on this screen:
+                         "LATEST" in cyan or "2.4.1 AVAILABLE" in the warning amber. GONE
+                         until a check has run, so the fact stays a fact. -->
+                    <TextView
+                        android:id="@+id/about_version_badge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:fontFamily="monospace"
+                        android:letterSpacing="0.10"
+                        android:textColor="@color/cb_signal_cyan"
+                        android:textSize="@dimen/cb_text_kicker"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <LinearLayout

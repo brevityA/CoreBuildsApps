@@ -36,7 +36,13 @@ data class Wallpaper(
     /** Bundled thumb asset path under assets/ (with .jpg). */
     val thumbAsset: String,
     /** True for a [LiveLoop] motion loop: [url] is an MP4, not a still. */
-    val isLive: Boolean = false
+    val isLive: Boolean = false,
+    /**
+     * Pack version this wall was added or last re-rendered in, e.g. "2.4.0",
+     * or "" for walls that predate the field. The browser's New chip shows
+     * the walls carrying the newest value in the manifest.
+     */
+    val since: String = ""
 ) : Parcelable {
 
     private constructor(parcel: Parcel) : this(
@@ -46,7 +52,8 @@ data class Wallpaper(
         thumbUrl = parcel.readString().orEmpty(),
         resolution = parcel.readString().orEmpty(),
         thumbAsset = parcel.readString().orEmpty(),
-        isLive = parcel.readInt() == 1
+        isLive = parcel.readInt() == 1,
+        since = parcel.readString().orEmpty()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -57,6 +64,7 @@ data class Wallpaper(
         parcel.writeString(resolution)
         parcel.writeString(thumbAsset)
         parcel.writeInt(if (isLive) 1 else 0)
+        parcel.writeString(since)
     }
 
     override fun describeContents(): Int = 0
@@ -103,10 +111,34 @@ object WallpaperCatalog {
                 url = url,
                 thumbUrl = o.optString("thumb"),
                 resolution = o.optString("resolution"),
-                thumbAsset = "$THUMB_DIR/${url.substringAfterLast('/').substringBeforeLast('.')}.jpg"
+                thumbAsset = "$THUMB_DIR/${url.substringAfterLast('/').substringBeforeLast('.')}.jpg",
+                since = o.optString("since")
             )
         }
         return out
+    }
+
+    /**
+     * The newest `since` in the collection, or null if no wall carries one.
+     * Compared numerically per dotted component, so "2.10.0" beats "2.4.0".
+     */
+    fun newestSince(walls: List<Wallpaper>): String? =
+        walls.map { it.since }.filter { it.isNotBlank() }.maxWithOrNull(::compareVersions)
+
+    /** Walls added or re-rendered in the newest release the manifest knows. */
+    fun newWalls(walls: List<Wallpaper>): List<Wallpaper> {
+        val newest = newestSince(walls) ?: return emptyList()
+        return walls.filter { it.since == newest }
+    }
+
+    private fun compareVersions(a: String, b: String): Int {
+        val pa = a.split('.').map { it.toIntOrNull() ?: 0 }
+        val pb = b.split('.').map { it.toIntOrNull() ?: 0 }
+        for (i in 0 until maxOf(pa.size, pb.size)) {
+            val d = (pa.getOrNull(i) ?: 0) - (pb.getOrNull(i) ?: 0)
+            if (d != 0) return d
+        }
+        return 0
     }
 
     /**

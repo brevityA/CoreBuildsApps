@@ -240,7 +240,8 @@ def collect() -> list[str]:
                       / "activity_faq.xml")
     checker = read(ROOT / "app" / "src" / "main" / "java" / "tv" / "corebuilds"
                    / "iconpack" / "UpdateChecker.kt")
-    for rid in ("set_refresh_row", "set_appinfo_row", "set_faq_row"):
+    for rid in ("set_refresh_row", "set_appinfo_row", "set_faq_row",
+                "set_about_row", "set_support_row"):
         check(f'android:id="@+id/{rid}"' in settings_layout,
               f"activity_settings.xml: missing {rid}")
         check(f"R.id.{rid})" in settings_kt, f"SettingsActivity: {rid} not wired")

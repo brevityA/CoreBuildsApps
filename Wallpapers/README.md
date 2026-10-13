@@ -17,6 +17,10 @@ and the wallpaper research behind earlier series is in
 
 ## Series
 
+[![Every wall, by series](../docs/wallpapers-collection.jpg)](../docs/wallpapers-collection.jpg)
+
+*All 108 walls in manifest order (`tools/build_wallpaper_collection_sheet.py`, rebuilt from the shipped thumbs). The in-app browser's **New** chip lists the 48 walls stamped `since: 2.4.0` — the three new series plus the refreshed Horizons and Deep Space.*
+
 | Series | # | Theme |
 |---|---|---|
 | `series-0-originals` | (not in manifest) | The original 20 JPGs, kept for history |
@@ -75,9 +79,14 @@ The icon-pack app ships a built-in Wallpapers screen:
      "series": "series-N-name",
      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-N-name/corebuilds-NN-slug.png",
      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-NN-slug.jpg",
-     "resolution": "3840x2160"
+     "resolution": "3840x2160",
+     "since": "2.5.0"
    }
    ```
+   `since` is the app release the wall first ships in. The browser's **New**
+   chip shows the walls whose `since` is the newest in the manifest, so stamp
+   every wall of a release with the same version and leave older walls
+   untouched; a refreshed wall (new render, same number) gets the new version.
 4. Run `python tools/sync_wallpaper_manifest.py`. It verifies every manifest
    entry against the files on disk, copies the manifest into
    `app/src/main/assets/manifest/wallpapers.json`, and keeps the bundled

@@ -87,6 +87,29 @@ class ManifestTests(unittest.TestCase):
         names = [w["name"] for w in self.walls]
         self.assertEqual(len(names), len(set(names)), "duplicate wallpaper names")
 
+    def test_since_is_a_version_and_the_new_chip_has_a_set(self):
+        """`since` is optional, but where present it is dotted-numeric and the
+        newest value marks a non-empty set - that is what WallpapersActivity's
+        New chip and the home rail's "N new" hint count. A release that ships
+        walls without stamping them makes the chip lie by omission."""
+        import re
+        stamped = [w for w in self.walls if "since" in w]
+        for w in stamped:
+            self.assertRegex(w["since"], r"^\d+\.\d+\.\d+$", w["name"])
+        self.assertTrue(stamped, "no wall carries `since`; the New chip would never show")
+        newest = max((w["since"] for w in stamped),
+                     key=lambda v: tuple(int(p) for p in v.split(".")))
+        new = [w for w in stamped if w["since"] == newest]
+        self.assertGreaterEqual(len(new), 1)
+        # Every wall of a brand-new series is stamped with the release it
+        # arrived in; a series half-stamped is a sync slip.
+        by_series = {}
+        for w in self.walls:
+            by_series.setdefault(w["series"], []).append("since" in w and w["since"] == newest)
+        for series, flags in by_series.items():
+            if any(flags):
+                self.assertTrue(all(flags), f"{series}: only some walls stamped since={newest}")
+
     def test_resolution_matches_the_file_on_disk(self):
         """The manifest promises a size; the bytes must be that size.
 

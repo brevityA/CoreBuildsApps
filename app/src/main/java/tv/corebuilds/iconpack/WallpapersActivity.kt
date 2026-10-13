@@ -178,9 +178,20 @@ class WallpapersActivity : TvActivity() {
     }
 
     private fun bindChips() {
+        // Opening the browser is seeing the release: the home rail stops
+        // advertising "N new" from here on.
+        WallpaperCatalog.newestSince(all)?.let { Prefs.setWallpapersNewSeen(this, it) }
         val present = all.map { it.series }.distinct()
         val labels = mutableListOf(getString(R.string.chip_all))
         val keys = mutableListOf<String?>(null)
+        // What this release added or re-rendered, first: with 108 walls in
+        // series order, a new series sits under eighty old ones and a user
+        // who updated for the wallpapers would scroll past them.
+        val fresh = WallpaperCatalog.newWalls(all)
+        if (fresh.isNotEmpty()) {
+            labels += getString(R.string.chip_new_fmt, fresh.size)
+            keys += NEW_KEY
+        }
         // Every moving wallpaper in one place, whichever series it belongs
         // to - the chip a TV user reaches for to save the loops in one go.
         if (all.any { it.isLive }) {
@@ -213,6 +224,7 @@ class WallpapersActivity : TvActivity() {
         val filtered = when (series) {
             null -> all
             LIVE_KEY -> all.filter { it.isLive }
+            NEW_KEY -> WallpaperCatalog.newWalls(all)
             else -> all.filter { it.series == series }
         }
         adapter.submit(filtered)
@@ -271,5 +283,7 @@ class WallpapersActivity : TvActivity() {
     companion object {
         /** Chip key for "every live loop"; never a real series folder name. */
         private const val LIVE_KEY = "__live__"
+        /** Chip key for "new in the latest release"; never a series folder name. */
+        private const val NEW_KEY = "__new__"
     }
 }

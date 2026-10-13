@@ -45,6 +45,40 @@ All notable changes to the Core Builds Icon Pack. Format follows
   by Downloader code, has its own icon: a telly on its stand with a play
   triangle inside (issue #301). No published brand colour was found, so it
   takes a pack palette accent.
+- **"New" chip in Wallpapers.** The browser's chip rail gains *New (48)*
+  after *All*: every wall stamped with this release in the manifest (the
+  three new series plus the refreshed Horizons and Deep Space), so a
+  returning user finds what changed without scanning 108 tiles. The home
+  rail's Wallpapers row says *108 walls · 48 new in this release* until the
+  chip has been seen once. Manifest entries carry an optional `since`
+  version; the chip counts the newest.
+- **Card floor in the wallpaper preview.** Under the launcher-seed swatches
+  the preview now says *Card floor · calm · 92% dark* (or *mixed* / *busy*):
+  the share of the lower third at or under 14% luma, measured from the
+  decoded image on the TV — the same floor the procedural generators are
+  held to, which the photographic series are not. One line that answers
+  "will my rows be readable over this" before pressing Set.
+- **Settings ↔ About ↔ Support.** Settings' Help group ends with *About*
+  and *Support* rows, so the version, update check and the Ko-fi/Discord
+  screen are reachable from Settings and not only from the home rail.
+- **Version badge in About.** After an update check the version line wears
+  a small badge: *LATEST* in cyan, or *vX AVAILABLE* in amber, so the state
+  survives scrolling away from the update row.
+- **Art style defaults to the launcher.** Until the Banners/Glyphs switch
+  is touched, its default follows the HOME launcher: a phone launcher
+  (Nova, Lawnchair, Apex, ADW) has no banner surface, so a first run there
+  starts on glyphs rather than on 16:9 cards it can never apply. TV
+  launchers and unknown HOMEs keep banners; a choice once made is kept.
+- **Collection sheet.** `docs/wallpapers-collection.jpg` shows all 108 walls
+  by series, rebuilt from the shipped thumbs by
+  `tools/build_wallpaper_collection_sheet.py`; the Wallpapers README and the
+  top-level README link it.
+- **Design note for 2.5.0.** `docs/research/mapping-confirmation-channel-2026-10.md`
+  proposes how a second TV confirms (or contradicts) an issue-sourced icon
+  mapping with one press — per-mapping GitHub issues, 👍 to confirm, a
+  prefilled comment carrying the real component when it does not apply.
+  Nothing is built; the note exists so the next release starts from a
+  decision.
 
 ### Changed
 

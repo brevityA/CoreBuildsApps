@@ -98,6 +98,16 @@ class AboutActivity : TvActivity() {
         checkForUpdate()
     }
 
+    /** The verdict beside the Version fact, in the brand's two truth colours. */
+    private fun badge(text: String, amber: Boolean) {
+        findViewById<TextView>(R.id.about_version_badge).apply {
+            this.text = text
+            setTextColor(androidx.core.content.ContextCompat.getColor(this@AboutActivity,
+                if (amber) R.color.cb_warning else R.color.cb_signal_cyan))
+            visibility = View.VISIBLE
+        }
+    }
+
     private fun setRow(label: String, sub: String) {
         findViewById<TextView>(R.id.about_update_label).text = label
         findViewById<TextView>(R.id.about_update_sub).text = sub
@@ -111,15 +121,19 @@ class AboutActivity : TvActivity() {
             when (result) {
                 is UpdateChecker.Result.Available -> {
                     available = result
+                    badge(getString(R.string.about_badge_available_fmt, result.versionName), amber = true)
                     val sub = result.highlights.takeIf { it.isNotEmpty() }
                         ?.joinToString(" · ")
                         ?: getString(R.string.update_sub_download)
                     setRow(getString(R.string.update_download, result.versionName), sub)
                 }
-                is UpdateChecker.Result.UpToDate -> setRow(
-                    getString(R.string.about_update_up_to_date),
-                    getString(R.string.about_update_up_to_date_sub_fmt, result.versionName)
-                )
+                is UpdateChecker.Result.UpToDate -> {
+                    badge(getString(R.string.about_badge_latest), amber = false)
+                    setRow(
+                        getString(R.string.about_update_up_to_date),
+                        getString(R.string.about_update_up_to_date_sub_fmt, result.versionName)
+                    )
+                }
                 is UpdateChecker.Result.Failed -> setRow(
                     getString(R.string.about_update_label),
                     getString(R.string.about_update_check_failed_sub_fmt, result.reason)

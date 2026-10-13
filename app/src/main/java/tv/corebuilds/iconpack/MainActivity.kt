@@ -157,14 +157,7 @@ class MainActivity : TvActivity() {
             // made the affordance read as prose rather than as something you
             // press, which is why the sheet draws three rows of title + sub.
             val wpEntry = findViewById<View>(R.id.wallpapers_entry)
-            val wpSub = findViewById<TextView>(R.id.wallpapers_entry_sub)
-            val wpCount = WallpaperCatalog.load(this).size
-            // No subtitle rather than repeating the row's own label.
-            wpSub.text = if (wpCount > 0) {
-                getString(R.string.wp_entry_sub_fmt, wpCount)
-            } else {
-                ""
-            }
+            bindWallpapersSub()
             wpEntry.setOnClickListener { startActivity(Intent(this, WallpapersActivity::class.java)) }
             bindStyleRow()
             findViewById<View>(R.id.missing_entry).setOnClickListener {
@@ -200,6 +193,30 @@ class MainActivity : TvActivity() {
                 // not take the cursor away from a control already reached.
                 findViewById<View>(R.id.apply_button).requestFocus()
             }
+        }
+    }
+
+    /**
+     * The Wallpapers row's subtitle: the count, and - until the browser has
+     * been opened once since the manifest's newest release - how many walls
+     * that release added or re-rendered, so an update taken for the
+     * wallpapers says where they are. Re-bound in onResume so returning from
+     * the browser clears the "new" the same visit.
+     */
+    private fun bindWallpapersSub() {
+        val wpSub = findViewById<TextView>(R.id.wallpapers_entry_sub)
+        val walls = WallpaperCatalog.load(this)
+        if (walls.isEmpty()) {
+            // No subtitle rather than repeating the row's own label.
+            wpSub.text = ""
+            return
+        }
+        val newest = WallpaperCatalog.newestSince(walls)
+        val fresh = WallpaperCatalog.newWalls(walls).size
+        wpSub.text = if (newest != null && fresh > 0 && Prefs.wallpapersNewSeen(this) != newest) {
+            getString(R.string.wp_entry_sub_new_fmt, walls.size, fresh)
+        } else {
+            getString(R.string.wp_entry_sub_fmt, walls.size)
         }
     }
 
@@ -438,6 +455,7 @@ class MainActivity : TvActivity() {
             // the app issues no network request of its own at all — which is
             // what the About screen's network list claims, and the claim has
             // to stay checkable.
+            bindWallpapersSub()
             if (!updateChecked && Prefs.updateChecks(this)) {
                 updateChecked = true
                 checkForUpdate()
