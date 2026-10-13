@@ -389,6 +389,7 @@
     <string name="phone_connect_button">Connect / refresh</string>
     <string name="phone_find_tv_button">Find TV on this Wi-Fi</string>
     <string name="phone_scan_qr_button">Scan TV QR</string>
+    <string name="phone_trying_next_address">That address did not answer. Trying %1$s.</string>
     <string name="phone_rediscovering">The saved TV address did not answer. Looking for the TV on this network.</string>
     <string name="phone_rediscover_ok">Found the TV at its new address and reconnected.</string>
     <string name="phone_rediscover_none">The TV was not found at a new address. Open the phone link on the TV, check the Wi-Fi, or pair again.</string>

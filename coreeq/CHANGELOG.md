@@ -8,6 +8,8 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+- **Pairing QR lists up to three TV addresses.** A TV with more than one LAN address puts them all in the QR. The phone tries the next address only when a connection fails, so a wrong first interface no longer blocks pairing. A wrong code is still reported straight away.
+
 - **Easier phone pairing and reconnects.** Opening the phone companion with no TV paired starts the TV search straight away. If a saved TV stops answering, the phone searches the LAN once and retries a TV it finds at a new address with the saved token; the token is the identity check, and the new address is saved only after it connects.
 
 - **Pair by QR code.** While pairing is open, the TV shows a QR code beside the one-time code. It carries the TV's LAN address, the temporary port and the same key, and it disappears with the pairing window. On the phone, **Scan TV QR** reads it with Google's code-scanner module (no camera permission) and runs the same encrypted pairing. Typing the address and code still works. The QR format is strict and covered by unit tests. A 6-digit code was not added: over plain HTTP on a LAN it can be checked offline, so a short code needs a password-authenticated key exchange first.

@@ -9,8 +9,15 @@ class TvPairingQrTest {
 
     @Test
     fun `round trips the address, port and key the TV encodes`() {
-        val text = TvPairingQr.build("192.168.1.20", 45123, key)
-        assertEquals(TvPairingQr.Payload("192.168.1.20", 45123, key), TvPairingQr.parse(text))
+        val text = TvPairingQr.build(listOf("192.168.1.20"), 45123, key)
+        assertEquals(TvPairingQr.Payload(listOf("192.168.1.20"), 45123, key), TvPairingQr.parse(text))
+    }
+
+    @Test
+    fun `carries several addresses in order and caps them`() {
+        val hosts = listOf("192.168.1.20", "10.0.0.5", "172.16.4.9", "192.168.50.2")
+        val text = TvPairingQr.build(hosts, 45123, key)
+        assertEquals(TvPairingQr.Payload(hosts.take(3), 45123, key), TvPairingQr.parse(text))
     }
 
     @Test
@@ -27,6 +34,13 @@ class TvPairingQrTest {
         assertNull(TvPairingQr.parse("coreeq://pair?h=192.168.1.20&p=0&k=$key"))
         assertNull(TvPairingQr.parse("coreeq://pair?h=192.168.1.20&p=65536&k=$key"))
         assertNull(TvPairingQr.parse("coreeq://pair?h=192.168.1.20&p=port&k=$key"))
+    }
+
+    @Test
+    fun `rejects an empty or bad address in a list`() {
+        assertNull(TvPairingQr.parse("coreeq://pair?h=192.168.1.20,&p=1000&k=$key"))
+        assertNull(TvPairingQr.parse("coreeq://pair?h=192.168.1.20,tv.local&p=1000&k=$key"))
+        assertNull(TvPairingQr.parse("coreeq://pair?h=1.1.1.1,2.2.2.2,3.3.3.3,4.4.4.4&p=1000&k=$key"))
     }
 
     @Test

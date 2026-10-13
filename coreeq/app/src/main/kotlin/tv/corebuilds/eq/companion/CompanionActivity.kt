@@ -302,12 +302,12 @@ class CompanionActivity : TvActivity() {
      * encrypted handshake, and a wrong address simply fails.
      */
     private fun showPairingQr(code: String) {
-        val host = lanIpv4List().firstOrNull()
-        if (host == null || listenPort == 0) {
+        val hosts = lanIpv4List()
+        if (hosts.isEmpty() || listenPort == 0) {
             pairingQr.visibility = View.GONE
             return
         }
-        val text = TvPairingQr.build(host, listenPort, code)
+        val text = TvPairingQr.build(hosts, listenPort, code)
         pairingQr.setImageBitmap(QrBitmap.render(text, 520))
         pairingQr.visibility = View.VISIBLE
     }

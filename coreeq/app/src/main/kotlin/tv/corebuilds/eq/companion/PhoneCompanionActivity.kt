@@ -70,6 +70,8 @@ class PhoneCompanionActivity : AppCompatActivity() {
     private lateinit var scanQrButton: Button
     private lateinit var discoveryLine: TextView
     private var tvSearch: TvDiscovery.Search? = null
+    /** Other TV addresses from the QR, tried only when a connection to the first one fails. */
+    private var fallbackHosts: List<String> = emptyList()
 
     private var dashboard: Dashboard? = null
     private var targetIndex = 0
@@ -335,9 +337,22 @@ class PhoneCompanionActivity : AppCompatActivity() {
                     setRemoteEnabled(true)
                 }
             } catch (e: Exception) {
+                val unreachable = e is java.net.ConnectException ||
+                    e is java.net.SocketTimeoutException ||
+                    e is java.net.NoRouteToHostException
+                val next = fallbackHosts.firstOrNull()
                 runOnUiThread {
                     setOperationBusy(false)
-                    setStatus(getString(R.string.phone_pair_failed, readableError(e)), error = true)
+                    if (unreachable && next != null) {
+                        // The first address did not answer; try the next one from the QR.
+                        fallbackHosts = fallbackHosts.drop(1)
+                        hostField.setText(next)
+                        setStatus(getString(R.string.phone_trying_next_address, next), error = false)
+                        pairWithTv()
+                    } else {
+                        fallbackHosts = emptyList()
+                        setStatus(getString(R.string.phone_pair_failed, readableError(e)), error = true)
+                    }
                 }
             }
         }
@@ -925,7 +940,8 @@ class PhoneCompanionActivity : AppCompatActivity() {
             setStatus(getString(R.string.phone_scan_not_tv), error = true)
             return
         }
-        hostField.setText(payload.host)
+        fallbackHosts = payload.hosts.drop(1)
+        hostField.setText(payload.hosts.first())
         portField.setText(payload.port.toString())
         codeField.setText(payload.key)
         setStatus(getString(R.string.phone_scan_ok), error = false)
