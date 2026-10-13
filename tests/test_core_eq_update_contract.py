@@ -11,7 +11,7 @@ so it needs the same two guarantees, plus the ones that are Core EQ's own:
     because its package id means a production APK could never install over it;
   * the release build's URL is the suite's feed on `main` and nothing else;
   * the tag build writes the feed *after* the versioned release, the floating
-    `coreeq` release and the test channel have the APK, exactly once, on main;
+    `coreeq` release have the APK, exactly once, on main;
   * the shipped APK's feed is generated from the changelog section the tag
     names, with a release-notes URL that resolves (the icon pack's tags are
     plain `v*`; Core EQ's are `coreeq-v*`, so a copied URL would 404);
@@ -156,7 +156,6 @@ class CoreEqUpdateContract(unittest.TestCase):
             "Publish versioned release",
             "Point floating tag coreeq at this commit",
             "Publish stable release",
-            "Publish to the coreeq-test prerelease",
         ):
             self.assertIn(earlier, steps)
             self.assertLess(
@@ -169,6 +168,21 @@ class CoreEqUpdateContract(unittest.TestCase):
         self.assertIn("python tools/generate_release_metadata.py coreeq", body)
         self.assertIn("cp \"$RUNNER_TEMP/coreeq-version.json\" Latestrelease/coreeq-version.json", body)
         self.assertIn("if: startsWith(github.ref, 'refs/tags/coreeq-v')", body.split("- name:", 1)[0])
+
+    def test_versioned_release_includes_changelog_and_beta_limits(self) -> None:
+        body = self.workflow.split("- name: Publish versioned release", 1)[1]
+        body = body.split("\n      - name:", 1)[0]
+        for required in (
+            'Path("coreeq/CHANGELOG.md").read_text()',
+            "No Core EQ changelog section",
+            "main-package beta",
+            "not measured acoustic response",
+            "separate traces and no averaging",
+            "at least 3 clean alignment bands and 8 clean common bands",
+            "data-sufficiency gates",
+            "Phone microphone captures remain uncalibrated",
+        ):
+            self.assertIn(required, body)
 
     def test_versioned_release_records_the_outstanding_m6a_gate(self) -> None:
         body = self.workflow.split("- name: Publish versioned release", 1)[1]

@@ -151,13 +151,13 @@ class CoreEqReleaseContract(unittest.TestCase):
         self.assertIn("--report 37", self.workflow)
         self.assertIn("Preinstall the preview-channel platform and system image", self.workflow)
 
-    def test_test_package_is_distinct_but_uses_the_stable_signer_on_main(self) -> None:
+    def test_debug_candidate_is_distinct_but_uses_the_stable_signer_on_main(self) -> None:
         self.assertIn('applicationIdSuffix = ".debug"', self.gradle)
         self.assertIn('signingConfig = signingConfigs.getByName("release")', self.gradle)
         self.assertIn("Require signing secrets and decode release keystore", self.workflow)
         self.assertIn("github.ref == 'refs/heads/main'", self.workflow)
         self.assertIn("KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD", self.workflow)
-        self.assertIn("tv.corebuilds.eq.debug", self.workflow)
+        self.assertIn("tv.corebuilds.eq.debug", self.publishing)
 
     def test_signing_secrets_are_the_suite_shared_ones(self) -> None:
         """Core EQ must sign with the repo secrets the other apps already use.
@@ -180,7 +180,7 @@ class CoreEqReleaseContract(unittest.TestCase):
         eq_secrets = set(re.findall(r"secrets\.((?:KEYSTORE|KEY)_[A-Z0-9_]+)", self.workflow))
         self.assertEqual(shared, eq_secrets)
 
-    def test_release_and_public_test_builds_pin_the_published_certificate(self) -> None:
+    def test_release_and_main_candidates_pin_the_published_certificate(self) -> None:
         self.assertIn("Verify candidate certificate matches current stable APK", self.workflow)
         self.assertIn("gh release download coreeq", self.workflow)
         self.assertIn("Signer #1 certificate SHA-256 digest", self.workflow)
@@ -190,6 +190,15 @@ class CoreEqReleaseContract(unittest.TestCase):
     def test_release_publication_waits_for_install_smokes(self) -> None:
         self.assertRegex(self.workflow, r"(?ms)^  install:\n.*?^    needs: apk$")
         self.assertRegex(self.workflow, r"(?ms)^  publish:\n    name: Publish verified APK\n    needs: \[apk, install\]")
+
+    def test_only_versioned_tags_can_publish_and_legacy_test_release_is_untouched(self) -> None:
+        publish = self.workflow.split("\n  publish:\n", 1)[1]
+        condition = publish.split("    runs-on:", 1)[0]
+        self.assertIn("if: startsWith(github.ref, 'refs/tags/coreeq-v')", condition)
+        self.assertNotIn("refs/heads/main", condition)
+        self.assertNotIn("Publish to the coreeq-test prerelease", publish)
+        self.assertNotIn("coreeq-debug.apk", publish)
+        self.assertIn("automatic publication is disabled", self.publishing)
 
     def test_first_test_signer_migration_is_documented(self) -> None:
         self.assertIn("uninstall only the test package once", self.publishing)
