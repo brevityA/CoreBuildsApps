@@ -120,6 +120,8 @@ class PhoneCompanionActivity : AppCompatActivity() {
             remotePanel.visibility = View.GONE
             connectionLine.setText(R.string.phone_not_paired)
             setRemoteEnabled(false)
+            // Nothing is saved yet, so look for the TV straight away.
+            withLocalNetwork { startTvSearch() }
         }
         refreshMeasurementChoices()
     }
@@ -370,6 +372,61 @@ class PhoneCompanionActivity : AppCompatActivity() {
                     setOperationBusy(false)
                     connectionLine.setText(R.string.phone_saved_not_connected)
                     setRemoteEnabled(true)
+                    setStatus(getString(R.string.phone_connect_failed, readableError(e)), error = true)
+                    rediscoverSavedTv(credentials)
+                }
+            }
+        }
+    }
+
+    /**
+     * The saved address may have changed (DHCP, a new router). Search the LAN once for a
+     * Core EQ TV at a different address and try it with the saved token. The token is the
+     * identity check: a device that was not paired cannot answer, and the new address is
+     * saved only after a successful connection.
+     */
+    private fun rediscoverSavedTv(saved: PhoneCredentials) {
+        if (operationInProgress || measurementInProgress || repeatFallbackSessionId != null) return
+        tvSearch?.cancel()
+        setStatus(getString(R.string.phone_rediscovering), error = false)
+        var retried = false
+        val search = TvDiscovery.Search(
+            context = this,
+            timeoutMs = FIND_TV_TIMEOUT_MS,
+            onFound = { found ->
+                if (!retried && (found.host != saved.host || found.port != saved.port)) {
+                    retried = true
+                    retryWithFoundTv(saved, found.host, found.port)
+                }
+            },
+            onDone = { _ ->
+                tvSearch = null
+                if (!retried) setStatus(getString(R.string.phone_rediscover_none), error = true)
+            }
+        )
+        tvSearch = search
+        search.start()
+    }
+
+    private fun retryWithFoundTv(saved: PhoneCredentials, host: String, port: Int) {
+        setOperationBusy(true)
+        setStatus(getString(R.string.phone_connecting), error = false)
+        thread(name = "CoreEqPhoneRediscover") {
+            try {
+                val creds = PhoneCredentials(host, port, saved.token)
+                val newDashboard = loadDashboard(creds)
+                credentialStore.save(creds)
+                runOnUiThread {
+                    setOperationBusy(false)
+                    hostField.setText(host)
+                    portField.setText(port.toString())
+                    showDashboard(newDashboard)
+                    setRemoteEnabled(true)
+                    setStatus(getString(R.string.phone_rediscover_ok), error = false)
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    setOperationBusy(false)
                     setStatus(getString(R.string.phone_connect_failed, readableError(e)), error = true)
                 }
             }

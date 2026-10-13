@@ -389,6 +389,9 @@
     <string name="phone_connect_button">Connect / refresh</string>
     <string name="phone_find_tv_button">Find TV on this Wi-Fi</string>
     <string name="phone_scan_qr_button">Scan TV QR</string>
+    <string name="phone_rediscovering">The saved TV address did not answer. Looking for the TV on this network.</string>
+    <string name="phone_rediscover_ok">Found the TV at its new address and reconnected.</string>
+    <string name="phone_rediscover_none">The TV was not found at a new address. Open the phone link on the TV, check the Wi-Fi, or pair again.</string>
     <string name="phone_scan_ok">QR read. Pairing with the TV now.</string>
     <string name="phone_scan_not_tv">That is not a Core EQ pairing code. Point the camera at the QR on the TV pairing screen.</string>
     <string name="phone_scan_unavailable">QR scanning is not available on this phone. Enter the TV address and code instead.</string>
