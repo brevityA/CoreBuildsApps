@@ -8,6 +8,8 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+## [1.5.2] — 2026-10-13
+
 ### Added
 
 - **Backend-aware fit diagnostics.** Core EQ samples the combined room/manual/runtime request at each EQ backend's reported or read-back band centre, applies shared positive-gain headroom, clamps to Android Equalizer's reported gain range, then compares the configured/read-back centre gains with that target. The status reports band count, headroom, range-limited bands and residuals. It is a configuration diagnostic only: it is not a measured speaker response and does not prove that another app's audio passed through the effect.
@@ -18,6 +20,8 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 - **Poweramp EQ preset import.** Manual EQ reads a single-preset native Poweramp JSON export as well as the existing AutoEq / Equalizer APO correction text. The numeric JSON mapping is versionless and provisional: unsupported codes are listed, and a file with no supported bands is refused rather than imported flat. A review dialog shows the fit error, mapping warning and skipped content before anything is saved or applied. Dated 2023/2026 public JSON fixtures cover observed shapes, but do not validate filter-response equivalence; physical Poweramp-build validation remains outstanding. Stereo-only filters are averaged into Core EQ's shared curve; source preamp is not applied.
 
 ### Changed
+
+- **Normal-package beta release.** These changes ship through `coreeq-v1.5.2` as the signed main package `tv.corebuilds.eq`, not `tv.corebuilds.eq.debug`. Main merges no longer publish to `coreeq-test`; the existing test release is retained unchanged. CI and emulator installs are software checks only. Real TV/phone audio routing, another app’s traversal of the effect, measured acoustic response, microphone calibration and M6a DynamicsProcessing/limiter qualification remain unverified on hardware; this beta is available for testing before those checks are complete.
 
 - **Phone companion security limits.** Pairing attempts are throttled per LAN peer (five per minute, followed by a 30-second pause) rather than closing pairing for every phone. The listener caps work at four active workers, four queued requests and eight accepted sockets; it rejects ambiguous HTTP framing and applies an 8 KiB header limit, a 3 MiB body limit, a five-second read-idle timeout and a 30-second deadline from accept. The listener and accepted sockets close as soon as the companion screen leaves the foreground, and opening it again starts a fresh listener. This remains a trusted-LAN feature, not a public internet service.
 

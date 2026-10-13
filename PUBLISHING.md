@@ -14,7 +14,7 @@ This repo ships five products from independent Gradle roots. Keep versioned tags
 | Core Motion | `motion-v<version>` | `motion` | `coremotion-release.apk` | `[USER TO SUPPLY]` |
 | Core Doctor | `doctor-v<version>` | `doctor` | `coredoctor-release.apk` | `8664938` |
 | Core EQ | `coreeq-v<version>` | `coreeq` | `coreeq-release.apk` | `7946159` |
-| Core EQ (test channel) | none — pushes to `main` only | `coreeq-test` | `coreeq-debug.apk` | none |
+| Core EQ (legacy test channel; publication disabled) | none | `coreeq-test` | `coreeq-debug.apk` | none |
 | Icon Pack (test channel) | none — `workflow_dispatch` only | `iconpack-test` | `iconpack-test.apk` | `9255317` |
 
 Do not create `line-v*` tags. Core Line is `coreline-v*`.
@@ -38,12 +38,15 @@ cannot be repointed afterwards. Never add a version or commit sha to it.
 
 ### Core EQ test channel
 
-`coreeq-test` is a main-only prerelease. Its APK has package ID
-`tv.corebuilds.eq.debug` so it installs alongside production, but it is signed
-with the same stable certificate as production. The workflow compares that
-certificate to the currently published APK and installs candidates on API 30
-and 37 before publishing. This lets test builds update in place without
-changing the production package.
+`coreeq-test` is a retained legacy prerelease; automatic publication is disabled.
+Do not update, delete or retract it without explicit user confirmation. Its APK
+has package ID `tv.corebuilds.eq.debug`, separate from the requested main app.
+Core EQ itself is beta: publish beta testing builds of `tv.corebuilds.eq` through
+`coreeq-v<version>`, which updates `coreeq` and its updater feed only after signing
+and API 30/37 emulator install checks. These checks do not qualify real TV/phone
+audio paths, acoustic response or microphone calibration. Record outstanding
+hardware qualification in the app changelog and release notes; it does not block
+beta availability.
 
 The first test APK signed by the stable certificate cannot update an older
 runner-debug-signed test APK: uninstall only the test package once, then install
@@ -63,7 +66,10 @@ Gradle, so `coreeq-test` never offers an APK it could not install over itself.
 1. Update `suite.json`.
 2. Update the selected app Gradle `versionName` and `versionCode`.
 3. For Icon Pack, also update `tools/catalog.json` `meta.version`, `Latestrelease/version.json`, and run all four generators.
-4. For updater apps, ensure matching metadata in `Latestrelease/`.
+4. For updater apps, ensure matching metadata in `Latestrelease/`. Core EQ is the
+   exception during preparation: leave its published feed unchanged until the
+   tag workflow writes it from the downloadable signed APK. It may lag the build,
+   never lead it.
 5. Run:
 
 ```bash
@@ -72,7 +78,8 @@ python tools/check_suite_truth.py
 python tools/audit_contract.py
 ```
 
-6. Let PR CI pass.
+6. Let PR CI pass, merge the version-bump PR, and tag only a commit on `main`
+   whose Gradle version matches the tag.
 
 ## Tagging
 
