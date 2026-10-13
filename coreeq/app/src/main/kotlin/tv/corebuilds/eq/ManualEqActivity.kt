@@ -340,7 +340,7 @@ class ManualEqActivity : TvActivity() {
             .show()
     }
 
-    /** Import a ParametricEQ or GraphicEQ text file (AutoEq, Equalizer APO) as a preset. */
+    /** Import a Poweramp JSON preset or an AutoEq/Equalizer APO correction text file. */
     private fun pickCorrectionFile() {
         if (importing) return
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
@@ -367,7 +367,7 @@ class ManualEqActivity : TvActivity() {
         thread(name = "CoreEqCorrectionImport", start = true) {
             val outcome = try {
                 val text = readCorrectionText(uri)
-                Result.success(displayName(uri) to CorrectionImport.parse(text))
+                Result.success(displayName(uri) to CorrectionImport.parseAny(text))
             } catch (e: Exception) {
                 Result.failure<Pair<String, CorrectionImport.Result>>(e)
             }
@@ -409,28 +409,48 @@ class ManualEqActivity : TvActivity() {
     }
 
     private fun finishImport(fileName: String, result: CorrectionImport.Result) {
-        val base = fileName.substringBeforeLast('.').trim().ifEmpty { "correction" }
+        val base = result.presetName?.takeIf { it.isNotBlank() }
+            ?: fileName.substringBeforeLast('.').trim().ifEmpty { "correction" }
         val name = "Import: $base".take(32).trim()
-        val saved = try {
-            profileStore.saveManualEqPreset(name, result.filters)
-        } catch (e: IllegalArgumentException) {
-            showImportError(e.message ?: getString(R.string.manual_eq_builtin_name))
-            return
-        }
-        applyPreset(saved)
         val fit = String.format(Locale.US, "%.1f", result.maxErrorDb)
+        val summary = getString(R.string.manual_eq_import_summary, result.source, fit, result.filters.size)
         val notes = result.notes.joinToString("\n")
-        val summary = getString(R.string.manual_eq_import_summary, result.source, fit)
+        val message = if (notes.isEmpty()) "$summary\n\n${getString(R.string.manual_eq_import_no_notes)}" else
+            "$summary\n\n${getString(R.string.manual_eq_import_notes_heading)}\n$notes"
+        textStatus.text = getString(R.string.manual_eq_import_review_status)
         AlertDialog.Builder(this)
-            .setTitle(getString(R.string.manual_eq_import_title, saved.name))
-            .setMessage(if (notes.isEmpty()) summary else "$summary\n\n$notes")
-            .setPositiveButton(android.R.string.ok, null)
+            .setTitle(R.string.manual_eq_import_preview_title)
+            .setMessage(message)
+            .setPositiveButton(R.string.manual_eq_import_apply) { _, _ ->
+                val saved = try {
+                    profileStore.saveManualEqPreset(name, result.filters)
+                } catch (e: IllegalArgumentException) {
+                    showImportError(e.message ?: getString(R.string.manual_eq_builtin_name))
+                    return@setPositiveButton
+                }
+                applyPreset(saved)
+                Toast.makeText(
+                    this,
+                    getString(R.string.manual_eq_import_applied, saved.name),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+            .setNegativeButton(android.R.string.cancel) { _, _ ->
+                textStatus.text = getString(R.string.manual_eq_import_cancelled)
+            }
+            .setOnCancelListener {
+                textStatus.text = getString(R.string.manual_eq_import_cancelled)
+            }
             .show()
     }
 
     private fun showImportError(reason: String) {
         textStatus.text = getString(R.string.manual_eq_import_failed, reason)
-        Toast.makeText(this, getString(R.string.manual_eq_import_failed, reason), Toast.LENGTH_LONG).show()
+        AlertDialog.Builder(this)
+            .setTitle(R.string.manual_eq_import_failed_title)
+            .setMessage(reason)
+            .setPositiveButton(android.R.string.ok, null)
+            .show()
     }
 
     private fun applyPreset(preset: ManualEqPreset) {

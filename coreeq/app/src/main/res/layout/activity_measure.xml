@@ -269,6 +269,16 @@
                 android:visibility="gone"
                 android:layout_marginTop="4dp" />
 
+            <TextView
+                android:id="@+id/text_measure_repeatability"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_kicker"
+                android:fontFamily="monospace"
+                android:visibility="gone"
+                android:layout_marginTop="4dp" />
+
             <!-- Action buttons -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -278,13 +288,26 @@
 
                 <Button
                     android:id="@+id/btn_measure_start"
-                    android:layout_width="160dp"
+                    android:layout_width="140dp"
                     android:layout_height="@dimen/cb_target_min"
                     android:background="@drawable/bg_cta"
                     android:text="@string/measure_start"
                     android:textColor="@color/cta_text"
                     android:textSize="@dimen/cb_text_label"
                     android:textStyle="bold"
+                    android:focusable="true"
+                    android:layout_marginEnd="@dimen/cb_space_sm" />
+
+                <Button
+                    android:id="@+id/btn_measure_repeat"
+                    android:layout_width="170dp"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:background="@drawable/bg_ghost"
+                    android:text="@string/measure_repeat_button"
+                    android:textColor="@color/ghost_text"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:textAllCaps="false"
+                    android:visibility="gone"
                     android:focusable="true"
                     android:layout_marginEnd="@dimen/cb_space_sm" />
 
@@ -296,12 +319,13 @@
                     android:text="@string/measure_stop"
                     android:textColor="@color/ghost_text"
                     android:textSize="@dimen/cb_text_label"
+                    android:visibility="gone"
                     android:focusable="true"
                     android:layout_marginEnd="@dimen/cb_space_sm" />
 
                 <Button
                     android:id="@+id/btn_measure_save"
-                    android:layout_width="160dp"
+                    android:layout_width="150dp"
                     android:layout_height="@dimen/cb_target_min"
                     android:background="@drawable/bg_cta"
                     android:text="@string/measure_save"

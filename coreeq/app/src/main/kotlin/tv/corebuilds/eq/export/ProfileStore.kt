@@ -225,10 +225,15 @@ class ProfileStore(context: Context) {
         get() = prefs.getBoolean(KEY_ENABLED, false)
         set(value) { prefs.edit().putBoolean(KEY_ENABLED, value).apply() }
 
-    /** Show a brief toast when a different profile or mode is applied (1.3.0). On by default. */
+    /** Show a brief notice when a different profile or mode is applied (1.3.0). On by default. */
     var announceApplied: Boolean
         get() = prefs.getBoolean(KEY_ANNOUNCE_APPLIED, true)
         set(value) { prefs.edit().putBoolean(KEY_ANNOUNCE_APPLIED, value).apply() }
+
+    /** Keep a truthful playback-status chip over other apps while playback is reported. Off by default. */
+    var playbackHudEnabled: Boolean
+        get() = prefs.getBoolean(KEY_PLAYBACK_HUD_ENABLED, false)
+        set(value) { prefs.edit().putBoolean(KEY_PLAYBACK_HUD_ENABLED, value).apply() }
 
     /** Home's "allow the on-screen card" bar was answered with Later (1.3.2); Profiles still offers it. */
     var cardPromptDismissed: Boolean
@@ -306,6 +311,7 @@ class ProfileStore(context: Context) {
         private const val KEY_ACTIVE_ID = "active_profile_id"
         private const val KEY_ENABLED = "correction_enabled"
         private const val KEY_ANNOUNCE_APPLIED = "announce_applied_v130"
+        private const val KEY_PLAYBACK_HUD_ENABLED = "playback_hud_enabled_v160"
         private const val KEY_CARD_PROMPT_DISMISSED = "card_prompt_dismissed_v132"
         private const val KEY_STATUS_MSG = "status_message"
         private const val KEY_STATUS_ERR = "status_is_error"
@@ -377,12 +383,111 @@ class ProfileStore(context: Context) {
                 }
             }
 
+            fun parseCaptureInfo(capture: JSONObject): CaptureInfo {
+                val descriptions = mutableListOf<String>()
+                capture.optJSONArray("microphone_descriptions")?.let { a ->
+                    for (i in 0 until a.length()) {
+                        a.optString(i, "").trim().takeIf { it.isNotEmpty() }?.let(descriptions::add)
+                    }
+                }
+                val processing = mutableListOf<String>()
+                capture.optJSONArray("processing")?.let { a ->
+                    for (i in 0 until a.length()) {
+                        a.optString(i, "").trim().takeIf { it.isNotEmpty() }?.let(processing::add)
+                    }
+                }
+                val response = mutableListOf<MicrophoneResponsePoint>()
+                capture.optJSONArray("microphone_frequency_response")?.let { a ->
+                    for (i in 0 until a.length()) {
+                        val point = a.optJSONObject(i) ?: continue
+                        val hz = point.optDouble("frequency_hz", Double.NaN)
+                        val db = point.optDouble("response_db", Double.NaN)
+                        val microphone = point.optString("microphone", "").trim()
+                        if (hz > 0.0 && hz.isFinite() && db.isFinite() && microphone.isNotEmpty()) {
+                            response += MicrophoneResponsePoint(microphone, hz, db)
+                        }
+                    }
+                }
+                val unprocessedSupported = when (val value = capture.opt("unprocessed_audio_source_supported")) {
+                    is Boolean -> value
+                    is String -> when (value.trim().lowercase()) {
+                        "true" -> true
+                        "false" -> false
+                        else -> null
+                    }
+                    else -> null
+                }
+                return CaptureInfo(
+                    requestedSampleRateHz = capture.optInt("requested_sample_rate_hz", 0).takeIf { it > 0 },
+                    inputSampleRateHz = capture.optInt("input_sample_rate_hz", 0).takeIf { it > 0 },
+                    analysisSampleRateHz = capture.optInt("analysis_sample_rate_hz", 0).takeIf { it > 0 },
+                    audioSource = capture.optString("audio_source", "").takeIf { it.isNotBlank() },
+                    inputDeviceName = capture.optString("input_device_name", "").takeIf { it.isNotBlank() },
+                    inputDeviceType = capture.optString("input_device_type", "").takeIf { it.isNotBlank() },
+                    activeMicrophoneCount = capture.optInt("active_microphone_count", -1).takeIf { it >= 0 },
+                    captureDeviceModel = capture.optString("capture_device_model", "").takeIf { it.isNotBlank() },
+                    captureOsVersion = capture.optString("capture_os_version", "").takeIf { it.isNotBlank() },
+                    microphoneDescriptions = descriptions,
+                    processing = processing,
+                    unprocessedAudioSourceSupported = unprocessedSupported,
+                    microphoneResponse = response
+                )
+            }
+            val captureInfo = obj.optJSONObject("capture")?.let { capture -> parseCaptureInfo(capture) }
+
+            fun parseRepeatability(repeat: JSONObject): RepeatabilityCheck? {
+                val metricsObject = repeat.optJSONObject("metrics")
+                val metricRange = metricsObject?.optJSONArray("comparison_range_hz")
+                val metricBands = metricsObject?.optInt("compared_bands", 0) ?: 0
+                val lowHz = metricRange?.optDouble(0, Double.NaN) ?: Double.NaN
+                val highHz = metricRange?.optDouble(1, Double.NaN) ?: Double.NaN
+                val offset = metricsObject?.optDouble("level_offset_db", Double.NaN) ?: Double.NaN
+                val medianAbs = metricsObject?.optDouble("median_abs_difference_db", Double.NaN) ?: Double.NaN
+                val rms = metricsObject?.optDouble("rms_difference_db", Double.NaN) ?: Double.NaN
+                val p95 = metricsObject?.optDouble("p95_abs_difference_db", Double.NaN) ?: Double.NaN
+                val metrics = if (
+                    metricBands in 1..512 && lowHz > 0.0 && lowHz.isFinite() && highHz > lowHz && highHz.isFinite() &&
+                    offset.isFinite() && medianAbs >= 0.0 && medianAbs.isFinite() && rms >= 0.0 && rms.isFinite() &&
+                    p95 >= 0.0 && p95.isFinite()
+                ) RepeatabilityMetrics(metricBands, lowHz, highHz, offset, medianAbs, rms, p95) else null
+
+                val repeatCurve = mutableListOf<CurvePoint>()
+                repeat.optJSONArray("curve")?.let { array ->
+                    for (index in 0 until minOf(array.length(), 512)) {
+                        val point = array.optJSONObject(index) ?: continue
+                        val hz = point.optDouble("hz", Double.NaN)
+                        val measured = point.optDouble("measured_db", Double.NaN)
+                        val correction = point.optDouble("correction_db", Double.NaN)
+                        if (hz > 0.0 && hz.isFinite() && measured.isFinite() && correction.isFinite()) {
+                            repeatCurve += CurvePoint(hz, measured, correction)
+                        }
+                    }
+                }
+                val repeatOutput = repeat.optJSONObject("output")
+                val note = repeat.optString("note", "").trim().takeIf { it.isNotEmpty() }
+                if (metrics == null && repeatCurve.isEmpty() && note == null) return null
+                return RepeatabilityCheck(
+                    metrics = metrics,
+                    comparisonCurve = repeatCurve,
+                    captureInfo = repeat.optJSONObject("capture")?.let { capture -> parseCaptureInfo(capture) },
+                    outputKind = repeatOutput?.optString("kind", "")?.takeIf { it.isNotBlank() },
+                    outputName = repeatOutput?.let { if (it.isNull("name")) null else it.optString("name") }
+                        ?.takeIf { it.isNotBlank() },
+                    snrDb = repeat.optDouble("snr_db", Double.NaN).takeIf { it.isFinite() },
+                    driftPpm = repeat.optDouble("drift_ppm", Double.NaN).takeIf { it.isFinite() },
+                    note = note
+                )
+            }
+            val repeatabilityCheck = obj.optJSONObject("repeatability")?.let { repeat -> parseRepeatability(repeat) }
+
             return Profile(
                 id = obj.getString("id"),
                 name = obj.optString("name", "Unnamed room"),
                 timestampMs = obj.optLong("timestamp_ms", 0L),
                 target = obj.optString("target", "dialogue"),
                 micType = obj.optString("microphone", "microphone"),
+                captureInfo = captureInfo,
+                repeatabilityCheck = repeatabilityCheck,
                 deviceName = obj.optString("device", "Android TV"),
                 stimulus = obj.optString("stimulus", "sweep_10s"),
                 captureSeconds = obj.optDouble("capture_seconds", 10.0),

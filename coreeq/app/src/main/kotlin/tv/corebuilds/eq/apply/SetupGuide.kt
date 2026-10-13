@@ -4,14 +4,14 @@ import tv.corebuilds.eq.dsp.DeviceIdentity
 import tv.corebuilds.eq.dsp.HardwarePresets
 
 /**
- * The one-tap setup check (1.4.0): what Core EQ can see about itself, and the
- * exact ADB line for anything it cannot grant itself.
+ * The setup check: what Core EQ can see and the exact, optional ADB steps for
+ * anything Android does not let it grant itself. This screen never runs ADB.
  *
- * Android does not let an app grant itself DUMP or run `pm grant`; only a
- * shell with ADB can. So this does not run ADB. It reads the state Core EQ can
- * see, says which step is still needed, and gives the command to copy. The
- * commands name this package and no other, and [connectTemplate] keeps its
- * `<TV-IP>` placeholder so nobody runs it unedited.
+ * Android TV's ADB workflow depends on the TV OS: legacy Network debugging
+ * uses the TCP port the TV exposes (often 5555); Wireless debugging with a
+ * pairing code is supported on Android TV 13+ and uses separate, dynamic pair
+ * and connect ports. The screen keeps those paths separate rather than
+ * promising that 5555 works on every TV.
  *
  * Pure Kotlin on purpose: the decisions are unit-tested without Android.
  */
@@ -19,22 +19,20 @@ object SetupGuide {
 
     const val PACKAGE = "tv.corebuilds.eq"
 
-    /** Network ADB port on Android TV, and the one the connect line uses. */
-    const val ADB_PORT = 5555
+    /** Classic ADB-over-TCP default only; use the port displayed by the TV if different. */
+    const val CLASSIC_ADB_PORT = 5555
 
-    /** Connect from a computer on the same network; the TV IP is under Settings › Network. */
-    val connectTemplate: String = "adb connect <TV-IP>:$ADB_PORT"
-
+    val connectTemplate: String = "adb connect <TV-IP>:$CLASSIC_ADB_PORT"
+    val wirelessPairTemplate: String = "adb pair <TV-IP>:<PAIRING-PORT>"
+    val wirelessConnectTemplate: String = "adb connect <TV-IP>:<CONNECT-PORT>"
+    val deviceListCommand: String = "adb devices -l"
     val dumpCommand: String = "adb shell pm grant $PACKAGE android.permission.DUMP"
-
     val overlayCommand: String = "adb shell appops set $PACKAGE SYSTEM_ALERT_WINDOW allow"
+    val logcatCommand: String = "adb logcat -d -t 500 -s CoreEqCapture CoreEqStimulus CoreEqService CoreEqProfiles"
 
     enum class State { DONE, NEEDED, INFO }
 
-    /**
-     * One row on the screen. [command] is what the Copy button puts on the
-     * clipboard, or null when there is nothing to copy. [detail] is plain text.
-     */
+    /** One row on the screen. [command] is what its Copy button puts on the clipboard. */
     data class Step(
         val id: String,
         val title: String,
@@ -44,17 +42,16 @@ object SetupGuide {
     )
 
     /**
-     * The checklist for the current state.
+     * Checklist for the current state.
      *
      * - [dumpGranted]: `android.permission.DUMP` is granted (see DumpsysDiscovery.hasGrant).
      * - [overlayAllowed]: "Display over other apps" is allowed (see OverlayPermission.allowed).
-     * - [outputKind] and [outputName]: the output the sound is routed to, from OutputRoute.current.
-     * - [hardware]: the model that output matches, or null (see HardwarePresets.detect).
-     * - [detection]: the TV and output brands (see [DeviceIdentity]), or null to omit the row.
-     * - [measured]: whether this output has a measurement, or null to omit the row.
-     * - [passthroughRisk]: HDMI may carry Dolby or DTS as a bitstream (see OutputRoute.mayPassThrough).
-     *   This is a may-bypass warning, not proof that the current stream is bitstreamed.
-     * - [spatialDetail]: the read-only spatial audio line (see SpatialStatus.detail), or null to omit it.
+     * - [outputKind] and [outputName]: current Android route (see OutputRoute.current).
+     * - [hardware]: model matched from that route, or null (see HardwarePresets.detect).
+     * - [detection]: TV/output brand detection, or null to omit that row.
+     * - [measured]: whether this output has a profile, or null to omit that row.
+     * - [passthroughRisk]: HDMI may bypass Android's mixer; it is not proof of bitstream playback.
+     * - [spatialDetail]: read-only Android spatializer status, or null to omit the row.
      */
     fun steps(
         dumpGranted: Boolean,
@@ -70,37 +67,82 @@ object SetupGuide {
         add(
             Step(
                 id = "connect",
-                title = "Connect ADB from a computer",
+                title = "Classic Network debugging",
                 state = State.INFO,
-                detail = "Turn on Network debugging in Developer options, then run this from a computer on the same network. Replace <TV-IP> with the TV's address.",
+                detail = "On the TV, enable Network debugging in Developer options. On the same network, replace <TV-IP> and use the TCP port shown by the TV (often 5555). This is not the Wireless debugging pairing port.",
                 command = connectTemplate
             )
         )
         add(
+            Step(
+                id = "wireless-pair",
+                title = "Wireless debugging · pair",
+                state = State.INFO,
+                detail = "On Android TV 13+, open Developer options → Wireless debugging → Pair device with pairing code. Copy the pairing IP and pairing port into this command; enter the six-digit code only when ADB prompts. Never include that code in a report.",
+                command = wirelessPairTemplate
+            )
+        )
+        add(
+            Step(
+                id = "wireless-connect",
+                title = "Wireless debugging · connect",
+                state = State.INFO,
+                detail = "After pairing, use the separate connect port shown on the main Wireless debugging screen (not the pairing-dialog port). Some ADB tools discover the paired TV automatically; otherwise run this command.",
+                command = wirelessConnectTemplate
+            )
+        )
+        add(
+            Step(
+                id = "adb-check",
+                title = "Verify the computer is connected",
+                state = State.INFO,
+                detail = "Run after connecting. The TV should appear as a device, not unauthorized or offline. If several TVs are connected, use the serial shown here with adb -s for later commands.",
+                command = deviceListCommand
+            )
+        )
+        add(
             if (dumpGranted) {
-                Step("dump", "Read the playing app (DUMP)", State.DONE, "Granted. Core EQ can tell which app is playing.", null)
+                Step("dump", "Read the playing app (DUMP)", State.DONE, "Granted. Core EQ can try to identify the playing app; Android may still limit what the system reveals.", null)
             } else {
                 Step(
                     "dump",
                     "Read the playing app (DUMP)",
                     State.NEEDED,
-                    "Not granted. Android documents DUMP as not for third-party apps, so some TVs refuse it. Run this once over ADB.",
+                    "Not granted. DUMP is a protected permission and Android documents it as unavailable to third-party apps; some TVs refuse this command. Optional app switching works only if the TV accepts it.",
                     dumpCommand
                 )
             }
         )
         add(
             if (overlayAllowed) {
-                Step("overlay", "Show the on-screen card", State.DONE, "Allowed. The card can show over other apps.", null)
+                Step("overlay", "Show the on-screen card", State.DONE, "Allowed. The applied-status card can show over other apps.", null)
             } else {
                 Step(
                     "overlay",
                     "Show the on-screen card",
                     State.NEEDED,
-                    "Not allowed. Turn on Display over other apps, or run this once over ADB on a TV with no such screen.",
+                    "Not allowed. Turn on Display over other apps, or use this command on a TV with no permission screen.",
                     overlayCommand
                 )
             }
+        )
+        add(
+            Step(
+                id = "adb-security",
+                title = "Turn debugging off when finished",
+                state = State.INFO,
+                detail = "ADB gives a trusted computer powerful access to the TV. When setup is done, turn off Wireless debugging or Network debugging in Developer options. Pairing codes are temporary secrets; do not share them.",
+                command = null
+            )
+        )
+        add(
+            Step(
+                id = "logs",
+                title = "Collect recent Core EQ logs (optional)",
+                state = State.INFO,
+                detail = "After reproducing a problem, run the copied command from the connected computer. It filters to Core EQ audio, service and profile tags; review the output before sharing it.",
+                command = logcatCommand
+            )
         )
         add(
             Step(
@@ -117,7 +159,7 @@ object SetupGuide {
                     id = "passthrough",
                     title = "Check the TV's surround setting",
                     state = State.INFO,
-                    detail = "HDMI may carry Dolby or DTS as a bitstream, and Core EQ cannot process that. On the TV, set Surround sound (or Audio format) to PCM. Core EQ cannot see the current format, so this is a check, not a missing step.",
+                    detail = "HDMI may carry Dolby or DTS as a bitstream, and Core EQ cannot process that. On the TV, set Surround sound (or Audio format) to PCM. Core EQ cannot see the current stream format, so this is a check, not a missing step.",
                     command = null
                 )
             )
@@ -150,9 +192,14 @@ object SetupGuide {
         }
     }
 
-    /** Plain text for the Copy report button: the same rows, readable pasted anywhere. */
-    fun report(steps: List<Step>): String = buildString {
+    /** Plain-text support report. [deviceDetails] is supplied only on explicit Copy report. */
+    fun report(steps: List<Step>, deviceDetails: List<String> = emptyList()): String = buildString {
         append("Core EQ setup check\n")
+        append("Privacy: no IP address, serial number, pairing code or microphone audio is included. Review before sharing.\n")
+        if (deviceDetails.isNotEmpty()) {
+            append("Device and app\n")
+            deviceDetails.forEach { detail -> append("  ").append(detail).append('\n') }
+        }
         for (step in steps) {
             val tag = when (step.state) {
                 State.DONE -> "[done]"

@@ -24,14 +24,18 @@ import tv.corebuilds.eq.dsp.DspConstants
 import tv.corebuilds.eq.dsp.ImportResult
 import tv.corebuilds.eq.dsp.MeasurementQuality
 import tv.corebuilds.eq.dsp.MeasurementException
+import tv.corebuilds.eq.dsp.RepeatabilityAnalysis
+import tv.corebuilds.eq.dsp.RepeatabilityComparison
 import tv.corebuilds.eq.dsp.RewImport
 import tv.corebuilds.eq.dsp.Sweep
 import tv.corebuilds.eq.dsp.SweepAnalysis
 import tv.corebuilds.eq.dsp.SweepResult
 import tv.corebuilds.eq.dsp.Targets
+import tv.corebuilds.eq.export.CaptureInfo
 import tv.corebuilds.eq.export.CurvePoint
 import tv.corebuilds.eq.export.PlatformBand
 import tv.corebuilds.eq.export.Profile
+import tv.corebuilds.eq.export.RepeatabilityCheck
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.measure.CaptureEngine
 import tv.corebuilds.eq.measure.CaptureListener
@@ -55,6 +59,16 @@ class MeasureActivity : TvActivity() {
     private data class RoomSize(val label: String, val volumeM3: Double?)
     private data class TargetChoice(val key: String, val label: String)
     private data class RewMeasurement(val frequenciesHz: DoubleArray, val magnitudesDb: DoubleArray)
+    private data class SweepCapture(
+        val result: SweepResult,
+        val samples: DoubleArray,
+        val rate: Int,
+        val captureInfo: CaptureInfo?,
+        val micName: String?,
+        val output: OutputRoute.Output?,
+        val targetIndex: Int,
+        val roomIndex: Int
+    )
 
     private lateinit var profileStore: ProfileStore
     private lateinit var stimulusPlayer: StimulusPlayer
@@ -64,7 +78,9 @@ class MeasureActivity : TvActivity() {
     private lateinit var progressMeasure: ProgressBar
     private lateinit var textStatus: TextView
     private lateinit var textQuality: TextView
+    private lateinit var textRepeatability: TextView
     private lateinit var btnStart: Button
+    private lateinit var btnRepeat: Button
     private lateinit var btnStop: Button
     private lateinit var btnSave: Button
     private lateinit var btnImport: Button
@@ -80,11 +96,22 @@ class MeasureActivity : TvActivity() {
     private var importing = false
     private var importThread: Thread? = null
     private var micName: String? = null
+    private var captureInfo: CaptureInfo? = null
     private var measuredOutput: OutputRoute.Output? = null
+    /** The first sweep remains the saved profile; a repeated sweep is kept separately for comparison. */
+    private var repeatBaseline: SweepCapture? = null
+    private var repeatCapture: SweepCapture? = null
+    private var repeatComparison: RepeatabilityComparison? = null
+    private var repeatabilityCheck: RepeatabilityCheck? = null
+    private var repeatComparisonClearedDueToSettings = false
+    private var activeMicName: String? = null
+    private var activeOutput: OutputRoute.Output? = null
+    private var pendingRepeatPermission = false
+    private var measurementIsRepeat = false
     /** Current media-route estimate captured when an external REW file is imported. */
     private var importedOutputEstimate: OutputRoute.Output? = null
     /** Bumped per measurement, so a late callback from an earlier one is ignored. */
-    private var measurementGeneration = 0
+    @Volatile private var measurementGeneration = 0
     private var sweepReanalysisGeneration = 0
     private var sweepReanalysisInProgress = false
     private var measuring = false
@@ -101,7 +128,9 @@ class MeasureActivity : TvActivity() {
         progressMeasure = findViewById(R.id.progress_measure)
         textStatus = findViewById(R.id.text_measure_status)
         textQuality = findViewById(R.id.text_measure_quality)
+        textRepeatability = findViewById(R.id.text_measure_repeatability)
         btnStart = findViewById(R.id.btn_measure_start)
+        btnRepeat = findViewById(R.id.btn_measure_repeat)
         btnStop = findViewById(R.id.btn_measure_stop)
         btnStop.isEnabled = false // only a running sweep can be stopped
         btnSave = findViewById(R.id.btn_measure_save)
@@ -116,14 +145,17 @@ class MeasureActivity : TvActivity() {
         btnRoom.setOnClickListener {
             roomIndex = (roomIndex + 1) % ROOMS.size
             prefs.edit().putInt(KEY_ROOM, roomIndex).apply()
+            clearRepeatComparisonForSettingsChange()
             refreshChoices()
         }
         btnTarget.setOnClickListener {
             targetIndex = (targetIndex + 1) % TARGETS.size
             prefs.edit().putInt(KEY_TARGET, targetIndex).apply()
+            clearRepeatComparisonForSettingsChange()
             refreshChoices()
         }
         btnStart.setOnClickListener { startMeasurement() }
+        btnRepeat.setOnClickListener { startRepeatMeasurement() }
         btnStop.setOnClickListener { cancelMeasurement("Stopped. Nothing was saved.") }
         btnSave.setOnClickListener { saveAndFinish() }
         btnImport.setOnClickListener { pickRewImport() }
@@ -167,6 +199,8 @@ class MeasureActivity : TvActivity() {
                     } else {
                         result = null
                         btnSave.visibility = View.GONE
+                        btnRepeat.visibility = View.GONE
+                        btnStart.setText(R.string.measure_start)
                         showTargetOnly()
                         textStatus.text = getString(
                             R.string.measure_failed,
@@ -178,6 +212,16 @@ class MeasureActivity : TvActivity() {
         } else {
             showTargetOnly()
         }
+    }
+
+    private fun clearRepeatComparisonForSettingsChange() {
+        if (repeatCapture == null && repeatabilityCheck == null) return
+        repeatBaseline = null
+        repeatCapture = null
+        repeatComparison = null
+        repeatabilityCheck = null
+        repeatComparisonClearedDueToSettings = true
+        renderRepeatabilityText()
     }
 
     private fun showTargetOnly() {
@@ -226,28 +270,107 @@ class MeasureActivity : TvActivity() {
             }
             else -> textQuality.visibility = View.GONE
         }
+        renderRepeatabilityText()
     }
 
-    private fun startMeasurement() {
+    private fun renderRepeatabilityText() {
+        val check = repeatabilityCheck
+        val sweepAvailable = result != null && importResult == null
+        when {
+            repeatComparisonClearedDueToSettings && sweepAvailable -> {
+                textRepeatability.setText(R.string.measure_repeat_changed)
+                textRepeatability.visibility = View.VISIBLE
+            }
+            check?.metrics != null -> {
+                val metrics = check.metrics
+                val summary = String.format(
+                    Locale.US,
+                    getString(R.string.measure_repeat_summary),
+                    metrics.comparedBands,
+                    metrics.lowFrequencyHz,
+                    metrics.highFrequencyHz / 1000.0,
+                    metrics.medianAbsDifferenceDb,
+                    metrics.rmsDifferenceDb,
+                    metrics.p95AbsDifferenceDb,
+                    metrics.levelOffsetDb
+                )
+                textRepeatability.text = listOfNotNull(summary, check.note).joinToString("\n")
+                textRepeatability.visibility = View.VISIBLE
+            }
+            check != null -> {
+                textRepeatability.text = getString(
+                    R.string.measure_repeat_uncompared,
+                    check.note ?: "too few clean shared bands"
+                )
+                textRepeatability.visibility = View.VISIBLE
+            }
+            sweepAvailable -> {
+                textRepeatability.setText(R.string.measure_repeat_intro)
+                textRepeatability.visibility = View.VISIBLE
+            }
+            else -> textRepeatability.visibility = View.GONE
+        }
+    }
+
+    private fun startRepeatMeasurement() {
+        val current = result ?: return
+        val samples = lastCapture ?: return
+        if (importResult != null) return
+        val baseline = SweepCapture(
+            result = current,
+            samples = samples,
+            rate = lastRate,
+            captureInfo = captureInfo,
+            micName = micName,
+            output = measuredOutput,
+            targetIndex = targetIndex,
+            roomIndex = roomIndex
+        )
+        startMeasurement(baseline)
+    }
+
+    private fun startMeasurement(repeatAgainst: SweepCapture? = null) {
         if (measuring || importing || sweepReanalysisInProgress) return
         sweepReanalysisGeneration += 1
         if (!captureEngine.hasPermission()) {
+            pendingRepeatPermission = repeatAgainst != null
             requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQ_MIC)
             return
         }
+        pendingRepeatPermission = false
+        val isRepeatCapture = repeatAgainst != null
+        measurementIsRepeat = isRepeatCapture
+        repeatComparisonClearedDueToSettings = false
+        repeatBaseline = repeatAgainst
+        repeatCapture = null
+        repeatComparison = null
+        repeatabilityCheck = null
+        if (!isRepeatCapture) {
+            result = null
+            lastCapture = null
+            importResult = null
+            importInput = null
+            importedOutputEstimate = null
+            measuredOutput = null
+            micName = null
+            captureInfo = null
+            btnStart.setText(R.string.measure_start)
+            btnRepeat.visibility = View.GONE
+        }
+        activeMicName = null
+        activeOutput = null
         measuring = true
+        btnStop.visibility = View.VISIBLE
         btnStop.isEnabled = true
         btnStop.requestFocus() // Start is disabled for the sweep; keep focus somewhere usable
         measurementGeneration += 1
         val generation = measurementGeneration
-        result = null
-        lastCapture = null
-        importResult = null
-        importInput = null
-        importedOutputEstimate = null
-        measuredOutput = null
-        micName = null
+        val selectedTargetIndex = targetIndex
+        val selectedRoomIndex = roomIndex
+        val selectedTarget = TARGETS[selectedTargetIndex].key
+        val selectedVolume = ROOMS[selectedRoomIndex].volumeM3
         btnStart.isEnabled = false
+        btnRepeat.isEnabled = false
         btnRoom.isEnabled = false
         btnTarget.isEnabled = false
         btnSave.setText(R.string.measure_save)
@@ -260,19 +383,22 @@ class MeasureActivity : TvActivity() {
 
         val total = LEAD_SECONDS + Sweep.STIMULUS_SECONDS + SweepAnalysis.TAIL_SECONDS
         captureEngine.start(total, object : CaptureListener {
-            override fun onRecording(deviceName: String?) {
-                micName = deviceName
+            override fun onRecording(info: CaptureInfo) {
+                if (measurementGeneration != generation) return
+                activeMicName = info.inputDeviceName?.takeIf { it.isNotBlank() }
+                    ?: info.inputDeviceType?.takeIf { it.isNotBlank() }
+                    ?: if (info.activeMicrophoneCount != null) "Android microphone input" else "remote microphone"
                 // Keep an output estimate as a fallback if Android does not
                 // report which device receives the sweep's own AudioTrack.
                 val ranked = OutputRoute.current(this@MeasureActivity)
-                measuredOutput = ranked
+                activeOutput = ranked
                 btnStart.postDelayed({
                     if (measuring && measurementGeneration == generation) stimulusPlayer.playSweep(
-                        onError = { msg -> runOnUiThread { fail(msg) } },
+                        onError = { msg -> runOnUiThread { fail(msg, isRepeatCapture) } },
                         onRouted = { device ->
                             val tagged = OutputRoute.tag(ranked, device?.type, device?.productName?.toString())
                             runOnUiThread {
-                                if (measuring && measurementGeneration == generation) measuredOutput = tagged
+                                if (measuring && measurementGeneration == generation) activeOutput = tagged
                             }
                         }
                     )
@@ -281,6 +407,7 @@ class MeasureActivity : TvActivity() {
 
             override fun onLevel(secondsElapsed: Float, totalSeconds: Float, rmsDbfs: Float, peakDbfs: Float) {
                 runOnUiThread {
+                    if (!measuring || measurementGeneration != generation) return@runOnUiThread
                     progressMeasure.progress = ((secondsElapsed / totalSeconds) * 100f).roundToInt().coerceIn(0, 100)
                     textStatus.text = String.format(
                         Locale.US, "%.1f s of %.0f s · mic level %.0f dBFS · peak %.0f dBFS%s",
@@ -290,13 +417,22 @@ class MeasureActivity : TvActivity() {
                 }
             }
 
-            override fun onCaptured(samples: DoubleArray, sampleRate: Int, deviceName: String?) {
+            override fun onCaptured(samples: DoubleArray, sampleRate: Int, info: CaptureInfo) {
+                if (measurementGeneration != generation) return
+                val outputAtCapture = activeOutput
+                val micAtCapture = activeMicName
                 runOnUiThread { textStatus.text = getString(R.string.measure_analysing) }
-                analyse(samples, sampleRate)
+                analyse(
+                    samples, sampleRate, info, isRepeatCapture,
+                    selectedTarget, selectedVolume, selectedTargetIndex, selectedRoomIndex,
+                    micAtCapture, outputAtCapture, generation
+                )
             }
 
             override fun onError(message: String) {
-                runOnUiThread { fail(message) }
+                runOnUiThread {
+                    if (measuring && measurementGeneration == generation) fail(message, isRepeatCapture)
+                }
             }
         })
     }
@@ -304,7 +440,19 @@ class MeasureActivity : TvActivity() {
     private var lastCapture: DoubleArray? = null
     private var lastRate = CaptureEngine.ANALYSIS_RATE
 
-    private fun analyse(samples: DoubleArray, rate: Int) {
+    private fun analyse(
+        samples: DoubleArray,
+        rate: Int,
+        info: CaptureInfo,
+        isRepeatCapture: Boolean,
+        target: String,
+        volumeM3: Double?,
+        selectedTargetIndex: Int,
+        selectedRoomIndex: Int,
+        capturedMicName: String?,
+        capturedOutput: OutputRoute.Output?,
+        generation: Int
+    ) {
         thread(name = "CoreEqAnalysis") {
             val (peakDbfs, _) = SweepAnalysis.levelsDbfs(samples)
             val outcome: Result<SweepResult> = if (peakDbfs > CLIP_DBFS) {
@@ -315,7 +463,7 @@ class MeasureActivity : TvActivity() {
                 ))
             } else {
                 try {
-                    Result.success(SweepAnalysis.analyze(samples, rate, TARGETS[targetIndex].key, ROOMS[roomIndex].volumeM3))
+                    Result.success(SweepAnalysis.analyze(samples, rate, target, volumeM3))
                 } catch (e: MeasurementException) {
                     Result.failure(e)
                 } catch (e: Exception) {
@@ -324,34 +472,135 @@ class MeasureActivity : TvActivity() {
                 }
             }
             runOnUiThread {
-                outcome.onSuccess {
-                    lastCapture = samples
-                    lastRate = rate
+                if (!measuring || measurementGeneration != generation || isFinishing || isDestroyed) return@runOnUiThread
+                outcome.onSuccess { analyzed ->
                     finishMeasuring()
-                    result = it
-                    importResult = null
-                    importInput = null
-                    showResult(it)
-                    btnSave.visibility = View.VISIBLE
-                    btnSave.requestFocus()
-                }.onFailure { fail(it.message ?: it.javaClass.simpleName) }
+                    val capture = SweepCapture(
+                        result = analyzed,
+                        samples = samples,
+                        rate = rate,
+                        captureInfo = info,
+                        micName = capturedMicName,
+                        output = capturedOutput,
+                        targetIndex = selectedTargetIndex,
+                        roomIndex = selectedRoomIndex
+                    )
+                    if (isRepeatCapture) {
+                        completeRepeat(capture)
+                    } else {
+                        installPrimaryCapture(capture)
+                    }
+                }.onFailure { fail(it.message ?: it.javaClass.simpleName, isRepeatCapture) }
             }
         }
     }
 
-    private fun showResult(r: SweepResult) {
-        btnSave.setText(R.string.measure_save)
-        graphMeasure.setData(
-            r.centresHz,
-            listOf(
-                Series("MEASURED", ContextCompat.getColor(this, R.color.cb_slate), r.measuredDb),
-                Series("TARGET", ContextCompat.getColor(this, R.color.cb_dusk_violet), r.targetDb),
-                Series("CORRECTION", ContextCompat.getColor(this, R.color.cb_signal_cyan), r.correctionDb)
-            ),
-            String.format(Locale.US, "MEASURED vs TARGET · FULL CORRECTION BELOW %.0f HZ", r.transitionHz),
-            20.0,
-            r.transitionHz
+    private fun installPrimaryCapture(capture: SweepCapture) {
+        result = capture.result
+        lastCapture = capture.samples
+        lastRate = capture.rate
+        captureInfo = capture.captureInfo
+        micName = capture.micName
+        measuredOutput = capture.output
+        importResult = null
+        importInput = null
+        importedOutputEstimate = null
+        repeatBaseline = null
+        repeatCapture = null
+        repeatComparison = null
+        repeatabilityCheck = null
+        btnStart.setText(R.string.measure_start_new)
+        btnRepeat.visibility = View.VISIBLE
+        btnRepeat.isEnabled = true
+        showResult(capture.result)
+        btnSave.visibility = View.VISIBLE
+        btnSave.requestFocus()
+    }
+
+    private fun completeRepeat(capture: SweepCapture) {
+        val baseline = repeatBaseline
+        if (baseline == null) {
+            fail("The first sweep is no longer available. Measure again.", isRepeatCapture = true)
+            return
+        }
+        val pathMismatch = repeatPathMismatch(baseline, capture)
+        val comparison = RepeatabilityAnalysis.compare(baseline.result, capture.result)
+        val canCompare = pathMismatch == null
+        val inputUnknown = listOf(baseline.captureInfo, capture.captureInfo).any { info ->
+            info == null || (info.inputDeviceType.isNullOrBlank() && info.inputDeviceName.isNullOrBlank())
+        }
+        val metadataUnknown = inputUnknown || baseline.output == null || capture.output == null ||
+            OutputRoute.keyFor(baseline.output) == OutputRoute.UNKNOWN ||
+            OutputRoute.keyFor(capture.output) == OutputRoute.UNKNOWN
+        val metrics = if (canCompare) comparison.metrics else null
+        val note = when {
+            pathMismatch != null -> "$pathMismatch No same-path repeatability summary was calculated."
+            metrics == null -> comparison.reason ?: "There were not enough comparable bands for a repeatability summary."
+            metadataUnknown -> getString(R.string.measure_repeat_unknown_output)
+            else -> null
+        }
+        repeatCapture = capture
+        repeatComparison = comparison.takeIf { canCompare }
+        repeatabilityCheck = RepeatabilityCheck(
+            metrics = metrics,
+            comparisonCurve = capture.result.centresHz.indices.map { index ->
+                CurvePoint(capture.result.centresHz[index], capture.result.measuredDb[index], capture.result.correctionDb[index])
+            },
+            captureInfo = capture.captureInfo,
+            outputKind = OutputRoute.keyFor(capture.output),
+            outputName = capture.output?.name,
+            snrDb = capture.result.snrDb,
+            driftPpm = capture.result.driftPpm,
+            note = note
         )
+        // Keep the first sweep as the profile curve. A repeat is evidence, not
+        // an implicit average or an automatic replacement of the correction.
+        result = baseline.result
+        lastCapture = baseline.samples
+        lastRate = baseline.rate
+        captureInfo = baseline.captureInfo
+        micName = baseline.micName
+        measuredOutput = baseline.output
+        btnStart.setText(R.string.measure_start_new)
+        btnRepeat.visibility = View.VISIBLE
+        btnRepeat.isEnabled = true
+        showResult(baseline.result, repeatComparison)
+        btnSave.visibility = View.VISIBLE
+        btnSave.requestFocus()
+    }
+
+    private fun repeatPathMismatch(first: SweepCapture, second: SweepCapture): String? {
+        if (first.targetIndex != second.targetIndex || first.roomIndex != second.roomIndex) {
+            return "Target or room-size settings changed between sweeps."
+        }
+        val outputMismatch = RepeatabilityAnalysis.reportedOutputMismatch(
+            OutputRoute.keyFor(first.output), first.output?.name,
+            OutputRoute.keyFor(second.output), second.output?.name
+        )
+        return outputMismatch ?: RepeatabilityAnalysis.reportedInputMismatch(first.captureInfo, second.captureInfo)
+    }
+
+    private fun showResult(r: SweepResult, comparison: RepeatabilityComparison? = null) {
+        btnSave.setText(R.string.measure_save)
+        val graphSeries = mutableListOf(
+            Series("MEASURED", ContextCompat.getColor(this, R.color.cb_slate), r.measuredDb)
+        )
+        val alignedRepeat = comparison?.alignedRepeatDb?.takeIf { values -> values.any { it.isFinite() } }
+        if (alignedRepeat != null) {
+            graphSeries += Series("REPEAT · LEVEL-ALIGNED", ContextCompat.getColor(this, R.color.cb_warning), alignedRepeat)
+        } else {
+            repeatCapture?.let { repeat ->
+                graphSeries += Series("REPEAT · RAW, NOT COMPARED", ContextCompat.getColor(this, R.color.cb_warning), repeat.result.measuredDb)
+            }
+        }
+        graphSeries += Series("TARGET", ContextCompat.getColor(this, R.color.cb_dusk_violet), r.targetDb)
+        graphSeries += Series("CORRECTION", ContextCompat.getColor(this, R.color.cb_signal_cyan), r.correctionDb)
+        val title = if (repeatCapture != null) {
+            String.format(Locale.US, "SAME-POSITION REPEAT · FULL CORRECTION BELOW %.0f HZ", r.transitionHz)
+        } else {
+            String.format(Locale.US, "MEASURED vs TARGET · FULL CORRECTION BELOW %.0f HZ", r.transitionHz)
+        }
+        graphMeasure.setData(r.centresHz, graphSeries, title, 20.0, r.transitionHz)
         val rt = r.rt60Seconds?.let { String.format(Locale.US, "RT60 %.2f s", it) } ?: "RT60 not measurable (noisy decay)"
         val nulls = r.nullMask.count { it }
         val gated = r.centresHz.indices.count { !r.minPhaseOk[it] && r.centresHz[it] >= r.floorHz }
@@ -361,12 +610,13 @@ class MeasureActivity : TvActivity() {
         val top = r.centresHz.lastOrNull() ?: DspConstants.F_MAX
         val clock = r.driftPpm?.takeIf { kotlin.math.abs(it) > SweepAnalysis.MIN_DRIFT_PPM }
             ?.let { String.format(Locale.US, " · clock drift %+.0f ppm corrected", it) } ?: ""
-        textStatus.text = String.format(
+        val resultSummary = String.format(
             Locale.US,
             "%s · corrects %.0f Hz–%.1f kHz · %d null%s, %d non-minimum-phase band%s and %d noisy band%s left alone · SNR %.0f dB%s",
             rt, r.floorHz, top / 1000, nulls, if (nulls == 1) "" else "s",
             gated, if (gated == 1) "" else "s", noisy, if (noisy == 1) "" else "s", r.snrDb, clock
         )
+        textStatus.text = listOfNotNull(resultSummary, captureInfo?.summary()).joinToString("\n")
         renderQuality()
     }
 
@@ -483,6 +733,7 @@ class MeasureActivity : TvActivity() {
         sweepReanalysisInProgress = busy
         val enabled = !busy && !measuring && !importing
         btnStart.isEnabled = enabled
+        btnRepeat.isEnabled = enabled && result != null && importResult == null
         btnImport.isEnabled = enabled
         btnRoom.isEnabled = enabled
         btnTarget.isEnabled = enabled
@@ -493,6 +744,7 @@ class MeasureActivity : TvActivity() {
         importing = busy
         val enabled = !busy && !measuring && !sweepReanalysisInProgress
         btnStart.isEnabled = enabled
+        btnRepeat.isEnabled = enabled && result != null && importResult == null
         btnImport.isEnabled = enabled
         btnRoom.isEnabled = enabled
         btnTarget.isEnabled = enabled
@@ -507,6 +759,13 @@ class MeasureActivity : TvActivity() {
     }
 
     private fun showImportResult(imp: ImportResult) {
+        repeatBaseline = null
+        repeatCapture = null
+        repeatComparison = null
+        repeatabilityCheck = null
+        repeatComparisonClearedDueToSettings = false
+        btnRepeat.visibility = View.GONE
+        btnStart.setText(R.string.measure_start_new)
         btnSave.setText(R.string.measure_import_save)
         graphMeasure.setData(
             imp.centresHz,
@@ -535,15 +794,37 @@ class MeasureActivity : TvActivity() {
         btnSave.requestFocus()
     }
 
-    private fun fail(message: String) {
+    private fun fail(message: String, isRepeatCapture: Boolean = measurementIsRepeat) {
         finishMeasuring()
+        progressMeasure.progress = 0
+        if (isRepeatCapture && result != null) {
+            repeatBaseline = null
+            repeatCapture = null
+            repeatComparison = null
+            repeatabilityCheck = null
+            btnStart.setText(R.string.measure_start_new)
+            btnRepeat.visibility = View.VISIBLE
+            btnRepeat.isEnabled = true
+            btnSave.setText(R.string.measure_save)
+            btnSave.visibility = View.VISIBLE
+            showResult(result!!)
+            textStatus.text = "${textStatus.text}\nRepeat not compared: $message. The first sweep remains available; nothing was averaged."
+            btnStart.requestFocus()
+            return
+        }
         result = null
         importResult = null
         importInput = null
         importedOutputEstimate = null
+        repeatBaseline = null
+        repeatCapture = null
+        repeatComparison = null
+        repeatabilityCheck = null
+        repeatComparisonClearedDueToSettings = false
+        btnRepeat.visibility = View.GONE
+        btnStart.setText(R.string.measure_start)
         btnSave.visibility = View.GONE
         btnSave.setText(R.string.measure_save)
-        progressMeasure.progress = 0
         textStatus.text = getString(R.string.measure_failed, message)
         renderQuality()
         btnStart.requestFocus()
@@ -551,10 +832,14 @@ class MeasureActivity : TvActivity() {
 
     private fun finishMeasuring() {
         measuring = false
+        measurementGeneration += 1 // invalidate late callbacks from the capture just ended
+        measurementIsRepeat = false
         btnStop.isEnabled = false
+        btnStop.visibility = View.GONE
         stimulusPlayer.stop()
         captureEngine.stop()
         btnStart.isEnabled = true
+        btnRepeat.isEnabled = result != null && importResult == null
         btnRoom.isEnabled = true
         btnTarget.isEnabled = true
         btnImport.isEnabled = true
@@ -563,9 +848,23 @@ class MeasureActivity : TvActivity() {
 
     private fun cancelMeasurement(message: String) {
         if (!measuring) return
+        val wasRepeat = measurementIsRepeat
         finishMeasuring()
         progressMeasure.progress = 0
-        textStatus.text = message
+        if (wasRepeat && result != null) {
+            repeatBaseline = null
+            repeatCapture = null
+            repeatComparison = null
+            repeatabilityCheck = null
+            btnStart.setText(R.string.measure_start_new)
+            btnRepeat.visibility = View.VISIBLE
+            btnRepeat.isEnabled = true
+            btnSave.setText(R.string.measure_save)
+            btnSave.visibility = View.VISIBLE
+            textStatus.text = "$message The first sweep remains available; nothing was averaged."
+        } else {
+            textStatus.text = message
+        }
         btnStart.requestFocus()
     }
 
@@ -581,6 +880,7 @@ class MeasureActivity : TvActivity() {
             DISPLAY_BANDS_HZ, { hz -> interpolate(hz, r.centresHz, r.correctionDb) }, -1500, 1500
         ).map { PlatformBand(it.first, it.second) }
         val output = measuredOutput
+        val savedRepeatability = repeatabilityCheck
         val baseName = getString(R.string.measure_profile_name, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(now)))
         val profile = Profile(
             id = "profile-$now",
@@ -588,6 +888,8 @@ class MeasureActivity : TvActivity() {
             timestampMs = now,
             target = TARGETS[targetIndex].key,
             micType = micName ?: "microphone",
+            captureInfo = captureInfo,
+            repeatabilityCheck = savedRepeatability,
             deviceName = "${Build.MANUFACTURER} ${Build.MODEL}".trim(),
             stimulus = "sweep_${Sweep.SECONDS.roundToInt()}s",
             captureSeconds = LEAD_SECONDS + Sweep.STIMULUS_SECONDS + SweepAnalysis.TAIL_SECONDS,
@@ -604,7 +906,13 @@ class MeasureActivity : TvActivity() {
             platformBands = bands,
             curve = r.centresHz.indices.map { CurvePoint(r.centresHz[it], r.measuredDb[it], r.correctionDb[it]) },
             outputKind = OutputRoute.keyFor(output),
-            outputName = output?.name
+            outputName = output?.name,
+            measurementNotes = buildList {
+                if (savedRepeatability != null) {
+                    add("Optional same-position repeat retained as a separate trace; captures are never averaged. The comparison is descriptive only, with no qualified pass/fail threshold, and does not generalize to other seats or rooms.")
+                    savedRepeatability.note?.let { add(it) }
+                }
+            }
         )
         profileStore.saveProfile(profile, setAsActive = true)
         EqService.send(this, EqService.ACTION_REAPPLY)
@@ -672,8 +980,10 @@ class MeasureActivity : TvActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode != REQ_MIC) return
         if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
-            startMeasurement()
+            if (pendingRepeatPermission) startRepeatMeasurement() else startMeasurement()
+            pendingRepeatPermission = false
         } else {
+            pendingRepeatPermission = false
             textStatus.text = getString(R.string.measure_failed,
                 "Core EQ needs the microphone to hear the sweep. Allow it when asked, or in Settings → Apps → Core EQ → Permissions.")
         }

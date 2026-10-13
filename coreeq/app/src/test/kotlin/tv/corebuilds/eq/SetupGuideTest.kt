@@ -1,6 +1,7 @@
 package tv.corebuilds.eq
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -15,7 +16,7 @@ class SetupGuideTest {
     private fun step(steps: List<SetupGuide.Step>, id: String) = steps.single { it.id == id }
 
     @Test
-    fun aFullyGrantedSetupNeedsNoCommands() {
+    fun aFullyGrantedSetupNeedsNoPermissionCommands() {
         val steps = SetupGuide.steps(true, true, OutputRoute.SPEAKER, null, null)
         assertEquals(State.DONE, step(steps, "dump").state)
         assertEquals(State.DONE, step(steps, "overlay").state)
@@ -33,10 +34,32 @@ class SetupGuideTest {
     }
 
     @Test
-    fun theConnectLineKeepsItsPlaceholderSoItCannotRunUnedited() {
-        val connect = step(SetupGuide.steps(true, true, null, null, null), "connect")
+    fun theClassicConnectLineKeepsAPlaceholderAndNamesItsPortLimit() {
+        val steps = SetupGuide.steps(true, true, null, null, null)
+        val connect = step(steps, "connect")
         assertEquals("adb connect <TV-IP>:5555", connect.command)
-        assertTrue(connect.detail.contains("<TV-IP>"))
+        assertTrue(connect.detail.contains("often 5555"))
+        assertTrue(connect.detail.contains("not the Wireless debugging pairing port"))
+    }
+
+    @Test
+    fun wirelessDebuggingUsesSeparatePairAndConnectPortPlaceholders() {
+        val steps = SetupGuide.steps(true, true, null, null, null)
+        assertEquals("adb pair <TV-IP>:<PAIRING-PORT>", step(steps, "wireless-pair").command)
+        assertEquals("adb connect <TV-IP>:<CONNECT-PORT>", step(steps, "wireless-connect").command)
+        assertTrue(step(steps, "wireless-pair").detail.contains("Android TV 13+"))
+        assertTrue(step(steps, "wireless-connect").detail.contains("not the pairing-dialog port"))
+    }
+
+    @Test
+    fun setupOffersAFilteredLogCommandAndRemindsPeopleToTurnAdbOff() {
+        val steps = SetupGuide.steps(true, true, null, null, null)
+        val logs = step(steps, "logs")
+        val command = logs.command ?: error("log row should have a copyable command")
+        assertTrue(command.contains("CoreEqCapture"))
+        assertTrue(command.contains("CoreEqService"))
+        assertNull(step(steps, "adb-security").command)
+        assertTrue(step(steps, "adb-security").detail.contains("turn off"))
     }
 
     @Test
@@ -57,6 +80,19 @@ class SetupGuideTest {
         assertTrue(report.contains("[needed] Read the playing app (DUMP)"))
         assertTrue(report.contains("    adb shell pm grant tv.corebuilds.eq android.permission.DUMP"))
         assertTrue(report.contains("[done] Show the on-screen card"))
+        assertTrue(report.contains("pairing code"))
+    }
+
+    @Test
+    fun copiedReportCanIncludeUsefulDeviceDetailsWithoutSecrets() {
+        val report = SetupGuide.report(
+            SetupGuide.steps(true, true, OutputRoute.SPEAKER, null, null),
+            listOf("TV: Example model", "Android: 16 (API 36)", "Core EQ: 1.5.1 (12)")
+        )
+        assertTrue(report.contains("Device and app"))
+        assertTrue(report.contains("TV: Example model"))
+        assertTrue(report.contains("no IP address, serial number, pairing code"))
+        assertFalse(report.contains("123456"))
     }
 
     @Test

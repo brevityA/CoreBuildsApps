@@ -41,6 +41,8 @@ class ProfilesActivity : TvActivity() {
     private lateinit var btnDelete: Button
     private lateinit var btnAnnounce: Button
     private lateinit var textAnnounceCard: TextView
+    private lateinit var btnPlaybackHud: Button
+    private lateinit var textPlaybackHud: TextView
     private lateinit var btnAllowOverlay: Button
 
     private var profilesList = mutableListOf<Profile>()
@@ -56,7 +58,8 @@ class ProfilesActivity : TvActivity() {
         super.onResume()
         if (::profileStore.isInitialized) {
             loadProfiles()
-            refreshAnnounce() // back from the overlay permission screen
+            refreshOverlaySettings() // back from the overlay permission screen
+            EqService.send(this, EqService.ACTION_REFRESH_PLAYBACK_HUD)
         }
     }
 
@@ -77,6 +80,8 @@ class ProfilesActivity : TvActivity() {
         btnDelete = findViewById(R.id.btn_delete_profile)
         btnAnnounce = findViewById(R.id.btn_announce_applied)
         textAnnounceCard = findViewById(R.id.text_announce_card)
+        btnPlaybackHud = findViewById(R.id.btn_playback_hud)
+        textPlaybackHud = findViewById(R.id.text_playback_hud)
         btnAllowOverlay = findViewById(R.id.btn_allow_overlay)
 
         recyclerProfiles.layoutManager = LinearLayoutManager(this)
@@ -88,29 +93,40 @@ class ProfilesActivity : TvActivity() {
         btnDelete.setOnClickListener { deleteCurrentProfile() }
         btnAnnounce.setOnClickListener {
             profileStore.announceApplied = !profileStore.announceApplied
-            refreshAnnounce()
+            refreshOverlaySettings()
+        }
+        btnPlaybackHud.setOnClickListener {
+            profileStore.playbackHudEnabled = !profileStore.playbackHudEnabled
+            refreshOverlaySettings()
+            EqService.send(this, EqService.ACTION_REFRESH_PLAYBACK_HUD)
         }
         btnAllowOverlay.setOnClickListener { openOverlaySettings() }
         findViewById<Button>(R.id.btn_test_card).setOnClickListener { showTestCard() }
-        refreshAnnounce()
+        refreshOverlaySettings()
     }
 
-    /**
-     * The service reads the switch each time it would show the notice; the
-     * line under it says how the notice will look on this TV right now.
-     */
-    private fun refreshAnnounce() {
-        val on = profileStore.announceApplied
-        btnAnnounce.showSwitch(on, R.string.profiles_announce_on, R.string.profiles_announce_off)
+    /** Describe both independent overlay features and share Android's overlay permission. */
+    private fun refreshOverlaySettings() {
+        val announce = profileStore.announceApplied
+        val playbackHud = profileStore.playbackHudEnabled
+        btnAnnounce.showSwitch(announce, R.string.profiles_announce_on, R.string.profiles_announce_off)
+        btnPlaybackHud.showSwitch(playbackHud, R.string.profiles_playback_hud_on, R.string.profiles_playback_hud_off)
         val allowed = OverlayPermission.allowed(this)
         textAnnounceCard.setText(
             when {
-                !on -> R.string.profiles_card_off
+                !announce -> R.string.profiles_card_off
                 allowed -> R.string.profiles_card_allowed
                 else -> R.string.profiles_card_needs_permission
             }
         )
-        btnAllowOverlay.visibility = if (on && !allowed) View.VISIBLE else View.GONE
+        textPlaybackHud.setText(
+            when {
+                !playbackHud -> R.string.profiles_playback_hud_off_note
+                allowed -> R.string.profiles_playback_hud_allowed
+                else -> R.string.profiles_playback_hud_needs_permission
+            }
+        )
+        btnAllowOverlay.visibility = if ((announce || playbackHud) && !allowed) View.VISIBLE else View.GONE
     }
 
     /**
@@ -123,14 +139,16 @@ class ProfilesActivity : TvActivity() {
             textAnnounceCard.setText(R.string.profiles_card_test_off)
             return
         }
-        refreshAnnounce()
+        refreshOverlaySettings()
         EqService.send(this, EqService.ACTION_SHOW_CARD)
     }
 
     /** Android's own "Display over other apps" screen for Core EQ, or the ADB line where a TV has none. */
     private fun openOverlaySettings() {
         if (!OverlayPermission.open(this)) {
-            textAnnounceCard.text = getString(R.string.profiles_card_no_settings, packageName)
+            val command = getString(R.string.profiles_card_no_settings, packageName)
+            textAnnounceCard.text = command
+            if (profileStore.playbackHudEnabled) textPlaybackHud.text = command
         }
     }
 

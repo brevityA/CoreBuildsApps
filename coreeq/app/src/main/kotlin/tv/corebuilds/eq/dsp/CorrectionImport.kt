@@ -6,8 +6,9 @@ import kotlin.math.max
 import kotlin.math.round
 
 /**
- * Imports a correction text file (AutoEq ParametricEQ, Equalizer APO or
- * GraphicEQ) and fits it to the 10 fixed bands of the manual EQ.
+ * Imports correction data and fits it to the 10 fixed bands of the manual EQ.
+ * [parse] handles AutoEq/Equalizer APO text; [parseAny] also dispatches native
+ * Poweramp EQ JSON presets to [PowerampEqImport].
  *
  * The fit is a best effort. The editor has 10 bands at Q 1.0, ±6 dB, in 0.5 dB
  * steps, so a file with more bands, other filter types or a larger gain is
@@ -31,14 +32,16 @@ object CorrectionImport {
     data class Result(
         /** Fitted filters on the 10 fixed bands, sanitised, sorted by frequency. */
         val filters: List<PeakingFilter>,
-        /** Largest difference, in dB, between the file's curve and the fitted curve, over 40 Hz to 8 kHz. */
+        /** Largest difference, in dB, between the supported input curve and fitted curve over 40 Hz to 8 kHz; skipped source shapes are excluded. */
         val maxErrorDb: Double,
         /** "ParametricEQ" or "GraphicEQ". */
         val source: String,
         /** The file's preamp, if it had one. It is reported, never applied. */
         val preampDb: Double?,
         /** Plain-English notes about anything skipped, clamped or approximated. */
-        val notes: List<String>
+        val notes: List<String>,
+        /** Name stored inside a native preset file, when the format provides one. */
+        val presetName: String? = null
     )
 
     private val preampLine = Regex("""^preamp\s*:\s*(-?\d+(?:\.\d+)?)\s*db""", RegexOption.IGNORE_CASE)
@@ -46,6 +49,15 @@ object CorrectionImport {
     private val fcToken = Regex("""\bfc\s+(\d+(?:\.\d+)?)\s*hz""", RegexOption.IGNORE_CASE)
     private val gainToken = Regex("""\bgain\s+(-?\d+(?:\.\d+)?)\s*db""", RegexOption.IGNORE_CASE)
     private val qToken = Regex("""\bq\s+(\d+(?:\.\d+)?)\b""", RegexOption.IGNORE_CASE)
+
+    /** Dispatch a native Poweramp JSON preset or an existing AutoEq/Equalizer APO text file. */
+    fun parseAny(text: String): Result {
+        require(text.length <= MAX_CHARS) {
+            "The file is larger than 64 KB. Choose a Poweramp JSON preset or an AutoEq/Equalizer APO correction text file."
+        }
+        val first = text.trimStart('\uFEFF', ' ', '\t', '\r', '\n').firstOrNull()
+        return if (first == '[' || first == '{') PowerampEqImport.parse(text) else parse(text)
+    }
 
     /**
      * Parse the text and fit it. Throws [IllegalArgumentException] with a message
@@ -114,7 +126,7 @@ object CorrectionImport {
 
         val grid = logGrid()
         val curve = if (useGraphic) {
-            interpolateGraphic(graphic!!)
+            interpolateGraphic(graphic!!, grid)
         } else {
             DoubleArray(grid.size) { k ->
                 var sum = 0.0
@@ -124,9 +136,32 @@ object CorrectionImport {
                 sum
             }
         }
+        return fitResponseCurve(
+            curve = curve,
+            grid = grid,
+            source = if (useGraphic) "GraphicEQ" else "ParametricEQ",
+            preampDb = preamp,
+            notes = notes
+        )
+    }
+
+    /** Fit a sampled response on the import grid to the manual editor's fixed bands. */
+    internal fun fitResponseCurve(
+        curve: DoubleArray,
+        grid: DoubleArray = logGrid(),
+        source: String,
+        preampDb: Double?,
+        notes: List<String>,
+        presetName: String? = null
+    ): Result {
+        require(curve.size == grid.size && grid.isNotEmpty()) { "The correction curve is not valid." }
+        require(curve.all { it.isFinite() } && grid.all { it.isFinite() && it > 0.0 }) {
+            "The correction curve contains invalid values."
+        }
+        val resultNotes = notes.toMutableList()
         val peak = curve.maxOfOrNull { abs(it) } ?: 0.0
         if (peak > ManualEq.MAX_GAIN_DB + 1e-9) {
-            notes += String.format(
+            resultNotes += String.format(
                 java.util.Locale.US,
                 "The file asks for up to %.1f dB; the editor stops at ±6 dB, so the peaks are limited.",
                 peak
@@ -140,16 +175,17 @@ object CorrectionImport {
         val maxError = grid.indices.maxOf { k ->
             abs(curve[k] - ManualEq.responseDb(filters, grid[k]))
         }
-        if (preamp != null) {
-            notes += "The file's preamp (${String.format(java.util.Locale.US, "%.1f", preamp)} dB) was not applied. " +
-                "If the result clips, lower the volume."
+        if (preampDb != null) {
+            resultNotes += "The source preamp (${String.format(java.util.Locale.US, "%.1f", preampDb)} dB) is reported but not copied. " +
+                "Core EQ recalculates headroom for the fitted bands."
         }
         return Result(
             filters = ManualEq.sanitize(filters),
             maxErrorDb = maxError,
-            source = if (useGraphic) "GraphicEQ" else "ParametricEQ",
-            preampDb = preamp,
-            notes = notes
+            source = source,
+            preampDb = preampDb,
+            notes = resultNotes,
+            presetName = presetName
         )
     }
 
@@ -165,8 +201,11 @@ object CorrectionImport {
     }
 
     /** Linear in dB, log in frequency, clamped to the end points outside the file's range. */
-    private fun interpolateGraphic(points: List<Pair<Double, Double>>): DoubleArray {
-        val grid = logGrid()
+    internal fun interpolateGraphic(
+        points: List<Pair<Double, Double>>,
+        grid: DoubleArray = logGrid()
+    ): DoubleArray {
+        if (points.isEmpty()) return DoubleArray(grid.size)
         return DoubleArray(grid.size) { k ->
             val f = grid[k]
             when {
@@ -183,7 +222,7 @@ object CorrectionImport {
         }
     }
 
-    private fun logGrid(): DoubleArray = DoubleArray(GRID_POINTS) { k ->
+    internal fun logGrid(): DoubleArray = DoubleArray(GRID_POINTS) { k ->
         LOW_HZ * Math.pow(HIGH_HZ / LOW_HZ, k.toDouble() / (GRID_POINTS - 1))
     }
 

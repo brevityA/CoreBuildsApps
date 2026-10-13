@@ -16,6 +16,8 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.apply.BandMapping
 import tv.corebuilds.eq.apply.EqService
+import tv.corebuilds.eq.companion.CompanionActivity
+import tv.corebuilds.eq.companion.PhoneCompanionActivity
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.dsp.DspConstants
 import tv.corebuilds.eq.dsp.ManualEq
@@ -60,6 +62,8 @@ class MainActivity : TvActivity() {
     private var updateChecked = false
     private var pulse: ObjectAnimator? = null
     private var lastIndicatorState: CorrectionIndicator? = null
+    private var routingToPhone = false
+    private var statusReceiverRegistered = false
 
     private val statusReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -71,6 +75,12 @@ class MainActivity : TvActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (!packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK)) {
+            routingToPhone = true
+            startActivity(Intent(this, PhoneCompanionActivity::class.java))
+            finish()
+            return
+        }
         setContentView(R.layout.activity_main)
 
         profileStore = ProfileStore(this)
@@ -109,6 +119,9 @@ class MainActivity : TvActivity() {
         findViewById<Button>(R.id.btn_nav_setup).setOnClickListener {
             startActivity(Intent(this, SetupActivity::class.java))
         }
+        findViewById<Button>(R.id.btn_nav_companion).setOnClickListener {
+            startActivity(Intent(this, CompanionActivity::class.java))
+        }
         findViewById<Button>(R.id.btn_nav_display_calibration).setOnClickListener {
             startActivity(Intent(this, tv.corebuilds.eq.display.DisplayCalibrationActivity::class.java))
         }
@@ -135,13 +148,13 @@ class MainActivity : TvActivity() {
     }
 
     /**
-     * Home's bar for the on-screen card (1.3.2): shown while the notice is on
-     * and Android will not let Core EQ draw over other apps. Re-read on every
-     * resume, so coming back from the permission screen hides it.
+     * Home's permission bar for requested overlay features: shown while a
+     * notice or playback chip is enabled and Android will not let Core EQ draw
+     * over other apps. Re-read on resume after the permission screen.
      */
     private fun refreshCardPermissionBar() {
         val visible = OverlayPermission.homePromptVisible(
-            noticeOn = profileStore.announceApplied,
+            noticeOn = profileStore.announceApplied || profileStore.playbackHudEnabled,
             allowed = OverlayPermission.allowed(this),
             dismissed = profileStore.cardPromptDismissed
         )
@@ -159,16 +172,19 @@ class MainActivity : TvActivity() {
 
     override fun onResume() {
         super.onResume()
+        if (routingToPhone) return
         refreshCardPermissionBar()
         ContextCompat.registerReceiver(
             this, statusReceiver, IntentFilter(EqService.ACTION_STATUS_CHANGED), ContextCompat.RECEIVER_NOT_EXPORTED
         )
+        statusReceiverRegistered = true
         // Correction that was on but is not running (a reboot Android would not
         // restart it after, or the system stopping it) resumes now that Core EQ
         // is on screen, which is the one moment Android allows it.
         if (profileStore.correctionEnabled && !EqService.running) {
             EqService.enable(this)?.let { profileStore.setStatus(it, isError = true) }
         }
+        EqService.send(this, EqService.ACTION_REFRESH_PLAYBACK_HUD)
         loadActiveProfile()
         refreshModeButton()
         refreshStatus()
@@ -259,7 +275,10 @@ class MainActivity : TvActivity() {
 
     override fun onPause() {
         stopPulse()
-        unregisterReceiver(statusReceiver)
+        if (statusReceiverRegistered) {
+            unregisterReceiver(statusReceiver)
+            statusReceiverRegistered = false
+        }
         super.onPause()
     }
 

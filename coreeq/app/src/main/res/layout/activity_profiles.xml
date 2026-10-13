@@ -86,6 +86,32 @@
                 android:textSize="@dimen/cb_text_kicker"
                 tools:text="Shown as a card at the top right for 4 seconds, over whatever is playing." />
 
+            <!-- Optional persistent playback status, independent of the one-shot applied notice. -->
+            <Button
+                android:id="@+id/btn_playback_hud"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cb_target_min"
+                android:layout_marginTop="@dimen/cb_space_sm"
+                android:background="@drawable/bg_toggle"
+                android:drawableEnd="@drawable/ic_switch"
+                android:drawablePadding="@dimen/cb_space_sm"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:text="@string/profiles_playback_hud_off"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:focusable="true" />
+
+            <TextView
+                android:id="@+id/text_playback_hud"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_kicker"
+                tools:text="A touch-through chip stays up while Android reports playback; it does not prove the audio route." />
+
             <Button
                 android:id="@+id/btn_allow_overlay"
                 android:layout_width="match_parent"

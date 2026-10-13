@@ -28,6 +28,8 @@
          sideloaded TV app, so this is the only path a newer build has. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Android 17 / target 37 local-network protection for the opt-in phone link. -->
+    <uses-permission android:name="android.permission.ACCESS_LOCAL_NETWORK" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <!-- Exports go through MediaStore on Android 10+, which needs no permission. -->
     <uses-permission
@@ -62,6 +64,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:fullBackupContent="@xml/backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:theme="@style/Theme.CoreEQ">
 
         <activity
@@ -100,6 +104,16 @@
             android:name=".SetupActivity"
             android:exported="false"
             android:label="@string/setup_title" />
+
+        <activity
+            android:name=".companion.CompanionActivity"
+            android:exported="false"
+            android:label="@string/companion_tv_title" />
+
+        <activity
+            android:name=".companion.PhoneCompanionActivity"
+            android:exported="false"
+            android:label="@string/action_companion" />
 
         <activity
             android:name=".CapabilityActivity"

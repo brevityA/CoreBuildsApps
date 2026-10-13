@@ -13,6 +13,109 @@ data class CurvePoint(
     val correctionDb: Double
 )
 
+/** Shape-only difference after removing the repeat sweep's broadband level offset. */
+data class RepeatabilityMetrics(
+    val comparedBands: Int,
+    val lowFrequencyHz: Double,
+    val highFrequencyHz: Double,
+    /** dB added to the repeat trace to align it to the reference over 500 Hz–2 kHz. */
+    val levelOffsetDb: Double,
+    val medianAbsDifferenceDb: Double,
+    val rmsDifferenceDb: Double,
+    val p95AbsDifferenceDb: Double
+)
+
+/** The second trace and its provenance; metrics may be absent when paths/bands were not comparable. */
+data class RepeatabilityCheck(
+    val metrics: RepeatabilityMetrics?,
+    val comparisonCurve: List<CurvePoint>,
+    val captureInfo: CaptureInfo? = null,
+    val outputKind: String? = null,
+    val outputName: String? = null,
+    val snrDb: Double? = null,
+    val driftPpm: Double? = null,
+    val note: String? = null
+)
+
+/** A microphone response point reported by Android; it is metadata, not a correction applied by Core EQ. */
+data class MicrophoneResponsePoint(
+    val microphone: String,
+    val frequencyHz: Double,
+    val responseDb: Double
+)
+
+/**
+ * What Android exposed about the actual input path for a sweep. Device support
+ * varies; missing fields mean "not reported", not "none". Microphone response
+ * points are preserved for audit/research and are explicitly not applied to
+ * the room curve. The input rate is the rate Android reports for the
+ * AudioRecord stream; it is not a measurement of the microphone ADC clock.
+ */
+data class CaptureInfo(
+    val requestedSampleRateHz: Int? = null,
+    val inputSampleRateHz: Int? = null,
+    val analysisSampleRateHz: Int? = null,
+    val audioSource: String? = null,
+    val inputDeviceName: String? = null,
+    val inputDeviceType: String? = null,
+    val activeMicrophoneCount: Int? = null,
+    /** Manufacturer/model of the device running AudioRecord; distinct from the TV profile owner. */
+    val captureDeviceModel: String? = null,
+    val captureOsVersion: String? = null,
+    val microphoneDescriptions: List<String> = emptyList(),
+    val processing: List<String> = emptyList(),
+    val unprocessedAudioSourceSupported: Boolean? = null,
+    val microphoneResponse: List<MicrophoneResponsePoint> = emptyList()
+) {
+    /** A concise line for the Measure result and support report. */
+    fun summary(): String {
+        val input = inputDeviceName?.takeIf { it.isNotBlank() }
+            ?: inputDeviceType?.takeIf { it.isNotBlank() }
+            ?: "input not named by Android"
+        val rates = when {
+            inputSampleRateHz == null && analysisSampleRateHz == null -> "sample rate not reported"
+            inputSampleRateHz == analysisSampleRateHz -> "${inputSampleRateHz} Hz"
+            else -> "${inputSampleRateHz ?: "?"} Hz input → ${analysisSampleRateHz ?: "?"} Hz analysis"
+        }
+        val source = audioSource?.takeIf { it.isNotBlank() }?.let { " · $it" }.orEmpty()
+        val recorder = captureDeviceModel?.takeIf { it.isNotBlank() }?.let { " · recorder $it" }.orEmpty()
+        val mic = activeMicrophoneCount?.let { " · $it active mic${if (it == 1) "" else "s"}" }.orEmpty()
+        val unprocessed = when (unprocessedAudioSourceSupported) {
+            true -> " · Android reports UNPROCESSED available"
+            false -> " · Android reports UNPROCESSED unavailable"
+            null -> " · UNPROCESSED availability not reported"
+        }
+        val effectState = processing.takeIf { it.isNotEmpty() }
+            ?.joinToString(", ")
+            ?.take(110)
+            ?.let { " · $it" }.orEmpty()
+        val calibration = if (microphoneResponse.isNotEmpty()) {
+            " · Android reported ${microphoneResponse.size} mic-response points (stored, not applied)"
+        } else ""
+        return "Capture: $input · $rates$source$recorder$mic$unprocessed$effectState$calibration"
+    }
+
+    /** Short, explicit provenance comments carried with text exports. */
+    fun exportNotes(): List<String> = buildList {
+        val rates = when {
+            inputSampleRateHz == null && analysisSampleRateHz == null -> "sample rate not reported"
+            else -> "${inputSampleRateHz ?: "unknown"} Hz input; ${analysisSampleRateHz ?: "unknown"} Hz analysis"
+        }
+        val route = listOfNotNull(inputDeviceName?.takeIf { it.isNotBlank() }, inputDeviceType?.takeIf { it.isNotBlank() })
+            .distinct().joinToString(" / ").ifBlank { "input route not reported" }
+        val source = audioSource?.takeIf { it.isNotBlank() } ?: "audio source not reported"
+        add("Capture path: $source; $route; $rates.")
+        captureDeviceModel?.takeIf { it.isNotBlank() }?.let { model ->
+            val os = captureOsVersion?.takeIf { it.isNotBlank() }?.let { " · Android $it" }.orEmpty()
+            add("Recording device: $model$os.")
+        }
+        if (microphoneResponse.isNotEmpty()) {
+            add("Android reported ${microphoneResponse.size} microphone frequency-response points; metadata only, not applied to the correction.")
+        }
+        processing.takeIf { it.isNotEmpty() }?.let { add("Capture processing: ${it.joinToString("; ")}.") }
+    }
+}
+
 /**
  * A saved correction. Room facts that were not measured are null, never a
  * plausible-looking default: a profile only claims what its measurement found.
@@ -23,6 +126,10 @@ data class Profile(
     val timestampMs: Long,
     val target: String,
     val micType: String,
+    /** Capture provenance from Android, absent on old profiles, REW imports and manual-only profiles. */
+    val captureInfo: CaptureInfo? = null,
+    /** Optional second same-position capture; curves are retained separately and never averaged. */
+    val repeatabilityCheck: RepeatabilityCheck? = null,
     val deviceName: String = "Android TV",
     val stimulus: String = "sweep_10s",
     val captureSeconds: Double = 10.0,
