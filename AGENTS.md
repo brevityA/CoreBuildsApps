@@ -6,7 +6,7 @@
 
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
-| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `2.3.4` | `5270601` / `iconpack` |
+| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `2.4.0` | `5270601` / `iconpack` |
 | Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.4.4` | `7375676` / `coreline` |
 | Core Shift | `shift/` | `dev.corebuilds.shift` | `2.3.5` | `8829421` / `shift` |
 | Core Motion | `motion-plugin/` | `tv.corebuilds.motion` | `1.0.0` | `[USER TO SUPPLY]` / `motion` |
@@ -109,7 +109,7 @@ For the visual receipt, run `python tools/build_icon_review.py` after the pack
 has built. It must show the new icons beside established, unchanged
 neighbours and actual-size banners, not only an isolated vendor-logo gallery.
 
-`Wallpapers/manifest.json` belongs to the icon pack and currently has 100 entries.
+`Wallpapers/manifest.json` belongs to the icon pack and currently has 108 entries.
 
 ## Truth gates
 

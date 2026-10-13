@@ -3,7 +3,7 @@
   "version": "6.0",
   "author": "brevityA",
   "brand_guide": "Core-Builds Brand Guide v1.0 (2026-08-11)",
-  "count": 100,
+  "count": 108,
   "wallpapers": [
     {
       "name": "25 Orbitals",
@@ -647,6 +647,62 @@
       "series": "series-12-earth",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-12-earth/corebuilds-116-ice-sheet-from-space.jpg",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-116-ice-sheet-from-space.jpg",
+      "resolution": "1376x768"
+    },
+    {
+      "name": "117 Aurora Fjord",
+      "series": "series-13-wild",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-13-wild/corebuilds-117-aurora-fjord.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-117-aurora-fjord.jpg",
+      "resolution": "1376x768"
+    },
+    {
+      "name": "118 Fog Forest",
+      "series": "series-13-wild",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-13-wild/corebuilds-118-fog-forest.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-118-fog-forest.jpg",
+      "resolution": "1376x768"
+    },
+    {
+      "name": "119 Desert Night",
+      "series": "series-13-wild",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-13-wild/corebuilds-119-desert-night.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-119-desert-night.jpg",
+      "resolution": "1376x768"
+    },
+    {
+      "name": "120 Glacier Lagoon",
+      "series": "series-13-wild",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-13-wild/corebuilds-120-glacier-lagoon.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-120-glacier-lagoon.jpg",
+      "resolution": "1376x768"
+    },
+    {
+      "name": "121 Volcano Glow",
+      "series": "series-13-wild",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-13-wild/corebuilds-121-volcano-glow.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-121-volcano-glow.jpg",
+      "resolution": "1376x768"
+    },
+    {
+      "name": "122 Ocean Bioluminescence",
+      "series": "series-13-wild",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-13-wild/corebuilds-122-ocean-bioluminescence.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-122-ocean-bioluminescence.jpg",
+      "resolution": "1376x768"
+    },
+    {
+      "name": "123 Alpine Dusk",
+      "series": "series-13-wild",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-13-wild/corebuilds-123-alpine-dusk.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-123-alpine-dusk.jpg",
+      "resolution": "1376x768"
+    },
+    {
+      "name": "124 Lightning Plains",
+      "series": "series-13-wild",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-13-wild/corebuilds-124-lightning-plains.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-124-lightning-plains.jpg",
       "resolution": "1376x768"
     },
     {

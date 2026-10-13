@@ -74,6 +74,7 @@ class ManifestTests(unittest.TestCase):
             # are generated imagery at 1376x768 (Circuit Core's precedent),
             # Flux is procedural at 4K.
             "series-12-earth": 8,
+            "series-13-wild": 8,
             "series-14-flux": 8,
         })
 

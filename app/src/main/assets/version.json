@@ -1,6 +1,6 @@
 {
-  "versionCode": 52,
-  "versionName": "2.3.4",
+  "versionCode": 53,
+  "versionName": "2.4.0",
   "iconCount": 991,
   "componentCount": 1227,
   "releaseDate": "2026-10-13",
@@ -8,8 +8,13 @@
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Binged icon",
-    "Buzz TV 6 icon",
-    "Telly Player icon"
+    "Check for updates in About",
+    "Earth wallpaper series",
+    "Wild wallpaper series",
+    "Flux wallpaper series",
+    "Support is on the home screen",
+    "Horizons re-rendered",
+    "Deep Space re-rendered",
+    "Fieldwork wallpaper series retired"
   ]
 }

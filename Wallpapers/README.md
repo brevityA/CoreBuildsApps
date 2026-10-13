@@ -1,6 +1,6 @@
 # Core Builds — Wallpaper Collection v6.0
 
-100 wallpapers · 3840×2160 (series 2–3, 7–11, 14) and 1376×768 (series 6, 12) ·
+108 wallpapers · 3840×2160 (series 2–3, 7–11, 14) and 1376×768 (series 6, 12–13) ·
 Core Builds palette, icon-echo retuned (2026-10-11):
 Core Cyan #00d4ff (the icon pack's own Signal cyan) · Glow #7eeeff ·
 Build Blue #4facfe · Dusk Violet #9754a8 (nudged toward the icon violet

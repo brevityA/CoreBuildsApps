@@ -6,6 +6,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.4.0] — 2026-10-13
+
 ### Added
 
 - **Check for updates in About.** About now carries an on-demand update
@@ -20,10 +22,29 @@ All notable changes to the Core Builds Icon Pack. Format follows
   an orbital sunrise, Earth over the Moon, a coastline at night, an ice
   sheet. Generated imagery, shipped at the 1376×768 it was made at under the
   same honesty rule as Circuit Core.
+- **Wild wallpaper series.** Eight nature and landscape-photography walls
+  (series 13, walls 117–124): aurora over a fjord, a forest in fog, the
+  Milky Way over dunes, a glacier lagoon, a volcano at night, bioluminescent
+  surf, alpenglow, a plains thunderstorm. Generated the same way as Earth,
+  at the same resolution. With Fieldwork gone the collection stays at 108.
 - **Flux wallpaper series.** Eight 4K abstract walls (series 14, walls
   125–132) — domain-warped ink, folded silk, a plasma core, streamlines,
   glass facets, caustics, a veil, a bent grid — procedural and seeded in the
   house palette (`tools/build_flux_wallpapers.py`).
+
+- **Binged icon.** Binged, the family streaming app (`net.binged.tv`), has
+  its own icon: a capital B over a short bar, the cue of its own launcher
+  icon, in the coral red of that icon's underline. Device-reported through
+  the pack's Missing icons scanner; the component is not yet confirmed on
+  a second TV.
+- **Buzz TV 6 icon.** The BuzzTV IPTV player (`com.buzztv.iptv.tv`) has its
+  own icon: a television screen with a buzz — a lightning bolt — inside it
+  (issue #300). No published brand colour was found, so it takes a pack
+  palette accent.
+- **Telly Player icon.** Telly Player (`com.desktoptelly.tv`), distributed
+  by Downloader code, has its own icon: a telly on its stand with a play
+  triangle inside (issue #301). No published brand colour was found, so it
+  takes a pack palette accent.
 
 ### Changed
 
@@ -45,24 +66,6 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Fieldwork wallpaper series retired.** The 24 mesh-gradient washes of series 1
   (walls 01–24) are retired on user feedback — at TV distance they were one
   blur in five colours. The numbers stay empty, as series 4 and 5 do.
-
-## [2.3.4] — 2026-10-13
-
-### Added
-
-- **Binged icon.** Binged, the family streaming app (`net.binged.tv`), has
-  its own icon: a capital B over a short bar, the cue of its own launcher
-  icon, in the coral red of that icon's underline. Device-reported through
-  the pack's Missing icons scanner; the component is not yet confirmed on
-  a second TV.
-- **Buzz TV 6 icon.** The BuzzTV IPTV player (`com.buzztv.iptv.tv`) has its
-  own icon: a television screen with a buzz — a lightning bolt — inside it
-  (issue #300). No published brand colour was found, so it takes a pack
-  palette accent.
-- **Telly Player icon.** Telly Player (`com.desktoptelly.tv`), distributed
-  by Downloader code, has its own icon: a telly on its stand with a play
-  triangle inside (issue #301). No published brand colour was found, so it
-  takes a pack palette accent.
 
 ## [2.3.3] — 2026-10-12
 
