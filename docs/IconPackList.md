@@ -1,6 +1,6 @@
 # Supported applications
 
-`988` icons · `1224` mapped components · pack v2.3.3
+`991` icons · `1227` mapped components · pack v2.3.4
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -99,6 +99,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | BET+ | `shows` | `#B80898` | `#B80898` | `com.bet.shows/com.vmn.playplex.tv.ui.splash.TvSplashActivity` |
 | Better xCloud | `betterxc` | `#3D8BFF` | `#3D8BFF` | `com.redphx.betterxc/com.redphx.betterxc.activity.MainActivity` |
 | Binge | `binge` | `#B80472` | `#BA0473` | `au.com.streamotion.ares/.MainActivity`<br>`au.com.binge.tv/.MainActivity`<br>`au.com.binge.tv/au.com.foxsports.martian.tv.main.MainActivity`<br>`au.com.streamotion.ares/au.com.foxsports.martian.tv.main.MainActivity` |
+| Binged | `binged` | `#E8453C` | `#E8453C` | `net.binged.tv/net.binged.tv.MainActivity` |
 | Bitdefender | `bitdefender` | `#ED1C24` | `#ED1C24` | `com.bitdefender.vpn/com.bitdefender.vpn.MainActivity` |
 | BitTV | `bit_tv` | `#008FD7` | `#008FD7` | `com.live_streaming_tv.online_tv/com.live_streaming_tv.online_tv.BitTVActivity`<br>`com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.MainActivity`<br>`com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.ui.MainActivity` |
 | Blip | `blip` | `#E00000` | `#E00000` | `net.blip.android/net.blip.android.MainActivity` |
@@ -114,6 +115,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Bstation | `bstar` | `#3672D9` | `#3672D9` | `com.bstar.intl.tv/com.biliintl.ibstartv.MainActivity` |
 | Button Mapper TV | `buttonmappertv` | `#063C9F` | `#0854DE` | `com.tv.remote.button.mapper.remap/com.tv.remote.button.mapper.remap.LauncherActivity` |
 | Buttons Remapper | `buttonsremapper` | `#1976D2` | `#1976D2` | `com.irishin.buttonsremapper/com.irishin.buttonsremapper.ui.MainActivity` |
+| Buzz TV 6 | `buzztv6` | `#FFE14D` | `#FFE14D` | `com.buzztv.iptv.tv/com.buzztv.iptv.MainActivity` |
 | ByeByeDPI | `byebyedpi` | `#09457F` | `#0D60B2` | `io.github.romanvht.byedpi/io.github.dovecoteescapee.byedpi.activities.MainActivity` |
 | BYUtv | `byutv` | `#2880E8` | `#2880E8` | `org.byutv.android/org.byutv.android.MainActivity` |
 | Cafe Bazaar | `farsitel` | `#60C018` | `#60C018` | `com.farsitel.bazaar.tv/com.farsitel.bazaar.tv.ui.splash.SplashActivity` |
@@ -808,6 +810,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Telewebion | `telewebion` | `#D00000` | `#D00000` | `tv.telewebion/tv.telewebion.ui.main.MainActivity` |
 | Telia Play | `teliaplaylt` | `#990AE3` | `#990AE3` | `lt.telia.tv/lt.telia.tv.MainActivity` |
 | Telly | `telly` | `#1E1EC8` | `#4949E4` | `tv.fournetwork.android.box.digi/tv.fournetwork.android.box.MainActivity` |
+| Telly Player | `tellyplayer` | `#4FACFE` | `#4FACFE` | `com.desktoptelly.tv/com.desktoptelly.tv.MainActivity` |
 | Tencent Video | `tencent` | `#30A0F8` | `#30A0F8` | `com.tencent.qqlive/com.tencent.qqlive.ona.activity.SplashHomeActivity` |
 | Tennis Channel | `tennis_channel` | `#109519` | `#109519` | `com.tennischannel.foxxum.amazon/com.foxxum.tennis.MainActivity`<br>`com.tennischannel.tceverywhere.amazon/com.foxxum.webapp.MainActivity` |
 | Tennis TV | `tennistv` | `#DDFF4F` | `#DDFF4F` | `com.tennistv.cdtv/com.tennistv.cdtv.MainActivity` |

@@ -13,6 +13,7 @@
     <item drawable="arrowfilms" />
     <item drawable="arvio" />
     <item drawable="begin" />
+    <item drawable="binged" />
     <item drawable="bit_tv" />
     <item drawable="boosteroidtv" />
     <item drawable="chillio" />
@@ -112,6 +113,7 @@
     <item drawable="visionplus" />
     <category title="Square · Live TV" />
     <item drawable="xtreamplayeranddownloader" />
+    <item drawable="buzztv6" />
     <item drawable="iptv3u" />
     <item drawable="drama_live" />
     <item drawable="eternaltviptvbox" />
@@ -146,6 +148,7 @@
     <item drawable="tapmad" />
     <item drawable="televizo" />
     <item drawable="telly" />
+    <item drawable="tellyplayer" />
     <item drawable="thundertv" />
     <item drawable="tvplayer" />
     <item drawable="tcl_tv" />

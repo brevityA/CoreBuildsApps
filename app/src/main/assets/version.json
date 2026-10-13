@@ -1,20 +1,15 @@
 {
-  "versionCode": 51,
-  "versionName": "2.3.3",
-  "iconCount": 988,
-  "componentCount": 1224,
-  "releaseDate": "2026-10-12",
+  "versionCode": 52,
+  "versionName": "2.3.4",
+  "iconCount": 991,
+  "componentCount": 1227,
+  "releaseDate": "2026-10-13",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "MovieBoxTV icon",
-    "AIOStreams icon",
-    "Icon Echo wallpaper series",
-    "Three Icon Echo live loops",
-    "Launcher compatibility summary",
-    "Coverage and mapping-reliability report",
-    "Wallpaper colours sit on the icon palette",
-    "Nuvio on the `com.nuvio.app` package"
+    "Binged icon",
+    "Buzz TV 6 icon",
+    "Telly Player icon"
   ]
 }

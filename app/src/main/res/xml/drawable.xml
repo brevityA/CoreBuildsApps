@@ -13,6 +13,7 @@
     <item drawable="arrowfilms_banner" />
     <item drawable="arvio_banner" />
     <item drawable="begin_banner" />
+    <item drawable="binged_banner" />
     <item drawable="bit_tv_banner" />
     <item drawable="boosteroidtv_banner" />
     <item drawable="chillio_banner" />
@@ -112,6 +113,7 @@
     <item drawable="visionplus_banner" />
     <category title="Banners · Live TV" />
     <item drawable="xtreamplayeranddownloader_banner" />
+    <item drawable="buzztv6_banner" />
     <item drawable="iptv3u_banner" />
     <item drawable="drama_live_banner" />
     <item drawable="eternaltviptvbox_banner" />
@@ -146,6 +148,7 @@
     <item drawable="tapmad_banner" />
     <item drawable="televizo_banner" />
     <item drawable="telly_banner" />
+    <item drawable="tellyplayer_banner" />
     <item drawable="thundertv_banner" />
     <item drawable="tvplayer_banner" />
     <item drawable="tcl_tv_banner" />

@@ -9044,3 +9044,40 @@ def movieboxtv_strip(c):
 
 
 GLYPHS.update({"movieboxtv_strip": movieboxtv_strip})
+
+
+def binged_b(c):
+    """Binged: a monoline capital B with a short bar beneath it — the app's
+    launcher cue (a bold B over a red underline) in Core stroke geometry,
+    not the vendor letterform."""
+    return (f'<path d="M 160 136 L 160 344 M 160 136 L 272 136 '
+            f'A 52 52 0 0 1 272 240 L 160 240 M 272 240 L 292 240 '
+            f'A 52 52 0 0 1 292 344 L 160 344" {_s(c, 32)}/>'
+            f'<path d="M 160 400 L 352 400" {_s(c, 26.2)}/>')
+
+
+GLYPHS.update({"binged_b": binged_b})
+
+
+def buzztv_bolt(c):
+    """Buzz TV: a rounded television screen with a buzz — a lightning bolt —
+    inside it, the IPTV box brand's name drawn literally in Core stroke
+    geometry; no vendor logo is traced."""
+    return (f'<rect x="88" y="120" width="336" height="236" rx="32" {_s(c, 32)}/>'
+            f'<path d="M 272 158 L 216 248 L 268 248 L 240 318" {_s(c, 26.2)}/>'
+            f'<path d="M 200 404 L 312 404" {_s(c, 26.2)}/>')
+
+
+GLYPHS.update({"buzztv_bolt": buzztv_bolt})
+
+
+def tellyplayer_screen(c):
+    """Telly Player: a telly — a rounded screen on a stand — with a play
+    triangle inside, the app's name drawn literally in Core stroke geometry;
+    no vendor art is traced."""
+    return (f'<rect x="88" y="104" width="336" height="236" rx="32" {_s(c, 32)}/>'
+            f'<path d="M 226 170 L 310 222 L 226 274 Z" {_s(c, 26.2)}/>'
+            f'<path d="M 256 340 L 256 388 M 176 404 L 336 404" {_s(c, 26.2)}/>')
+
+
+GLYPHS.update({"tellyplayer_screen": tellyplayer_screen})

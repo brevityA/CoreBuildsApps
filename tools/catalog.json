@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "2.3.3",
+    "version": "2.3.4",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 988
+    "count": 991
   },
   "icons": [
     {
@@ -1173,6 +1173,20 @@
       ]
     },
     {
+      "name": "Binged",
+      "drawable": "binged",
+      "color": "#E8453C",
+      "glyph": "binged_b",
+      "components": [
+        "net.binged.tv/net.binged.tv.MainActivity"
+      ],
+      "category": "STREAM",
+      "mapping_source": "device-reported via the pack's Missing icons scanner (screenshot, Android TV, pack 2.3.3, 2026-10-11): net.binged.tv/net.binged.tv.MainActivity is the activity the launcher opened for Binged on that device. Not confirmed on a second TV",
+      "color_source": "eyeballed from the app's own launcher icon as shown in the scanner screenshot (a white B over a red underline, 'Binged for the family' banner): coral red #E8453C; approximate, not sampled from a vendor asset (2026-10-13)",
+      "color_reviewed": "2026-10-13",
+      "glyph_source": "original Core monoline mark: a capital B with a short bar beneath it - the launcher icon's cue - in Core stroke geometry, not the vendor letterform and not traced (2026-10-13)"
+    },
+    {
       "name": "Bitdefender",
       "drawable": "bitdefender",
       "color": "#ED1C24",
@@ -1249,6 +1263,20 @@
       "category": "STREAM",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
+    },
+    {
+      "name": "Buzz TV 6",
+      "drawable": "buzztv6",
+      "color": "#FFE14D",
+      "glyph": "buzztv_bolt",
+      "components": [
+        "com.buzztv.iptv.tv/com.buzztv.iptv.MainActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "issue #300 (device-reported on G Series, Android 14, pack 2.3.3): com.buzztv.iptv.tv/com.buzztv.iptv.MainActivity is the activity the launcher opened for Buzz TV 6 on that device; Play listing play.google.com/store/apps/details?id=com.buzztv.iptv.tv. Not confirmed on a second TV",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: a television screen with a lightning bolt - a buzz - inside it, the name drawn literally in Core stroke geometry; no vendor logo traced (2026-10-13)"
     },
     {
       "name": "İnat Box",
@@ -10848,6 +10876,20 @@
       "color_source": "sampled from the official launcher icon (Google Play listing for tv.fournetwork.android.box.digi): dominant brand accent #1E1EC8 (2026-09-26)",
       "color_reviewed": "2026-09-26",
       "glyph_source": "wordmark-derived mark from the Projectivy Icon Pack 1.1.9 artwork for tv.fournetwork.android.box.digi (github.com/SicMundus86/ProjectivyIconPack, used as reference only): the logotype's cue 'Telly', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
+    },
+    {
+      "name": "Telly Player",
+      "drawable": "tellyplayer",
+      "color": "#4FACFE",
+      "glyph": "tellyplayer_screen",
+      "components": [
+        "com.desktoptelly.tv/com.desktoptelly.tv.MainActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "issue #301 (device-reported on SHIELD Android TV, Android 11, pack 2.3.1): com.desktoptelly.tv/com.desktoptelly.tv.MainActivity is the activity the launcher opened for Telly Player on that device; distributed by Downloader code 5393783, no store link given. Not confirmed on a second TV",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: a telly - a rounded screen on a stand - with a play triangle inside, the name drawn literally in Core stroke geometry; no vendor art traced (2026-10-13)"
     },
     {
       "name": "Tencent Video",

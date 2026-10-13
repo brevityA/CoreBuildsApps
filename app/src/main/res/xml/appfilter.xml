@@ -270,6 +270,9 @@
     <item component="ComponentInfo{au.com.binge.tv/.MainActivity}" drawable="binge_banner"/>
     <item component="ComponentInfo{au.com.binge.tv/au.com.foxsports.martian.tv.main.MainActivity}" drawable="binge_banner"/>
     <item component="ComponentInfo{au.com.streamotion.ares/au.com.foxsports.martian.tv.main.MainActivity}" drawable="binge_banner"/>
+    <!-- Binged -->
+    <item component="ComponentInfo{net.binged.tv/net.binged.tv.MainActivity}" drawable="binged_banner"/>
+    <item component="ComponentInfo{net.binged.tv/.MainActivity}" drawable="binged_banner"/>
     <!-- Bitdefender -->
     <item component="ComponentInfo{com.bitdefender.vpn/com.bitdefender.vpn.MainActivity}" drawable="bitdefender_banner"/>
     <item component="ComponentInfo{com.bitdefender.vpn/.MainActivity}" drawable="bitdefender_banner"/>
@@ -313,6 +316,8 @@
     <!-- Buttons Remapper -->
     <item component="ComponentInfo{com.irishin.buttonsremapper/com.irishin.buttonsremapper.ui.MainActivity}" drawable="buttonsremapper_banner"/>
     <item component="ComponentInfo{com.irishin.buttonsremapper/.ui.MainActivity}" drawable="buttonsremapper_banner"/>
+    <!-- Buzz TV 6 -->
+    <item component="ComponentInfo{com.buzztv.iptv.tv/com.buzztv.iptv.MainActivity}" drawable="buzztv6_banner"/>
     <!-- ByeByeDPI -->
     <item component="ComponentInfo{io.github.romanvht.byedpi/io.github.dovecoteescapee.byedpi.activities.MainActivity}" drawable="byebyedpi_banner"/>
     <!-- BYUtv -->
@@ -2341,6 +2346,9 @@
     <item component="ComponentInfo{lt.telia.tv/.MainActivity}" drawable="teliaplaylt_banner"/>
     <!-- Telly -->
     <item component="ComponentInfo{tv.fournetwork.android.box.digi/tv.fournetwork.android.box.MainActivity}" drawable="telly_banner"/>
+    <!-- Telly Player -->
+    <item component="ComponentInfo{com.desktoptelly.tv/com.desktoptelly.tv.MainActivity}" drawable="tellyplayer_banner"/>
+    <item component="ComponentInfo{com.desktoptelly.tv/.MainActivity}" drawable="tellyplayer_banner"/>
     <!-- Tencent Video -->
     <item component="ComponentInfo{com.tencent.qqlive/com.tencent.qqlive.ona.activity.SplashHomeActivity}" drawable="tencent_banner"/>
     <item component="ComponentInfo{com.tencent.qqlive/.ona.activity.SplashHomeActivity}" drawable="tencent_banner"/>

@@ -6,6 +6,24 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.3.4] — 2026-10-13
+
+### Added
+
+- **Binged icon.** Binged, the family streaming app (`net.binged.tv`), has
+  its own icon: a capital B over a short bar, the cue of its own launcher
+  icon, in the coral red of that icon's underline. Device-reported through
+  the pack's Missing icons scanner; the component is not yet confirmed on
+  a second TV.
+- **Buzz TV 6 icon.** The BuzzTV IPTV player (`com.buzztv.iptv.tv`) has its
+  own icon: a television screen with a buzz — a lightning bolt — inside it
+  (issue #300). No published brand colour was found, so it takes a pack
+  palette accent.
+- **Telly Player icon.** Telly Player (`com.desktoptelly.tv`), distributed
+  by Downloader code, has its own icon: a telly on its stand with a play
+  triangle inside (issue #301). No published brand colour was found, so it
+  takes a pack palette accent.
+
 ## [2.3.3] — 2026-10-12
 
 ### Added

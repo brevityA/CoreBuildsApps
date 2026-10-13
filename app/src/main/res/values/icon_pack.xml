@@ -93,6 +93,7 @@
         <item>shows</item>
         <item>betterxc</item>
         <item>binge</item>
+        <item>binged</item>
         <item>bitdefender</item>
         <item>bit_tv</item>
         <item>blip</item>
@@ -108,6 +109,7 @@
         <item>bstar</item>
         <item>buttonmappertv</item>
         <item>buttonsremapper</item>
+        <item>buzztv6</item>
         <item>byebyedpi</item>
         <item>byutv</item>
         <item>farsitel</item>
@@ -802,6 +804,7 @@
         <item>telewebion</item>
         <item>teliaplaylt</item>
         <item>telly</item>
+        <item>tellyplayer</item>
         <item>tencent</item>
         <item>tennis_channel</item>
         <item>tennistv</item>
@@ -1083,6 +1086,7 @@
         <item>BET+</item>
         <item>Better xCloud</item>
         <item>Binge</item>
+        <item>Binged</item>
         <item>Bitdefender</item>
         <item>BitTV</item>
         <item>Blip</item>
@@ -1098,6 +1102,7 @@
         <item>Bstation</item>
         <item>Button Mapper TV</item>
         <item>Buttons Remapper</item>
+        <item>Buzz TV 6</item>
         <item>ByeByeDPI</item>
         <item>BYUtv</item>
         <item>Cafe Bazaar</item>
@@ -1792,6 +1797,7 @@
         <item>Telewebion</item>
         <item>Telia Play</item>
         <item>Telly</item>
+        <item>Telly Player</item>
         <item>Tencent Video</item>
         <item>Tennis Channel</item>
         <item>Tennis TV</item>
@@ -2073,6 +2079,7 @@
         <item>VOD</item>
         <item>APP</item>
         <item>VOD</item>
+        <item>STREAM</item>
         <item>VPN</item>
         <item>STREAM</item>
         <item>APP</item>
@@ -2088,6 +2095,7 @@
         <item>APP</item>
         <item>TOOL</item>
         <item>APP</item>
+        <item>LIVE</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -2781,6 +2789,7 @@
         <item>LIVE</item>
         <item>APP</item>
         <item>APP</item>
+        <item>LIVE</item>
         <item>LIVE</item>
         <item>APP</item>
         <item>SPORT</item>
@@ -3094,6 +3103,8 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3769,6 +3780,7 @@
         <item>1</item>
         <item>1</item>
         <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3961,5 +3973,5 @@
         <item>1</item>
         <item>1</item>
     </integer-array>
-    <integer name="icon_count">988</integer>
+    <integer name="icon_count">991</integer>
 </resources>

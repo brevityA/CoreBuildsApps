@@ -270,6 +270,9 @@
     <item component="ComponentInfo{au.com.binge.tv/.MainActivity}" drawable="binge"/>
     <item component="ComponentInfo{au.com.binge.tv/au.com.foxsports.martian.tv.main.MainActivity}" drawable="binge"/>
     <item component="ComponentInfo{au.com.streamotion.ares/au.com.foxsports.martian.tv.main.MainActivity}" drawable="binge"/>
+    <!-- Binged -->
+    <item component="ComponentInfo{net.binged.tv/net.binged.tv.MainActivity}" drawable="binged"/>
+    <item component="ComponentInfo{net.binged.tv/.MainActivity}" drawable="binged"/>
     <!-- Bitdefender -->
     <item component="ComponentInfo{com.bitdefender.vpn/com.bitdefender.vpn.MainActivity}" drawable="bitdefender"/>
     <item component="ComponentInfo{com.bitdefender.vpn/.MainActivity}" drawable="bitdefender"/>
@@ -313,6 +316,8 @@
     <!-- Buttons Remapper -->
     <item component="ComponentInfo{com.irishin.buttonsremapper/com.irishin.buttonsremapper.ui.MainActivity}" drawable="buttonsremapper"/>
     <item component="ComponentInfo{com.irishin.buttonsremapper/.ui.MainActivity}" drawable="buttonsremapper"/>
+    <!-- Buzz TV 6 -->
+    <item component="ComponentInfo{com.buzztv.iptv.tv/com.buzztv.iptv.MainActivity}" drawable="buzztv6"/>
     <!-- ByeByeDPI -->
     <item component="ComponentInfo{io.github.romanvht.byedpi/io.github.dovecoteescapee.byedpi.activities.MainActivity}" drawable="byebyedpi"/>
     <!-- BYUtv -->
@@ -2341,6 +2346,9 @@
     <item component="ComponentInfo{lt.telia.tv/.MainActivity}" drawable="teliaplaylt"/>
     <!-- Telly -->
     <item component="ComponentInfo{tv.fournetwork.android.box.digi/tv.fournetwork.android.box.MainActivity}" drawable="telly"/>
+    <!-- Telly Player -->
+    <item component="ComponentInfo{com.desktoptelly.tv/com.desktoptelly.tv.MainActivity}" drawable="tellyplayer"/>
+    <item component="ComponentInfo{com.desktoptelly.tv/.MainActivity}" drawable="tellyplayer"/>
     <!-- Tencent Video -->
     <item component="ComponentInfo{com.tencent.qqlive/com.tencent.qqlive.ona.activity.SplashHomeActivity}" drawable="tencent"/>
     <item component="ComponentInfo{com.tencent.qqlive/.ona.activity.SplashHomeActivity}" drawable="tencent"/>
