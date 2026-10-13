@@ -10,6 +10,33 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
+- **Live is a set of its own.** The Wallpapers browser's *Live* chip now
+  owns every loop; a series chip shows stills only. Forty-two loops, each
+  the moving form of a committed wall: the twelve Motion walls (new, clips
+  32–43), the twelve Deep Space walls (re-rendered from the 2.4.0 stills,
+  which the old loops predated), the six Cinema scenes, and all twelve
+  Icon Echo walls (29–31 re-rendered, 44–52 new). One roster
+  (`tools/live_roster.py`) feeds the renderers, the feed, `LiveLoop.kt`
+  and the tests.
+- **Live loops, remade.** The ten loops that opened the set were ffmpeg
+  test patterns (gradients, cellular automaton, Mandelbrot, Sierpinski)
+  with Core Builds names on them, at 30 fps; so were the three Icon Echo
+  loops. All are retired or re-rendered: every loop is now a real wall
+  given time by one engine (`tools/build_still_loops.py`: points of light
+  twinkle on their own phase, soft light shimmers, the camera breathes and
+  drifts, seamless over 20 s) at 1080p 60 fps, CRF 22. Numbers 01–10 stay
+  empty; no shipped file name changed.
+- **Icon Echo to twelve.** Six more walls lit by catalogue accents, hues
+  chosen to be distinct from the first six: Violet Stream (Twitch
+  `#9146FF`), Ember Reel (Crunchyroll `#FF5E00`), Teal Tide (ABC iview
+  `#20B8B8`), Solar Band (Pluto TV `#FFF200`), Magenta Veil (Binge
+  `#B80472`), Indigo Drift (Disney+ `#113CCF`). Walls 133–138; palette
+  cues only, no marks.
+- **Flux to twelve.** Smoke Columns, Interference, Aurora Sheet and Field
+  Lines (139–142): warped smoke, two ring systems beating against each
+  other, a curtain of light, and iron filings combed along a magnetic
+  field - procedural and seeded like the first eight.
+
 - **Check for updates in About.** About now carries an on-demand update
   check: press it and the row says *Up to date*, *Download vX* (with the
   release's highlights), or why GitHub could not be reached — then walks
@@ -48,8 +75,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **"New" chip in Wallpapers.** The browser's chip rail gains *New (48)*
   after *All*: every wall stamped with this release in the manifest (the
   three new series plus the refreshed Horizons and Deep Space), so a
-  returning user finds what changed without scanning 108 tiles. The home
-  rail's Wallpapers row says *108 walls · 48 new in this release* until the
+  returning user finds what changed without scanning the whole grid. The home
+  rail's Wallpapers row says *118 walls · N new in this release* until the
   chip has been seen once. Manifest entries carry an optional `since`
   version; the chip counts the newest.
 - **Card floor in the wallpaper preview.** Under the launcher-seed swatches
@@ -69,7 +96,21 @@ All notable changes to the Core Builds Icon Pack. Format follows
   (Nova, Lawnchair, Apex, ADW) has no banner surface, so a first run there
   starts on glyphs rather than on 16:9 cards it can never apply. TV
   launchers and unknown HOMEs keep banners; a choice once made is kept.
-- **Collection sheet.** `docs/wallpapers-collection.jpg` shows all 108 walls
+- **Circuit Core, re-rendered.** Walls 41–50 are new renders of the same
+  ten ideas as one coherent set - a single subject each (a blooming core,
+  circuit shards, a cooling cinder, a monolith, a foundry, a conduit, a
+  skyline of components, works, rising traces, a deep core), with depth
+  and a calm lower third, in place of the earlier centred clusters. Same
+  honesty rule: 1376×768 JPEG at the size they were made. 79–80 follow.
+- **Retrowave, refreshed.** Same twelve walls, seeds and palettes, with
+  atmosphere: the sun blooms, a haze band sits on the horizon, the sun
+  reflects down the grid plane, the grid emerges from fog instead of a
+  hard line, and ridge walls gain a far ridge lost in haze.
+- **AMOLED, refreshed.** Every stroke now carries a two-stage halo (tight
+  plus a wide faint one) and a hot core lifted toward white, so it reads
+  as light the panel emits rather than a line painted on it. True-black
+  coverage stays at 94–98%; the ≥50% contract still asserts.
+- **Collection sheet.** `docs/wallpapers-collection.jpg` shows every wall
   by series, rebuilt from the shipped thumbs by
   `tools/build_wallpaper_collection_sheet.py`; the Wallpapers README and the
   top-level README link it.

@@ -859,16 +859,17 @@ def wallpapers_frame() -> tuple[Image.Image, str]:
     body_top = y + dp(DIMENS["cb_target_min"]) + dp(DIMENS["cb_space_md"])
 
     # ---- LEFT RAIL: series chips, then the export foot.
+    # WallpapersActivity: All, New (N), Live, then the still series in
+    # catalogue order - the loops' own key is not a series chip.
     series: list[str] = []
     for wall in walls:
-        if wall["series"] not in series:
+        if not wall.get("live") and wall["series"] not in series:
             series.append(wall["series"])
-    # WallpapersActivity puts a "New (N)" chip after All whenever the manifest
-    # carries walls with the newest `since`; read the count, not type it.
     newest = max((w.get("since", "") for w in walls), key=version_key, default="")
     new_count = sum(1 for w in walls if w.get("since", "") == newest) if newest else 0
     labels = [STRINGS["chip_all"]] + (
-        [fmt(STRINGS["chip_new_fmt"], new_count)] if new_count else []) + [
+        [fmt(STRINGS["chip_new_fmt"], new_count)] if new_count else []) + (
+        [STRINGS["chip_live"]] if any(w.get("live") for w in walls) else []) + [
         " ".join(part.capitalize()
                  for part in s.removeprefix("series-").split("-", 1)[1].split("-"))
         for s in series

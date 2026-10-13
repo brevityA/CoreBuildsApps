@@ -85,7 +85,12 @@ TWO_PI = 2 * math.pi
 
 
 def clip_name(index: int, slug: str) -> str:
-    return f"coremotion-live-{FIRST_CLIP + index:02d}-cinema-{slug}"
+    # Numbered by tools/live_roster.py, the one list every loop consumer reads.
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from live_roster import CINEMA
+    assert CINEMA[index].slug == slug, (index, slug)
+    return CINEMA[index].stem
 
 
 # --------------------------------------------------------------------------

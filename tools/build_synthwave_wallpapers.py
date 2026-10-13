@@ -9,6 +9,10 @@ had none: its dark abstracts stop at mesh, aurora and circuit work. This
 series adds twelve 4K walls in the genre's grammar — sliced gradient sun,
 perspective grid, starfield, chrome ridge — kept on the pack's night
 ground with a calm, dim lower third so launcher cards still hold.
+Refreshed in 2.4.0 (same walls, seeds and palettes): the sun blooms, a
+haze band sits on the horizon, the sun reflects down the grid plane, the
+grid emerges from fog rather than a hard line, and ridge walls get a far
+ridge lost in haze behind the near one (`_atmosphere`, `_ridge`).
 
 Writes:
   Wallpapers/series-7-retrowave/corebuilds-NN-slug.png   3840x2160
@@ -124,7 +128,21 @@ def _grid(im: Image.Image, horizon_y: int, colour: tuple, vpx: float,
 
 def _ridge(im: Image.Image, horizon_y: int, seed: int, peak: float,
            edge: tuple) -> None:
+    """Two ridgelines: a far one lost in haze, then the near one with its
+    lit edge - the 2.4.0 refresh's depth; before it one flat silhouette."""
     rnd = random.Random(seed)
+    far = [(0, horizon_y + 6)]
+    x = 0.0
+    while x < W:
+        x += rnd.uniform(W * 0.04, W * 0.10)
+        far.append((min(W, x), horizon_y - rnd.uniform(peak * 0.6, peak * 1.35)))
+    far += [(W, horizon_y + 6)]
+    haze = tuple(int(NIGHT[i] * 0.55 + edge[i] * 0.12) for i in range(3))
+    layer = Image.new("RGB", (W, H), (0, 0, 0))
+    ImageDraw.Draw(layer).polygon(far, fill=haze)
+    mask = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(mask).polygon(far, fill=255)
+    im.paste(layer, (0, 0), mask)
     pts = [(0, horizon_y + 6)]
     x = 0.0
     while x < W:
@@ -134,6 +152,50 @@ def _ridge(im: Image.Image, horizon_y: int, seed: int, peak: float,
     draw = ImageDraw.Draw(im)
     draw.polygon(pts, fill=NIGHT)
     draw.line(pts[:-1], fill=edge, width=5)
+
+
+def _glow(im: Image.Image, mask: Image.Image, colour: tuple, blur: float,
+          strength: float) -> None:
+    """Add `colour` through a blurred mask - additive light, never paint."""
+    halo = np.asarray(mask.filter(ImageFilter.GaussianBlur(blur)), dtype="float32") / 255.0
+    arr = np.asarray(im, dtype="float32")
+    arr += halo[..., None] * np.array(colour, dtype="float32") * strength
+    im.paste(Image.fromarray(np.clip(arr, 0, 255).astype("uint8")))
+
+
+def _atmosphere(im: Image.Image, cx: float, cy: float, r: float, horizon_y: int,
+                ctop: tuple, cbot: tuple, ink: tuple, ridge: bool) -> None:
+    """The 2.4.0 refresh, in one place: bloom around the sun, a haze band at
+    the horizon, the sun's reflection streaking down the grid plane, and
+    fog that swallows the grid where it meets the sky."""
+    # Sun bloom: the disc's own colour, wide and soft.
+    m = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(m).ellipse((cx - r * 1.1, cy - r * 1.1, cx + r * 1.1, cy + r * 1.1), fill=255)
+    _glow(im, m, lerp_color(ctop, cbot, 0.5), r * 0.5, 0.2)
+    # Horizon haze: a thin bright band in the sky's base colour.
+    m = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(m).rectangle((0, horizon_y - 6, W, horizon_y + 6), fill=255)
+    _glow(im, m, cbot, H * 0.035, 0.32)
+    # Reflection: a soft column under the sun, fading with distance down.
+    if not ridge:
+        m = Image.new("L", (W, H), 0)
+        d = ImageDraw.Draw(m)
+        for k in range(14):
+            t = k / 13.0
+            y = horizon_y + (H - horizon_y) * (t ** 1.6)
+            hw = r * (0.35 + 0.9 * t)
+            d.line([(cx - hw, y), (cx + hw, y)], fill=int(230 * (1 - t) ** 1.4), width=int(6 + 30 * t))
+        _glow(im, m, lerp_color(ctop, cbot, 0.6), H * 0.025, 0.22)
+    # Fog: the first stretch of ground below the horizon lifts toward the
+    # haze colour, so the grid emerges out of distance instead of starting
+    # at a hard line.
+    arr = np.asarray(im, dtype="float32")
+    depth = int((H - horizon_y) * 0.22)
+    t = np.linspace(1, 0, depth, dtype="float32")[:, None, None] ** 1.5
+    fog = np.array(cbot, dtype="float32") * 0.18 + np.array(VOID, dtype="float32")
+    arr[horizon_y:horizon_y + depth] = (arr[horizon_y:horizon_y + depth] * (1 - 0.6 * t)
+                                        + fog * 0.6 * t)
+    im.paste(Image.fromarray(np.clip(arr, 0, 255).astype("uint8")))
 
 
 def wall(seed: int, pal, *, sun_r=0.30, sun_x=0.5, horizon=0.60, grid=True,
@@ -157,6 +219,8 @@ def wall(seed: int, pal, *, sun_r=0.30, sun_x=0.5, horizon=0.60, grid=True,
         _ridge(im, horizon_y, seed + 7, H * ridge, ink)
     if grid:
         _grid(im, horizon_y, ink, W * sun_x, grid_density, alpha)
+    _atmosphere(im, W * sun_x, horizon_y - r * drop, r, horizon_y, ctop, cbot, ink,
+                bool(ridge))
     if scan:
         band = Image.new("RGB", (W, H), (0, 0, 0))
         bd = ImageDraw.Draw(band)

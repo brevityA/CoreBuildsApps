@@ -1,79 +1,61 @@
 # Core Builds Motion — live wallpapers
 
-Twenty-two **genuinely animated** live-wallpaper loops — actual moving
-content, not a still with a pan — all original and licenseable (no
-third-party footage):
+Forty-two **seamless 1080p 60 fps loops**, every one the moving form of a
+committed wall in [`Wallpapers/`](../../Wallpapers/README.md). None is a
+stock pattern: until 2.4.0 the set opened with ten ffmpeg test sources
+(`gradients`, `cellauto`, `mandelbrot`, `sierpinski`) with Core Builds names
+on them; those were retired, their numbers 01–10 left empty, and every loop
+since derives from a still you can also set.
 
-- **Clips 01–10** are generated procedurally by ffmpeg in the Core Builds §03
-  palette (`tools/build_motion_feed.py`).
-- **Clips 11–22** are the Deep Space walls moving: rendered from the committed
-  `series-9-deep-space` stills by `tools/build_deep_space_loops.py`, with each
-  scene's own stars twinkling and its glow shimmering.
+The roster is one list, [`tools/live_roster.py`](../../tools/live_roster.py):
+the renderers, the feed, the icon pack's `LiveLoop.kt`
+(`tools/build_live_loop_kt.py`) and the tests all read it. Clip numbers are
+raw-GitHub URLs that shipped app builds hard-code, so a number is never
+renamed or reused.
 
-| # | File | Title | Technique | Bitrate |
+| Set | Clips | Stills | Renderer | How it moves |
 |---|---|---|---|---|
-| 01 | `coremotion-live-01-spiral-cyan.mp4` | Spiral Cyan | flowing spiral gradient, cyan→violet | ~1.0 Mb/s |
-| 02 | `coremotion-live-02-spiral-ember.mp4` | Spiral Ember | flowing spiral gradient, ember→violet | ~1.0 Mb/s |
-| 03 | `coremotion-live-03-radial-cyan.mp4` | Radial Cyan | radial gradient, cyan→build-blue | ~0.7 Mb/s |
-| 04 | `coremotion-live-04-circular-void.mp4` | Circular Void | circular gradient, cyan on night | ~0.8 Mb/s |
-| 05 | `coremotion-live-05-circuit.mp4` | Circuit | cellular automaton (rule 110), cyan-tinted | ~2.2 Mb/s |
-| 06 | `coremotion-live-06-deep-zoom.mp4` | Deep Zoom | Mandelbrot deep zoom, blurred | ~3.0 Mb/s |
-| 07 | `coremotion-live-07-linear-blue.mp4` | Linear Build Blue | flowing linear gradient, build-blue→cyan | ~0.9 Mb/s |
-| 08 | `coremotion-live-08-square-cyan.mp4` | Square Cyan | square gradient field, cyan on night | ~0.2 Mb/s |
-| 09 | `coremotion-live-09-carpet.mp4` | Carpet | Sierpinski carpet, violet-tinted | ~1.2 Mb/s |
-| 10 | `coremotion-live-10-spiral-blue.mp4` | Spiral Build Blue | flowing spiral gradient, build-blue→cyan | ~1.2 Mb/s |
-| 11 | `coremotion-live-11-deep-space-event-horizon.mp4` | Event Horizon | wall 85, moving: its stars twinkle, its glow shimmers | ~0.9 Mb/s |
-| 12 | `coremotion-live-12-deep-space-nebula-drift.mp4` | Nebula Drift | wall 86, moving: its stars twinkle, its glow shimmers | ~0.9 Mb/s |
-| 13 | `coremotion-live-13-deep-space-starfield.mp4` | Starfield | wall 87, moving: its stars twinkle, its glow shimmers | ~1.3 Mb/s |
-| 14 | `coremotion-live-14-deep-space-ringed-planet.mp4` | Ringed Planet | wall 88, moving: its stars twinkle, its glow shimmers | ~1.1 Mb/s |
-| 15 | `coremotion-live-15-deep-space-galaxy-spiral.mp4` | Galaxy Spiral | wall 89, moving: its stars twinkle, its glow shimmers | ~0.7 Mb/s |
-| 16 | `coremotion-live-16-deep-space-aurora-orbit.mp4` | Aurora Orbit | wall 90, moving: its stars twinkle, its glow shimmers | ~0.5 Mb/s |
-| 17 | `coremotion-live-17-deep-space-comet-lane.mp4` | Comet Lane | wall 91, moving: its stars twinkle, its glow shimmers | ~0.8 Mb/s |
-| 18 | `coremotion-live-18-deep-space-deep-field.mp4` | Deep Field | wall 92, moving: its stars twinkle, its glow shimmers | ~0.6 Mb/s |
-| 19 | `coremotion-live-19-deep-space-ember-nova.mp4` | Ember Nova | wall 93, moving: its stars twinkle, its glow shimmers | ~1.0 Mb/s |
-| 20 | `coremotion-live-20-deep-space-hex-station.mp4` | Hex Station | wall 94, moving: its stars twinkle, its glow shimmers | ~0.6 Mb/s |
-| 21 | `coremotion-live-21-deep-space-cyan-supernova.mp4` | Cyan Supernova | wall 95, moving: its stars twinkle, its glow shimmers | ~0.9 Mb/s |
-| 22 | `coremotion-live-22-deep-space-dark-side-moon.mp4` | Dark Side Moon | wall 96, moving: its stars twinkle, its glow shimmers | ~1.0 Mb/s |
+| Motion | 32–43 | 25–32, 51–54 | `tools/build_still_loops.py` | particles and ember heads twinkle, soft light shimmers, the camera drifts |
+| Deep Space | 11–22 | 85–96 | `tools/build_still_loops.py` | stars twinkle on their own phase, nebulae shimmer, parallax drift |
+| Cinema | 23–28 | 97–102 | `tools/build_cinema_wallpapers.py` | drawn as layers: marquee bulbs chase, neon stutters, dust in the beam |
+| Icon Echo | 29–31, 44–52 | 104–106, 103, 107–108, 133–138 | `tools/build_still_loops.py` | no points to twinkle — the washes breathe, the camera drifts |
 
-Clips 11–22 are the icon pack's `series-9-deep-space` walls themselves, in
-wall order, rendered from the committed 4K stills by
-`tools/build_deep_space_loops.py`: each scene's own stars twinkle and its
-nebulae shimmer, under a slow camera drift, and every motion completes whole
-cycles so the loop has no seam.
+Clip 29 keeps its 2.3.x file name `signal-sweep` while being the moving form
+of wall 104 Signal Red; 30 and 31 match their stills by name.
 
-All: 1920×1080, 30 fps, 20 s, H.264, **silent**, `+faststart`.
+## The still→loop engine
 
-## Why these
+`build_still_loops.py` splits a still into `detail` (points and hairlines,
+`still − blur(still)`) and `glow` (everything soft), on a 1.1× canvas:
 
-"Live wallpaper" means *motion*, not a photograph. These are real animated
-content — flowing gradients, a running automaton, an infinite fractal zoom —
-which is what Overflight / Aerial Views do with footage, done here with
-procedural generators so the brand stays fully owned.
+    frame = glow × shimmer(x, y, t) + detail + star × twinkle(t)
 
-## Feeds
+then resamples a moving crop (breathing zoom, Lissajous drift) to 1920×1080
+and pipes it to ffmpeg (`libx264 -preset slow -crf 22`, `yuv420p`,
+`+faststart`). Every motion completes a whole number of cycles over the 20 s,
+so frame N equals frame 0. Only isolated points twinkle — a hairline stays
+steady — and shimmer fades out below 60% of the height so launcher cards sit
+on a calm floor. Per-set `twinkle`/`shimmer` amplitudes live on the roster.
 
-- [`../live-feed.json`](../live-feed.json) — Overflight-compatible feed
-  (`location`/`title`/`author`/`url_img`/`url_1080p`). Point the Overflight
-  plugin *or* the Core Motion plugin at its raw URL.
+Deterministic: same still, same seed, same frames. The committed still is
+the composition's source of truth; the loop only adds time.
 
-## Regenerate
+## Files
 
-```bash
-pip install imageio-ffmpeg
-python tools/build_motion_feed.py
-```
+    Motion/live/<stem>.mp4            silent H.264 1080p 60 fps 20 s
+    Motion/live/thumbs/<stem>.jpg     poster frame (1 s in), 480×270
+    Motion/live/preview/live-preview.png   contact sheet, roster order
+    Motion/live-feed.json             Overflight-compatible feed
+    app/src/main/assets/live_thumbs/  the posters the icon pack bundles
 
-`build_motion_feed.py` renders the ten procedural clips and writes the feed
-(it lists the Deep Space loops but does not render them). Re-render those
-with `python tools/build_deep_space_loops.py` (`--only 85` for one wall).
+## Rebuilding
 
-Edit the `CLIPS` list in `tools/build_motion_feed.py` to change palettes,
-speeds, seeds, or add generators. To serve **real 4K footage** instead, drop
-your own MP4s alongside and add them to `live-feed.json` — the plugin and the
-feed don't care whether the bytes are procedural or filmed.
+    pip install -r tools/requirements.txt imageio-ffmpeg
+    python tools/build_still_loops.py --stale      # clips older than their still
+    python tools/build_cinema_wallpapers.py        # Cinema stills + loops
+    python tools/build_motion_feed.py              # feed, sheet, bundled posters
+    python tools/build_live_loop_kt.py             # LiveLoop.kt from the roster
+    python tools/validate_motion_feed.py
 
-## Note on real footage
-
-This is the lower-ceiling "now" content. For Apple-Aerials-grade quality, real
-4K drone/aerial footage (which you source and license) drops into the same
-feed with `url_4k` entries — no plugin change needed.
+A refreshed still makes its loop stale; `--stale` renders only those. About
+three to five minutes per clip on two cores.

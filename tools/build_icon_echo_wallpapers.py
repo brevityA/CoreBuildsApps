@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build Core Builds ``series-11-icon-echo``.
 
-Six 3840x2160 wallpapers, each lit by one accent taken from the icon pack's
+Twelve 3840x2160 wallpapers, each lit by one accent taken from the icon pack's
 own catalogue (tools/catalog.json) and *shifted a step for the wall*: the
 icon keeps its brand hex on the launcher, the wall carries the same hue a
 shade deeper, so a home row and its background glow the same colour without
@@ -19,6 +19,13 @@ Accent provenance (catalog entries, checked 2026-10-11):
   106 Molten Orbit   MaxPlayer #F8A000
   107 Frost Line     TiviMate #97C1FF
   108 Signal Azure   ARD Sounds #2D92FF
+Added in 2.4.0, bringing the series to twelve (checked 2026-10-13):
+  133 Violet Stream  Twitch #9146FF
+  134 Ember Reel     Crunchyroll #FF5E00
+  135 Teal Tide      ABC iview #20B8B8
+  136 Solar Band     Pluto TV #FFF200
+  137 Magenta Veil   Binge #B80472
+  138 Indigo Drift   Disney+ #113CCF
 
 Writes full PNGs, both thumbnail copies, and ``docs/icon-echo-wallpapers.png``.
 The manifest remains a separately reviewed source of truth.
@@ -51,6 +58,12 @@ SPOTIFY_GREEN = (30, 215, 96)        # #1ED760
 MAXPLAYER_AMBER = (248, 160, 0)      # #F8A000
 TIVIMATE_BLUE = (151, 193, 255)      # #97C1FF
 ARD_AZURE = (45, 146, 255)           # #2D92FF
+TWITCH_VIOLET = (145, 70, 255)       # #9146FF
+CRUNCHYROLL_ORANGE = (255, 94, 0)    # #FF5E00
+IVIEW_TEAL = (32, 184, 184)          # #20B8B8
+PLUTO_YELLOW = (255, 242, 0)         # #FFF200
+BINGE_MAGENTA = (184, 4, 114)        # #B80472
+DISNEY_INDIGO = (17, 60, 207)        # #113CCF
 
 
 def wall_tones(accent: tuple[int, int, int]):
@@ -249,6 +262,129 @@ def w108_signal_azure() -> Image.Image:
     return im
 
 
+def w133_violet_stream() -> Image.Image:
+    """Vertical streaks falling through a violet haze, each with a lit head.
+
+    Twitch #9146FF - a stream of points, not the speech-bubble glitch mark.
+    """
+    deep, mid, bright = wall_tones(TWITCH_VIOLET)
+    im = _base()
+    _wash(im, 1250, 900, 1500, deep, 0.34)
+    for x, top, length, colour, head in (
+            (900, 300, 520, mid, False), (1180, 160, 760, bright, True),
+            (1400, 420, 380, deep, False), (1720, 240, 640, mid, True),
+            (2080, 520, 300, mid, False), (2400, 180, 560, bright, True),
+            (2760, 460, 420, mid, False), (3060, 320, 300, deep, False)):
+        _line(im, [(x, top), (x, top + length)], colour, 3, 16, 0.42)
+        if head:
+            _dot(im, x, top + length, 6, bright, 18, 0.6)
+    return im
+
+
+def w134_ember_reel() -> Image.Image:
+    """Concentric arcs low right, the rim of a reel, one segment lit.
+
+    Crunchyroll #FF5E00 - arcs of warm light; no face, no hime mark.
+    """
+    deep, mid, bright = wall_tones(CRUNCHYROLL_ORANGE)
+    im = _base()
+    _wash(im, 2700, 1560, 1300, deep, 0.28)
+    cx, cy = 2700, 1560
+    for r, colour, width, start, end in (
+            (520, mid, 3, 190, 350), (700, deep, 2, 196, 344),
+            (880, mid, 2, 202, 338), (1060, deep, 2, 208, 332)):
+        mask = Image.new("L", im.size, 0)
+        ImageDraw.Draw(mask).arc((cx - r, cy - r, cx + r, cy + r), start, end,
+                                 fill=255, width=width)
+        halo = mask.filter(ImageFilter.GaussianBlur(16)).point(
+            lambda p: min(255, int(p * 0.5)))
+        im.paste(Image.new("RGB", im.size, colour), (0, 0), halo)
+        im.paste(Image.new("RGB", im.size, colour), (0, 0), mask)
+    # The lit segment on the inner arc.
+    mask = Image.new("L", im.size, 0)
+    ImageDraw.Draw(mask).arc((cx - 520, cy - 520, cx + 520, cy + 520), 250, 292,
+                             fill=255, width=4)
+    halo = mask.filter(ImageFilter.GaussianBlur(10)).point(lambda p: min(255, int(p * 0.6)))
+    im.paste(Image.new("RGB", im.size, bright), (0, 0), halo)
+    im.paste(Image.new("RGB", im.size, bright), (0, 0), mask)
+    _dot(im, cx + 520 * math.cos(math.radians(271)), cy + 520 * math.sin(math.radians(271)),
+         7, bright, 22, 0.65)
+    return im
+
+
+def w135_teal_tide() -> Image.Image:
+    """Tide lines: stacked slow waves across the middle, the top one lit.
+
+    ABC iview #20B8B8 - water lines in teal, nothing of the wordmark.
+    """
+    deep, mid, bright = wall_tones(IVIEW_TEAL)
+    im = _base()
+    _wash(im, 1920, 1120, 1800, deep, 0.36)
+    for k, (y0, amp, colour, width) in enumerate((
+            (860, 40, bright, 3), (980, 56, mid, 3), (1100, 48, mid, 2),
+            (1220, 64, deep, 2), (1340, 44, deep, 2))):
+        pts = [(x, y0 + amp * math.sin(x / 520.0 + k * 0.9))
+               for x in range(200, 3700, 24)]
+        _line(im, pts, colour, width, 18, 0.42)
+    _dot(im, 2416, 860 + 40 * math.sin(2416 / 520.0), 6, bright, 16, 0.55)
+    return im
+
+
+def w136_solar_band() -> Image.Image:
+    """A thin yellow band at the horizon with a bright gap, warm wash under it.
+
+    Pluto TV #FFF200 - a band of light; no disc, which would be the mark.
+    """
+    deep, mid, bright = wall_tones(PLUTO_YELLOW)
+    im = _base()
+    _wash(im, 1920, 1560, 1500, deep, 0.2)
+    _wash(im, 1920, 1180, 600, mid, 0.08)
+    _line(im, [(300, 1160), (1700, 1160)], mid, 3, 24, 0.5)
+    _line(im, [(2140, 1160), (3540, 1160)], mid, 3, 24, 0.5)
+    _line(im, [(1700, 1161), (2140, 1161)], bright, 4, 10, 0.6)
+    for x, y, r in ((1540, 1120, 3), (2300, 1110, 4), (2780, 1130, 3)):
+        _dot(im, x, y, r, mid, 12, 0.5)
+    return im
+
+
+def w137_magenta_veil() -> Image.Image:
+    """Two soft diagonal veils of magenta crossing the frame, one hairline lit.
+
+    Binge #B80472 - the dominant tone of its gradient, as light, not as the B.
+    """
+    deep, mid, bright = wall_tones(BINGE_MAGENTA)
+    im = _base()
+    for (x0, y0, x1, y1), colour, blur, strength in (
+            ((-200, 1500, 2600, 100), deep, 160, 0.6),
+            ((1200, 1700, 4100, 300), mid, 140, 0.3)):
+        mask = Image.new("L", im.size, 0)
+        ImageDraw.Draw(mask).line([(x0, y0), (x1, y1)], fill=255, width=260)
+        mask = mask.filter(ImageFilter.GaussianBlur(blur)).point(
+            lambda p, s=strength: min(255, int(p * s)))
+        im.paste(Image.new("RGB", im.size, colour), (0, 0), mask)
+    _line(im, [(400, 1360), (3000, 380)], bright, 2, 14, 0.5)
+    _dot(im, 1960, 772, 6, bright, 18, 0.6)
+    return im
+
+
+def w138_indigo_drift() -> Image.Image:
+    """Points drifting along one long arc through an indigo field.
+
+    Disney+ #113CCF - an arc of light; the arc is open and carries no mark.
+    """
+    deep, mid, bright = wall_tones(DISNEY_INDIGO)
+    im = _base()
+    _wash(im, 1920, 760, 1500, deep, 0.3)
+    pts = [(x, 1060 - 520 * math.sin((x - 400) / 3040.0 * math.pi))
+           for x in range(400, 3441, 20)]
+    _line(im, pts, deep, 2, 18, 0.5)
+    for i, x in enumerate(range(640, 3300, 190)):
+        y = 1060 - 520 * math.sin((x - 400) / 3040.0 * math.pi)
+        lit = i % 4 == 2
+        _dot(im, x, y, 7 if lit else 4, bright if lit else mid, 20 if lit else 12, 0.6)
+    return im
+
+
 WALLS = [
     ("103", "thermal-bloom", "103 Thermal Bloom", w103_thermal_bloom),
     ("104", "signal-red", "104 Signal Red", w104_signal_red),
@@ -256,13 +392,20 @@ WALLS = [
     ("106", "molten-orbit", "106 Molten Orbit", w106_molten_orbit),
     ("107", "frost-line", "107 Frost Line", w107_frost_line),
     ("108", "signal-azure", "108 Signal Azure", w108_signal_azure),
+    ("133", "violet-stream", "133 Violet Stream", w133_violet_stream),
+    ("134", "ember-reel", "134 Ember Reel", w134_ember_reel),
+    ("135", "teal-tide", "135 Teal Tide", w135_teal_tide),
+    ("136", "solar-band", "136 Solar Band", w136_solar_band),
+    ("137", "magenta-veil", "137 Magenta Veil", w137_magenta_veil),
+    ("138", "indigo-drift", "138 Indigo Drift", w138_indigo_drift),
 ]
 
 
 def build_sheet() -> None:
-    """2x3 contact sheet at 960x540 per panel for the README/review."""
+    """4x3 contact sheet at 960x540 per panel for the README/review."""
     pw, ph = 960, 540
-    sheet = Image.new("RGB", (pw * 3 + 40, ph * 2 + 30), (9, 12, 18))
+    rows = (len(WALLS) + 2) // 3
+    sheet = Image.new("RGB", (pw * 3 + 40, ph * rows + 10 * (rows + 1)), (9, 12, 18))
     for i, (num, slug, title, fn) in enumerate(WALLS):
         im = fn().resize((pw, ph), Image.LANCZOS)
         x = 10 + (i % 3) * (pw + 10)
@@ -279,7 +422,7 @@ def main() -> int:
         stem = f"corebuilds-{num}-{slug}"
         im = fn()
         total += save_wall(im, SERIES, stem)
-    print(f"\n6 icon-echo walls · {total / 1e6:.1f} MB total")
+    print(f"\n{len(WALLS)} icon-echo walls · {total / 1e6:.1f} MB total")
     print("  Thumbs bundled to app/src/main/assets/wallpapers_thumbs/")
     print("  Next: add manifest entries, run sync_wallpaper_manifest.py.")
     build_sheet()

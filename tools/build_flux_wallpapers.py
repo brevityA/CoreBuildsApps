@@ -2,7 +2,7 @@
 """
 Core Builds Icon Pack — series-14-flux.
 
-Eight 4K abstract walls: domain-warped noise fields, flow ribbons, marbled
+Twelve 4K abstract walls (eight in 2.4.0, four more the same release): domain-warped noise fields, flow ribbons, marbled
 ink and silk folds in the house palette, on the night ground. Flux is the
 abstract series the 2.4.0 feedback asked for - "abstract" meaning shape and
 flow, not the gradient washes Fieldwork was retired for. All procedural and
@@ -214,6 +214,66 @@ def w132_signal_grid() -> Image.Image:
     return _finish(_calm(arr))
 
 
+def w139_smoke_columns() -> Image.Image:
+    """Columns of warped smoke rising through a cold blue field."""
+    f = _warp(13901, 900, 0.45, 5)
+    yy, xx = np.mgrid[0:H, 0:W].astype("float32")
+    cols = 0.5 + 0.5 * np.sin((xx / W + (f - 0.5) * 0.3) * math.pi * 5.0)
+    rise = np.clip(1.0 - yy / H * 1.05, 0, 1) * np.clip(yy / H * 6, 0, 1)
+    t = np.clip(np.power(cols, 1.6) * (f * 1.5 + 0.1) * rise, 0, 1)
+    arr = _ramp(t, [VOID, (10, 22, 42), (26, 60, 104), (60, 130, 200), (140, 200, 255)])
+    return _finish(_calm(arr * 0.85))
+
+
+def w140_interference() -> Image.Image:
+    """Two ring systems beating against each other: moiré in ember and cyan."""
+    f = _warp(14001, 1300, 0.3, 4)
+    yy, xx = np.mgrid[0:H, 0:W].astype("float32")
+    d1 = np.sqrt((xx - W * 0.36) ** 2 + (yy - H * 0.46) ** 2)
+    d2 = np.sqrt((xx - W * 0.64) ** 2 + (yy - H * 0.40) ** 2)
+    k = 2 * math.pi / 54.0
+    w1 = 0.5 + 0.5 * np.sin(d1 * k + f * 6)
+    w2 = 0.5 + 0.5 * np.sin(d2 * k * 1.04 + f * 6)
+    beat = np.power(w1 * w2, 1.6)
+    fade = np.exp(-((d1 * d2) / (W * W * 0.09)))
+    arr = _col(VOID) + f[..., None] * _col((10, 16, 30)) * 1.2
+    arr = arr + (beat * fade)[..., None] * _col(CYAN) * 0.7
+    arr = arr + (beat * fade * (xx / W))[..., None] * _col(EMBER) * 0.7
+    return _finish(_calm(arr))
+
+
+def w141_aurora_sheet() -> Image.Image:
+    """A curtain of light hanging across the upper half, cyan into violet."""
+    f = _warp(14101, 1500, 0.5, 5)
+    g = _warp(14104, 300, 0.3, 4)
+    yy, xx = np.mgrid[0:H, 0:W].astype("float32")
+    centre = 0.32 + (f - 0.5) * 0.4
+    band = np.exp(-((yy / H - centre) / 0.22) ** 2)
+    rays = 0.55 + 0.45 * np.power(0.5 + 0.5 * np.sin((xx / W + (g - 0.5) * 0.25) * math.pi * 48), 1.6)
+    t = np.clip(band * rays * (0.35 + f * 0.8), 0, 1)
+    arr = _ramp(t, [VOID, (6, 18, 30), (0, 80, 100), (0, 150, 170), (120, 110, 220)])
+    arr = arr + np.power(t, 3)[..., None] * _col(GLOW_CYAN) * 0.2
+    return _finish(_calm(arr * 0.85, start=0.58))
+
+
+def w142_field_lines() -> Image.Image:
+    """Iron filings: fine lines combed along a warped magnetic field, in rose."""
+    # A smooth potential (two octaves, large scale) so its level sets read as
+    # combed lines rather than grain; the filings are the iso-lines of it.
+    pot = _fbm2d(14201, 1400, 2, w=W // 4, h=H // 4)
+    pot = np.asarray(Image.fromarray(pot, mode="F").resize((W, H), Image.BICUBIC), dtype="float32")
+    f = _warp(14204, 1200, 0.3, 4)
+    lines = np.power(0.5 + 0.5 * np.sin(pot * math.pi * 90 + f * 2.0), 14.0)
+    gy, gx = np.gradient(pot)
+    mag = np.clip(np.hypot(gx, gy) * 9000, 0, 1)
+    yy, xx = np.mgrid[0:H, 0:W].astype("float32")
+    vig = np.exp(-(((xx / W - 0.5) / 0.55) ** 2 + ((yy / H - 0.42) / 0.5) ** 2))
+    arr = _col(VOID) + f[..., None] * _col((22, 10, 30)) * 1.1
+    arr = arr + (lines * mag * vig)[..., None] * _col(ROSE) * 0.95
+    arr = arr + np.power(lines * mag * vig, 3)[..., None] * _col((255, 220, 240)) * 0.3
+    return _finish(_calm(arr))
+
+
 WALLS = [
     (125, "ink-tide", "125 Ink Tide", w125_ink_tide),
     (126, "silk", "126 Silk", w126_silk),
@@ -223,6 +283,10 @@ WALLS = [
     (130, "tidepool", "130 Tidepool", w130_tidepool),
     (131, "dusk-veil", "131 Dusk Veil", w131_dusk_veil),
     (132, "signal-grid", "132 Signal Grid", w132_signal_grid),
+    (139, "smoke-columns", "139 Smoke Columns", w139_smoke_columns),
+    (140, "interference", "140 Interference", w140_interference),
+    (141, "aurora-sheet", "141 Aurora Sheet", w141_aurora_sheet),
+    (142, "field-lines", "142 Field Lines", w142_field_lines),
 ]
 
 
