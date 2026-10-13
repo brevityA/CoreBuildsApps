@@ -6,6 +6,46 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Check for updates in About.** About now carries an on-demand update
+  check: press it and the row says *Up to date*, *Download vX* (with the
+  release's highlights), or why GitHub could not be reached — then walks
+  the same download → permission → install flow as the home-screen bar,
+  with the instruction written into the row rather than a toast. Until now
+  the only way to learn about a new build was the startup check, which
+  users with update checks off, or who had pressed Later, never saw again.
+- **Earth wallpaper series.** Eight walls of the planet from orbit (series
+  12, walls 109–116): city lights, aurora from above, a crescent, a storm,
+  an orbital sunrise, Earth over the Moon, a coastline at night, an ice
+  sheet. Generated imagery, shipped at the 1376×768 it was made at under the
+  same honesty rule as Circuit Core.
+- **Flux wallpaper series.** Eight 4K abstract walls (series 14, walls
+  125–132) — domain-warped ink, folded silk, a plasma core, streamlines,
+  glass facets, caustics, a veil, a bent grid — procedural and seeded in the
+  house palette (`tools/build_flux_wallpapers.py`).
+
+### Changed
+
+- **Support is on the home screen.** The rail's last row is now Support |
+  Settings | About, so the Ko-fi and Discord screen is one press from the
+  home screen instead of two hops through About. The version suffix About
+  carried on that row went with the third card; it is the About screen's
+  first fact.
+- **Horizons re-rendered.** The twelve Horizons walls were a gradient, a
+  line and a dot. Each is now a scene — graded sky, sun or moon with its own
+  atmosphere, cloud bands, a thinning star field and three to five ridgelines
+  of fBm terrain stepping into haze — keeping its number, name and accent
+  (`tools/build_horizons_wallpapers.py`, the first generator the series has
+  had for walls 33–40).
+- **Deep Space re-rendered.** Every large glow is shaped by ridged fBm
+  noise, so nebulae break into filaments and dust lanes, planet discs carry
+  bands and grain, the Milky Way band is a band, and a dense faint dust
+  field sits under the stars. Same walls, same seeds, more in them.
+- **Fieldwork wallpaper series retired.** The 24 mesh-gradient washes of series 1
+  (walls 01–24) are retired on user feedback — at TV distance they were one
+  blur in five colours. The numbers stay empty, as series 4 and 5 do.
+
 ## [2.3.4] — 2026-10-13
 
 ### Added

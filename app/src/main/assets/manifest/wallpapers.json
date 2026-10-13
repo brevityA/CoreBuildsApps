@@ -1,178 +1,10 @@
 {
   "collection": "Core Builds Wallpapers",
-  "version": "5.3",
+  "version": "6.0",
   "author": "brevityA",
   "brand_guide": "Core-Builds Brand Guide v1.0 (2026-08-11)",
-  "count": 108,
+  "count": 100,
   "wallpapers": [
-    {
-      "name": "01 Mesh Drift",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-01-mesh-drift.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-01-mesh-drift.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "02 Mesh Ember",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-02-mesh-ember.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-02-mesh-ember.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "03 Mesh Labs",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-03-mesh-labs.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-03-mesh-labs.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "04 Aurora Veil",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-04-aurora-veil.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-04-aurora-veil.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "05 Ember Orb",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-05-ember-orb.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-05-ember-orb.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "06 Colorfield",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-06-colorfield.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-06-colorfield.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "07 Light Trails",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-07-light-trails.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-07-light-trails.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "08 Rainfall",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-08-rainfall.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-08-rainfall.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "09 Comet",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-09-comet.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-09-comet.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "10 Ridgeline",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-10-ridgeline.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-10-ridgeline.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "11 Spire",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-11-spire.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-11-spire.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "12 Dunes",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-12-dunes.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-12-dunes.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "13 Topo",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-13-topo.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-13-topo.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "14 Flowfield",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-14-flowfield.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-14-flowfield.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "15 Bokeh",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-15-bokeh.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-15-bokeh.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "16 Pulse",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-16-pulse.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-16-pulse.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "17 Silk",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-17-silk.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-17-silk.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "18 Halftone",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-18-halftone.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-18-halftone.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "19 Canyon",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-19-canyon.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-19-canyon.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "20 Deepfield",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-20-deepfield.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-20-deepfield.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "21 Glass",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-21-glass.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-21-glass.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "22 Moonrise",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-22-moonrise.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-22-moonrise.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "23 Updraft",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-23-updraft.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-23-updraft.jpg",
-      "resolution": "3840x2160"
-    },
-    {
-      "name": "24 Arc",
-      "series": "series-1-fieldwork",
-      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-1-fieldwork/corebuilds-24-arc.png",
-      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-24-arc.jpg",
-      "resolution": "3840x2160"
-    },
     {
       "name": "25 Orbitals",
       "series": "series-2-motion",
@@ -759,6 +591,118 @@
       "series": "series-11-icon-echo",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-11-icon-echo/corebuilds-108-signal-azure.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-108-signal-azure.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "109 City Lights from Orbit",
+      "series": "series-12-earth",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-12-earth/corebuilds-109-city-lights-from-orbit.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-109-city-lights-from-orbit.jpg",
+      "resolution": "1376x768"
+    },
+    {
+      "name": "110 Aurora from Orbit",
+      "series": "series-12-earth",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-12-earth/corebuilds-110-aurora-from-orbit.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-110-aurora-from-orbit.jpg",
+      "resolution": "1376x768"
+    },
+    {
+      "name": "111 Blue Marble Crescent",
+      "series": "series-12-earth",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-12-earth/corebuilds-111-blue-marble-crescent.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-111-blue-marble-crescent.jpg",
+      "resolution": "1376x768"
+    },
+    {
+      "name": "112 Storm from Above",
+      "series": "series-12-earth",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-12-earth/corebuilds-112-storm-from-above.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-112-storm-from-above.jpg",
+      "resolution": "1376x768"
+    },
+    {
+      "name": "113 Sunrise Limb",
+      "series": "series-12-earth",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-12-earth/corebuilds-113-sunrise-limb.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-113-sunrise-limb.jpg",
+      "resolution": "1376x768"
+    },
+    {
+      "name": "114 Moon over Earth",
+      "series": "series-12-earth",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-12-earth/corebuilds-114-moon-over-earth.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-114-moon-over-earth.jpg",
+      "resolution": "1376x768"
+    },
+    {
+      "name": "115 Coastline at Night",
+      "series": "series-12-earth",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-12-earth/corebuilds-115-coastline-at-night.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-115-coastline-at-night.jpg",
+      "resolution": "1376x768"
+    },
+    {
+      "name": "116 Ice Sheet from Space",
+      "series": "series-12-earth",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-12-earth/corebuilds-116-ice-sheet-from-space.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-116-ice-sheet-from-space.jpg",
+      "resolution": "1376x768"
+    },
+    {
+      "name": "125 Ink Tide",
+      "series": "series-14-flux",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-14-flux/corebuilds-125-ink-tide.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-125-ink-tide.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "126 Silk",
+      "series": "series-14-flux",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-14-flux/corebuilds-126-silk.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-126-silk.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "127 Plasma Core",
+      "series": "series-14-flux",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-14-flux/corebuilds-127-plasma-core.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-127-plasma-core.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "128 Flow Lines",
+      "series": "series-14-flux",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-14-flux/corebuilds-128-flow-lines.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-128-flow-lines.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "129 Glass Shards",
+      "series": "series-14-flux",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-14-flux/corebuilds-129-glass-shards.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-129-glass-shards.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "130 Tidepool",
+      "series": "series-14-flux",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-14-flux/corebuilds-130-tidepool.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-130-tidepool.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "131 Dusk Veil",
+      "series": "series-14-flux",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-14-flux/corebuilds-131-dusk-veil.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-131-dusk-veil.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "132 Signal Grid",
+      "series": "series-14-flux",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-14-flux/corebuilds-132-signal-grid.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-132-signal-grid.jpg",
       "resolution": "3840x2160"
     }
   ]

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import java.io.File
 
 /**
  * Build facts, and the complete list of what this app sends anywhere.
@@ -22,8 +23,21 @@ import android.widget.Toast
  * Counts are read from generated resources and the bundled catalog, never
  * typed in: a hand-maintained "940 icons" goes stale on the next tranche and
  * nothing in the build would catch it.
+ *
+ * Since 2.4.0 the screen also carries an on-demand update check. The home
+ * screen's bar only appears when the startup check finds a newer build, and
+ * only when checks are on in Settings; a user who turned them off, pressed
+ * Later, or simply wants to know "am I current?" had no way to ask. This row
+ * is the same [UpdateChecker] and [UpdateInstaller], driven by a press, with
+ * the answer written into the row rather than a toast. It is still the first
+ * item on the network list - one request, user-initiated.
  */
 class AboutActivity : TvActivity() {
+
+    private var available: UpdateChecker.Result.Available? = null
+    private var downloadedApk: File? = null
+    private var installOffered = false
+    private var busy = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Prefs.applyChrome(this)
@@ -56,7 +70,132 @@ class AboutActivity : TvActivity() {
         findViewById<View>(R.id.about_support).setOnClickListener {
             startActivity(Intent(this, SupportActivity::class.java))
         }
+        findViewById<View>(R.id.about_update).setOnClickListener { onUpdatePressed() }
         findViewById<View>(R.id.about_back).setOnClickListener { finish() }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Back from the install-permission screen with the APK already on
+        // disk: the same no-second-press rule the home screen's bar keeps.
+        val file = downloadedApk ?: return
+        if (!file.exists()) {
+            downloadedApk = null
+            return
+        }
+        if (UpdateInstaller.canInstall(this) && !installOffered) {
+            installOffered = true
+            findViewById<View>(R.id.about_update).requestFocus()
+            startInstall(file)
+        }
+    }
+
+    /** One row, three jobs, decided by how far the flow has got. */
+    private fun onUpdatePressed() {
+        if (busy) return
+        downloadedApk?.let { if (it.exists()) { startInstall(it); return } }
+        available?.let { startDownload(it); return }
+        checkForUpdate()
+    }
+
+    private fun setRow(label: String, sub: String) {
+        findViewById<TextView>(R.id.about_update_label).text = label
+        findViewById<TextView>(R.id.about_update_sub).text = sub
+    }
+
+    private fun checkForUpdate() {
+        busy = true
+        setRow(getString(R.string.update_checking), getString(R.string.about_update_sub))
+        UpdateChecker.check(this) { result ->
+            busy = false
+            when (result) {
+                is UpdateChecker.Result.Available -> {
+                    available = result
+                    val sub = result.highlights.takeIf { it.isNotEmpty() }
+                        ?.joinToString(" · ")
+                        ?: getString(R.string.update_sub_download)
+                    setRow(getString(R.string.update_download, result.versionName), sub)
+                }
+                is UpdateChecker.Result.UpToDate -> setRow(
+                    getString(R.string.about_update_up_to_date),
+                    getString(R.string.about_update_up_to_date_sub_fmt, result.versionName)
+                )
+                is UpdateChecker.Result.Failed -> setRow(
+                    getString(R.string.about_update_label),
+                    getString(R.string.about_update_check_failed_sub_fmt, result.reason)
+                )
+            }
+        }
+    }
+
+    private fun startDownload(update: UpdateChecker.Result.Available) {
+        if (update.apkUrl.isBlank()) {
+            setRow(getString(R.string.about_update_label),
+                getString(R.string.update_failed_fmt, "no apkUrl in version.json"))
+            return
+        }
+        busy = true
+        val label = findViewById<TextView>(R.id.about_update_label)
+        UpdateInstaller.download(this, update.apkUrl, update.versionCode, update.apkSha256) { event ->
+            when (event) {
+                is UpdateInstaller.Event.Progress ->
+                    label.text = progressLabel(event.received, event.total)
+                is UpdateInstaller.Event.Ready -> {
+                    busy = false
+                    downloadedApk = event.file
+                    installOffered = false
+                    setRow(getString(R.string.update_install, update.versionName),
+                        getString(R.string.update_sub_install))
+                    startInstall(event.file)
+                }
+                is UpdateInstaller.Event.Failed -> {
+                    busy = false
+                    setRow(getString(R.string.update_download, update.versionName),
+                        getString(R.string.update_failed_fmt, event.reason))
+                }
+            }
+        }
+    }
+
+    private fun startInstall(file: File) {
+        if (!UpdateInstaller.canInstall(this)) {
+            installOffered = false
+            // The sub-line carries the instruction for as long as it takes to
+            // find the toggle; onResume re-offers the install on the way back.
+            findViewById<TextView>(R.id.about_update_sub).text =
+                getString(R.string.update_need_permission)
+            if (!UpdateInstaller.requestInstallPermission(this)) {
+                findViewById<TextView>(R.id.about_update_sub).text =
+                    getString(R.string.update_permission_missing)
+            }
+            return
+        }
+        try {
+            UpdateInstaller.install(this, file)
+        } catch (e: android.content.ActivityNotFoundException) {
+            installOffered = false
+            findViewById<TextView>(R.id.about_update_sub).text =
+                getString(R.string.update_no_installer)
+        } catch (e: Exception) {
+            installOffered = false
+            findViewById<TextView>(R.id.about_update_sub).text =
+                getString(R.string.update_failed_fmt, e.message ?: "installer refused")
+        }
+    }
+
+    private fun progressLabel(received: Long, total: Long): String {
+        val rec = formatBytes(received)
+        return if (total > 0) {
+            getString(R.string.update_progress_of_fmt, rec, formatBytes(total))
+        } else {
+            getString(R.string.update_progress_fmt, rec)
+        }
+    }
+
+    private fun formatBytes(n: Long): String = when {
+        n >= 1_000_000 -> "%.1f MB".format(n / 1_000_000.0)
+        n >= 1_000 -> "%.0f KB".format(n / 1_000.0)
+        else -> "${n}B"
     }
 
     /**

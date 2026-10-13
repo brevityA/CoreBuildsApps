@@ -166,12 +166,12 @@ class MainActivity : TvActivity() {
                 ""
             }
             wpEntry.setOnClickListener { startActivity(Intent(this, WallpapersActivity::class.java)) }
-            findViewById<TextView>(R.id.about_entry_sub).text =
-                getString(R.string.about_entry_sub_fmt, BuildConfig.VERSION_NAME)
-
             bindStyleRow()
             findViewById<View>(R.id.missing_entry).setOnClickListener {
                 startActivity(Intent(this, AuditorActivity::class.java))
+            }
+            findViewById<View>(R.id.support_entry).setOnClickListener {
+                startActivity(Intent(this, SupportActivity::class.java))
             }
             findViewById<View>(R.id.settings_entry).setOnClickListener {
                 startActivity(Intent(this, SettingsActivity::class.java))
@@ -208,8 +208,8 @@ class MainActivity : TvActivity() {
      * at the moment their visibility changes.
      *
      * The sheet's screen order is apply_button -> update_bar -> style_entry ->
-     * missing_entry -> wallpapers_entry -> settings_entry | about_entry (one
-     * row) -> apply_targets ->
+     * missing_entry -> wallpapers_entry -> support_entry | settings_entry |
+     * about_entry (one row) -> apply_targets ->
      * search -> chip_row ->
      * grid, and three of those stops are conditional: the update bar only when a
      * newer manifest exists, the ALSO APPLIES TO row only with a second launcher
@@ -256,14 +256,15 @@ class MainActivity : TvActivity() {
             findViewById<View>(id).nextFocusDownId =
                 if (groupShown) R.id.style_entry else R.id.search
         }
-        // Settings and About share the rail's last row: both step down.
+        // Support, Settings and About share the rail's last row: all step down.
+        findViewById<View>(R.id.support_entry).nextFocusDownId = belowRows
         findViewById<View>(R.id.settings_entry).nextFocusDownId = belowRows
         findViewById<View>(R.id.about_entry).nextFocusDownId = belowRows
         findViewById<View>(R.id.apply_targets).nextFocusUpId =
-            if (groupShown) R.id.settings_entry else aboveRows
+            if (groupShown) R.id.support_entry else aboveRows
         findViewById<View>(R.id.apply_targets).nextFocusDownId = R.id.search
         findViewById<View>(R.id.search).nextFocusUpId = belowRows.takeIf { targetsShown }
-            ?: if (groupShown) R.id.settings_entry else aboveRows
+            ?: if (groupShown) R.id.support_entry else aboveRows
         findViewById<View>(R.id.chip_row).nextFocusUpId = R.id.search
         // Down from the category row: the grid, or the empty state's undo when
         // the grid is the container that just went GONE. The search field always

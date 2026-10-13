@@ -51,11 +51,13 @@ class ManifestTests(unittest.TestCase):
     def test_count_matches_entries(self):
         self.assertEqual(self.manifest["count"], len(self.walls))
 
-    def test_active_series_use_twelve_wall_units(self):
+    def test_active_series_use_fixed_wall_units(self):
         from collections import Counter
         counts = Counter(w["series"] for w in self.walls)
         self.assertEqual(counts, {
-            "series-1-fieldwork": 24,
+            # Fieldwork (series 1, 24 walls) retired in 2.4.0: twenty-four
+            # near-identical gradient washes, the feedback's "blurs". Numbers
+            # 01-24 stay empty, as series 4 and 5 do.
             "series-2-motion": 12,
             "series-3-horizons": 12,
             "series-6-circuit-core": 12,
@@ -68,6 +70,11 @@ class ManifestTests(unittest.TestCase):
             # Icon Echo: the companion series lit by icon accents. Three of
             # its six walls (103-105) also ship as live loops 29-31.
             "series-11-icon-echo": 6,
+            # 2.4.0's picture series ship in units of eight: Earth and Wild
+            # are generated imagery at 1376x768 (Circuit Core's precedent),
+            # Flux is procedural at 4K.
+            "series-12-earth": 8,
+            "series-14-flux": 8,
         })
 
     def test_entries_are_https_github(self):

@@ -1,6 +1,6 @@
-# Core Builds — Wallpaper Collection v5.3
+# Core Builds — Wallpaper Collection v6.0
 
-108 wallpapers · 3840×2160 (series 1–3, 7–11) and 1376×768 (series 6) ·
+100 wallpapers · 3840×2160 (series 2–3, 7–11, 14) and 1376×768 (series 6, 12) ·
 Core Builds palette, icon-echo retuned (2026-10-11):
 Core Cyan #00d4ff (the icon pack's own Signal cyan) · Glow #7eeeff ·
 Build Blue #4facfe · Dusk Violet #9754a8 (nudged toward the icon violet
@@ -20,21 +20,26 @@ and the wallpaper research behind earlier series is in
 | Series | # | Theme |
 |---|---|---|
 | `series-0-originals` | (not in manifest) | The original 20 JPGs, kept for history |
-| `series-1-fieldwork` | 01–24 | Mesh gradients, aurora, light trails, topo, deepfield |
+| `series-1-fieldwork` | (retired 2.4.0) | Was 24 mesh-gradient washes, 01–24. Retired in 2.4.0 on user feedback ("blurs"); the numbers stay empty, as 4 and 5 do. |
 | `series-2-motion` | 25–32 | Long-exposure kinetics: orbitals, warp, fogbanks, spiral, slipstream |
-| `series-3-horizons` | 33–40 | One horizon, eight meanings — the §03 semantic accent slots as landscapes |
+| `series-3-horizons` | 33–40, 55–58 | One horizon, twelve meanings — the §03 semantic accent slots as landscapes. **Refreshed in 2.4.0:** each wall is now a scene — graded sky, sun or moon with its own atmosphere, cloud bands, a thinning star field and three to five ridgelines of fBm terrain stepping into haze — keeping its number, name and accent (`tools/build_horizons_wallpapers.py`, [contact sheet](../docs/horizons-wallpapers.png)). |
 | `series-5-pop` | (retired with Pop) | Was Core Builds Pop's 12-wall set, indexed by `pop-manifest.json`. Removed with the pack in 2026-09; the number stays empty so history keeps its meaning. |
 | `series-6-circuit-core` | 41–50, 79–80 | **Circuit Core.** Twelve lit-circuit fields on near-black — the same §06 lighting language the retired Core Mark series used (cyan first, violet/ember ambient), authored at 1376×768 rather than 4K. Replaced `series-4-core-mark` in v1.8.6; `tools/build_circuit_wallpaper_extensions.py` reproduces the final pair. |
 | `series-7-retrowave` | 59–68, 81–82 | **Retrowave.** Twelve 4K walls in 2026's nostalgic retro-gradient genre: sliced gradient suns, perspective grids, chrome ridges and starfields on the night ground, per `tools/build_synthwave_wallpapers.py`. |
 | `series-8-amoled` | 69–78, 83–84 | **AMOLED.** Twelve minimalist 4K walls on exact `#000000`: sparse cyan, violet, and ember geometry with 92.4–99.8% true-black coverage. `tools/build_amoled_wallpapers.py` asserts the ≥50% contract and writes the [contact sheet](../docs/amoled-wallpapers.png). |
-| `series-9-deep-space` | 85–96 | **Deep Space.** Twelve 4K space walls in the house palette — event horizon, nebulae, ringed planet, spiral galaxy, comets, novae — all procedural and seeded (`tools/build_deep_space_wallpapers.py`, [contact sheet](../docs/deep-space-wallpapers.png)). Smooth gradients ship grain-free like series 7/8: the full-frame dither cost ~9 MB per PNG for a texture invisible at TV distance. |
+| `series-9-deep-space` | 85–96 | **Deep Space.** Twelve 4K space walls in the house palette — event horizon, nebulae, ringed planet, spiral galaxy, comets, novae — all procedural and seeded (`tools/build_deep_space_wallpapers.py`, [contact sheet](../docs/deep-space-wallpapers.png)). **Refreshed in 2.4.0:** every large glow is shaped by ridged fBm noise, so nebulae break into filaments and dust lanes, planet discs carry bands and grain, and a dense faint dust field sits under the stars — same walls, same seeds, more in them. Smooth gradients still ship grain-free: the full-frame dither cost ~9 MB per PNG for a texture invisible at TV distance. |
 | `series-10-cinema` | 97–102 | **Cinema.** Six 4K night-time cinema scenes in neon and marquee light — marquee frontage, velvet stage, projector beam, neon lounge, late-night rentals, box office. Each is drawn once as layers and animated by weighting them, so every wall has a seamless 60 fps loop that is the same drawing (`tools/build_cinema_wallpapers.py`, [contact sheet](../docs/cinema-wallpapers.png)). |
 | `series-11-icon-echo` | 103–108 | **Icon Echo.** The companion series the [2026-10 concept study](../docs/research/icon-wallpaper-palette-study-2026-10.md) pointed at: each wall is lit by one accent taken straight from the icon catalogue — HeatLive `#EB1E54`, YouTube `#FF0033`, Spotify `#1ED760`, MaxPlayer `#F8A000`, TiviMate `#97C1FF`, ARD `#2D92FF` — and shifted a step toward the night ground (`wall_tones` in `tools/build_icon_echo_wallpapers.py`: deep wash, main light, bright core), so a wall and the icons it backs glow the same colour a shade apart. Palette cues only: no logos, no icon geometry. Walls 103–105 also ship as live loops 29–31 (`tools/build_icon_echo_loops.py`, `Motion/live/`). [Contact sheet](../docs/icon-echo-wallpapers.png). |
 
+| `series-12-earth` | 109–116 | **Earth.** Eight walls of the planet from orbit — city lights, aurora from above, a crescent, a storm, an orbital sunrise, Earth over the Moon, a coastline at night, an ice sheet. Generated imagery (AI, prompted for dark frames with a calm lower third), shipped as 1376×768 JPEG at the resolution it was made — the same honesty rule as Circuit Core; not procedural and not reproducible from a tool. |
+| `series-13-wild` | 117–124 | **Wild.** Eight nature and landscape-photography walls (aurora over a fjord, a forest in fog, a desert night, a glacier lagoon …), generated the same way as Earth, 1376×768 JPEG. |
+| `series-14-flux` | 125–132 | **Flux.** Eight 4K abstract walls — domain-warped ink, folded silk, a plasma core, streamlines, glass facets, caustics, a veil, a bent grid — in the house palette, all procedural and seeded (`tools/build_flux_wallpapers.py`, [contact sheet](../docs/flux-wallpapers.png)). |
+
 Retired: `series-4-core-mark` (41–70, 30 × 4K PNGs of the lit hex + faceted core
-diamond) shipped in v1.7.0 and was removed in v1.8.6. Series index 4 stays empty
-and 5 belonged to Pop (retired 2026-09); subsequent additions continue at
-series 7 and beyond, currently through series 10.
+diamond) shipped in v1.7.0 and was removed in v1.8.6. Series index 4 stays empty,
+5 belonged to Pop (retired 2026-09), and 1 (Fieldwork) was retired in 2.4.0;
+subsequent additions continue at series 7 and beyond, currently through
+series 14.
 
 ## In-app browser
 

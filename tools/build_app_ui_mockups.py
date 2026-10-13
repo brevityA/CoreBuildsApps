@@ -736,14 +736,16 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
                   focused=(index == 0 and not with_update_bar), switch=state, badge=badge)
         # The rows sit cb_space_xs apart, as the layout's margins space them.
         ry += h + dp(DIMENS["cb_space_xs"])
-    # Settings | About: one row of two single-line cards, About carrying the
-    # version as a mono suffix.
-    half = (rail_r - g - dp(DIMENS["cb_space_xs"])) // 2
+    # Support | Settings | About: one row of three single-line cards (Support
+    # leads since 2.4.0; the version suffix About carried left with the third
+    # card - it is the About screen's first fact).
+    half = (rail_r - g - 2 * dp(DIMENS["cb_space_xs"])) // 3
     inset = dp(DIMENS["cb_card_padding"])
     f_title = font("sans", DIMENS["cb_text_body"], bold=True)
     for i, (title, suffix) in enumerate((
+        (STRINGS["support_label"], None),
         (STRINGS["settings_label"], None),
-        (STRINGS["about_label"], fmt(STRINGS["about_entry_sub_fmt"], VERSION["versionName"])),
+        (STRINGS["about_label"], None),
     )):
         x0 = g + i * (half + dp(DIMENS["cb_space_xs"]))
         box = [x0, ry, x0 + half, ry + row_h]

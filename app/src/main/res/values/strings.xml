@@ -16,7 +16,6 @@
     <string name="pack_stats_fmt">%1$d icons - %2$d components</string>
     <string name="search_hint_fmt">Search %1$d icons</string>
     <string name="cta_also_applies">ALSO APPLIES TO</string>
-    <string name="about_entry_sub_fmt">v%1$s</string>
     <string name="wp_sub_fmt">%1$d walls - series chips filter the grid</string>
 
     <!-- Empty state. Without it a filter with no match renders a blank grid
@@ -334,6 +333,13 @@
     <string name="about_network_two">2.  A request for each wallpaper you choose to download, and for Core Builds Glyphs Pack the first time you switch the art style to Glyphs.</string>
     <string name="about_network_none">That is the whole list. No analytics, no installed-app list, no device model, no identifier. Icons ship inside the app and are never fetched.</string>
     <string name="about_links">LINKS</string>
+    <!-- About > Check for updates. The row's title is the button through the
+         flow: this label, then update_download / update_install. -->
+    <string name="about_update_label">Check for updates</string>
+    <string name="about_update_sub">Compares this build with the version published on GitHub. Only runs when you press it.</string>
+    <string name="about_update_up_to_date">Up to date</string>
+    <string name="about_update_up_to_date_sub_fmt">v%1$s is the latest build.</string>
+    <string name="about_update_check_failed_sub_fmt">Could not check: %1$s. Press to try again.</string>
     <string name="about_source_label">Source &amp; issues</string>
     <string name="about_settings_label">Settings</string>
     <string name="about_launcher_label">Launcher compatibility</string>
