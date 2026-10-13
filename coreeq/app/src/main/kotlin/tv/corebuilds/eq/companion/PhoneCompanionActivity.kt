@@ -18,6 +18,8 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import org.json.JSONObject
 import tv.corebuilds.eq.R
 import java.net.Inet4Address
@@ -63,6 +65,9 @@ class PhoneCompanionActivity : AppCompatActivity() {
     private lateinit var roomButton: Button
     private lateinit var repeatCheck: CheckBox
     private lateinit var measureProgress: ProgressBar
+    private lateinit var findTvButton: Button
+    private lateinit var discoveryLine: TextView
+    private var tvSearch: TvDiscovery.Search? = null
 
     private var dashboard: Dashboard? = null
     private var targetIndex = 0
@@ -118,11 +123,26 @@ class PhoneCompanionActivity : AppCompatActivity() {
     }
 
     private fun buildContent(): ScrollView {
-        val scroll = ScrollView(this)
+        // targetSdk 37 draws edge-to-edge, so the scroll view keeps its background under the
+        // status and navigation bars and pads its content clear of them. The bottom inset is
+        // the keyboard when it is taller than the navigation bar, so the focused field and the
+        // pair button stay on screen while typing.
+        val scroll = ScrollView(this).apply {
+            isFillViewport = true
+            clipToPadding = false
+            setBackgroundColor(color(R.color.cb_night))
+            ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
+                val bars = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+                )
+                val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+                view.setPadding(bars.left, bars.top, bars.right, maxOf(bars.bottom, ime.bottom))
+                insets
+            }
+        }
         val column = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(20), dp(18), dp(20), dp(24))
-            setBackgroundColor(color(R.color.cb_night))
         }
         scroll.addView(column)
         column.addView(label(getString(R.string.phone_companion_title), 25f, true, R.color.cb_ink))
@@ -131,6 +151,12 @@ class PhoneCompanionActivity : AppCompatActivity() {
 
         val pairHeading = label(getString(R.string.phone_pair_heading), 19f, true, R.color.cb_ink)
         column.addView(pairHeading, matchWrap(top = 16))
+        findTvButton = actionButton(getString(R.string.phone_find_tv_button), primary = false).apply {
+            setOnClickListener { withLocalNetwork { startTvSearch() } }
+        }
+        column.addView(findTvButton, matchWrap(top = 6))
+        discoveryLine = label("", 14f, false, R.color.cb_slate)
+        column.addView(discoveryLine, matchWrap(top = 4))
         hostField = editField(getString(R.string.phone_tv_ip_hint), InputType.TYPE_CLASS_PHONE).apply {
             contentDescription = getString(R.string.phone_tv_ip_accessibility)
         }
@@ -192,6 +218,10 @@ class PhoneCompanionActivity : AppCompatActivity() {
             "gaming" to R.string.phone_mode_gaming
         ).forEach { (mode, titleRes) ->
             val button = actionButton(getString(titleRes), primary = false).apply {
+                // Three equal columns on a narrow phone: let long labels wrap instead of clipping.
+                minimumWidth = 0
+                maxLines = 2
+                setPadding(dp(6), dp(8), dp(6), dp(8))
                 setOnClickListener { runControl(JSONObject().put("op", "set_mode").put("mode", mode)) }
             }
             modeRow.addView(button, weightedWrap())
@@ -795,12 +825,45 @@ class PhoneCompanionActivity : AppCompatActivity() {
 
     override fun onStop() {
         if (measurementInProgress && !isChangingConfigurations) cancelCapture(sendRemote = true)
+        tvSearch?.cancel()
         super.onStop()
     }
 
     override fun onDestroy() {
         if (measurementInProgress) cancelCapture(sendRemote = true)
+        tvSearch?.cancel()
+        tvSearch = null
         super.onDestroy()
+    }
+
+    /**
+     * Looks for a Core EQ TV on this LAN and fills in its address and port. It
+     * never pairs or sends anything: the one-time code on the TV still gates
+     * pairing, and a wrong or stale address simply fails the handshake.
+     */
+    private fun startTvSearch() {
+        if (operationInProgress || measurementInProgress) return
+        tvSearch?.cancel()
+        findTvButton.isEnabled = false
+        discoveryLine.text = getString(R.string.phone_find_tv_searching)
+        val search = TvDiscovery.Search(
+            context = this,
+            timeoutMs = FIND_TV_TIMEOUT_MS,
+            onFound = { found ->
+                hostField.setText(found.host)
+                portField.setText(found.port.toString())
+                discoveryLine.text = getString(R.string.phone_find_tv_found, found.name, found.host)
+                codeField.requestFocus()
+            },
+            onDone = { foundAny ->
+                // Runs synchronously when a previous search is cancelled, before the new one is stored.
+                tvSearch = null
+                findTvButton.isEnabled = true
+                if (!foundAny) discoveryLine.text = getString(R.string.phone_find_tv_none)
+            }
+        )
+        tvSearch = search
+        search.start()
     }
 
     private fun refreshMeasureButtonLabel() {
@@ -995,6 +1058,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
     companion object {
         private const val REQ_LOCAL_NETWORK = 731
         private const val REQ_MICROPHONE = 732
+        private const val FIND_TV_TIMEOUT_MS = 8_000L
         private const val PROGRESS_MAX = 1000
         private const val PREFS = "core_eq_phone_measurement"
         private const val KEY_TARGET = "target_index"

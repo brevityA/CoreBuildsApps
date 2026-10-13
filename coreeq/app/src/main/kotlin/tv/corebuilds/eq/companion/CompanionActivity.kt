@@ -36,6 +36,8 @@ class CompanionActivity : TvActivity() {
     private lateinit var stopPairing: Button
     private lateinit var revokePairing: Button
     private var server: CompanionServer? = null
+    /** Advertises the open listener over mDNS so the phone can find it; stopped with the server. */
+    private val advertiser by lazy { TvDiscovery.Advertiser(this) }
     private var activeCode: String? = null
     private var expiresAt = 0L
     private var screenVisible = false
@@ -88,6 +90,7 @@ class CompanionActivity : TvActivity() {
     }
 
     private fun closeVisibleServer() {
+        advertiser.stop()
         val closingServer = server ?: return
         server = null
         closingServer.stopListening()
@@ -178,6 +181,7 @@ class CompanionActivity : TvActivity() {
             server = runningServer
             addressLine.text = getString(R.string.companion_tv_address, localIpv4Addresses().ifEmpty { "not reported" })
             portLine.text = getString(R.string.companion_tv_port, port)
+            advertiser.start(port)
             startPairing.isEnabled = true
             refreshPairedState()
             statusLine.text = getString(R.string.companion_waiting_phone)

@@ -8,6 +8,9 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+- **Phone companion finds the TV.** While the TV's phone link is open it advertises itself on the LAN over mDNS (`_coreeq._tcp`) with only a display name and port. The phone's new **Find TV on this Wi-Fi** button fills in the address and port. Pairing still needs the one-time code shown on the TV, and a wrong or stale address just fails the handshake.
+- **Phone companion layout.** The screen now clears the status bar, navigation bar and display cutouts (targetSdk 37 draws edge-to-edge), keeps the focused field above the keyboard, and lets the three listening-mode labels wrap instead of clipping on narrow phones. Physical-device qualification of the layout is still required.
+
 ## [1.5.2] — 2026-10-13
 
 ### Added

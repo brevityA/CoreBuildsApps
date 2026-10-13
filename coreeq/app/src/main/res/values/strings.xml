@@ -386,6 +386,10 @@
     <string name="phone_pair_code_accessibility">One-time pairing code shown on the TV</string>
     <string name="phone_pair_button">Pair this phone</string>
     <string name="phone_connect_button">Connect / refresh</string>
+    <string name="phone_find_tv_button">Find TV on this Wi-Fi</string>
+    <string name="phone_find_tv_searching">Looking for a Core EQ TV on this network. Open the phone link on the TV first.</string>
+    <string name="phone_find_tv_found">Found %1$s at %2$s. Enter the pairing code shown on the TV.</string>
+    <string name="phone_find_tv_none">No Core EQ TV found. Open the phone link on the TV, check you are on the same Wi-Fi, or enter the address below.</string>
     <string name="phone_not_paired">No TV paired</string>
     <string name="phone_saved_not_connected">TV saved · not connected</string>
     <string name="phone_invalid_tv_ip">Enter the TV private IPv4 address shown on its Core EQ companion screen. Host names and public addresses are not accepted.</string>
