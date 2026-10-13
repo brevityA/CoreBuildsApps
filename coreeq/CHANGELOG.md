@@ -8,6 +8,8 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+- **Research building blocks (not yet wired into the app).** Three pure-logic modules with unit tests: `TargetCurveImport` reads a GraphicEQ file as a target normalised to 0 dB at 1 kHz and held to the correction budget; `PostCorrectionCheck` describes the residual between a re-measurement and its target, using only the 40 Hz to 8 kHz window and withholding the summary below eight bands; `AutoApplyPolicy` decides auto-apply once per device, then suggest-only. No screen, storage or apply path uses them yet, so behaviour is unchanged in this build.
+
 - **Pairing QR lists up to three TV addresses.** A TV with more than one LAN address puts them all in the QR. The phone tries the next address only when a connection fails, so a wrong first interface no longer blocks pairing. A wrong code is still reported straight away.
 
 - **Easier phone pairing and reconnects.** Opening the phone companion with no TV paired starts the TV search straight away. If a saved TV stops answering, the phone searches the LAN once and retries a TV it finds at a new address with the saved token; the token is the identity check, and the new address is saved only after it connects.
