@@ -8,6 +8,9 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+- **Pair by QR code.** While pairing is open, the TV shows a QR code beside the one-time code. It carries the TV's LAN address, the temporary port and the same key, and it disappears with the pairing window. On the phone, **Scan TV QR** reads it with Google's code-scanner module (no camera permission) and runs the same encrypted pairing. Typing the address and code still works. The QR format is strict and covered by unit tests. A 6-digit code was not added: over plain HTTP on a LAN it can be checked offline, so a short code needs a password-authenticated key exchange first.
+- **Phone pairing needs Google Play services** for the QR scanner. Without it, the button reports that scanning is unavailable and the typed route still works.
+
 - **Phone companion finds the TV.** While the TV's phone link is open it advertises itself on the LAN over mDNS (`_coreeq._tcp`) with only a display name and port. The phone's new **Find TV on this Wi-Fi** button fills in the address and port. Pairing still needs the one-time code shown on the TV, and a wrong or stale address just fails the handshake.
 - **Phone companion layout.** The screen now clears the status bar, navigation bar and display cutouts (targetSdk 37 draws edge-to-edge), keeps the focused field above the keyboard, and lets the three listening-mode labels wrap instead of clipping on narrow phones. Physical-device qualification of the layout is still required.
 

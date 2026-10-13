@@ -301,7 +301,8 @@
     <string name="companion_finding_address">TV address: finding a local IPv4 address…</string>
     <string name="companion_tv_address">TV address: %1$s</string>
     <string name="companion_tv_port">Temporary port: %1$d</string>
-    <string name="companion_tv_pair_instructions">On the Android phone, open Core EQ. Enter this TV address, temporary port and the one-time code. Keep both devices on the same trusted Wi-Fi network. Pairing replaces any previous phone.</string>
+    <string name="companion_tv_pair_instructions">On the Android phone, open Core EQ and choose Scan TV QR, then point the camera at the code below. Or enter this TV address, temporary port and the one-time code. Keep both devices on the same trusted Wi-Fi network. Pairing replaces any previous phone.</string>
+    <string name="companion_tv_qr_accessibility">QR code for pairing this TV with the Core EQ phone app. Shown only while pairing is open.</string>
     <string name="companion_pairing_closed">Pairing code is not active</string>
     <string name="companion_pairing_stopped">Pairing is stopped.</string>
     <string name="companion_pairing_expired">Pairing code expired. Start pairing again on the TV.</string>
@@ -387,6 +388,10 @@
     <string name="phone_pair_button">Pair this phone</string>
     <string name="phone_connect_button">Connect / refresh</string>
     <string name="phone_find_tv_button">Find TV on this Wi-Fi</string>
+    <string name="phone_scan_qr_button">Scan TV QR</string>
+    <string name="phone_scan_ok">QR read. Pairing with the TV now.</string>
+    <string name="phone_scan_not_tv">That is not a Core EQ pairing code. Point the camera at the QR on the TV pairing screen.</string>
+    <string name="phone_scan_unavailable">QR scanning is not available on this phone. Enter the TV address and code instead.</string>
     <string name="phone_find_tv_searching">Looking for a Core EQ TV on this network. Open the phone link on the TV first.</string>
     <string name="phone_find_tv_found">Found %1$s at %2$s. Enter the pairing code shown on the TV.</string>
     <string name="phone_find_tv_none">No Core EQ TV found. Open the phone link on the TV, check you are on the same Wi-Fi, or enter the address below.</string>

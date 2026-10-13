@@ -17,6 +17,7 @@ import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.codescanner.GmsBarcodeScanning
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -66,6 +67,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
     private lateinit var repeatCheck: CheckBox
     private lateinit var measureProgress: ProgressBar
     private lateinit var findTvButton: Button
+    private lateinit var scanQrButton: Button
     private lateinit var discoveryLine: TextView
     private var tvSearch: TvDiscovery.Search? = null
 
@@ -155,6 +157,10 @@ class PhoneCompanionActivity : AppCompatActivity() {
             setOnClickListener { withLocalNetwork { startTvSearch() } }
         }
         column.addView(findTvButton, matchWrap(top = 6))
+        scanQrButton = actionButton(getString(R.string.phone_scan_qr_button), primary = true).apply {
+            setOnClickListener { scanTvQr() }
+        }
+        column.addView(scanQrButton, matchWrap(top = 6))
         discoveryLine = label("", 14f, false, R.color.cb_slate)
         column.addView(discoveryLine, matchWrap(top = 4))
         hostField = editField(getString(R.string.phone_tv_ip_hint), InputType.TYPE_CLASS_PHONE).apply {
@@ -834,6 +840,39 @@ class PhoneCompanionActivity : AppCompatActivity() {
         tvSearch?.cancel()
         tvSearch = null
         super.onDestroy()
+    }
+
+    /**
+     * Reads the QR on the TV's pairing screen. The QR carries the same one-time
+     * key as the typed code, so scanning fills in the form and runs the same
+     * encrypted pairing. Nothing is sent until the phone has the TV's key.
+     */
+    private fun scanTvQr() {
+        if (operationInProgress || measurementInProgress || repeatFallbackSessionId != null) return
+        scanQrButton.isEnabled = false
+        GmsBarcodeScanning.getClient(this).startScan()
+            .addOnSuccessListener { barcode ->
+                scanQrButton.isEnabled = true
+                handleTvQr(barcode.rawValue)
+            }
+            .addOnCanceledListener { scanQrButton.isEnabled = true }
+            .addOnFailureListener {
+                scanQrButton.isEnabled = true
+                setStatus(getString(R.string.phone_scan_unavailable), error = true)
+            }
+    }
+
+    private fun handleTvQr(raw: String?) {
+        val payload = TvPairingQr.parse(raw)
+        if (payload == null) {
+            setStatus(getString(R.string.phone_scan_not_tv), error = true)
+            return
+        }
+        hostField.setText(payload.host)
+        portField.setText(payload.port.toString())
+        codeField.setText(payload.key)
+        setStatus(getString(R.string.phone_scan_ok), error = false)
+        withLocalNetwork { pairWithTv() }
     }
 
     /**

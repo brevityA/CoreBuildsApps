@@ -14,11 +14,13 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.ImageView
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import tv.corebuilds.eq.R
 import tv.corebuilds.eq.TvActivity
+import tv.corebuilds.eq.ui.QrBitmap
 import java.net.Inet4Address
 import java.net.NetworkInterface
 import kotlin.concurrent.thread
@@ -29,6 +31,8 @@ class CompanionActivity : TvActivity() {
     private lateinit var addressLine: TextView
     private lateinit var portLine: TextView
     private lateinit var pairingCode: TextView
+    private lateinit var pairingQr: ImageView
+    private var listenPort = 0
     private lateinit var pairingExpiry: TextView
     private lateinit var statusLine: TextView
     private lateinit var pairedLine: TextView
@@ -53,6 +57,7 @@ class CompanionActivity : TvActivity() {
                 handler.postDelayed(this, 1_000L)
             } else if (activeCode != null) {
                 activeCode = null
+                hidePairingQr()
                 pairingCode.text = getString(R.string.companion_pairing_closed)
                 pairingExpiry.text = getString(R.string.companion_pairing_expired)
                 stopPairing.isEnabled = false
@@ -82,6 +87,7 @@ class CompanionActivity : TvActivity() {
         handler.removeCallbacks(expiryTicker)
         activeCode = null
         expiresAt = 0L
+        hidePairingQr()
         pairingCode.setText(R.string.companion_pairing_closed)
         pairingExpiry.setText(R.string.companion_pairing_stopped)
         stopPairing.isEnabled = false
@@ -125,6 +131,17 @@ class CompanionActivity : TvActivity() {
             setBackgroundResource(R.drawable.bg_card)
         }
         column.addView(pairingCode, matchWrap(top = 8))
+        pairingQr = ImageView(this).apply {
+            visibility = View.GONE
+            scaleType = ImageView.ScaleType.FIT_CENTER
+            setBackgroundResource(R.drawable.bg_card)
+            setPadding(dp(12), dp(12), dp(12), dp(12))
+            contentDescription = getString(R.string.companion_tv_qr_accessibility)
+        }
+        column.addView(pairingQr, LinearLayout.LayoutParams(dp(260), dp(260)).apply {
+            gravity = Gravity.CENTER_HORIZONTAL
+            topMargin = dp(10)
+        })
         pairingExpiry = label(getString(R.string.companion_pairing_stopped), 14f, false, R.color.cb_slate)
         column.addView(pairingExpiry)
         startPairing = actionButton(getString(R.string.companion_start_pairing), primary = true)
@@ -170,6 +187,7 @@ class CompanionActivity : TvActivity() {
                         activeCode = null
                         expiresAt = 0L
                         handler.removeCallbacks(expiryTicker)
+                        hidePairingQr()
                         pairingCode.setText(R.string.companion_pairing_closed)
                         pairingExpiry.setText(R.string.companion_pairing_stopped)
                         stopPairing.isEnabled = false
@@ -178,6 +196,7 @@ class CompanionActivity : TvActivity() {
             }
             candidateServer = runningServer
             val port = runningServer.start()
+            listenPort = port
             server = runningServer
             addressLine.text = getString(R.string.companion_tv_address, localIpv4Addresses().ifEmpty { "not reported" })
             portLine.text = getString(R.string.companion_tv_port, port)
@@ -201,6 +220,7 @@ class CompanionActivity : TvActivity() {
             activeCode = activeServer.startPairing()
             expiresAt = SystemClock.elapsedRealtime() + PAIR_WINDOW_MS
             pairingCode.text = activeCode!!.chunked(4).joinToString(" ")
+            showPairingQr(activeCode!!)
             pairingExpiry.text = getString(R.string.companion_pairing_expiry, PAIR_WINDOW_SECONDS)
             stopPairing.isEnabled = true
             handler.removeCallbacks(expiryTicker)
@@ -216,6 +236,7 @@ class CompanionActivity : TvActivity() {
         activeCode = null
         expiresAt = 0L
         handler.removeCallbacks(expiryTicker)
+        hidePairingQr()
         pairingCode.setText(R.string.companion_pairing_closed)
         pairingExpiry.setText(R.string.companion_pairing_stopped)
         stopPairing.isEnabled = false
@@ -251,6 +272,48 @@ class CompanionActivity : TvActivity() {
         handler.removeCallbacks(expiryTicker)
         closeVisibleServer()
         super.onDestroy()
+    }
+
+    /** Private IPv4 addresses for the QR, in the order Android lists them. */
+    private fun lanIpv4List(): List<String> = try {
+        NetworkInterface.getNetworkInterfaces().toList()
+            .filter { it.isUp && !it.isLoopback }
+            .flatMap { it.inetAddresses.toList() }
+            .filterIsInstance<Inet4Address>()
+            .filter { address ->
+                val bytes = address.address.map { it.toInt() and 0xff }
+                bytes.size == 4 && (
+                    bytes[0] == 10 ||
+                    (bytes[0] == 172 && bytes[1] in 16..31) ||
+                    (bytes[0] == 192 && bytes[1] == 168)
+                )
+            }
+            .mapNotNull { it.hostAddress }
+            .distinct()
+    } catch (_: Exception) {
+        emptyList()
+    }
+
+    /**
+     * The QR carries the same one-time key as the typed code, plus the address
+     * and port. It is shown only while pairing is open and is removed with it.
+     * The phone treats it as a pre-filled form: pairing still goes through the
+     * encrypted handshake, and a wrong address simply fails.
+     */
+    private fun showPairingQr(code: String) {
+        val host = lanIpv4List().firstOrNull()
+        if (host == null || listenPort == 0) {
+            pairingQr.visibility = View.GONE
+            return
+        }
+        val text = TvPairingQr.build(host, listenPort, code)
+        pairingQr.setImageBitmap(QrBitmap.render(text, 520))
+        pairingQr.visibility = View.VISIBLE
+    }
+
+    private fun hidePairingQr() {
+        pairingQr.setImageDrawable(null)
+        pairingQr.visibility = View.GONE
     }
 
     private fun localIpv4Addresses(): String = try {
