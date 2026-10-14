@@ -164,6 +164,20 @@ class PickerTests(unittest.TestCase):
         self.assertIn("UpdateInstaller.canInstall", src)
         self.assertIn("startInstall(file)", src)
 
+    def test_installer_is_marked_offered_before_it_opens(self):
+        # Ready resets installOffered and calls startInstall. If the flag is
+        # still false when the installer opens, cancelling it resumes the
+        # activity and onResume opens it again, in a loop.
+        for name in ("MainActivity", "AboutActivity"):
+            with self.subTest(name):
+                src = read(f"app/src/main/java/tv/corebuilds/iconpack/{name}.kt")
+                body = src[src.index("private fun startInstall(file: File)"):]
+                body = body[:body.index("\n    private fun ")]
+                self.assertRegex(
+                    body,
+                    r"installOffered = true\s*(//[^\n]*\s*)*try \{\s*UpdateInstaller\.install\(this, file\)",
+                )
+
 
 class ApplyTests(unittest.TestCase):
     def test_projectivy_contract_unchanged(self):

@@ -184,6 +184,10 @@ class AboutActivity : TvActivity() {
             }
             return
         }
+        // Mark it offered before the installer opens: coming back from a
+        // cancelled install fires onResume, which would otherwise launch it
+        // again. The row stays pressable for a deliberate retry.
+        installOffered = true
         try {
             UpdateInstaller.install(this, file)
         } catch (e: android.content.ActivityNotFoundException) {
