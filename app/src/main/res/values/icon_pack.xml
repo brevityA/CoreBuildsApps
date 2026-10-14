@@ -358,6 +358,7 @@
         <item>instagram</item>
         <item>ip_address</item>
         <item>iptools</item>
+        <item>iptvdeck</item>
         <item>iptvextremepro</item>
         <item>iptv_pro</item>
         <item>iptvsmarterstvbox</item>
@@ -1353,6 +1354,7 @@
         <item>Instagram</item>
         <item>Ip Address</item>
         <item>IP Tools</item>
+        <item>IPTV Deck</item>
         <item>IPTV Extreme Pro</item>
         <item>IPTV Pro</item>
         <item>IPTV Smarters</item>
@@ -2348,6 +2350,7 @@
         <item>APP</item>
         <item>TOOL</item>
         <item>TOOL</item>
+        <item>LIVE</item>
         <item>LIVE</item>
         <item>LIVE</item>
         <item>LIVE</item>
@@ -3362,6 +3365,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3981,5 +3985,5 @@
         <item>1</item>
         <item>1</item>
     </integer-array>
-    <integer name="icon_count">993</integer>
+    <integer name="icon_count">994</integer>
 </resources>

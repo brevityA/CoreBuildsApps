@@ -9104,3 +9104,19 @@ def nuyodeviceinfo_phone(c):
 
 
 GLYPHS.update({"nuyodeviceinfo_phone": nuyodeviceinfo_phone})
+
+
+def iptvdeck_cards(c):
+    """IPTV Deck: a deck - an upright card with a play triangle on it and two
+    cards stacked up and to the right behind it, only their visible edges
+    drawn so no line crosses the front card - the app's name stated in Core
+    stroke geometry; not a trace of the vendor icon."""
+    return (f'<path d="M 200 116 L 200 92 A 28 28 0 0 1 228 64 L 380 64 '
+            f'A 28 28 0 0 1 408 92 L 408 308 A 28 28 0 0 1 380 336 L 356 336" {_s(c, 26.2)}/>'
+            f'<path d="M 148 168 L 148 144 A 28 28 0 0 1 176 116 L 328 116 '
+            f'A 28 28 0 0 1 356 144 L 356 360 A 28 28 0 0 1 328 388 L 304 388" {_s(c, 26.2)}/>'
+            f'<rect x="96" y="168" width="208" height="272" rx="28" {_s(c, 32)}/>'
+            f'<path d="M 172 256 L 248 304 L 172 352 Z" {_s(c, 26.2)}/>')
+
+
+GLYPHS.update({"iptvdeck_cards": iptvdeck_cards})

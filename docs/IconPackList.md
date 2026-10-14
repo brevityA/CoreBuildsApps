@@ -1,6 +1,6 @@
 # Supported applications
 
-`993` icons · `1229` mapped components · pack v2.4.0
+`994` icons · `1230` mapped components · pack v2.4.1
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -364,6 +364,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Instagram | `instagram` | `#FF0069` | `#FF0069` | `com.instagram.airwave/com.instagram.airwave.AirwaveMainActivity` |
 | Ip Address | `ip_address` | `#F8453C` | `#F8453C` | `net.info.az/net.info.az.SplashActivity` |
 | IP Tools | `iptools` | `#FF8000` | `#FF8000` | `com.ddm.iptools/com.ddm.iptools.ui.MainActivity` |
+| IPTV Deck | `iptvdeck` | `#4FACFE` | `#4FACFE` | `com.mistykuu.iptvdeck/com.mistykuu.iptvdeck.MainActivity` |
 | IPTV Extreme Pro | `iptvextremepro` | `#1565C0` | `#1565C0` | `com.pecana.iptvextremepro/com.pecana.iptvextremepro.SplashActivity` |
 | IPTV Pro | `iptv_pro` | `#2478C0` | `#2478C0` | `ru.iptvremote.android.iptv.pro/ru.iptvremote.android.iptv.pro.ChannelsActivity` |
 | IPTV Smarters | `iptvsmarterstvbox` | `#1982C4` | `#1982C4` | `com.nst.iptvsmarterstvbox/com.nst.iptvsmarterstvbox.view.activity.SplashActivity` |

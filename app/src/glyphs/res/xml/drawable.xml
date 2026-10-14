@@ -124,6 +124,7 @@
     <item drawable="heatlive" />
     <item drawable="heatlive_backup" />
     <item drawable="myiptvonline" />
+    <item drawable="iptvdeck" />
     <item drawable="iptvextremepro" />
     <item drawable="iptv_pro" />
     <item drawable="iptvsmarterstvbox" />

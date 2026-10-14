@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "2.4.0",
+    "version": "2.4.1",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 993
+    "count": 994
   },
   "icons": [
     {
@@ -14013,6 +14013,20 @@
       "color_source": "eyeballed from the app's Play Store launcher icon (a white handset-and-i on blue): #2F80ED; approximate, not sampled from a vendor asset (2026-10-14)",
       "color_reviewed": "2026-10-14",
       "glyph_source": "original Core monoline mark: a rounded handset outline with an information dot and stem inside - the app's subject drawn literally in Core stroke geometry; no vendor art traced (2026-10-14)"
+    },
+    {
+      "name": "IPTV Deck",
+      "drawable": "iptvdeck",
+      "color": "#4FACFE",
+      "glyph": "iptvdeck_cards",
+      "components": [
+        "com.mistykuu.iptvdeck/com.mistykuu.iptvdeck.MainActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "device-reported via the pack's Missing icons scanner (photo of the TV screen, shared 2026-10-15): com.mistykuu.iptvdeck/com.mistykuu.iptvdeck.MainActivity is the activity the launcher opened for IPTV Deck on that device. No store listing found. Not confirmed on a second TV",
+      "color_source": "core-builds palette: the launcher icon in the scanner photo is white cards on a blue tile, but a photo of a TV screen gives no reliable value, so the pack's Build Blue stands in (no published brand colour found)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: an upright card with a play triangle and two cards stacked behind it up and to the right - a deck, the app's name drawn literally in Core stroke geometry; no vendor art traced (2026-10-15)"
     }
   ],
   "artwork": {

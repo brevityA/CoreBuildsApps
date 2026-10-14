@@ -6,6 +6,27 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.4.1] — 2026-10-14
+
+### Fixed
+
+- **Re-rendered wallpapers show their new art.** 2.4.0 re-rendered Motion,
+  Horizons, Circuit Core, Retrowave, AMOLED, Deep Space and Icon Echo under
+  the file names they already had, and the wallpaper cache was keyed on the
+  file name alone. A wall opened on 2.3.x (44 Monolith Grid, say) showed the
+  new thumbnail in the grid but kept opening, setting and saving the old
+  picture. The cache now keys each download on its release stamp too, so the
+  2.4.x art downloads once and the old copy ages out. Exported files keep
+  their names in `Pictures/CoreBuilds`.
+
+### Added
+
+- **IPTV Deck icon.** IPTV Deck (`com.mistykuu.iptvdeck`) has its own icon:
+  an upright card with a play triangle and two cards stacked behind it, a
+  deck. Scanner-reported on a TV; no store listing or published brand colour
+  was found, so it takes the pack's Build Blue. 993 → 994 icons, 1229 → 1230
+  components.
+
 ## [2.4.0] — 2026-10-14
 
 ### Added

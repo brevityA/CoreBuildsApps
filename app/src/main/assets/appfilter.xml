@@ -1040,6 +1040,9 @@
     <!-- IP Tools -->
     <item component="ComponentInfo{com.ddm.iptools/com.ddm.iptools.ui.MainActivity}" drawable="iptools_banner"/>
     <item component="ComponentInfo{com.ddm.iptools/.ui.MainActivity}" drawable="iptools_banner"/>
+    <!-- IPTV Deck -->
+    <item component="ComponentInfo{com.mistykuu.iptvdeck/com.mistykuu.iptvdeck.MainActivity}" drawable="iptvdeck_banner"/>
+    <item component="ComponentInfo{com.mistykuu.iptvdeck/.MainActivity}" drawable="iptvdeck_banner"/>
     <!-- IPTV Extreme Pro -->
     <item component="ComponentInfo{com.pecana.iptvextremepro/com.pecana.iptvextremepro.SplashActivity}" drawable="iptvextremepro_banner"/>
     <item component="ComponentInfo{com.pecana.iptvextremepro/.SplashActivity}" drawable="iptvextremepro_banner"/>

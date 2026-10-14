@@ -1,20 +1,14 @@
 {
-  "versionCode": 53,
-  "versionName": "2.4.0",
-  "iconCount": 993,
-  "componentCount": 1229,
+  "versionCode": 54,
+  "versionName": "2.4.1",
+  "iconCount": 994,
+  "componentCount": 1230,
   "releaseDate": "2026-10-14",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Check for updates in About",
-    "Live wallpapers are a set of their own",
-    "48 loops, every one a real wall given time",
-    "Earth, Wild and Flux wallpaper series",
-    "Every series is twelve walls \u2014 132 in all",
-    "Circuit Core re-rendered",
-    "Motion, Icon Echo, Retrowave, AMOLED, Horizons, Deep Space refreshed",
-    "Support is on the home screen"
+    "IPTV Deck icon",
+    "Re-rendered wallpapers show their new art"
   ]
 }

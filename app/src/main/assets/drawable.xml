@@ -124,6 +124,7 @@
     <item drawable="heatlive_banner" />
     <item drawable="heatlive_backup_banner" />
     <item drawable="myiptvonline_banner" />
+    <item drawable="iptvdeck_banner" />
     <item drawable="iptvextremepro_banner" />
     <item drawable="iptv_pro_banner" />
     <item drawable="iptvsmarterstvbox_banner" />
