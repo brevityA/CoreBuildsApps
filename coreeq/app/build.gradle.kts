@@ -107,5 +107,5 @@ dependencies {
     // android.jar's org.json is a stub on the JVM ("not mocked"), so the
     // profile JSON round trip (ProfileJsonTest) brings the real one, as Core
     // Line's tests do.
-    testImplementation("org.json:json:20240303")
+    testImplementation("org.json:json:20260814")
 }
