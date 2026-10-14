@@ -401,7 +401,7 @@ object LiveLoop {
             stillSeries = CINEMA_SERIES
         ),
         Loop(
-            id = "signal-red",
+            id = "signal-sweep",
             title = "Signal Red",
             fileName = "coremotion-live-29-signal-sweep.mp4",
             url = RAW_BASE + "coremotion-live-29-signal-sweep.mp4",

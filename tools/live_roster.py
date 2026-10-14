@@ -73,8 +73,11 @@ class Clip:
 
     @property
     def id(self) -> str:
-        """LiveLoop.kt id: the still slug, unique across the roster."""
-        return self.slug
+        """LiveLoop.kt id: the persisted preference value, so it follows the
+        file slug a shipped loop kept (clip 29 is still `signal-sweep` on disk
+        and in installed builds' prefs, though its still is now Signal Red).
+        Renaming it would silently re-point that wallpaper to the default."""
+        return self.file_slug or self.slug
 
 
 def _set(set_name, series, prefix, rows, **tuning) -> list[Clip]:

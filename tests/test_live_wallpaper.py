@@ -121,11 +121,27 @@ class LoopCatalogueTests(unittest.TestCase):
         expected = {name.rsplit(".", 1)[0] + ".jpg" for name in self.files}
         self.assertEqual({p.name for p in LIVE_THUMBS.glob("*.jpg")}, expected)
 
+    # Every loop id a released build has written to prefs (2.3.3, the last
+    # release before the 2.4.0 rebuild). LiveLoop.byId falls back to the first
+    # loop for an unknown id, so dropping or renaming one of these resets that
+    # user's wallpaper without a word; the 2.4.0 rebuild nearly shipped
+    # `signal-sweep` as `signal-red`. Add to this list, never remove from it.
+    SHIPPED_IDS = (
+        "event-horizon", "nebula-drift", "starfield", "ringed-planet",
+        "galaxy-spiral", "aurora-orbit", "comet-lane", "deep-field",
+        "ember-nova", "hex-station", "cyan-supernova", "dark-side-moon",
+        "marquee-lights", "velvet-curtain", "projector-beam", "neon-lounge",
+        "late-rentals", "box-office", "signal-sweep", "green-current",
+        "molten-orbit",
+    )
+
     def test_ids_are_stable_slugs(self):
         # The id is a persisted preference value. Renaming one silently
         # re-points every installed wallpaper back to the default.
         for loop_id in self.ids:
             self.assertRegex(loop_id, r"^[a-z0-9]+(-[a-z0-9]+)*$", loop_id)
+        missing = [i for i in self.SHIPPED_IDS if i not in self.ids]
+        self.assertEqual(missing, [], "a released loop id was renamed or dropped")
 
     def test_every_loop_has_its_mp4_in_motion_live(self):
         for name in self.files:
