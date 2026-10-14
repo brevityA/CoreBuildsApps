@@ -10886,7 +10886,7 @@
         "com.desktoptelly.tv/com.desktoptelly.tv.MainActivity"
       ],
       "category": "LIVE",
-      "mapping_source": "issue #301 (device-reported on SHIELD Android TV, Android 11, pack 2.3.1): com.desktoptelly.tv/com.desktoptelly.tv.MainActivity is the activity the launcher opened for Telly Player on that device; distributed by Downloader code 5393783, no store link given. Not confirmed on a second TV",
+      "mapping_source": "issue #301 (device-reported on SHIELD Android TV, Android 11, pack 2.3.1): com.desktoptelly.tv/com.desktoptelly.tv.MainActivity is the activity the launcher opened for Telly Player on that device; distributed by Downloader code 5393783, no store link given. Confirmed on a second TV by issue #306 (a different reporter, via the pack's Missing icons scanner on MiTV-AFMU0, Android 14, pack 2.3.3, 2026-10-14): the same component, with the vendor's APK at download.desktoptelly.com",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
       "glyph_source": "original Core monoline mark: a telly - a rounded screen on a stand - with a play triangle inside, the name drawn literally in Core stroke geometry; no vendor art traced (2026-10-13)"

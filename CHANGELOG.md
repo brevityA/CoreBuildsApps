@@ -87,7 +87,9 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Telly Player icon.** Telly Player (`com.desktoptelly.tv`), distributed
   by Downloader code, has its own icon: a telly on its stand with a play
   triangle inside (issue #301). No published brand colour was found, so it
-  takes a pack palette accent.
+  takes a pack palette accent. A second TV reported the same component
+  through the pack's scanner (issue #306, a Xiaomi TV on Android 14), so
+  the mapping is confirmed on two devices.
 - **Yango Play icon.** Yango Play (`com.yango.saft.tv`), Kinopoisk's
   international build under its own package, has its own icon: a Y with a
   play triangle on its stem in Yango red (issue #305; scanner-reported on
