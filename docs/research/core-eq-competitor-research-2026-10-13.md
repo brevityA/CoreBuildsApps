@@ -36,9 +36,14 @@ the cheapest way to close the gap without new hardware.
 
 - **SoundWave TV: Equalizer** (Nexech, Google Play). 5- to 10-band graphic EQ
   using the platform `Equalizer` API, bass boost, virtualiser, reverb and genre
-  presets. Still manual sliders with no measurement. Its listing shows version
-  12.18.1 dated 2026-09-11, with a NextUI migration and "AI features" in the
-  notes ([listing copy](https://soundwave-eq-tv.en.aptoide.com/app)).
+  presets. Still manual sliders with no measurement. The primary source is the
+  [Google Play listing](https://play.google.com/store/apps/details?id=com.soundwave.tv&hl=en_US)
+  for `com.soundwave.tv`; its current version was not recorded in this pass.
+  A third-party Aptoide mirror, read on 2026-10-13, shows version 12.18.1 dated
+  2026-09-11 with a NextUI migration and "AI features" in the notes
+  ([mirror](https://soundwave-eq-tv.en.aptoide.com/app)). That mirror names the
+  publisher as AOSP STUDIO Apps, not Nexech, so treat its version and notes as
+  unconfirmed until they are checked against the Play listing.
   The 2026-09-28 pass recorded a 3.8/5 rating and reports of audio dropouts
   after sleep; those reports have not been re-checked in this pass.
 - **TV DSP Center** (Play Store). Manual EQ with TV-targeted presets. No
@@ -143,9 +148,10 @@ against cost and risk. None of these is approved.
 2. **User-set correction ceiling, narrow-only.** Let the user lower the
    correction's upper limit (for example 500 Hz, 1 kHz, 2 kHz, or the default
    8 kHz). Narrowing is safe; widening past 8 kHz is not, so the control must
-   never go above the current limit. This is the Audyssey Editor's most-used
-   control. Cost: a change to the Kotlin limits and the Python parity reference
-   (`tools/core_eq_dsp.py`), plus updating `tests/test_core_eq_parity.py`.
+   never go above the current limit. The Audyssey MultEQ Editor offers the same
+   kind of control (its upper frequency limit for correction). Cost: a change to
+   the Kotlin limits and the Python parity reference (`tools/core_eq_dsp.py`),
+   plus updating `tests/test_core_eq_parity.py`.
 3. **Custom target curve import.** Accept a GraphicEQ target file and treat it
    as the target, with the existing limits still applied. This matches the
    Editor's custom target and reuses the import parser.
@@ -188,7 +194,8 @@ against cost and risk. None of these is approved.
 
 ## Sources
 
-- SoundWave TV listing: https://soundwave-eq-tv.en.aptoide.com/app
+- SoundWave TV on Google Play: https://play.google.com/store/apps/details?id=com.soundwave.tv&hl=en_US
+- SoundWave TV, third-party Aptoide mirror (snapshot 2026-10-13, unconfirmed): https://soundwave-eq-tv.en.aptoide.com/app
 - Wavelet features: https://pittvandewitt.github.io/Wavelet/Features/
 - Wavelet on Google Play: https://play.google.com/store/apps/details?id=com.pittvandewitt.wavelet&hl=en_US
 - Equalizer314 on F-Droid: https://f-droid.org/en/packages/com.bearinmind.equalizer314/
