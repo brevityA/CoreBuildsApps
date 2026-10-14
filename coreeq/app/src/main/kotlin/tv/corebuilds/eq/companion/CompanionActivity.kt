@@ -5,6 +5,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -275,8 +276,29 @@ class CompanionActivity : TvActivity() {
         super.onDestroy()
     }
 
-    /** Private IPv4 addresses for the QR, in the order Android lists them. */
-    private fun lanIpv4List(): List<String> = try {
+    /**
+     * Private IPv4 addresses for the QR, the active network's first. The phone tries them
+     * in order and moves on only when one does not answer, so leading with the network
+     * that carries the TV's traffic (Wi-Fi or Ethernet alike) saves a timeout on a TV that
+     * also has a VPN, hotspot or second adapter up.
+     */
+    private fun lanIpv4List(): List<String> {
+        val all = interfaceIpv4List()
+        return (activeNetworkIpv4().filter { it in all } + all).distinct()
+    }
+
+    private fun activeNetworkIpv4(): List<String> = try {
+        val connectivity = getSystemService(ConnectivityManager::class.java)
+        connectivity?.getLinkProperties(connectivity.activeNetwork)?.linkAddresses.orEmpty()
+            .map { it.address }
+            .filterIsInstance<Inet4Address>()
+            .mapNotNull { it.hostAddress }
+    } catch (_: Exception) {
+        emptyList()
+    }
+
+    /** Private IPv4 addresses on every interface that is up, in the order Android lists them. */
+    private fun interfaceIpv4List(): List<String> = try {
         NetworkInterface.getNetworkInterfaces().toList()
             .filter { it.isUp && !it.isLoopback }
             .flatMap { it.inetAddresses.toList() }

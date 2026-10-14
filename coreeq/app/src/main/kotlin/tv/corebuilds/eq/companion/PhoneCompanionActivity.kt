@@ -317,32 +317,25 @@ class PhoneCompanionActivity : AppCompatActivity() {
             codeField.requestFocus()
             return
         }
+        // The user is pairing with these fields now; a search still running must not
+        // replace the address underneath them.
+        stopTvSearch()
         setOperationBusy(true)
         setStatus(getString(R.string.phone_pairing), error = false)
         thread(name = "CoreEqPhonePair") {
-            try {
+            val saved = try {
                 val token = CompanionCrypto.randomKey()
                 val clientName = "${Build.MANUFACTURER} ${Build.MODEL}".trim().take(60).ifBlank { "Android phone" }
                 val response = CompanionClient(host, port, pairingKey).pair(pairingKey, token, clientName)
                 requireOk(response)
-                val saved = PhoneCredentials(host, port, token)
-                credentialStore.save(saved)
-                val newDashboard = loadDashboard(saved)
-                runOnUiThread {
-                    setOperationBusy(false)
-                    codeField.text?.clear()
-                    remotePanel.visibility = View.VISIBLE
-                    setStatus(getString(R.string.phone_pair_success), error = false)
-                    showDashboard(newDashboard)
-                    setRemoteEnabled(true)
-                }
+                PhoneCredentials(host, port, token).also { credentialStore.save(it) }
             } catch (e: Exception) {
                 val unreachable = e is java.net.ConnectException ||
                     e is java.net.SocketTimeoutException ||
                     e is java.net.NoRouteToHostException
-                val next = fallbackHosts.firstOrNull()
                 runOnUiThread {
                     setOperationBusy(false)
+                    val next = fallbackHosts.firstOrNull()
                     if (unreachable && next != null) {
                         // The first address did not answer; try the next one from the QR.
                         fallbackHosts = fallbackHosts.drop(1)
@@ -354,6 +347,33 @@ class PhoneCompanionActivity : AppCompatActivity() {
                         setStatus(getString(R.string.phone_pair_failed, readableError(e)), error = true)
                     }
                 }
+                return@thread
+            }
+            // Paired: the TV has spent the one-time key and the token is saved. A failure from
+            // here on is a connection problem to report, never a reason to pair again with the
+            // QR's next address, which would only fail on the spent key.
+            val newDashboard = try {
+                loadDashboard(saved)
+            } catch (e: Exception) {
+                runOnUiThread {
+                    setOperationBusy(false)
+                    fallbackHosts = emptyList()
+                    codeField.text?.clear()
+                    remotePanel.visibility = View.VISIBLE
+                    connectionLine.setText(R.string.phone_saved_not_connected)
+                    setRemoteEnabled(true)
+                    setStatus(getString(R.string.phone_paired_not_loaded, readableError(e)), error = true)
+                }
+                return@thread
+            }
+            runOnUiThread {
+                setOperationBusy(false)
+                fallbackHosts = emptyList()
+                codeField.text?.clear()
+                remotePanel.visibility = View.VISIBLE
+                setStatus(getString(R.string.phone_pair_success), error = false)
+                showDashboard(newDashboard)
+                setRemoteEnabled(true)
             }
         }
     }
@@ -395,35 +415,73 @@ class PhoneCompanionActivity : AppCompatActivity() {
     }
 
     /**
-     * The saved address may have changed (DHCP, a new router). Search the LAN once for a
-     * Core EQ TV at a different address and try it with the saved token. The token is the
-     * identity check: a device that was not paired cannot answer, and the new address is
-     * saved only after a successful connection.
+     * The saved address may have changed (DHCP, a new router). Search the LAN for Core EQ
+     * TVs at a different address and try each with the saved token, one at a time, until
+     * one accepts it or the search ends. The token is the identity check: a TV that was
+     * not paired with this phone refuses it, so a second Core EQ TV answering first only
+     * costs one attempt. The new address is saved only after a successful connection.
+     * All of this state lives on the main thread.
      */
     private fun rediscoverSavedTv(saved: PhoneCredentials) {
         if (operationInProgress || measurementInProgress || repeatFallbackSessionId != null) return
         tvSearch?.cancel()
         setStatus(getString(R.string.phone_rediscovering), error = false)
-        var retried = false
-        val search = TvDiscovery.Search(
+        val candidates = ArrayDeque<TvDiscovery.FoundTv>()
+        val seen = hashSetOf("${saved.host}:${saved.port}")
+        var trying = false
+        var tried = false
+        var searching = true
+        var connected = false
+        lateinit var search: TvDiscovery.Search
+        fun tryNext() {
+            if (trying || connected) return
+            val next = candidates.removeFirstOrNull()
+            if (next == null) {
+                // Nothing left to try. A failed attempt already left its own message.
+                if (!searching && !tried) setStatus(getString(R.string.phone_rediscover_none), error = true)
+                return
+            }
+            trying = true
+            tried = true
+            retryWithFoundTv(saved, next.host, next.port) { ok ->
+                trying = false
+                if (ok) {
+                    connected = true
+                    search.cancel()
+                } else {
+                    tryNext()
+                }
+            }
+        }
+        search = TvDiscovery.Search(
             context = this,
             timeoutMs = FIND_TV_TIMEOUT_MS,
+            firstOnly = false,
             onFound = { found ->
-                if (!retried && (found.host != saved.host || found.port != saved.port)) {
-                    retried = true
-                    retryWithFoundTv(saved, found.host, found.port)
+                if (seen.add("${found.host}:${found.port}")) {
+                    candidates.addLast(found)
+                    tryNext()
                 }
             },
             onDone = { _ ->
-                tvSearch = null
-                if (!retried) setStatus(getString(R.string.phone_rediscover_none), error = true)
+                searching = false
+                if (tvSearch === search) tvSearch = null
+                // onStop/onDestroy cancel the search; leaving the screen is not a cue to
+                // start another connection attempt.
+                if (!isFinishing && !isDestroyed) tryNext()
             }
         )
         tvSearch = search
         search.start()
     }
 
-    private fun retryWithFoundTv(saved: PhoneCredentials, host: String, port: Int) {
+    /** One reconnect attempt; [onResult] runs on the main thread with whether it connected. */
+    private fun retryWithFoundTv(
+        saved: PhoneCredentials,
+        host: String,
+        port: Int,
+        onResult: (Boolean) -> Unit
+    ) {
         setOperationBusy(true)
         setStatus(getString(R.string.phone_connecting), error = false)
         thread(name = "CoreEqPhoneRediscover") {
@@ -438,11 +496,13 @@ class PhoneCompanionActivity : AppCompatActivity() {
                     showDashboard(newDashboard)
                     setRemoteEnabled(true)
                     setStatus(getString(R.string.phone_rediscover_ok), error = false)
+                    onResult(true)
                 }
             } catch (e: Exception) {
                 runOnUiThread {
                     setOperationBusy(false)
                     setStatus(getString(R.string.phone_connect_failed, readableError(e)), error = true)
+                    onResult(false)
                 }
             }
         }
@@ -958,24 +1018,45 @@ class PhoneCompanionActivity : AppCompatActivity() {
         tvSearch?.cancel()
         findTvButton.isEnabled = false
         discoveryLine.text = getString(R.string.phone_find_tv_searching)
-        val search = TvDiscovery.Search(
+        // The search starts by itself when nothing is paired, so the user may type an
+        // address (or scan the QR) while it runs. What they entered wins: a found TV only
+        // fills fields that are still as they were when the search started.
+        val hostAtStart = hostField.text?.toString().orEmpty()
+        val portAtStart = portField.text?.toString().orEmpty()
+        lateinit var search: TvDiscovery.Search
+        search = TvDiscovery.Search(
             context = this,
             timeoutMs = FIND_TV_TIMEOUT_MS,
             onFound = { found ->
-                hostField.setText(found.host)
-                portField.setText(found.port.toString())
-                discoveryLine.text = getString(R.string.phone_find_tv_found, found.name, found.host)
-                codeField.requestFocus()
+                val edited = hostField.text?.toString().orEmpty() != hostAtStart ||
+                    portField.text?.toString().orEmpty() != portAtStart
+                if (edited) {
+                    discoveryLine.text = getString(R.string.phone_find_tv_found_kept, found.name, found.host)
+                } else {
+                    hostField.setText(found.host)
+                    portField.setText(found.port.toString())
+                    discoveryLine.text = getString(R.string.phone_find_tv_found, found.name, found.host)
+                    codeField.requestFocus()
+                }
             },
             onDone = { foundAny ->
-                // Runs synchronously when a previous search is cancelled, before the new one is stored.
-                tvSearch = null
+                // Runs synchronously when a previous search is cancelled, before the new one
+                // is stored. stopTvSearch() lets go of it first, which reads as "stopped".
+                val stopped = tvSearch !== search
+                if (tvSearch === search) tvSearch = null
                 findTvButton.isEnabled = true
-                if (!foundAny) discoveryLine.text = getString(R.string.phone_find_tv_none)
+                if (!foundAny) discoveryLine.text = if (stopped) "" else getString(R.string.phone_find_tv_none)
             }
         )
         tvSearch = search
         search.start()
+    }
+
+    /** Ends any running search on purpose (pairing has started), without a "not found". */
+    private fun stopTvSearch() {
+        val search = tvSearch ?: return
+        tvSearch = null
+        search.cancel()
     }
 
     private fun refreshMeasureButtonLabel() {

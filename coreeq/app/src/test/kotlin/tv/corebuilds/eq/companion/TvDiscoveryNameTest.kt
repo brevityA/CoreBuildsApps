@@ -1,6 +1,8 @@
 package tv.corebuilds.eq.companion
 
+import java.net.InetAddress
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -31,5 +33,16 @@ class TvDiscoveryNameTest {
         // The advertised name comes only from the model string, so it can never include a code or token.
         val name = TvDiscovery.displayName("Model")
         assertEquals("Core EQ - Model", name)
+    }
+
+    @Test
+    fun `an IPv6 address listed first does not hide the TV's IPv4 address`() {
+        // Literals only: InetAddress.getByName does no lookup for them.
+        val v6 = InetAddress.getByName("fe80::1")
+        val v4 = InetAddress.getByName("192.168.1.20")
+        assertEquals("192.168.1.20", TvDiscovery.firstIpv4(listOf(v6, v4))?.hostAddress)
+        assertEquals("192.168.1.20", TvDiscovery.firstIpv4(listOf(v4))?.hostAddress)
+        assertNull(TvDiscovery.firstIpv4(listOf(v6)))
+        assertNull(TvDiscovery.firstIpv4(emptyList()))
     }
 }

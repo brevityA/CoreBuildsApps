@@ -404,6 +404,7 @@
     <string name="phone_scan_unavailable">QR scanning is not available on this phone. Enter the TV address and code instead.</string>
     <string name="phone_find_tv_searching">Looking for a Core EQ TV on this network. Open the phone link on the TV first.</string>
     <string name="phone_find_tv_found">Found %1$s at %2$s. Enter the pairing code shown on the TV.</string>
+    <string name="phone_find_tv_found_kept">Found %1$s at %2$s. Kept the address you entered.</string>
     <string name="phone_find_tv_none">No Core EQ TV found. Open the phone link on the TV, check you are on the same Wi-Fi, or enter the address below.</string>
     <string name="phone_not_paired">No TV paired</string>
     <string name="phone_saved_not_connected">TV saved · not connected</string>
@@ -413,6 +414,7 @@
     <string name="phone_pairing">Pairing with the TV…</string>
     <string name="phone_pair_success">Phone paired. The code can no longer be reused.</string>
     <string name="phone_pair_failed">Pairing failed: %1$s</string>
+    <string name="phone_paired_not_loaded">Phone paired, but the TV did not answer afterwards: %1$s. Press Connect / refresh to try again.</string>
     <string name="phone_pair_first">Pair this phone on the TV first, then connect.</string>
     <string name="phone_connecting">Connecting to Core EQ on the local network…</string>
     <string name="phone_connect_failed">Could not connect: %1$s</string>
