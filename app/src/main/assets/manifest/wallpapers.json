@@ -3,7 +3,7 @@
   "version": "6.0",
   "author": "brevityA",
   "brand_guide": "Core-Builds Brand Guide v1.0 (2026-08-11)",
-  "count": 118,
+  "count": 126,
   "wallpapers": [
     {
       "name": "25 Orbitals",
@@ -430,14 +430,16 @@
       "series": "series-6-circuit-core",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-6-circuit-core/corebuilds-79-circuit-nexus.jpg",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-79-circuit-nexus.jpg",
-      "resolution": "1376x768"
+      "resolution": "1376x768",
+      "since": "2.4.0"
     },
     {
       "name": "80 Circuit Vault",
       "series": "series-6-circuit-core",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-6-circuit-core/corebuilds-80-circuit-vault.jpg",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-80-circuit-vault.jpg",
-      "resolution": "1376x768"
+      "resolution": "1376x768",
+      "since": "2.4.0"
     },
     {
       "name": "81 Laser Dusk",
@@ -764,6 +766,38 @@
       "since": "2.4.0"
     },
     {
+      "name": "143 River Delta at Night",
+      "series": "series-12-earth",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-12-earth/corebuilds-143-river-delta-at-night.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-143-river-delta-at-night.jpg",
+      "resolution": "1376x768",
+      "since": "2.4.0"
+    },
+    {
+      "name": "144 Cyclone Eye at Terminator",
+      "series": "series-12-earth",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-12-earth/corebuilds-144-cyclone-eye-at-terminator.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-144-cyclone-eye-at-terminator.jpg",
+      "resolution": "1376x768",
+      "since": "2.4.0"
+    },
+    {
+      "name": "145 Lightning from Orbit",
+      "series": "series-12-earth",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-12-earth/corebuilds-145-lightning-from-orbit.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-145-lightning-from-orbit.jpg",
+      "resolution": "1376x768",
+      "since": "2.4.0"
+    },
+    {
+      "name": "146 Dunes from Orbit",
+      "series": "series-12-earth",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-12-earth/corebuilds-146-dunes-from-orbit.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-146-dunes-from-orbit.jpg",
+      "resolution": "1376x768",
+      "since": "2.4.0"
+    },
+    {
       "name": "117 Aurora Fjord",
       "series": "series-13-wild",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-13-wild/corebuilds-117-aurora-fjord.jpg",
@@ -824,6 +858,38 @@
       "series": "series-13-wild",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-13-wild/corebuilds-124-lightning-plains.jpg",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-124-lightning-plains.jpg",
+      "resolution": "1376x768",
+      "since": "2.4.0"
+    },
+    {
+      "name": "147 Blue Hour Lake",
+      "series": "series-13-wild",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-13-wild/corebuilds-147-blue-hour-lake.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-147-blue-hour-lake.jpg",
+      "resolution": "1376x768",
+      "since": "2.4.0"
+    },
+    {
+      "name": "148 Sea Cave Stars",
+      "series": "series-13-wild",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-13-wild/corebuilds-148-sea-cave-stars.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-148-sea-cave-stars.jpg",
+      "resolution": "1376x768",
+      "since": "2.4.0"
+    },
+    {
+      "name": "149 Moonlit Forest",
+      "series": "series-13-wild",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-13-wild/corebuilds-149-moonlit-forest.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-149-moonlit-forest.jpg",
+      "resolution": "1376x768",
+      "since": "2.4.0"
+    },
+    {
+      "name": "150 Canyon Night",
+      "series": "series-13-wild",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-13-wild/corebuilds-150-canyon-night.jpg",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-150-canyon-night.jpg",
       "resolution": "1376x768",
       "since": "2.4.0"
     },

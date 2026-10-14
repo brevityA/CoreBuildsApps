@@ -71,8 +71,8 @@ class ManifestTests(unittest.TestCase):
             # lands, and never leave a series at an odd count.
             "series-10-cinema": 6,
             "series-11-icon-echo": 12,
-            "series-12-earth": 8,
-            "series-13-wild": 8,
+            "series-12-earth": 12,
+            "series-13-wild": 12,
             "series-14-flux": 12,
         })
 

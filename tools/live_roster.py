@@ -17,7 +17,7 @@ Sets, in browser order (the Live chip shows them in this order):
 
   Motion      32–43  series-2-motion walls 25–32, 51–54      build_still_loops
   Deep Space  11–22  series-9-deep-space walls 85–96          build_still_loops
-  Cinema      23–28  series-10-cinema walls 97–102            build_cinema_wallpapers
+  Cinema      23–28, 53–58  series-10-cinema walls 97–102, 151–156  build_cinema_wallpapers
   Icon Echo   29–31, 44–52  series-11-icon-echo walls 104–106, 103, 107–108,
                             133–138                     build_still_loops
 """
@@ -119,6 +119,12 @@ CINEMA = _set("Cinema", "series-10-cinema", "cinema-", [
     (26, 100, "neon-lounge", "Neon Lounge"),
     (27, 101, "late-rentals", "Late Rentals"),
     (28, 102, "box-office", "Box Office"),
+    (53, 151, "drive-in", "Drive-In"),
+    (54, 152, "aisle-lights", "Aisle Lights"),
+    (55, 153, "film-reel", "Film Reel"),
+    (56, 154, "popcorn-stand", "Popcorn Stand"),
+    (57, 155, "exit-sign", "Exit Sign"),
+    (58, 156, "intermission", "Intermission"),
 ])
 
 # 29–31 keep the file names 2.3.x shipped (no "icon-echo-" infix, and 29
