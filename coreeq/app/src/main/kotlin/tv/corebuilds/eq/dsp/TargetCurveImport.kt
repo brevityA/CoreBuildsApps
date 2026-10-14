@@ -48,7 +48,13 @@ object TargetCurveImport {
         if (sorted.size < 2) return Result.Error("A target needs at least two different frequencies.")
 
         val reference = CorrectionImport.interpolateGraphic(sorted, doubleArrayOf(REF_HZ))[0]
-        val normalised = sorted.map { (f, g) -> f to (g - reference) }
+        // Pin 1 kHz before limiting. Without a point there, clamping the two neighbours by
+        // different amounts moves the interpolated 1 kHz value off 0 dB (100 Hz −20 dB and
+        // 10 kHz +20 dB limit to −12 / +6 and read −3 dB at 1 kHz). The pinned point lies on
+        // the normalised curve, so it changes nothing else.
+        val anchored = if (sorted.any { it.first == REF_HZ }) sorted
+            else (sorted + (REF_HZ to reference)).sortedBy { it.first }
+        val normalised = anchored.map { (f, g) -> f to (g - reference) }
         val limited = normalised.map { (f, g) ->
             f to g.coerceIn(-CorrectionLimits.MAX_CUT_DB, CorrectionLimits.MAX_BOOST_DB)
         }

@@ -45,7 +45,9 @@ object PostCorrectionCheck {
                 worstDb = diff
             }
         }
-        if (count == 0) return Result(0, null, null, null)
+        // Below MIN_BANDS the figures would describe a handful of bands as if they were the
+        // room, so only the count goes back.
+        if (count < MIN_BANDS) return Result(count, null, null, null)
         return Result(count, sqrt(sumSquares / count), worstHz, worstDb)
     }
 }

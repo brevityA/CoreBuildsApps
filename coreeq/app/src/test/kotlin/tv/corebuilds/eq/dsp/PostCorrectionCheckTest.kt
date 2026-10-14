@@ -10,11 +10,14 @@ class PostCorrectionCheckTest {
 
     @Test
     fun `ignores bands outside the trusted 40 Hz to 8 kHz window`() {
-        val centres = doubleArrayOf(20.0, 100.0, 1000.0, 8000.0, 16000.0)
-        val measured = doubleArrayOf(30.0, 1.0, 0.0, 0.0, -30.0)
+        // Eight trusted bands from 100 Hz to 8 kHz, between 20 Hz and 16 kHz bands whose
+        // large errors must not count.
+        val trusted = doubleArrayOf(100.0, 200.0, 400.0, 800.0, 1000.0, 2000.0, 4000.0, 8000.0)
+        val centres = doubleArrayOf(20.0) + trusted + doubleArrayOf(16000.0)
+        val measured = doubleArrayOf(30.0, 1.0) + DoubleArray(7) + doubleArrayOf(-30.0)
         val target = DoubleArray(centres.size)
         val result = PostCorrectionCheck.residual(centres, measured, target)
-        assertEquals(3, result.bands)
+        assertEquals(8, result.bands)
         assertEquals(100.0, result.worstHz!!, 1e-9)
     }
 
@@ -34,8 +37,12 @@ class PostCorrectionCheckTest {
     @Test
     fun `withholds the summary when there are too few bands`() {
         val centres = doubleArrayOf(100.0, 200.0)
-        val result = PostCorrectionCheck.residual(centres, DoubleArray(2), DoubleArray(2))
+        val result = PostCorrectionCheck.residual(centres, doubleArrayOf(4.0, 0.0), DoubleArray(2))
         assertFalse(result.sufficient)
+        assertEquals(2, result.bands)
+        assertNull(result.rmsDb)
+        assertNull(result.worstHz)
+        assertNull(result.worstDb)
     }
 
     @Test

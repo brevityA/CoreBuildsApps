@@ -30,6 +30,16 @@ class TargetCurveImportTest {
     }
 
     @Test
+    fun `limiting keeps 1 kHz at 0 dB when the file has no 1 kHz point`() {
+        val target = ok("GraphicEQ: 100 -20; 10000 20")
+        val db = TargetCurveImport.targetDb(target.points, doubleArrayOf(100.0, 1000.0, 10000.0))
+        assertEquals(-12.0, db[0], 1e-9)
+        assertEquals(0.0, db[1], 1e-9)
+        assertEquals(6.0, db[2], 1e-9)
+        assertTrue(target.notes.any { it.contains("limited") })
+    }
+
+    @Test
     fun `limits gains to the correction budget and says so`() {
         val target = ok("GraphicEQ: 20 -20; 1000 0")
         assertEquals(-12.0, target.points[0].second, 1e-9)
