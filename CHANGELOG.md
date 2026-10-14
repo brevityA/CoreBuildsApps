@@ -105,6 +105,16 @@ All notable changes to the Core Builds Icon Pack. Format follows
   (Nova, Lawnchair, Apex, ADW) has no banner surface, so a first run there
   starts on glyphs rather than on 16:9 cards it can never apply. TV
   launchers and unknown HOMEs keep banners; a choice once made is kept.
+- **Motion, re-authored.** Walls 25–32 (Orbitals, Warp, Fogbanks, Spiral,
+  Slipstream, Embers, Tracer, Pendulum) were hand-made exports with no
+  generator in the repo: thin single-tone lines, flat at TV distance. They
+  are now drawn by `tools/build_motion_wallpapers.py` as long-exposure
+  light — every trail a hot core inside a wide glow, a bright head where
+  the light is now, depth from layers at different blur, a calm lower
+  third — keeping each wall's number, name and subject. Slipstream's
+  streamlines are integrated through a real potential flow round the
+  body; Pendulum is a decaying harmonograph. Their eight loops (32–39)
+  are re-rendered from the new stills.
 - **Circuit Core, re-rendered.** Walls 41–50 are new renders of the same
   ten ideas as one coherent set - a single subject each (a blooming core,
   circuit shards, a cooling cinder, a monolith, a foundry, a conduit, a

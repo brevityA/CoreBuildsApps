@@ -10,56 +10,64 @@
       "series": "series-2-motion",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-2-motion/corebuilds-25-orbitals.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-25-orbitals.jpg",
-      "resolution": "3840x2160"
+      "resolution": "3840x2160",
+      "since": "2.4.0"
     },
     {
       "name": "26 Warp",
       "series": "series-2-motion",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-2-motion/corebuilds-26-warp.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-26-warp.jpg",
-      "resolution": "3840x2160"
+      "resolution": "3840x2160",
+      "since": "2.4.0"
     },
     {
       "name": "27 Fogbanks",
       "series": "series-2-motion",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-2-motion/corebuilds-27-fogbanks.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-27-fogbanks.jpg",
-      "resolution": "3840x2160"
+      "resolution": "3840x2160",
+      "since": "2.4.0"
     },
     {
       "name": "28 Spiral",
       "series": "series-2-motion",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-2-motion/corebuilds-28-spiral.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-28-spiral.jpg",
-      "resolution": "3840x2160"
+      "resolution": "3840x2160",
+      "since": "2.4.0"
     },
     {
       "name": "29 Slipstream",
       "series": "series-2-motion",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-2-motion/corebuilds-29-slipstream.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-29-slipstream.jpg",
-      "resolution": "3840x2160"
+      "resolution": "3840x2160",
+      "since": "2.4.0"
     },
     {
       "name": "30 Embers",
       "series": "series-2-motion",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-2-motion/corebuilds-30-embers.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-30-embers.jpg",
-      "resolution": "3840x2160"
+      "resolution": "3840x2160",
+      "since": "2.4.0"
     },
     {
       "name": "31 Tracer",
       "series": "series-2-motion",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-2-motion/corebuilds-31-tracer.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-31-tracer.jpg",
-      "resolution": "3840x2160"
+      "resolution": "3840x2160",
+      "since": "2.4.0"
     },
     {
       "name": "32 Pendulum",
       "series": "series-2-motion",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-2-motion/corebuilds-32-pendulum.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-32-pendulum.jpg",
-      "resolution": "3840x2160"
+      "resolution": "3840x2160",
+      "since": "2.4.0"
     },
     {
       "name": "51 Vortex",
