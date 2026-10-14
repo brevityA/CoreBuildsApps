@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.dsp.Correction
+import tv.corebuilds.eq.dsp.CustomTarget
 import tv.corebuilds.eq.dsp.DspConstants
 import tv.corebuilds.eq.dsp.ImportResult
 import tv.corebuilds.eq.dsp.MeasurementQuality
@@ -30,6 +31,7 @@ import tv.corebuilds.eq.dsp.RewImport
 import tv.corebuilds.eq.dsp.Sweep
 import tv.corebuilds.eq.dsp.SweepAnalysis
 import tv.corebuilds.eq.dsp.SweepResult
+import tv.corebuilds.eq.dsp.TargetCurveImport
 import tv.corebuilds.eq.dsp.Targets
 import tv.corebuilds.eq.export.CaptureInfo
 import tv.corebuilds.eq.export.CurvePoint
@@ -89,6 +91,8 @@ class MeasureActivity : TvActivity() {
 
     private var roomIndex = 1
     private var targetIndex = 0
+    private var useCustomTarget = false
+    private lateinit var btnTargetImport: Button
     private var result: SweepResult? = null
     /** A REW import replaces the sweep result for display and saving (plan M10). */
     private var importResult: ImportResult? = null
@@ -137,10 +141,12 @@ class MeasureActivity : TvActivity() {
         btnImport = findViewById(R.id.btn_measure_import)
         btnRoom = findViewById(R.id.btn_room_size)
         btnTarget = findViewById(R.id.btn_target)
+        btnTargetImport = findViewById(R.id.btn_target_import)
 
         val prefs = getSharedPreferences(PREFS, MODE_PRIVATE)
         roomIndex = prefs.getInt(KEY_ROOM, 1).coerceIn(ROOMS.indices)
         targetIndex = prefs.getInt(KEY_TARGET, 0).coerceIn(TARGETS.indices)
+        restoreCustomTarget(prefs)
 
         btnRoom.setOnClickListener {
             roomIndex = (roomIndex + 1) % ROOMS.size
@@ -149,11 +155,17 @@ class MeasureActivity : TvActivity() {
             refreshChoices()
         }
         btnTarget.setOnClickListener {
-            targetIndex = (targetIndex + 1) % TARGETS.size
-            prefs.edit().putInt(KEY_TARGET, targetIndex).apply()
+            // The first press leaves an imported target and returns to the built-in choice.
+            if (useCustomTarget) {
+                useCustomTarget = false
+            } else {
+                targetIndex = (targetIndex + 1) % TARGETS.size
+            }
+            prefs.edit().putInt(KEY_TARGET, targetIndex).putBoolean(KEY_USE_CUSTOM, useCustomTarget).apply()
             clearRepeatComparisonForSettingsChange()
             refreshChoices()
         }
+        btnTargetImport.setOnClickListener { pickTargetFile() }
         btnStart.setOnClickListener { startMeasurement() }
         btnRepeat.setOnClickListener { startRepeatMeasurement() }
         btnStop.setOnClickListener { cancelMeasurement("Stopped. Nothing was saved.") }
@@ -167,7 +179,11 @@ class MeasureActivity : TvActivity() {
 
     private fun refreshChoices() {
         btnRoom.text = getString(R.string.measure_room_button, ROOMS[roomIndex].label)
-        btnTarget.text = getString(R.string.measure_target_button, TARGETS[targetIndex].label)
+        btnTarget.text = if (useCustomTarget) {
+            getString(R.string.measure_target_custom)
+        } else {
+            getString(R.string.measure_target_button, TARGETS[targetIndex].label)
+        }
         val capture = lastCapture
         val imported = importInput
         if (imported != null && importResult != null && !measuring && !importing) {
@@ -179,7 +195,7 @@ class MeasureActivity : TvActivity() {
             // Lock the controls until the matching analysis completes so Save
             // cannot combine a new target label with the previous correction.
             val generation = ++sweepReanalysisGeneration
-            val target = TARGETS[targetIndex].key
+            val target = activeTargetKey()
             val volume = ROOMS[roomIndex].volumeM3
             setSweepReanalysisBusy(true)
             textStatus.text = getString(R.string.measure_analysing)
@@ -229,8 +245,8 @@ class MeasureActivity : TvActivity() {
         graphMeasure.setData(
             centres,
             listOf(Series("TARGET", ContextCompat.getColor(this, R.color.cb_signal_cyan),
-                Targets.targetCurve(TARGETS[targetIndex].key, centres))),
-            "TARGET · ${TARGETS[targetIndex].label.uppercase(Locale.US)}",
+                Targets.targetCurve(activeTargetKey(), centres))),
+            "TARGET · ${activeTargetTitle().uppercase(Locale.US)}",
             20.0,
             Correction.transitionHz(ROOMS[roomIndex].volumeM3, null)
         )
@@ -367,7 +383,7 @@ class MeasureActivity : TvActivity() {
         val generation = measurementGeneration
         val selectedTargetIndex = targetIndex
         val selectedRoomIndex = roomIndex
-        val selectedTarget = TARGETS[selectedTargetIndex].key
+        val selectedTarget = activeTargetKey()
         val selectedVolume = ROOMS[selectedRoomIndex].volumeM3
         btnStart.isEnabled = false
         btnRepeat.isEnabled = false
@@ -621,6 +637,68 @@ class MeasureActivity : TvActivity() {
     }
 
     /** REW measurement import (plan M10): File → Export → Measurement as text. */
+    /** The key the analysis and the saved profile use: "custom" while an imported target is active. */
+    private fun activeTargetKey(): String =
+        if (useCustomTarget && CustomTarget.points != null) CustomTarget.KEY else TARGETS[targetIndex].key
+
+    private fun activeTargetTitle(): String =
+        if (useCustomTarget && CustomTarget.points != null) getString(R.string.measure_target_custom_title)
+        else TARGETS[targetIndex].label
+
+    private fun restoreCustomTarget(prefs: android.content.SharedPreferences) {
+        useCustomTarget = prefs.getBoolean(KEY_USE_CUSTOM, false)
+        val saved = prefs.getString(KEY_CUSTOM_TARGET, null)
+        val parsed = saved?.let { TargetCurveImport.parse(it) }
+        CustomTarget.points = (parsed as? TargetCurveImport.Result.Ok)?.points
+        if (CustomTarget.points == null) useCustomTarget = false
+    }
+
+    private fun pickTargetFile() {
+        if (measuring || importing) return
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            .addCategory(Intent.CATEGORY_OPENABLE)
+            .setType("text/*")
+        try {
+            startActivityForResult(intent, REQ_TARGET_IMPORT)
+        } catch (e: ActivityNotFoundException) {
+            textStatus.text = getString(R.string.measure_target_import_failed,
+                getString(R.string.measure_target_picker_missing))
+        }
+    }
+
+    /** Reads a GraphicEQ file as the target. Nothing changes unless the whole file parses. */
+    private fun loadCustomTarget(uri: Uri) {
+        val text = try {
+            contentResolver.openInputStream(uri)?.use { stream ->
+                val bytes = stream.readNBytes(TargetCurveImport.MAX_BYTES + 1)
+                if (bytes.size > TargetCurveImport.MAX_BYTES) null else String(bytes, Charsets.UTF_8)
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Target file could not be read", e)
+            null
+        }
+        if (text == null) {
+            textStatus.text = getString(R.string.measure_target_import_failed,
+                getString(R.string.measure_target_unreadable))
+            return
+        }
+        when (val parsed = TargetCurveImport.parse(text)) {
+            is TargetCurveImport.Result.Error ->
+                textStatus.text = getString(R.string.measure_target_import_failed, parsed.message)
+            is TargetCurveImport.Result.Ok -> {
+                CustomTarget.points = parsed.points
+                useCustomTarget = true
+                getSharedPreferences(PREFS, MODE_PRIVATE).edit()
+                    .putString(KEY_CUSTOM_TARGET, text)
+                    .putBoolean(KEY_USE_CUSTOM, true)
+                    .apply()
+                clearRepeatComparisonForSettingsChange()
+                refreshChoices()
+                if (parsed.notes.isNotEmpty()) textStatus.text = parsed.notes.joinToString(" ")
+            }
+        }
+    }
+
     private fun pickRewImport() {
         if (measuring || importing) return
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
@@ -635,7 +713,7 @@ class MeasureActivity : TvActivity() {
 
     private fun importRewFile(uri: Uri) {
         if (measuring || importing) return
-        val target = TARGETS[targetIndex].key
+        val target = activeTargetKey()
         val volume = ROOMS[roomIndex].volumeM3
         setImportBusy(true)
         textStatus.text = getString(R.string.measure_importing)
@@ -694,7 +772,7 @@ class MeasureActivity : TvActivity() {
     }
 
     private fun reanalyzeImport(source: RewMeasurement) {
-        val target = TARGETS[targetIndex].key
+        val target = activeTargetKey()
         val volume = ROOMS[roomIndex].volumeM3
         setImportBusy(true)
         textStatus.text = getString(R.string.measure_importing)
@@ -886,7 +964,7 @@ class MeasureActivity : TvActivity() {
             id = "profile-$now",
             name = if (output != null) "$baseName · ${output.name}" else baseName,
             timestampMs = now,
-            target = TARGETS[targetIndex].key,
+            target = activeTargetKey(),
             micType = micName ?: "microphone",
             captureInfo = captureInfo,
             repeatabilityCheck = savedRepeatability,
@@ -935,7 +1013,7 @@ class MeasureActivity : TvActivity() {
             id = "profile-$now",
             name = if (output != null) "$baseName · ${output.name}" else baseName,
             timestampMs = now,
-            target = TARGETS[targetIndex].key,
+            target = activeTargetKey(),
             micType = "REW import",
             deviceName = "REW",
             stimulus = "rew_import",
@@ -969,6 +1047,11 @@ class MeasureActivity : TvActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQ_TARGET_IMPORT) {
+            val targetUri = data?.data
+            if (resultCode == RESULT_OK && targetUri != null) loadCustomTarget(targetUri)
+            return
+        }
         if (requestCode != REQ_IMPORT) return
         val uri = data?.data
         if (resultCode == RESULT_OK && uri != null) {
@@ -1017,6 +1100,7 @@ class MeasureActivity : TvActivity() {
         private const val TAG = "CoreEqMeasure"
         private const val REQ_MIC = 42
         private const val REQ_IMPORT = 43
+        private const val REQ_TARGET_IMPORT = 44
         private const val REW_IMPORT_MEASUREMENT_NOTE =
             "REW magnitude-only import: no decay analysis; optional phase column is not analysed; room size cannot inform transition; transition defaults to 300 Hz; minimum-phase gate unverified."
         private const val REW_IMPORT_OUTPUT_ESTIMATE_NOTE =
@@ -1028,6 +1112,8 @@ class MeasureActivity : TvActivity() {
         private const val PREFS = "core_eq_measure"
         private const val KEY_ROOM = "room_index"
         private const val KEY_TARGET = "target_index"
+        private const val KEY_USE_CUSTOM = "use_custom_target"
+        private const val KEY_CUSTOM_TARGET = "custom_target_text"
         /** Silence recorded before the sweep, so the noise estimate and latency have room. */
         private const val LEAD_SECONDS = 0.5
         private const val CLIP_DBFS = -0.5

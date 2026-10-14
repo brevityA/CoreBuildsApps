@@ -120,6 +120,12 @@
     <string name="measure_profile_name">Room · %1$s</string>
     <string name="measure_room_button">Room size: %1$s</string>
     <string name="measure_target_button">Target: %1$s</string>
+    <string name="measure_target_custom">Target: Imported file</string>
+    <string name="measure_target_custom_title">Imported file</string>
+    <string name="measure_target_import_button">Import target file (GraphicEQ)</string>
+    <string name="measure_target_import_failed">Target not imported: %1$s</string>
+    <string name="measure_target_unreadable">the file could not be read</string>
+    <string name="measure_target_picker_missing">this TV has no file picker; use a TV file-transfer app, then try again</string>
 
     <!-- Correction switch -->
     <string name="correction_on">Correction: On</string>

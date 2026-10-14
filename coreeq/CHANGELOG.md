@@ -8,7 +8,8 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
-- **Research building blocks (not yet wired into the app).** Three pure-logic modules with unit tests: `TargetCurveImport` reads a GraphicEQ file as a target normalised to 0 dB at 1 kHz and held to the correction budget; `PostCorrectionCheck` describes the residual between a re-measurement and its target, using only the 40 Hz to 8 kHz window and withholding the summary below eight bands; `AutoApplyPolicy` decides auto-apply once per device, then suggest-only. No screen, storage or apply path uses them yet, so behaviour is unchanged in this build.
+- **Import a target curve on the TV.** Measure has a new **Import target file (GraphicEQ)** button. The file is read as a target normalised to 0 dB at 1 kHz and held to the same +6 / −12 dB budget as a correction. Choosing a built-in target again returns to it. The imported curve is saved on the TV, and profiles saved with it are recorded as `custom`. The phone companion still uses built-in targets only.
+- **Research building blocks (not yet wired into the app).** `PostCorrectionCheck` describes the residual between a re-measurement and its target, using only the 40 Hz to 8 kHz window and withholding the summary below eight bands. `AutoApplyPolicy` decides auto-apply once per device, then suggest-only. Neither has a screen or apply path yet, so behaviour is unchanged for them.
 
 - **Pairing QR lists up to three TV addresses.** A TV with more than one LAN address puts them all in the QR. The phone tries the next address only when a connection fails, so a wrong first interface no longer blocks pairing. A wrong code is still reported straight away.
 

@@ -60,4 +60,25 @@ class TargetCurveImportTest {
         assertEquals(0.0, db[1], 1e-9)
         assertEquals(4.0, db[2], 1e-9)
     }
+
+    @Test
+    fun `the custom key routes the imported curve through Targets`() {
+        val points = ok("GraphicEQ: 100 -4; 10000 4").points
+        CustomTarget.points = points
+        try {
+            val centres = doubleArrayOf(100.0, 1000.0, 10000.0)
+            val viaTargets = Targets.targetCurve(CustomTarget.KEY, centres)
+            assertEquals(TargetCurveImport.targetDb(points, centres).toList(), viaTargets.toList())
+        } finally {
+            CustomTarget.points = null
+        }
+    }
+
+    @Test
+    fun `the custom key is flat when nothing is imported`() {
+        CustomTarget.points = null
+        val db = Targets.targetCurve(CustomTarget.KEY, doubleArrayOf(100.0, 1000.0))
+        assertEquals(0.0, db[0], 1e-9)
+        assertEquals(0.0, db[1], 1e-9)
+    }
 }
