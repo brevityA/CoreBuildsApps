@@ -670,8 +670,17 @@ class MeasureActivity : TvActivity() {
     private fun loadCustomTarget(uri: Uri) {
         val text = try {
             contentResolver.openInputStream(uri)?.use { stream ->
-                val bytes = stream.readNBytes(TargetCurveImport.MAX_BYTES + 1)
-                if (bytes.size > TargetCurveImport.MAX_BYTES) null else String(bytes, Charsets.UTF_8)
+                // Read at most MAX_BYTES + 1 bytes; readNBytes needs API 33, and minSdk is 30.
+                val out = java.io.ByteArrayOutputStream()
+                val buf = ByteArray(4096)
+                var total = 0
+                while (total <= TargetCurveImport.MAX_BYTES) {
+                    val n = stream.read(buf, 0, minOf(buf.size, TargetCurveImport.MAX_BYTES + 1 - total))
+                    if (n < 0) break
+                    out.write(buf, 0, n)
+                    total += n
+                }
+                if (total > TargetCurveImport.MAX_BYTES) null else out.toString(Charsets.UTF_8.name())
             }
         } catch (e: Exception) {
             Log.w(TAG, "Target file could not be read", e)
