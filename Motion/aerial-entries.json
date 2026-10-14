@@ -211,6 +211,48 @@
       "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-28-cinema-box-office.mp4"
     },
     {
+      "id": "coremotion_live_53_cinema_drive_in",
+      "accessibilityLabel": "Drive-In \u2014 Core Motion \u00b7 Cinema by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-53-cinema-drive-in.mp4"
+    },
+    {
+      "id": "coremotion_live_54_cinema_aisle_lights",
+      "accessibilityLabel": "Aisle Lights \u2014 Core Motion \u00b7 Cinema by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-54-cinema-aisle-lights.mp4"
+    },
+    {
+      "id": "coremotion_live_55_cinema_film_reel",
+      "accessibilityLabel": "Film Reel \u2014 Core Motion \u00b7 Cinema by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-55-cinema-film-reel.mp4"
+    },
+    {
+      "id": "coremotion_live_56_cinema_popcorn_stand",
+      "accessibilityLabel": "Popcorn Stand \u2014 Core Motion \u00b7 Cinema by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-56-cinema-popcorn-stand.mp4"
+    },
+    {
+      "id": "coremotion_live_57_cinema_exit_sign",
+      "accessibilityLabel": "Exit Sign \u2014 Core Motion \u00b7 Cinema by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-57-cinema-exit-sign.mp4"
+    },
+    {
+      "id": "coremotion_live_58_cinema_intermission",
+      "accessibilityLabel": "Intermission \u2014 Core Motion \u00b7 Cinema by Core Builds",
+      "type": "aerial",
+      "timeOfDay": "night",
+      "url-1080-SDR": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-58-cinema-intermission.mp4"
+    },
+    {
       "id": "coremotion_live_29_signal_sweep",
       "accessibilityLabel": "Signal Red \u2014 Core Motion \u00b7 Icon Echo by Core Builds",
       "type": "aerial",

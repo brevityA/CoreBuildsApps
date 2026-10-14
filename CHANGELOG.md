@@ -11,11 +11,12 @@ All notable changes to the Core Builds Icon Pack. Format follows
 ### Added
 
 - **Live is a set of its own.** The Wallpapers browser's *Live* chip now
-  owns every loop; a series chip shows stills only. Forty-two loops, each
+  owns every loop; a series chip shows stills only. Forty-eight loops, each
   the moving form of a committed wall: the twelve Motion walls (new, clips
   32–43), the twelve Deep Space walls (re-rendered from the 2.4.0 stills,
-  which the old loops predated), the six Cinema scenes, and all twelve
-  Icon Echo walls (29–31 re-rendered, 44–52 new). One roster
+  which the old loops predated), all twelve Cinema scenes (23–28, and
+  53–58 for the six new scenes), and all twelve Icon Echo walls (29–31
+  re-rendered, 44–52 new). One roster
   (`tools/live_roster.py`) feeds the renderers, the feed, `LiveLoop.kt`
   and the tests.
 - **Live loops, remade.** The ten loops that opened the set were ffmpeg
@@ -44,16 +45,24 @@ All notable changes to the Core Builds Icon Pack. Format follows
   with the instruction written into the row rather than a toast. Until now
   the only way to learn about a new build was the startup check, which
   users with update checks off, or who had pressed Later, never saw again.
-- **Earth wallpaper series.** Eight walls of the planet from orbit (series
-  12, walls 109–116): city lights, aurora from above, a crescent, a storm,
-  an orbital sunrise, Earth over the Moon, a coastline at night, an ice
-  sheet. Generated imagery, shipped at the 1376×768 it was made at under the
+- **Earth wallpaper series.** Twelve walls of the planet from orbit (series
+  12, walls 109–116 and 143–146): city lights, aurora from above, a
+  crescent, a storm, an orbital sunrise, Earth over the Moon, a coastline at
+  night, an ice sheet, a river delta at night, a cyclone eye on the
+  terminator, lightning from orbit, dunes from orbit. Generated imagery, shipped at the 1376×768 it was made at under the
   same honesty rule as Circuit Core.
-- **Wild wallpaper series.** Eight nature and landscape-photography walls
-  (series 13, walls 117–124): aurora over a fjord, a forest in fog, the
-  Milky Way over dunes, a glacier lagoon, a volcano at night, bioluminescent
-  surf, alpenglow, a plains thunderstorm. Generated the same way as Earth,
-  at the same resolution. With Fieldwork gone the collection stays at 108.
+- **Wild wallpaper series.** Twelve nature and landscape-photography walls
+  (series 13, walls 117–124 and 147–150): aurora over a fjord, a forest in
+  fog, the Milky Way over dunes, a glacier lagoon, a volcano at night,
+  bioluminescent surf, alpenglow, a plains thunderstorm, a blue-hour lake, a
+  sea cave under stars, a moonlit forest, a canyon at night. Generated the
+  same way as Earth, at the same resolution.
+- **Cinema to twelve.** Six more scenes in the same layered engine (walls
+  151–156): Drive-In, Aisle Lights, Film Reel, Popcorn Stand, Exit Sign,
+  Intermission — each a still and a seamless 60 fps loop (clips 53–58).
+- **Every series is twelve walls.** Motion, Horizons, Circuit Core,
+  Retrowave, AMOLED, Deep Space, Cinema, Icon Echo, Earth, Wild and Flux:
+  eleven series of twelve, 132 walls in all.
 - **Flux wallpaper series.** Eight 4K abstract walls (series 14, walls
   125–132) — domain-warped ink, folded silk, a plasma core, streamlines,
   glass facets, caustics, a veil, a bent grid — procedural and seeded in the
@@ -76,7 +85,7 @@ All notable changes to the Core Builds Icon Pack. Format follows
   after *All*: every wall stamped with this release in the manifest (the
   three new series plus the refreshed Horizons and Deep Space), so a
   returning user finds what changed without scanning the whole grid. The home
-  rail's Wallpapers row says *118 walls · N new in this release* until the
+  rail's Wallpapers row says *132 walls · N new in this release* until the
   chip has been seen once. Manifest entries carry an optional `since`
   version; the chip counts the newest.
 - **Card floor in the wallpaper preview.** Under the launcher-seed swatches

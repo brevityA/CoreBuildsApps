@@ -210,6 +210,48 @@
     "url_1080p": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-28-cinema-box-office.mp4"
   },
   {
+    "location": "Core Motion \u00b7 Cinema",
+    "title": "Drive-In",
+    "author": "Core Builds",
+    "url_img": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/thumbs/coremotion-live-53-cinema-drive-in.jpg",
+    "url_1080p": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-53-cinema-drive-in.mp4"
+  },
+  {
+    "location": "Core Motion \u00b7 Cinema",
+    "title": "Aisle Lights",
+    "author": "Core Builds",
+    "url_img": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/thumbs/coremotion-live-54-cinema-aisle-lights.jpg",
+    "url_1080p": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-54-cinema-aisle-lights.mp4"
+  },
+  {
+    "location": "Core Motion \u00b7 Cinema",
+    "title": "Film Reel",
+    "author": "Core Builds",
+    "url_img": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/thumbs/coremotion-live-55-cinema-film-reel.jpg",
+    "url_1080p": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-55-cinema-film-reel.mp4"
+  },
+  {
+    "location": "Core Motion \u00b7 Cinema",
+    "title": "Popcorn Stand",
+    "author": "Core Builds",
+    "url_img": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/thumbs/coremotion-live-56-cinema-popcorn-stand.jpg",
+    "url_1080p": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-56-cinema-popcorn-stand.mp4"
+  },
+  {
+    "location": "Core Motion \u00b7 Cinema",
+    "title": "Exit Sign",
+    "author": "Core Builds",
+    "url_img": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/thumbs/coremotion-live-57-cinema-exit-sign.jpg",
+    "url_1080p": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-57-cinema-exit-sign.mp4"
+  },
+  {
+    "location": "Core Motion \u00b7 Cinema",
+    "title": "Intermission",
+    "author": "Core Builds",
+    "url_img": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/thumbs/coremotion-live-58-cinema-intermission.jpg",
+    "url_1080p": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/coremotion-live-58-cinema-intermission.mp4"
+  },
+  {
     "location": "Core Motion \u00b7 Icon Echo",
     "title": "Signal Red",
     "author": "Core Builds",

@@ -1,6 +1,6 @@
 # Core Builds Motion — live wallpapers
 
-Forty-two **seamless 1080p 60 fps loops**, every one the moving form of a
+Forty-eight **seamless 1080p 60 fps loops**, every one the moving form of a
 committed wall in [`Wallpapers/`](../../Wallpapers/README.md). None is a
 stock pattern: until 2.4.0 the set opened with ten ffmpeg test sources
 (`gradients`, `cellauto`, `mandelbrot`, `sierpinski`) with Core Builds names
@@ -17,7 +17,7 @@ renamed or reused.
 |---|---|---|---|---|
 | Motion | 32–43 | 25–32, 51–54 | `tools/build_still_loops.py` | particles and ember heads twinkle, soft light shimmers, the camera drifts |
 | Deep Space | 11–22 | 85–96 | `tools/build_still_loops.py` | stars twinkle on their own phase, nebulae shimmer, parallax drift |
-| Cinema | 23–28 | 97–102 | `tools/build_cinema_wallpapers.py` | drawn as layers: marquee bulbs chase, neon stutters, dust in the beam |
+| Cinema | 23–28, 53–58 | 97–102, 151–156 | `tools/build_cinema_wallpapers.py` | drawn as layers: marquee bulbs chase, neon stutters, dust in the beam |
 | Icon Echo | 29–31, 44–52 | 104–106, 103, 107–108, 133–138 | `tools/build_still_loops.py` | no points to twinkle — the washes breathe, the camera drifts |
 
 Clip 29 keeps its 2.3.x file name `signal-sweep` while being the moving form

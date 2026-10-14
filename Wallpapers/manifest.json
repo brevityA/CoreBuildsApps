@@ -3,7 +3,7 @@
   "version": "6.0",
   "author": "brevityA",
   "brand_guide": "Core-Builds Brand Guide v1.0 (2026-08-11)",
-  "count": 126,
+  "count": 132,
   "wallpapers": [
     {
       "name": "25 Orbitals",
@@ -610,6 +610,54 @@
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-10-cinema/corebuilds-102-box-office.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-102-box-office.jpg",
       "resolution": "3840x2160"
+    },
+    {
+      "name": "151 Drive-In",
+      "series": "series-10-cinema",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-10-cinema/corebuilds-151-drive-in.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-151-drive-in.jpg",
+      "resolution": "3840x2160",
+      "since": "2.4.0"
+    },
+    {
+      "name": "152 Aisle Lights",
+      "series": "series-10-cinema",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-10-cinema/corebuilds-152-aisle-lights.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-152-aisle-lights.jpg",
+      "resolution": "3840x2160",
+      "since": "2.4.0"
+    },
+    {
+      "name": "153 Film Reel",
+      "series": "series-10-cinema",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-10-cinema/corebuilds-153-film-reel.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-153-film-reel.jpg",
+      "resolution": "3840x2160",
+      "since": "2.4.0"
+    },
+    {
+      "name": "154 Popcorn Stand",
+      "series": "series-10-cinema",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-10-cinema/corebuilds-154-popcorn-stand.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-154-popcorn-stand.jpg",
+      "resolution": "3840x2160",
+      "since": "2.4.0"
+    },
+    {
+      "name": "155 Exit Sign",
+      "series": "series-10-cinema",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-10-cinema/corebuilds-155-exit-sign.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-155-exit-sign.jpg",
+      "resolution": "3840x2160",
+      "since": "2.4.0"
+    },
+    {
+      "name": "156 Intermission",
+      "series": "series-10-cinema",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-10-cinema/corebuilds-156-intermission.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-156-intermission.jpg",
+      "resolution": "3840x2160",
+      "since": "2.4.0"
     },
     {
       "name": "103 Thermal Bloom",

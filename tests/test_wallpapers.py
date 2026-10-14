@@ -69,7 +69,7 @@ class ManifestTests(unittest.TestCase):
             # drawn with their loops; Earth and Wild are generated imagery
             # at 1376x768, Circuit Core's precedent) - update these as each
             # lands, and never leave a series at an odd count.
-            "series-10-cinema": 6,
+            "series-10-cinema": 12,
             "series-11-icon-echo": 12,
             "series-12-earth": 12,
             "series-13-wild": 12,

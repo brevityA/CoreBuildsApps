@@ -7,7 +7,7 @@ Plain unittest over the repo tree, no Android SDK (mirrors
 tests/test_wallpaper_export.py). Guards the wiring that would otherwise rot
 silently:
 
-  * the loop catalogue is tools/live_roster.py's forty-two loops, each with a real
+  * the loop catalogue is tools/live_roster.py's forty-eight loops, each with a real
     MP4 in Motion/live/ and a bundled still frame for the grid and the engine
     fallback - a loop with no file is a 404 in the app, a frame with no bundle
     is a blank home screen before the first download
@@ -82,10 +82,10 @@ class LoopCatalogueTests(unittest.TestCase):
         self.assertEqual(feed_files, roster_files, "live-feed.json is not the roster")
         self.assertEqual(self.files, roster_files, "LiveLoop.kt is not the roster")
         self.assertEqual([len(MOTION), len(DEEP_SPACE), len(CINEMA), len(ICON_ECHO)],
-                         [12, 12, 6, 12])
-        self.assertEqual(len(re.findall(r"\bLoop\(", self.loops_body)), 42, "forty-two Loop entries")
-        self.assertEqual(len(self.ids), 42)
-        self.assertEqual(len(set(self.ids)), 42, "loop ids must be unique")
+                         [12, 12, 12, 12])
+        self.assertEqual(len(re.findall(r"\bLoop\(", self.loops_body)), 48, "forty-eight Loop entries")
+        self.assertEqual(len(self.ids), 48)
+        self.assertEqual(len(set(self.ids)), 48, "loop ids must be unique")
         self.assertEqual(self.ids, [c.id for c in ROSTER])
         for c in ROSTER:
             self.assertTrue(c.still.is_file(), f"loop {c.number} has no still: {c.still.name}")
@@ -182,7 +182,7 @@ class LoopCatalogueTests(unittest.TestCase):
         self.assertIn("val stillSeries: String", self.src)
         self.assertEqual(self.loops_body.count("stillSeries = MOTION_SERIES"), 12)
         self.assertEqual(self.loops_body.count("stillSeries = DEEP_SPACE_SERIES"), 12)
-        self.assertEqual(self.loops_body.count("stillSeries = CINEMA_SERIES"), 6)
+        self.assertEqual(self.loops_body.count("stillSeries = CINEMA_SERIES"), 12)
         self.assertEqual(self.loops_body.count("stillSeries = ICON_ECHO_SERIES"), 12)
         self.assertNotIn("series = CINEMA_SERIES", self.loops_body)
         browser = kt("WallpapersActivity.kt")
