@@ -77,7 +77,7 @@
     "app/src/main/res/values/dimens.xml": "a1bc9b63cd27d82092ba302192c431f4d48faf95cc6d590a8fe0cb8f9abd0c1a",
     "app/src/main/res/values/icon_pack.xml": "bd6057f28b76c3dad726e38c0cb252181b8a0e8ff59ca2041506efa38d49a085",
     "app/src/main/res/values/issue_prefill.xml": "fd85418cdd4ccdc59f0f0793b32fc7d96e01f23f80f7f38a3e3d4d7699393ced",
-    "app/src/main/res/values/strings.xml": "469d1371445b2e8fbdd5f501e3d4cc497bdc947e8dd0fe69a25aa2a416a1018d",
+    "app/src/main/res/values/strings.xml": "ff4142ef8cd0ea32636fca5dac05aca7fd00900c3cf84940e92bff7a2616a6ae",
     "app/src/main/res/values/suite_hub.xml": "aff339700a9e6751b31ed189c2695e77ce18b80332f104f94e9235cdd05ef74a",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
     "tools/build_app_ui_mockups.py": "562b6df3758b9fd1ef3f4aafdd01a4833b4629655f26ed983d909b38ac08fb32",
@@ -87,7 +87,7 @@
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "6cfc3ea82b413727bbfb339c83afa89689622152b579e411ea772b1bf9fe8938",
+  "inputs_digest": "46d8fe3f021d20019548a0d4b6bd7f6c09699675b139f86806eeadd7fdd63f68",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
@@ -106,5 +106,5 @@
     "count": 19,
     "digest": "159b5dcf060e19baf12e93e3fccb60382f660442ea3f09ea8d40ba1c4bccda28"
   },
-  "renderer": "python 3.11.2, freetype 2.13.2, layout basic, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
+  "renderer": "python 3.11.17, freetype 2.13.2, layout raqm, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
 }
