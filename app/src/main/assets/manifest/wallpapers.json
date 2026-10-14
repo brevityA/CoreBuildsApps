@@ -672,42 +672,48 @@
       "series": "series-11-icon-echo",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-11-icon-echo/corebuilds-103-thermal-bloom.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-103-thermal-bloom.jpg",
-      "resolution": "3840x2160"
+      "resolution": "3840x2160",
+      "since": "2.4.0"
     },
     {
       "name": "104 Signal Red",
       "series": "series-11-icon-echo",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-11-icon-echo/corebuilds-104-signal-red.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-104-signal-red.jpg",
-      "resolution": "3840x2160"
+      "resolution": "3840x2160",
+      "since": "2.4.0"
     },
     {
       "name": "105 Green Current",
       "series": "series-11-icon-echo",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-11-icon-echo/corebuilds-105-green-current.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-105-green-current.jpg",
-      "resolution": "3840x2160"
+      "resolution": "3840x2160",
+      "since": "2.4.0"
     },
     {
       "name": "106 Molten Orbit",
       "series": "series-11-icon-echo",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-11-icon-echo/corebuilds-106-molten-orbit.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-106-molten-orbit.jpg",
-      "resolution": "3840x2160"
+      "resolution": "3840x2160",
+      "since": "2.4.0"
     },
     {
       "name": "107 Frost Line",
       "series": "series-11-icon-echo",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-11-icon-echo/corebuilds-107-frost-line.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-107-frost-line.jpg",
-      "resolution": "3840x2160"
+      "resolution": "3840x2160",
+      "since": "2.4.0"
     },
     {
       "name": "108 Signal Azure",
       "series": "series-11-icon-echo",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-11-icon-echo/corebuilds-108-signal-azure.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-108-signal-azure.jpg",
-      "resolution": "3840x2160"
+      "resolution": "3840x2160",
+      "since": "2.4.0"
     },
     {
       "name": "133 Violet Stream",

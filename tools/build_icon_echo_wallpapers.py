@@ -27,6 +27,15 @@ Added in 2.4.0, bringing the series to twelve (checked 2026-10-13):
   137 Magenta Veil   Binge #B80472
   138 Indigo Drift   Disney+ #113CCF
 
+Refreshed in 2.4.0: the twelve compositions are unchanged, but the light is
+remade. The primitives draw heavier (line weight x2.5, dots x1.8, washes
++30%), and every wall then passes through :func:`_relight`, which takes
+whatever sits above the night ground - the wall's own accent light - and
+blooms it in two stages (a wide far glow and a tight near halo, the hot
+core pushed toward white), lays a slow fBm wash of the deep tone behind it
+so the accent has a room to sit in, and vignettes the frame. Same walls,
+same catalogue accents, read from the couch.
+
 Writes full PNGs, both thumbnail copies, and ``docs/icon-echo-wallpapers.png``.
 The manifest remains a separately reviewed source of truth.
 """
@@ -94,6 +103,7 @@ def _base(top=VOID, bottom=NIGHT) -> Image.Image:
 def _wash(im: Image.Image, cx: float, cy: float, r: float,
           colour: tuple, strength: float) -> None:
     """A soft radial wash, composited by alpha over the ground."""
+    strength = min(1.0, strength * 1.0)
     mask = Image.new("L", im.size, 0)
     d = ImageDraw.Draw(mask)
     d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=255)
@@ -103,6 +113,7 @@ def _wash(im: Image.Image, cx: float, cy: float, r: float,
 
 
 def _line(im: Image.Image, points, colour, width=4, blur=16, strength=0.5) -> None:
+    width = max(2, int(round(width * 2.5)))
     mask = Image.new("L", im.size, 0)
     ImageDraw.Draw(mask).line(points, fill=255, width=width, joint="curve")
     if blur:
@@ -114,6 +125,7 @@ def _line(im: Image.Image, points, colour, width=4, blur=16, strength=0.5) -> No
 
 def _dot(im: Image.Image, x: float, y: float, r: float, colour,
          blur=20, strength=0.5) -> None:
+    r = r * 1.8
     mask = Image.new("L", im.size, 0)
     ImageDraw.Draw(mask).ellipse((x - r, y - r, x + r, y + r), fill=255)
     if blur:
@@ -121,6 +133,55 @@ def _dot(im: Image.Image, x: float, y: float, r: float, colour,
             lambda p: min(255, int(p * strength)))
         im.paste(Image.new("RGB", im.size, colour), (0, 0), halo)
     im.paste(Image.new("RGB", im.size, colour), (0, 0), mask)
+
+
+def _fbm(seed: int, scale: float, octaves: int, w: int, h: int) -> np.ndarray:
+    rnd = np.random.RandomState(seed)
+    acc, amp, total, cell = np.zeros((h, w), "float32"), 1.0, 0.0, scale
+    for _ in range(octaves):
+        gw, gh = max(2, int(math.ceil(w / cell)) + 1), max(2, int(math.ceil(h / cell)) + 1)
+        grid = rnd.rand(gh, gw).astype("float32")
+        acc += np.asarray(Image.fromarray(grid, mode="F").resize((w, h), Image.BICUBIC), "float32") * amp
+        total, amp, cell = total + amp, amp * 0.5, max(2.0, cell * 0.5)
+    acc /= total
+    return (acc - acc.min()) / max(1e-6, acc.max() - acc.min())
+
+
+def _relight(im: Image.Image, accent: tuple[int, int, int], seed: int) -> Image.Image:
+    """The 2.4.0 pass: bloom the wall's own light, give it a room, vignette.
+
+    Everything above the night ground is the accent light the wall was
+    drawn with; it is blurred at two radii and added back (far glow, near
+    halo) with the brightest parts pushed toward off-white, so lines and
+    dots read as emitted light rather than ink. A slow fBm wash of the deep
+    tone goes underneath, and the corners fall away.
+    """
+    deep, _mid, _bright = wall_tones(accent)
+    arr = np.asarray(im, "float32")
+    ground = np.asarray(_base(), "float32")
+    light = np.clip(arr - ground, 0, 255)
+    # structure only: take the broad washes out, so what blooms is the drawn
+    # light (lines, dots, arcs) and not the ambient that is already soft
+    low_im = Image.fromarray(light.astype("uint8")).resize((W // 16, H // 16), Image.BOX)
+    low = np.asarray(low_im.filter(ImageFilter.GaussianBlur(6)).resize((W, H), Image.BILINEAR), "float32")
+    struct = np.clip(light - low * 1.15, 0, 255)
+    lum = struct.max(axis=2) / 255.0
+    # far glow: an eighth-res blur, wide and soft
+    small = Image.fromarray(struct.astype("uint8")).resize((W // 8, H // 8), Image.BOX)
+    far = np.asarray(small.filter(ImageFilter.GaussianBlur(10)).resize((W, H), Image.BILINEAR), "float32")
+    # near halo: a quarter-res blur, tight
+    near_im = Image.fromarray(struct.astype("uint8")).resize((W // 4, H // 4), Image.BOX)
+    near = np.asarray(near_im.filter(ImageFilter.GaussianBlur(4)).resize((W, H), Image.BILINEAR), "float32")
+    # the room: deep tone over slow noise, strongest where the far glow already is
+    f = _fbm(seed, 1600, 4, W // 8, H // 8)
+    f = np.asarray(Image.fromarray(f, mode="F").resize((W, H), Image.BICUBIC), "float32")
+    room = (f ** 2)[..., None] * (np.array(deep, "float32") - np.array(VOID, "float32")) * 0.4
+    hot = (np.clip(lum - 0.55, 0, 1) / 0.45)[..., None] ** 2
+    out = arr + far * 1.4 + near * 0.8 + room + hot * np.array(OFFWHITE, "float32") * 0.4
+    yy, xx = np.mgrid[0:H, 0:W].astype("float32")
+    d = ((xx - W / 2) / (W / 2)) ** 2 + ((yy - H / 2) / (H / 2)) ** 2
+    out = out * (1 - 0.45 * np.clip(d, 0, 1) ** 1.4)[..., None]
+    return Image.fromarray(np.clip(out, 0, 255).astype("uint8"))
 
 
 def w103_thermal_bloom() -> Image.Image:
@@ -385,19 +446,35 @@ def w138_indigo_drift() -> Image.Image:
     return im
 
 
+ACCENTS = {
+    "103": HEATLIFE_MAGENTA, "104": YOUTUBE_RED, "105": SPOTIFY_GREEN,
+    "106": MAXPLAYER_AMBER, "107": TIVIMATE_BLUE, "108": ARD_AZURE,
+    "133": TWITCH_VIOLET, "134": CRUNCHYROLL_ORANGE, "135": IVIEW_TEAL,
+    "136": PLUTO_YELLOW, "137": BINGE_MAGENTA, "138": DISNEY_INDIGO,
+}
+
+
+def _lit(num: str, fn):
+    """Wrap a wall drawer so it ends with the 2.4.0 relight pass."""
+    def build() -> Image.Image:
+        return _relight(fn(), ACCENTS[num], seed=11000 + int(num))
+    build.__name__, build.__doc__ = fn.__name__, fn.__doc__
+    return build
+
+
 WALLS = [
-    ("103", "thermal-bloom", "103 Thermal Bloom", w103_thermal_bloom),
-    ("104", "signal-red", "104 Signal Red", w104_signal_red),
-    ("105", "green-current", "105 Green Current", w105_green_current),
-    ("106", "molten-orbit", "106 Molten Orbit", w106_molten_orbit),
-    ("107", "frost-line", "107 Frost Line", w107_frost_line),
-    ("108", "signal-azure", "108 Signal Azure", w108_signal_azure),
-    ("133", "violet-stream", "133 Violet Stream", w133_violet_stream),
-    ("134", "ember-reel", "134 Ember Reel", w134_ember_reel),
-    ("135", "teal-tide", "135 Teal Tide", w135_teal_tide),
-    ("136", "solar-band", "136 Solar Band", w136_solar_band),
-    ("137", "magenta-veil", "137 Magenta Veil", w137_magenta_veil),
-    ("138", "indigo-drift", "138 Indigo Drift", w138_indigo_drift),
+    ("103", "thermal-bloom", "103 Thermal Bloom", _lit("103", w103_thermal_bloom)),
+    ("104", "signal-red", "104 Signal Red", _lit("104", w104_signal_red)),
+    ("105", "green-current", "105 Green Current", _lit("105", w105_green_current)),
+    ("106", "molten-orbit", "106 Molten Orbit", _lit("106", w106_molten_orbit)),
+    ("107", "frost-line", "107 Frost Line", _lit("107", w107_frost_line)),
+    ("108", "signal-azure", "108 Signal Azure", _lit("108", w108_signal_azure)),
+    ("133", "violet-stream", "133 Violet Stream", _lit("133", w133_violet_stream)),
+    ("134", "ember-reel", "134 Ember Reel", _lit("134", w134_ember_reel)),
+    ("135", "teal-tide", "135 Teal Tide", _lit("135", w135_teal_tide)),
+    ("136", "solar-band", "136 Solar Band", _lit("136", w136_solar_band)),
+    ("137", "magenta-veil", "137 Magenta Veil", _lit("137", w137_magenta_veil)),
+    ("138", "indigo-drift", "138 Indigo Drift", _lit("138", w138_indigo_drift)),
 ]
 
 

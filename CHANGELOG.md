@@ -81,9 +81,9 @@ All notable changes to the Core Builds Icon Pack. Format follows
   by Downloader code, has its own icon: a telly on its stand with a play
   triangle inside (issue #301). No published brand colour was found, so it
   takes a pack palette accent.
-- **"New" chip in Wallpapers.** The browser's chip rail gains *New (48)*
+- **"New" chip in Wallpapers.** The browser's chip rail gains *New (116)*
   after *All*: every wall stamped with this release in the manifest (the
-  three new series plus the refreshed Horizons and Deep Space), so a
+  three new series, the additions, and every refreshed series), so a
   returning user finds what changed without scanning the whole grid. The home
   rail's Wallpapers row says *132 walls · N new in this release* until the
   chip has been seen once. Manifest entries carry an optional `since`
