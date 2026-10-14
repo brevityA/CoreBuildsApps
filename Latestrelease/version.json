@@ -1,20 +1,20 @@
 {
-  "versionCode": 51,
-  "versionName": "2.3.3",
-  "iconCount": 988,
-  "componentCount": 1224,
-  "releaseDate": "2026-10-12",
+  "versionCode": 53,
+  "versionName": "2.4.0",
+  "iconCount": 993,
+  "componentCount": 1229,
+  "releaseDate": "2026-10-14",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "MovieBoxTV icon",
-    "AIOStreams icon",
-    "Icon Echo wallpaper series",
-    "Three Icon Echo live loops",
-    "Launcher compatibility summary",
-    "Coverage and mapping-reliability report",
-    "Wallpaper colours sit on the icon palette",
-    "Nuvio on the `com.nuvio.app` package"
+    "Check for updates in About",
+    "Live wallpapers are a set of their own",
+    "48 loops, every one a real wall given time",
+    "Earth, Wild and Flux wallpaper series",
+    "Every series is twelve walls \u2014 132 in all",
+    "Circuit Core re-rendered",
+    "Motion, Icon Echo, Retrowave, AMOLED, Horizons, Deep Space refreshed",
+    "Support is on the home screen"
   ]
 }
