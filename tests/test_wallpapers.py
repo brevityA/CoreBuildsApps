@@ -276,6 +276,20 @@ class AndroidWiringTests(unittest.TestCase):
         self.assertIn("WallpapersActivity", main)
         self.assertIn("wallpapers_entry", main)
 
+    def test_card_floor_uses_the_generators_dark_threshold(self):
+        # The preview's card-floor label and the generators' dark-coverage
+        # floor are one measure: share of pixels at or under 14% luma. The
+        # generators work on 0-1 (`L / 255 <= 0.14`); WallpaperSeed.luma is
+        # 0-255, so its threshold must be scaled. Compared against a bare
+        # 0.14f, only pure black counted and nearly every wall read bright.
+        seed = _read(JAVA / "WallpaperSeed.kt")
+        self.assertIn("DARK_LUMA = 0.14f * 255f", seed)
+        self.assertRegex(seed, r"luma\(p\) <= DARK_LUMA")
+        self.assertNotRegex(seed, r"luma\(\w+\) <= 0\.\d+f\)")
+        classic = _read(ROOT / "tools/build_classic_wallpapers.py")
+        self.assertIn("/ 255.0", classic)
+        self.assertIn("(a <= 0.14)", classic)
+
     def test_no_full_wallpapers_bundled_into_apk(self):
         # Full 4K images download on demand; assets should only hold thumbs + manifest.
         assets = ROOT / "app/src/main/assets"

@@ -62,7 +62,7 @@ object WallpaperSeed {
             val pixels = IntArray(w * h)
             scaled.getPixels(pixels, 0, w, 0, 0, w, h)
             var dark = 0
-            for (p in pixels) if (luma(p) <= 0.14f) dark++
+            for (p in pixels) if (luma(p) <= DARK_LUMA) dark++
             return dark.toFloat() / pixels.size
         } finally {
             if (scaled !== bottom) scaled.recycle()
@@ -135,6 +135,11 @@ object WallpaperSeed {
 
     private fun luma(c: Int): Float =
         0.2126f * Color.red(c) + 0.7152f * Color.green(c) + 0.0722f * Color.blue(c)
+
+    // 14% of full scale on luma's 0-255 range: the generators' dark-coverage
+    // floor is `L / 255 <= 0.14`. Compared against a bare 0.14f, only pure
+    // black counted, so almost every wall read as a bright card floor.
+    private const val DARK_LUMA = 0.14f * 255f
 
     private const val CORE_CYAN = 0xFF00E5FF.toInt()
     private const val BUILD_BLUE = 0xFF4FACFE.toInt()
