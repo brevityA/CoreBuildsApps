@@ -47,22 +47,25 @@ Full table with every mapped component: [**docs/IconPackList.md**](../IconPackLi
 
 ## Wallpapers
 
-108 curated wallpapers in eleven series — browse in the Wallpapers tab, preview full-screen, **Set** as device wallpaper or **Save** to `Pictures/CoreBuilds`. Multi-select export bulk-saves to a folder any launcher can rotate from. Thumbnails ship in the APK; full images download on demand from GitHub.
+132 curated wallpapers in eleven series of twelve — browse in the Wallpapers tab, preview full-screen, **Set** as device wallpaper or **Save** to `Pictures/CoreBuilds`. Multi-select export bulk-saves to a folder any launcher can rotate from. Thumbnails ship in the APK; full images download on demand from GitHub. The **New** chip lists the 122 walls stamped with the current release.
 
-All twelve Series 9 walls, all six Series 10 walls and three of the six Series 11 Icon Echo walls are also **live wallpapers**: each one's loop rides the same grid behind a LIVE badge, and **Set** hands you to the system live picker pre-pointed at Core Builds Live — a muted, looping `MediaPlayer` engine that pauses off-screen and shows the bundled frame until the clip has downloaded once. Loops sit under their own **Live** chip and bulk-export alongside stills: loops save as MP4 to `Movies/CoreBuilds`, where video-wallpaper pickers such as Monet's find them, and stills to `Pictures/CoreBuilds` for launcher rotation. On Monet-as-HOME, **Set** saves the MP4 to `Movies/CoreBuilds` instead.
+48 of them are also **live wallpapers**: all twelve Motion, Deep Space, Cinema and Icon Echo walls, each loop the moving form of its still. Loops sit under their own **Live** chip (a series chip shows stills only), and **Set** hands you to the system live picker pre-pointed at Core Builds Live — a muted, looping `MediaPlayer` engine that pauses off-screen and shows the bundled frame until the clip has downloaded once. Loops bulk-export alongside stills: loops save as MP4 to `Movies/CoreBuilds`, where video-wallpaper pickers such as Monet's find them, and stills to `Pictures/CoreBuilds` for launcher rotation. On Monet-as-HOME, **Set** saves the MP4 to `Movies/CoreBuilds` instead.
 
 | Series | Walls | Theme |
 |---|---|---|
-| 1 · Fieldwork | 01–24 | Mesh gradients, aurora, light trails, topo |
-| 2 · Motion | 25–32, 51–54 | Long-exposure kinetics: orbitals, warp, spiral |
-| 3 · Horizons | 33–40, 55–58 | One horizon, eight meanings |
-| 6 · Circuit Core | 41–50, 79–80 | Lit-circuit fields on near-black |
+| 2 · Motion | 25–32, 51–54 | Long-exposure light: orbitals, warp, spiral |
+| 3 · Horizons | 33–40, 55–58 | One horizon, twelve meanings |
+| 6 · Circuit Core | 41–50, 79–80 | Lit-circuit fields on near-black (1376×768) |
 | 7 · Retrowave | 59–68, 81–82 | Gradient suns, perspective grids, chrome |
 | 8 · AMOLED | 69–78, 83–84 | Exact-black minimalism |
 | 9 · Deep Space | 85–96 | Event horizon, nebulae, ringed planet, comets, novae |
-| 10 · Cinema | 97–102 | Neon cinema nights: marquee, velvet curtain, projector beam, lounge, late rentals, box office |
+| 10 · Cinema | 97–102, 151–156 | Neon cinema nights: marquee, projector beam, drive-in, popcorn stand, intermission |
+| 11 · Icon Echo | 103–108, 133–138 | Each lit by one accent from the icon catalogue |
+| 12 · Earth | 109–116, 143–146 | The planet from orbit (1376×768) |
+| 13 · Wild | 117–124, 147–150 | Nature and landscape (1376×768) |
+| 14 · Flux | 125–132, 139–142 | Procedural abstracts: ink, silk, plasma, caustics |
 
-Series numbers are historical — 4 and 5 both retired with earlier packs. The [series map](../../Wallpapers/README.md) has the full numbering.
+Series numbers are historical — 4 and 5 retired with earlier packs, and 1 (Fieldwork) in 2.4.0. The [series map](../../Wallpapers/README.md) has the full numbering.
 
 <div align="center"><img src="../deep-space-wallpapers.png" alt="Deep Space series" width="760"></div>
 

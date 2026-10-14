@@ -49,11 +49,12 @@ series 14.
 
 The icon-pack app ships a built-in Wallpapers screen:
 
-- **Thumbs are bundled** (`app/src/main/assets/wallpapers_thumbs/`, about 1 MB for
-  all 102) so the grid is instant and works offline.
+- **Thumbs are bundled** (`app/src/main/assets/wallpapers_thumbs/`, about 1.9 MB for
+  all 132) so the grid is instant and works offline.
 - **Full images download on demand** from the raw URLs below and are cached in
-  internal storage (12-file LRU, ~30 MB ceiling) — the APK stays small. Series 1–3
-  and 7–8 are 4K PNG, series 6 is 1376×768 JPEG; `resolution` per entry is the truth.
+  internal storage (12-file LRU, ~30 MB ceiling) — the APK stays small. Series 2–3,
+  7–11 and 14 are 4K PNG; series 6, 12 and 13 are 1376×768 JPEG; `resolution` per
+  entry is the truth.
 - **Set** writes the system wallpaper via `WallpaperManager` for launchers
   that theme from it. On Fire TV — which blocks third-party wallpaper writes —
   the image is saved to `Pictures/CoreBuilds` and handed to the system

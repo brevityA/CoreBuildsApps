@@ -28,8 +28,9 @@ Added in 2.4.0, bringing the series to twelve (checked 2026-10-13):
   138 Indigo Drift   Disney+ #113CCF
 
 Refreshed in 2.4.0: the twelve compositions are unchanged, but the light is
-remade. The primitives draw heavier (line weight x2.5, dots x1.8, washes
-+30%), and every wall then passes through :func:`_relight`, which takes
+remade. The lines and dots draw heavier (line weight x2.5, dots x1.8;
+washes keep their 2.3.x strength), and every wall then passes through
+:func:`_relight`, which takes
 whatever sits above the night ground - the wall's own accent light - and
 blooms it in two stages (a wide far glow and a tight near halo, the hot
 core pushed toward white), lays a slow fBm wash of the deep tone behind it
@@ -103,7 +104,7 @@ def _base(top=VOID, bottom=NIGHT) -> Image.Image:
 def _wash(im: Image.Image, cx: float, cy: float, r: float,
           colour: tuple, strength: float) -> None:
     """A soft radial wash, composited by alpha over the ground."""
-    strength = min(1.0, strength * 1.0)
+    strength = min(1.0, strength)
     mask = Image.new("L", im.size, 0)
     d = ImageDraw.Draw(mask)
     d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=255)

@@ -42,10 +42,6 @@ All notable changes to the Core Builds Icon Pack. Format follows
   vignettes the frame. The first six were thin lines on faint washes,
   invisible from the couch; now they read like the rest of the collection.
   Their twelve loops are re-rendered from the new stills.
-- **Flux to twelve.** Smoke Columns, Interference, Aurora Sheet and Field
-  Lines (139–142): warped smoke, two ring systems beating against each
-  other, a curtain of light, and iron filings combed along a magnetic
-  field - procedural and seeded like the first eight.
 
 - **Check for updates in About.** About now carries an on-demand update
   check: press it and the row says *Up to date*, *Download vX* (with the
@@ -72,9 +68,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Every series is twelve walls.** Motion, Horizons, Circuit Core,
   Retrowave, AMOLED, Deep Space, Cinema, Icon Echo, Earth, Wild and Flux:
   eleven series of twelve, 132 walls in all.
-- **Flux wallpaper series.** Eight 4K abstract walls (series 14, walls
-  125–132) — domain-warped ink, folded silk, a plasma core, streamlines,
-  glass facets, caustics, a veil, a bent grid — procedural and seeded in the
+- **Flux wallpaper series.** Twelve 4K abstract walls (series 14, walls
+  125–132 and 139–142) — domain-warped ink, folded silk, a plasma core,
+  streamlines, glass facets, caustics, a veil, a bent grid, warped smoke,
+  two ring systems beating against each other, a curtain of light, and iron
+  filings combed along a magnetic field — procedural and seeded in the
   house palette (`tools/build_flux_wallpapers.py`).
 
 - **Binged icon.** Binged, the family streaming app (`net.binged.tv`), has
@@ -97,8 +95,9 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Nuyo Device Info icon.** Nuyo Device Info (`com.roysolberg.android.deviceinfo`)
   has its own icon: a handset outline with an information mark inside
   (issue #296; scanner-reported on a Google TV Streamer, Android 14).
-  991 → 993 icons, 1227 → 1229 components.
-- **"New" chip in Wallpapers.** The browser's chip rail gains *New (116)*
+  With Binged, Buzz TV 6, Telly Player and Yango Play: 988 → 993 icons,
+  1224 → 1229 components.
+- **"New" chip in Wallpapers.** The browser's chip rail gains *New (122)*
   after *All*: every wall stamped with this release in the manifest (the
   three new series, the additions, and every refreshed series), so a
   returning user finds what changed without scanning the whole grid. The home

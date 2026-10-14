@@ -187,8 +187,8 @@ class WallpapersActivity : TvActivity() {
         val present = all.filter { !it.isLive }.map { it.series }.distinct()
         val labels = mutableListOf(getString(R.string.chip_all))
         val keys = mutableListOf<String?>(null)
-        // What this release added or re-rendered, first: with 108 walls in
-        // series order, a new series sits under eighty old ones and a user
+        // What this release added or re-rendered, first: with 132 walls in
+        // series order, a new series sits under a hundred old ones and a user
         // who updated for the wallpapers would scroll past them.
         val fresh = WallpaperCatalog.newWalls(all)
         if (fresh.isNotEmpty()) {
