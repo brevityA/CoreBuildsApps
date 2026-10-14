@@ -33,6 +33,15 @@ All notable changes to the Core Builds Icon Pack. Format follows
   `#20B8B8`), Solar Band (Pluto TV `#FFF200`), Magenta Veil (Binge
   `#B80472`), Indigo Drift (Disney+ `#113CCF`). Walls 133–138; palette
   cues only, no marks.
+- **Icon Echo, relit.** All twelve walls keep their compositions and
+  catalogue accents, but the light is remade: lines draw at two and a half
+  times the weight and dots near twice, then every wall passes through a
+  relight that blooms the drawn light in two stages (a wide far glow, a
+  tight near halo, hot cores pushed toward white), lays a slow noise wash
+  of the deep tone behind it so the accent has a room to sit in, and
+  vignettes the frame. The first six were thin lines on faint washes,
+  invisible from the couch; now they read like the rest of the collection.
+  Their twelve loops are re-rendered from the new stills.
 - **Flux to twelve.** Smoke Columns, Interference, Aurora Sheet and Field
   Lines (139–142): warped smoke, two ring systems beating against each
   other, a curtain of light, and iron filings combed along a magnetic
