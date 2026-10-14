@@ -113,13 +113,6 @@ object Prefs {
     }
 
     /**
-     * The motion loop [LiveWallpaperService] plays ([LiveLoop.Loop.id]).
-     * Written by the preview's "Set live" button; read by the engine on
-     * every visibility change, so re-picking a loop re-points wallpaper
-     * that is already active. Unknown values fall back to the first loop
-     * in [LiveLoop.byId] rather than crashing the engine.
-     */
-    /**
      * The newest wallpaper `since` the user has opened the browser for. The
      * home rail's Wallpapers row advertises "N new" until this matches the
      * manifest's newest value; [WallpapersActivity] records it on open.
@@ -131,6 +124,13 @@ object Prefs {
         prefs(context).edit().putString(KEY_WP_NEW_SEEN, since).apply()
     }
 
+    /**
+     * The motion loop [LiveWallpaperService] plays ([LiveLoop.Loop.id]).
+     * Written by the preview's "Set live" button; read by the engine on
+     * every visibility change, so re-picking a loop re-points wallpaper
+     * that is already active. Unknown values fall back to the first loop
+     * in [LiveLoop.byId] rather than crashing the engine.
+     */
     fun liveLoopId(context: Context): String =
         prefs(context).getString(KEY_LIVE_LOOP, LiveLoop.LOOPS[0].id)
             ?: LiveLoop.LOOPS[0].id

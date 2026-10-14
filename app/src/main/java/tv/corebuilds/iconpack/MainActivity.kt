@@ -451,11 +451,11 @@ class MainActivity : TvActivity() {
                     startActivity(Intent(this, WhatsNewActivity::class.java))
                 }
             }
-            // Gated by Settings. Off means UpdateChecker is never called, so
-            // the app issues no network request of its own at all — which is
-            // what the About screen's network list claims, and the claim has
-            // to stay checkable.
             bindWallpapersSub()
+            // Gated by Settings. Off means this startup check never runs, so
+            // the only update request left is the one the user asks for in
+            // About - which is what the About screen's network list says, and
+            // the claim has to stay checkable.
             if (!updateChecked && Prefs.updateChecks(this)) {
                 updateChecked = true
                 checkForUpdate()
