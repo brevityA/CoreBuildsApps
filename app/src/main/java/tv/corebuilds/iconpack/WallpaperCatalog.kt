@@ -77,9 +77,21 @@ data class Wallpaper(
     val title: String
         get() = name.substringAfter("· ", name).trim()
 
-    /** Stable cache filename derived from the URL (always .png). */
+    /** The wall's file name from its URL: the name it is exported to Pictures under. */
     val cacheName: String
         get() = url.substringAfterLast('/')
+
+    /**
+     * The name the download is cached under. A re-rendered wall keeps its URL, so the
+     * manifest's `since` goes into the name: keyed on [cacheName] alone, a wall opened
+     * on 2.3.x (44 Monolith Grid, say) kept serving the old picture behind the 2.4.0
+     * thumbnail. The old file ages out of the 12-file cache like any other.
+     */
+    val storeName: String
+        get() {
+            val stamp = since.filter { it.isLetterOrDigit() || it == '.' || it == '-' }
+            return if (stamp.isEmpty()) cacheName else "$stamp-$cacheName"
+        }
 }
 
 object WallpaperCatalog {
