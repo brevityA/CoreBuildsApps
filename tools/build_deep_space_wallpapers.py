@@ -7,6 +7,14 @@ dusk violet and ember heat on the night ground. Event horizon, nebulae,
 starfields, a ringed planet, a spiral galaxy, comets, a nova — all
 procedural, all seeded, no external sources.
 
+2.4.0 refresh: the first cut was smooth gaussian glows, which read as soft
+blobs at TV distance ("the space ones look like blurs"). Every large glow is
+now shaped by seeded fractional-Brownian noise - ridged, so nebulae break
+into filaments and dust lanes instead of fading evenly - planet discs carry
+latitude bands and a surface grain, and the star layer gained a dense faint
+dust field under the sparkles. Same walls, same seeds, same compositions;
+more in them.
+
 House rules (per Wallpapers/README.md): OLED-friendly dark coverage,
 calm bottom third for launcher cards, film-grain dither against banding.
 
@@ -52,6 +60,56 @@ PALE = (200, 226, 255)
 WHITE = (235, 244, 255)
 
 
+# Texture: how much of every large glow's falloff is handed to ridged noise.
+# 0 reproduces the 1.9.x smooth blobs exactly; 0.6 is the 2.4.0 look.
+TEXTURE = 0.6
+_FBM_CACHE: dict = {}
+
+
+def _fbm(seed: int, scale: float = 900.0, octaves: int = 6,
+         gain: float = 0.5, ridged: bool = True) -> np.ndarray:
+    """Seeded fractional-Brownian value noise on the full frame, in [0, 1].
+
+    Each octave is a coarse random grid resized bicubically to frame size -
+    cheap at 4K and deterministic for a seed. Ridged noise folds each octave
+    about its midline, which is what turns a soft cloud into filaments.
+    """
+    key = (seed, scale, octaves, gain, ridged)
+    hit = _FBM_CACHE.get(key)
+    if hit is not None:
+        return hit
+    rnd = np.random.RandomState(seed)
+    acc = np.zeros((H, W), dtype="float32")
+    amp, total, cell = 1.0, 0.0, scale
+    for _ in range(octaves):
+        gw = max(2, int(math.ceil(W / cell)) + 1)
+        gh = max(2, int(math.ceil(H / cell)) + 1)
+        grid = rnd.rand(gh, gw).astype("float32")
+        layer = np.asarray(Image.fromarray(grid, mode="F")
+                           .resize((W, H), Image.BICUBIC), dtype="float32")
+        if ridged:
+            layer = 1.0 - np.abs(layer * 2.0 - 1.0)
+            layer = layer * layer
+        acc += layer * amp
+        total += amp
+        amp *= gain
+        cell = max(2.0, cell * 0.5)
+    acc /= max(1e-6, total)
+    lo, hi = float(acc.min()), float(acc.max())
+    acc = (acc - lo) / max(1e-6, hi - lo)
+    _FBM_CACHE[key] = acc
+    return acc
+
+
+def _texture_for(cx: float, cy: float, r: float) -> np.ndarray:
+    """A noise field whose seed and scale follow the glow's geometry, so two
+    glows on one wall never share filaments, and a re-render is identical."""
+    seed = int(cx * 7 + cy * 13 + r * 3) % 100000
+    scale = float(min(1400.0, max(260.0, r * 1.1)))
+    n = _fbm(seed, scale=scale, octaves=5)
+    return (1.0 - TEXTURE) + TEXTURE * n * 1.9
+
+
 def _base(seed: int, top: tuple = VOID, bottom: tuple = NIGHT) -> np.ndarray:
     """Vertical night gradient with a soft vignette. Deterministic."""
     rnd = random.Random(seed)  # noqa: F841 (kept: every wall takes a seed)
@@ -63,7 +121,13 @@ def _base(seed: int, top: tuple = VOID, bottom: tuple = NIGHT) -> np.ndarray:
     dx = (xx / W - 0.5) * 2
     dy = (yy / H - 0.5) * 2
     vig = 1.0 - 0.35 * np.clip(dx * dx * 0.6 + dy * dy - 0.35, 0, 1)[..., None]
-    return arr * vig
+    arr = arr * vig
+    # Interstellar dust: a faint blue-grey fBm wash so the night ground is a
+    # sky rather than a gradient. Kept far under the walls' own glows.
+    dust = _fbm(seed, scale=1500.0, octaves=5, ridged=False)
+    dust_col = np.array((18, 26, 44), dtype="float32").reshape(1, 1, 3)
+    arr = arr + dust[..., None] * dust_col * 0.55
+    return arr
 
 
 def _stars(arr: np.ndarray, seed: int, n: int, ymax_frac: float = 0.92,
@@ -72,6 +136,16 @@ def _stars(arr: np.ndarray, seed: int, n: int, ymax_frac: float = 0.92,
     rnd = random.Random(seed)
     h, w, _ = arr.shape
     ymax = int(h * ymax_frac)
+    # Dust field first: several times the count at a fraction of the light,
+    # single pixels, so the sky has depth behind the named stars. Vectorised -
+    # the loop below is per-star for the sparkle crosses only.
+    dn = n * 4
+    drs = np.random.RandomState(seed + 7)
+    dxs = drs.randint(0, w, dn)
+    dys = (np.abs(drs.normal(0.0, 1.0, dn)) % 1.0 * ymax).astype(int)
+    db = drs.uniform(0.05, 0.28, dn).astype("float32")
+    dust_tint = np.array(PALE, dtype="float32")
+    arr[dys, dxs] = np.minimum(255, arr[dys, dxs] + db[:, None] * dust_tint)
     for i in range(n):
         x = rnd.randint(0, w - 1)
         if band and rnd.random() < 0.55:
@@ -118,6 +192,12 @@ def _blob(arr: np.ndarray, cx: float, cy: float, r: float, color: tuple,
     ry = dx * sa + dy * ca
     d2 = rx * rx + ry * ry
     fall = np.exp(-np.power(np.clip(d2, 0, 9), power / 2))
+    # Large coloured glows (nebulae, haloes, dust) take the ridged texture;
+    # small ones (star cores, comet heads, background galaxies) and pure white
+    # cores stay smooth,
+    # and so do the subtractive dark lanes, which already are structure.
+    if r >= 140 and strength > 0 and TEXTURE > 0 and tuple(color) != WHITE:
+        fall = fall * _texture_for(cx, cy, r)
     col = np.array(color, dtype="float32").reshape(1, 1, 3)
     arr[:, :, :] = np.minimum(255, arr + fall[..., None] * col * strength)
 
@@ -145,6 +225,17 @@ def _disc(arr: np.ndarray, cx: float, cy: float, r: float, color: tuple,
     light = np.clip(0.5 - (nx * shade_dir[0] + ny * shade_dir[1]) * 1.4, 0.06, 1.0)
     col = np.array(color, dtype="float32").reshape(1, 1, 3)
     lit = col * light[..., None]
+    if TEXTURE > 0:
+        # Surface: latitude bands (a stretched noise, strongest on big discs)
+        # under a finer grain, both seeded from the disc's geometry.
+        seed = int(cx * 3 + cy * 5 + r) % 100000
+        bands = _fbm(seed, scale=max(60.0, r * 0.35), octaves=3, ridged=False)
+        bands = np.asarray(Image.fromarray(bands, mode="F")
+                           .resize((W // 8, H), Image.BILINEAR)
+                           .resize((W, H), Image.BILINEAR), dtype="float32")
+        grain = _fbm(seed + 1, scale=max(24.0, r * 0.12), octaves=4, ridged=True)
+        surface = 0.72 + 0.36 * bands + 0.22 * (grain - 0.5)
+        lit = lit * np.clip(surface, 0.45, 1.3)[..., None]
     edge = np.clip((1.0 - d) * r / 3.0, 0, 1)[..., None]
     arr[:, :, :] = np.where(inside[..., None], lit * edge + arr * (1 - edge), arr)
 
@@ -522,6 +613,10 @@ def main() -> int:
             rendered.append((num, title, Image.open(SERIES / f"{stem}.png").convert("RGB")))
             continue
         im = fn()
+        # ~32 MiB per 4K field; reuse is within a wall, so drop them here
+        # or a full build holds every wall's noise to the end. Seeded, so a
+        # miss recomputes the same field.
+        _FBM_CACHE.clear()
         dc = dark_coverage(im)
         assert dc >= 0.45, f"{stem}: dark coverage {dc:.0%} below the 45% floor"
         total += save_wall(im, SERIES, stem)

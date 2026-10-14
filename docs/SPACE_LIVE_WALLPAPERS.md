@@ -70,16 +70,31 @@ whole number of cycles per 20 s, so the loop is seamless, and the 4K still is
 the same drawing at t = 0. 60 fps, location `Core Motion · Cinema` in the
 feed.
 
-## The Icon Echo set (clips 29–31)
+## The Icon Echo set (clips 29–31, 44–52)
 
 `series-11-icon-echo` is the companion series lit by icon accents (walls
-103–108, `tools/build_icon_echo_wallpapers.py`). Three of its six walls ship a
-moving companion: slow procedural fields in the icon's own hue, shifted a step
-toward the night ground the same way the stills' tones are — Signal Sweep
-(YouTube red), Green Current (Spotify green), Molten Orbit (Max Player amber).
-`tools/build_icon_echo_loops.py` renders them (1080p 30 fps 20 s, the
-pipeline's standard clip shape), location `Core Motion · Icon Echo` in the
-feed; they play as system live wallpapers in the pack like the other sets.
+103–108 and 133–138, `tools/build_icon_echo_wallpapers.py`). Since 2.4.0 all
+twelve ship a moving companion rendered from the still itself by
+`tools/build_still_loops.py`, with no twinkle (there are no points) and more
+shimmer, so the washes breathe and the camera drifts. Until then clips 29–31
+were ffmpeg gradient fields at 30 fps; they keep their file names (29
+`signal-sweep` is the moving form of wall 104 Signal Red) and now match the
+other sets at 60 fps. Location `Core Motion · Icon Echo` in the feed.
+
+## The Motion set (clips 32–43)
+
+`series-2-motion` (walls 25–32, 51–54) is the oldest surviving series and,
+by name, the natural home of motion; 2.4.0 gives each wall a loop through
+the same engine, tuned between Deep Space and Icon Echo (particles and
+ember heads twinkle, hairlines stay steady). Location `Core Motion · Motion`.
+
+## One roster, one chip
+
+`tools/live_roster.py` is the single list every consumer reads (renderers,
+feed, `LiveLoop.kt` via `tools/build_live_loop_kt.py`, tests). In the icon
+pack the loops are a set of their own since 2.4.0 - the **Live** chip - and
+no longer appear under the still series they came from, so a series chip is
+stills only and one press gathers every loop.
 
 ## What plays where
 

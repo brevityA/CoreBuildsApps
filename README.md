@@ -23,7 +23,7 @@ Five free apps for Android TV and Google TV, and one for your phone. Each has a 
 <!-- suite-stamp:start -->
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
-> | **[Core Builds Icon Pack](#-core-builds-icon-pack)** | `v2.3.3` | 988 transparent icons + 108 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Builds Icon Pack](#-core-builds-icon-pack)** | `v2.4.0` | 993 transparent icons + 132 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.4.4` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
 > | **[Core Shift](#-core-shift)** | `v2.3.5` | Android TV screensaver + motion wallpaper browser | `8829421` | [`shift-v*` / `shift`](../../releases) |
 > | **[Core Motion](#-core-motion)** | `v1.0.0` | Projectivy wallpaper-provider plugin for Core Motion loops | none yet | [`motion-v*` / `motion`](../../releases) |
@@ -56,7 +56,7 @@ Icon Pack, Core Line, Core Shift and Core EQ check for their own updates. Core M
 **Transparent icons and 16:9 banners for Projectivy Launcher, plus wallpapers.** Every icon is drawn in one style: original geometry, one accent colour, transparent background. The pack applies banners by default; a square glyph build is one switch away. Home's **Missing icons** row lists the apps on your TV that have no icon yet and prefills the request for you.
 
 **Install:** Downloader **`5270601`** · [permanent APK](https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk) · then press **Apply** in the app. \
-**More:** [guide](docs/apps/icon-pack.md) · [every mapped app](docs/IconPackList.md) · [wallpapers](Wallpapers/README.md) · [changelog](CHANGELOG.md)
+**More:** [guide](docs/apps/icon-pack.md) · [every mapped app](docs/IconPackList.md) · [wallpapers](Wallpapers/README.md) ([all 132 at a glance](docs/wallpapers-collection.jpg)) · [changelog](CHANGELOG.md)
 
 ## 🔷 Core Line
 

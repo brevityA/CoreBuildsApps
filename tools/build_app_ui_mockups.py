@@ -643,6 +643,16 @@ def new_frame() -> Image.Image:
 # Frames
 # ---------------------------------------------------------------------------
 
+def wallpapers_entry_sub() -> str:
+    """MainActivity.bindWallpapersSub: the "N new in this release" line until
+    the New chip has been seen; the mockup is a first run, so it shows."""
+    newest = max((w.get("since", "") for w in WALLPAPERS), key=version_key, default="")
+    new = sum(1 for w in WALLPAPERS if w.get("since", "") == newest) if newest else 0
+    if new:
+        return fmt(STRINGS["wp_entry_sub_new_fmt"], len(WALLPAPERS), new)
+    return fmt(STRINGS["wp_entry_sub_fmt"], len(WALLPAPERS))
+
+
 def category_counts() -> list[tuple[str, str, int]]:
     counts: dict[str, int] = {}
     for cat in CATS:
@@ -728,7 +738,7 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
     rows = [
         (STRINGS["art_style_label"], STRINGS["art_style_banners"], True, None),
         (STRINGS["missing_entry"], STRINGS["missing_entry_sub"], None, str(missing)),
-        (STRINGS["wp_entry"], fmt(STRINGS["wp_entry_sub_fmt"], len(WALLPAPERS)), None, None),
+        (STRINGS["wp_entry"], wallpapers_entry_sub(), None, None),
     ]
     for index, (title, sub_text, state, badge) in enumerate(rows):
         h = entry_row_height(sub_text, state is not None or badge is not None)
@@ -736,14 +746,16 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
                   focused=(index == 0 and not with_update_bar), switch=state, badge=badge)
         # The rows sit cb_space_xs apart, as the layout's margins space them.
         ry += h + dp(DIMENS["cb_space_xs"])
-    # Settings | About: one row of two single-line cards, About carrying the
-    # version as a mono suffix.
-    half = (rail_r - g - dp(DIMENS["cb_space_xs"])) // 2
+    # Support | Settings | About: one row of three single-line cards (Support
+    # leads since 2.4.0; the version suffix About carried left with the third
+    # card - it is the About screen's first fact).
+    half = (rail_r - g - 2 * dp(DIMENS["cb_space_xs"])) // 3
     inset = dp(DIMENS["cb_card_padding"])
     f_title = font("sans", DIMENS["cb_text_body"], bold=True)
     for i, (title, suffix) in enumerate((
+        (STRINGS["support_label"], None),
         (STRINGS["settings_label"], None),
-        (STRINGS["about_label"], fmt(STRINGS["about_entry_sub_fmt"], VERSION["versionName"])),
+        (STRINGS["about_label"], None),
     )):
         x0 = g + i * (half + dp(DIMENS["cb_space_xs"]))
         box = [x0, ry, x0 + half, ry + row_h]
@@ -821,6 +833,10 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
     return img, note
 
 
+def version_key(v: str) -> tuple:
+    return tuple(int(p) if p.isdigit() else 0 for p in v.split("."))
+
+
 def wallpapers_frame() -> tuple[Image.Image, str]:
     """The wallpapers browser as built: landscape two-pane. Header across the
     top, series chips and the export foot in the left rail, the named-thumb
@@ -843,11 +859,17 @@ def wallpapers_frame() -> tuple[Image.Image, str]:
     body_top = y + dp(DIMENS["cb_target_min"]) + dp(DIMENS["cb_space_md"])
 
     # ---- LEFT RAIL: series chips, then the export foot.
+    # WallpapersActivity: All, New (N), Live, then the still series in
+    # catalogue order - the loops' own key is not a series chip.
     series: list[str] = []
     for wall in walls:
-        if wall["series"] not in series:
+        if not wall.get("live") and wall["series"] not in series:
             series.append(wall["series"])
-    labels = [STRINGS["chip_all"]] + [
+    newest = max((w.get("since", "") for w in walls), key=version_key, default="")
+    new_count = sum(1 for w in walls if w.get("since", "") == newest) if newest else 0
+    labels = [STRINGS["chip_all"]] + (
+        [fmt(STRINGS["chip_new_fmt"], new_count)] if new_count else []) + (
+        [STRINGS["chip_live"]] if any(w.get("live") for w in walls) else []) + [
         " ".join(part.capitalize()
                  for part in s.removeprefix("series-").split("-", 1)[1].split("-"))
         for s in series
@@ -950,6 +972,8 @@ def settings_order() -> list:
         ("group", "settings_group_help"),
         ("row", "settings_audit_title", "settings_audit_sub", None),
         ("row", "settings_faq_title", "settings_faq_sub", None),
+        ("row", "settings_about_title", "settings_about_sub", None),
+        ("row", "settings_support_title", "settings_support_sub", None),
     ]
 
 

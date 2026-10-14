@@ -13,6 +13,7 @@
     <item drawable="arrowfilms" />
     <item drawable="arvio" />
     <item drawable="begin" />
+    <item drawable="binged" />
     <item drawable="bit_tv" />
     <item drawable="boosteroidtv" />
     <item drawable="chillio" />
@@ -58,6 +59,7 @@
     <item drawable="weyd" />
     <item drawable="weyd_2" />
     <item drawable="wuplay" />
+    <item drawable="yangoplay" />
     <category title="Square · Media centres" />
     <item drawable="dsvideo" />
     <item drawable="emby" />
@@ -112,6 +114,7 @@
     <item drawable="visionplus" />
     <category title="Square · Live TV" />
     <item drawable="xtreamplayeranddownloader" />
+    <item drawable="buzztv6" />
     <item drawable="iptv3u" />
     <item drawable="drama_live" />
     <item drawable="eternaltviptvbox" />
@@ -146,6 +149,7 @@
     <item drawable="tapmad" />
     <item drawable="televizo" />
     <item drawable="telly" />
+    <item drawable="tellyplayer" />
     <item drawable="thundertv" />
     <item drawable="tvplayer" />
     <item drawable="tcl_tv" />
@@ -354,6 +358,7 @@
     <item drawable="omnisoft" />
     <item drawable="morphe" />
     <item drawable="notifications_for_android_tv" />
+    <item drawable="nuyodeviceinfo" />
     <item drawable="remote_capture" />
     <item drawable="pmx" />
     <item drawable="quickbars_for_home_assistant" />

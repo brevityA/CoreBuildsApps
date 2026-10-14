@@ -5,7 +5,7 @@
 Thermal Bloom, Signal Red, Green Current and Molten Orbit at full resolution,
 plus two further curated catalogue accents (TiviMate `#97C1FF`, ARD
 `#2D92FF`). Walls 103–105 also ship as live loops 29–31
-(`tools/build_icon_echo_loops.py`). The current 102-wallpaper collection was
+(originally `tools/build_icon_echo_loops.py`; since 2.4.0 rendered from the stills by `tools/build_still_loops.py`). The current 102-wallpaper collection was
 not touched; the same "shift a step" idea retuned the generated series' house
 accents onto the icon palette (see `Wallpapers/README.md`).
 

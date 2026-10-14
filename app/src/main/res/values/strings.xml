@@ -16,7 +16,6 @@
     <string name="pack_stats_fmt">%1$d icons - %2$d components</string>
     <string name="search_hint_fmt">Search %1$d icons</string>
     <string name="cta_also_applies">ALSO APPLIES TO</string>
-    <string name="about_entry_sub_fmt">v%1$s</string>
     <string name="wp_sub_fmt">%1$d walls - series chips filter the grid</string>
 
     <!-- Empty state. Without it a filter with no match renders a blank grid
@@ -31,6 +30,7 @@
     <string name="empty_clear_filter">Show all %1$d icons</string>
     <string name="search_hint">Find an app by name</string>
     <string name="chip_all">All</string>
+    <string name="chip_new_fmt">New (%1$d)</string>
     <string name="chip_live">Live</string>
     <string name="chip_brandmarks">Brandmarks</string>
     <string name="icon_selected_fmt">%1$s · %2$s. Assign it from the launcher icon picker if it did not auto-apply.</string>
@@ -130,6 +130,7 @@
          series-6 walls are 1376x768; a blanket "4K" was false for a fifth of
          the collection. Each preview states its own real resolution. -->
     <string name="wp_entry_sub_fmt">%1$d walls · export to Pictures</string>
+    <string name="wp_entry_sub_new_fmt">%1$d walls · %2$d new in this release</string>
     <string name="wp_downloading_fmt">Downloading… %1$d KB</string>
     <string name="wp_downloading_of_fmt">Downloading… %1$d of %2$d KB</string>
     <string name="wp_download_failed_fmt">Download failed: %1$s</string>
@@ -140,6 +141,9 @@
     <string name="wp_sub_set">Sets the system home wallpaper. Your launcher re-themes its tiles from it.</string>
     <string name="wp_sub_save">Saves to Pictures and opens the system setter (Fire TV fallback).</string>
     <string name="wp_seed_label">Launcher seed</string>
+    <string name="wp_floor_calm_fmt">Card floor · calm · %1$d%% dark</string>
+    <string name="wp_floor_mixed_fmt">Card floor · mixed · %1$d%% dark</string>
+    <string name="wp_floor_busy_fmt">Card floor · busy · %1$d%% dark</string>
     <string name="wp_seed_desc">Seed colours this wallpaper gives a launcher to theme tiles from.</string>
     <string name="wp_set_done">Wallpaper set.</string>
     <string name="wp_saved">Saved to Pictures. Confirm in the system setter.</string>
@@ -216,7 +220,7 @@
     <string name="settings_amoled_title">AMOLED chrome</string>
     <string name="settings_amoled_sub">Pure black app background, to match the AMOLED wallpaper series.</string>
     <string name="settings_banner_title">Art style: Banners or Glyphs</string>
-    <string name="settings_banner_sub">16:9 banner cards when on (the default), square glyphs when off. Switches the catalogue, the icon picker and the icons your launcher applies to every app.</string>
+    <string name="settings_banner_sub">16:9 banner cards when on (the default on a TV launcher), square glyphs when off (the default when a phone launcher is HOME). Switches the catalogue, the icon picker and the icons your launcher applies to every app.</string>
     <string name="settings_group_storage">STORAGE</string>
     <string name="settings_cache_title">Wallpaper cache</string>
     <string name="settings_cache_sub">Wallpapers you downloaded. Clearing re-fetches them on demand.</string>
@@ -231,6 +235,10 @@
     <string name="settings_group_help">HELP</string>
     <string name="settings_faq_title">Troubleshooting and FAQ</string>
     <string name="settings_faq_sub">Stale icons, manual overrides, Monet handoffs, unmapped apps. The repo docs, readable from the sofa.</string>
+    <string name="settings_about_title">About</string>
+    <string name="settings_about_sub">Version, build, and everything this app sends anywhere.</string>
+    <string name="settings_support_title">Support Core Builds</string>
+    <string name="settings_support_sub">Ko-fi, Discord and the source. The pack is free; this is the tip jar.</string>
     <string name="refresh_applied_fmt">Apply re-sent to %1$s. If cards are still stale, force-stop the launcher from its app info page.</string>
     <string name="refresh_manual_fmt">%1$s has no apply contract: %2$s</string>
     <string name="refresh_no_launcher">No supported launcher detected on this TV.</string>
@@ -330,10 +338,19 @@
     <string name="about_label_icons">ICONS</string>
     <string name="about_label_wallpapers">WALLPAPERS</string>
     <string name="about_network_header">EVERYTHING THIS APP SENDS</string>
-    <string name="about_network_one">1.  A request for the update manifest, when update checks are on.</string>
-    <string name="about_network_two">2.  A request for each wallpaper you choose to download, and for Core Builds Glyphs Pack the first time you switch the art style to Glyphs.</string>
+    <string name="about_network_one">1.  A request for the update manifest, when update checks are on or when you press Check for updates here, and the update itself when you choose to download it.</string>
+    <string name="about_network_two">2.  A request for each wallpaper or live loop you choose to download, and for Core Builds Glyphs Pack the first time you switch the art style to Glyphs.</string>
     <string name="about_network_none">That is the whole list. No analytics, no installed-app list, no device model, no identifier. Icons ship inside the app and are never fetched.</string>
     <string name="about_links">LINKS</string>
+    <!-- About > Check for updates. The row's title is the button through the
+         flow: this label, then update_download / update_install. -->
+    <string name="about_update_label">Check for updates</string>
+    <string name="about_update_sub">Compares this build with the version published on GitHub. Only runs when you press it.</string>
+    <string name="about_update_up_to_date">Up to date</string>
+    <string name="about_update_up_to_date_sub_fmt">v%1$s is the latest build.</string>
+    <string name="about_badge_latest">LATEST</string>
+    <string name="about_badge_available_fmt">%1$s AVAILABLE</string>
+    <string name="about_update_check_failed_sub_fmt">Could not check: %1$s. Press to try again.</string>
     <string name="about_source_label">Source &amp; issues</string>
     <string name="about_settings_label">Settings</string>
     <string name="about_launcher_label">Launcher compatibility</string>

@@ -31,6 +31,7 @@ object Prefs {
     const val KEY_PICK_BANNERS = "pick_banners"
     const val KEY_LIVE_LOOP = "live_loop"
     const val KEY_WHATS_NEW_SEEN = "whats_new_seen_version"
+    const val KEY_WP_NEW_SEEN = "wallpapers_new_seen_since"
     const val KEY_COMPANION_PENDING_APPLY = "glyphs_pending_apply"
 
     private fun prefs(context: Context): SharedPreferences =
@@ -109,6 +110,18 @@ object Prefs {
 
     fun setWhatsNewSeen(context: Context, versionCode: Int) {
         prefs(context).edit().putInt(KEY_WHATS_NEW_SEEN, versionCode).apply()
+    }
+
+    /**
+     * The newest wallpaper `since` the user has opened the browser for. The
+     * home rail's Wallpapers row advertises "N new" until this matches the
+     * manifest's newest value; [WallpapersActivity] records it on open.
+     */
+    fun wallpapersNewSeen(context: Context): String =
+        prefs(context).getString(KEY_WP_NEW_SEEN, "") ?: ""
+
+    fun setWallpapersNewSeen(context: Context, since: String) {
+        prefs(context).edit().putString(KEY_WP_NEW_SEEN, since).apply()
     }
 
     /**

@@ -157,21 +157,14 @@ class MainActivity : TvActivity() {
             // made the affordance read as prose rather than as something you
             // press, which is why the sheet draws three rows of title + sub.
             val wpEntry = findViewById<View>(R.id.wallpapers_entry)
-            val wpSub = findViewById<TextView>(R.id.wallpapers_entry_sub)
-            val wpCount = WallpaperCatalog.load(this).size
-            // No subtitle rather than repeating the row's own label.
-            wpSub.text = if (wpCount > 0) {
-                getString(R.string.wp_entry_sub_fmt, wpCount)
-            } else {
-                ""
-            }
+            bindWallpapersSub()
             wpEntry.setOnClickListener { startActivity(Intent(this, WallpapersActivity::class.java)) }
-            findViewById<TextView>(R.id.about_entry_sub).text =
-                getString(R.string.about_entry_sub_fmt, BuildConfig.VERSION_NAME)
-
             bindStyleRow()
             findViewById<View>(R.id.missing_entry).setOnClickListener {
                 startActivity(Intent(this, AuditorActivity::class.java))
+            }
+            findViewById<View>(R.id.support_entry).setOnClickListener {
+                startActivity(Intent(this, SupportActivity::class.java))
             }
             findViewById<View>(R.id.settings_entry).setOnClickListener {
                 startActivity(Intent(this, SettingsActivity::class.java))
@@ -204,12 +197,36 @@ class MainActivity : TvActivity() {
     }
 
     /**
+     * The Wallpapers row's subtitle: the count, and - until the browser has
+     * been opened once since the manifest's newest release - how many walls
+     * that release added or re-rendered, so an update taken for the
+     * wallpapers says where they are. Re-bound in onResume so returning from
+     * the browser clears the "new" the same visit.
+     */
+    private fun bindWallpapersSub() {
+        val wpSub = findViewById<TextView>(R.id.wallpapers_entry_sub)
+        val walls = WallpaperCatalog.load(this)
+        if (walls.isEmpty()) {
+            // No subtitle rather than repeating the row's own label.
+            wpSub.text = ""
+            return
+        }
+        val newest = WallpaperCatalog.newestSince(walls)
+        val fresh = WallpaperCatalog.newWalls(walls).size
+        wpSub.text = if (newest != null && fresh > 0 && Prefs.wallpapersNewSeen(this) != newest) {
+            getString(R.string.wp_entry_sub_new_fmt, walls.size, fresh)
+        } else {
+            getString(R.string.wp_entry_sub_fmt, walls.size)
+        }
+    }
+
+    /**
      * Rewrite the vertical D-pad chain around the containers that come and go,
      * at the moment their visibility changes.
      *
      * The sheet's screen order is apply_button -> update_bar -> style_entry ->
-     * missing_entry -> wallpapers_entry -> settings_entry | about_entry (one
-     * row) -> apply_targets ->
+     * missing_entry -> wallpapers_entry -> support_entry | settings_entry |
+     * about_entry (one row) -> apply_targets ->
      * search -> chip_row ->
      * grid, and three of those stops are conditional: the update bar only when a
      * newer manifest exists, the ALSO APPLIES TO row only with a second launcher
@@ -256,14 +273,15 @@ class MainActivity : TvActivity() {
             findViewById<View>(id).nextFocusDownId =
                 if (groupShown) R.id.style_entry else R.id.search
         }
-        // Settings and About share the rail's last row: both step down.
+        // Support, Settings and About share the rail's last row: all step down.
+        findViewById<View>(R.id.support_entry).nextFocusDownId = belowRows
         findViewById<View>(R.id.settings_entry).nextFocusDownId = belowRows
         findViewById<View>(R.id.about_entry).nextFocusDownId = belowRows
         findViewById<View>(R.id.apply_targets).nextFocusUpId =
-            if (groupShown) R.id.settings_entry else aboveRows
+            if (groupShown) R.id.support_entry else aboveRows
         findViewById<View>(R.id.apply_targets).nextFocusDownId = R.id.search
         findViewById<View>(R.id.search).nextFocusUpId = belowRows.takeIf { targetsShown }
-            ?: if (groupShown) R.id.settings_entry else aboveRows
+            ?: if (groupShown) R.id.support_entry else aboveRows
         findViewById<View>(R.id.chip_row).nextFocusUpId = R.id.search
         // Down from the category row: the grid, or the empty state's undo when
         // the grid is the container that just went GONE. The search field always
@@ -433,10 +451,11 @@ class MainActivity : TvActivity() {
                     startActivity(Intent(this, WhatsNewActivity::class.java))
                 }
             }
-            // Gated by Settings. Off means UpdateChecker is never called, so
-            // the app issues no network request of its own at all — which is
-            // what the About screen's network list claims, and the claim has
-            // to stay checkable.
+            bindWallpapersSub()
+            // Gated by Settings. Off means this startup check never runs, so
+            // the only update request left is the one the user asks for in
+            // About - which is what the About screen's network list says, and
+            // the claim has to stay checkable.
             if (!updateChecked && Prefs.updateChecks(this)) {
                 updateChecked = true
                 checkForUpdate()
@@ -1072,6 +1091,10 @@ class MainActivity : TvActivity() {
             }
             return
         }
+        // Mark it offered before the installer opens: coming back from a
+        // cancelled install fires onResume, which would otherwise launch it
+        // again. The button stays live for a deliberate retry.
+        installOffered = true
         try {
             UpdateInstaller.install(this, file)
         } catch (e: android.content.ActivityNotFoundException) {

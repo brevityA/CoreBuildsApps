@@ -91,6 +91,7 @@
     <item drawable="shows" />
     <item drawable="betterxc" />
     <item drawable="binge" />
+    <item drawable="binged" />
     <item drawable="bitdefender" />
     <item drawable="bit_tv" />
     <item drawable="blip" />
@@ -106,6 +107,7 @@
     <item drawable="bstar" />
     <item drawable="buttonmappertv" />
     <item drawable="buttonsremapper" />
+    <item drawable="buzztv6" />
     <item drawable="byebyedpi" />
     <item drawable="byutv" />
     <item drawable="farsitel" />
@@ -532,6 +534,7 @@
     <item drawable="nrk_tv" />
     <item drawable="ntathome" />
     <item drawable="nuvio" />
+    <item drawable="nuyodeviceinfo" />
     <item drawable="nvplayer" />
     <item drawable="nxsha" />
     <item drawable="nzrplus" />
@@ -800,6 +803,7 @@
     <item drawable="telewebion" />
     <item drawable="teliaplaylt" />
     <item drawable="telly" />
+    <item drawable="tellyplayer" />
     <item drawable="tencent" />
     <item drawable="tennis_channel" />
     <item drawable="tennistv" />
@@ -962,6 +966,7 @@
     <item drawable="xumo_play" />
     <item drawable="yacine_tv" />
     <item drawable="yandex_browser" />
+    <item drawable="yangoplay" />
     <item drawable="selfcare" />
     <item drawable="yettel_tv" />
     <item drawable="yippee" />

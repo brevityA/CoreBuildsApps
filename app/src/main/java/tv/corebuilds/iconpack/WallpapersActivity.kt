@@ -24,8 +24,9 @@ import androidx.recyclerview.widget.RecyclerView
  * auto-rotate the folder. The header Export button also starts with all visible
  * wallpapers selected if not already in selection mode.
  *
- * The live loops ([LiveLoop]: Deep Space and Cinema) ride the same grid with
- * a LIVE badge, under their own series chip and all together under the Live
+ * The live loops ([LiveLoop]: Motion, Deep Space, Cinema, Icon Echo) ride the same grid with
+ * a LIVE badge, together under the Live chip (a set of their own since 2.4.0,
+ * so a series chip shows stills only) and in the All grid; see also the New
  * chip. They preview like stills and set through the system live picker; a
  * bulk save sends them to Movies/CoreBuilds, where Projectivy's and Monet's
  * video pickers find them - so Live, Export and Select all save every loop
@@ -178,9 +179,22 @@ class WallpapersActivity : TvActivity() {
     }
 
     private fun bindChips() {
-        val present = all.map { it.series }.distinct()
+        // Opening the browser is seeing the release: the home rail stops
+        // advertising "N new" from here on.
+        WallpaperCatalog.newestSince(all)?.let { Prefs.setWallpapersNewSeen(this, it) }
+        // The still series, in catalogue order. The loops' own key is not a
+        // series folder; it gets the Live chip below, after New.
+        val present = all.filter { !it.isLive }.map { it.series }.distinct()
         val labels = mutableListOf(getString(R.string.chip_all))
         val keys = mutableListOf<String?>(null)
+        // What this release added or re-rendered, first: with 132 walls in
+        // series order, a new series sits under a hundred old ones and a user
+        // who updated for the wallpapers would scroll past them.
+        val fresh = WallpaperCatalog.newWalls(all)
+        if (fresh.isNotEmpty()) {
+            labels += getString(R.string.chip_new_fmt, fresh.size)
+            keys += NEW_KEY
+        }
         // Every moving wallpaper in one place, whichever series it belongs
         // to - the chip a TV user reaches for to save the loops in one go.
         if (all.any { it.isLive }) {
@@ -213,6 +227,7 @@ class WallpapersActivity : TvActivity() {
         val filtered = when (series) {
             null -> all
             LIVE_KEY -> all.filter { it.isLive }
+            NEW_KEY -> WallpaperCatalog.newWalls(all)
             else -> all.filter { it.series == series }
         }
         adapter.submit(filtered)
@@ -271,5 +286,7 @@ class WallpapersActivity : TvActivity() {
     companion object {
         /** Chip key for "every live loop"; never a real series folder name. */
         private const val LIVE_KEY = "__live__"
+        /** Chip key for "new in the latest release"; never a series folder name. */
+        private const val NEW_KEY = "__new__"
     }
 }

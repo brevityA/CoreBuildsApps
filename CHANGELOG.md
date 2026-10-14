@@ -6,6 +6,188 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.4.0] — 2026-10-14
+
+### Added
+
+- **Live is a set of its own.** The Wallpapers browser's *Live* chip now
+  owns every loop; a series chip shows stills only. Forty-eight loops, each
+  the moving form of a committed wall: the twelve Motion walls (new, clips
+  32–43), the twelve Deep Space walls (re-rendered from the 2.4.0 stills,
+  which the old loops predated), all twelve Cinema scenes (23–28, and
+  53–58 for the six new scenes), and all twelve Icon Echo walls (29–31
+  re-rendered, 44–52 new). One roster
+  (`tools/live_roster.py`) feeds the renderers, the feed, `LiveLoop.kt`
+  and the tests.
+- **Live loops, remade.** The ten loops that opened the set were ffmpeg
+  test patterns (gradients, cellular automaton, Mandelbrot, Sierpinski)
+  with Core Builds names on them, at 30 fps; so were the three Icon Echo
+  loops. All are retired or re-rendered: every loop is now a real wall
+  given time by one engine (`tools/build_still_loops.py`: points of light
+  twinkle on their own phase, soft light shimmers, the camera breathes and
+  drifts, seamless over 20 s) at 1080p 60 fps, CRF 22. Numbers 01–10 stay
+  empty; no shipped file name changed.
+- **Icon Echo to twelve.** Six more walls lit by catalogue accents, hues
+  chosen to be distinct from the first six: Violet Stream (Twitch
+  `#9146FF`), Ember Reel (Crunchyroll `#FF5E00`), Teal Tide (ABC iview
+  `#20B8B8`), Solar Band (Pluto TV `#FFF200`), Magenta Veil (Binge
+  `#B80472`), Indigo Drift (Disney+ `#113CCF`). Walls 133–138; palette
+  cues only, no marks.
+- **Icon Echo, relit.** All twelve walls keep their compositions and
+  catalogue accents, but the light is remade: lines draw at two and a half
+  times the weight and dots near twice, then every wall passes through a
+  relight that blooms the drawn light in two stages (a wide far glow, a
+  tight near halo, hot cores pushed toward white), lays a slow noise wash
+  of the deep tone behind it so the accent has a room to sit in, and
+  vignettes the frame. The first six were thin lines on faint washes,
+  invisible from the couch; now they read like the rest of the collection.
+  Their twelve loops are re-rendered from the new stills.
+
+- **Check for updates in About.** About now carries an on-demand update
+  check: press it and the row says *Up to date*, *Download vX* (with the
+  release's highlights), or why GitHub could not be reached — then walks
+  the same download → permission → install flow as the home-screen bar,
+  with the instruction written into the row rather than a toast. Until now
+  the only way to learn about a new build was the startup check, which
+  users with update checks off, or who had pressed Later, never saw again.
+- **Earth wallpaper series.** Twelve walls of the planet from orbit (series
+  12, walls 109–116 and 143–146): city lights, aurora from above, a
+  crescent, a storm, an orbital sunrise, Earth over the Moon, a coastline at
+  night, an ice sheet, a river delta at night, a cyclone eye on the
+  terminator, lightning from orbit, dunes from orbit. Generated imagery, shipped at the 1376×768 it was made at under the
+  same honesty rule as Circuit Core.
+- **Wild wallpaper series.** Twelve nature and landscape-photography walls
+  (series 13, walls 117–124 and 147–150): aurora over a fjord, a forest in
+  fog, the Milky Way over dunes, a glacier lagoon, a volcano at night,
+  bioluminescent surf, alpenglow, a plains thunderstorm, a blue-hour lake, a
+  sea cave under stars, a moonlit forest, a canyon at night. Generated the
+  same way as Earth, at the same resolution.
+- **Cinema to twelve.** Six more scenes in the same layered engine (walls
+  151–156): Drive-In, Aisle Lights, Film Reel, Popcorn Stand, Exit Sign,
+  Intermission — each a still and a seamless 60 fps loop (clips 53–58).
+- **Every series is twelve walls.** Motion, Horizons, Circuit Core,
+  Retrowave, AMOLED, Deep Space, Cinema, Icon Echo, Earth, Wild and Flux:
+  eleven series of twelve, 132 walls in all.
+- **Flux wallpaper series.** Twelve 4K abstract walls (series 14, walls
+  125–132 and 139–142) — domain-warped ink, folded silk, a plasma core,
+  streamlines, glass facets, caustics, a veil, a bent grid, warped smoke,
+  two ring systems beating against each other, a curtain of light, and iron
+  filings combed along a magnetic field — procedural and seeded in the
+  house palette (`tools/build_flux_wallpapers.py`).
+
+- **Binged icon.** Binged, the family streaming app (`net.binged.tv`), has
+  its own icon: a capital B over a short bar, the cue of its own launcher
+  icon, in the coral red of that icon's underline. Device-reported through
+  the pack's Missing icons scanner; the component is not yet confirmed on
+  a second TV.
+- **Buzz TV 6 icon.** The BuzzTV IPTV player (`com.buzztv.iptv.tv`) has its
+  own icon: a television screen with a buzz — a lightning bolt — inside it
+  (issue #300). No published brand colour was found, so it takes a pack
+  palette accent.
+- **Telly Player icon.** Telly Player (`com.desktoptelly.tv`), distributed
+  by Downloader code, has its own icon: a telly on its stand with a play
+  triangle inside (issue #301). No published brand colour was found, so it
+  takes a pack palette accent. A second TV reported the same component
+  through the pack's scanner (issue #306, a Xiaomi TV on Android 14), so
+  the mapping is confirmed on two devices.
+- **Yango Play icon.** Yango Play (`com.yango.saft.tv`), Kinopoisk's
+  international build under its own package, has its own icon: a Y with a
+  play triangle on its stem in Yango red (issue #305; scanner-reported on
+  a Xiaomi TV, Android 14).
+- **Nuyo Device Info icon.** Nuyo Device Info (`com.roysolberg.android.deviceinfo`)
+  has its own icon: a handset outline with an information mark inside
+  (issue #296; scanner-reported on a Google TV Streamer, Android 14).
+  With Binged, Buzz TV 6, Telly Player and Yango Play: 988 → 993 icons,
+  1224 → 1229 components.
+- **"New" chip in Wallpapers.** The browser's chip rail gains *New (122)*
+  after *All*: every wall stamped with this release in the manifest (the
+  three new series, the additions, and every refreshed series), so a
+  returning user finds what changed without scanning the whole grid. The home
+  rail's Wallpapers row says *132 walls · N new in this release* until the
+  chip has been seen once. Manifest entries carry an optional `since`
+  version; the chip counts the newest.
+- **Card floor in the wallpaper preview.** Under the launcher-seed swatches
+  the preview now says *Card floor · calm · 92% dark* (or *mixed* / *busy*):
+  the share of the lower third at or under 14% luma, measured from the
+  decoded image on the TV — the same floor the procedural generators are
+  held to, which the photographic series are not. One line that answers
+  "will my rows be readable over this" before pressing Set.
+- **Settings ↔ About ↔ Support.** Settings' Help group ends with *About*
+  and *Support* rows, so the version, update check and the Ko-fi/Discord
+  screen are reachable from Settings and not only from the home rail.
+- **Version badge in About.** After an update check the version line wears
+  a small badge: *LATEST* in cyan, or *vX AVAILABLE* in amber, so the state
+  survives scrolling away from the update row.
+- **Art style defaults to the launcher.** Until the Banners/Glyphs switch
+  is touched, its default follows the HOME launcher: a phone launcher
+  (Nova, Lawnchair, Apex, ADW) has no banner surface, so a first run there
+  starts on glyphs rather than on 16:9 cards it can never apply. TV
+  launchers and unknown HOMEs keep banners; a choice once made is kept.
+- **Motion, re-authored.** Walls 25–32 (Orbitals, Warp, Fogbanks, Spiral,
+  Slipstream, Embers, Tracer, Pendulum) were hand-made exports with no
+  generator in the repo: thin single-tone lines, flat at TV distance. They
+  are now drawn by `tools/build_motion_wallpapers.py` as long-exposure
+  light — every trail a hot core inside a wide glow, a bright head where
+  the light is now, depth from layers at different blur, a calm lower
+  third — keeping each wall's number, name and subject. Slipstream's
+  streamlines are integrated through a real potential flow round the
+  body; Pendulum is a decaying harmonograph. Their eight loops (32–39)
+  are re-rendered from the new stills.
+- **Circuit Core, re-rendered.** Walls 41–50 are new renders of the same
+  ten ideas as one coherent set - a single subject each (a blooming core,
+  circuit shards, a cooling cinder, a monolith, a foundry, a conduit, a
+  skyline of components, works, rising traces, a deep core), with depth
+  and a calm lower third, in place of the earlier centred clusters. Same
+  honesty rule: 1376×768 JPEG at the size they were made. 79–80 follow.
+- **Retrowave, refreshed.** Same twelve walls, seeds and palettes, with
+  atmosphere: the sun blooms, a haze band sits on the horizon, the sun
+  reflects down the grid plane, the grid emerges from fog instead of a
+  hard line, and ridge walls gain a far ridge lost in haze.
+- **AMOLED, refreshed.** Every stroke now carries a two-stage halo (tight
+  plus a wide faint one) and a hot core lifted toward white, so it reads
+  as light the panel emits rather than a line painted on it. True-black
+  coverage stays at 94–98%; the ≥50% contract still asserts.
+- **Collection sheet.** `docs/wallpapers-collection.jpg` shows every wall
+  by series, rebuilt from the shipped thumbs by
+  `tools/build_wallpaper_collection_sheet.py`; the Wallpapers README and the
+  top-level README link it.
+- **Design note for 2.5.0.** `docs/research/mapping-confirmation-channel-2026-10.md`
+  proposes how a second TV confirms (or contradicts) an issue-sourced icon
+  mapping with one press — per-mapping GitHub issues, 👍 to confirm, a
+  prefilled report carrying the real component when it does not apply.
+  Nothing is built; the note exists so the next release starts from a
+  decision.
+
+### Changed
+
+- **Support is on the home screen.** The rail's last row is now Support |
+  Settings | About, so the Ko-fi and Discord screen is one press from the
+  home screen instead of two hops through About. The version suffix About
+  carried on that row went with the third card; it is the About screen's
+  first fact.
+- **Horizons re-rendered.** The twelve Horizons walls were a gradient, a
+  line and a dot. Each is now a scene — graded sky, sun or moon with its own
+  atmosphere, cloud bands, a thinning star field and three to five ridgelines
+  of fBm terrain stepping into haze — keeping its number, name and accent
+  (`tools/build_horizons_wallpapers.py`, the first generator the series has
+  had for walls 33–40).
+- **Deep Space re-rendered.** Every large glow is shaped by ridged fBm
+  noise, so nebulae break into filaments and dust lanes, planet discs carry
+  bands and grain, the Milky Way band is a band, and a dense faint dust
+  field sits under the stars. Same walls, same seeds, more in them.
+- **Fieldwork wallpaper series retired.** The 24 mesh-gradient washes of series 1
+  (walls 01–24) are retired on user feedback — at TV distance they were one
+  blur in five colours. The numbers stay empty, as series 4 and 5 do.
+
+### Fixed
+
+- **Cancelling the update installer no longer reopens it.** Once an update
+  had downloaded, backing out of Android's installer brought the pack back
+  to the front, and the home-screen bar opened the installer again, over
+  and over, until the update was installed (2.3.x). The bar and the new
+  About row now count the first launch as the offer; pressing them still
+  retries.
+
 ## [2.3.3] — 2026-10-12
 
 ### Added

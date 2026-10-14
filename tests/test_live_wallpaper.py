@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Contracts for the live wallpaper feature: the Deep Space, Cinema and Icon
+Contracts for the live wallpaper feature: the Motion, Deep Space, Cinema and Icon
 Echo loops playing as the system live wallpaper.
 
 Plain unittest over the repo tree, no Android SDK (mirrors
 tests/test_wallpaper_export.py). Guards the wiring that would otherwise rot
 silently:
 
-  * the loop catalogue is the twelve Deep Space and six Cinema loops, each with a real
+  * the loop catalogue is tools/live_roster.py's forty-eight loops, each with a real
     MP4 in Motion/live/ and a bundled still frame for the grid and the engine
     fallback - a loop with no file is a 404 in the app, a frame with no bundle
     is a blank home screen before the first download
@@ -68,25 +68,52 @@ class LoopCatalogueTests(unittest.TestCase):
         cls.titles = re.findall(r'title = "([^"]+)"', cls.loops_body)
         cls.files = re.findall(r'fileName = "([^"]+)"', cls.loops_body)
 
-    def test_the_loops_are_exactly_the_deep_space_cinema_and_icon_echo_sets(self):
-        # One loop per series-9, series-10 and series-11 wall, in wall order,
-        # and nothing else: the app's list is the feed's Deep Space, Cinema
-        # and Icon Echo entries, so a loop the feed drops (or adds) cannot
-        # linger (or go missing) in the picker.
+    def test_the_loops_are_exactly_the_roster(self):
+        # One loop per roster clip, in roster order, and nothing else: the
+        # app's list, the feed and tools/live_roster.py are one list, so a
+        # loop the roster drops (or adds) cannot linger (or go missing) in
+        # the picker. Every set is the moving form of a whole still series.
+        import sys
+        sys.path.insert(0, str(ROOT / "tools"))
+        from live_roster import ROSTER, MOTION, DEEP_SPACE, CINEMA, ICON_ECHO
         feed = json.loads(read(MOTION_FEED))
-        deep = [e["url_1080p"].rsplit("/", 1)[-1] for e in feed
-                if "Deep Space" in e.get("location", "")]
-        cinema = [e["url_1080p"].rsplit("/", 1)[-1] for e in feed
-                  if "Cinema" in e.get("location", "")]
-        echo = [e["url_1080p"].rsplit("/", 1)[-1] for e in feed
-                if "Icon Echo" in e.get("location", "")]
-        self.assertEqual(len(deep), 12, "live-feed.json should list twelve Deep Space loops")
-        self.assertEqual(len(cinema), 6, "live-feed.json should list six Cinema loops")
-        self.assertEqual(len(echo), 3, "live-feed.json should list three Icon Echo loops")
-        self.assertEqual(self.files, deep + cinema + echo)
-        self.assertEqual(len(re.findall(r"\bLoop\(", self.loops_body)), 21, "twenty-one Loop entries")
-        self.assertEqual(len(self.ids), 21)
-        self.assertEqual(len(set(self.ids)), 21, "loop ids must be unique")
+        feed_files = [e["url_1080p"].rsplit("/", 1)[-1] for e in feed]
+        roster_files = [f"{c.stem}.mp4" for c in ROSTER]
+        self.assertEqual(feed_files, roster_files, "live-feed.json is not the roster")
+        self.assertEqual(self.files, roster_files, "LiveLoop.kt is not the roster")
+        self.assertEqual([len(MOTION), len(DEEP_SPACE), len(CINEMA), len(ICON_ECHO)],
+                         [12, 12, 12, 12])
+        self.assertEqual(len(re.findall(r"\bLoop\(", self.loops_body)), 48, "forty-eight Loop entries")
+        self.assertEqual(len(self.ids), 48)
+        self.assertEqual(len(set(self.ids)), 48, "loop ids must be unique")
+        self.assertEqual(self.ids, [c.id for c in ROSTER])
+        for c in ROSTER:
+            self.assertTrue(c.still.is_file(), f"loop {c.number} has no still: {c.still.name}")
+            self.assertEqual(c.location, next(
+                e["location"] for e in feed if e["url_1080p"].endswith(f"{c.stem}.mp4")))
+
+    def test_no_test_pattern_clips_remain(self):
+        # 01-10 were ffmpeg gradients/cellauto/mandelbrot/sierpinski with
+        # Core Builds names on them; retired in 2.4.0 when Live became a
+        # set of walls given time. Their numbers stay empty, never reused.
+        strays = sorted(p.name for p in MOTION_LIVE.glob("coremotion-live-*.mp4")
+                        if int(p.name.split("-")[2]) <= 10)
+        self.assertEqual(strays, [])
+        self.assertFalse((ROOT / "tools" / "build_icon_echo_loops.py").exists())
+
+    def test_every_loop_is_60fps_1080p(self):
+        # The quality bar the 2.4.0 rebuild set: no 30 fps clip, no odd size.
+        import subprocess
+        try:
+            import imageio_ffmpeg
+            ff = imageio_ffmpeg.get_ffmpeg_exe()
+        except Exception:
+            self.skipTest("imageio-ffmpeg not installed")
+        for name in self.files:
+            err = subprocess.run([ff, "-i", str(MOTION_LIVE / name)],
+                                 capture_output=True, text=True).stderr
+            self.assertIn("1920x1080", err, name)
+            self.assertRegex(err, r"\b60 fps\b", f"{name} is not 60 fps")
 
     def test_no_stale_bundled_frames(self):
         # Every bundled frame belongs to a listed loop (the 1.9.4 placeholder
@@ -94,11 +121,48 @@ class LoopCatalogueTests(unittest.TestCase):
         expected = {name.rsplit(".", 1)[0] + ".jpg" for name in self.files}
         self.assertEqual({p.name for p in LIVE_THUMBS.glob("*.jpg")}, expected)
 
+    # Every loop id a released build has written to prefs (2.3.3, the last
+    # release before the 2.4.0 rebuild). LiveLoop.byId falls back to the first
+    # loop for an unknown id, so dropping or renaming one of these resets that
+    # user's wallpaper without a word; the 2.4.0 rebuild nearly shipped
+    # `signal-sweep` as `signal-red`. Add to this list, never remove from it.
+    SHIPPED_IDS = (
+        "event-horizon", "nebula-drift", "starfield", "ringed-planet",
+        "galaxy-spiral", "aurora-orbit", "comet-lane", "deep-field",
+        "ember-nova", "hex-station", "cyan-supernova", "dark-side-moon",
+        "marquee-lights", "velvet-curtain", "projector-beam", "neon-lounge",
+        "late-rentals", "box-office", "signal-sweep", "green-current",
+        "molten-orbit",
+    )
+
     def test_ids_are_stable_slugs(self):
         # The id is a persisted preference value. Renaming one silently
         # re-points every installed wallpaper back to the default.
         for loop_id in self.ids:
             self.assertRegex(loop_id, r"^[a-z0-9]+(-[a-z0-9]+)*$", loop_id)
+        missing = [i for i in self.SHIPPED_IDS if i not in self.ids]
+        self.assertEqual(missing, [], "a released loop id was renamed or dropped")
+
+    def test_deep_space_wrapper_never_renders_other_sets(self):
+        # build_still_loops reads an empty --only as "everything", so a wall
+        # filter that matched nothing (a typo, or a clip number given as a
+        # wall) used to overwrite all 36 still loops across three sets.
+        import sys
+        sys.path.insert(0, str(ROOT / "tools"))
+        import build_deep_space_loops as wrapper
+        calls = []
+        real = wrapper._main
+        wrapper._main = lambda argv: calls.append(argv) or 0
+        try:
+            wrapper.main(["--only", "85"])
+            self.assertEqual(calls.pop(), ["--set", "Deep Space", "--only", "11"])
+            wrapper.main([])
+            self.assertEqual(calls.pop()[:2], ["--set", "Deep Space"])
+            with self.assertRaises(SystemExit):
+                wrapper.main(["--only", "11"])
+            self.assertEqual(calls, [])
+        finally:
+            wrapper._main = real
 
     def test_every_loop_has_its_mp4_in_motion_live(self):
         for name in self.files:
@@ -146,21 +210,25 @@ class LoopCatalogueTests(unittest.TestCase):
             self.assertIn(name, by_file, f"{name} is not in live-feed.json")
             self.assertEqual(title, by_file[name], f"{name} is titled differently in the feed")
 
-    def test_loops_ride_their_own_still_series(self):
-        # Each loop is the moving half of a still series, so it appears under
-        # that chip (and under Live) rather than in a series that splits one
-        # wallpaper's two forms.
-        self.assertIn('const val SERIES = "series-9-deep-space"', self.src)
-        self.assertIn('const val CINEMA_SERIES = "series-10-cinema"', self.src)
-        self.assertIn('const val ICON_ECHO_SERIES = "series-11-icon-echo"', self.src)
+    def test_loops_are_a_set_of_their_own(self):
+        # Since 2.4.0 the loops sit under the Live chip only; a still series'
+        # chip shows stills. The grid key is not a manifest series folder,
+        # and the browser derives its series chips from the stills alone.
+        self.assertIn('const val SERIES = "series-live"', self.src)
         self.assertIn("val series: String = LiveLoop.SERIES", self.src)
-        self.assertEqual(self.loops_body.count("series = CINEMA_SERIES"), 6)
-        self.assertEqual(self.loops_body.count("series = ICON_ECHO_SERIES"), 3)
-        self.assertIn("series = loop.series", self.src)
+        self.assertIn("val stillSeries: String", self.src)
+        self.assertEqual(self.loops_body.count("stillSeries = MOTION_SERIES"), 12)
+        self.assertEqual(self.loops_body.count("stillSeries = DEEP_SPACE_SERIES"), 12)
+        self.assertEqual(self.loops_body.count("stillSeries = CINEMA_SERIES"), 12)
+        self.assertEqual(self.loops_body.count("stillSeries = ICON_ECHO_SERIES"), 12)
+        self.assertNotIn("series = CINEMA_SERIES", self.loops_body)
+        browser = kt("WallpapersActivity.kt")
+        self.assertIn("all.filter { !it.isLive }.map { it.series }.distinct()", browser)
         manifest = json.loads(read(ROOT / "Wallpapers" / "manifest.json"))
         series = {w["series"] for w in manifest["wallpapers"]}
-        self.assertIn("series-10-cinema", series, "the Cinema stills must exist for their chip")
-        self.assertIn("series-11-icon-echo", series, "the Icon Echo stills must exist for their chip")
+        self.assertNotIn("series-live", series, "the Live set is not a stills folder")
+        for still in ("series-2-motion", "series-9-deep-space", "series-10-cinema", "series-11-icon-echo"):
+            self.assertIn(still, series, f"{still} stills must exist for their loops")
 
     def test_as_wallpapers_marks_them_live(self):
         self.assertIn("isLive = true", self.src)

@@ -270,6 +270,9 @@
     <item component="ComponentInfo{au.com.binge.tv/.MainActivity}" drawable="binge"/>
     <item component="ComponentInfo{au.com.binge.tv/au.com.foxsports.martian.tv.main.MainActivity}" drawable="binge"/>
     <item component="ComponentInfo{au.com.streamotion.ares/au.com.foxsports.martian.tv.main.MainActivity}" drawable="binge"/>
+    <!-- Binged -->
+    <item component="ComponentInfo{net.binged.tv/net.binged.tv.MainActivity}" drawable="binged"/>
+    <item component="ComponentInfo{net.binged.tv/.MainActivity}" drawable="binged"/>
     <!-- Bitdefender -->
     <item component="ComponentInfo{com.bitdefender.vpn/com.bitdefender.vpn.MainActivity}" drawable="bitdefender"/>
     <item component="ComponentInfo{com.bitdefender.vpn/.MainActivity}" drawable="bitdefender"/>
@@ -313,6 +316,8 @@
     <!-- Buttons Remapper -->
     <item component="ComponentInfo{com.irishin.buttonsremapper/com.irishin.buttonsremapper.ui.MainActivity}" drawable="buttonsremapper"/>
     <item component="ComponentInfo{com.irishin.buttonsremapper/.ui.MainActivity}" drawable="buttonsremapper"/>
+    <!-- Buzz TV 6 -->
+    <item component="ComponentInfo{com.buzztv.iptv.tv/com.buzztv.iptv.MainActivity}" drawable="buzztv6"/>
     <!-- ByeByeDPI -->
     <item component="ComponentInfo{io.github.romanvht.byedpi/io.github.dovecoteescapee.byedpi.activities.MainActivity}" drawable="byebyedpi"/>
     <!-- BYUtv -->
@@ -1557,6 +1562,9 @@
     <item component="ComponentInfo{com.nuvio.tv/com.nuvio.tv.launcher.AppIconGraphite}" drawable="nuvio"/>
     <item component="ComponentInfo{com.nuvio.tv/.launcher.AppIconGraphite}" drawable="nuvio"/>
     <item component="ComponentInfo{com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault}" drawable="nuvio"/>
+    <!-- Nuyo Device Info -->
+    <item component="ComponentInfo{com.roysolberg.android.deviceinfo/com.roysolberg.android.deviceinfo.ui.MainActivity}" drawable="nuyodeviceinfo"/>
+    <item component="ComponentInfo{com.roysolberg.android.deviceinfo/.ui.MainActivity}" drawable="nuyodeviceinfo"/>
     <!-- NV Player -->
     <item component="ComponentInfo{com.acb.nvplayer/com.ae.video.bplayer.ui.SplashActivity}" drawable="nvplayer"/>
     <!-- Nxsha -->
@@ -2341,6 +2349,9 @@
     <item component="ComponentInfo{lt.telia.tv/.MainActivity}" drawable="teliaplaylt"/>
     <!-- Telly -->
     <item component="ComponentInfo{tv.fournetwork.android.box.digi/tv.fournetwork.android.box.MainActivity}" drawable="telly"/>
+    <!-- Telly Player -->
+    <item component="ComponentInfo{com.desktoptelly.tv/com.desktoptelly.tv.MainActivity}" drawable="tellyplayer"/>
+    <item component="ComponentInfo{com.desktoptelly.tv/.MainActivity}" drawable="tellyplayer"/>
     <!-- Tencent Video -->
     <item component="ComponentInfo{com.tencent.qqlive/com.tencent.qqlive.ona.activity.SplashHomeActivity}" drawable="tencent"/>
     <item component="ComponentInfo{com.tencent.qqlive/.ona.activity.SplashHomeActivity}" drawable="tencent"/>
@@ -2799,6 +2810,8 @@
     <!-- Yandex Browser -->
     <item component="ComponentInfo{com.yandex.browser.tv/com.yandex.browser.tv.tvactivity.TvActivity}" drawable="yandex_browser"/>
     <item component="ComponentInfo{com.yandex.browser.tv/.tvactivity.TvActivity}" drawable="yandex_browser"/>
+    <!-- Yango Play -->
+    <item component="ComponentInfo{com.yango.saft.tv/ru.kinopoisk.tv.presentation.splash.SplashActivity}" drawable="yangoplay"/>
     <!-- Yettel Selfcare -->
     <item component="ComponentInfo{bg.yettel.tv.selfcare/bg.yettel.tv.selfcare.MainActivity}" drawable="selfcare"/>
     <item component="ComponentInfo{bg.yettel.tv.selfcare/.MainActivity}" drawable="selfcare"/>

@@ -120,6 +120,21 @@
                         android:textColor="@color/cb_ink"
                         android:textSize="@dimen/cb_text_title"
                         android:textStyle="bold" />
+
+                    <!-- Verdict of the last Check for updates on this screen:
+                         "LATEST" in cyan or "2.4.1 AVAILABLE" in the warning amber. GONE
+                         until a check has run, so the fact stays a fact. -->
+                    <TextView
+                        android:id="@+id/about_version_badge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:fontFamily="monospace"
+                        android:letterSpacing="0.10"
+                        android:textColor="@color/cb_signal_cyan"
+                        android:textSize="@dimen/cb_text_kicker"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -257,6 +272,46 @@
                 android:textColor="@color/cb_signal_cyan"
                 android:textSize="@dimen/cb_text_kicker"
                 android:textStyle="bold" />
+
+            <!-- Check for updates: the same UpdateChecker the home screen runs
+                 at startup, but on demand, with its answer written into the
+                 sub-line - up to date, a version to download, or why GitHub
+                 could not be reached - so a user whose checks are off in
+                 Settings, or who pressed Later on the bar, still has a door.
+                 The title doubles as the button through the whole flow:
+                 Check -> Download vX -> Install vX. -->
+            <LinearLayout
+                android:id="@+id/about_update"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:minHeight="@dimen/cb_target_min"
+                android:background="@drawable/bg_card"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:padding="@dimen/cb_card_padding">
+
+                <TextView
+                    android:id="@+id/about_update_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/about_update_label"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_label" />
+
+                <TextView
+                    android:id="@+id/about_update_sub"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:text="@string/about_update_sub"
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_data" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/about_source"
