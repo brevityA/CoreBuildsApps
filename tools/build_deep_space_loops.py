@@ -31,7 +31,16 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--only", type=int, action="append")
     a = p.parse_args(argv)
     numbers = [c.number for c in DEEP_SPACE if not a.only or c.wall in a.only]
-    return _main(sum([["--only", str(n)] for n in numbers], []))
+    # An empty --only would read as "no filter" downstream and re-render
+    # every still loop in every set, so a filter that matches nothing stops
+    # here, and the set restriction rides along regardless.
+    if not numbers:
+        p.error(f"no Deep Space wall matches {a.only} (walls are "
+                f"{DEEP_SPACE[0].wall}-{DEEP_SPACE[-1].wall}, not clip numbers)")
+    args = ["--set", "Deep Space"]
+    for n in numbers:
+        args += ["--only", str(n)]
+    return _main(args)
 
 
 if __name__ == "__main__":

@@ -613,6 +613,10 @@ def main() -> int:
             rendered.append((num, title, Image.open(SERIES / f"{stem}.png").convert("RGB")))
             continue
         im = fn()
+        # ~32 MiB per 4K field; reuse is within a wall, so drop them here
+        # or a full build holds every wall's noise to the end. Seeded, so a
+        # miss recomputes the same field.
+        _FBM_CACHE.clear()
         dc = dark_coverage(im)
         assert dc >= 0.45, f"{stem}: dark coverage {dc:.0%} below the 45% floor"
         total += save_wall(im, SERIES, stem)

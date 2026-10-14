@@ -143,6 +143,27 @@ class LoopCatalogueTests(unittest.TestCase):
         missing = [i for i in self.SHIPPED_IDS if i not in self.ids]
         self.assertEqual(missing, [], "a released loop id was renamed or dropped")
 
+    def test_deep_space_wrapper_never_renders_other_sets(self):
+        # build_still_loops reads an empty --only as "everything", so a wall
+        # filter that matched nothing (a typo, or a clip number given as a
+        # wall) used to overwrite all 36 still loops across three sets.
+        import sys
+        sys.path.insert(0, str(ROOT / "tools"))
+        import build_deep_space_loops as wrapper
+        calls = []
+        real = wrapper._main
+        wrapper._main = lambda argv: calls.append(argv) or 0
+        try:
+            wrapper.main(["--only", "85"])
+            self.assertEqual(calls.pop(), ["--set", "Deep Space", "--only", "11"])
+            wrapper.main([])
+            self.assertEqual(calls.pop()[:2], ["--set", "Deep Space"])
+            with self.assertRaises(SystemExit):
+                wrapper.main(["--only", "11"])
+            self.assertEqual(calls, [])
+        finally:
+            wrapper._main = real
+
     def test_every_loop_has_its_mp4_in_motion_live(self):
         for name in self.files:
             path = MOTION_LIVE / name
