@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 991
+    "count": 993
   },
   "icons": [
     {
@@ -13985,6 +13985,34 @@
           "source": "Silo orange #FA7604, the foot bar of the official wordmark (siloserver.org/brand/silo-wordmark-dark.svg, reference only) (2026-10-08)"
         }
       }
+    },
+    {
+      "name": "Yango Play",
+      "drawable": "yangoplay",
+      "color": "#FC3F1D",
+      "glyph": "yangoplay_y",
+      "components": [
+        "com.yango.saft.tv/ru.kinopoisk.tv.presentation.splash.SplashActivity"
+      ],
+      "category": "STREAM",
+      "mapping_source": "issue #305 (device-reported via the pack's Missing icons scanner on MiTV-AFMU0, Android 14, pack 2.3.3, 2026-10-13): com.yango.saft.tv/ru.kinopoisk.tv.presentation.splash.SplashActivity is the activity the launcher opened for Yango Play on that device - Kinopoisk's international build under its own package, same splash activity class. Not confirmed on a second TV",
+      "color_source": "Yango brand red as published in Yango's own app and web branding; approximate hex #FC3F1D, not sampled from a vendor asset (2026-10-14)",
+      "color_reviewed": "2026-10-14",
+      "glyph_source": "original Core monoline mark: a capital Y with a play triangle on its stem - the service's letter and its play cue - in Core stroke geometry, not the vendor letterform and not traced (2026-10-14)"
+    },
+    {
+      "name": "Nuyo Device Info",
+      "drawable": "nuyodeviceinfo",
+      "color": "#2F80ED",
+      "glyph": "nuyodeviceinfo_phone",
+      "components": [
+        "com.roysolberg.android.deviceinfo/com.roysolberg.android.deviceinfo.ui.MainActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #296 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, pack 2.3.1, 2026-10-12): com.roysolberg.android.deviceinfo/com.roysolberg.android.deviceinfo.ui.MainActivity is the activity the launcher opened for Nuyo Device Info on that device. Not confirmed on a second TV",
+      "color_source": "eyeballed from the app's Play Store launcher icon (a white handset-and-i on blue): #2F80ED; approximate, not sampled from a vendor asset (2026-10-14)",
+      "color_reviewed": "2026-10-14",
+      "glyph_source": "original Core monoline mark: a rounded handset outline with an information dot and stem inside - the app's subject drawn literally in Core stroke geometry; no vendor art traced (2026-10-14)"
     }
   ],
   "artwork": {

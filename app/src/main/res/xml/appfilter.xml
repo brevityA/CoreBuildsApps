@@ -1562,6 +1562,9 @@
     <item component="ComponentInfo{com.nuvio.tv/com.nuvio.tv.launcher.AppIconGraphite}" drawable="nuvio_banner"/>
     <item component="ComponentInfo{com.nuvio.tv/.launcher.AppIconGraphite}" drawable="nuvio_banner"/>
     <item component="ComponentInfo{com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault}" drawable="nuvio_banner"/>
+    <!-- Nuyo Device Info -->
+    <item component="ComponentInfo{com.roysolberg.android.deviceinfo/com.roysolberg.android.deviceinfo.ui.MainActivity}" drawable="nuyodeviceinfo_banner"/>
+    <item component="ComponentInfo{com.roysolberg.android.deviceinfo/.ui.MainActivity}" drawable="nuyodeviceinfo_banner"/>
     <!-- NV Player -->
     <item component="ComponentInfo{com.acb.nvplayer/com.ae.video.bplayer.ui.SplashActivity}" drawable="nvplayer_banner"/>
     <!-- Nxsha -->
@@ -2807,6 +2810,8 @@
     <!-- Yandex Browser -->
     <item component="ComponentInfo{com.yandex.browser.tv/com.yandex.browser.tv.tvactivity.TvActivity}" drawable="yandex_browser_banner"/>
     <item component="ComponentInfo{com.yandex.browser.tv/.tvactivity.TvActivity}" drawable="yandex_browser_banner"/>
+    <!-- Yango Play -->
+    <item component="ComponentInfo{com.yango.saft.tv/ru.kinopoisk.tv.presentation.splash.SplashActivity}" drawable="yangoplay_banner"/>
     <!-- Yettel Selfcare -->
     <item component="ComponentInfo{bg.yettel.tv.selfcare/bg.yettel.tv.selfcare.MainActivity}" drawable="selfcare_banner"/>
     <item component="ComponentInfo{bg.yettel.tv.selfcare/.MainActivity}" drawable="selfcare_banner"/>

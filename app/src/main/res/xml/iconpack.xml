@@ -534,6 +534,7 @@
     <item drawable="nrk_tv" />
     <item drawable="ntathome" />
     <item drawable="nuvio" />
+    <item drawable="nuyodeviceinfo" />
     <item drawable="nvplayer" />
     <item drawable="nxsha" />
     <item drawable="nzrplus" />
@@ -965,6 +966,7 @@
     <item drawable="xumo_play" />
     <item drawable="yacine_tv" />
     <item drawable="yandex_browser" />
+    <item drawable="yangoplay" />
     <item drawable="selfcare" />
     <item drawable="yettel_tv" />
     <item drawable="yippee" />

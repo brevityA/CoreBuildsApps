@@ -59,6 +59,7 @@
     <item drawable="weyd_banner" />
     <item drawable="weyd_2_banner" />
     <item drawable="wuplay_banner" />
+    <item drawable="yangoplay_banner" />
     <category title="Banners · Media centres" />
     <item drawable="dsvideo_banner" />
     <item drawable="emby_banner" />
@@ -357,6 +358,7 @@
     <item drawable="omnisoft_banner" />
     <item drawable="morphe_banner" />
     <item drawable="notifications_for_android_tv_banner" />
+    <item drawable="nuyodeviceinfo_banner" />
     <item drawable="remote_capture_banner" />
     <item drawable="pmx_banner" />
     <item drawable="quickbars_for_home_assistant_banner" />

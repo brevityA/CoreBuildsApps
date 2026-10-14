@@ -90,6 +90,14 @@ All notable changes to the Core Builds Icon Pack. Format follows
   by Downloader code, has its own icon: a telly on its stand with a play
   triangle inside (issue #301). No published brand colour was found, so it
   takes a pack palette accent.
+- **Yango Play icon.** Yango Play (`com.yango.saft.tv`), Kinopoisk's
+  international build under its own package, has its own icon: a Y with a
+  play triangle on its stem in Yango red (issue #305; scanner-reported on
+  a Xiaomi TV, Android 14).
+- **Nuyo Device Info icon.** Nuyo Device Info (`com.roysolberg.android.deviceinfo`)
+  has its own icon: a handset outline with an information mark inside
+  (issue #296; scanner-reported on a Google TV Streamer, Android 14).
+  991 → 993 icons, 1227 → 1229 components.
 - **"New" chip in Wallpapers.** The browser's chip rail gains *New (116)*
   after *All*: every wall stamped with this release in the manifest (the
   three new series, the additions, and every refreshed series), so a

@@ -1,6 +1,6 @@
 # Supported applications
 
-`991` icons · `1227` mapped components · pack v2.4.0
+`993` icons · `1229` mapped components · pack v2.4.0
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -542,6 +542,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | NRK TV | `nrk_tv` | `#B0C8F0` | `#B0C8F0` | `no.nrk.tv/no.nrk.tv.view.MobileSplashScreenActivity`<br>`no.nrk.tv/no.nrk.tv.view.TvSplashScreenActivity` |
 | NT at Home | `ntathome` | `#F04DE0` | `#F04DE0` | `com.ntathome/tv.vhx.LauncherActivity`<br>`com.ntathome/tv.vhx.tv.home.TvHomeActivity` |
 | Nuvio TV | `nuvio` | `#A238F0` | `#A238F0` | `com.nuvio.app/com.nuvio.tv.MainActivity`<br>`com.nuvio.tv/.MainActivity`<br>`com.nuvio.tv/com.nuvio.tv.MainActivity`<br>`com.nuviodebug.com/com.nuvio.tv.MainActivity`<br>`com.nuvio.tv/.launcher.AppIconDefault`<br>`com.nuvio.tv/.launcher.AppIconArcticBlue`<br>`com.nuvio.tv/.launcher.AppIconEmerald`<br>`com.nuvio.tv/.launcher.AppIconRoseGold`<br>`com.nuvio.tv/.launcher.AppIconCopper`<br>`com.nuvio.tv/.launcher.AppIconGraphite`<br>`com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault` |
+| Nuyo Device Info | `nuyodeviceinfo` | `#2F80ED` | `#2F80ED` | `com.roysolberg.android.deviceinfo/com.roysolberg.android.deviceinfo.ui.MainActivity` |
 | NV Player | `nvplayer` | `#50D8F8` | `#50D8F8` | `com.acb.nvplayer/com.ae.video.bplayer.ui.SplashActivity` |
 | Nxsha | `nxsha` | `#F8C828` | `#F8C828` | `com.nxsha/com.nxsha.MainActivity` |
 | NZR+ | `nzrplus` | `#5214D6` | `#6E32EC` | `com.nzrplus.app/com.nzrplus.app.MainActivity` |
@@ -973,6 +974,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Xumo Play | `xumo_play` | `#7C74FF` | `#7C74FF` | `com.xumo.xumo/com.xumo.xumo.activity.SplashActivity` |
 | Yacine TV | `yacine_tv` | `#E02828` | `#E02828` | `ver3.ycntivi.off/dev.google.yacinetv.ui.splash.SplashActivity`<br>`ver3.ycntivi.off/dev.google.yacinetv.tvui.splash.SplashActivity` |
 | Yandex Browser | `yandex_browser` | `#FC3A2C` | `#FC3A2C` | `com.yandex.browser.tv/com.yandex.browser.tv.tvactivity.TvActivity` |
+| Yango Play | `yangoplay` | `#FC3F1D` | `#FC3F1D` | `com.yango.saft.tv/ru.kinopoisk.tv.presentation.splash.SplashActivity` |
 | Yettel Selfcare | `selfcare` | `#B0F800` | `#B0F800` | `bg.yettel.tv.selfcare/bg.yettel.tv.selfcare.MainActivity` |
 | Yettel TV | `yettel_tv` | `#B0F800` | `#B0F800` | `rs.yettel.tv/rs.yettel.tv.MainActivity` |
 | Yippee | `yippee` | `#F84818` | `#F84818` | `com.yippeeentertainment/tv.vhx.tv.home.TvHomeActivity` |

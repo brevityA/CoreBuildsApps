@@ -9081,3 +9081,26 @@ def tellyplayer_screen(c):
 
 
 GLYPHS.update({"tellyplayer_screen": tellyplayer_screen})
+
+
+def yangoplay_y(c):
+    """Yango Play: a monoline capital Y whose two arms meet a play triangle
+    standing on the stem — the service's letter with its play cue, drawn in
+    Core stroke geometry; not a trace of the Yango Play mark."""
+    return (f'<path d="M 108 120 L 228 240 L 348 120 M 228 240 L 228 400" {_s(c, 32)}/>'
+            f'<path d="M 316 292 L 408 348 L 316 404 Z" {_s(c, 26.2)}/>')
+
+
+GLYPHS.update({"yangoplay_y": yangoplay_y})
+
+
+def nuyodeviceinfo_phone(c):
+    """Nuyo Device Info: a rounded handset outline with an information mark
+    (dot over a short stem) inside it — the app's subject stated literally
+    in Core stroke geometry; not a trace of the vendor icon."""
+    return (f'<rect x="156" y="88" width="200" height="336" rx="40" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="188" r="18" {_f(c)}/>'
+            f'<path d="M 256 240 L 256 344" {_s(c, 26.2)}/>')
+
+
+GLYPHS.update({"nuyodeviceinfo_phone": nuyodeviceinfo_phone})
