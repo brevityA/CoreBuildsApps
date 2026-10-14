@@ -177,6 +177,15 @@ All notable changes to the Core Builds Icon Pack. Format follows
   (walls 01–24) are retired on user feedback — at TV distance they were one
   blur in five colours. The numbers stay empty, as series 4 and 5 do.
 
+### Fixed
+
+- **Cancelling the update installer no longer reopens it.** Once an update
+  had downloaded, backing out of Android's installer brought the pack back
+  to the front, and the home-screen bar opened the installer again, over
+  and over, until the update was installed (2.3.x). The bar and the new
+  About row now count the first launch as the offer; pressing them still
+  retries.
+
 ## [2.3.3] — 2026-10-12
 
 ### Added
