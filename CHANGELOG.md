@@ -152,7 +152,7 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Design note for 2.5.0.** `docs/research/mapping-confirmation-channel-2026-10.md`
   proposes how a second TV confirms (or contradicts) an issue-sourced icon
   mapping with one press — per-mapping GitHub issues, 👍 to confirm, a
-  prefilled comment carrying the real component when it does not apply.
+  prefilled report carrying the real component when it does not apply.
   Nothing is built; the note exists so the next release starts from a
   decision.
 

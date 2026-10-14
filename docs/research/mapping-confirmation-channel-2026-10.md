@@ -40,7 +40,7 @@ file *Icon not applying*. Positive confirmations never do.
 |---|---|---|---|
 | A | **Issue per confirmation** via the existing prefill URL | zero new infra | floods the tracker; duplicates; maintainer cost scales with users |
 | B | **Reactions on a pinned per-release "confirm" issue** | GitHub-native dedup (one 👍 per account); counts visible to all | needs GitHub login on the phone; one issue per release to keep tidy; cannot say *which* mapping was confirmed without a comment |
-| C | **One issue per unconfirmed mapping, auto-opened by CI at release**, confirmations = 👍 on *that* issue, failures = a comment prefilled from the TV | per-mapping signal, deduped per account, closes itself when 👍 ≥ N; the TV only ever opens a URL the user chose | a few dozen open issues per release at worst; still needs a phone with GitHub |
+| C | **One issue per unconfirmed mapping, auto-opened by CI at release**, confirmations = 👍 on *that* issue, failures = a report prefilled from the TV | per-mapping signal, deduped per account, closes itself when 👍 ≥ N; the TV only ever opens a URL the user chose | a few dozen open issues per release at worst; still needs a phone with GitHub |
 | D | **Discussions poll** | lighter than issues | API for polls is read-only; cannot prefill; no per-mapping granularity |
 
 **Pick C.** It reuses everything that already exists (issue prefills, QR flow,
@@ -58,7 +58,7 @@ below 2 (new field in the catalogue CSV, default 1 for issue-sourced,
 > This icon was mapped from one TV's report. If **<App>** shows the Core
 > Builds icon on your TV, add 👍. If it is installed and still shows the
 > palette fallback, press *Report* in the pack's Missing icons screen — the
-> comment it prefills carries the component your TV actually runs.
+> report it prefills carries the component your TV actually runs.
 
 Idempotent: keyed on the package name in the title.
 
@@ -70,26 +70,40 @@ and the footer: the installed apps whose mapping is in the
 `manifest/wallpapers.json`). Each row:
 
 - Title: app name · sub: *"Mapped from one report — does the icon show here?"*
-- Press → the existing report-or-QR path with the issue URL
-  `…/issues/<n>#issuecomment-new` plus a prefilled comment body:
-  `Confirmed on <device model> · <launcher> · pack <version>` **or**, when
-  `AppAudit` sees the installed component differs from the appfilter's,
-  `Not applying · installed component: <component>` (this is the valuable
-  negative — it hands the fix to the maintainer in one line).
+- Press → the existing report-or-QR path, with one of two URLs:
+  - **Works here** (the installed component matches the appfilter's):
+    the confirm issue itself, `…/issues/<n>`, for a 👍. A positive needs
+    no text, and the reaction is GitHub's own one-per-account dedup.
+  - **Not applying** (`AppAudit` sees the installed component differs):
+    a new-issue URL on a `confirmation` issue form,
+    `…/issues/new?template=confirmation.yml&confirms=<n>&result=…`, with
+    `result` prefilled to
+    `Not applying · installed component: <component> · <device model> · <launcher> · pack <version>`
+    (this is the valuable negative — it hands the fix to the maintainer in
+    one line).
+
+  GitHub prefills a new issue's form inputs from URL parameters (text
+  inputs only, not dropdowns, so both fields are inputs). It has no URL
+  that prefills a comment on an existing issue: `#issuecomment-new` only
+  scrolls to an empty comment box. That is why the negative arrives as a
+  short-lived issue rather than a comment.
 
 Nothing is sent without the press; the phone's GitHub session does the post.
 
 ### Back in the repo (CI, nightly or on `issues` webhook)
 
-`tools/harvest_confirmations.py` (new) reads 👍 counts and comments on
-`needs-confirmation` issues:
+`tools/harvest_confirmations.py` (new) reads 👍 counts on
+`needs-confirmation` issues, and the open `confirmation` issues that point
+at them:
 
-- 👍 ≥ 2 **or** 1 comment matching `^Confirmed on` from a different author →
-  bump `confirmed_on`, drop the label, close with *"Confirmed on N TVs"*,
-  and strip the "not yet confirmed" caveat from the next CHANGELOG via the
+- 👍 ≥ 2 from accounts other than the original reporter → bump
+  `confirmed_on`, drop the label, close with *"Confirmed on N TVs"*, and
+  strip the "not yet confirmed" caveat from the next CHANGELOG via the
   existing release notes builder.
-- Any `Not applying · installed component:` comment → relabel
-  `mapping-mismatch`, add the reported component to the issue body as a
+- Any `confirmation` issue whose `result` starts `Not applying · installed
+  component:` → copy the line onto confirm issue #`confirms` as a comment,
+  close the `confirmation` issue as a duplicate of it, relabel the confirm
+  issue `mapping-mismatch`, add the reported component to its body as a
   candidate `<item>` line, and surface it in `docs/COVERAGE.md`'s first-fix
   table. A human still merges the mapping; the script never edits
   appfilter.
@@ -110,8 +124,9 @@ Nothing is sent without the press; the phone's GitHub session does the post.
   migration; `tools/check_catalog.py` learns to validate it.
 - App: one list section and one prefill format in `AuditorActivity`, plus a
   ~2 KB asset. No new permission, no new screen, no new string beyond four.
-- Issue template: a hidden `confirmation` form so the prefilled comment URL
-  has somewhere stable to land if GitHub changes the comment anchor.
+- Issue template: a `confirmation` issue form with two text inputs
+  (`confirms`, `result`), so the TV's prefilled URL has a supported place
+  to land; the harvester closes each one into its confirm issue.
 
 ## Decision needed before 2.5.0 starts
 
