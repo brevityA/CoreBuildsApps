@@ -35,6 +35,21 @@ All notable changes to the Core Builds Icon Pack. Format follows
     differs, and `--check` fails on one.
   - `tests/test_wallpapers.py` holds every bundled thumb byte-identical to the
     repo thumb; it fails on the 2.4.1 set with all 12 names.
+- **Six walls redrawn in 2.3.3 open their new picture.** 2.3.3 redrew
+  52 Shockwave and Cinema 97 Marquee Lights, 99 Projector Beam, 100 Neon
+  Lounge, 101 Late Rentals and 102 Box Office under their old file names, with
+  no `since` stamp. 2.4.1's cache fix moved only stamped walls to new cache
+  names, so a TV that opened one of the six on 2.3.2 or earlier still opened,
+  set and saved the old picture. They are now stamped `2.3.3`, the release
+  their current pictures first shipped in, so they stay out of the **New**
+  chip.
+  - `tools/check_wallpaper_cache_keys.py` compares every wall with every
+    release tag and fails when a picture changed under a cache name an
+    earlier release used. `prepare_release.py` runs it as a gate. It flagged
+    exactly these six, against 51 releases.
+  - An audit of every 2.4.1 preview found nothing else: the other 120 grid
+    thumbnails, all 48 live loops (thumbnail against video, and video against
+    the still it is made from) and `docs/wallpapers-collection.jpg` match.
 
 ## [2.4.1] — 2026-10-15
 

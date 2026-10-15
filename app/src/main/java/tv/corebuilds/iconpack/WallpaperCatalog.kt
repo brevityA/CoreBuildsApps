@@ -84,8 +84,9 @@ data class Wallpaper(
     /**
      * The name the download is cached under. A re-rendered wall keeps its URL, so the
      * manifest's `since` goes into the name: keyed on [cacheName] alone, a wall opened
-     * on 2.3.x (44 Monolith Grid, say) kept serving the old picture behind the 2.4.0
-     * thumbnail. The old file ages out of the 12-file cache like any other.
+     * before its re-render kept serving the old picture. A re-render must therefore
+     * move to a new `since`; `tools/check_wallpaper_cache_keys.py` fails a release
+     * that does not. The old file ages out of the 12-file cache like any other.
      */
     val storeName: String
         get() {

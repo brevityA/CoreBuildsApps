@@ -55,9 +55,13 @@ def main() -> None:
     d.text((pad, pad), f"CORE BUILDS · WALLPAPERS · {len(walls)} walls · manifest v{manifest.get('version', '?')}",
            font=f_title, fill=CYAN)
     y = pad + 44
+    # "New" is the newest stamp, as in the app's New chip: an older `since`
+    # marks a re-render's cache name (52 Shockwave, 2.3.3), not a new wall.
+    newest = max((w["since"] for w in walls if w.get("since")),
+                 key=lambda v: tuple(int(p) for p in v.split(".")), default="")
     for series, items in groups.items():
-        new = sum(1 for w in items if w.get("since"))
-        label = series.upper() + f"  ({len(items)})" + ("  · NEW IN 2.4.0" if new == len(items) else
+        new = sum(1 for w in items if newest and w.get("since") == newest)
+        label = series.upper() + f"  ({len(items)})" + (f"  · NEW IN {newest}" if new == len(items) else
                                                        (f"  · {new} NEW" if new else ""))
         d.text((pad, y), label, font=f_head, fill=INK)
         y += 30
