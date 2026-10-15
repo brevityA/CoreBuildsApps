@@ -65,7 +65,7 @@
     <string name="manual_eq_save_hint">Preset name</string>
     <string name="manual_eq_import_file">Import EQ preset or correction file…</string>
     <string name="manual_eq_import_busy">Reading the correction file…</string>
-    <string name="manual_eq_import_no_picker">This TV has no file picker. Enable the Files app, then try again.</string>
+    <string name="manual_eq_import_no_picker">This TV has no file picker or file manager. Install a file manager, then try again.</string>
     <string name="manual_eq_import_unreadable">That file could not be read.</string>
     <string name="manual_eq_import_too_large">The file is larger than 64 KB. Choose a smaller Poweramp JSON preset or correction text file.</string>
     <string name="manual_eq_import_failed">Not imported: %1$s</string>
@@ -122,10 +122,10 @@
     <string name="measure_target_button">Target: %1$s</string>
     <string name="measure_target_custom">Target: Imported file</string>
     <string name="measure_target_custom_title">Imported file</string>
-    <string name="measure_target_import_button">Import target file (GraphicEQ)</string>
+    <string name="measure_target_import_button">Import target file (GraphicEQ, REW, CSV)</string>
     <string name="measure_target_import_failed">Target not imported: %1$s</string>
     <string name="measure_target_unreadable">the file could not be read</string>
-    <string name="measure_target_picker_missing">this TV has no file picker; use a TV file-transfer app, then try again</string>
+    <string name="measure_target_picker_missing">this TV has no file picker or file manager; install one, then try again</string>
 
     <!-- Correction switch -->
     <string name="correction_on">Correction: On</string>
@@ -401,7 +401,8 @@
     <string name="phone_rediscover_none">The TV was not found at a new address. Open the phone link on the TV, check the Wi-Fi, or pair again.</string>
     <string name="phone_scan_ok">QR read. Pairing with the TV now.</string>
     <string name="phone_scan_not_tv">That is not a Core EQ pairing code. Point the camera at the QR on the TV pairing screen.</string>
-    <string name="phone_scan_unavailable">QR scanning is not available on this phone. Enter the TV address and code instead.</string>
+    <string name="phone_scan_downloading">Downloading the QR scanner from Google Play services. This happens once.</string>
+    <string name="phone_scan_unavailable">Google Play services could not provide the QR scanner on this phone. Enter the TV address and code instead.</string>
     <string name="phone_find_tv_searching">Looking for a Core EQ TV on this network. Open the phone link on the TV first.</string>
     <string name="phone_find_tv_found">Found %1$s at %2$s. Enter the pairing code shown on the TV.</string>
     <string name="phone_find_tv_found_kept">Found %1$s at %2$s. Kept the address you entered.</string>

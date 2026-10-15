@@ -81,7 +81,8 @@ internal class CompanionServer(
     private val pairingAttemptLimiter = PairingAttemptLimiter()
     private val replayedNonces = object : LinkedHashSet<String>() {}
     private val nonceLock = Any()
-    private val server = ServerSocket()
+    /** Replaced by [ListenerPort.open] in [start]; an unbound placeholder until then. */
+    @Volatile private var server = ServerSocket()
     @Volatile private var running = false
     @Volatile var port: Int = 0
         private set
@@ -111,8 +112,8 @@ internal class CompanionServer(
 
     fun start(): Int {
         if (running) return port
-        server.reuseAddress = true
-        server.bind(java.net.InetSocketAddress(InetAddress.getByName("0.0.0.0"), 0), BACKLOG)
+        runCatching { server.close() }
+        server = ListenerPort.open(BACKLOG)
         port = server.localPort
         running = true
         Thread({ acceptLoop() }, "CoreEqCompanionServer").apply { isDaemon = true; start() }

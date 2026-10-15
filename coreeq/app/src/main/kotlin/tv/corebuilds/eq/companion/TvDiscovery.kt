@@ -40,7 +40,18 @@ internal object TvDiscovery {
      * address first, and the companion link is IPv4 only, so the whole list is searched.
      */
     internal fun firstIpv4(addresses: List<InetAddress>): Inet4Address? =
-        addresses.firstOrNull { it is Inet4Address } as Inet4Address?
+        addresses.filterIsInstance<Inet4Address>().firstOrNull()
+
+    /** Lookups refused because another was still running get this many more tries. */
+    internal const val RESOLVE_RETRIES = 2
+    internal const val RESOLVE_RETRY_DELAY_MS = 300L
+
+    /**
+     * Whether a refused lookup is worth another try: only "already active", which means an
+     * earlier lookup (from a search started a moment ago) still holds the resolver.
+     */
+    internal fun shouldRetryResolve(errorCode: Int, triesSoFar: Int): Boolean =
+        errorCode == NsdManager.FAILURE_ALREADY_ACTIVE && triesSoFar < RESOLVE_RETRIES
 
     /** Advertises the running companion listener on the LAN while it is open. */
     class Advertiser(context: Context) {
@@ -117,6 +128,10 @@ internal object TvDiscovery {
         // (FAILURE_ALREADY_ACTIVE), so services found together are resolved one at a time.
         private val pending = ArrayDeque<NsdServiceInfo>()
         private var resolving = false
+        /** The lookup in flight, so a finished search can stop it (API 34+). */
+        private var activeResolve: NsdManager.ResolveListener? = null
+        /** Retries spent per service name, for [shouldRetryResolve]. */
+        private val retries = HashMap<String, Int>()
 
         fun start() {
             val manager = nsd
@@ -159,38 +174,54 @@ internal object TvDiscovery {
             if (resolving || finished) return
             val serviceInfo = pending.removeFirstOrNull() ?: return
             resolving = true
-            try {
-                manager.resolveService(serviceInfo, object : NsdManager.ResolveListener {
-                    override fun onResolveFailed(serviceInfo: NsdServiceInfo, errorCode: Int) {
-                        Log.w(TAG, "resolve failed: $errorCode")
-                        main.post {
-                            resolving = false
+            val listener = object : NsdManager.ResolveListener {
+                override fun onResolveFailed(failed: NsdServiceInfo, errorCode: Int) {
+                    Log.w(TAG, "resolve failed: $errorCode")
+                    main.post {
+                        resolving = false
+                        activeResolve = null
+                        if (finished) return@post
+                        // A search started right after another can find the resolver still
+                        // busy with the old one; dropping the TV then read as "not found".
+                        val name = serviceInfo.serviceName.orEmpty()
+                        val tries = retries[name] ?: 0
+                        if (shouldRetryResolve(errorCode, tries)) {
+                            retries[name] = tries + 1
+                            pending.addFirst(serviceInfo)
+                            main.postDelayed({ resolveNext(manager) }, RESOLVE_RETRY_DELAY_MS)
+                        } else {
                             resolveNext(manager)
                         }
                     }
-                    override fun onServiceResolved(resolved: NsdServiceInfo) {
-                        val host = ipv4Of(resolved)
-                        val found = host?.let {
-                            FoundTv(name = resolved.serviceName.orEmpty(), host = it, port = resolved.port)
-                        }
-                        main.post {
-                            resolving = false
-                            if (finished) return@post
-                            if (found != null) {
-                                foundAny = true
-                                onFound(found)
-                                if (firstOnly) {
-                                    finish()
-                                    return@post
-                                }
+                }
+                override fun onServiceResolved(resolved: NsdServiceInfo) {
+                    val host = ipv4Of(resolved)
+                    val found = host?.let {
+                        FoundTv(name = resolved.serviceName.orEmpty(), host = it, port = resolved.port)
+                    }
+                    main.post {
+                        resolving = false
+                        activeResolve = null
+                        if (finished) return@post
+                        if (found != null) {
+                            foundAny = true
+                            onFound(found)
+                            if (firstOnly) {
+                                finish()
+                                return@post
                             }
-                            resolveNext(manager)
                         }
+                        resolveNext(manager)
                     }
-                })
+                }
+            }
+            activeResolve = listener
+            try {
+                manager.resolveService(serviceInfo, listener)
             } catch (e: IllegalArgumentException) {
                 Log.w(TAG, "resolve rejected", e)
                 resolving = false
+                activeResolve = null
                 resolveNext(manager)
             }
         }
@@ -211,6 +242,17 @@ internal object TvDiscovery {
             finished = true
             main.removeCallbacks(timeout)
             pending.clear()
+            // Let go of the resolver too, so the next search does not find it busy (API 34+;
+            // older stacks have no way to stop a lookup and the retry above covers them).
+            val inFlight = activeResolve
+            activeResolve = null
+            if (inFlight != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                try {
+                    nsd?.stopServiceResolution(inFlight)
+                } catch (e: IllegalArgumentException) {
+                    Log.w(TAG, "resolve already finished", e)
+                }
+            }
             discovery?.let { listener ->
                 try {
                     nsd?.stopServiceDiscovery(listener)

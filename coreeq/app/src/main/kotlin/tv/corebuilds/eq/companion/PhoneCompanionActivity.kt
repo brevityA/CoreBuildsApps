@@ -17,6 +17,12 @@ import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.common.moduleinstall.InstallStatusListener
+import com.google.android.gms.common.moduleinstall.ModuleInstall
+import com.google.android.gms.common.moduleinstall.ModuleInstallClient
+import com.google.android.gms.common.moduleinstall.ModuleInstallRequest
+import com.google.android.gms.common.moduleinstall.ModuleInstallStatusUpdate
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanner
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -591,7 +597,14 @@ class PhoneCompanionActivity : AppCompatActivity() {
         refreshMeasurementChoices()
     }
 
-    private fun runControl(request: JSONObject) {
+    /**
+     * Every remote action goes through the local-network check, as Find, Pair and Connect do.
+     * Without it, a phone on Android 17 whose permission was denied timed out after 5 s with
+     * "connect timed out" instead of saying what was wrong.
+     */
+    private fun runControl(request: JSONObject) = withLocalNetwork { runControlNow(request) }
+
+    private fun runControlNow(request: JSONObject) {
         if (operationInProgress || measurementInProgress || repeatFallbackSessionId != null) return
         val credentials = credentialStore.load() ?: return
         setOperationBusy(true)
@@ -617,7 +630,9 @@ class PhoneCompanionActivity : AppCompatActivity() {
         }
     }
 
-    private fun requestMicrophoneThenMeasure() {
+    private fun requestMicrophoneThenMeasure() = withLocalNetwork { requestMicrophoneThenMeasureNow() }
+
+    private fun requestMicrophoneThenMeasureNow() {
         if (measurementInProgress || operationInProgress || repeatFallbackSessionId != null) return
         val engine = PhoneCaptureEngine(this)
         if (!engine.hasPermission()) {
@@ -982,16 +997,70 @@ class PhoneCompanionActivity : AppCompatActivity() {
     private fun scanTvQr() {
         if (operationInProgress || measurementInProgress || repeatFallbackSessionId != null) return
         scanQrButton.isEnabled = false
-        GmsBarcodeScanning.getClient(this).startScan()
+        val scanner = GmsBarcodeScanning.getClient(this)
+        val installer = ModuleInstall.getClient(this)
+        // The scanner is a Play services module that is not in the APK. On a phone that has
+        // never used it, startScan() fails while the module downloads, which read as "not
+        // available on this phone". Ask first, and download it with the user told why.
+        installer.areModulesAvailable(scanner)
+            .addOnSuccessListener { availability ->
+                if (availability.areModulesAvailable()) {
+                    startTvQrScan(scanner)
+                } else {
+                    setStatus(getString(R.string.phone_scan_downloading), error = false)
+                    installScannerThenScan(installer, scanner)
+                }
+            }
+            .addOnFailureListener { scanUnavailable() }
+    }
+
+    private fun installScannerThenScan(installer: ModuleInstallClient, scanner: GmsBarcodeScanner) {
+        val listener = object : InstallStatusListener {
+            override fun onInstallStatusUpdated(update: ModuleInstallStatusUpdate) {
+                when (update.installState) {
+                    ModuleInstallStatusUpdate.InstallState.STATE_COMPLETED -> {
+                        installer.unregisterListener(this)
+                        if (!isFinishing && !isDestroyed) startTvQrScan(scanner)
+                    }
+                    ModuleInstallStatusUpdate.InstallState.STATE_FAILED,
+                    ModuleInstallStatusUpdate.InstallState.STATE_CANCELED -> {
+                        installer.unregisterListener(this)
+                        if (!isFinishing && !isDestroyed) scanUnavailable()
+                    }
+                    else -> Unit // pending or downloading: the status line already says so
+                }
+            }
+        }
+        val request = ModuleInstallRequest.newBuilder()
+            .addApi(scanner)
+            .setListener(listener)
+            .build()
+        installer.installModules(request)
+            .addOnSuccessListener { response ->
+                if (response.areModulesAlreadyInstalled()) {
+                    installer.unregisterListener(listener)
+                    startTvQrScan(scanner)
+                }
+            }
+            .addOnFailureListener {
+                installer.unregisterListener(listener)
+                scanUnavailable()
+            }
+    }
+
+    private fun startTvQrScan(scanner: GmsBarcodeScanner) {
+        scanner.startScan()
             .addOnSuccessListener { barcode ->
                 scanQrButton.isEnabled = true
                 handleTvQr(barcode.rawValue)
             }
             .addOnCanceledListener { scanQrButton.isEnabled = true }
-            .addOnFailureListener {
-                scanQrButton.isEnabled = true
-                setStatus(getString(R.string.phone_scan_unavailable), error = true)
-            }
+            .addOnFailureListener { scanUnavailable() }
+    }
+
+    private fun scanUnavailable() {
+        scanQrButton.isEnabled = true
+        setStatus(getString(R.string.phone_scan_unavailable), error = true)
     }
 
     private fun handleTvQr(raw: String?) {

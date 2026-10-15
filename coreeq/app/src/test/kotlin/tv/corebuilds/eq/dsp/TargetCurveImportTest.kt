@@ -57,9 +57,65 @@ class TargetCurveImportTest {
     }
 
     @Test
-    fun `rejects oversized files`() {
-        val points = (0..TargetCurveImport.MAX_POINTS).joinToString("; ") { "${20 + it * 10} 0" }
-        assertTrue(TargetCurveImport.parse("GraphicEQ: $points") is TargetCurveImport.Result.Error)
+    fun `resamples a dense file instead of refusing it`() {
+        // 700 points, as an AutoEq target CSV carries: a log sweep from 20 Hz to 20 kHz
+        // on a gentle tilt, 0 dB at 1 kHz.
+        val lines = (0 until 700).joinToString("\n") { k ->
+            val f = 20.0 * Math.pow(1000.0, k / 699.0)
+            "$f,${-2.0 * Math.log10(f / 1000.0)}"
+        }
+        val target = ok("frequency,raw\n$lines")
+        assertTrue(target.points.size <= TargetCurveImport.MAX_POINTS + 1)
+        assertTrue(target.notes.any { it.contains("resampled") })
+        val db = TargetCurveImport.targetDb(target.points, doubleArrayOf(100.0, 1000.0, 10000.0))
+        assertEquals(2.0, db[0], 0.05)
+        assertEquals(0.0, db[1], 1e-9)
+        assertEquals(-2.0, db[2], 0.05)
+    }
+
+    @Test
+    fun `refuses a file over 64 KB`() {
+        val big = "20 0\n".repeat(TargetCurveImport.MAX_BYTES / 4)
+        assertTrue(TargetCurveImport.parse(big) is TargetCurveImport.Result.Error)
+    }
+
+    @Test
+    fun `reads a REW house curve with comments`() {
+        val target = ok("* Room house curve\n* exported by hand\n20 6\n100 3\n1000 0\n10000 -3\n20000 -5\n")
+        assertEquals(listOf(20.0, 100.0, 1000.0, 10000.0, 20000.0), target.points.map { it.first })
+        assertEquals(6.0, target.points[0].second, 1e-9)
+        assertEquals(-5.0, target.points[4].second, 1e-9)
+    }
+
+    @Test
+    fun `reads an AutoEq CSV by its first two columns`() {
+        val target = ok("frequency,raw,error\n20.0,4.0,0.1\n1000.0,0.0,0.0\n20000.0,-6.0,0.0\n")
+        assertEquals(listOf(20.0, 1000.0, 20000.0), target.points.map { it.first })
+        assertEquals(4.0, target.points[0].second, 1e-9)
+        assertEquals(-6.0, target.points[2].second, 1e-9)
+    }
+
+    @Test
+    fun `reads decimal commas when columns are split by semicolons or tabs`() {
+        val semi = ok("Frequenz;Pegel\n20;3,5\n1000;0\n10000;-2,5\n")
+        assertEquals(3.5, semi.points[0].second, 1e-9)
+        assertEquals(-2.5, semi.points.last().second, 1e-9)
+        val tabs = ok("20\t2\n1000\t0\n")
+        assertEquals(2.0, tabs.points[0].second, 1e-9)
+    }
+
+    @Test
+    fun `leaves out points outside 20 Hz to 20 kHz and says so`() {
+        val target = ok("GraphicEQ: 10 0; 20 2; 1000 0; 22000 -3")
+        assertEquals(listOf(20.0, 1000.0), target.points.map { it.first })
+        assertTrue(target.notes.any { it.contains("2 points were outside") })
+    }
+
+    @Test
+    fun `a number that does not parse still rejects the file`() {
+        assertTrue(TargetCurveImport.parse("20 2\n1000 x\n") is TargetCurveImport.Result.Error)
+        assertTrue(TargetCurveImport.parse("20,2\n1000\n") is TargetCurveImport.Result.Error)
+        assertTrue(TargetCurveImport.parse("hello\nworld\n") is TargetCurveImport.Result.Error)
     }
 
     @Test

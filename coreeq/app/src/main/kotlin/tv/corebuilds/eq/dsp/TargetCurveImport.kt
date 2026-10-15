@@ -3,16 +3,29 @@ package tv.corebuilds.eq.dsp
 import tv.corebuilds.eq.CorrectionLimits
 
 /**
- * A GraphicEQ text file read as a target response, not as a correction.
+ * A target response read from a file, not a correction.
+ *
+ * Two formats:
+ *  - **GraphicEQ** (`GraphicEQ: f g; f g; ...`, Equalizer APO / AutoEq), as before.
+ *  - **Columns**: one point per line, frequency then gain, separated by spaces, tabs, commas
+ *    or semicolons. That is how REW house curves, AutoEq target CSVs and most hand-made
+ *    target files are written. Extra columns are ignored (AutoEq's `frequency,raw,...` takes
+ *    `raw`), and lines that start with text (a header, a `*` or `#` comment) are skipped.
+ *    When a line is split by `;` or tabs, a comma inside a number is a decimal comma.
  *
  * The curve is normalised to 0 dB at 1 kHz, so a target only shapes the balance and
  * never changes the overall level. Each gain is held to the same budget as a correction
  * (+6 dB / −12 dB), so a file cannot ask for more than the corrector is allowed to do.
- * Parsing is strict; any malformed line rejects the whole file.
+ * Points outside 20 Hz to 20 kHz are left out with a note, and a curve with more than
+ * [MAX_POINTS] points is resampled to that many on a log-frequency grid, because target
+ * files are routinely denser than the correction can use. A number that does not parse
+ * still rejects the whole file: a half-read curve is worse than none.
  */
 object TargetCurveImport {
     const val MAX_BYTES = 64 * 1024
     const val MAX_POINTS = 256
+    /** Bounds the work on a hostile file; 64 KB of the shortest valid lines is fewer than this. */
+    private const val MAX_INPUT_POINTS = 16_384
     private const val MIN_HZ = 20.0
     private const val MAX_HZ = 20_000.0
     private const val REF_HZ = 1_000.0
@@ -23,29 +36,36 @@ object TargetCurveImport {
         data class Error(val message: String) : Result
     }
 
+    private sealed interface Read {
+        data class Points(val points: List<Pair<Double, Double>>) : Read
+        data class Failed(val message: String) : Read
+    }
+
     fun parse(text: String): Result {
         if (text.toByteArray(Charsets.UTF_8).size > MAX_BYTES) {
-            return Result.Error("The file is larger than 64 KB. Export a GraphicEQ text file and try again.")
+            return Result.Error("The file is larger than 64 KB. Export the target with fewer points and try again.")
         }
-        val line = text.lineSequence().map { it.trim() }
+        val graphicLine = text.lineSequence().map { it.trim() }
             .firstOrNull { it.startsWith("GraphicEQ:", ignoreCase = true) }
-            ?: return Result.Error("No GraphicEQ line found. Choose a GraphicEQ text file.")
-        val raw = ArrayList<Pair<Double, Double>>()
-        for (entry in line.substringAfter(':').split(';')) {
-            if (entry.isBlank()) continue
-            val parts = entry.trim().split(Regex("\\s+"))
-            if (parts.size != 2) return Result.Error("Each point must be a frequency and a gain.")
-            val f = parts[0].toDoubleOrNull()?.takeIf { it.isFinite() }
-                ?: return Result.Error("A frequency is not a number.")
-            val g = parts[1].toDoubleOrNull()?.takeIf { it.isFinite() }
-                ?: return Result.Error("A gain is not a number.")
-            if (f < MIN_HZ || f > MAX_HZ) return Result.Error("A frequency is outside 20 Hz to 20 kHz.")
-            raw += f to g
-            if (raw.size > MAX_POINTS) return Result.Error("The file has more than $MAX_POINTS points.")
+        val read = if (graphicLine != null) readGraphicEq(graphicLine) else readColumns(text)
+        val raw = when (read) {
+            is Read.Failed -> return Result.Error(read.message)
+            is Read.Points -> read.points
         }
-        if (raw.size < 2) return Result.Error("A target needs at least two points.")
-        val sorted = raw.sortedBy { it.first }.distinctBy { it.first }
+        val notes = mutableListOf<String>()
+
+        val inRange = raw.filter { (f, _) -> f in MIN_HZ..MAX_HZ }
+        val outside = raw.size - inRange.size
+        if (outside > 0) {
+            notes += "$outside point${if (outside == 1) " was" else "s were"} outside 20 Hz to 20 kHz and left out."
+        }
+        if (inRange.size < 2) return Result.Error("A target needs at least two points between 20 Hz and 20 kHz.")
+        var sorted = inRange.sortedBy { it.first }.distinctBy { it.first }
         if (sorted.size < 2) return Result.Error("A target needs at least two different frequencies.")
+        if (sorted.size > MAX_POINTS) {
+            notes += "The file's ${sorted.size} points were resampled to $MAX_POINTS."
+            sorted = resample(sorted, MAX_POINTS)
+        }
 
         val reference = CorrectionImport.interpolateGraphic(sorted, doubleArrayOf(REF_HZ))[0]
         // Pin 1 kHz before limiting. Without a point there, clamping the two neighbours by
@@ -58,11 +78,67 @@ object TargetCurveImport {
         val limited = normalised.map { (f, g) ->
             f to g.coerceIn(-CorrectionLimits.MAX_CUT_DB, CorrectionLimits.MAX_BOOST_DB)
         }
-        val notes = mutableListOf<String>()
         if (limited.zip(normalised).any { (a, b) -> a.second != b.second }) {
             notes += "Some gains were limited to +6 dB / −12 dB, as for corrections."
         }
         return Result.Ok(limited, notes)
+    }
+
+    private fun readGraphicEq(line: String): Read {
+        val raw = ArrayList<Pair<Double, Double>>()
+        for (entry in line.substringAfter(':').split(';')) {
+            if (entry.isBlank()) continue
+            val parts = entry.trim().split(Regex("\\s+"))
+            if (parts.size != 2) return Read.Failed("Each point must be a frequency and a gain.")
+            val point = point(parts[0], parts[1]) ?: return Read.Failed(numberError(parts[0], parts[1]))
+            raw += point
+            if (raw.size > MAX_INPUT_POINTS) return Read.Failed("The file has too many points to be a target.")
+        }
+        return Read.Points(raw)
+    }
+
+    private fun readColumns(text: String): Read {
+        val raw = ArrayList<Pair<Double, Double>>()
+        for (rawLine in text.lineSequence()) {
+            val line = rawLine.trim()
+            if (line.isEmpty() || line.startsWith("*") || line.startsWith("#") || line.startsWith("//")) continue
+            // ';' or a tab between columns means a comma is the decimal mark (20,5;-3,2).
+            val decimalComma = line.contains(';') || line.contains('\t')
+            val tokens = line.split(if (decimalComma) Regex("[;\\t ]+") else Regex("[,\\s]+"))
+                .filter { it.isNotEmpty() }
+                .map { if (decimalComma) it.replace(',', '.') else it }
+            // A line that does not start with a number is a header or a comment.
+            if (tokens.isEmpty() || tokens[0].toDoubleOrNull() == null) continue
+            if (tokens.size < 2) return Read.Failed("Each line must hold a frequency and a gain.")
+            val point = point(tokens[0], tokens[1]) ?: return Read.Failed(numberError(tokens[0], tokens[1]))
+            raw += point
+            if (raw.size > MAX_INPUT_POINTS) return Read.Failed("The file has too many points to be a target.")
+        }
+        if (raw.isEmpty()) {
+            return Read.Failed(
+                "No target points found. Choose a GraphicEQ file, or a text or CSV file with frequency and gain columns."
+            )
+        }
+        return Read.Points(raw)
+    }
+
+    private fun point(f: String, g: String): Pair<Double, Double>? {
+        val hz = f.toDoubleOrNull()?.takeIf { it.isFinite() && it > 0.0 } ?: return null
+        val db = g.toDoubleOrNull()?.takeIf { it.isFinite() } ?: return null
+        return hz to db
+    }
+
+    private fun numberError(f: String, g: String): String =
+        if (f.toDoubleOrNull()?.takeIf { it.isFinite() && it > 0.0 } == null) "A frequency is not a number."
+        else "A gain is not a number."
+
+    /** [count] points on a log-frequency grid across the curve's own span, read off the curve. */
+    private fun resample(points: List<Pair<Double, Double>>, count: Int): List<Pair<Double, Double>> {
+        val lo = points.first().first
+        val hi = points.last().first
+        val grid = DoubleArray(count) { k -> lo * Math.pow(hi / lo, k.toDouble() / (count - 1)) }
+        val db = CorrectionImport.interpolateGraphic(points, grid)
+        return grid.indices.map { grid[it] to db[it] }
     }
 
     /**

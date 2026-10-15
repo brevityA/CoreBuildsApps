@@ -1,7 +1,6 @@
 package tv.corebuilds.eq
 
 import android.Manifest
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -32,6 +31,7 @@ import tv.corebuilds.eq.dsp.Sweep
 import tv.corebuilds.eq.dsp.SweepAnalysis
 import tv.corebuilds.eq.dsp.SweepResult
 import tv.corebuilds.eq.dsp.TargetCurveImport
+import tv.corebuilds.eq.ui.FilePicker
 import tv.corebuilds.eq.dsp.Targets
 import tv.corebuilds.eq.export.CaptureInfo
 import tv.corebuilds.eq.export.CurvePoint
@@ -659,12 +659,7 @@ class MeasureActivity : TvActivity() {
 
     private fun pickTargetFile() {
         if (measuring || importing) return
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-            .addCategory(Intent.CATEGORY_OPENABLE)
-            .setType("text/*")
-        try {
-            startActivityForResult(intent, REQ_TARGET_IMPORT)
-        } catch (e: ActivityNotFoundException) {
+        if (!FilePicker.open(this, REQ_TARGET_IMPORT, FilePicker.TEXT_TYPES)) {
             textStatus.text = getString(R.string.measure_target_import_failed,
                 getString(R.string.measure_target_picker_missing))
         }
@@ -714,13 +709,8 @@ class MeasureActivity : TvActivity() {
 
     private fun pickRewImport() {
         if (measuring || importing) return
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-            .addCategory(Intent.CATEGORY_OPENABLE)
-            .setType("*/*")
-        try {
-            startActivityForResult(intent, REQ_IMPORT)
-        } catch (e: ActivityNotFoundException) {
-            importFailed("This TV's system file picker is unavailable. Enable its Files app or use a TV file-transfer app, then try again.")
+        if (!FilePicker.open(this, REQ_IMPORT)) {
+            importFailed("This TV has no file picker. Install a file manager or use a TV file-transfer app, then try again.")
         }
     }
 
