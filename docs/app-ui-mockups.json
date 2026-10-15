@@ -49,7 +49,7 @@
   "inputs": {
     "app/src/main/assets/appfilter.xml": "27103a6323331c3c03c3c1c7338d1b7759cdc3740703ed133dc754dbe41ef2ef",
     "app/src/main/assets/manifest/wallpapers.json": "5679c253df2f16513284ab59c194fa959fc7b1d535966a213b9f5d6b68e779f3",
-    "app/src/main/assets/version.json": "590f630c3015a801185355c2d2133134d4804201e7cdcd9d2efd73f1143c6fd8",
+    "app/src/main/assets/version.json": "d4e33fcc65ebe2386727a2c24a19b6ed9887d5fc3ef04f27b9e4c5d6a16a5bd1",
     "app/src/main/res/layout/activity_about.xml": "1d201c102b3b3251e6ec69f72163333db331f486cea72ac264185526fb6f289e",
     "app/src/main/res/layout/activity_auditor.xml": "98f1f377ab4224abc967d39994c07a120018d508584046272ae0139fd8baf1a7",
     "app/src/main/res/layout/activity_export_progress.xml": "3c388eb2b74cc0b5e362069cff6adfe219a4948eed7220f36a9a2d2d06d48210",
@@ -87,7 +87,7 @@
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "57bbbf16046af5b291551d6f788bd0ddeb18cf09c98f7f5fe7cd7d13624da0a6",
+  "inputs_digest": "a6bc10888fa26cc4507e95dd3b0a972adc391e5b698a49be5be765c5a7551306",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,

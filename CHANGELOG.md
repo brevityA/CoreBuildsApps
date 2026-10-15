@@ -24,6 +24,17 @@ All notable changes to the Core Builds Icon Pack. Format follows
     copy is what plays.
   - Older copies are deleted once the new one is in. Saved loops keep their
     names in `Movies/CoreBuilds`.
+- **Circuit Core thumbnails show the wallpapers they open.** 2.4.0 re-rendered
+  all 12 Circuit Core walls (41–50, 79, 80) but the APK kept their 2.3.x
+  thumbnails, so the grid showed the old art while opening, setting and
+  saving the new. 2.4.1's note blamed the download cache alone, and said the
+  grid already showed the new art: for Circuit Core it did not. The 12 bundled
+  thumbs now match `Wallpapers/thumbs/`; the other 120 already did.
+  - `tools/sync_wallpaper_manifest.py` compared thumb file names only, and a
+    re-render keeps its names. It now compares bytes, copies any thumb that
+    differs, and `--check` fails on one.
+  - `tests/test_wallpapers.py` holds every bundled thumb byte-identical to the
+    repo thumb; it fails on the 2.4.1 set with all 12 names.
 
 ## [2.4.1] — 2026-10-15
 

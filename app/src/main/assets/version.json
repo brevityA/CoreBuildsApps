@@ -8,6 +8,7 @@
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Re-rendered live loops play their new animation"
+    "Re-rendered live loops play their new animation",
+    "Circuit Core thumbnails show the wallpapers they open"
   ]
 }

@@ -182,6 +182,18 @@ class ThumbnailTests(unittest.TestCase):
         have = {p.name for p in BUNDLED_THUMBS.glob("*.jpg")}
         self.assertEqual(have, want)
 
+    def test_bundled_thumbs_match_the_repo_thumbs(self):
+        # A re-render keeps its file names, so a name check passes on stale
+        # art: 2.4.0 and 2.4.1 shipped Circuit Core's old thumbs this way.
+        stale = []
+        for w in self.walls:
+            fname = w["url"].rsplit("/", 1)[-1].rsplit(".", 1)[0] + ".jpg"
+            bundled = BUNDLED_THUMBS / fname
+            if bundled.exists() and bundled.read_bytes() != (THUMBS / fname).read_bytes():
+                stale.append(fname)
+        self.assertFalse(stale, "bundled thumbs differ from Wallpapers/thumbs "
+                                f"(run tools/sync_wallpaper_manifest.py): {stale}")
+
 
 class Series6FileTests(unittest.TestCase):
     def setUp(self):
