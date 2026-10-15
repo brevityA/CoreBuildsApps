@@ -1,14 +1,15 @@
 {
   "versionCode": 54,
   "versionName": "2.4.1",
-  "iconCount": 994,
-  "componentCount": 1230,
-  "releaseDate": "2026-10-14",
+  "iconCount": 1002,
+  "componentCount": 1241,
+  "releaseDate": "2026-10-15",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "IPTV Deck icon",
-    "Re-rendered wallpapers show their new art"
+    "9 new icons",
+    "Re-rendered wallpapers show their new art",
+    "VTM GO, CloudStream Beta and CRICFy TV pick up their icons"
   ]
 }

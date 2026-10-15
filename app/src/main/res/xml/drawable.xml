@@ -38,8 +38,10 @@
     <item drawable="videoplayer_banner" />
     <item drawable="nuvio_banner" />
     <item drawable="oldmovies_banner" />
+    <item drawable="playboxtv_banner" />
     <item drawable="pureflix_banner" />
     <item drawable="realstream_tv_banner" />
+    <item drawable="rectv_banner" />
     <item drawable="battlelancer_banner" />
     <item drawable="sstream_banner" />
     <item drawable="streamflix_banner" />
@@ -54,6 +56,7 @@
     <item drawable="syncler_beta_banner" />
     <item drawable="thecomedychannel_banner" />
     <item drawable="tvlok_banner" />
+    <item drawable="vega_banner" />
     <item drawable="venevision_banner" />
     <item drawable="voltra_tv_banner" />
     <item drawable="weyd_banner" />
@@ -104,6 +107,7 @@
     <item drawable="cbs_banner" />
     <item drawable="tve_banner" />
     <item drawable="peacockandroid_banner" />
+    <item drawable="goplay_app_banner" />
     <item drawable="primevideo_banner" />
     <item drawable="sbs_banner" />
     <item drawable="seven_plus_banner" />
@@ -360,6 +364,7 @@
     <item drawable="morphe_banner" />
     <item drawable="notifications_for_android_tv_banner" />
     <item drawable="nuyodeviceinfo_banner" />
+    <item drawable="nuyowifianalyzer_banner" />
     <item drawable="remote_capture_banner" />
     <item drawable="pmx_banner" />
     <item drawable="quickbars_for_home_assistant_banner" />
@@ -377,9 +382,11 @@
     <item drawable="tduk_app_killer_banner" />
     <item drawable="tduk_screensaver_manager_banner" />
     <item drawable="termux_banner" />
+    <item drawable="tvcalibration_banner" />
     <item drawable="tv_manager_banner" />
     <item drawable="tvquickactions_banner" />
     <item drawable="tv_quick_actions_banner" />
+    <item drawable="universalmanager_banner" />
     <item drawable="virtualhere_usb_server_banner" />
     <item drawable="booster_banner" />
     <item drawable="zank_remote_banner" />
@@ -720,6 +727,7 @@
     <item drawable="mewatch_banner" />
     <item drawable="epix_banner" />
     <item drawable="gallery_banner" />
+    <item drawable="mihome_banner" />
     <item drawable="miracast_banner" />
     <item drawable="mo_4media_banner" />
     <item drawable="mobily_banner" />

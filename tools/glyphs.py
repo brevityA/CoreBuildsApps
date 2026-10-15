@@ -9120,3 +9120,87 @@ def iptvdeck_cards(c):
 
 
 GLYPHS.update({"iptvdeck_cards": iptvdeck_cards})
+
+
+# Issue batch 2026-10-15 (#309-#317, #319): eight scanner-reported apps, each
+# drawn from its subject in Core stroke geometry; no vendor art traced.
+def rectv_viewfinder(c):
+    """REC TV: a viewfinder - four rounded corner brackets - framing a solid
+    record dot, the "REC" of the name."""
+    corners = ("M 72 168 L 72 116 A 44 44 0 0 1 116 72 L 168 72",
+               "M 344 72 L 396 72 A 44 44 0 0 1 440 116 L 440 168",
+               "M 440 344 L 440 396 A 44 44 0 0 1 396 440 L 344 440",
+               "M 168 440 L 116 440 A 44 44 0 0 1 72 396 L 72 344")
+    return ("".join(f'<path d="{d}" {_s(c, 32)}/>' for d in corners)
+            + f'<circle cx="256" cy="256" r="84" {_f(c)}/>')
+
+
+def vega_star(c):
+    """Vega: the brightest star in Lyra - a V whose right arm points at a
+    four-point star."""
+    return (f'<path d="M 88 128 L 220 408 L 318 200" {_s(c, 34)}/>'
+            f'<path d="M 376 64 Q 384 128 440 136 Q 384 144 376 208 '
+            f'Q 368 144 312 136 Q 368 128 376 64 Z" {_s(c, 26.2)}/>')
+
+
+def playboxtv_box(c):
+    """PlayboxTV: an open box, both flaps folded out, with a play triangle on
+    its front - the name drawn literally."""
+    return (f'<rect x="112" y="216" width="288" height="216" rx="28" {_s(c, 32)}/>'
+            f'<path d="M 112 216 L 64 136 L 200 136 L 240 192" {_s(c, 28)}/>'
+            f'<path d="M 400 216 L 448 136 L 312 136 L 272 192" {_s(c, 28)}/>'
+            f'<path d="M 224 276 L 312 324 L 224 372 Z" {_s(c, 26.2)}/>')
+
+
+def mihome_house(c):
+    """Mi Home: a house holding a signal fan - the connected home. Kept apart
+    from home_bar (a bar inside) by its interior."""
+    return (f'<path d="M 72 240 L 256 88 L 440 240" {_s(c, 32)}/>'
+            f'<path d="M 128 232 L 128 400 A 32 32 0 0 0 160 432 L 352 432 '
+            f'A 32 32 0 0 0 384 400 L 384 232" {_s(c, 30)}/>'
+            f'<path d="M 188 304 A 96 96 0 0 1 324 304" {_s(c, 26.2)}/>'
+            f'<path d="M 222 340 A 48 48 0 0 1 290 340" {_s(c, 26.2)}/>'
+            f'<circle cx="256" cy="380" r="17" {_f(c)}/>')
+
+
+def nuyowifi_channels(c):
+    """Nuyo WiFi Analyzer: a channel graph - two overlapping signal humps on a
+    baseline, the view the app is built around."""
+    return (f'<path d="M 64 416 L 448 416" {_s(c, 30)}/>'
+            f'<path d="M 88 416 C 120 96 312 96 344 416" {_s(c, 32)}/>'
+            f'<path d="M 248 416 C 272 216 400 216 424 416" {_s(c, 26.2)}/>')
+
+
+def tvcalibration_card(c):
+    """TV Calibration: a screen on a stand showing a test card - a circle and
+    its crosshair."""
+    return (f'<rect x="56" y="104" width="400" height="280" rx="40" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="244" r="84" {_s(c, 26.2)}/>'
+            f'<path d="M 256 136 L 256 352 M 140 244 L 372 244" {_s(c, 26.2)}/>'
+            f'<path d="M 184 436 L 328 436" {_s(c, 30)}/>')
+
+
+def universalmanager_braces(c):
+    """Universal Manager: curly braces around an arrow coming down onto a tray
+    - a package, installed."""
+    return (f'<path d="M 152 72 Q 104 72 104 120 L 104 216 Q 104 256 64 256 '
+            f'Q 104 256 104 296 L 104 392 Q 104 440 152 440" {_s(c, 30)}/>'
+            f'<path d="M 360 72 Q 408 72 408 120 L 408 216 Q 408 256 448 256 '
+            f'Q 408 256 408 296 L 408 392 Q 408 440 360 440" {_s(c, 30)}/>'
+            f'<path d="M 256 128 L 256 320 M 192 256 L 256 320 L 320 256" {_s(c, 32)}/>'
+            f'<path d="M 184 384 L 328 384" {_s(c, 30)}/>')
+
+
+def goplay_split(c):
+    """Play (be.goplay.app): a play triangle split into two stacked halves -
+    the two rows of the stacked wordmark, without its letters."""
+    return (f'<path d="M 128 92 L 128 232 L 384 232 Z" {_s(c, 30)}/>'
+            f'<path d="M 128 280 L 128 420 L 384 280 Z" {_s(c, 30)}/>')
+
+
+GLYPHS.update({"rectv_viewfinder": rectv_viewfinder, "vega_star": vega_star,
+               "playboxtv_box": playboxtv_box, "mihome_house": mihome_house,
+               "nuyowifi_channels": nuyowifi_channels,
+               "tvcalibration_card": tvcalibration_card,
+               "universalmanager_braces": universalmanager_braces,
+               "goplay_split": goplay_split})
