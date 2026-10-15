@@ -277,7 +277,7 @@ class WallpaperPreviewActivity : TvActivity() {
     }
 
     private fun beginDownload(wp: Wallpaper, gen: Int) {
-        WallpaperDownloader.fetchUrl(this, wp.url, wp.cacheName) { event ->
+        WallpaperDownloader.fetchUrl(this, wp.url, wp.storeName) { event ->
             if (destroyed || gen != generation) return@fetchUrl
             when (event) {
                 is WallpaperDownloader.Event.Progress -> {

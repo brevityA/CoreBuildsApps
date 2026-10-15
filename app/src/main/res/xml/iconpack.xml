@@ -356,6 +356,7 @@
     <item drawable="instagram" />
     <item drawable="ip_address" />
     <item drawable="iptools" />
+    <item drawable="iptvdeck" />
     <item drawable="iptvextremepro" />
     <item drawable="iptv_pro" />
     <item drawable="iptvsmarterstvbox" />
@@ -453,6 +454,7 @@
     <item drawable="mewatch" />
     <item drawable="epix" />
     <item drawable="gallery" />
+    <item drawable="mihome" />
     <item drawable="miracast" />
     <item drawable="mixplorer" />
     <item drawable="bamnetworks" />
@@ -535,6 +537,7 @@
     <item drawable="ntathome" />
     <item drawable="nuvio" />
     <item drawable="nuyodeviceinfo" />
+    <item drawable="nuyowifianalyzer" />
     <item drawable="nvplayer" />
     <item drawable="nxsha" />
     <item drawable="nzrplus" />
@@ -589,9 +592,11 @@
     <item drawable="offshore" />
     <item drawable="pikcloud" />
     <item drawable="pixee" />
+    <item drawable="goplay_app" />
     <item drawable="playnow" />
     <item drawable="playsuisse" />
     <item drawable="universal" />
+    <item drawable="playboxtv" />
     <item drawable="player" />
     <item drawable="playfy" />
     <item drawable="playkids" />
@@ -647,6 +652,7 @@
     <item drawable="realdebrid" />
     <item drawable="realdebrid_2" />
     <item drawable="realstream_tv" />
+    <item drawable="rectv" />
     <item drawable="nousguide" />
     <item drawable="reddish" />
     <item drawable="redream" />
@@ -851,6 +857,7 @@
     <item drawable="tv_app_repo" />
     <item drawable="tvwebbrowser" />
     <item drawable="tvbrowser" />
+    <item drawable="tvcalibration" />
     <item drawable="tv_garden" />
     <item drawable="tv_manager" />
     <item drawable="deadlyduck" />
@@ -886,6 +893,7 @@
     <item drawable="livingwithhippos" />
     <item drawable="unifi_protect" />
     <item drawable="unifi_tv" />
+    <item drawable="universalmanager" />
     <item drawable="unlinked" />
     <item drawable="unreal_debrid" />
     <item drawable="smarttvapp" />
@@ -894,6 +902,7 @@
     <item drawable="tvod169" />
     <item drawable="vbtv" />
     <item drawable="veezie" />
+    <item drawable="vega" />
     <item drawable="venevision" />
     <item drawable="vewd_internet_browser" />
     <item drawable="viaplay" />

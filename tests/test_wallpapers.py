@@ -290,6 +290,30 @@ class AndroidWiringTests(unittest.TestCase):
         self.assertIn("/ 255.0", classic)
         self.assertIn("(a <= 0.14)", classic)
 
+    def test_cache_name_changes_when_a_wall_is_re_rendered(self):
+        # 2.4.0 re-rendered walls under their old URLs. Cached under the bare
+        # file name, a wall downloaded on 2.3.x kept showing its old picture
+        # behind the new thumbnail. The cache key carries the manifest's
+        # `since`; the export name (Pictures/CoreBuilds) stays the file name.
+        catalog = _read(JAVA / "WallpaperCatalog.kt")
+        self.assertIn("val storeName: String", catalog)
+        self.assertIn('"$stamp-$cacheName"', catalog)
+        downloader = _read(JAVA / "WallpaperDownloader.kt")
+        self.assertIn("cachedFile(context, wallpaper.storeName)", downloader)
+        self.assertIn("fetchUrl(context, wallpaper.url, wallpaper.storeName, callback)", downloader)
+        self.assertNotIn("wallpaper.cacheName", downloader)
+        preview = _read(JAVA / "WallpaperPreviewActivity.kt")
+        self.assertIn("fetchUrl(this, wp.url, wp.storeName)", preview)
+        self.assertNotIn("fetchUrl(this, wp.url, wp.cacheName)", preview)
+        exporter = _read(JAVA / "WallpaperExporter.kt")
+        self.assertIn("val cacheName = wp.cacheName", exporter)
+        # The stamp goes into a file name the downloader validates against
+        # [A-Za-z0-9._-]+, so the manifest may only use those characters.
+        manifest = json.loads(_read(ROOT / "Wallpapers/manifest.json"))
+        walls = manifest["wallpapers"] if isinstance(manifest, dict) else manifest
+        for wall in walls:
+            self.assertRegex(wall.get("since", ""), r"^[0-9A-Za-z.-]*$", wall["name"])
+
     def test_no_full_wallpapers_bundled_into_apk(self):
         # Full 4K images download on demand; assets should only hold thumbs + manifest.
         assets = ROOT / "app/src/main/assets"

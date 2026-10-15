@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "2.4.0",
+    "version": "2.4.1",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 993
+    "count": 1002
   },
   "icons": [
     {
@@ -1762,11 +1762,13 @@
       "color": "#4FACFE",
       "glyph": "cloud_box",
       "components": [
-        "com.lagradost.cloudstream3/com.lagradost.cloudstream3.ui.account.AccountSelectActivity"
+        "com.lagradost.cloudstream3/com.lagradost.cloudstream3.ui.account.AccountSelectActivity",
+        "com.lagradost.cloudstream3.prerelease/com.lagradost.cloudstream3.ui.account.AccountSelectActivity2"
       ],
       "category": "STREAM",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mapping_source": "issue #314 (device-reported via the pack's Missing icons scanner on a Smart TV, Android 14, pack 2.4.0, 2026-10-14): CloudStream's pre-release build installs as com.lagradost.cloudstream3.prerelease and launches ui.account.AccountSelectActivity2; the stable mapping is pre-provenance"
     },
     {
       "name": "CNBC",
@@ -1978,12 +1980,14 @@
       "color": "#E81820",
       "glyph": "cricfy_ball",
       "components": [
-        "com.cricfy.tv/com.android.vending.tv.activities.Splash"
+        "com.cricfy.tv/com.android.vending.tv.activities.Splash",
+        "com.cricfytv.sports/com.android.vending.activities.Splash"
       ],
       "category": "APP",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.cricfy.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E81820 (2026-09-27)",
       "color_reviewed": "2026-09-27",
-      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.cricfy.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.cricfy.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)",
+      "mapping_source": "issue #315 (device-reported via the pack's Missing icons scanner on a Smart TV, Android 14, pack 2.4.0, 2026-10-14): the CRICFy TV build from cricfyapk.io installs as com.cricfytv.sports and launches com.android.vending.activities.Splash. Same Cricfy brand as com.cricfy.tv. Not confirmed on a second TV"
     },
     {
       "name": "Criterion Channel",
@@ -12445,12 +12449,14 @@
       "color": "#F8C0B8",
       "glyph": "zenderapp_wm",
       "components": [
-        "be.vmma.vtm.zenderapp/be.persgroep.vtmgo.presentation.VtmGoMainActivity"
+        "be.vmma.vtm.zenderapp/be.persgroep.vtmgo.presentation.VtmGoMainActivity",
+        "be.vmma.vtm.zenderapp/be.persgroep.vtmgo.VtmGoMainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the Google Play listing launcher icon for be.vmma.vtm.zenderapp (reference only): #F8C0B8 (2026-09-28)",
       "color_reviewed": "2026-09-28",
-      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for be.vmma.vtm.zenderapp (reference only): the logotype's cue 'VTM', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for be.vmma.vtm.zenderapp (reference only): the logotype's cue 'VTM', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)",
+      "mapping_source": "issue #308 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, pack 2.4.0, 2026-10-14): current VTM GO builds launch be.persgroep.vtmgo.VtmGoMainActivity, without the .presentation package the original mapping (pre-provenance) names; both are kept so older builds still match"
     },
     {
       "name": "VTVcab ON",
@@ -14013,6 +14019,132 @@
       "color_source": "eyeballed from the app's Play Store launcher icon (a white handset-and-i on blue): #2F80ED; approximate, not sampled from a vendor asset (2026-10-14)",
       "color_reviewed": "2026-10-14",
       "glyph_source": "original Core monoline mark: a rounded handset outline with an information dot and stem inside - the app's subject drawn literally in Core stroke geometry; no vendor art traced (2026-10-14)"
+    },
+    {
+      "name": "IPTV Deck",
+      "drawable": "iptvdeck",
+      "color": "#4FACFE",
+      "glyph": "iptvdeck_cards",
+      "components": [
+        "com.mistykuu.iptvdeck/com.mistykuu.iptvdeck.MainActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "device-reported via the pack's Missing icons scanner (photo of the TV screen, shared 2026-10-15): com.mistykuu.iptvdeck/com.mistykuu.iptvdeck.MainActivity is the activity the launcher opened for IPTV Deck on that device. No store listing found. Not confirmed on a second TV",
+      "color_source": "core-builds palette: the launcher icon in the scanner photo is white cards on a blue tile, but a photo of a TV screen gives no reliable value, so the pack's Build Blue stands in (no published brand colour found)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: an upright card with a play triangle and two cards stacked behind it up and to the right - a deck, the app's name drawn literally in Core stroke geometry; no vendor art traced (2026-10-15)"
+    },
+    {
+      "name": "REC TV",
+      "drawable": "rectv",
+      "color": "#FF7A2E",
+      "glyph": "rectv_viewfinder",
+      "components": [
+        "com.rectv.shot/com.rectv.shot.MainActivity"
+      ],
+      "category": "STREAM",
+      "mapping_source": "issue #319 (device-reported via the pack's Missing icons scanner on Box R 4K, Android 14, pack 2.4.0, 2026-10-14): com.rectv.shot/com.rectv.shot.MainActivity is the activity the launcher opened for REC TV on that device. Not confirmed on a second TV; #318 is the same request",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: a viewfinder - four rounded corner brackets - framing a solid record dot, the REC of the name; no vendor art traced (2026-10-15)"
+    },
+    {
+      "name": "Vega",
+      "drawable": "vega",
+      "color": "#A366FF",
+      "glyph": "vega_star",
+      "components": [
+        "com.vega/com.vega.LauncherDefault"
+      ],
+      "category": "STREAM",
+      "mapping_source": "issue #317 (device-reported via the pack's Missing icons scanner on a Smart TV, Android 14, pack 2.4.0, 2026-10-14): com.vega/com.vega.LauncherDefault is the activity the launcher opened for Vega on that device. Not confirmed on a second TV",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: a V whose right arm points at a four-point star - Vega, the star; no vendor art traced (2026-10-15)"
+    },
+    {
+      "name": "PlayboxTV",
+      "drawable": "playboxtv",
+      "color": "#EB262D",
+      "glyph": "playboxtv_box",
+      "components": [
+        "playboxtv.tv.android.in/playboxtv.tv.in.SplashScreenActivity"
+      ],
+      "category": "STREAM",
+      "mapping_source": "issue #316 (device-reported via the pack's Missing icons scanner on a Smart TV, Android 14, pack 2.4.0, 2026-10-14): playboxtv.tv.android.in/playboxtv.tv.in.SplashScreenActivity is the activity the launcher opened for PlayboxTV on that device. Not confirmed on a second TV",
+      "color_source": "sampled from the Google Play listing art for playboxtv.tv.android.in: the mark's red #EB262D (2026-10-15)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: an open box, both flaps folded out, with a play triangle on its front - the name drawn literally; no vendor art traced (2026-10-15)"
+    },
+    {
+      "name": "Mi Home",
+      "drawable": "mihome",
+      "color": "#1AC886",
+      "glyph": "mihome_house",
+      "components": [
+        "com.xiaomi.smarthome.tv.global4/com.xiaomi.smarthome.tv.ui.MainActivity"
+      ],
+      "category": "APP",
+      "mapping_source": "issue #313 (device-reported via the pack's Missing icons scanner on MiTV-AFMU0, Android 14, pack 2.4.0, 2026-10-14): com.xiaomi.smarthome.tv.global4/com.xiaomi.smarthome.tv.ui.MainActivity is the activity the launcher opened for Mi Home on that device. Not confirmed on a second TV",
+      "color_source": "sampled from the Google Play launcher icon of the phone app (com.xiaomi.smarthome, listed as Xiaomi Home; the TV build has no listing of its own): the tile's green #1AC886 (2026-10-15)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: a house holding a signal fan - the connected home; no vendor art traced (2026-10-15)"
+    },
+    {
+      "name": "Nuyo WiFi Analyzer",
+      "drawable": "nuyowifianalyzer",
+      "color": "#00BCD6",
+      "glyph": "nuyowifi_channels",
+      "components": [
+        "com.roysolberg.android.wifianalyzer/com.roysolberg.android.wifianalyzer.tv.TvMainActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #312 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, pack 2.4.0, 2026-10-14): com.roysolberg.android.wifianalyzer/com.roysolberg.android.wifianalyzer.tv.TvMainActivity is the activity the launcher opened for Nuyo WiFi Analyzer on that device. Not confirmed on a second TV",
+      "color_source": "sampled from the Google Play launcher icon (com.roysolberg.android.wifianalyzer): #00BCD6, the middle of the arcs' cyan-to-blue gradient (2026-10-15)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: a channel graph - two overlapping signal humps on a baseline, the view the app is built around; no vendor art traced (2026-10-15)"
+    },
+    {
+      "name": "TV Calibration",
+      "drawable": "tvcalibration",
+      "color": "#FFB020",
+      "glyph": "tvcalibration_card",
+      "components": [
+        "net.damota.android.tvcalibration/net.damota.android.tvcalibration.MainActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #311 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, pack 2.4.0, 2026-10-14): net.damota.android.tvcalibration/net.damota.android.tvcalibration.MainActivity is the activity the launcher opened for TV Calibration on that device. Not confirmed on a second TV",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: a screen on a stand showing a test card - a circle and its crosshair; no vendor art traced (2026-10-15)"
+    },
+    {
+      "name": "Universal Manager",
+      "drawable": "universalmanager",
+      "color": "#B6F23A",
+      "glyph": "universalmanager_braces",
+      "components": [
+        "com.universal.manager/com.universal.manager.LauncherActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #310 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, pack 2.4.0, 2026-10-14): com.universal.manager/com.universal.manager.LauncherActivity is the activity the launcher opened for Universal Manager on that device. Not confirmed on a second TV. Google Play lists the package as XAPK Installer APK Downloader",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: curly braces around an arrow coming down onto a tray - a package, installed; no vendor art traced (2026-10-15)"
+    },
+    {
+      "name": "Play",
+      "drawable": "goplay_app",
+      "color": "#FF4052",
+      "glyph": "goplay_split",
+      "components": [
+        "be.goplay.app/be.goplay.app.ui.splash.SplashActivity"
+      ],
+      "category": "VOD",
+      "mapping_source": "issue #309 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, pack 2.4.0, 2026-10-14): be.goplay.app/be.goplay.app.ui.splash.SplashActivity is the activity the launcher opened for Play on that device. Not confirmed on a second TV. Not the GoPlay icon (com.eitv.goplay), a different app",
+      "color_source": "sampled from the Google Play launcher icon (be.goplay.app): the tile's #FF4052 (2026-10-15)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: a play triangle split into two stacked halves - the two rows of the stacked wordmark, without its letters; no vendor art traced (2026-10-15)"
     }
   ],
   "artwork": {

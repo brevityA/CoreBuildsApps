@@ -38,8 +38,10 @@
     <item drawable="videoplayer" />
     <item drawable="nuvio" />
     <item drawable="oldmovies" />
+    <item drawable="playboxtv" />
     <item drawable="pureflix" />
     <item drawable="realstream_tv" />
+    <item drawable="rectv" />
     <item drawable="battlelancer" />
     <item drawable="sstream" />
     <item drawable="streamflix" />
@@ -54,6 +56,7 @@
     <item drawable="syncler_beta" />
     <item drawable="thecomedychannel" />
     <item drawable="tvlok" />
+    <item drawable="vega" />
     <item drawable="venevision" />
     <item drawable="voltra_tv" />
     <item drawable="weyd" />
@@ -104,6 +107,7 @@
     <item drawable="cbs" />
     <item drawable="tve" />
     <item drawable="peacockandroid" />
+    <item drawable="goplay_app" />
     <item drawable="primevideo" />
     <item drawable="sbs" />
     <item drawable="seven_plus" />
@@ -124,6 +128,7 @@
     <item drawable="heatlive" />
     <item drawable="heatlive_backup" />
     <item drawable="myiptvonline" />
+    <item drawable="iptvdeck" />
     <item drawable="iptvextremepro" />
     <item drawable="iptv_pro" />
     <item drawable="iptvsmarterstvbox" />
@@ -359,6 +364,7 @@
     <item drawable="morphe" />
     <item drawable="notifications_for_android_tv" />
     <item drawable="nuyodeviceinfo" />
+    <item drawable="nuyowifianalyzer" />
     <item drawable="remote_capture" />
     <item drawable="pmx" />
     <item drawable="quickbars_for_home_assistant" />
@@ -376,9 +382,11 @@
     <item drawable="tduk_app_killer" />
     <item drawable="tduk_screensaver_manager" />
     <item drawable="termux" />
+    <item drawable="tvcalibration" />
     <item drawable="tv_manager" />
     <item drawable="tvquickactions" />
     <item drawable="tv_quick_actions" />
+    <item drawable="universalmanager" />
     <item drawable="virtualhere_usb_server" />
     <item drawable="booster" />
     <item drawable="zank_remote" />
@@ -719,6 +727,7 @@
     <item drawable="mewatch" />
     <item drawable="epix" />
     <item drawable="gallery" />
+    <item drawable="mihome" />
     <item drawable="miracast" />
     <item drawable="mo_4media" />
     <item drawable="mobily" />

@@ -6,6 +6,44 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.4.1] — 2026-10-15
+
+### Fixed
+
+- **Re-rendered wallpapers show their new art.** 2.4.0 re-rendered Motion,
+  Horizons, Circuit Core, Retrowave, AMOLED, Deep Space and Icon Echo under
+  the file names they already had, and the wallpaper cache was keyed on the
+  file name alone. A wall opened on 2.3.x (44 Monolith Grid, say) showed the
+  new thumbnail in the grid but kept opening, setting and saving the old
+  picture. The cache now keys each download on its release stamp too, so the
+  2.4.x art downloads once and the old copy ages out. Exported files keep
+  their names in `Pictures/CoreBuilds`.
+- **VTM GO, CloudStream Beta and CRICFy TV pick up their icons.** Each
+  launches a component the pack did not map:
+  - Current VTM GO builds open `be.persgroep.vtmgo.VtmGoMainActivity`, without
+    the `.presentation` package (#308). The old component stays for older
+    builds.
+  - CloudStream's pre-release build installs as
+    `com.lagradost.cloudstream3.prerelease` (#314) and now shares the
+    CloudStream icon.
+  - CRICFy TV installs as `com.cricfytv.sports` (#315) and now shares the
+    Cricfy icon.
+
+### Added
+
+- **9 new icons.** IPTV Deck, REC TV (#319), Vega (#317), PlayboxTV (#316),
+  Mi Home (#313), Nuyo WiFi Analyzer (#312), TV Calibration (#311),
+  Universal Manager (#310) and Play (#309, the Belgian app `be.goplay.app`;
+  the existing GoPlay icon belongs to a different app). Each is a new
+  original mark, and each component was reported by the pack's Missing icons
+  scanner on one TV.
+  - PlayboxTV, Mi Home, Nuyo WiFi Analyzer and Play take the colour sampled
+    from their Google Play icon.
+  - The other five take a pack palette colour: no store listing (IPTV Deck,
+    REC TV), a multicolour icon (TV Calibration, Universal Manager), or no
+    colour sourced (Vega).
+  - 993 → 1002 icons, 1229 → 1241 components.
+
 ## [2.4.0] — 2026-10-14
 
 ### Added
