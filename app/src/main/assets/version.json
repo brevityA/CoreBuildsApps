@@ -8,6 +8,7 @@
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "The home screen fits the TV's largest text size"
+    "The home screen fits the TV's largest text size",
+    "Download on the update bar works with the remote"
   ]
 }
