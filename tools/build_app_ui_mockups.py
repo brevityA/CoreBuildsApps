@@ -718,10 +718,15 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
     draw_text(draw, (g, ry + dp(2)), STRINGS["kicker"],
               font("mono", DIMENS["cb_text_label"], bold=True),
               colour("cb_signal_cyan"))
-    draw_text(draw, (g, ry + dp(26)),
-              fmt(STRINGS["pack_stats_fmt"], len(PACK), COMPONENT_COUNT),
-              f_data, colour("cb_slate"))
-    ry += dp(48)
+    if with_update_bar:
+        # MainActivity.showUpdateAvailable hides the count while the bar is up
+        # (the bar states the new release's count), so the rail's last row fits.
+        ry += dp(24)
+    else:
+        draw_text(draw, (g, ry + dp(26)),
+                  fmt(STRINGS["pack_stats_fmt"], len(PACK), COMPONENT_COUNT),
+                  f_data, colour("cb_slate"))
+        ry += dp(48)
     button(img, g, ry, STRINGS["cta_apply"], "cta", min_w_dp=DIMENS["cb_rail_width"])
     ry += row_h + gap
     if not with_update_bar:
@@ -748,9 +753,10 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
         ry += h + dp(DIMENS["cb_space_xs"])
     # Support | Settings | About: one row of three single-line cards (Support
     # leads since 2.4.0; the version suffix About carried left with the third
-    # card - it is the About screen's first fact).
+    # card - it is the About screen's first fact). Labels centred since 2.4.3,
+    # as activity_main.xml lays them out.
     half = (rail_r - g - 2 * dp(DIMENS["cb_space_xs"])) // 3
-    inset = dp(DIMENS["cb_card_padding"])
+    inset = dp(DIMENS["cb_space_xs"])
     f_title = font("sans", DIMENS["cb_text_body"], bold=True)
     for i, (title, suffix) in enumerate((
         (STRINGS["support_label"], None),
@@ -760,8 +766,8 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
         x0 = g + i * (half + dp(DIMENS["cb_space_xs"]))
         box = [x0, ry, x0 + half, ry + row_h]
         card(img, box)
-        draw_text(draw, (x0 + inset, ry + row_h / 2), title, f_title, colour("cb_ink"),
-                  anchor="lm")
+        draw_text(draw, (x0 + half / 2, ry + row_h / 2), title, f_title, colour("cb_ink"),
+                  anchor="mm")
         if suffix:
             draw_text(draw, (x0 + half - inset, ry + row_h / 2), suffix, f_data,
                       colour("cb_slate"), anchor="rm")
@@ -824,8 +830,8 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
         py += tile_h
         row += 1
 
-    extra = ("update bar: first highlight from version.json, launcher list and "
-             "ALSO APPLIES TO reclaimed while it is up; " if with_update_bar
+    extra = ("update bar: first highlight from version.json, launcher list, icon "
+             "count and ALSO APPLIES TO reclaimed while it is up; " if with_update_bar
              else "")
     note = ("MOCKUP - catalogue from activity_main.xml + strings/dimens/colors + "
             f"appfilter ({COMPONENT_COUNT} components); {extra}"

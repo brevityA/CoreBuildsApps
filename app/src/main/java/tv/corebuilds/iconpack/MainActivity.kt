@@ -8,14 +8,18 @@ import android.os.Looper
 import android.view.KeyEvent
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.view.doOnLayout
+import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -146,6 +150,8 @@ class MainActivity : TvActivity() {
         bindSearch()
         bindEmptyActions()
         syncFocusChain()
+        bindRailScroll()
+        matchRowTextSizes()
         if (pickMode) {
             // Icon-picker mode has no use for the wallpapers entry or apply.
             findViewById<View>(R.id.wallpapers_group).visibility = View.GONE
@@ -194,6 +200,52 @@ class MainActivity : TvActivity() {
                 findViewById<View>(R.id.apply_button).requestFocus()
             }
         }
+    }
+
+    /**
+     * The rail scrolls when it is taller than the screen: large system text, the
+     * update bar and the launcher note under Apply can each push its last row
+     * past the bottom edge. D-pad focus scrolls it down to the row it lands on;
+     * when focus leaves the rail it goes back to the top, so the wordmark and the
+     * icon count are on screen again instead of half a line clipped under the
+     * update bar (2.4.0 at the TV's largest text size).
+     */
+    private fun bindRailScroll() {
+        val rail = findViewById<ScrollView>(R.id.rail)
+        rail.viewTreeObserver.addOnGlobalFocusChangeListener { _, newFocus ->
+            if (newFocus == null || rail.scrollY == 0 || isInside(newFocus, rail)) {
+                return@addOnGlobalFocusChangeListener
+            }
+            if (Prefs.reduceMotion(this)) rail.scrollTo(0, 0) else rail.smoothScrollTo(0, 0)
+        }
+    }
+
+    /**
+     * Support | Settings | About each shrink to fit a third of the rail under
+     * large system text (autoSize in activity_main.xml), but each on its own, so
+     * "About" would stay larger than "Settings". After the first layout all three
+     * take the smallest size and keep it, so the row reads as one control. At the
+     * default text size all three already fit at full size and nothing changes.
+     */
+    private fun matchRowTextSizes() {
+        val labels = intArrayOf(R.id.support_entry, R.id.settings_entry, R.id.about_entry)
+            .map { findViewById<TextView>(it) }
+        (labels.first().parent as View).doOnLayout {
+            val smallest = labels.minOf { it.textSize }
+            for (label in labels) {
+                TextViewCompat.setAutoSizeTextTypeWithDefaults(label, TextViewCompat.AUTO_SIZE_TEXT_TYPE_NONE)
+                label.setTextSize(TypedValue.COMPLEX_UNIT_PX, smallest)
+            }
+        }
+    }
+
+    private fun isInside(view: View, ancestor: View): Boolean {
+        var node: Any? = view
+        while (node is View) {
+            if (node === ancestor) return true
+            node = node.parent
+        }
+        return false
     }
 
     /**
@@ -993,10 +1045,14 @@ class MainActivity : TvActivity() {
             highlights.visibility = View.VISIBLE
             highlights.text = "•  " + update.highlights.first()
         }
-        // Give the bar the two rows it outranks, so the grid keeps a full row of
+        // Give the bar the rows it outranks, so the grid keeps a full row of
         // tiles: the header's launcher list and the ALSO APPLIES TO band are
-        // both secondary chrome, and Later puts them back.
+        // both secondary chrome, and Later puts them back. The icon count goes
+        // too: the bar states the new release's count, and without that line
+        // the rail's last row (Support | Settings | About) fits under the bar
+        // at the default text size instead of being cut in half.
         findViewById<View>(R.id.apply_sub).visibility = View.GONE
+        findViewById<View>(R.id.count).visibility = View.GONE
         setTargetsBand(shown = false)
         syncFocusChain()
         findViewById<TextView>(R.id.update_later).setOnClickListener { dismissUpdate() }
@@ -1030,6 +1086,7 @@ class MainActivity : TvActivity() {
     private fun dismissUpdate() {
         updateDismissed = true
         findViewById<LinearLayout>(R.id.update_bar).visibility = View.GONE
+        findViewById<View>(R.id.count).visibility = View.VISIBLE
         if (!pickMode) {
             // Recomputes the launcher list under the CTA and the ALSO APPLIES TO
             // band from what is installed, then resyncs the chain.

@@ -31,6 +31,7 @@
 -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -171,13 +172,24 @@
              a band with a second one. On a 540dp panel that pushed the last
              row past the bottom edge with no way to reach it. A ScrollView
              scrolls to whatever takes focus, so D-pad DOWN always lands on
-             a visible row; when everything fits it is inert. -->
+             a visible row; when everything fits it is inert.
+
+             Large system text makes it scroll too (2.4.0 at the TV's largest
+             text size: the wordmark and count each wrapped to two lines and the
+             rail ran ~20dp past the bottom). So the wordmark and count stay on
+             one line and shrink to the rail's width, the edges fade where the
+             rail is cut instead of slicing a line in half, and
+             MainActivity.bindRailScroll returns it to the top when focus
+             leaves, so the header is not left half-hidden under the update bar. -->
         <ScrollView
+            android:id="@+id/rail"
             android:layout_width="@dimen/cb_rail_width"
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/cb_space_md"
+            android:fadingEdgeLength="@dimen/cb_space_lg"
             android:fillViewport="true"
             android:overScrollMode="never"
+            android:requiresFadingEdge="vertical"
             android:scrollbars="none">
 
         <LinearLayout
@@ -191,10 +203,16 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="monospace"
                 android:letterSpacing="0.18"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="@string/kicker"
                 android:textColor="@color/cb_signal_cyan"
                 android:textSize="@dimen/cb_text_label"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:autoSizeMaxTextSize="@dimen/cb_text_label"
+                app:autoSizeMinTextSize="@dimen/cb_text_fit_min"
+                app:autoSizeStepGranularity="1sp"
+                app:autoSizeTextType="uniform" />
 
             <TextView
                 android:id="@+id/count"
@@ -202,9 +220,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/cb_space_xs"
                 android:fontFamily="monospace"
+                android:ellipsize="end"
                 android:letterSpacing="0.02"
+                android:maxLines="1"
                 android:textColor="@color/cb_slate"
-                android:textSize="@dimen/cb_text_data" />
+                android:textSize="@dimen/cb_text_data"
+                app:autoSizeMaxTextSize="@dimen/cb_text_data"
+                app:autoSizeMinTextSize="@dimen/cb_text_fit_min"
+                app:autoSizeStepGranularity="1sp"
+                app:autoSizeTextType="uniform" />
 
             <TextView
                 android:id="@+id/apply_button"
@@ -406,7 +430,14 @@
                      screen instead of two hops through About. LEFT/RIGHT moves
                      along the three. The version used to ride on About as a
                      mono suffix; at a third of the rail it collided with the
-                     word, and it is the first fact on the About screen. -->
+                     word, and it is the first fact on the About screen.
+
+                     A third of the rail is ~95dp. At the TV's largest text size
+                     "Settings" no longer fits it, and 2.4.0 broke the word over
+                     two lines ("Setting / s"). So each label stays on one line,
+                     centred with a narrow inset, and shrinks (autoSize, never
+                     below cb_text_fit_min); MainActivity.matchRowTextSizes then
+                     gives all three the smallest size so the row reads as one. -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -424,17 +455,23 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
-                        android:gravity="center_vertical"
+                        android:gravity="center"
                         android:minHeight="@dimen/cb_target_min"
                         android:nextFocusUp="@id/wallpapers_entry"
                         android:nextFocusDown="@id/apply_targets"
                         android:nextFocusRight="@id/settings_entry"
-                        android:paddingStart="@dimen/cb_card_padding"
-                        android:paddingEnd="@dimen/cb_card_padding"
+                        android:paddingStart="@dimen/cb_space_xs"
+                        android:paddingEnd="@dimen/cb_space_xs"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         android:text="@string/support_label"
                         android:textColor="@color/cb_ink"
                         android:textSize="@dimen/cb_text_body"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        app:autoSizeMaxTextSize="@dimen/cb_text_body"
+                        app:autoSizeMinTextSize="@dimen/cb_text_fit_min"
+                        app:autoSizeStepGranularity="1sp"
+                        app:autoSizeTextType="uniform" />
 
                     <TextView
                         android:id="@+id/settings_entry"
@@ -446,18 +483,24 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
-                        android:gravity="center_vertical"
+                        android:gravity="center"
                         android:minHeight="@dimen/cb_target_min"
                         android:nextFocusUp="@id/wallpapers_entry"
                         android:nextFocusDown="@id/apply_targets"
                         android:nextFocusLeft="@id/support_entry"
                         android:nextFocusRight="@id/about_entry"
-                        android:paddingStart="@dimen/cb_card_padding"
-                        android:paddingEnd="@dimen/cb_card_padding"
+                        android:paddingStart="@dimen/cb_space_xs"
+                        android:paddingEnd="@dimen/cb_space_xs"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         android:text="@string/settings_label"
                         android:textColor="@color/cb_ink"
                         android:textSize="@dimen/cb_text_body"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        app:autoSizeMaxTextSize="@dimen/cb_text_body"
+                        app:autoSizeMinTextSize="@dimen/cb_text_fit_min"
+                        app:autoSizeStepGranularity="1sp"
+                        app:autoSizeTextType="uniform" />
 
                     <TextView
                         android:id="@+id/about_entry"
@@ -468,17 +511,23 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
-                        android:gravity="center_vertical"
+                        android:gravity="center"
                         android:minHeight="@dimen/cb_target_min"
                         android:nextFocusUp="@id/wallpapers_entry"
                         android:nextFocusDown="@id/apply_targets"
                         android:nextFocusLeft="@id/settings_entry"
-                        android:paddingStart="@dimen/cb_card_padding"
-                        android:paddingEnd="@dimen/cb_card_padding"
+                        android:paddingStart="@dimen/cb_space_xs"
+                        android:paddingEnd="@dimen/cb_space_xs"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         android:text="@string/about_label"
                         android:textColor="@color/cb_ink"
                         android:textSize="@dimen/cb_text_body"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        app:autoSizeMaxTextSize="@dimen/cb_text_body"
+                        app:autoSizeMinTextSize="@dimen/cb_text_fit_min"
+                        app:autoSizeStepGranularity="1sp"
+                        app:autoSizeTextType="uniform" />
                 </LinearLayout>
             </LinearLayout>
 

@@ -96,5 +96,10 @@
     <dimen name="cb_text_section">19sp</dimen>
     <dimen name="cb_text_title">32sp</dimen>
     <dimen name="cb_text_display">34sp</dimen>
+    <!-- The smallest a one-line label may shrink to when the system text size
+         makes it wider than its slot (the home rail's wordmark, count and
+         Support | Settings | About). The floor above, not below it: being sp, it
+         grows with the user's setting too, so large text still reads larger. -->
+    <dimen name="cb_text_fit_min">12sp</dimen>
 
 </resources>
