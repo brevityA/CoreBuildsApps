@@ -6,6 +6,32 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.4.3] — 2026-10-15
+
+### Fixed
+
+- **The home screen fits the TV's largest text size.** At about 1.3× system
+  text, the left rail ran ~20dp past the bottom of the screen on 2.4.0:
+  - the CORE BUILDS ICON PACK wordmark and the icon count each wrapped to two
+    lines;
+  - Support | Settings | About broke mid-word ("Setting / s");
+  - moving down the rail scrolled the header half under the update bar.
+
+  Now:
+  - The wordmark, the count and the three buttons stay on one line and shrink
+    to fit, never below 12sp at your text size. The three buttons share one
+    size and are centred.
+  - Where the rail still has to scroll (1.3× text with the update bar up), its
+    edges fade instead of cutting a line in half, and it returns to the top
+    when the cursor leaves it.
+  - While the update bar is up, the icon count steps aside as the launcher
+    note already did; the bar states the new release's count. At the default
+    text size the whole rail now fits under the bar, Support | Settings |
+    About included.
+  - Checked by rendering the home layout at 1920×1080 with 1.0×, 1.3× and 1.5×
+    text. The other 12 screens already reflow inside their scroll views at
+    1.3×.
+
 ## [2.4.2] — 2026-10-15
 
 ### Fixed
