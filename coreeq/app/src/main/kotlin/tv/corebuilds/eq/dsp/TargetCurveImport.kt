@@ -65,6 +65,23 @@ object TargetCurveImport {
         return Result.Ok(limited, notes)
     }
 
+    /**
+     * A curve read back from a saved profile or a backup file, held to what [parse] can
+     * produce: finite points within 20 Hz to 20 kHz, gains within the budget, sorted, no
+     * repeated frequency, at most [MAX_POINTS] + 1 (the pinned 1 kHz). Unlike [parse] it
+     * drops bad points instead of rejecting the curve, so one damaged value in a backup
+     * costs that point, not the profile. Returns an empty list when fewer than two remain.
+     */
+    fun fromStored(points: List<Pair<Double, Double>>): List<Pair<Double, Double>> {
+        val kept = points
+            .filter { (f, g) -> f.isFinite() && g.isFinite() && f in MIN_HZ..MAX_HZ }
+            .map { (f, g) -> f to g.coerceIn(-CorrectionLimits.MAX_CUT_DB, CorrectionLimits.MAX_BOOST_DB) }
+            .sortedBy { it.first }
+            .distinctBy { it.first }
+            .take(MAX_POINTS + 1)
+        return if (kept.size >= 2) kept else emptyList()
+    }
+
     /** The target in dB at each frequency in [centres]: log-frequency interpolation, flat beyond the ends. */
     fun targetDb(points: List<Pair<Double, Double>>, centres: DoubleArray): DoubleArray =
         CorrectionImport.interpolateGraphic(points, centres)

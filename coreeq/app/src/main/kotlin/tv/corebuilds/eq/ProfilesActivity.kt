@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.dsp.DspConstants
 import tv.corebuilds.eq.dsp.ManualEq
-import tv.corebuilds.eq.dsp.Targets
 import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.export.Profile
@@ -243,16 +242,19 @@ class ProfilesActivity : TvActivity() {
                 val hz = effective.curve[index].hz
                 effective.correctionAt(hz) + ManualEq.responseDb(effective.manualFilters, hz)
             }
-            val target = Targets.targetCurve(profile.target, freqs)
+            // The profile's own target: an imported one is read from the profile, never from
+            // whatever curve is imported now. Null (imported, curve not saved) draws no target.
+            val target = profile.targetDb(freqs)
 
-            val series = listOf(
+            val series = listOfNotNull(
                 Series("TOTAL EQ", ContextCompat.getColor(this, R.color.cb_signal_cyan), corr),
-                Series("TARGET", ContextCompat.getColor(this, R.color.cb_dusk_violet), target)
+                target?.let { Series("TARGET", ContextCompat.getColor(this, R.color.cb_dusk_violet), it) }
             )
             graphProfile.setData(
                 freqs = freqs,
                 series = series,
-                title = "${profile.name.uppercase(Locale.US)} · ${mode.title.uppercase(Locale.US)} — EQ vs TARGET",
+                title = "${profile.name.uppercase(Locale.US)} · ${mode.title.uppercase(Locale.US)} — " +
+                    if (target != null) "EQ vs TARGET" else "EQ",
                 yRange = 15.0,
                 tHz = profile.transitionHz
             )

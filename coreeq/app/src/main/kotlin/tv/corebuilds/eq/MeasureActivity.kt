@@ -641,6 +641,10 @@ class MeasureActivity : TvActivity() {
     private fun activeTargetKey(): String =
         if (useCustomTarget && CustomTarget.points != null) CustomTarget.KEY else TARGETS[targetIndex].key
 
+    /** The imported curve a profile saved now must keep, so it still draws its own target after the next import. */
+    private fun activeTargetPoints(): List<Pair<Double, Double>> =
+        if (activeTargetKey() == CustomTarget.KEY) CustomTarget.points.orEmpty() else emptyList()
+
     private fun activeTargetTitle(): String =
         if (useCustomTarget && CustomTarget.points != null) getString(R.string.measure_target_custom_title)
         else TARGETS[targetIndex].label
@@ -974,6 +978,7 @@ class MeasureActivity : TvActivity() {
             name = if (output != null) "$baseName · ${output.name}" else baseName,
             timestampMs = now,
             target = activeTargetKey(),
+            targetPoints = activeTargetPoints(),
             micType = micName ?: "microphone",
             captureInfo = captureInfo,
             repeatabilityCheck = savedRepeatability,
@@ -1023,6 +1028,7 @@ class MeasureActivity : TvActivity() {
             name = if (output != null) "$baseName · ${output.name}" else baseName,
             timestampMs = now,
             target = activeTargetKey(),
+            targetPoints = activeTargetPoints(),
             micType = "REW import",
             deviceName = "REW",
             stimulus = "rew_import",
