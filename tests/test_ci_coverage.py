@@ -46,6 +46,12 @@ LOCAL_ONLY: dict[str, str] = {
         "measurement it makes (safe area, rendered alpha, monoline contract) "
         "is already a CI gate against the shipped assets"
     ),
+    "check_wallpaper_cache_keys.py": (
+        "compares every wall with every release tag, and CI's depth-1 checkout "
+        "has no tags; prepare_release.py runs it as a gate before each tag, "
+        "and test_wallpapers.CacheNameTests pins its rule and the 2.3.3 stamps "
+        "in CI"
+    ),
 }
 
 # The repo-truth gates. Each has caught a real defect before; each must be

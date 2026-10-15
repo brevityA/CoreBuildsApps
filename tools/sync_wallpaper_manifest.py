@@ -78,16 +78,24 @@ def check_collection(name: str, cfg: dict, write: bool) -> list[str]:
             manifest_state = "DRIFT (would copy)"
             problems.append(f"{name}: bundled manifest drifts from the repo manifest")
 
-    # thumb set: exactly the manifest's set
+    # thumb set: exactly the manifest's set, byte for byte. Comparing names
+    # alone let 2.4.0 ship Circuit Core's pre-re-render thumbs: the series was
+    # re-rendered under the same file names, so nothing looked missing.
     want = {Path(w["thumb"]).name for w in walls}
     dst = cfg["thumbs"]
     dst.mkdir(parents=True, exist_ok=True)
     have = {p.name for p in dst.iterdir() if p.is_file()}
-    copied = [n for n in sorted(want - have)]
+    missing = sorted(want - have)
+    changed = sorted(n for n in want & have
+                     if (dst / n).read_bytes() != (THUMBS / n).read_bytes())
+    copied = missing + changed
     stale = [n for n in sorted(have - want)]
     for n in copied:
         if write:
             (dst / n).write_bytes((THUMBS / n).read_bytes())
+        else:
+            what = "missing" if n in missing else "differs from Wallpapers/thumbs"
+            problems.append(f"{name}: bundled thumb {n} {what}")
     for n in stale:
         if write:
             (dst / n).unlink()

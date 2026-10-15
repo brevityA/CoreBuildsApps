@@ -23,6 +23,7 @@ Sets, in browser order (the Live chip shows them in this order):
 """
 from __future__ import annotations
 
+import hashlib
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -78,6 +79,14 @@ class Clip:
         and in installed builds' prefs, though its still is now Signal Red).
         Renaming it would silently re-point that wallpaper to the default."""
         return self.file_slug or self.slug
+
+    @property
+    def revision(self) -> str:
+        """First 12 hex digits of the committed MP4's sha256: LiveLoop.kt's
+        cache key. A re-render keeps the file name and URL (installed builds
+        hard-code them), so the content is what tells a device its copy is
+        old. Derived from the file, so a re-render cannot ship unstamped."""
+        return hashlib.sha256(self.mp4.read_bytes()).hexdigest()[:12]
 
 
 def _set(set_name, series, prefix, rows, **tuning) -> list[Clip]:

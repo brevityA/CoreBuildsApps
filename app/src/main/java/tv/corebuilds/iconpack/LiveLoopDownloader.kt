@@ -1,5 +1,6 @@
 package tv.corebuilds.iconpack
 
+import android.app.WallpaperManager
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
@@ -59,20 +60,59 @@ object LiveLoopDownloader {
         fun onEvent(event: Event)
     }
 
-    /** The cached MP4 for [loop], or null if it has not been downloaded yet. */
+    /**
+     * The cached MP4 of [loop]'s current render, or null if that has not been
+     * downloaded yet. Preview, Set and Save use this, so a re-rendered loop
+     * downloads once instead of showing the copy an older build saved.
+     */
     fun cached(context: Context, loop: Loop): File? =
-        cachedFile(context.applicationContext, loop.fileName)
+        cachedFile(context.applicationContext, loop.storeName)
 
-    /** Where [loop]'s MP4 is (or would be) cached. */
+    /**
+     * What the wallpaper engine plays: the current render if it is here, else
+     * the newest older copy of the same loop. The engine never downloads, so
+     * after an update re-renders the loop the home screen keeps its old
+     * animation until the new one has arrived, instead of dropping to the
+     * still frame.
+     */
+    fun playable(context: Context, loop: Loop): File? {
+        cached(context, loop)?.let { return it }
+        return cacheDir(context).listFiles()
+            ?.filter { loop.isCopy(it.name) && it.length() >= MIN_BYTES }
+            ?.maxByOrNull { it.lastModified() }
+    }
+
+    /** Where [loop]'s current render is (or would be) cached. */
     fun fileFor(context: Context, loop: Loop): File =
-        File(cacheDir(context.applicationContext), loop.fileName)
+        File(cacheDir(context.applicationContext), loop.storeName)
 
     fun cacheDir(context: Context): File =
         File(context.applicationContext.filesDir, DIR).apply { mkdirs() }
 
-    /** Fetch [loop]'s MP4. See [fetchUrl]. */
+    /** Fetch [loop]'s current render. See [fetchUrl]. */
     fun fetch(context: Context, loop: Loop, callback: Callback) {
-        fetchUrl(context, loop.url, loop.fileName, callback)
+        fetchUrl(context, loop.url, loop.storeName, callback)
+    }
+
+    /**
+     * Download the current render of the loop the home screen is playing, when
+     * only an older copy is on the device. Called when the user opens
+     * Wallpapers: that is the user action, so nothing runs on its own, and the
+     * old loop keeps playing until the new one is complete. Does nothing when
+     * this app's live wallpaper is not the one set, or when the loop was never
+     * downloaded (there is nothing playing to replace).
+     */
+    fun refreshActive(context: Context) {
+        val app = context.applicationContext
+        val ours = runCatching {
+            WallpaperManager.getInstance(app).wallpaperInfo?.packageName == app.packageName
+        }.getOrDefault(false)
+        if (!ours) return
+        val loop = LiveLoop.byId(Prefs.liveLoopId(app))
+        if (cached(app, loop) != null || playable(app, loop) == null) return
+        fetch(app, loop) { event ->
+            if (event is Event.Failed) Log.w(TAG, "could not refresh ${loop.id}: ${event.reason}")
+        }
     }
 
     /**
@@ -221,11 +261,23 @@ object LiveLoopDownloader {
      * evicting the loop that is set as the wallpaper: with twelve loops to
      * preview, age alone would let browsing delete the video the home screen
      * is playing, and the engine would drop to its still frame.
+     *
+     * Older renders go first: once a loop's current render is here, its other
+     * copies (an earlier revision, or a pre-2.4.2 bare file name) are deleted.
+     * Until then an older copy of the active loop is what the engine plays, so
+     * every copy of the active loop is protected.
      */
     private fun trimCache(context: Context) {
-        val active = LiveLoop.byId(Prefs.liveLoopId(context)).fileName
-        val files = cacheDir(context).listFiles()
-            ?.filter { !it.name.endsWith(".part") && it.name != active }
+        val dir = cacheDir(context)
+        val names = dir.list()?.toSet() ?: return
+        for (loop in LiveLoop.LOOPS) {
+            if (loop.storeName !in names) continue
+            names.filter { it != loop.storeName && loop.isCopy(it) }
+                .forEach { runCatching { File(dir, it).delete() } }
+        }
+        val active = LiveLoop.byId(Prefs.liveLoopId(context))
+        val files = dir.listFiles()
+            ?.filter { !it.name.endsWith(".part") && !active.isCopy(it.name) }
             ?.sortedByDescending { it.lastModified() }
             ?: return
         files.drop(MAX_CACHE_FILES - 1).forEach { runCatching { it.delete() } }

@@ -11,8 +11,8 @@ android {
         applicationId = "tv.corebuilds.iconpack"
         minSdk = 21
         targetSdk = 34
-        versionCode = 54
-        versionName = "2.4.1"
+        versionCode = 55
+        versionName = "2.4.2"
 
         // Read by the updater code: where to check for a newer release and
         // which FileProvider authority serves the downloaded APK.

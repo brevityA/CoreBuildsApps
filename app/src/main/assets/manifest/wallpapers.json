@@ -81,7 +81,8 @@
       "series": "series-2-motion",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-2-motion/corebuilds-52-shockwave.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-52-shockwave.jpg",
-      "resolution": "3840x2160"
+      "resolution": "3840x2160",
+      "since": "2.3.3"
     },
     {
       "name": "53 Cascade",
@@ -582,7 +583,8 @@
       "series": "series-10-cinema",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-10-cinema/corebuilds-97-marquee-lights.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-97-marquee-lights.jpg",
-      "resolution": "3840x2160"
+      "resolution": "3840x2160",
+      "since": "2.3.3"
     },
     {
       "name": "98 Velvet Curtain",
@@ -596,28 +598,32 @@
       "series": "series-10-cinema",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-10-cinema/corebuilds-99-projector-beam.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-99-projector-beam.jpg",
-      "resolution": "3840x2160"
+      "resolution": "3840x2160",
+      "since": "2.3.3"
     },
     {
       "name": "100 Neon Lounge",
       "series": "series-10-cinema",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-10-cinema/corebuilds-100-neon-lounge.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-100-neon-lounge.jpg",
-      "resolution": "3840x2160"
+      "resolution": "3840x2160",
+      "since": "2.3.3"
     },
     {
       "name": "101 Late Rentals",
       "series": "series-10-cinema",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-10-cinema/corebuilds-101-late-rentals.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-101-late-rentals.jpg",
-      "resolution": "3840x2160"
+      "resolution": "3840x2160",
+      "since": "2.3.3"
     },
     {
       "name": "102 Box Office",
       "series": "series-10-cinema",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-10-cinema/corebuilds-102-box-office.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-102-box-office.jpg",
-      "resolution": "3840x2160"
+      "resolution": "3840x2160",
+      "since": "2.3.3"
     },
     {
       "name": "151 Drive-In",

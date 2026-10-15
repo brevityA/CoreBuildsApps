@@ -31,6 +31,7 @@ def render() -> str:
             id = "{c.id}",
             title = "{c.title}",
             fileName = "{c.stem}.mp4",
+            revision = "{c.revision}",
             url = RAW_BASE + "{c.stem}.mp4",
             thumbUrl = RAW_BASE + "thumbs/{c.stem}.jpg",
             thumbAsset = "$THUMB_DIR/{c.stem}.jpg",

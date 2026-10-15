@@ -88,6 +88,11 @@ The icon-pack app ships a built-in Wallpapers screen:
    chip shows the walls whose `since` is the newest in the manifest, so stamp
    every wall of a release with the same version and leave older walls
    untouched; a refreshed wall (new render, same number) gets the new version.
+   That is not optional: the app caches each download under `since` plus the
+   file name, so a refresh that keeps its old `since` keeps handing devices
+   the picture they downloaded before. `tools/check_wallpaper_cache_keys.py`
+   (a `prepare_release.py` gate) fails a release that does it; 2.3.3 redrew
+   52 Shockwave and Cinema 97, 99–102 that way.
 4. Run `python tools/sync_wallpaper_manifest.py`. It verifies every manifest
    entry against the files on disk, copies the manifest into
    `app/src/main/assets/manifest/wallpapers.json`, and keeps the bundled

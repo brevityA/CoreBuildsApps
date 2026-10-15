@@ -81,6 +81,10 @@ GATES = [
     "tools/check_ui_resources.py",
     "tools/check_appfilter_integrity.py",
     "tools/build_app_ui_mockups.py --check",
+    # Added for 2.4.2: 2.3.3 redrew six walls under their old cache names, so
+    # devices kept the old pictures. Reads the release tags, which a local
+    # release run has and CI's shallow checkout does not.
+    "tools/check_wallpaper_cache_keys.py",
     "tools/check_gradle_envelope.py",
     "-m unittest discover -s tests",
     "tools/check_suite_truth.py",

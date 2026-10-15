@@ -48,7 +48,7 @@ class LiveWallpaperService : WallpaperService() {
         override fun onSurfaceCreated(incoming: SurfaceHolder) {
             holder = incoming
             loadChoice()
-            attachFile(LiveLoopDownloader.cached(applicationContext, loop))
+            attachFile(LiveLoopDownloader.playable(applicationContext, loop))
         }
 
         override fun onSurfaceChanged(
@@ -64,12 +64,15 @@ class LiveWallpaperService : WallpaperService() {
             visible = shown
             // Re-read the choice on every visibility change: the preview's
             // "Set live" writes the preference and hands the user to the
-            // picker, so the loop can change while this engine is alive.
+            // picker, so the loop can change while this engine is alive. The
+            // file is re-resolved too: a newer render of the same loop that
+            // finished downloading replaces the older copy playing now.
             val previous = loop
             loadChoice()
-            if (loop.id != previous.id) {
+            val next = LiveLoopDownloader.playable(applicationContext, loop)
+            if (loop.id != previous.id || next?.path != file?.path) {
                 stopPlayback()
-                attachFile(LiveLoopDownloader.cached(applicationContext, loop))
+                attachFile(next)
                 return
             }
             if (shown) startPlayback() else pausePlayback()

@@ -182,6 +182,78 @@ class ThumbnailTests(unittest.TestCase):
         have = {p.name for p in BUNDLED_THUMBS.glob("*.jpg")}
         self.assertEqual(have, want)
 
+    def test_bundled_thumbs_match_the_repo_thumbs(self):
+        # A re-render keeps its file names, so a name check passes on stale
+        # art: 2.4.0 and 2.4.1 shipped Circuit Core's old thumbs this way.
+        stale = []
+        for w in self.walls:
+            fname = w["url"].rsplit("/", 1)[-1].rsplit(".", 1)[0] + ".jpg"
+            bundled = BUNDLED_THUMBS / fname
+            if bundled.exists() and bundled.read_bytes() != (THUMBS / fname).read_bytes():
+                stale.append(fname)
+        self.assertFalse(stale, "bundled thumbs differ from Wallpapers/thumbs "
+                                f"(run tools/sync_wallpaper_manifest.py): {stale}")
+
+
+def _cache_keys():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "check_wallpaper_cache_keys", ROOT / "tools" / "check_wallpaper_cache_keys.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+class CacheNameTests(unittest.TestCase):
+    """A re-render keeps its URL, so it must move to a new cache name.
+
+    The full check reads the release tags (tools/check_wallpaper_cache_keys.py,
+    a prepare_release gate); CI's shallow clone has none, so these pin the rule
+    and the walls 2.3.3 redrew without a stamp."""
+
+    def setUp(self):
+        self.mod = _cache_keys()
+        self.walls = json.loads(_read(MANIFEST))["wallpapers"]
+
+    def test_redraw_under_the_same_cache_name_is_caught(self):
+        history = [("2.3.2", {"w.png": ("old", "")}), ("2.4.1", {"w.png": ("new", "")})]
+        problems = self.mod.collisions({"w.png": ("new", "")}, history)
+        self.assertEqual(len(problems), 1)
+        self.assertIn("v2.3.2", problems[0])
+
+    def test_a_new_stamp_moves_the_cache_name(self):
+        history = [("2.3.2", {"w.png": ("old", "")}), ("2.4.1", {"w.png": ("new", "")})]
+        self.assertEqual(self.mod.collisions({"w.png": ("new", "2.3.3")}, history), [])
+
+    def test_a_stamp_reused_across_a_redraw_is_caught(self):
+        # 2.4.1+ apps cache under <since>-<file>; a redraw that keeps the stamp
+        # hits the copy downloaded under it.
+        history = [("2.4.1", {"w.png": ("old", "2.4.0")})]
+        self.assertEqual(len(self.mod.collisions({"w.png": ("new", "2.4.0")}, history)), 1)
+
+    def test_unchanged_pictures_need_no_stamp(self):
+        history = [("1.2.0", {"w.png": ("same", "")})]
+        self.assertEqual(self.mod.collisions({"w.png": ("same", "")}, history), [])
+
+    def test_the_tool_models_the_apps_cache_name(self):
+        src = _read(JAVA / "WallpaperCatalog.kt")
+        self.assertIn("since.filter { it.isLetterOrDigit() || it == '.' || it == '-' }", src)
+        self.assertIn('if (stamp.isEmpty()) cacheName else "$stamp-$cacheName"', src)
+        self.assertEqual(self.mod.store_name("a.png", "2.3.3", (2, 4, 2)), "2.3.3-a.png")
+        self.assertEqual(self.mod.store_name("a.png", "2.3.3", (2, 4, 0)), "a.png")
+
+    def test_walls_redrawn_in_2_3_3_carry_their_stamp(self):
+        # Redrawn in 2.3.3 (#299) with no stamp; devices kept the old pictures
+        # through 2.4.1.
+        redrawn = {"52 Shockwave", "97 Marquee Lights", "99 Projector Beam",
+                   "100 Neon Lounge", "101 Late Rentals", "102 Box Office"}
+        stamps = {w["name"]: w.get("since") for w in self.walls if w["name"] in redrawn}
+        self.assertEqual(stamps, {n: "2.3.3" for n in redrawn})
+
+    def test_release_runs_the_check(self):
+        self.assertIn('"tools/check_wallpaper_cache_keys.py"',
+                      _read(ROOT / "tools" / "prepare_release.py"))
+
 
 class Series6FileTests(unittest.TestCase):
     def setUp(self):

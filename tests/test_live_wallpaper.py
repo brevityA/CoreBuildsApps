@@ -92,6 +92,30 @@ class LoopCatalogueTests(unittest.TestCase):
             self.assertEqual(c.location, next(
                 e["location"] for e in feed if e["url_1080p"].endswith(f"{c.stem}.mp4")))
 
+    def test_revisions_are_the_committed_mp4s(self):
+        # The cache key's revision is the sha256 prefix of the file in
+        # Motion/live/. A re-render that is committed without re-running
+        # tools/build_live_loop_kt.py would ship the old key, and devices
+        # would keep playing the old animation: this is what catches it.
+        import sys
+        sys.path.insert(0, str(ROOT / "tools"))
+        from live_roster import ROSTER
+        revisions = re.findall(r'revision = "([^"]*)"', self.loops_body)
+        self.assertEqual(len(revisions), 48, "every loop carries a revision")
+        for rev in revisions:
+            self.assertRegex(rev, r"^[0-9a-f]{12}$")
+        self.assertEqual(revisions, [c.revision for c in ROSTER],
+                         "LiveLoop.kt revisions are stale: run tools/build_live_loop_kt.py")
+
+    def test_cache_name_carries_the_revision_and_export_name_does_not(self):
+        # Keyed on fileName alone, a loop downloaded before 2.4.0 re-rendered it
+        # kept playing the old animation. The Movies export keeps fileName.
+        self.assertIn('"$revision-$fileName"', self.src)
+        self.assertIn("fun isCopy(name: String): Boolean", self.src)
+        exporter = kt("WallpaperExporter.kt")
+        self.assertIn("copyFileToMovies(context, file, loop.fileName)", exporter)
+        self.assertNotIn("storeName", exporter)
+
     def test_no_test_pattern_clips_remain(self):
         # 01-10 were ffmpeg gradients/cellauto/mandelbrot/sierpinski with
         # Core Builds names on them; retired in 2.4.0 when Live became a
@@ -344,6 +368,20 @@ class EngineTests(unittest.TestCase):
         self.assertIn("Prefs.liveLoopId(applicationContext)", self.src)
         self.assertIn("LiveLoop.byId(", self.src)
 
+    def test_keeps_the_old_render_until_the_new_one_lands(self):
+        # The engine plays the current render or, failing that, an older copy
+        # of the same loop - never the still frame just because an update
+        # re-rendered the loop - and switches when a newer file appears.
+        self.assertIn("LiveLoopDownloader.playable(applicationContext, loop)", self.src)
+        self.assertNotIn("LiveLoopDownloader.cached(", self.src)
+        self.assertIn("next?.path != file?.path", self.src)
+
+    def test_the_engine_never_downloads(self):
+        # Nothing runs without a user action: the refresh belongs to opening
+        # Wallpapers, never to the wallpaper engine.
+        self.assertNotIn("fetch(", self.src)
+        self.assertNotIn("refreshActive", self.src)
+
     def test_no_dependency_needed(self):
         self.assertNotIn("com.google.android.exoplayer", self.src)
         self.assertNotIn("import com.google", self.src)
@@ -381,8 +419,27 @@ class DownloaderTests(unittest.TestCase):
     def test_never_evicts_the_active_loop(self):
         src = kt("LiveLoopDownloader.kt")
         trim = src.split("private fun trimCache(", 1)[1].split("\n    }\n", 1)[0]
-        self.assertIn("LiveLoop.byId(Prefs.liveLoopId(context)).fileName", trim)
-        self.assertIn("it.name != active", trim)
+        self.assertIn("LiveLoop.byId(Prefs.liveLoopId(context))", trim)
+        # Every copy of the active loop: the older render is what plays
+        # until the current one has downloaded.
+        self.assertIn("!active.isCopy(it.name)", trim)
+
+    def test_current_render_is_the_cache_key(self):
+        self.assertIn("cachedFile(context.applicationContext, loop.storeName)", self.src)
+        self.assertIn("fetchUrl(context, loop.url, loop.storeName, callback)", self.src)
+
+    def test_older_renders_are_dropped_once_the_current_one_lands(self):
+        trim = self.src.split("private fun trimCache(", 1)[1].split("\n    }\n", 1)[0]
+        self.assertIn("if (loop.storeName !in names) continue", trim)
+        self.assertIn("it != loop.storeName && loop.isCopy(it)", trim)
+
+    def test_the_active_loop_refreshes_when_wallpapers_opens(self):
+        refresh = self.src.split("fun refreshActive(", 1)[1].split("\n    }\n", 1)[0]
+        # Only when this app's live wallpaper is the one set, and only to
+        # replace an older copy that is actually playing.
+        self.assertIn("wallpaperInfo?.packageName == app.packageName", refresh)
+        self.assertIn("if (cached(app, loop) != null || playable(app, loop) == null) return", refresh)
+        self.assertIn("LiveLoopDownloader.refreshActive(this)", kt("WallpapersActivity.kt"))
 
     def test_coalesces_in_flight_requests(self):
         self.assertIn("ConcurrentHashMap", self.src)
