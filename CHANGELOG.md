@@ -31,6 +31,19 @@ All notable changes to the Core Builds Icon Pack. Format follows
   - Checked by rendering the home layout at 1920×1080 with 1.0×, 1.3× and 1.5×
     text. The other 12 screens already reflow inside their scroll views at
     1.3×.
+- **Download on the update bar works with the remote.** Pressing Download
+  greyed the button out while the APK came down, and Android moves the
+  remote's cursor off a greyed-out button. On a TV it jumped to Later, one
+  press from dismissing the update, and did not come back when the button
+  turned into Install. Only a phone touchpad could press it, because touch
+  mode never moves the cursor (reported from a Shield Pro, updating 2.4.1 to
+  2.4.2).
+  - The button now stays live and keeps the cursor. A second press while it
+    downloads does nothing, as About's update row already did.
+  - When the download finishes, the line under the title says to press
+    Install instead of showing the release highlight.
+  - This fixes updates from 2.4.3 on. To install 2.4.3 itself from 2.4.2 or
+    older with the remote, use About → Update.
 
 ## [2.4.2] — 2026-10-15
 
