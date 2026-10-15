@@ -54,6 +54,9 @@ class WallpapersActivity : TvActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wallpapers)
+        // Opening Wallpapers is the user action that fetches a newer render of
+        // the live loop the home screen is playing; the old one plays until then.
+        LiveLoopDownloader.refreshActive(this)
 
         all = WallpaperCatalog.load(this) + LiveLoop.asWallpapers()
         count = findViewById(R.id.wp_count)

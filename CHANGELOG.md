@@ -6,6 +6,25 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.4.2] — 2026-10-15
+
+### Fixed
+
+- **Re-rendered live loops play their new animation.** 2.4.0 re-rendered the
+  live loops under the file names they already had, and the loop cache was
+  keyed on the file name alone. A loop downloaded before 2.4.0 kept playing
+  its old animation, including in preview. Each loop now carries a revision
+  (the first 12 hex digits of its MP4's sha256), and the cache keys on it:
+  - Preview, **Set live** and **Save** download the current render once.
+  - The home screen keeps playing the older copy until the new one has
+    downloaded, then switches the next time it comes into view. It never
+    drops to the still frame for an update.
+  - Opening Wallpapers fetches the new render of the loop your home screen
+    plays, only when this app's live wallpaper is the one set and an older
+    copy is what plays.
+  - Older copies are deleted once the new one is in. Saved loops keep their
+    names in `Movies/CoreBuilds`.
+
 ## [2.4.1] — 2026-10-15
 
 ### Fixed
