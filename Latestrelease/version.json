@@ -1,6 +1,6 @@
 {
-  "versionCode": 54,
-  "versionName": "2.4.1",
+  "versionCode": 55,
+  "versionName": "2.4.2",
   "iconCount": 1002,
   "componentCount": 1241,
   "releaseDate": "2026-10-15",
@@ -8,8 +8,8 @@
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "9 new icons",
-    "Re-rendered wallpapers show their new art",
-    "VTM GO, CloudStream Beta and CRICFy TV pick up their icons"
+    "Re-rendered live loops play their new animation",
+    "Circuit Core thumbnails show the wallpapers they open",
+    "Six walls redrawn in 2.3.3 open their new picture"
   ]
 }
