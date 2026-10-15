@@ -102,6 +102,8 @@ dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+    // QR scanning for phone pairing: the Play services module needs no CAMERA permission.
+    implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
 
     testImplementation("junit:junit:4.13.2")
     // android.jar's org.json is a stub on the JVM ("not mocked"), so the

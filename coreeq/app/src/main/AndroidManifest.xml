@@ -113,6 +113,7 @@
         <activity
             android:name=".companion.PhoneCompanionActivity"
             android:exported="false"
+            android:windowSoftInputMode="adjustResize"
             android:label="@string/action_companion" />
 
         <activity

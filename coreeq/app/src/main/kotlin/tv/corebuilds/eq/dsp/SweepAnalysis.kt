@@ -43,7 +43,13 @@ data class SweepResult(
     /** T20 per octave, 125 Hz-2 kHz; null where that octave's decay did not stand clear of its noise. */
     val rt60ByOctave: Map<Double, Double?> = emptyMap(),
     /** The capture clock against the player's, from the timing markers; null when they were not found. */
-    val driftPpm: Double? = null
+    val driftPpm: Double? = null,
+    /**
+     * The highest frequency the correction reaches: [DspConstants.F_MAX], or lower when the
+     * capture's bandwidth ended early (an 8 kHz remote codec). Kept so seats can be combined
+     * ([SeatAverage]) without correcting past the edge of the narrowest one.
+     */
+    val fMaxHz: Double = DspConstants.F_MAX
 )
 
 /**
@@ -256,7 +262,8 @@ object SweepAnalysis {
             preampDb = Peaking.preampDb(filters),
             bandSnrDb = bandSnr,
             rt60ByOctave = octaves,
-            driftPpm = drift
+            driftPpm = drift,
+            fMaxHz = fMax
         )
     }
 

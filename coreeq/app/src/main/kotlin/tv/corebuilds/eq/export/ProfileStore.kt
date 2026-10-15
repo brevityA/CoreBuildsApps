@@ -6,10 +6,12 @@ import android.util.Log
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import tv.corebuilds.eq.dsp.CustomTarget
 import tv.corebuilds.eq.dsp.HardwarePresets
 import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.dsp.ManualEqPreset
 import tv.corebuilds.eq.dsp.PeakingFilter
+import tv.corebuilds.eq.dsp.TargetCurveImport
 import tv.corebuilds.eq.mode.ContentMode
 import tv.corebuilds.eq.mode.ContentModeStore
 import java.util.UUID
@@ -373,6 +375,20 @@ class ProfileStore(context: Context) {
                 }
             }
 
+            // Only an imported target carries its curve; a backup's points on any other
+            // target are ignored rather than kept and written back out.
+            val target = obj.optString("target", "dialogue")
+            val targetPoints = if (target != CustomTarget.KEY) emptyList() else {
+                val raw = mutableListOf<Pair<Double, Double>>()
+                obj.optJSONArray("target_points")?.let { a ->
+                    for (i in 0 until minOf(a.length(), 4 * (TargetCurveImport.MAX_POINTS + 1))) {
+                        val p = a.optJSONObject(i) ?: continue
+                        raw += p.optDouble("hz", Double.NaN) to p.optDouble("db", Double.NaN)
+                    }
+                }
+                TargetCurveImport.fromStored(raw)
+            }
+
             val capMap = mutableMapOf<String, String>()
             obj.optJSONObject("capability")?.let { c -> for (k in c.keys()) capMap[k] = c.optString(k, "") }
             val measurementNotes = mutableListOf<String>()
@@ -484,7 +500,7 @@ class ProfileStore(context: Context) {
                 id = obj.getString("id"),
                 name = obj.optString("name", "Unnamed room"),
                 timestampMs = obj.optLong("timestamp_ms", 0L),
-                target = obj.optString("target", "dialogue"),
+                target = target,
                 micType = obj.optString("microphone", "microphone"),
                 captureInfo = captureInfo,
                 repeatabilityCheck = repeatabilityCheck,
@@ -510,7 +526,8 @@ class ProfileStore(context: Context) {
                 outputName = obj.optJSONObject("output")?.let { o -> if (o.isNull("name")) null else o.optString("name") }
                     ?.takeIf { it.isNotBlank() },
                 manualFilters = ManualEq.sanitize(manualFiltersList),
-                manualOnly = obj.optBoolean("manual_only", false)
+                manualOnly = obj.optBoolean("manual_only", false),
+                targetPoints = targetPoints
             )
         }
     }
