@@ -116,6 +116,16 @@
     <string name="measure_repeat_changed">Measurement choices changed; the repeat comparison was cleared. Repeat again under the new target and room settings.</string>
     <string name="measure_repeat_unknown_output">Android did not report enough input/output route detail for both sweeps; treat this comparison as provisional.</string>
     <string name="measure_start_new">New sweep</string>
+    <string name="measure_refine_kicker">BEFORE YOU SAVE</string>
+    <string name="measure_refine_title">More seats, then a check</string>
+    <string name="measure_refine_sub">Add a seat: move the remote to another place a head goes and sweep again. Up to three seats are averaged, so a peak only one chair hears is cut less and the room\'s own are cut in full. Check: the sweep plays again through this correction and shows how close it lands to the target. Neither one saves.</string>
+    <string name="measure_add_seat_button">Add a seat (%1$d of %2$d)</string>
+    <string name="measure_check_button">Check correction</string>
+    <string name="measure_seats_summary">%1$d-seat energy average · bass lift still capped at %2$.0f dB below the transition, as for one seat</string>
+    <string name="measure_seats_left_out">Seat %1$d left out: from 300 Hz to 3 kHz it sat %2$.1f dB RMS from the other seats, where seats in one room normally agree within 1–2 dB (remote covered, turned away or behind something?). New sweep starts the seats again.</string>
+    <string name="measure_check_summary">Check · correction on · one position · %1$d bands · %2$.1f dB RMS from the target (room alone %3$.1f dB, predicted %4$.1f dB) · largest %5$+.1f dB at %6$s. Bands the correction leaves alone are not counted. Descriptive, not a pass/fail.</string>
+    <string name="measure_check_unscored">Check captured but not scored: too few trusted bands the two sweeps share. The correction is unchanged.</string>
+    <string name="measure_check_provisional">%1$s Treat this check as provisional.</string>
     <string name="measure_saved">Saved and made active: %1$s</string>
     <string name="measure_profile_name">Room · %1$s</string>
     <string name="measure_room_button">Room size: %1$s</string>

@@ -210,6 +210,75 @@
                     android:layout_marginTop="2dp" />
             </LinearLayout>
 
+            <!-- Before saving: average more seats, or check the correction. Shown once a
+                 sweep is on screen; in the rail because it scrolls, and the action row
+                 under the graph has no width left at 960dp. -->
+            <LinearLayout
+                android:id="@+id/card_refine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/cb_card_padding"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/cb_space_xs">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/measure_refine_kicker"
+                    android:textColor="@color/cb_success"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:fontFamily="monospace"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/measure_refine_title"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_label"
+                    android:textStyle="bold"
+                    android:layout_marginTop="2dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/measure_refine_sub"
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:layout_marginTop="2dp" />
+
+                <Button
+                    android:id="@+id/btn_measure_add_seat"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:background="@drawable/bg_ghost"
+                    android:textColor="@color/ghost_text"
+                    android:textSize="@dimen/cb_text_data"
+                    android:textAllCaps="false"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="@dimen/cb_space_sm"
+                    android:paddingEnd="@dimen/cb_space_sm"
+                    android:focusable="true"
+                    android:layout_marginTop="@dimen/cb_space_xs" />
+
+                <Button
+                    android:id="@+id/btn_measure_check"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:background="@drawable/bg_ghost"
+                    android:text="@string/measure_check_button"
+                    android:textColor="@color/ghost_text"
+                    android:textSize="@dimen/cb_text_data"
+                    android:textAllCaps="false"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="@dimen/cb_space_sm"
+                    android:paddingEnd="@dimen/cb_space_sm"
+                    android:focusable="true"
+                    android:layout_marginTop="@dimen/cb_space_xs" />
+            </LinearLayout>
+
             <!-- REW import (plan M10): measure elsewhere, correct here. -->
             <Button
                 android:id="@+id/btn_measure_import"

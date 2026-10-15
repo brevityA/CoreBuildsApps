@@ -74,8 +74,8 @@ saving. The TV suspends correction during the sweep and resumes it afterwards.
 The workflow records available route, sample-rate, device, and processing
 metadata, but cannot guarantee Android's selected route or processing state.
 Phone microphones are not presumed calibrated; their reported response is
-provenance only. This remains single-position: multi-position averaging is a
-research candidate, not an implemented feature.
+provenance only. Phone captures remain single-position: averaging several
+seats (§3) is on the TV's Measure screen only.
 
 ## 2. The screens
 
@@ -119,7 +119,12 @@ pink noise (20 s, deterministic) — cross-check and live RTA
               → capture bandwidth edge (from 2 kHz: under 10 dB SNR or 20 dB under the mids)
               → bands under 10 dB SNR are shown, not corrected
   → one capture at the user-selected listening position (head height, remote still)
-  → no multi-position averaging: it remains a research candidate and the saved profile is single-position
+  → optional: up to 3 seats (SeatAverage), each analysed like the first, then
+        energy mean per band (not a dB mean, so a one-chair dip cannot cancel a peak)
+        a seat > 4 dB RMS from the others' mean over 300 Hz–3 kHz is left out (3 seats only)
+        a band is corrected only where every seat measured it cleanly
+        nulls and roll-off re-read from the average; bass lift keeps the 2 dB single-seat cap
+        stops at the narrowest seat's bandwidth edge; phone captures stay single-position
   → measured vs target (Flat / B&K / Room / Olive / Dialogue / House)
   → room model
         transition  = min(2·f_s, 400 Hz), or 300 Hz when the room is unknown
@@ -136,6 +141,12 @@ pink noise (20 s, deterministic) — cross-check and live RTA
         → taper the edges → zero outside floor–8 kHz
   → collapse onto the device's own Equalizer bands (millibel-clamped)
   → fit 8 peaking filters for the parametric export (Q 0.4–4.0, spacing penalty)
+  → optional check sweep before saving (PostCorrectionCheck)
+        the sweep plays through this profile's correction on an audio session of its own
+        (DynamicsProcessing, protection limiter, no tone layers; the service stays suspended)
+        level-aligned over 300 Hz–3 kHz, residual vs target: room alone / predicted / heard
+        bands the correction leaves alone (nulls, gated, noisy, outside floor–edge) not counted
+        descriptive only, no pass/fail; the figures go into the profile's notes on Save
   → export: parametric .txt (Preamp + band limit + "Bands Overlap = Cascade")
             / GraphicEQ: / profile .json (transition, nulls, room, capability)
 ```
