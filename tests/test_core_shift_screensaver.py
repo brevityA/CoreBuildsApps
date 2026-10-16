@@ -1,4 +1,4 @@
-"""Contracts for Core Shift 2.3.5 screensaver + Overflight feed."""
+"""Contracts for the Core Shift screensaver + Overflight feed."""
 
 from __future__ import annotations
 
@@ -51,10 +51,13 @@ def test_screensaver_button_is_wired():
     assert 'android:id="@+id/btn_screensaver"' in layout
 
 
-def test_version_is_235():
+def test_version_matches_the_registry():
+    # Agreement with suite.json, not a literal: a test naming "the current
+    # release" fails for shipping the next one (it read 2.3.5 until 2.3.6).
+    suite = json.loads((ROOT / "suite.json").read_text(encoding="utf-8"))["apps"]["shift"]
     gradle = (ROOT / "shift/app/build.gradle.kts").read_text(encoding="utf-8")
-    assert 'versionName = "2.3.5"' in gradle
-    assert "versionCode = 11" in gradle
+    assert f'versionName = "{suite["versionName"]}"' in gradle
+    assert f'versionCode = {suite["versionCode"]}' in gradle
 
 
 def test_overflight_feed_merges_and_stays_https():
@@ -77,7 +80,7 @@ def main() -> int:
         test_playlist_prefers_local_then_cache_then_catalog,
         test_dream_has_no_media_session,
         test_screensaver_button_is_wired,
-        test_version_is_235,
+        test_version_matches_the_registry,
         test_overflight_feed_merges_and_stays_https,
     ]
     failed = 0
