@@ -44,7 +44,7 @@ AIOStreams paths and is not used as an arbitrary wallpaper relay.
 cd shift && ./gradlew :app:assembleDebug    # JDK 17 + Android SDK
 ```
 
-Standalone Gradle root, package `dev.corebuilds.shift`, version **2.3.5** (versionCode 11),
+Standalone Gradle root, package `dev.corebuilds.shift`, version **2.3.6** (versionCode 12),
 minSdk 26, target/compile 34, AGP 8.5.2 / Kotlin 1.9.24. Dependencies: appcompat,
 core-ktx, recyclerview, Media3 (ExoPlayer, UI, session).
 
