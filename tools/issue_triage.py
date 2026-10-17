@@ -66,7 +66,8 @@ NOT_APPLYING = (
     Field("The component name on YOUR device", kind="component"),
     Field("Device and OS"),
     Field("Launcher", kind="choice", options=(
-        "Projectivy", "Nova", "Lawnchair", "FLauncher", "Other")),
+        "Projectivy", "Monet", "AT4K", "Leanback on Fire", "L TV Launcher",
+        "ChillHub", "Nova", "Lawnchair", "Apex", "ADW", "FLauncher", "Other")),
     Field("Confirm", kind="ticks", checkboxes=2),
 )
 

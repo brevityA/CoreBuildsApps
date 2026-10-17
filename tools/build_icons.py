@@ -560,7 +560,9 @@ def main():
                  f'stroke="rgba(255,255,255,.06)"/>')
         s.append(f'<g transform="translate({cx + 33},{cy + 20}) '
                  f'scale({84 / 512})">{inner}</g>')
-        label = esc(i["name"])[:17]
+        # Cut the name, then escape it: cutting escaped text can end mid-entity
+        # ("Background Apps &amp; ..." -> "...Apps &") and break the SVG.
+        label = esc(i["name"][:17])
         s.append(f'<text x="{cx + cell / 2}" y="{cy + cell - 12}" '
                  f'fill="#8b949e" font-family="ui-monospace,monospace" '
                  f'font-size="10.5" text-anchor="middle">{label}</text>')

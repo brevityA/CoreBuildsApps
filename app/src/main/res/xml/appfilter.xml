@@ -230,6 +230,9 @@
     <item component="ComponentInfo{com.award.VPN/app.award.update.SplashActivity}" drawable="award_banner"/>
     <!-- Baby Einstein -->
     <item component="ComponentInfo{com.giant.babyeinstein/com.codes.ui.SplashActivity}" drawable="babyeinstein_banner"/>
+    <!-- Background Apps &amp; Processes -->
+    <item component="ComponentInfo{com.backgroundapps.v1.fm.ut.android/com.backgroundapps.v1.fm.ut.android.Activities.MainActivity}" drawable="background_apps_processes_banner"/>
+    <item component="ComponentInfo{com.backgroundapps.v1.fm.ut.android/.Activities.MainActivity}" drawable="background_apps_processes_banner"/>
     <!-- Background Apps And Process List -->
     <item component="ComponentInfo{io.github.visnkmr.bapl/io.github.visnkmr.bapl.MainActivity}" drawable="background_apps_and_process_list_banner"/>
     <item component="ComponentInfo{io.github.visnkmr.bapl/.MainActivity}" drawable="background_apps_and_process_list_banner"/>
@@ -320,6 +323,8 @@
     <item component="ComponentInfo{com.buzztv.iptv.tv/com.buzztv.iptv.MainActivity}" drawable="buzztv6_banner"/>
     <!-- ByeByeDPI -->
     <item component="ComponentInfo{io.github.romanvht.byedpi/io.github.dovecoteescapee.byedpi.activities.MainActivity}" drawable="byebyedpi_banner"/>
+    <item component="ComponentInfo{io.github.romanvht.byedpi/io.github.romanvht.byedpi.activities.MainActivity}" drawable="byebyedpi_banner"/>
+    <item component="ComponentInfo{io.github.romanvht.byedpi/.activities.MainActivity}" drawable="byebyedpi_banner"/>
     <!-- BYUtv -->
     <item component="ComponentInfo{org.byutv.android/org.byutv.android.MainActivity}" drawable="byutv_banner"/>
     <item component="ComponentInfo{org.byutv.android/.MainActivity}" drawable="byutv_banner"/>
@@ -487,6 +492,8 @@
     <item component="ComponentInfo{deezer.android.tv/com.deezer.android.ui.activity.LauncherActivity}" drawable="deezer_banner"/>
     <!-- Delta TV -->
     <item component="ComponentInfo{com.nowcast.deltatv/com.nowcasttv.SplashActivity}" drawable="deltatv_banner"/>
+    <!-- DELTA TV -->
+    <item component="ComponentInfo{com.nep.delta.tv/com.stoneroos.deltatv.main.MainActivity}" drawable="deltatv_nl_banner"/>
     <!-- Developer Tools -->
     <item component="ComponentInfo{com.roysolberg.android.developertools/com.roysolberg.android.developertools.ui.activity.MainActivity}" drawable="developer_tools_banner"/>
     <item component="ComponentInfo{com.roysolberg.android.developertools/.ui.activity.MainActivity}" drawable="developer_tools_banner"/>
@@ -625,6 +632,9 @@
     <!-- EchoGram -->
     <item component="ComponentInfo{com.liori.echogram/com.liori.echogram.MainActivity}" drawable="echogram_banner"/>
     <item component="ComponentInfo{com.liori.echogram/.MainActivity}" drawable="echogram_banner"/>
+    <!-- Eclipse -->
+    <item component="ComponentInfo{com.eclipse.android/com.eclipse.android.tv.TvActivity}" drawable="eclipse_banner"/>
+    <item component="ComponentInfo{com.eclipse.android/.tv.TvActivity}" drawable="eclipse_banner"/>
     <!-- Elefin -->
     <item component="ComponentInfo{com.flex.elefin/com.flex.elefin.MainActivity}" drawable="elefin_banner"/>
     <item component="ComponentInfo{com.flex.elefin/.MainActivity}" drawable="elefin_banner"/>
@@ -662,6 +672,8 @@
     <!-- ES-DE -->
     <item component="ComponentInfo{org.es_de.frontend/org.es_de.frontend.TvActivity}" drawable="es_de_frontend_banner"/>
     <item component="ComponentInfo{org.es_de.frontend/.TvActivity}" drawable="es_de_frontend_banner"/>
+    <!-- ESET Smart TV Security -->
+    <item component="ComponentInfo{com.eset.etvs.gp/com.eset.tv.next.main.presentation.EstvsMainActivity}" drawable="eset_smart_tv_security_banner"/>
     <!-- ESPN -->
     <item component="ComponentInfo{com.espn.score_center/com.espn.startup.presentation.StartupActivity}" drawable="score_center_banner"/>
     <!-- Eternal TV Divine -->
@@ -772,6 +784,9 @@
     <!-- Flix Vision -->
     <item component="ComponentInfo{flix.com.vision/flix.com.vision.activities.SplashScreenActivity}" drawable="flix_vision_banner"/>
     <item component="ComponentInfo{flix.com.vision/.activities.SplashScreenActivity}" drawable="flix_vision_banner"/>
+    <!-- Flixed -->
+    <item component="ComponentInfo{tv.flixed.app/tv.flixed.app.MainActivity}" drawable="flixed_banner"/>
+    <item component="ComponentInfo{tv.flixed.app/.MainActivity}" drawable="flixed_banner"/>
     <!-- FlixNest -->
     <item component="ComponentInfo{hu.kinetik.streamapp/hu.kinetik.streamapp.MainActivity}" drawable="flixnest_banner"/>
     <item component="ComponentInfo{hu.kinetik.streamapp/.MainActivity}" drawable="flixnest_banner"/>
@@ -1768,6 +1783,9 @@
     <!-- Polsat Box Go -->
     <item component="ComponentInfo{pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.mobile.launch.LaunchActivity}" drawable="polsat_box_go_banner"/>
     <item component="ComponentInfo{pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.tv.launch.TvLaunchActivity}" drawable="polsat_box_go_banner"/>
+    <!-- Porter -->
+    <item component="ComponentInfo{eu.darken.porter/eu.darken.porter.manager.MainActivity}" drawable="porter_banner"/>
+    <item component="ComponentInfo{eu.darken.porter/.manager.MainActivity}" drawable="porter_banner"/>
     <!-- Poweramp Equalizer -->
     <item component="ComponentInfo{com.maxmpz.equalizer/com.maxmpz.equalizer.StartupActivity}" drawable="poweramp_eq_banner"/>
     <item component="ComponentInfo{com.maxmpz.equalizer/.StartupActivity}" drawable="poweramp_eq_banner"/>
@@ -2626,6 +2644,9 @@
     <item component="ComponentInfo{com.tcl.usercenter/.activity.WelActivity}" drawable="user_center_banner"/>
     <!-- UStreme -->
     <item component="ComponentInfo{com.maz.tvod169/com.maz.activities.ViewerLaunchActivity}" drawable="tvod169_banner"/>
+    <!-- VAX Player -->
+    <item component="ComponentInfo{com.vaapp.app/com.vaapp.app.MainActivityAlt}" drawable="vax_player_banner"/>
+    <item component="ComponentInfo{com.vaapp.app/.MainActivityAlt}" drawable="vax_player_banner"/>
     <!-- VBTV -->
     <item component="ComponentInfo{dce.fivb.volleyballtv/com.applicaster.ui.activities.MainActivity}" drawable="vbtv_banner"/>
     <!-- Veezie -->
@@ -2771,6 +2792,8 @@
     <!-- Weyd Player -->
     <item component="ComponentInfo{app.weyd.player/app.weyd.player.ui.SplashScreenActivity}" drawable="weyd_2_banner"/>
     <item component="ComponentInfo{app.weyd.player/.ui.SplashScreenActivity}" drawable="weyd_2_banner"/>
+    <item component="ComponentInfo{app.weyd.player/app.weyd.player.ui.splashscreen.SplashScreenActivity}" drawable="weyd_2_banner"/>
+    <item component="ComponentInfo{app.weyd.player/.ui.splashscreen.SplashScreenActivity}" drawable="weyd_2_banner"/>
     <!-- Whale TV -->
     <item component="ComponentInfo{com.rlaxxtv.tvapp.atv/com.rlaxxtv.tvapp.MainActivity}" drawable="rlaxxtv_banner"/>
     <!-- Wholphin -->

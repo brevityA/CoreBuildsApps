@@ -16,8 +16,8 @@
       "legacyApk": "app-release.apk",
       "metadata": "Latestrelease/version.json",
       "section": "icon-pack",
-      "iconCount": 1002,
-      "componentCount": 1241
+      "iconCount": 1009,
+      "componentCount": 1250
     },
     "line": {
       "name": "Core Line",
