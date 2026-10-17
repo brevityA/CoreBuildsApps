@@ -6,6 +6,50 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **7 new icons.** Flixed (#323), Background Apps & Processes (#325), Eclipse
+  (#329, #331), Porter (#330), DELTA TV (#332), ESET Smart TV Security (#334)
+  and VAX Player (#335). Each is a new original mark, and each component was
+  reported by the pack's Missing icons scanner. Eclipse was reported on two
+  TVs; the others on one.
+  - Each takes the colour sampled from its own icon: the Google Play listing
+    (Background Apps & Processes, DELTA TV, ESET), the app's site (Flixed,
+    Eclipse), its GitHub repository (Porter) or the TV banner inside its APK
+    (VAX Player).
+  - Two names were already in use. Background Apps & Processes
+    (`com.backgroundapps.v1.fm.ut.android`) is a different app from
+    Background Apps And Process List. DELTA TV (`com.nep.delta.tv`) is
+    likewise different from Delta TV (`com.nowcast.deltatv`).
+  - VAX Player maps only `com.vaapp.app.MainActivityAlt`, the alias the
+    reporting TV opened. The APK linked in #335 declares `MainActivity` as
+    its launch activity, but no device has reported it, and the pack's
+    unverified-mapping ceiling only moves down. A TV that opens it will list
+    VAX Player under Missing icons, and one report adds it.
+  - VAX Player's first draft, a play outline with a V inside, matched Nuvio
+    and IPTV3U at 0.82–0.83 alpha IoU. It is now an open V holding a solid
+    play triangle. The closest match to any of the seven new icons in the
+    built pack is now 0.694 (VAX Player and Voltra TV).
+  - 1002 → 1009 icons, 1241 → 1250 components.
+
+### Fixed
+
+- **Weyd and ByeByeDPI icons apply on current builds.** Both apps moved
+  their launch activity, so the pack's mapping no longer matched:
+  - Weyd now launches
+    `app.weyd.player.ui.splashscreen.SplashScreenActivity` (#327).
+  - ByeByeDPI now launches
+    `io.github.romanvht.byedpi.activities.MainActivity`, out of the
+    `dovecoteescapee` namespace (#324, #333).
+
+  The old components stay for older builds.
+- **Not-applying reports from Monet users are accepted.** The report form
+  offers 12 launchers, but the auto-reply only accepted 5, so a report
+  naming Monet, AT4K, Leanback on Fire, L TV Launcher, ChillHub, Apex or ADW
+  got `needs-info` (#333). The checker now accepts all 12. Its drift test now
+  compares the two lists both ways. The old test only checked that the
+  checker's options appeared in the form.
+
 ## [2.4.3] — 2026-10-15
 
 ### Fixed

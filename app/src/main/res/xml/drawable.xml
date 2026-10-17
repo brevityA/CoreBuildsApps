@@ -25,6 +25,7 @@
     <item drawable="filmrise_banner" />
     <item drawable="platform_banner" />
     <item drawable="flix_vision_banner" />
+    <item drawable="flixed_banner" />
     <item drawable="androidtv_4_banner" />
     <item drawable="justwatch_banner" />
     <item drawable="androidtv_5_banner" />
@@ -119,6 +120,7 @@
     <category title="Banners · Live TV" />
     <item drawable="xtreamplayeranddownloader_banner" />
     <item drawable="buzztv6_banner" />
+    <item drawable="deltatv_nl_banner" />
     <item drawable="iptv3u_banner" />
     <item drawable="drama_live_banner" />
     <item drawable="eternaltviptvbox_banner" />
@@ -184,6 +186,7 @@
     <item drawable="tg4_player_banner" />
     <item drawable="tubplayer_banner" />
     <item drawable="tvi_player_banner" />
+    <item drawable="vax_player_banner" />
     <item drawable="vimu_banner" />
     <item drawable="vlc_banner" />
     <item drawable="vstro_player_banner" />
@@ -209,6 +212,7 @@
     <item drawable="launchsounds_banner" />
     <item drawable="deezer_banner" />
     <item drawable="dsaudio_banner" />
+    <item drawable="eclipse_banner" />
     <item drawable="fmradio_banner" />
     <item drawable="clearchannel_banner" />
     <item drawable="kfandroid_banner" />
@@ -344,6 +348,7 @@
     <item drawable="fastest_banner" />
     <item drawable="apktime_banner" />
     <item drawable="atvtools_banner" />
+    <item drawable="background_apps_processes_banner" />
     <item drawable="buttonmappertv_banner" />
     <item drawable="developer_tools_banner" />
     <item drawable="download_navi_banner" />
@@ -351,6 +356,7 @@
     <item drawable="dr_nettools_banner" />
     <item drawable="dsfinder_banner" />
     <item drawable="dsget_banner" />
+    <item drawable="eset_smart_tv_security_banner" />
     <item drawable="fasttaskkiller_banner" />
     <item drawable="playstore_2_banner" />
     <item drawable="ip_address_banner" />
@@ -367,6 +373,7 @@
     <item drawable="nuyowifianalyzer_banner" />
     <item drawable="remote_capture_banner" />
     <item drawable="pmx_banner" />
+    <item drawable="porter_banner" />
     <item drawable="quickbars_for_home_assistant_banner" />
     <item drawable="ram_banner" />
     <item drawable="dinhlap_banner" />

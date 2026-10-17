@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 1002
+    "count": 1009
   },
   "icons": [
     {
@@ -1409,10 +1409,11 @@
       "color": "#09457F",
       "glyph": "byedpi_dove",
       "components": [
-        "io.github.romanvht.byedpi/io.github.dovecoteescapee.byedpi.activities.MainActivity"
+        "io.github.romanvht.byedpi/io.github.dovecoteescapee.byedpi.activities.MainActivity",
+        "io.github.romanvht.byedpi/io.github.romanvht.byedpi.activities.MainActivity"
       ],
       "category": "APP",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "mapping_source": "Projectivy Icon Pack 1.1.9 (io.github.dovecoteescapee.byedpi.activities.MainActivity); issues #324 (haierATV, Android 11, pack 2.4.0) and #333 (4K Android TV Box, Android 14, pack 2.4.2, Monet), both device-reported via the pack's Missing icons scanner: current ByeByeDPI builds launch io.github.romanvht.byedpi.activities.MainActivity, the class moved out of the dovecoteescapee namespace",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for io.github.romanvht.byedpi): dominant brand accent #09457F (2026-09-26)",
       "color_reviewed": "2026-09-26",
       "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for io.github.romanvht.byedpi (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)",
@@ -12651,13 +12652,15 @@
       "color": "#6C5CE7",
       "glyph": "weyd_mark",
       "components": [
-        "app.weyd.player/app.weyd.player.ui.SplashScreenActivity"
+        "app.weyd.player/app.weyd.player.ui.SplashScreenActivity",
+        "app.weyd.player/app.weyd.player.ui.splashscreen.SplashScreenActivity"
       ],
       "category": "STREAM",
       "brand": "weyd",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null,
-      "style": "core_monoline"
+      "style": "core_monoline",
+      "mapping_source": "pre-provenance (app.weyd.player.ui.SplashScreenActivity); issue #327 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.4.2, 2026-10-16): current Weyd builds launch app.weyd.player.ui.splashscreen.SplashScreenActivity"
     },
     {
       "name": "Wholphin",
@@ -14145,6 +14148,107 @@
       "color_source": "sampled from the Google Play launcher icon (be.goplay.app): the tile's #FF4052 (2026-10-15)",
       "color_reviewed": null,
       "glyph_source": "original Core monoline mark: a play triangle split into two stacked halves - the two rows of the stacked wordmark, without its letters; no vendor art traced (2026-10-15)"
+    },
+    {
+      "name": "Flixed",
+      "drawable": "flixed",
+      "color": "#303888",
+      "glyph": "flixed_cat",
+      "components": [
+        "tv.flixed.app/tv.flixed.app.MainActivity"
+      ],
+      "category": "STREAM",
+      "mapping_source": "issue #323 (device-reported via the pack's Missing icons scanner on onn. 4K Plus Streaming, Android 14, pack 2.4.2, 2026-10-15): tv.flixed.app/tv.flixed.app.MainActivity is the activity the launcher opened for Flixed on that device; download page flixed.to/apk. Not confirmed on a second TV",
+      "color_source": "sampled from the app's launcher icon (flixed.to/icon.png): the tile's indigo #303888 (2026-10-17)",
+      "color_reviewed": "2026-10-17",
+      "glyph_source": "original Core monoline mark: a cat-eared ghost head with two tall oval eyes - the app's mascot reduced to its silhouette; no vendor art traced (2026-10-17)"
+    },
+    {
+      "name": "Background Apps & Processes",
+      "drawable": "background_apps_processes",
+      "banner_name": "Apps & Processes",
+      "color": "#0888E8",
+      "glyph": "bgprocesses_stack",
+      "components": [
+        "com.backgroundapps.v1.fm.ut.android/com.backgroundapps.v1.fm.ut.android.Activities.MainActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #325 (device-reported via the pack's Missing icons scanner on onn. Full HD Streaming Device, Android 14, pack 2.4.2, 2026-10-15): com.backgroundapps.v1.fm.ut.android/com.backgroundapps.v1.fm.ut.android.Activities.MainActivity is the activity the launcher opened for Background Apps and Processes on that device. A different app from Background Apps And Process List (io.github.visnkmr.bapl). Not confirmed on a second TV",
+      "color_source": "sampled from the Google Play launcher icon (com.backgroundapps.v1.fm.ut.android): the gear card's blue #0888E8 (2026-10-17)",
+      "color_reviewed": "2026-10-17",
+      "glyph_source": "original Core monoline mark: a card with a gear on it and two shorter cards stacked behind - work running in the background; no vendor art traced (2026-10-17)"
+    },
+    {
+      "name": "Eclipse",
+      "drawable": "eclipse",
+      "color": "#E05040",
+      "glyph": "eclipse_vinyl",
+      "components": [
+        "com.eclipse.android/com.eclipse.android.tv.TvActivity"
+      ],
+      "category": "MUSIC",
+      "mapping_source": "issues #329 (Google TV Streamer, Android 14, pack 2.4.2, Projectivy) and #331 (BRAVIA 4K VH21, Android 12, pack 2.4.2, Monet), both device-reported via the pack's Missing icons scanner, 2026-10-16: com.eclipse.android/com.eclipse.android.tv.TvActivity is the activity both launchers opened for Eclipse; site eclipsemusic.app",
+      "color_source": "sampled from the app's icon (eclipsemusic.app/img/icon.png): the eclipsed sun's red-orange #E05040 (2026-10-17)",
+      "color_reviewed": "2026-10-17",
+      "glyph_source": "original Core monoline mark: a record passing in front of a sun - a solid crescent beside a disc with its label and one groove; no vendor art traced (2026-10-17)"
+    },
+    {
+      "name": "Porter",
+      "drawable": "porter",
+      "color": "#48E088",
+      "glyph": "porter_key",
+      "components": [
+        "eu.darken.porter/eu.darken.porter.manager.MainActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #330 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, pack 2.4.2, 2026-10-16): eu.darken.porter/eu.darken.porter.manager.MainActivity is the activity the launcher opened for Porter on that device; source github.com/d4rken-org/porter. Not confirmed on a second TV",
+      "color_source": "sampled from the launcher icon in github.com/d4rken-org/porter: the mascot's green #48E088 (2026-10-17)",
+      "color_reviewed": "2026-10-17",
+      "glyph_source": "original Core monoline mark: a key whose bow holds a keyhole - system access, and the keyhole that stands in for the O of the wordmark; no vendor art traced (2026-10-17)"
+    },
+    {
+      "name": "DELTA TV",
+      "drawable": "deltatv_nl",
+      "color": "#0080C0",
+      "glyph": "deltatv_arcs",
+      "components": [
+        "com.nep.delta.tv/com.stoneroos.deltatv.main.MainActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "issue #332 (device-reported via the pack's Missing icons scanner on Box R 4K Plus, Android 14, pack 2.4.2, Projectivy, 2026-10-16): com.nep.delta.tv/com.stoneroos.deltatv.main.MainActivity is the activity the launcher opened for DELTA TV on that device. A different app from Delta TV (com.nowcast.deltatv). Not confirmed on a second TV",
+      "color_source": "sampled from the Google Play launcher icon (com.nep.delta.tv): the tile's blue #0080C0 (2026-10-17)",
+      "color_reviewed": "2026-10-17",
+      "glyph_source": "original Core monoline mark: a capital D with three signal arcs fanning up from its foot - the provider's initial and its broadcast cue; no vendor art traced (2026-10-17)"
+    },
+    {
+      "name": "ESET Smart TV Security",
+      "drawable": "eset_smart_tv_security",
+      "banner_name": "ESET Smart TV",
+      "color": "#0090A0",
+      "glyph": "esetsmarttv_shield",
+      "components": [
+        "com.eset.etvs.gp/com.eset.tv.next.main.presentation.EstvsMainActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #334 (device-reported via the pack's Missing icons scanner on 4K Android TV Box, Android 14, pack 2.4.2, 2026-10-17): com.eset.etvs.gp/com.eset.tv.next.main.presentation.EstvsMainActivity is the activity the launcher opened for ESET Smart TV Security on that device; Play listing play.google.com/store/apps/details?id=com.eset.etvs.gp. Not confirmed on a second TV",
+      "color_source": "sampled from the Google Play launcher icon (com.eset.etvs.gp): the outline's teal #0090A0 (2026-10-17)",
+      "color_reviewed": "2026-10-17",
+      "glyph_source": "original Core monoline mark: a television whose top-right corner gives way to a shield - the screen, protected; no vendor art traced (2026-10-17)",
+      "name_source": "Google Play listing title for com.eset.etvs.gp; the request named it Smart TV Security (2026-10-17)"
+    },
+    {
+      "name": "VAX Player",
+      "drawable": "vax_player",
+      "color": "#20B8A8",
+      "glyph": "vax_play",
+      "components": [
+        "com.vaapp.app/com.vaapp.app.MainActivityAlt"
+      ],
+      "category": "PLAYER",
+      "mapping_source": "issue #335 (device-reported via the pack's Missing icons scanner on 4K Android TV Box, Android 14, pack 2.4.2, 2026-10-17): com.vaapp.app/com.vaapp.app.MainActivityAlt is the activity the launcher opened for VAX Player on that device. The APK the request links (github.com/youngbi/vaxapp, release NewUpdate) declares com.vaapp.app.MainActivity as its launch activity; it is not mapped, because no device has reported it and the unverified ceiling only moves down. Not confirmed on a second TV",
+      "color_source": "sampled from the TV banner inside the linked APK: the play mark's teal #20B8A8 (2026-10-17)",
+      "color_reviewed": "2026-10-17",
+      "glyph_source": "original Core monoline mark: an open V with a solid play triangle resting in its crook - the player's initial holding its action; no vendor art traced (2026-10-17)"
     }
   ],
   "artwork": {

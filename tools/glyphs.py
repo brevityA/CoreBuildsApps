@@ -9204,3 +9204,89 @@ GLYPHS.update({"rectv_viewfinder": rectv_viewfinder, "vega_star": vega_star,
                "tvcalibration_card": tvcalibration_card,
                "universalmanager_braces": universalmanager_braces,
                "goplay_split": goplay_split})
+
+
+# Issue batch 2026-10-17 (#323, #325, #329-#332, #334, #335): seven requested
+# apps, each drawn from its subject in Core stroke geometry; no vendor art
+# traced.
+def flixed_cat(c):
+    """Flixed: a cat-eared ghost head with two tall oval eyes - the app's
+    mascot reduced to its silhouette."""
+    return (f'<path d="M 256 432 C 148 432 96 388 96 304 C 96 244 108 204 124 176 '
+            f'L 136 84 Q 140 68 154 76 L 214 120 C 240 112 272 112 298 120 '
+            f'L 358 76 Q 372 68 376 84 L 388 176 C 404 204 416 244 416 304 '
+            f'C 416 388 364 432 256 432 Z" {_s(c, 32)}/>'
+            f'<ellipse cx="204" cy="292" rx="26" ry="42" {_f(c)}/>'
+            f'<ellipse cx="308" cy="292" rx="26" ry="42" {_f(c)}/>')
+
+
+def eclipse_vinyl(c):
+    """Eclipse: a record passing in front of a sun - the sun is the solid
+    crescent left showing beside the disc, held off the record's rim by a
+    gap; the record has its label and one groove."""
+    return (f'<path d="M 202.6 116.6 A 140 140 0 0 0 202.6 395.4 '
+            f'A 170 170 0 0 1 202.6 116.6 Z" {_f(c)}/>'
+            f'<circle cx="300" cy="256" r="140" {_s(c, 32)}/>'
+            f'<path d="M 300 164 A 92 92 0 0 1 392 256" {_s(c, 21.8)}/>'
+            f'<circle cx="300" cy="256" r="36" {_s(c, 26.2)}/>')
+
+
+def porter_key(c):
+    """Porter: a key whose bow holds a keyhole - system access, the app's
+    subject, and the keyhole that stands in for a letter in its name."""
+    return (f'<circle cx="168" cy="168" r="84" {_s(c, 32)}/>'
+            f'<circle cx="168" cy="152" r="22" {_f(c)}/>'
+            f'<path d="M 158 166 L 150 208 L 186 208 L 178 166 Z" {_f(c)}/>'
+            f'<path d="M 228 228 L 424 424" {_s(c, 32)}/>'
+            f'<path d="M 344 344 L 300 388 M 392 392 L 356 428" {_s(c, 26.2)}/>')
+
+
+def deltatv_arcs(c):
+    """DELTA TV: a capital D with three signal arcs fanning up and out from
+    its foot - the provider's initial and its broadcast cue."""
+    arcs = "".join(
+        f'<path d="M {264 - r} 360 A {r} {r} 0 0 1 {264 - r / 2:g} {360 - r * 0.866:.0f}" '
+        f'{_s(c, 26.2)}/>' for r in (64, 120, 176))
+    return (f'<path d="M 264 168 L 312 168 A 96 96 0 0 1 312 360 L 264 360 Z" {_s(c, 32)}/>'
+            + arcs)
+
+
+def esetsmarttv_shield(c):
+    """ESET Smart TV Security: a television whose top-right corner gives way
+    to a shield - the screen, protected."""
+    return (f'<path d="M 272 152 L 112 152 A 40 40 0 0 0 72 192 L 72 352 '
+            f'A 40 40 0 0 0 112 392 L 352 392 A 40 40 0 0 0 392 352 L 392 284" {_s(c, 32)}/>'
+            f'<path d="M 368 88 L 432 112 L 432 172 C 432 212 404 236 368 252 '
+            f'C 332 236 304 212 304 172 L 304 112 Z" {_s(c, 26.2)}/>'
+            f'<path d="M 176 432 L 336 432" {_s(c, 26.2)}/>')
+
+
+def bgprocesses_stack(c):
+    """Background Apps & Processes: a card with a gear on it and two shorter
+    cards stacked behind - work running in the background."""
+    pts = []
+    for i in range(8):
+        a = math.radians(i * 45)
+        for da, r in ((-18, 48), (-10, 68), (10, 68), (18, 48)):
+            t = a + math.radians(da)
+            pts.append(f"{256 + r * math.cos(t):.1f} {304 + r * math.sin(t):.1f}")
+    gear = "M " + " L ".join(pts) + " Z"
+    return (f'<path d="M 216 88 L 296 88" {_s(c, 26.2)}/>'
+            f'<path d="M 176 136 L 336 136" {_s(c, 26.2)}/>'
+            f'<rect x="112" y="184" width="288" height="240" rx="36" {_s(c, 32)}/>'
+            f'<path d="{gear}" {_s(c, 21.8)}/>'
+            f'<circle cx="256" cy="304" r="18" {_s(c, 21.8)}/>')
+
+
+def vax_play(c):
+    """VAX Player: an open V with a solid play triangle resting in its crook -
+    the player's initial holding its action. Not a play triangle with a V on
+    it: that outline matched Nuvio's and IPTV3U's at 0.82-0.83 alpha IoU."""
+    return (f'<path d="M 104 112 L 256 408 L 408 112" {_s(c, 32)}/>'
+            f'<path d="M 220 128 L 300 176 L 220 224 Z" {_f(c)}/>')
+
+
+GLYPHS.update({"flixed_cat": flixed_cat, "eclipse_vinyl": eclipse_vinyl,
+               "porter_key": porter_key, "deltatv_arcs": deltatv_arcs,
+               "esetsmarttv_shield": esetsmarttv_shield,
+               "bgprocesses_stack": bgprocesses_stack, "vax_play": vax_play})

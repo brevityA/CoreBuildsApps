@@ -25,6 +25,7 @@
     <item drawable="filmrise" />
     <item drawable="platform" />
     <item drawable="flix_vision" />
+    <item drawable="flixed" />
     <item drawable="androidtv_4" />
     <item drawable="justwatch" />
     <item drawable="androidtv_5" />
@@ -119,6 +120,7 @@
     <category title="Square · Live TV" />
     <item drawable="xtreamplayeranddownloader" />
     <item drawable="buzztv6" />
+    <item drawable="deltatv_nl" />
     <item drawable="iptv3u" />
     <item drawable="drama_live" />
     <item drawable="eternaltviptvbox" />
@@ -184,6 +186,7 @@
     <item drawable="tg4_player" />
     <item drawable="tubplayer" />
     <item drawable="tvi_player" />
+    <item drawable="vax_player" />
     <item drawable="vimu" />
     <item drawable="vlc" />
     <item drawable="vstro_player" />
@@ -209,6 +212,7 @@
     <item drawable="launchsounds" />
     <item drawable="deezer" />
     <item drawable="dsaudio" />
+    <item drawable="eclipse" />
     <item drawable="fmradio" />
     <item drawable="clearchannel" />
     <item drawable="kfandroid" />
@@ -344,6 +348,7 @@
     <item drawable="fastest" />
     <item drawable="apktime" />
     <item drawable="atvtools" />
+    <item drawable="background_apps_processes" />
     <item drawable="buttonmappertv" />
     <item drawable="developer_tools" />
     <item drawable="download_navi" />
@@ -351,6 +356,7 @@
     <item drawable="dr_nettools" />
     <item drawable="dsfinder" />
     <item drawable="dsget" />
+    <item drawable="eset_smart_tv_security" />
     <item drawable="fasttaskkiller" />
     <item drawable="playstore_2" />
     <item drawable="ip_address" />
@@ -367,6 +373,7 @@
     <item drawable="nuyowifianalyzer" />
     <item drawable="remote_capture" />
     <item drawable="pmx" />
+    <item drawable="porter" />
     <item drawable="quickbars_for_home_assistant" />
     <item drawable="ram" />
     <item drawable="dinhlap" />
