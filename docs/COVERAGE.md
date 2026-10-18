@@ -5,21 +5,21 @@
 
 # Coverage and mapping reliability
 
-Generated: 2026-10-12 · pack v2.3.3 · tracker live since 2026-09-21
+Generated: 2026-10-18 · pack v2.4.3 · tracker live since 2026-09-21
 
 ## Headline
 
-- **40** distinct apps reported since the tracker went live; **22** are in the pack now
-- **8/9** closed not-applying reports have the **exact reported component** shipped now (first-fix rate)
-- Median resolution: **1.0 days** on icon requests, **0.7 days** on not-applying (worst 6.1 days)
-- Open backlog: **5** requests, **1** not-applying
+- **71** distinct apps reported since the tracker went live; **40** are in the pack now
+- **9/10** closed not-applying reports have the **exact reported component** shipped now (first-fix rate)
+- Median resolution: **0.8 days** on icon requests, **0.6 days** on not-applying (worst 6.1 days)
+- Open backlog: **15** requests, **5** not-applying
 
 ## Icon requests
 
 | Closed | Count |
 | --- | --- |
-| MAPPED | 18 |
-| NOT-MAPPED | 13 |
+| MAPPED | 36 |
+| NOT-MAPPED | 15 |
 
 A request counts as MAPPED only when its package (from the component, or a Play store link's `id=`) is in the bundled appfilter; a label hit is reported as NAME-MATCH and never counted.
 
@@ -36,22 +36,37 @@ A request counts as MAPPED only when its package (from the component, or a Play 
 | [256](https://github.com/brevityA/CoreBuildsApps/issues/256) | HBO Max | `com.wbd.hbomax/com.wbd.beam.BeamActivity` | EXACT | 1.7 |
 | [286](https://github.com/brevityA/CoreBuildsApps/issues/286) | waipu.tv | `de.exaring.waipu/de.exaring.waipu.MainActivity` | EXACT | 0.7 |
 | [288](https://github.com/brevityA/CoreBuildsApps/issues/288) | Nuvio | `com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault` | EXACT | 0.3 |
+| [308](https://github.com/brevityA/CoreBuildsApps/issues/308) | VTM GO | `be.vmma.vtm.zenderapp/be.persgroep.vtmgo.VtmGoMainActivity` | EXACT | 0.5 |
 
 By launcher (the form's Launcher field, device-line fallback):
 
 | Launcher | Closed | Exact component fixed |
 | --- | --- | --- |
 | Other | 4 | 4 |
-| Projectivy | 4 | 4 |
+| Projectivy | 5 | 5 |
 | Unstated | 1 | 0 |
 
 ## Open backlog
 
 | # | App | Kind | Age (days) | Component |
 | --- | --- | --- | --- | --- |
-| [290](https://github.com/brevityA/CoreBuildsApps/issues/290) | AIOStreams | request | 1 | `` |
-| [291](https://github.com/brevityA/CoreBuildsApps/issues/291) | MovieBoxTV | request | 1 | `` |
-| [292](https://github.com/brevityA/CoreBuildsApps/issues/292) | ITVX | not applying | 1 | `` |
-| [293](https://github.com/brevityA/CoreBuildsApps/issues/293) | AIOStreams | request | 1 | `io.github.viren070.aiostreams/io.github.viren070.aiostreams.MainActivity` |
-| [294](https://github.com/brevityA/CoreBuildsApps/issues/294) | MovieBoxTV | request | 1 | `com.community.mbox.tv/com.transsion.subroom.activity.SplashActivity` |
-| [296](https://github.com/brevityA/CoreBuildsApps/issues/296) | Nuyo Device Info | request | 0 | `com.roysolberg.android.deviceinfo/com.roysolberg.android.deviceinfo.ui.MainActivity` |
+| [292](https://github.com/brevityA/CoreBuildsApps/issues/292) | ITVX | not applying | 7 | `` |
+| [323](https://github.com/brevityA/CoreBuildsApps/issues/323) | Flixed | request | 2 | `tv.flixed.app/tv.flixed.app.MainActivity` |
+| [324](https://github.com/brevityA/CoreBuildsApps/issues/324) | ByeByeDPI | not applying | 2 | `io.github.romanvht.byedpi/io.github.romanvht.byedpi.activities.MainActivity` |
+| [325](https://github.com/brevityA/CoreBuildsApps/issues/325) | Background Apps and Processes | request | 2 | `com.backgroundapps.v1.fm.ut.android/com.backgroundapps.v1.fm.ut.android.Activities.MainActivity` |
+| [327](https://github.com/brevityA/CoreBuildsApps/issues/327) | weyd | not applying | 2 | `app.weyd.player/app.weyd.player.ui.splashscreen.SplashScreenActivity` |
+| [329](https://github.com/brevityA/CoreBuildsApps/issues/329) | Eclipse | request | 2 | `com.eclipse.android/com.eclipse.android.tv.TvActivity` |
+| [330](https://github.com/brevityA/CoreBuildsApps/issues/330) | Porter | request | 2 | `eu.darken.porter/eu.darken.porter.manager.MainActivity` |
+| [331](https://github.com/brevityA/CoreBuildsApps/issues/331) | Eclipse | request | 2 | `com.eclipse.android/com.eclipse.android.tv.TvActivity` |
+| [332](https://github.com/brevityA/CoreBuildsApps/issues/332) | DELTA TV | request | 2 | `com.nep.delta.tv/com.stoneroos.deltatv.main.MainActivity` |
+| [333](https://github.com/brevityA/CoreBuildsApps/issues/333) | ByeByeDPI | not applying | 1 | `io.github.romanvht.byedpi/io.github.romanvht.byedpi.activities.MainActivity` |
+| [334](https://github.com/brevityA/CoreBuildsApps/issues/334) | Smart TV Security | request | 1 | `com.eset.etvs.gp/com.eset.tv.next.main.presentation.EstvsMainActivity` |
+| [335](https://github.com/brevityA/CoreBuildsApps/issues/335) | VAX Player | request | 1 | `com.vaapp.app/com.vaapp.app.MainActivityAlt` |
+| [337](https://github.com/brevityA/CoreBuildsApps/issues/337) | Plex | not applying | 0 | `com.plexapp.android/tv.plex.app.MainActivity` |
+| [338](https://github.com/brevityA/CoreBuildsApps/issues/338) | AquaPlay | request | 0 | `com.aquaplay.tv/com.aquaplay.tv.MainActivity` |
+| [339](https://github.com/brevityA/CoreBuildsApps/issues/339) | Core Builds Glyphs Pack | request | 0 | `tv.corebuilds.iconpack.glyphs/tv.corebuilds.iconpack.glyphs.GlyphsHomeActivity` |
+| [340](https://github.com/brevityA/CoreBuildsApps/issues/340) | OwnTV Fanart | request | 0 | `tv.own.owntv.glcn/tv.own.owntv.MainActivity` |
+| [341](https://github.com/brevityA/CoreBuildsApps/issues/341) | WatchBridge TV | request | 0 | `com.tunombre.tvbridge/com.tunombre.tvbridge.MainActivity` |
+| [342](https://github.com/brevityA/CoreBuildsApps/issues/342) | Archivos | request | 0 | `com.android.documentsui/com.android.documentsui.LauncherActivity` |
+| [344](https://github.com/brevityA/CoreBuildsApps/issues/344) | Navegador Vewd | request | 0 | `com.vewd.core.browser/com.vewd.core.browser.BrowserActivity` |
+| [345](https://github.com/brevityA/CoreBuildsApps/issues/345) | TV | request | 0 | `org.droidtv.playtv/org.droidtv.playtv.PlayTvActivity` |
