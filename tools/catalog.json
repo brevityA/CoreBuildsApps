@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 1009
+    "count": 1011
   },
   "icons": [
     {
@@ -1830,11 +1830,13 @@
       "color": "#00D4FF",
       "glyph": "core_mark",
       "components": [
-        "tv.corebuilds.iconpack/.MainActivity"
+        "tv.corebuilds.iconpack/.MainActivity",
+        "tv.corebuilds.iconpack.glyphs/.GlyphsHomeActivity"
       ],
       "category": "CORE",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mapping_source": "pre-provenance; issue #339 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.4.2, 2026-10-17): the Core Builds Glyphs companion (tv.corebuilds.iconpack.glyphs, built from glyphs/ in this repo) launches .GlyphsHomeActivity and ships the same Core Builds launcher art and banner, so it shares this icon"
     },
     {
       "name": "Core Doctor",
@@ -3278,7 +3280,8 @@
       "components": [
         "com.google.android.documentsui/.files.FilesActivity",
         "com.google.android.documentsui/com.android.documentsui.files.FilesActivity",
-        "com.google.android.apps.nbu.files/.home.HomeActivity"
+        "com.google.android.apps.nbu.files/.home.HomeActivity",
+        "com.android.documentsui/com.android.documentsui.LauncherActivity"
       ],
       "category": "SYSTEM",
       "unverified": [
@@ -3286,7 +3289,8 @@
         "com.google.android.apps.nbu.files/.home.HomeActivity"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mapping_source": "pre-provenance; issue #342 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.4.2, 2026-10-17, listed in Spanish as Archivos): SHIELD ships the AOSP build of Files (com.android.documentsui), which launches LauncherActivity"
     },
     {
       "name": "FileSynced",
@@ -7763,11 +7767,13 @@
       "color": "#4CAF50",
       "glyph": "satellite",
       "components": [
-        "tv.own.owntv/tv.own.owntv.MainActivity"
+        "tv.own.owntv/tv.own.owntv.MainActivity",
+        "tv.own.owntv.glcn/tv.own.owntv.MainActivity"
       ],
       "category": "LIVE",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mapping_source": "pre-provenance; issue #340 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.4.2, 2026-10-17): OwnTV Fanart, a fork of OwnTV, installs as tv.own.owntv.glcn and launches the same tv.own.owntv.MainActivity, so it shares the OwnTV icon"
     },
     {
       "name": "Pac Man 256",
@@ -8194,13 +8200,15 @@
       "glyph": "plex_chevron",
       "components": [
         "com.plexapp.android/com.plexapp.plex.activities.SplashActivity",
-        "com.plexapp.mediaserver.smb/.MainActivity"
+        "com.plexapp.mediaserver.smb/.MainActivity",
+        "com.plexapp.android/tv.plex.app.MainActivity"
       ],
       "category": "MEDIA",
       "brand": "plex",
       "style": "core_monoline",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mapping_source": "pre-provenance; issue #337 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.4.2, 2026-10-17, Monet): current Plex builds launch tv.plex.app.MainActivity"
     },
     {
       "name": "Plexamp",
@@ -14249,6 +14257,34 @@
       "color_source": "sampled from the TV banner inside the linked APK: the play mark's teal #20B8A8 (2026-10-17)",
       "color_reviewed": "2026-10-17",
       "glyph_source": "original Core monoline mark: an open V with a solid play triangle resting in its crook - the player's initial holding its action; no vendor art traced (2026-10-17)"
+    },
+    {
+      "name": "AquaPlay",
+      "drawable": "aquaplay",
+      "color": "#88C8E8",
+      "glyph": "aquaplay_wave",
+      "components": [
+        "com.aquaplay.tv/com.aquaplay.tv.MainActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "issue #338 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.4.2, 2026-10-17): com.aquaplay.tv/com.aquaplay.tv.MainActivity is the activity the launcher opened for AquaPlay on that device; site aquaplayiptv.github.io. Not confirmed on a second TV",
+      "color_source": "sampled from the logo on aquaplayiptv.github.io: the wave-cut letters' blue #88C8E8 (2026-10-17)",
+      "color_reviewed": "2026-10-17",
+      "glyph_source": "original Core monoline mark: a play triangle above a wave - water and play, the two halves of the name; no vendor art traced (2026-10-17)"
+    },
+    {
+      "name": "WatchBridge TV",
+      "drawable": "watchbridge_tv",
+      "color": "#38C8F8",
+      "glyph": "watchbridge_arch",
+      "components": [
+        "com.tunombre.tvbridge/com.tunombre.tvbridge.MainActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #341 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.4.2, 2026-10-17): com.tunombre.tvbridge/com.tunombre.tvbridge.MainActivity is the activity the launcher opened for WatchBridge TV on that device. The Play listing the request links is com.tunombre.tvbridge.play, a different package; it is not mapped. Not confirmed on a second TV",
+      "color_source": "sampled from the Google Play launcher icon (com.tunombre.tvbridge.play): the screen's cyan #38C8F8, the light end of its cyan-to-violet gradient (2026-10-17)",
+      "color_reviewed": "2026-10-17",
+      "glyph_source": "original Core monoline mark: a screen with a play triangle carried on an arch bridge - the link from a TV recommendation to the app that plays it; no vendor art traced (2026-10-17)"
     }
   ],
   "artwork": {

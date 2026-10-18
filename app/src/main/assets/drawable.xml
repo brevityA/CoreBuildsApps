@@ -119,6 +119,7 @@
     <item drawable="visionplus_banner" />
     <category title="Banners · Live TV" />
     <item drawable="xtreamplayeranddownloader_banner" />
+    <item drawable="aquaplay_banner" />
     <item drawable="buzztv6_banner" />
     <item drawable="deltatv_nl_banner" />
     <item drawable="iptv3u_banner" />
@@ -396,6 +397,7 @@
     <item drawable="universalmanager_banner" />
     <item drawable="virtualhere_usb_server_banner" />
     <item drawable="booster_banner" />
+    <item drawable="watchbridge_tv_banner" />
     <item drawable="zank_remote_banner" />
     <item drawable="goodtoolapps_banner" />
     <category title="Banners · Stores" />

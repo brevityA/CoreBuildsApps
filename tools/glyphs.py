@@ -9290,3 +9290,26 @@ GLYPHS.update({"flixed_cat": flixed_cat, "eclipse_vinyl": eclipse_vinyl,
                "porter_key": porter_key, "deltatv_arcs": deltatv_arcs,
                "esetsmarttv_shield": esetsmarttv_shield,
                "bgprocesses_stack": bgprocesses_stack, "vax_play": vax_play})
+
+
+# Issue batch 2026-10-17 (#338, #341): two more scanner-reported apps, drawn
+# from their subject in Core stroke geometry; no vendor art traced.
+def aquaplay_wave(c):
+    """AquaPlay: a play triangle above a wave - water and play, the two
+    halves of the name."""
+    return (f'<path d="M 184 72 L 384 188 L 184 304 Z" {_s(c, 32)}/>'
+            f'<path d="M 72 400 C 136 344 200 344 256 384 C 312 424 376 424 440 368" '
+            f'{_s(c, 26.2)}/>')
+
+
+def watchbridge_arch(c):
+    """WatchBridge TV: a screen with a play triangle, carried on a bridge - a
+    deck with an arch rising to meet it at mid-span - the app as the link
+    between a recommendation and the streaming app that plays it."""
+    return (f'<rect x="104" y="64" width="304" height="208" rx="32" {_s(c, 32)}/>'
+            f'<path d="M 226 124 L 298 168 L 226 212 Z" {_s(c, 26.2)}/>'
+            f'<path d="M 64 336 L 448 336" {_s(c, 30)}/>'
+            f'<path d="M 96 440 Q 256 232 416 440" {_s(c, 26.2)}/>')
+
+
+GLYPHS.update({"aquaplay_wave": aquaplay_wave, "watchbridge_arch": watchbridge_arch})

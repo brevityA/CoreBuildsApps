@@ -62,6 +62,7 @@
         <item>appletv</item>
         <item>applinkednew</item>
         <item>aptoide</item>
+        <item>aquaplay</item>
         <item>arc_browser</item>
         <item>ard_mediathek</item>
         <item>ard_sounds</item>
@@ -950,6 +951,7 @@
         <item>wako</item>
         <item>amcnetworks</item>
         <item>frograms</item>
+        <item>watchbridge_tv</item>
         <item>watcher_tv</item>
         <item>watcho</item>
         <item>wave_iptv</item>
@@ -1073,6 +1075,7 @@
         <item>Apple TV</item>
         <item>AppLinked</item>
         <item>Aptoide TV</item>
+        <item>AquaPlay</item>
         <item>Arc Browser</item>
         <item>ARD Mediathek</item>
         <item>ARD Sounds</item>
@@ -1961,6 +1964,7 @@
         <item>Wako</item>
         <item>Watch Free UK</item>
         <item>WATCHA</item>
+        <item>WatchBridge TV</item>
         <item>Watcher TV</item>
         <item>Watcho</item>
         <item>Wave IPTV</item>
@@ -2084,6 +2088,7 @@
         <item>VOD</item>
         <item>APP</item>
         <item>STORE</item>
+        <item>LIVE</item>
         <item>BROWSER</item>
         <item>APP</item>
         <item>MUSIC</item>
@@ -2972,6 +2977,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>TOOL</item>
         <item>APP</item>
         <item>APP</item>
         <item>LIVE</item>
@@ -3160,6 +3166,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3930,6 +3937,7 @@
         <item>1</item>
         <item>1</item>
         <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -4045,5 +4053,5 @@
         <item>1</item>
         <item>1</item>
     </integer-array>
-    <integer name="icon_count">1009</integer>
+    <integer name="icon_count">1011</integer>
 </resources>

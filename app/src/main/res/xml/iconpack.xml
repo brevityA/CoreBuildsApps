@@ -60,6 +60,7 @@
     <item drawable="appletv" />
     <item drawable="applinkednew" />
     <item drawable="aptoide" />
+    <item drawable="aquaplay" />
     <item drawable="arc_browser" />
     <item drawable="ard_mediathek" />
     <item drawable="ard_sounds" />
@@ -948,6 +949,7 @@
     <item drawable="wako" />
     <item drawable="amcnetworks" />
     <item drawable="frograms" />
+    <item drawable="watchbridge_tv" />
     <item drawable="watcher_tv" />
     <item drawable="watcho" />
     <item drawable="wave_iptv" />

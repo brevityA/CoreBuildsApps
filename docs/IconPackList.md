@@ -1,6 +1,6 @@
 # Supported applications
 
-`1009` icons · `1250` mapped components · pack v2.4.3
+`1011` icons · `1256` mapped components · pack v2.4.3
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -68,6 +68,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Apple TV | `appletv` | `#000000` | `#E6EDF3` | `com.apple.atve.androidtv.appletv/.MainActivity`<br>`com.apple.atve.amazon.appletv/.MainActivity` |
 | AppLinked | `applinkednew` | `#04A96D` | `#04A96D` | `com.i4apps.applinkednew/com.applinked.applinkedapp.SplashScreenActivity` |
 | Aptoide TV | `aptoide` | `#F26522` | `#F26522` | `cm.aptoidetv.pt/.activity.MainActivity` |
+| AquaPlay | `aquaplay` | `#88C8E8` | `#88C8E8` | `com.aquaplay.tv/com.aquaplay.tv.MainActivity` |
 | Arc Browser | `arc_browser` | `#C95CFF` | `#C95CFF` | `net.floatingpoint.android.arcturus/net.floatingpoint.android.arcturus.MainActivity` |
 | ARD Mediathek | `ard_mediathek` | `#003480` | `#0057D6` | `de.swr.avp.ard.tv/de.swr.avp.ard.tv.TvActivity` |
 | ARD Sounds | `ard_sounds` | `#2D92FF` | `#2D92FF` | `de.ard.audiothek.tv/com.mitxp.androidtv.MainActivity` |
@@ -148,7 +149,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | CNN | `cnn` | `#CC0000` | `#CC0000` | `com.cnn.mobile.android.tv/com.cnn.ctv.MainActivity` |
 | Coji TV Browser | `coji_tv_browser` | `#F04DE0` | `#F04DE0` | `mvl.studio.tvlite/mvl.studio.tvlite.android_tv.presentation.ui.TabletLauncherActivity`<br>`mvl.studio.tvlite/mvl.studio.tvlite.android_tv.presentation.ui.HomeLauncherActivity` |
 | Comedy Box | `comedybox` | `#B6F23A` | `#B6F23A` | `com.comedybox.app/com.android.comedybox.ui.TvSplashActivity` |
-| Core Builds | `corebuilds` | `#00D4FF` | `#00D4FF` | `tv.corebuilds.iconpack/.MainActivity` |
+| Core Builds | `corebuilds` | `#00D4FF` | `#00D4FF` | `tv.corebuilds.iconpack/.MainActivity`<br>`tv.corebuilds.iconpack.glyphs/.GlyphsHomeActivity` |
 | Core Doctor | `coredoctor` | `#00D4FF` | `#00D4FF` | `dev.corebuilds.doctor/.MainActivity` |
 | Core EQ | `coreeq` | `#00D4FF` | `#00D4FF` | `tv.corebuilds.eq/.MainActivity` |
 | Core Line | `coreline` | `#00D4FF` | `#00D4FF` | `dev.corebuilds.line/.MainActivity` |
@@ -257,7 +258,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | FEB | `feb` | `#007AFF` | `#007AFF` | `com.topspeed.febbox2/com.snowtop.diskpanda.view.activity.SplashActivity` |
 | FIFA+ | `fifa` | `#00F858` | `#00F858` | `com.fifa.plus.android/com.fifa.tv.FifaTvSplashActivity` |
 | File Commander | `mobisystems` | `#FFCB2F` | `#FFCB2F` | `com.mobisystems.fileman/com.mobisystems.files.FileBrowser` |
-| Files | `files` | `#4285F4` | `#4285F4` | `com.google.android.documentsui/.files.FilesActivity`<br>`com.google.android.documentsui/com.android.documentsui.files.FilesActivity`<br>`com.google.android.apps.nbu.files/.home.HomeActivity` |
+| Files | `files` | `#4285F4` | `#4285F4` | `com.google.android.documentsui/.files.FilesActivity`<br>`com.google.android.documentsui/com.android.documentsui.files.FilesActivity`<br>`com.google.android.apps.nbu.files/.home.HomeActivity`<br>`com.android.documentsui/com.android.documentsui.LauncherActivity` |
 | FileSynced | `filesynced` | `#0777F7` | `#0777F7` | `com.filesynced.app/com.filesynced.app.SplashActivity` |
 | Filimo | `filimo` | `#FEC33D` | `#FEC33D` | `com.sabaidea.filimo.tv/com.bluevod.android.tv.ui.activities.MainActivity` |
 | Filmfriend | `filmfriend` | `#2BB5B1` | `#2BB5B1` | `de.filmfriend/crc64a5e6c5f1927a9b79.MainActivity` |
@@ -578,7 +579,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | OTT Navigator | `ottnavigator` | `#4FACFE` | `#4FACFE` | `live.h24.ottnavigator/live.h24.ottnavigator.ui.MainLeanbackActivity`<br>`live.h24.ottnavigator/.ui.MainLeanbackActivity` |
 | OTTplay | `ottplay` | `#ECDC1C` | `#ECDC1C` | `com.ottplay.ottplay/com.ottplay.ottplay.StartActivity` |
 | Ottplayer | `ottplayer` | `#FF6600` | `#FF6600` | `es.ottplayer.tv/es.ottplayer.tv.SplashActivity` |
-| OwnTV | `owntv` | `#4CAF50` | `#4CAF50` | `tv.own.owntv/tv.own.owntv.MainActivity` |
+| OwnTV | `owntv` | `#4CAF50` | `#4CAF50` | `tv.own.owntv/tv.own.owntv.MainActivity`<br>`tv.own.owntv.glcn/tv.own.owntv.MainActivity` |
 | Pac Man 256 | `pac_man_256` | `#FFB020` | `#FFB020` | `eu.bandainamcoent.pacman256/com.unity3d.player.UnityPlayerActivity` |
 | Package Explorer | `package_explorer` | `#00D4FF` | `#00D4FF` | `com.yugandhar_kumar.packageexplorer/com.yugandhar_kumar.packageexplorer.applist.AppListActivity` |
 | Panda+ | `panda_plus` | `#FFA61A` | `#FFA61A` | `pt.dreamia.pandaplus/com.magycal.androidott.ui.tv.TVBaseActivity` |
@@ -615,7 +616,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | PlayKids | `playkids` | `#D028D8` | `#D028D8` | `com.movile.playkids/com.movile.playkids.MainActivity` |
 | PlayLatin | `apksrebrand` | `#EECB13` | `#EECB13` | `boxbr.apksrebrand.playlatin/boxbr.apksrebrand.smarters.view.activity.SplashActivity` |
 | PlayStation | `playstation` | `#0070D1` | `#0070D1` | `com.playstation.remoteplay/.MainActivity`<br>`com.scee.psxandroid/.MainActivity` |
-| Plex | `plex` | `#EBAF00` | `#EBAF00` | `com.plexapp.android/com.plexapp.plex.activities.SplashActivity`<br>`com.plexapp.mediaserver.smb/.MainActivity` |
+| Plex | `plex` | `#EBAF00` | `#EBAF00` | `com.plexapp.android/com.plexapp.plex.activities.SplashActivity`<br>`com.plexapp.mediaserver.smb/.MainActivity`<br>`com.plexapp.android/tv.plex.app.MainActivity` |
 | Plexamp | `plexamp` | `#FF7A2E` | `#FF7A2E` | `tv.plex.labs.plexamp/com.plexamp.MainActivity` |
 | Pluto TV | `pluto_tv` | `#FFF200` | `#FFF200` | `tv.pluto.android/tv.pluto.android.EntryPoint`<br>`tv.pluto.android/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity` |
 | PMX | `pmx` | `#00C2C2` | `#00C2C2` | `com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivityM`<br>`com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivity` |
@@ -956,6 +957,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Wako | `wako` | `#3082C4` | `#3082C4` | `app.wako/app.wako.MainActivity` |
 | Watch Free UK | `amcnetworks` | `#D10000` | `#D10000` | `com.amcnetworks.cbscatchup/com.simplestream.presentation.startup.StartUpActivity` |
 | WATCHA | `frograms` | `#FF0558` | `#FF0558` | `com.frograms.wplay/com.frograms.wplay.activity.InitActivity` |
+| WatchBridge TV | `watchbridge_tv` | `#38C8F8` | `#38C8F8` | `com.tunombre.tvbridge/com.tunombre.tvbridge.MainActivity` |
 | Watcher TV | `watcher_tv` | `#6F3663` | `#8F467F` | `ott.watcherentertainment/tv.vhx.LauncherActivity`<br>`ott.watcherentertainment/tv.vhx.tv.home.TvHomeActivity` |
 | Watcho | `watcho` | `#EA3453` | `#EA3453` | `com.watcho_multi/com.yupptv.ott.ui.activity.SplashActivity` |
 | Wave IPTV | `wave_iptv` | `#7C74FF` | `#7C74FF` | `com.smartwave.wave_iptv/com.smartwave.wave_iptv.SplashActivity`<br>`com.smartwave.waveo/com.smartwave.wave_iptv.SplashActivity` |

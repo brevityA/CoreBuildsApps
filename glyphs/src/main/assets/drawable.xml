@@ -119,6 +119,7 @@
     <item drawable="visionplus" />
     <category title="Square · Live TV" />
     <item drawable="xtreamplayeranddownloader" />
+    <item drawable="aquaplay" />
     <item drawable="buzztv6" />
     <item drawable="deltatv_nl" />
     <item drawable="iptv3u" />
@@ -396,6 +397,7 @@
     <item drawable="universalmanager" />
     <item drawable="virtualhere_usb_server" />
     <item drawable="booster" />
+    <item drawable="watchbridge_tv" />
     <item drawable="zank_remote" />
     <item drawable="goodtoolapps" />
     <category title="Square · Stores" />

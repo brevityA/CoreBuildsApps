@@ -8,15 +8,18 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
-- **7 new icons.** Flixed (#323), Background Apps & Processes (#325), Eclipse
-  (#329, #331), Porter (#330), DELTA TV (#332), ESET Smart TV Security (#334)
-  and VAX Player (#335). Each is a new original mark, and each component was
-  reported by the pack's Missing icons scanner. Eclipse was reported on two
-  TVs; the others on one.
+- **9 new icons.** Flixed (#323), Background Apps & Processes (#325), Eclipse
+  (#329, #331), Porter (#330), DELTA TV (#332), ESET Smart TV Security
+  (#334), VAX Player (#335), AquaPlay (#338) and WatchBridge TV (#341). Each
+  is a new original mark, and each component was reported by the pack's
+  Missing icons scanner. Eclipse was reported on two TVs; the others on one.
   - Each takes the colour sampled from its own icon: the Google Play listing
-    (Background Apps & Processes, DELTA TV, ESET), the app's site (Flixed,
-    Eclipse), its GitHub repository (Porter) or the TV banner inside its APK
-    (VAX Player).
+    (Background Apps & Processes, DELTA TV, ESET, WatchBridge TV), the app's
+    site (Flixed, Eclipse, AquaPlay), its GitHub repository (Porter) or the
+    TV banner inside its APK (VAX Player).
+  - WatchBridge TV maps the sideloaded `com.tunombre.tvbridge` the TV
+    reported. Its Play build, `com.tunombre.tvbridge.play`, has no report
+    yet.
   - Two names were already in use. Background Apps & Processes
     (`com.backgroundapps.v1.fm.ut.android`) is a different app from
     Background Apps And Process List. DELTA TV (`com.nep.delta.tv`) is
@@ -28,9 +31,9 @@ All notable changes to the Core Builds Icon Pack. Format follows
     VAX Player under Missing icons, and one report adds it.
   - VAX Player's first draft, a play outline with a V inside, matched Nuvio
     and IPTV3U at 0.82–0.83 alpha IoU. It is now an open V holding a solid
-    play triangle. The closest match to any of the seven new icons in the
+    play triangle. The closest match to any of the nine new icons in the
     built pack is now 0.694 (VAX Player and Voltra TV).
-  - 1002 → 1009 icons, 1241 → 1250 components.
+  - 1002 → 1011 icons, 1241 → 1256 components.
 
 ### Fixed
 
@@ -43,6 +46,19 @@ All notable changes to the Core Builds Icon Pack. Format follows
     `dovecoteescapee` namespace (#324, #333).
 
   The old components stay for older builds.
+- **Four more apps share an existing icon**, all reported from one SHIELD
+  (Android 11):
+  - Plex: current builds launch `tv.plex.app.MainActivity` (#337). The old
+    `SplashActivity` mapping stays.
+  - Files: SHIELD ships Android's own build, `com.android.documentsui`, which
+    launches `LauncherActivity` (#342, listed in Spanish as *Archivos*). The
+    pack had only Google's build.
+  - OwnTV Fanart, a fork of OwnTV, installs as `tv.own.owntv.glcn` with the
+    same activity, and now shares the OwnTV icon (#340).
+  - Core Builds Glyphs, this pack's own glyphs-only companion
+    (`tv.corebuilds.iconpack.glyphs`), now takes the Core Builds icon, the
+    art it already ships with (#339). It was the one suite app the pack did
+    not map.
 - **Not-applying reports from Monet users are accepted.** The report form
   offers 12 launchers, but the auto-reply only accepted 5, so a report
   naming Monet, AT4K, Leanback on Fire, L TV Launcher, ChillHub, Apex or ADW
