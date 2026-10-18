@@ -1186,10 +1186,12 @@ class MeasureActivity : TvActivity() {
             btnSave.setText(R.string.measure_save)
             btnSave.visibility = View.VISIBLE
             showResult(kept, repeatComparison)
+            // Most failure messages end in a full stop already; the templates add their own.
+            val reason = message.trimEnd().trimEnd('.')
             val note = when (kind) {
-                SweepKind.SEAT -> "Seat not added: $message. The result on screen is unchanged."
-                SweepKind.CHECK -> "Check not run: $message. The correction is unchanged."
-                else -> "Repeat not compared: $message. The first sweep remains available; nothing was averaged."
+                SweepKind.SEAT -> "Seat not added: $reason. The result on screen is unchanged."
+                SweepKind.CHECK -> "Check not run: $reason. The correction is unchanged."
+                else -> "Repeat not compared: $reason. The first sweep remains available; nothing was averaged."
             }
             textStatus.text = "${textStatus.text}\n$note"
             btnStart.requestFocus()

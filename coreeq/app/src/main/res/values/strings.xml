@@ -317,8 +317,8 @@
     <string name="companion_tv_subtitle">Local-only link for controlling profiles and taking a phone-microphone measurement. The listener runs only while this screen is open.</string>
     <string name="companion_finding_address">TV address: finding a local IPv4 address…</string>
     <string name="companion_tv_address">TV address: %1$s</string>
-    <string name="companion_tv_port">Temporary port: %1$d</string>
-    <string name="companion_tv_pair_instructions">On the Android phone, open Core EQ and choose Scan TV QR, then point the camera at the code below. Or enter this TV address, temporary port and the one-time code. Keep both devices on the same trusted Wi-Fi network. Pairing replaces any previous phone.</string>
+    <string name="companion_tv_port">Port: %1$d</string>
+    <string name="companion_tv_pair_instructions">On the Android phone, open Core EQ and choose Scan TV QR, then point the camera at the code below. Or enter this TV address, port and the one-time code. Keep both devices on the same trusted Wi-Fi network. Pairing replaces any previous phone.</string>
     <string name="companion_tv_qr_accessibility">QR code for pairing this TV with the Core EQ phone app. Shown only while pairing is open.</string>
     <string name="companion_pairing_closed">Pairing code is not active</string>
     <string name="companion_pairing_stopped">Pairing is stopped.</string>
@@ -398,8 +398,8 @@
     <string name="phone_pair_heading">Pair with your TV</string>
     <string name="phone_tv_ip_hint">TV private IPv4 address · for example 192.168.1.20</string>
     <string name="phone_tv_ip_accessibility">TV private IPv4 address shown on the Core EQ companion screen</string>
-    <string name="phone_tv_port_hint">Temporary port shown on the TV</string>
-    <string name="phone_tv_port_accessibility">Temporary TCP port shown on the Core EQ TV screen</string>
+    <string name="phone_tv_port_hint">Port shown on the TV</string>
+    <string name="phone_tv_port_accessibility">TCP port shown on the Core EQ TV screen</string>
     <string name="phone_pair_code_hint">One-time pairing code · enter all 32 hex characters</string>
     <string name="phone_pair_code_accessibility">One-time pairing code shown on the TV</string>
     <string name="phone_pair_button">Pair this phone</string>
@@ -421,7 +421,7 @@
     <string name="phone_not_paired">No TV paired</string>
     <string name="phone_saved_not_connected">TV saved · not connected</string>
     <string name="phone_invalid_tv_ip">Enter the TV private IPv4 address shown on its Core EQ companion screen. Host names and public addresses are not accepted.</string>
-    <string name="phone_invalid_tv_port">Enter the TV temporary port, from 1 to 65535.</string>
+    <string name="phone_invalid_tv_port">Enter the TV port, from 1 to 65535.</string>
     <string name="phone_invalid_pair_code">Enter the complete one-time code shown on the TV.</string>
     <string name="phone_pairing">Pairing with the TV…</string>
     <string name="phone_pair_success">Phone paired. The code can no longer be reused.</string>

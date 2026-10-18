@@ -49,7 +49,14 @@ data class SweepResult(
      * capture's bandwidth ended early (an 8 kHz remote codec). Kept so seats can be combined
      * ([SeatAverage]) without correcting past the edge of the narrowest one.
      */
-    val fMaxHz: Double = DspConstants.F_MAX
+    val fMaxHz: Double = DspConstants.F_MAX,
+    /**
+     * The minimum-phase test per band before [minPhaseOk] waives it above this sweep's own
+     * [transitionHz]. [SeatAverage] combines these under the combined transition, so a seat
+     * whose decay put its transition lower cannot switch on a band its own test failed.
+     * Empty on results built without it, where [minPhaseOk] stands in.
+     */
+    val phaseGate: BooleanArray = BooleanArray(0)
 )
 
 /**
@@ -263,7 +270,8 @@ object SweepAnalysis {
             bandSnrDb = bandSnr,
             rt60ByOctave = octaves,
             driftPpm = drift,
-            fMaxHz = fMax
+            fMaxHz = fMax,
+            phaseGate = gate
         )
     }
 

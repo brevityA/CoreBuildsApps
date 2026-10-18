@@ -96,6 +96,29 @@ class SeatAverageTest {
         assertTrue("gated band: ${combined.correctionDb[idx(100.0)]}", abs(combined.correctionDb[idx(100.0)]) < 0.5)
     }
 
+    /** A seat as SweepAnalysis returns it for a known room: raw [gate], waived above its own transition. */
+    private fun seatInRoom(volumeM3: Double, rt60: Double, gate: BooleanArray): SweepResult {
+        val transition = Correction.transitionHz(volumeM3, rt60)
+        return seat(minPhaseOk = BooleanArray(centres.size) { gate[it] || centres[it] >= transition }, rt60 = rt60)
+            .copy(transitionHz = transition, phaseGate = gate)
+    }
+
+    @Test
+    fun `a seat's failed gate stays failed below the combined transition`() {
+        // 60 m3: RT60 0.2 s puts seat A's transition at 231 Hz, 0.6 s puts B's at 400 Hz, and
+        // their mean, 0.4 s, puts the combined one at 327 Hz. A's own result waives its failed
+        // 250 Hz test (above 231 Hz); the combined result must not, since 250 < 327.
+        val failsAt250 = BooleanArray(centres.size) { true }.also { it[idx(250.0)] = false }
+        val a = seatInRoom(60.0, 0.2, failsAt250)
+        val b = seatInRoom(60.0, 0.6, BooleanArray(centres.size) { true })
+        assertTrue("seat A waives its own 250 Hz band", a.minPhaseOk[idx(250.0)])
+        val combined = SeatAverage.combine(listOf(a, b), "flat", 60.0)
+        assertTrue("combined transition ${combined.transitionHz}", combined.transitionHz in 300.0..350.0)
+        assertTrue("250 Hz must stay gated", !combined.minPhaseOk[idx(250.0)])
+        // Above the combined transition the diffuse-field waiver still applies.
+        assertTrue(combined.minPhaseOk[idx(400.0)])
+    }
+
     @Test
     fun `bass is never lifted past the single-seat limit`() {
         val dip = mapOf(50.0 to -9.0, 63.0 to -9.0)

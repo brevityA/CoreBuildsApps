@@ -138,7 +138,10 @@ object SeatAverage {
         val nulls = Correction.detectNulls(centres, measured)
         val rolloff = Correction.detectLowRolloff(centres, measured)
         val floorHz = max(DspConstants.F_MIN, rolloff)
-        val minPhaseOk = BooleanArray(n) { k -> seats.all { it.minPhaseOk[k] } || centres[k] >= transition }
+        // Each seat's raw gate, not its minPhaseOk: that one is already waived above the seat's
+        // own transition, which a shorter decay puts below the combined one.
+        val gate = BooleanArray(n) { k -> seats.all { it.phaseGate.getOrElse(k) { _ -> it.minPhaseOk[k] } } }
+        val minPhaseOk = BooleanArray(n) { k -> gate[k] || centres[k] >= transition }
         val bandSnr = DoubleArray(n) { k -> seats.minOf { it.bandSnrDb.getOrElse(k) { Double.MAX_VALUE } } }
         val correctable = BooleanArray(n) { minPhaseOk[it] && bandSnr[it] >= SweepAnalysis.BAND_MIN_SNR_DB }
         val fMax = seats.minOf { it.fMaxHz }
@@ -176,7 +179,8 @@ object SeatAverage {
             bandSnrDb = bandSnr,
             rt60ByOctave = octaves,
             driftPpm = seats[0].driftPpm,
-            fMaxHz = fMax
+            fMaxHz = fMax,
+            phaseGate = gate
         )
     }
 }
