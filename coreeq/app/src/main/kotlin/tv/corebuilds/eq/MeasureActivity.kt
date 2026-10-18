@@ -25,6 +25,7 @@ import tv.corebuilds.eq.dsp.Correction
 import tv.corebuilds.eq.dsp.CustomTarget
 import tv.corebuilds.eq.dsp.DspConstants
 import tv.corebuilds.eq.dsp.ImportResult
+import tv.corebuilds.eq.dsp.AutoApplyPolicy
 import tv.corebuilds.eq.dsp.MeasurementQuality
 import tv.corebuilds.eq.dsp.MeasurementException
 import tv.corebuilds.eq.dsp.PostCorrectionCheck
@@ -725,6 +726,28 @@ class MeasureActivity : TvActivity() {
         showResult(capture.result)
         btnSave.visibility = View.VISIBLE
         btnSave.requestFocus()
+        maybeAutoApply(capture)
+    }
+
+    /**
+     * Once per output kind, a clean (GREEN) first measurement is saved and applied without a
+     * tap. Later measurements, weaker recordings, and outputs Android did not name are only
+     * shown, as before. The applied kinds are kept on the TV.
+     */
+    private fun maybeAutoApply(capture: SweepCapture) {
+        val prefs = getSharedPreferences(PREFS, MODE_PRIVATE)
+        val device = OutputRoute.keyFor(capture.output).takeIf { it != OutputRoute.UNKNOWN }
+        val applied = prefs.getStringSet(KEY_AUTO_APPLIED, emptySet()) ?: emptySet()
+        if (AutoApplyPolicy.decide(device, applied) != AutoApplyPolicy.Action.AUTO_APPLY) return
+        val tier = MeasurementQuality.tier(MeasurementQuality.score(capture.result))
+        if (tier != MeasurementQuality.Tier.GREEN) return
+        val profile = buildSweepProfile(capture.result, System.currentTimeMillis())
+        profileStore.saveProfile(profile, setAsActive = true)
+        EqService.send(this, EqService.ACTION_REAPPLY)
+        prefs.edit()
+            .putStringSet(KEY_AUTO_APPLIED, AutoApplyPolicy.recordApplied(device!!, applied))
+            .apply()
+        textStatus.text = getString(R.string.measure_auto_applied, profile.name)
     }
 
     /**
@@ -1437,6 +1460,7 @@ class MeasureActivity : TvActivity() {
         private const val KEY_ROOM = "room_index"
         private const val KEY_TARGET = "target_index"
         private const val KEY_USE_CUSTOM = "use_custom_target"
+        private const val KEY_AUTO_APPLIED = "auto_applied_outputs"
         private const val KEY_CUSTOM_TARGET = "custom_target_text"
         /** Silence recorded before the sweep, so the noise estimate and latency have room. */
         private const val LEAD_SECONDS = 0.5
