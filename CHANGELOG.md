@@ -6,6 +6,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.4.4] — 2026-10-18
+
+The first release after 2.4.2. 2.4.3 was never tagged, so this build also
+carries its one fix: the home screen fits the TV's largest text size.
+
 ### Added
 
 - **10 new icons.** Flixed (#323), Background Apps & Processes (#325),
@@ -140,7 +145,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
   compares the two lists both ways. The old test only checked that the
   checker's options appeared in the form.
 
-## [2.4.3] — 2026-10-15
+## [2.4.3] — Unreleased
+
+Prepared as `versionCode 56` and merged to main on 2026-10-15, but never
+tagged; 2.4.4 replaced it, together with the update-bar fix from #326. The fix
+below first reaches devices in 2.4.4.
 
 ### Fixed
 

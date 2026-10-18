@@ -573,10 +573,25 @@ def test_update_buttons_keep_the_remote_while_busy():
         f"startDownload must open by ignoring a press while a download runs; "
         f"its first statement is {first!r}"
     )
-    assert code.count("updateDownloading = false") >= 2, (
-        "startDownload must clear updateDownloading on both Ready and Failed, "
-        "or the button stays dead after the first attempt"
+    set_at = code.find("updateDownloading = true")
+    call_at = code.find("UpdateInstaller.download(")
+    assert 0 <= set_at < call_at, (
+        "startDownload must set updateDownloading before it starts the "
+        "download, or a second press in between starts a second one"
     )
+    # One reset in each terminal branch, not two anywhere: two in Ready would
+    # pass a count and still leave the button dead after a failed download.
+    # code_lines drops brace-only lines, so a branch runs from its own header
+    # to the next one.
+    heads = list(re.finditer(r"is UpdateInstaller\.Event\.(\w+) ->", code))
+    branches = {m.group(1): code[m.end():(heads[i + 1].start()
+                                         if i + 1 < len(heads) else len(code))]
+                for i, m in enumerate(heads)}
+    for event in ("Ready", "Failed"):
+        assert "updateDownloading = false" in branches.get(event, ""), (
+            f"startDownload must clear updateDownloading on {event}, or the "
+            f"button stays dead after the first attempt"
+        )
     about = source("AboutActivity.kt")
     for name in ("onUpdatePressed", "startDownload"):
         assert not re.search(r"\.isEnabled\s*=\s*false",

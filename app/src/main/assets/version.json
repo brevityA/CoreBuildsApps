@@ -1,13 +1,20 @@
 {
-  "versionCode": 56,
-  "versionName": "2.4.3",
+  "versionCode": 57,
+  "versionName": "2.4.4",
   "iconCount": 1012,
   "componentCount": 1226,
-  "releaseDate": "2026-10-15",
+  "releaseDate": "2026-10-18",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "The home screen fits the TV's largest text size"
+    "10 new icons",
+    "28 icons are redrawn, resized or re-centred",
+    "The component count counts each component once",
+    "New look-alike icons fail CI",
+    "Download on the update bar works with the remote",
+    "Setting a wallpaper no longer crashes when you move to the next one",
+    "Weyd and ByeByeDPI icons apply on current builds",
+    "Four more apps share an existing icon"
   ]
 }
