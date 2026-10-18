@@ -458,7 +458,11 @@ class WallpaperPreviewActivity : TvActivity() {
                         val homePkg = ApplyIconPack.homePackage(this@WallpaperPreviewActivity)
                         if (homePkg == "com.spocky.projengmenu") {
                             Thread {
-                                val fallback = WallpaperSetter.copyFileToPictures(this@WallpaperPreviewActivity, downloaded!!, downloaded!!.name)
+                                // The file this apply started with, not the field:
+                                // D-pad left/right during the apply loads the next
+                                // wallpaper and clears `downloaded`, which crashed
+                                // this thread (or handed Projectivy the wrong wall).
+                                val fallback = WallpaperSetter.copyFileToPictures(this@WallpaperPreviewActivity, file, file.name)
                                 runOnUiThread {
                                     if (destroyed) return@runOnUiThread
                                     if (fallback is WallpaperSetter.Result.SavedToGallery) {
@@ -491,7 +495,7 @@ class WallpaperPreviewActivity : TvActivity() {
                             }
                         } else {
                             try {
-                                val mime = if (downloaded?.name?.endsWith(".png", ignoreCase = true) == true) "image/png" else "image/jpeg"
+                                val mime = if (file.name.endsWith(".png", ignoreCase = true)) "image/png" else "image/jpeg"
                                 openSetter.launch(
                                     WallpaperSetter.setIntent(result.uri, mime)
                                 )

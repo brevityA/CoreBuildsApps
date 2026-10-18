@@ -60,6 +60,7 @@
     <item drawable="appletv" />
     <item drawable="applinkednew" />
     <item drawable="aptoide" />
+    <item drawable="aquaplay" />
     <item drawable="arc_browser" />
     <item drawable="ard_mediathek" />
     <item drawable="ard_sounds" />
@@ -77,6 +78,7 @@
     <item drawable="av_source" />
     <item drawable="award" />
     <item drawable="babyeinstein" />
+    <item drawable="background_apps_processes" />
     <item drawable="background_apps_and_process_list" />
     <item drawable="ballyscorp" />
     <item drawable="basis" />
@@ -171,6 +173,7 @@
     <item drawable="debrify" />
     <item drawable="deezer" />
     <item drawable="deltatv" />
+    <item drawable="deltatv_nl" />
     <item drawable="developer_tools" />
     <item drawable="digdroid" />
     <item drawable="digi_tv" />
@@ -213,6 +216,7 @@
     <item drawable="dw" />
     <item drawable="earthcamtv" />
     <item drawable="echogram" />
+    <item drawable="eclipse" />
     <item drawable="elefin" />
     <item drawable="emby" />
     <item drawable="appstore" />
@@ -225,6 +229,7 @@
     <item drawable="ertflix_2" />
     <item drawable="estrongs" />
     <item drawable="es_de_frontend" />
+    <item drawable="eset_smart_tv_security" />
     <item drawable="score_center" />
     <item drawable="nathnetwork" />
     <item drawable="eternaltviptvbox" />
@@ -264,6 +269,7 @@
     <item drawable="flicky" />
     <item drawable="flix_tv" />
     <item drawable="flix_vision" />
+    <item drawable="flixed" />
     <item drawable="flixnest" />
     <item drawable="findlink" />
     <item drawable="flosports" />
@@ -609,6 +615,7 @@
     <item drawable="pocketcasts" />
     <item drawable="podcastaddict" />
     <item drawable="polsat_box_go" />
+    <item drawable="porter" />
     <item drawable="poweramp_eq" />
     <item drawable="ppsspp" />
     <item drawable="premier_sports" />
@@ -900,6 +907,8 @@
     <item drawable="androidtv_9" />
     <item drawable="user_center" />
     <item drawable="tvod169" />
+    <item drawable="uyaniktv" />
+    <item drawable="vax_player" />
     <item drawable="vbtv" />
     <item drawable="veezie" />
     <item drawable="vega" />
@@ -941,6 +950,7 @@
     <item drawable="wako" />
     <item drawable="amcnetworks" />
     <item drawable="frograms" />
+    <item drawable="watchbridge_tv" />
     <item drawable="watcher_tv" />
     <item drawable="watcho" />
     <item drawable="wave_iptv" />

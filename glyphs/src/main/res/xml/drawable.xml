@@ -25,6 +25,7 @@
     <item drawable="filmrise" />
     <item drawable="platform" />
     <item drawable="flix_vision" />
+    <item drawable="flixed" />
     <item drawable="androidtv_4" />
     <item drawable="justwatch" />
     <item drawable="androidtv_5" />
@@ -118,7 +119,9 @@
     <item drawable="visionplus" />
     <category title="Square · Live TV" />
     <item drawable="xtreamplayeranddownloader" />
+    <item drawable="aquaplay" />
     <item drawable="buzztv6" />
+    <item drawable="deltatv_nl" />
     <item drawable="iptv3u" />
     <item drawable="drama_live" />
     <item drawable="eternaltviptvbox" />
@@ -143,6 +146,7 @@
     <item drawable="myiptv" />
     <item drawable="dcsapp" />
     <item drawable="oktv22" />
+    <item drawable="ott_navigator" />
     <item drawable="ottnavigator" />
     <item drawable="owntv" />
     <item drawable="siptv" />
@@ -158,6 +162,7 @@
     <item drawable="thundertv" />
     <item drawable="tvplayer" />
     <item drawable="tcl_tv" />
+    <item drawable="uyaniktv" />
     <item drawable="wave_iptv" />
     <item drawable="wavetv" />
     <item drawable="nathnetwork_2" />
@@ -184,6 +189,7 @@
     <item drawable="tg4_player" />
     <item drawable="tubplayer" />
     <item drawable="tvi_player" />
+    <item drawable="vax_player" />
     <item drawable="vimu" />
     <item drawable="vlc" />
     <item drawable="vstro_player" />
@@ -209,6 +215,7 @@
     <item drawable="launchsounds" />
     <item drawable="deezer" />
     <item drawable="dsaudio" />
+    <item drawable="eclipse" />
     <item drawable="fmradio" />
     <item drawable="clearchannel" />
     <item drawable="kfandroid" />
@@ -344,6 +351,7 @@
     <item drawable="fastest" />
     <item drawable="apktime" />
     <item drawable="atvtools" />
+    <item drawable="background_apps_processes" />
     <item drawable="buttonmappertv" />
     <item drawable="developer_tools" />
     <item drawable="download_navi" />
@@ -351,13 +359,13 @@
     <item drawable="dr_nettools" />
     <item drawable="dsfinder" />
     <item drawable="dsget" />
+    <item drawable="eset_smart_tv_security" />
     <item drawable="fasttaskkiller" />
     <item drawable="playstore_2" />
     <item drawable="ip_address" />
     <item drawable="iptools" />
     <item drawable="jtv_go_server" />
     <item drawable="launch_on_boot" />
-    <item drawable="luckymanager" />
     <item drawable="magiconnect" />
     <item drawable="matvt_mouse_for_android_tv_toggle" />
     <item drawable="omnisoft" />
@@ -367,6 +375,7 @@
     <item drawable="nuyowifianalyzer" />
     <item drawable="remote_capture" />
     <item drawable="pmx" />
+    <item drawable="porter" />
     <item drawable="quickbars_for_home_assistant" />
     <item drawable="ram" />
     <item drawable="dinhlap" />
@@ -389,6 +398,7 @@
     <item drawable="universalmanager" />
     <item drawable="virtualhere_usb_server" />
     <item drawable="booster" />
+    <item drawable="watchbridge_tv" />
     <item drawable="zank_remote" />
     <item drawable="goodtoolapps" />
     <category title="Square · Stores" />
@@ -409,6 +419,7 @@
     <item drawable="launcher" />
     <item drawable="gamelauncher" />
     <item drawable="ltvlauncher" />
+    <item drawable="luckymanager" />
     <item drawable="launcher_manager" />
     <item drawable="leanbackonfire" />
     <item drawable="monet" />
@@ -792,7 +803,6 @@
     <item drawable="orftvthek" />
     <item drawable="osn" />
     <item drawable="otf_tv" />
-    <item drawable="ott_navigator" />
     <item drawable="ottplay" />
     <item drawable="panda_plus" />
     <item drawable="scrobble" />

@@ -231,6 +231,11 @@ jobs:
         run: python tools/fit_classic_glyphs.py --check
       - name: Check fallback palette colours match their assignment
         run: python tools/icon_palette.py --check
+      # build.yml runs this after it regenerates the art; here it reads the
+      # committed drawables, which build.yml holds to the catalog. Both, because
+      # build.yml is path-filtered and this job is not.
+      - name: No new look-alike icons (64 px alpha IoU >= 0.80)
+        run: python tools/check_lookalikes.py
       # This job installs the render deps and runs no asset builder, so the
       # rasters the frames paste are the committed ones. build.yml runs the
       # same check, ahead of its regeneration step, for that reason. The check
@@ -275,6 +280,7 @@ jobs:
           python tests/test_navigation_graph.py
           python tests/test_tv_scale.py
           python tests/test_mapping_hygiene.py
+          python tests/test_lookalikes.py
           python tests/test_monet_handoff.py
           python tests/test_launcher_handoff.py
           python tests/test_launcher_compat.py

@@ -6,7 +6,157 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
-## [2.4.3] — 2026-10-15
+## [2.4.4] — 2026-10-18
+
+The first release after 2.4.2. 2.4.3 was never tagged, so this build also
+carries its one fix: the home screen fits the TV's largest text size.
+
+### Added
+
+- **10 new icons.** Flixed (#323), Background Apps & Processes (#325),
+  Eclipse (#329, #331), Porter (#330), DELTA TV (#332), ESET Smart TV
+  Security (#334), VAX Player (#335), AquaPlay (#338), WatchBridge TV (#341)
+  and Uyanik TV. Each is a new original mark, and each component was
+  reported by the pack's Missing icons scanner. Eclipse was reported on two
+  TVs; the others on one. Uyanik TV came from scanner screenshots shared
+  directly, not an issue.
+  - Each takes the colour sampled from its own icon: the Google Play listing
+    (Background Apps & Processes, DELTA TV, ESET, WatchBridge TV), the app's
+    site (Flixed, Eclipse, AquaPlay), its GitHub repository (Porter), the TV
+    banner inside its APK (VAX Player) or the launcher icon in the scanner
+    screenshot (Uyanik TV).
+  - Uyanik TV's mark is an infinity loop with a play triangle in its right
+    loop. AllDebrid's bare infinity loop is not among its four closest
+    matches. Its closest, IP Address and DNS Changer at 0.768 alpha IoU, share
+    only a wide, low silhouette: a pill and a DNS wordmark.
+  - WatchBridge TV maps the sideloaded `com.tunombre.tvbridge` the TV
+    reported. Its Play build, `com.tunombre.tvbridge.play`, has no report
+    yet.
+  - Two names were already in use. Background Apps & Processes
+    (`com.backgroundapps.v1.fm.ut.android`) is a different app from
+    Background Apps And Process List. DELTA TV (`com.nep.delta.tv`) is
+    likewise different from Delta TV (`com.nowcast.deltatv`).
+  - VAX Player maps only `com.vaapp.app.MainActivityAlt`, the alias the
+    reporting TV opened. The APK linked in #335 declares `MainActivity` as
+    its launch activity, but no device has reported it, and the pack's
+    unverified-mapping ceiling only moves down. A TV that opens it will list
+    VAX Player under Missing icons, and one report adds it.
+  - VAX Player's first draft, a play outline with a V inside, matched Nuvio
+    and IPTV3U at 0.82–0.83 alpha IoU. It is now an open V holding a solid
+    play triangle. Its closest match in the built pack is now 0.694 (Voltra
+    TV).
+  - 1002 → 1012 icons and 16 new components.
+
+### Changed
+
+- **28 icons are redrawn, resized or re-centred.** A sweep measured every
+  built icon at tile size, against each other and against its own source.
+  - **13 brands now draw their wordmark.** Nine drew a bare letter that
+    another brand drew too: TBS and TNT a T; AMC+, A&E and ABC News an A;
+    Kayo and Fox News a K, like Kanopy's; Sling an S, like Shudder's; ZEE5 a
+    Z, like Zona's. On a launcher row only colour told them apart, and
+    several glyphs' own notes named a cue they never drew, such as TNT's
+    crash bar or ABC's wave. They now read `tbs`, `TNT`, `AMC+`, `A&E`, `abc`
+    in a ring, `kayo`, `FOX NEWS`, `sling` and `ZEE5`. Four more become
+    words: Kocowa's bare play triangle (the same as MX Player TV's), MEGOGO's
+    play box (the same as Nova Video Player's), Binge's skip mark and Arte's
+    lone `a`. They read `KOCO WA` and `MEGO GO` (on two lines, because on
+    one MEGOGO's counters closed at 48 px), `BINGE` and `arte`.
+  - **Watch Free UK no longer wears AMC's A.** Its Play icon is a boxed
+    *WATCH FREE UK* on purple. It now draws `WF` in a frame in that purple
+    (`#7030F8`), replacing an unsourced red. The full words fit only at
+    47 px, under the pack's 96 px letter floor.
+  - **Aptoide TV, Aurora Store and APKPure were one empty bag.** Their notes
+    promised a play mark, a download arc and a play. The bags now carry a
+    play, a download arrow and an `A`.
+  - **Three apps installed under two packages now draw one icon.** Launcher
+    Manager's Google TV build drew a yellow wrench beside the original's
+    blue gear. OTT Navigator's two packages drew a compass and an `ON`
+    screen. MX Player drew the generic circle-play shared by four other
+    players, while MX Player TV drew MX's own play arrow. Each pair now
+    shares the sourced mark.
+  - **Four marks were too small.** Arte filled 52% of the canvas, MX Player
+    TV 55%, Binge 57% and Kocowa 61%, against a typical 67–84%. The
+    smallest icon in the pack now fills 62%.
+  - **Six marks sat off-centre.** NordVPN and Projectivy Overflight sat 6–7%
+    high, MaxPlayer 5% left, Virtualhere USB Server 5% low, and FileSynced
+    and Mecool File Manager twice as low as the pack's other folders. They
+    are moved, with no stroke or shape changed.
+  - **NASA's wing touched its globe at tile size.** It now sits higher, and
+    the gaps between the two stay open at 96 px.
+- **The component count counts each component once.** 31 icons listed a
+  component twice, once in each name form (`pkg/.Activity` and
+  `pkg/pkg.Activity`). The build writes both forms from one entry, so the
+  copies are folded and every appfilter is byte-identical. Folding takes the
+  count from 1257 to 1226, and the unverified count from 92 to 76: 16 of
+  those copies were unverified components counted twice.
+- **New look-alike icons fail CI.** `tools/check_lookalikes.py` compares
+  every built icon at 64 px and fails on any new pair of brands whose marks
+  match at 0.80 alpha IoU or above. The 70 pairs accepted today, such as
+  NBC's shared peacock and generic shapes, are listed in
+  `tools/lookalike_baseline.json`, which may only shrink.
+
+### Fixed
+
+- **Download on the update bar works with the remote.** Pressing Download
+  greyed the button out while the APK came down, and Android moves the
+  remote's cursor off a greyed-out button. On a TV it jumped to Later, one
+  press from dismissing the update, and did not come back when the button
+  turned into Install. Only a phone touchpad could press it, because touch
+  mode never moves the cursor (reported from a Shield Pro, updating 2.4.1 to
+  2.4.2).
+  - The button now stays live and keeps the cursor. A second press while it
+    downloads does nothing, as About's update row already did.
+  - When the download finishes, the line under the title says to press
+    Install instead of showing the release highlight.
+  - This fixes updates from 2.4.4 on. To install 2.4.4 itself from an older
+    version with the remote, use About → Update.
+- **Setting a wallpaper no longer crashes when you move to the next one.**
+  On a Projectivy home screen, pressing left or right while Set was still
+  applying cleared the wallpaper the apply was using. When it finished, the
+  app crashed on a background thread, or handed Projectivy the next
+  wallpaper instead. Set now keeps the file it started with.
+- **Weyd and ByeByeDPI icons apply on current builds.** Both apps moved
+  their launch activity, so the pack's mapping no longer matched:
+  - Weyd now launches
+    `app.weyd.player.ui.splashscreen.SplashScreenActivity` (#327).
+  - ByeByeDPI now launches
+    `io.github.romanvht.byedpi.activities.MainActivity`, out of the
+    `dovecoteescapee` namespace (#324, #333).
+
+  The old components stay for older builds.
+- **Six more apps share an existing icon.** Four were reported from one
+  SHIELD (Android 11), and two from one Philips Google TV (TA1, Android 14):
+  - Plex: current builds launch `tv.plex.app.MainActivity` (#337). The old
+    `SplashActivity` mapping stays.
+  - Files: SHIELD ships Android's own build, `com.android.documentsui`, which
+    launches `LauncherActivity` (#342, listed in Spanish as *Archivos*). The
+    pack had only Google's build.
+  - OwnTV Fanart, a fork of OwnTV, installs as `tv.own.owntv.glcn` with the
+    same activity, and now shares the OwnTV icon (#340).
+  - Core Builds Glyphs, this pack's own glyphs-only companion
+    (`tv.corebuilds.iconpack.glyphs`), now takes the Core Builds icon, the
+    art it already ships with (#339). It was the one suite app the pack did
+    not map.
+  - Vewd: the browser Philips ships installs as `com.vewd.core.browser`
+    (#344, listed in Spanish as *Navegador Vewd*). The pack had only the
+    `com.vewd.core.integration.dia` build, and both now share the Vewd
+    Internet Browser icon.
+  - Philips' own TV app (`org.droidtv.playtv`, the antenna and cable tuner,
+    labelled *TV*) now takes the Live TV icon, the pack's mark for a TV's
+    built-in tuner app (#345).
+- **Not-applying reports from Monet users are accepted.** The report form
+  offers 12 launchers, but the auto-reply only accepted 5, so a report
+  naming Monet, AT4K, Leanback on Fire, L TV Launcher, ChillHub, Apex or ADW
+  got `needs-info` (#333). The checker now accepts all 12. Its drift test now
+  compares the two lists both ways. The old test only checked that the
+  checker's options appeared in the form.
+
+## [2.4.3] — Unreleased
+
+Prepared as `versionCode 56` and merged to main on 2026-10-15, but never
+tagged; 2.4.4 replaced it, together with the update-bar fix from #326. The fix
+below first reaches devices in 2.4.4.
 
 ### Fixed
 

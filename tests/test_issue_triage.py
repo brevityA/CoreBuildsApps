@@ -169,15 +169,37 @@ class FormDriftTests(unittest.TestCase):
         for f in it.NOT_APPLYING:
             self.assertIn(f"label: {f.heading}", text, f.heading)
 
+    @staticmethod
+    def _dropdown(form: str, heading: str) -> list[str]:
+        """The `- option` lines under the dropdown labelled `heading`."""
+        lines = form.splitlines()
+        start = next(i for i, l in enumerate(lines) if l.strip() == f"label: {heading}")
+        opts_at = next(i for i in range(start, len(lines)) if lines[i].strip() == "options:")
+        indent = len(lines[opts_at + 1]) - len(lines[opts_at + 1].lstrip())
+        options = []
+        for line in lines[opts_at + 1:]:
+            if len(line) - len(line.lstrip()) != indent or not line.lstrip().startswith("- "):
+                break
+            options.append(line.strip()[2:])
+        return options
+
     def test_dropdown_options_match_form(self):
+        """Both directions. Checking only that the checker's options appear in
+        the form let the form gain Monet, AT4K and six more launchers while the
+        checker still knew five, so #333 (Monet, a valid pick) got needs-info."""
         new = self._form("1.new_icon_request.yml")
         mapping = self._form("2.icon_not_applying.yml")
         for f in it.NEW_REQUEST + it.NOT_APPLYING:
             if f.kind != "choice":
                 continue
             src = new if f in it.NEW_REQUEST else mapping
-            for opt in f.options:
-                self.assertIn(f"- {opt}", src, opt)
+            self.assertEqual(list(f.options), self._dropdown(src, f.heading), f.heading)
+
+    def test_every_launcher_the_form_offers_passes(self):
+        mapping = self._form("2.icon_not_applying.yml")
+        for launcher in self._dropdown(mapping, "Launcher"):
+            body = GOOD_MAP.replace("\nProjectivy\n", f"\n{launcher}\n")
+            self.assertEqual(it.check(body, "mapping"), [], launcher)
 
 
 class ActionTests(unittest.TestCase):
