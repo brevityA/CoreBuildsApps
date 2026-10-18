@@ -1,0 +1,776 @@
+{
+ "threshold": 0.8,
+ "note": "Glyph pairs accepted as look-alikes when tools/check_lookalikes.py was written. Remove a pair when it is fixed; never add one to let a new icon in.",
+ "pairs": [
+  {
+   "glyphs": [
+    "nbc_peacock",
+    "ncbc_mark"
+   ],
+   "iou": 1.0,
+   "icons": [
+    "NBC Sports",
+    "NBC News"
+   ]
+  },
+  {
+   "glyphs": [
+    "cbs_eye",
+    "showmax_eye"
+   ],
+   "iou": 0.948,
+   "icons": [
+    "CBS News",
+    "Showmax"
+   ]
+  },
+  {
+   "glyphs": [
+    "bag_play",
+    "store_bag"
+   ],
+   "iou": 0.935,
+   "icons": [
+    "Aptoide TV",
+    "Aurora Store"
+   ]
+  },
+  {
+   "glyphs": [
+    "media_wave_play",
+    "play_round"
+   ],
+   "iou": 0.927,
+   "icons": [
+    "Xiaomi Media Player",
+    "Chillio"
+   ]
+  },
+  {
+   "glyphs": [
+    "live_ultra_drop",
+    "live_ultra_plus_drop"
+   ],
+   "iou": 0.911,
+   "icons": [
+    "Live Ultra",
+    "Live Ultra+"
+   ]
+  },
+  {
+   "glyphs": [
+    "shahid_mark",
+    "showmax_eye"
+   ],
+   "iou": 0.907,
+   "icons": [
+    "Shahid",
+    "Showmax"
+   ]
+  },
+  {
+   "glyphs": [
+    "cbs_eye",
+    "shahid_mark"
+   ],
+   "iou": 0.902,
+   "icons": [
+    "CBS News",
+    "Shahid"
+   ]
+  },
+  {
+   "glyphs": [
+    "cbs_eye",
+    "nvidia_eye"
+   ],
+   "iou": 0.898,
+   "icons": [
+    "CBS News",
+    "GeForce Now"
+   ]
+  },
+  {
+   "glyphs": [
+    "google_tv",
+    "iptv_player"
+   ],
+   "iou": 0.886,
+   "icons": [
+    "Google TV",
+    "A 8k Player Vip"
+   ]
+  },
+  {
+   "glyphs": [
+    "heatvod_ultra_drop",
+    "live_ultra_drop"
+   ],
+   "iou": 0.88,
+   "icons": [
+    "HeatVod Ultra",
+    "Live Ultra"
+   ]
+  },
+  {
+   "glyphs": [
+    "nvidia_eye",
+    "showmax_eye"
+   ],
+   "iou": 0.871,
+   "icons": [
+    "GeForce Now",
+    "Showmax"
+   ]
+  },
+  {
+   "glyphs": [
+    "graymatrix_wm",
+    "ip_tag"
+   ],
+   "iou": 0.869,
+   "icons": [
+    "ZEE5",
+    "Ip Address"
+   ]
+  },
+  {
+   "glyphs": [
+    "criterion_mark",
+    "globoplay_mark"
+   ],
+   "iou": 0.866,
+   "icons": [
+    "Criterion Channel",
+    "Globoplay"
+   ]
+  },
+  {
+   "glyphs": [
+    "play_round",
+    "weyd_mark"
+   ],
+   "iou": 0.865,
+   "icons": [
+    "Chillio",
+    "Weyd"
+   ]
+  },
+  {
+   "glyphs": [
+    "apkpure_d",
+    "store_bag"
+   ],
+   "iou": 0.864,
+   "icons": [
+    "APKPure",
+    "Aurora Store"
+   ]
+  },
+  {
+   "glyphs": [
+    "playnow_arrow",
+    "plexamp_mark"
+   ],
+   "iou": 0.861,
+   "icons": [
+    "Play Now",
+    "Plexamp"
+   ]
+  },
+  {
+   "glyphs": [
+    "apkpure_d",
+    "bag_play"
+   ],
+   "iou": 0.86,
+   "icons": [
+    "APKPure",
+    "Aptoide TV"
+   ]
+  },
+  {
+   "glyphs": [
+    "nvidia_eye",
+    "shahid_mark"
+   ],
+   "iou": 0.86,
+   "icons": [
+    "GeForce Now",
+    "Shahid"
+   ]
+  },
+  {
+   "glyphs": [
+    "leankey_play",
+    "tencent_play"
+   ],
+   "iou": 0.856,
+   "icons": [
+    "LeanKey Keyboard",
+    "Tencent Video"
+   ]
+  },
+  {
+   "glyphs": [
+    "ottplay_aperture",
+    "playnow_arrow"
+   ],
+   "iou": 0.856,
+   "icons": [
+    "OTTplay",
+    "Play Now"
+   ]
+  },
+  {
+   "glyphs": [
+    "coreelec_power",
+    "fasttask_cube"
+   ],
+   "iou": 0.854,
+   "icons": [
+    "CoreELEC Helper",
+    "Fast Task Killer"
+   ]
+  },
+  {
+   "glyphs": [
+    "home_button",
+    "roku_house"
+   ],
+   "iou": 0.851,
+   "icons": [
+    "Home Button",
+    "The Roku Channel"
+   ]
+  },
+  {
+   "glyphs": [
+    "adguard_shield",
+    "nfl_ball"
+   ],
+   "iou": 0.85,
+   "icons": [
+    "AdGuard",
+    "NFL"
+   ]
+  },
+  {
+   "glyphs": [
+    "media_wave_play",
+    "weyd_mark"
+   ],
+   "iou": 0.849,
+   "icons": [
+    "Xiaomi Media Player",
+    "Weyd"
+   ]
+  },
+  {
+   "glyphs": [
+    "broadcast_K",
+    "broadcast_R"
+   ],
+   "iou": 0.847,
+   "icons": [
+    "K+",
+    "Rover's Morning Glory"
+   ]
+  },
+  {
+   "glyphs": [
+    "dramaplayer_ring",
+    "play_round"
+   ],
+   "iou": 0.847,
+   "icons": [
+    "Drama Player",
+    "Chillio"
+   ]
+  },
+  {
+   "glyphs": [
+    "folder_fx",
+    "folder_rs"
+   ],
+   "iou": 0.847,
+   "icons": [
+    "FX File Explorer",
+    "RS File Manager"
+   ]
+  },
+  {
+   "glyphs": [
+    "localsend_sun",
+    "seerr_eye"
+   ],
+   "iou": 0.846,
+   "icons": [
+    "LocalSend",
+    "SeerrTV"
+   ]
+  },
+  {
+   "glyphs": [
+    "directone_block",
+    "stremio_square"
+   ],
+   "iou": 0.843,
+   "icons": [
+    "Direct One",
+    "Stremio"
+   ]
+  },
+  {
+   "glyphs": [
+    "ipvanish_mark",
+    "premier_mark"
+   ],
+   "iou": 0.839,
+   "icons": [
+    "IPVanish",
+    "Premier Sports"
+   ]
+  },
+  {
+   "glyphs": [
+    "tv_browser_bar",
+    "tv_web_browser"
+   ],
+   "iou": 0.839,
+   "icons": [
+    "TV Browser",
+    "TV Web Browser"
+   ]
+  },
+  {
+   "glyphs": [
+    "shadow_ring",
+    "yettel_play"
+   ],
+   "iou": 0.837,
+   "icons": [
+    "Shadow",
+    "Yettel TV"
+   ]
+  },
+  {
+   "glyphs": [
+    "folder_rs",
+    "folder_solid"
+   ],
+   "iou": 0.833,
+   "icons": [
+    "RS File Manager",
+    "Solid Explorer"
+   ]
+  },
+  {
+   "glyphs": [
+    "play_round",
+    "trakt_mark"
+   ],
+   "iou": 0.833,
+   "icons": [
+    "Chillio",
+    "Trakt"
+   ]
+  },
+  {
+   "glyphs": [
+    "play_round",
+    "yousee_disc"
+   ],
+   "iou": 0.826,
+   "icons": [
+    "Chillio",
+    "YouSee Play"
+   ]
+  },
+  {
+   "glyphs": [
+    "coji_browser",
+    "vewd_browser"
+   ],
+   "iou": 0.825,
+   "icons": [
+    "Coji TV Browser",
+    "Vewd Internet Browser"
+   ]
+  },
+  {
+   "glyphs": [
+    "adguard_shield",
+    "premier_mark"
+   ],
+   "iou": 0.824,
+   "icons": [
+    "AdGuard",
+    "Premier Sports"
+   ]
+  },
+  {
+   "glyphs": [
+    "apple_tv",
+    "gt_tv"
+   ],
+   "iou": 0.824,
+   "icons": [
+    "Apple TV",
+    "Locals Google TV"
+   ]
+  },
+  {
+   "glyphs": [
+    "ottplay_aperture",
+    "play_round"
+   ],
+   "iou": 0.823,
+   "icons": [
+    "OTTplay",
+    "Chillio"
+   ]
+  },
+  {
+   "glyphs": [
+    "play_round",
+    "playnow_arrow"
+   ],
+   "iou": 0.823,
+   "icons": [
+    "Chillio",
+    "Play Now"
+   ]
+  },
+  {
+   "glyphs": [
+    "play_round",
+    "plexamp_mark"
+   ],
+   "iou": 0.821,
+   "icons": [
+    "Chillio",
+    "Plexamp"
+   ]
+  },
+  {
+   "glyphs": [
+    "aljazeera_flame",
+    "fpt_badge"
+   ],
+   "iou": 0.82,
+   "icons": [
+    "Al Jazeera",
+    "FPT Play"
+   ]
+  },
+  {
+   "glyphs": [
+    "flix_f",
+    "flosports_mark"
+   ],
+   "iou": 0.82,
+   "icons": [
+    "Streamflix",
+    "Flosports"
+   ]
+  },
+  {
+   "glyphs": [
+    "package_find",
+    "torbox_cube"
+   ],
+   "iou": 0.82,
+   "icons": [
+    "Package Explorer",
+    "TorBox"
+   ]
+  },
+  {
+   "glyphs": [
+    "google_tv",
+    "gt_tv"
+   ],
+   "iou": 0.819,
+   "icons": [
+    "Google TV",
+    "Locals Google TV"
+   ]
+  },
+  {
+   "glyphs": [
+    "globoplay_mark",
+    "gplay_games"
+   ],
+   "iou": 0.818,
+   "icons": [
+    "Globoplay",
+    "Google Play Games"
+   ]
+  },
+  {
+   "glyphs": [
+    "tennistv_ball",
+    "xbox_orb"
+   ],
+   "iou": 0.817,
+   "icons": [
+    "Tennis TV",
+    "Xbox"
+   ]
+  },
+  {
+   "glyphs": [
+    "broadcast_K",
+    "broadcast_U"
+   ],
+   "iou": 0.816,
+   "icons": [
+    "K+",
+    "U"
+   ]
+  },
+  {
+   "glyphs": [
+    "maxplayer_m",
+    "tencent_play"
+   ],
+   "iou": 0.816,
+   "icons": [
+    "MaxPlayer",
+    "Tencent Video"
+   ]
+  },
+  {
+   "glyphs": [
+    "appnotifier_check",
+    "goplay_split"
+   ],
+   "iou": 0.815,
+   "icons": [
+    "App Notifier",
+    "Play"
+   ]
+  },
+  {
+   "glyphs": [
+    "ottplay_aperture",
+    "plexamp_mark"
+   ],
+   "iou": 0.814,
+   "icons": [
+    "OTTplay",
+    "Plexamp"
+   ]
+  },
+  {
+   "glyphs": [
+    "bolt_screen",
+    "capture_dot"
+   ],
+   "iou": 0.813,
+   "icons": [
+    "Streamz",
+    "PCAPdroid"
+   ]
+  },
+  {
+   "glyphs": [
+    "coredoctor_pulse",
+    "coreline_ticker"
+   ],
+   "iou": 0.813,
+   "icons": [
+    "Core Doctor",
+    "Core Line"
+   ]
+  },
+  {
+   "glyphs": [
+    "heatvod_ultra_drop",
+    "live_ultra_plus_drop"
+   ],
+   "iou": 0.812,
+   "icons": [
+    "HeatVod Ultra",
+    "Live Ultra+"
+   ]
+  },
+  {
+   "glyphs": [
+    "obtainium_mark",
+    "tsn_mark"
+   ],
+   "iou": 0.812,
+   "icons": [
+    "Obtainium",
+    "TSN"
+   ]
+  },
+  {
+   "glyphs": [
+    "ottplay_aperture",
+    "xciptv_bars"
+   ],
+   "iou": 0.812,
+   "icons": [
+    "OTTplay",
+    "XC IPTV"
+   ]
+  },
+  {
+   "glyphs": [
+    "etube_bars",
+    "purevpn_drop"
+   ],
+   "iou": 0.809,
+   "icons": [
+    "Etube",
+    "PureVPN"
+   ]
+  },
+  {
+   "glyphs": [
+    "binge_wm",
+    "ip_tag"
+   ],
+   "iou": 0.808,
+   "icons": [
+    "Binge",
+    "Ip Address"
+   ]
+  },
+  {
+   "glyphs": [
+    "broadcast_O",
+    "broadcast_U"
+   ],
+   "iou": 0.808,
+   "icons": [
+    "Ott Navigator",
+    "U"
+   ]
+  },
+  {
+   "glyphs": [
+    "playnow_arrow",
+    "xciptv_bars"
+   ],
+   "iou": 0.808,
+   "icons": [
+    "Play Now",
+    "XC IPTV"
+   ]
+  },
+  {
+   "glyphs": [
+    "media_wave_play",
+    "yousee_disc"
+   ],
+   "iou": 0.807,
+   "icons": [
+    "Xiaomi Media Player",
+    "YouSee Play"
+   ]
+  },
+  {
+   "glyphs": [
+    "ted_mark",
+    "vidio_mono"
+   ],
+   "iou": 0.807,
+   "icons": [
+    "Ted",
+    "Vidio"
+   ]
+  },
+  {
+   "glyphs": [
+    "bitdefender_shield",
+    "hotspot_globe"
+   ],
+   "iou": 0.806,
+   "icons": [
+    "Bitdefender",
+    "Hotspot Shield VPN"
+   ]
+  },
+  {
+   "glyphs": [
+    "heatlive_drop",
+    "heatvod_drop"
+   ],
+   "iou": 0.804,
+   "icons": [
+    "HeatLive",
+    "HeatVod"
+   ]
+  },
+  {
+   "glyphs": [
+    "media_wave_play",
+    "trakt_mark"
+   ],
+   "iou": 0.804,
+   "icons": [
+    "Xiaomi Media Player",
+    "Trakt"
+   ]
+  },
+  {
+   "glyphs": [
+    "fanetv_wm",
+    "ip_tag"
+   ],
+   "iou": 0.803,
+   "icons": [
+    "FANE TV",
+    "Ip Address"
+   ]
+  },
+  {
+   "glyphs": [
+    "mpv_play",
+    "plexamp_mark"
+   ],
+   "iou": 0.802,
+   "icons": [
+    "Mpv",
+    "Plexamp"
+   ]
+  },
+  {
+   "glyphs": [
+    "broadcast_K",
+    "broadcast_T"
+   ],
+   "iou": 0.801,
+   "icons": [
+    "K+",
+    "Televizo"
+   ]
+  },
+  {
+   "glyphs": [
+    "enhanced_wm",
+    "ip_tag"
+   ],
+   "iou": 0.801,
+   "icons": [
+    "Dune",
+    "Ip Address"
+   ]
+  },
+  {
+   "glyphs": [
+    "replaio_radio",
+    "worldradios_grille"
+   ],
+   "iou": 0.801,
+   "icons": [
+    "Replaio Radio",
+    "World Radios"
+   ]
+  }
+ ]
+}

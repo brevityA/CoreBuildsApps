@@ -2440,7 +2440,7 @@
         <item>APP</item>
         <item>TOOL</item>
         <item>APP</item>
-        <item>TOOL</item>
+        <item>LAUNCHER</item>
         <item>LAUNCHER</item>
         <item>LIVE</item>
         <item>APP</item>
@@ -2597,7 +2597,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
-        <item>APP</item>
+        <item>LIVE</item>
         <item>LIVE</item>
         <item>APP</item>
         <item>PLAYER</item>
@@ -3611,7 +3611,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>1</item>
+        <item>0</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>

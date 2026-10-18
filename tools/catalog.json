@@ -103,13 +103,14 @@
       "name": "A&E",
       "drawable": "androidtv_3",
       "color": "#C95CFF",
-      "glyph": "a_e_mark",
+      "glyph": "androidtv_3_wm",
       "components": [
         "com.aetn.aetv.watch.androidtv/com.aetn.android.tveapps.app.MainActivity"
       ],
       "category": "STREAM",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "Core stroke-letter wordmark (A&E), the brand's own logo being a word. Replaced a_e_mark, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "ABC iview",
@@ -131,13 +132,14 @@
       "name": "ABC News",
       "drawable": "abcnews",
       "color": "#000000",
-      "glyph": "abcnews_mark",
+      "glyph": "abcnews_wm",
       "components": [
         "com.abc.abcnews/com.disney.datg.android.androidtv.splash.AbcNewsSplashScreenActivity"
       ],
       "category": "SPORT",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "Core stroke-letter wordmark (abc in a ring), the brand's own logo being a word. Replaced abcnews_mark, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "Ace Stream",
@@ -479,27 +481,29 @@
     {
       "name": "Watch Free UK",
       "drawable": "amcnetworks",
-      "color": "#D10000",
-      "glyph": "amc_a",
+      "color": "#7030F8",
+      "glyph": "amcnetworks_wm",
       "components": [
         "com.amcnetworks.cbscatchup/com.simplestream.presentation.startup.StartUpActivity"
       ],
       "category": "APP",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null,
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.amcnetworks.cbscatchup (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Watch Free UK logo for this package (2026-09-27)"
+      "color_source": "sampled from the Google Play launcher icon (com.amcnetworks.cbscatchup, listed as WatchFreeUK): the tile's purple #7030F8; replaced an unsourced red that belonged to AMC (accuracy sweep 2026-10-18)",
+      "color_reviewed": "2026-10-18",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.amcnetworks.cbscatchup (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Watch Free UK logo for this package (2026-09-27)",
+      "glyph_source": "Core stroke-letter wordmark: WF in a frame, the initials of the boxed WATCH FREE logo on its Google Play icon. The full words framed set at 47 px, under the pack's 96 px letter floor. Replaced amc_a, AMC+'s film-strip A, which is not this app's mark (accuracy sweep 2026-10-18)"
     },
     {
       "name": "AMC+",
       "drawable": "amcandroidtv",
       "color": "#000000",
-      "glyph": "amc_a",
+      "glyph": "amcandroidtv_wm",
       "components": [
         "com.amcplus.amcandroidtv/com.amcplus.tv.MainActivity"
       ],
       "category": "APP",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "Core stroke-letter wordmark (AMC with a plus), the brand's own logo being a word. Replaced amc_a, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "Amnis",
@@ -844,7 +848,7 @@
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for tv.arte.plus7): dominant brand accent #FC4700 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "glyph_source": "wordmark-derived mark from the Projectivy Icon Pack 1.1.9 artwork for tv.arte.plus7 (github.com/SicMundus86/ProjectivyIconPack, used as reference only): the logotype's cue 'a', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
+      "glyph_source": "Core stroke-letter wordmark (arte), the brand's lower-case logo. Was the single letter a, which rendered at 52% of the canvas (accuracy sweep 2026-10-18)"
     },
     {
       "name": "Artlume",
@@ -1157,7 +1161,7 @@
       "name": "Binge",
       "drawable": "binge",
       "color": "#B80472",
-      "glyph": "binge_wave",
+      "glyph": "binge_wm",
       "components": [
         "au.com.streamotion.ares/.MainActivity",
         "au.com.binge.tv/.MainActivity",
@@ -1170,7 +1174,8 @@
       "unverified": [
         "au.com.binge.tv/au.com.foxsports.martian.tv.main.MainActivity",
         "au.com.streamotion.ares/au.com.foxsports.martian.tv.main.MainActivity"
-      ]
+      ],
+      "glyph_source": "Core stroke-letter wordmark (BINGE), the brand's own logo being a word. Replaced binge_wave, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "Binged",
@@ -1353,8 +1358,7 @@
       "color": "#BAAA16",
       "glyph": "browser_globe",
       "components": [
-        "org.mlm.browkorftv/org.mlm.browkorftv.activity.main.MainActivity",
-        "org.mlm.browkorftv/.activity.main.MainActivity"
+        "org.mlm.browkorftv/org.mlm.browkorftv.activity.main.MainActivity"
       ],
       "category": "BROWSER",
       "mapping_source": "Browkorf TV official repository AndroidManifest.xml, 2026-09",
@@ -2078,8 +2082,7 @@
       "glyph": "folder",
       "components": [
         "com.cxinventor.file.explorer/com.alphainventor.filemanager.activity.MainActivity",
-        "com.alphainventor.filemanager/.activity.MainActivity",
-        "com.alphainventor.filemanager/com.alphainventor.filemanager.activity.MainActivity"
+        "com.alphainventor.filemanager/.activity.MainActivity"
       ],
       "category": "FILES",
       "color_source": "core-builds palette (no published brand colour found)",
@@ -2521,8 +2524,7 @@
       "glyph": "downloader_arrow",
       "components": [
         "com.esaba.downloader/.ui.main.MainActivity",
-        "com.esaba.downloader/.MainActivity",
-        "com.esaba.downloader/com.esaba.downloader.MainActivity"
+        "com.esaba.downloader/.MainActivity"
       ],
       "category": "TOOL",
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -2672,12 +2674,10 @@
       "category": "MUSIC",
       "components": [
         "com.synology.dsaudio/com.synology.dsaudio.ui.SplashActivity",
-        "com.synology.dsaudio/.ui.SplashActivity",
         "com.synology.dsaudio/com.synology.dsaudio.MainActivity"
       ],
       "unverified": [
         "com.synology.dsaudio/com.synology.dsaudio.ui.SplashActivity",
-        "com.synology.dsaudio/.ui.SplashActivity",
         "com.synology.dsaudio/com.synology.dsaudio.MainActivity"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -2691,13 +2691,11 @@
       "category": "FILES",
       "components": [
         "com.synology.DSfile/com.synology.DSfile.ui.activity.SplashActivity",
-        "com.synology.DSfile/.ui.activity.SplashActivity",
         "com.synology.DSfile/com.synology.DSfile.MainActivity",
         "com.hisona.dsfile/com.hisona.dsfile.MainActivity"
       ],
       "unverified": [
         "com.synology.DSfile/com.synology.DSfile.ui.activity.SplashActivity",
-        "com.synology.DSfile/.ui.activity.SplashActivity",
         "com.synology.DSfile/com.synology.DSfile.MainActivity",
         "com.hisona.dsfile/com.hisona.dsfile.MainActivity"
       ],
@@ -2712,12 +2710,10 @@
       "category": "TOOL",
       "components": [
         "com.synology.DSfinder/com.synology.DSfinder.ui.SplashActivity",
-        "com.synology.DSfinder/.ui.SplashActivity",
         "com.synology.DSfinder/com.synology.DSfinder.MainActivity"
       ],
       "unverified": [
         "com.synology.DSfinder/com.synology.DSfinder.ui.SplashActivity",
-        "com.synology.DSfinder/.ui.SplashActivity",
         "com.synology.DSfinder/com.synology.DSfinder.MainActivity"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -2731,12 +2727,10 @@
       "category": "TOOL",
       "components": [
         "com.synology.DSget/com.synology.DSget.ui.SplashActivity",
-        "com.synology.DSget/.ui.SplashActivity",
         "com.synology.DSget/com.synology.DSget.MainActivity"
       ],
       "unverified": [
         "com.synology.DSget/com.synology.DSget.ui.SplashActivity",
-        "com.synology.DSget/.ui.SplashActivity",
         "com.synology.DSget/com.synology.DSget.MainActivity"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -2750,12 +2744,10 @@
       "category": "FILES",
       "components": [
         "com.synology.dsphoto/com.synology.dsphoto.ui.SplashActivity",
-        "com.synology.dsphoto/.ui.SplashActivity",
         "com.synology.dsphoto/com.synology.dsphoto.MainActivity"
       ],
       "unverified": [
         "com.synology.dsphoto/com.synology.dsphoto.ui.SplashActivity",
-        "com.synology.dsphoto/.ui.SplashActivity",
         "com.synology.dsphoto/com.synology.dsphoto.MainActivity"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -2783,13 +2775,11 @@
       "category": "MEDIA",
       "components": [
         "com.synology.dsvideo/com.synology.dsvideo.ui.SplashActivity",
-        "com.synology.dsvideo/.ui.SplashActivity",
         "com.synology.dsvideo/com.synology.dsvideo.MainActivity",
         "com.synology.dsvideo/com.synology.dsvideo.ui.WelcomeActivity"
       ],
       "unverified": [
         "com.synology.dsvideo/com.synology.dsvideo.ui.SplashActivity",
-        "com.synology.dsvideo/.ui.SplashActivity",
         "com.synology.dsvideo/com.synology.dsvideo.MainActivity"
       ],
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.synology.dsvideo (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #E83238, replacing an accent that did not match it (2026-09-28)",
@@ -3720,13 +3710,14 @@
       "name": "Fox News",
       "drawable": "foxnews",
       "color": "#003580",
-      "glyph": "foxnews_mark",
+      "glyph": "foxnews_wm",
       "components": [
         "com.foxnews.android/com.foxnews.androidtv.ui.splash.SplashScreenActivity"
       ],
       "category": "SPORT",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "Core stroke-letter wordmark (FOX NEWS on two lines), the brand's own logo being a word. Replaced foxnews_mark, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "FOX One",
@@ -4075,12 +4066,10 @@
       "glyph": "folder",
       "category": "FILES",
       "components": [
-        "com.ghostsq.commander/com.ghostsq.commander.FileCommander",
-        "com.ghostsq.commander/.FileCommander"
+        "com.ghostsq.commander/com.ghostsq.commander.FileCommander"
       ],
       "unverified": [
-        "com.ghostsq.commander/com.ghostsq.commander.FileCommander",
-        "com.ghostsq.commander/.FileCommander"
+        "com.ghostsq.commander/com.ghostsq.commander.FileCommander"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -5025,7 +5014,6 @@
       "glyph": "jellyfin_chevrons",
       "components": [
         "org.jellyfin.androidtv/.ui.startup.StartupActivity",
-        "org.jellyfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity",
         "org.jellyfin.mobile/.MainActivity"
       ],
       "category": "MEDIA",
@@ -5214,7 +5202,7 @@
       "name": "Kayo",
       "drawable": "kayo",
       "color": "#58B068",
-      "glyph": "kayo_bolt",
+      "glyph": "kayo_wm",
       "components": [
         "au.com.kayosports.tv/.MainActivity",
         "au.com.streamotion.hyperion/.MainActivity",
@@ -5227,7 +5215,8 @@
       ],
       "color_source": "sampled (current logo green)",
       "color_reviewed": "2026-09-08",
-      "color_note": null
+      "color_note": null,
+      "glyph_source": "Core stroke-letter wordmark (kayo), the brand's own logo being a word. Replaced kayo_bolt, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "KDE Connect",
@@ -5375,13 +5364,14 @@
       "name": "Kocowa",
       "drawable": "kocowa",
       "color": "#FF4D4D",
-      "glyph": "kocowa_mark",
+      "glyph": "kocowa_wm",
       "components": [
         "com.kocowa.android.tv/com.kocowa.base.a_view.launcher.LauncherActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "Core stroke-letter wordmark (KOCOWA), the brand's own logo being a word. Replaced kocowa_mark, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "Kodi",
@@ -5390,7 +5380,6 @@
       "glyph": "kodi_box",
       "components": [
         "org.xbmc.kodi/.Splash",
-        "org.xbmc.kodi/org.xbmc.kodi.Splash",
         "org.xbmc.kodi_touch/.Splash"
       ],
       "category": "MEDIA",
@@ -5557,14 +5546,16 @@
     {
       "name": "Launcher Manager",
       "drawable": "luckymanager",
-      "color": "#FBBF24",
-      "glyph": "tools_wrench",
+      "color": "#4080F0",
+      "glyph": "launchermanager_gear",
       "components": [
         "com.wolf.google.lm/.main.MainActivity"
       ],
-      "category": "TOOL",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "category": "LAUNCHER",
+      "color_source": "shared with Launcher Manager (launcher_manager): com.wolf.google.lm is the Google TV build of the same developer's Launcher Manager; was #FBBF24 (accuracy sweep 2026-10-18)",
+      "color_reviewed": "2026-09-28",
+      "brand": "launchermanager",
+      "glyph_source": "shared with launcher_manager: com.wolf.google.lm is the Google TV build of the same developer's Launcher Manager; was tools_wrench (accuracy sweep 2026-10-18)"
     },
     {
       "name": "Launcher Manager",
@@ -5584,7 +5575,8 @@
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.wolf.lm (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #4080F0 (2026-09-28)",
       "color_reviewed": "2026-09-28",
-      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.wolf.lm (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.wolf.lm (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)",
+      "brand": "launchermanager"
     },
     {
       "name": "Lazy IPTV Deluxe",
@@ -5987,12 +5979,10 @@
       "glyph": "folder",
       "category": "FILES",
       "components": [
-        "me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity",
-        "me.zhanghai.android.files/.filelist.FileListActivity"
+        "me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity"
       ],
       "unverified": [
-        "me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity",
-        "me.zhanghai.android.files/.filelist.FileListActivity"
+        "me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -6021,7 +6011,6 @@
         "com.wbd.stream/.MainActivity",
         "com.hbo.hbonow/.MainActivity",
         "com.wbd.hbomax/.MainActivity",
-        "com.wbd.hbomax/com.wbd.hbomax.MainActivity",
         "com.wbd.stream/com.wbd.beam.BeamActivity",
         "com.wbd.hbomax/com.wbd.beam.BeamActivity"
       ],
@@ -6162,13 +6151,14 @@
       "name": "MEGOGO",
       "drawable": "application",
       "color": "#22C3B1",
-      "glyph": "megogo_mark",
+      "glyph": "application_wm",
       "components": [
         "com.megogo.application/net.megogo.tv.main.MainActivity"
       ],
       "category": "APP",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.megogo.application (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #22C3B1, replacing an accent that did not match it (2026-09-28)",
-      "color_reviewed": "2026-09-28"
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "Core stroke-letter wordmark (MEGOGO), the brand's own logo being a word. Replaced megogo_mark, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "MEO",
@@ -6309,8 +6299,7 @@
       "glyph": "folder",
       "components": [
         "com.mixplorer.silver/com.mixplorer.activities.BrowseActivity",
-        "com.mixplorer/.activities.BrowseActivity",
-        "com.mixplorer/com.mixplorer.activities.BrowseActivity"
+        "com.mixplorer/.activities.BrowseActivity"
       ],
       "category": "FILES",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.mixplorer.silver (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #1D87E3, replacing an accent that did not match it (2026-09-28)",
@@ -6376,8 +6365,7 @@
       "color": "#B388FF",
       "glyph": "droplet",
       "components": [
-        "com.klevico.monet/com.klevico.monet.HomeActivity",
-        "com.klevico.monet/.HomeActivity"
+        "com.klevico.monet/com.klevico.monet.HomeActivity"
       ],
       "category": "LAUNCHER",
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -6672,8 +6660,8 @@
     {
       "name": "MX Player",
       "drawable": "mxplayer",
-      "color": "#3AB4F2",
-      "glyph": "play_round",
+      "color": "#3C8CEB",
+      "glyph": "mxplayer_mark",
       "components": [
         "com.mxtech.videoplayer.ad/.ActivityMediaList",
         "com.mxtech.videoplayer.pro/.ActivityMediaList",
@@ -6681,8 +6669,10 @@
         "com.mxtech.videoplayer.ad/com.mxtech.videoplayer.ad.ActivityWelcomeMX"
       ],
       "category": "PLAYER",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "shared with MX Player TV (videoplayer): MX Player and MX Player TV are one brand; this play arrow is MX Player's own mark, not the generic circle-play four other players share; was #3AB4F2 (accuracy sweep 2026-10-18)",
+      "color_reviewed": "2026-09-28",
+      "brand": "mxplayer",
+      "glyph_source": "shared with videoplayer: MX Player and MX Player TV are one brand; this play arrow is MX Player's own mark, not the generic circle-play four other players share; was play_round (accuracy sweep 2026-10-18)"
     },
     {
       "name": "MX Player TV",
@@ -6694,7 +6684,8 @@
       ],
       "category": "STREAM",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.mxtech.videoplayer.television (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #3C8CEB, replacing an accent that did not match it (2026-09-28)",
-      "color_reviewed": "2026-09-28"
+      "color_reviewed": "2026-09-28",
+      "brand": "mxplayer"
     },
     {
       "name": "My Family Cinema Player",
@@ -7342,7 +7333,6 @@
       "components": [
         "com.nuvio.app/com.nuvio.tv.MainActivity",
         "com.nuvio.tv/.MainActivity",
-        "com.nuvio.tv/com.nuvio.tv.MainActivity",
         "com.nuviodebug.com/com.nuvio.tv.MainActivity",
         "com.nuvio.tv/.launcher.AppIconDefault",
         "com.nuvio.tv/.launcher.AppIconArcticBlue",
@@ -7711,15 +7701,18 @@
     {
       "name": "Ott Navigator",
       "drawable": "ott_navigator",
-      "color": "#FFE14D",
-      "glyph": "ott_navigator",
+      "color": "#4FACFE",
+      "glyph": "broadcast_O",
       "components": [
         "studio.scillarium.ottnavigator/studio.scillarium.ottnavigator.MainActivity"
       ],
-      "category": "APP",
+      "category": "LIVE",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "shared with OTT Navigator (ottnavigator): studio.scillarium.ottnavigator and live.h24.ottnavigator are the same OTT Navigator app under two packages; was #FFE14D (accuracy sweep 2026-10-18)",
+      "color_reviewed": null,
+      "brand": "ottnavigator",
+      "glyph_source": "shared with ottnavigator: studio.scillarium.ottnavigator and live.h24.ottnavigator are the same OTT Navigator app under two packages; was ott_navigator (accuracy sweep 2026-10-18)",
+      "mark": "ON"
     },
     {
       "name": "OTTplay",
@@ -9005,12 +8998,10 @@
       "category": "FILES",
       "components": [
         "com.rs.explorer.filemanager/com.rs.explorer.filemanager.MainActivity",
-        "com.rs.explorer.filemanager/.MainActivity",
         "com.rs.explorer.filemanager/com.edili.filemanager.module.activity.FirstActivity"
       ],
       "unverified": [
-        "com.rs.explorer.filemanager/com.rs.explorer.filemanager.MainActivity",
-        "com.rs.explorer.filemanager/.MainActivity"
+        "com.rs.explorer.filemanager/com.rs.explorer.filemanager.MainActivity"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -9181,7 +9172,6 @@
       "glyph": "iptv_player",
       "components": [
         "com.s0und.s0undtv/.MainActivity",
-        "com.s0und.s0undtv/com.s0und.s0undtv.MainActivity",
         "com.s0und.s0undtv/com.s0und.s0undtv.activities.FireTVMainActivity",
         "com.s0und.s0undtv/com.s0und.s0undtv.activities.MainActivity"
       ],
@@ -9680,14 +9670,15 @@
       "name": "Sling TV",
       "drawable": "sling_tv",
       "color": "#19A9E0",
-      "glyph": "sling_s",
+      "glyph": "sling_tv_wm",
       "components": [
         "com.sling/com.sling.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.sling (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #19A9E0, replacing an accent that did not match it (2026-09-28)",
-      "color_reviewed": "2026-09-28"
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "Core stroke-letter wordmark (sling), the brand's own logo being a word. Replaced sling_s, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "Smart Tube",
@@ -9799,12 +9790,10 @@
       "category": "FILES",
       "components": [
         "pl.solidexplorer2/pl.solidexplorer2.SolidExplorer",
-        "pl.solidexplorer2/.SolidExplorer",
         "pl.solidexplorer2/pl.solidexplorer.SolidExplorer"
       ],
       "unverified": [
-        "pl.solidexplorer2/pl.solidexplorer2.SolidExplorer",
-        "pl.solidexplorer2/.SolidExplorer"
+        "pl.solidexplorer2/pl.solidexplorer2.SolidExplorer"
       ],
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for pl.solidexplorer2 (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #049BE5, replacing an accent that did not match it (2026-09-28)",
       "color_reviewed": "2026-09-28"
@@ -9926,15 +9915,13 @@
       "glyph": "sportseverywhere_wm",
       "components": [
         "com.Arena4Viewer.Sportseverywhere/com.Arena4Viewer.Sportseverywhere.MainActivitysplachscren",
-        "com.bone.android.a4v.oficial/com.bone.android.a4v.oficial.AVActivity",
-        "com.bone.android.a4v.oficial/.AVActivity"
+        "com.bone.android.a4v.oficial/com.bone.android.a4v.oficial.AVActivity"
       ],
       "category": "SPORT",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.Arena4Viewer.Sportseverywhere (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F84048 (2026-09-27)",
       "color_reviewed": "2026-09-27",
       "unverified": [
-        "com.bone.android.a4v.oficial/com.bone.android.a4v.oficial.AVActivity",
-        "com.bone.android.a4v.oficial/.AVActivity"
+        "com.bone.android.a4v.oficial/com.bone.android.a4v.oficial.AVActivity"
       ],
       "mapping_source": "Arena4Viewer official site + issue #175 package; AVActivity entrypoint from indexed APK manifest analysis, 2026-09-26",
       "glyph_source": "wordmark-derived mark from the Projectivy Icon Pack 1.1.9 artwork for com.Arena4Viewer.Sportseverywhere (github.com/SicMundus86/ProjectivyIconPack, used as reference only): the logotype's cue '4V' with its under, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
@@ -10204,7 +10191,6 @@
       "glyph": "stremio_square",
       "components": [
         "com.stremio.one/com.stremio.one.MainActivity",
-        "com.stremio.one/.MainActivity",
         "com.stremio.one/com.stremio.tv.MainActivity"
       ],
       "category": "STREAM",
@@ -10219,12 +10205,10 @@
       "color": "#34EB7A",
       "glyph": "stremize_z",
       "components": [
-        "com.stremize.player/.MainActivity",
-        "com.stremize.player/com.stremize.player.MainActivity"
+        "com.stremize.player/.MainActivity"
       ],
       "unverified": [
-        "com.stremize.player/.MainActivity",
-        "com.stremize.player/com.stremize.player.MainActivity"
+        "com.stremize.player/.MainActivity"
       ],
       "category": "STREAM",
       "brand": "stremize",
@@ -10264,8 +10248,7 @@
       "color": "#7453B7",
       "glyph": "tv_stack",
       "components": [
-        "com.strmr.ps/com.strmr.ps.ui.auth.SignInActivity",
-        "com.strmr.ps/.ui.auth.SignInActivity"
+        "com.strmr.ps/com.strmr.ps.ui.auth.SignInActivity"
       ],
       "category": "STREAM",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.strmr.ps (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #7453B7, replacing an accent that did not match it (2026-09-28)",
@@ -10480,13 +10463,11 @@
       "category": "FILES",
       "components": [
         "com.synology.server.SynologyDrive/com.synology.server.SynologyDrive.ui.SplashActivity",
-        "com.synology.dscloud/com.synology.dscloud.ui.SplashActivity",
-        "com.synology.dscloud/.ui.SplashActivity"
+        "com.synology.dscloud/com.synology.dscloud.ui.SplashActivity"
       ],
       "unverified": [
         "com.synology.server.SynologyDrive/com.synology.server.SynologyDrive.ui.SplashActivity",
-        "com.synology.dscloud/com.synology.dscloud.ui.SplashActivity",
-        "com.synology.dscloud/.ui.SplashActivity"
+        "com.synology.dscloud/com.synology.dscloud.ui.SplashActivity"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null,
@@ -10659,14 +10640,15 @@
       "name": "TBS",
       "drawable": "tbs",
       "color": "#F19A65",
-      "glyph": "tbs_mark",
+      "glyph": "tbs_wm",
       "components": [
         "com.turner.tbs.android.networkapp/com.wme.app.MainActivityTv"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.turner.tbs.android.networkapp (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #F19A65, replacing a palette fallback (2026-09-28)",
-      "color_reviewed": "2026-09-28"
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "Core stroke-letter wordmark (tbs), the brand's own logo being a word. Replaced tbs_mark, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "TCL Channel",
@@ -11155,8 +11137,7 @@
       "color": "#97C1FF",
       "glyph": "tivimate_guide",
       "components": [
-        "ar.tvplayer.tv/ar.tvplayer.tv.ui.MainActivity",
-        "ar.tvplayer.tv/.ui.MainActivity"
+        "ar.tvplayer.tv/ar.tvplayer.tv.ui.MainActivity"
       ],
       "category": "LIVE",
       "color_source": "sampled from the official launcher icon (Google Play listing for ar.tvplayer.tv, 512px): the 'tivi' wordmark's light blue #97C1FF, the icon's dominant ink; #028AD5 came from third-party artwork (2026-10-07)",
@@ -11211,14 +11192,15 @@
       "name": "TNT",
       "drawable": "tnt",
       "color": "#C95CFF",
-      "glyph": "tnt_mark",
+      "glyph": "tnt_wm",
       "components": [
         "com.turner.tnt.android.networkapp/com.wme.app.MainActivityTv"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "Core stroke-letter wordmark (TNT), the brand's own logo being a word. Replaced tnt_mark, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "TOD",
@@ -11960,13 +11942,11 @@
       "glyph": "ufm_folder_arrow",
       "components": [
         "za.kilowatch.ultimatefilemanager/.MainActivity",
-        "za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity",
         "za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.onboarding.LanguageWelcomeActivity"
       ],
       "category": "FILES",
       "unverified": [
-        "za.kilowatch.ultimatefilemanager/.MainActivity",
-        "za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity"
+        "za.kilowatch.ultimatefilemanager/.MainActivity"
       ],
       "color_source": "sampled from the launcher tile in a supporter's device screenshot (2026-09-27): the folder mark's steel blue #80A0B0",
       "color_reviewed": "2026-09-27",
@@ -12823,8 +12803,7 @@
       "color": "#FFFFFF",
       "glyph": "yinyang_play",
       "components": [
-        "app.wuplay.androidtv/app.wuplay.androidtv.MainActivity",
-        "app.wuplay.androidtv/.MainActivity"
+        "app.wuplay.androidtv/app.wuplay.androidtv.MainActivity"
       ],
       "category": "STREAM",
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -12850,8 +12829,7 @@
       "color": "#FFA512",
       "glyph": "folder",
       "components": [
-        "com.lonelycatgames.Xplore/com.lonelycatgames.Xplore.Browser",
-        "com.lonelycatgames.Xplore/.Browser"
+        "com.lonelycatgames.Xplore/com.lonelycatgames.Xplore.Browser"
       ],
       "category": "FILES",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.lonelycatgames.Xplore (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #FFA512, replacing an accent that did not match it (2026-09-28)",
@@ -13230,13 +13208,14 @@
       "name": "ZEE5",
       "drawable": "graymatrix",
       "color": "#FF5CA8",
-      "glyph": "zee5_mark",
+      "glyph": "graymatrix_wm",
       "components": [
         "com.graymatrix.did/com.zee5.android.launch.presentation.AppStartActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "Core stroke-letter wordmark (ZEE5), the brand's own logo being a word. Replaced zee5_mark, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "Zen IPTV",
@@ -13469,16 +13448,15 @@
       "mark": "ON",
       "category": "LIVE",
       "components": [
-        "live.h24.ottnavigator/live.h24.ottnavigator.ui.MainLeanbackActivity",
-        "live.h24.ottnavigator/.ui.MainLeanbackActivity"
+        "live.h24.ottnavigator/live.h24.ottnavigator.ui.MainLeanbackActivity"
       ],
       "mapping_source": "research document 2026-09-18 (component unverified against APK)",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
       "unverified": [
-        "live.h24.ottnavigator/live.h24.ottnavigator.ui.MainLeanbackActivity",
-        "live.h24.ottnavigator/.ui.MainLeanbackActivity"
-      ]
+        "live.h24.ottnavigator/live.h24.ottnavigator.ui.MainLeanbackActivity"
+      ],
+      "brand": "ottnavigator"
     },
     {
       "name": "Televizo",
@@ -13488,15 +13466,13 @@
       "mark": "TE",
       "category": "LIVE",
       "components": [
-        "ru.vovasoft.televizo/ru.vovasoft.televizo.ui.MainActivity",
-        "ru.vovasoft.televizo/.ui.MainActivity"
+        "ru.vovasoft.televizo/ru.vovasoft.televizo.ui.MainActivity"
       ],
       "mapping_source": "research document 2026-09-18 (component unverified against APK)",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
       "unverified": [
-        "ru.vovasoft.televizo/ru.vovasoft.televizo.ui.MainActivity",
-        "ru.vovasoft.televizo/.ui.MainActivity"
+        "ru.vovasoft.televizo/ru.vovasoft.televizo.ui.MainActivity"
       ]
     },
     {

@@ -84,8 +84,14 @@ python tools/build_banners_pack.py   # the icon pack's banner XML from the glyph
 python tools/build_branding.py
 python tools/build_brand_preview.py
 python tools/validate.py
-python tests/test_icon_identity.py    # 68 style/colour/reference/mapping regressions
+python tools/check_lookalikes.py     # no new pair of brands whose icons match at tile size (ratchet baseline)
+python tests/test_icon_identity.py    # 70 style/colour/reference/mapping regressions
 ```
+
+A glyph that is a bare letter or a bare shape will usually collide with
+another brand's. When `check_lookalikes.py` names a new pair, give one of
+them the cue its brand actually has (the word, if its logo is a word),
+never an entry in `tools/lookalike_baseline.json`.
 
 Paste the validator receipt. Current receipt: `Validated 1012 icons · 1929 components`.
 

@@ -126,6 +126,9 @@ jobs:
       - name: Validate catalog + appfilter
         run: python tools/validate.py
 
+      - name: No new look-alike icons (64 px alpha IoU >= 0.80)
+        run: python tools/check_lookalikes.py
+
       - name: Check every UI resource the three modules reference
         run: python tools/check_ui_resources.py
 
@@ -150,6 +153,7 @@ jobs:
           python tests/test_wordmark_type.py
           python tests/test_stroke_spacing.py
           python tests/test_icon_review.py
+          python tests/test_lookalikes.py
           python tests/test_ci_coverage.py
 
       - name: Set up JDK 17

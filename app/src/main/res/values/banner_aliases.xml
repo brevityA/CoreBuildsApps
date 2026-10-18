@@ -3,6 +3,7 @@
 <resources>
     <drawable name="ertflix_banner">@drawable/ertflix_2_banner</drawable>
     <drawable name="jawwy_tv_banner">@drawable/intigral_banner</drawable>
+    <drawable name="luckymanager_banner">@drawable/launcher_manager_banner</drawable>
     <drawable name="syncler_banner">@drawable/syncler_2_banner</drawable>
     <drawable name="tvquickactions_banner">@drawable/tv_quick_actions_banner</drawable>
 </resources>

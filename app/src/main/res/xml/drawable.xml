@@ -146,6 +146,7 @@
     <item drawable="myiptv_banner" />
     <item drawable="dcsapp_banner" />
     <item drawable="oktv22_banner" />
+    <item drawable="ott_navigator_banner" />
     <item drawable="ottnavigator_banner" />
     <item drawable="owntv_banner" />
     <item drawable="siptv_banner" />
@@ -365,7 +366,6 @@
     <item drawable="iptools_banner" />
     <item drawable="jtv_go_server_banner" />
     <item drawable="launch_on_boot_banner" />
-    <item drawable="luckymanager_banner" />
     <item drawable="magiconnect_banner" />
     <item drawable="matvt_mouse_for_android_tv_toggle_banner" />
     <item drawable="omnisoft_banner" />
@@ -419,6 +419,7 @@
     <item drawable="launcher_banner" />
     <item drawable="gamelauncher_banner" />
     <item drawable="ltvlauncher_banner" />
+    <item drawable="luckymanager_banner" />
     <item drawable="launcher_manager_banner" />
     <item drawable="leanbackonfire_banner" />
     <item drawable="monet_banner" />
@@ -802,7 +803,6 @@
     <item drawable="orftvthek_banner" />
     <item drawable="osn_banner" />
     <item drawable="otf_tv_banner" />
-    <item drawable="ott_navigator_banner" />
     <item drawable="ottplay_banner" />
     <item drawable="panda_plus_banner" />
     <item drawable="scrobble_banner" />

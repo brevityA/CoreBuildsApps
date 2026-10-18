@@ -346,10 +346,12 @@ def core_mark(c):
 
 
 def store_bag(c):
-    """App stores — shopping bag with a download arc."""
+    """App stores — shopping bag with a download arrow. Drawn since the
+    2026-10-18 sweep; before it the bag was empty and matched Aptoide's."""
     return (f'<path d="M 118 172 L 394 172 L 372 404 L 140 404 Z" {_s(c, 32)}/>'
             f'<path d="M 196 224 L 196 148 C 196 108 226 84 256 84 '
-            f'C 286 84 316 108 316 148 L 316 224" {_s(c, 30)}/>')
+            f'C 286 84 316 108 316 148 L 316 224" {_s(c, 30)}/>'
+            f'<path d="M 256 236 L 256 344 M 212 300 L 256 344 L 300 300" {_s(c, 26.2)}/>')
 
 
 def install_box(c):
@@ -1040,10 +1042,13 @@ def music_note(c):
 
 
 def bag_play(c):
-    """Aptoide: bag with a play mark."""
+    """Aptoide: bag with a play mark. The play was named here but never
+    drawn, which left Aptoide, Aurora Store and APKPure the same empty bag
+    (sweep 2026-10-18)."""
     return (f'<path d="M 118 172 L 394 172 L 372 404 L 140 404 Z" {_s(c, 32)}/>'
             f'<path d="M 196 224 L 196 148 C 196 108 226 84 256 84 '
-            f'C 286 84 316 108 316 148 L 316 224" {_s(c, 30)}/>')
+            f'C 286 84 316 108 316 148 L 316 224" {_s(c, 30)}/>'
+            f'<path d="M 226 240 L 226 348 L 316 294 Z" {_s(c, 26.2)}/>')
 
 
 def aurora_a(c):
@@ -2503,9 +2508,10 @@ GLYPHS.update({
 # Tier 6 — VPN, browsers, files and gaming marks.
 # ==========================================================================
 def nordvpn_arrow(c):
-    """NordVPN's mountain/dome, not a generic shield; all ink is monoline."""
-    return (f'<path d="M 112 364 A 180 180 0 1 1 400 364" {_s(c, 32)}/>'
-            f'<path d="M 112 364 L 220 202 L 258 266 L 286 166 L 400 364" {_s(c, 32)}/>')
+    """NordVPN's mountain/dome, not a generic shield; all ink is monoline.
+    Moved down 36: the dome sat 7% high on the card (sweep 2026-10-18)."""
+    return _shifted((f'<path d="M 112 364 A 180 180 0 1 1 400 364" {_s(c, 32)}/>'
+            f'<path d="M 112 364 L 220 202 L 258 266 L 286 166 L 400 364" {_s(c, 32)}/>'), 0, 36)
 
 
 def proton_shield(c):
@@ -2749,8 +2755,10 @@ def ted_mark(c):
 
 
 def nasa_mark(c):
-    """NASA: the meatball orbit — a wing over a globe."""
-    return (f'<path d="M 148 210 C 216 140 360 150 396 220" {_s(c, 28)}/>'
+    """NASA: the meatball orbit — a wing over a globe. The wing sits 24 higher
+    than it did: at a 96 px tile the gaps between it and the globe closed
+    (sweep 2026-10-18)."""
+    return (f'<path d="M 148 186 C 216 116 360 126 396 196" {_s(c, 28)}/>'
             f'<circle cx="250" cy="286" r="96" {_s(c, 30)}/>'
             f'<path d="M 250 190 L 250 382" {_s(c, 20)}/>'
             f'<path d="M 154 286 L 346 286" {_s(c, 20)}/>')
@@ -3073,10 +3081,13 @@ def windscribe_mark(c):
 
 
 def apkpure_d(c):
-    """APKPure: the pure bag — a shopping bag with a play."""
+    """APKPure: the pure bag — a shopping bag carrying an A, the app's
+    initial. The play this once named was never drawn, and a play would
+    now repeat Aptoide's (sweep 2026-10-18)."""
     return (f'<path d="M 118 176 L 394 176 L 372 404 L 140 404 Z" {_s(c, 32)}/>'
             f'<path d="M 196 228 L 196 150 C 196 110 226 86 256 86 '
-            f'C 286 86 316 110 316 150 L 316 228" {_s(c, 28)}/>')
+            f'C 286 86 316 110 316 150 L 316 228" {_s(c, 28)}/>'
+            f'<path d="M 210 352 L 256 240 L 302 352 M 228 310 L 284 310" {_s(c, 26.2)}/>')
 
 
 def apkmirror_mark(c):
@@ -3301,8 +3312,10 @@ def moviesanywhere_mark(c):
 
 
 def mxplayer_mark(c):
-    """MX Player: the play arrow — a bold play on a flag."""
-    return (f'<path d="M 170 180 L 170 332 L 292 256 Z" {_s(c, 40)}/>')
+    """MX Player: the play arrow — one bold play triangle, MX Player's own
+    mark. Redrawn at the pack's size in the 2026-10-18 sweep: at 122x152 it
+    rendered at 55% of the canvas even after the classic fit's 1.5x cap."""
+    return (f'<path d="M 150 120 L 150 392 L 386 256 Z" {_s(c, 40)}/>')
 
 
 def boosteroid_mark(c):
@@ -3742,11 +3755,12 @@ def folder_tree(c):
 
 
 def folder_sync_one(c):
-    """FileSynced - a folder under a sync arc."""
-    return (_folder(c)
+    """FileSynced - a folder under a sync arc.
+    Moved up 17, to sit with the pack's other folders (sweep 2026-10-18)."""
+    return _shifted((_folder(c)
             + f'<path d="M 176 320 C 176 276 214 244 258 244 C 296 244 328 '
               f'266 340 298" {_s(c, 24)}/>'
-            + f'<path d="M 300 298 L 344 298 L 344 254" {_s(c, 22)}/>')
+            + f'<path d="M 300 298 L 344 298 L 344 254" {_s(c, 22)}/>'), 0, -17)
 
 
 def folder_sync_two(c):
@@ -3771,10 +3785,11 @@ def ftp_server(c):
 
 
 def folder_grid(c):
-    """Mecool File Manager - a folder full of tiles."""
-    return (_folder(c)
+    """Mecool File Manager - a folder full of tiles.
+    Moved up 17, to sit with the pack's other folders (sweep 2026-10-18)."""
+    return _shifted((_folder(c)
             + f'<rect x="126" y="256" width="112" height="72" rx="18" {_s(c, 22)}/>'
-            + f'<rect x="274" y="256" width="112" height="72" rx="18" {_s(c, 22)}/>')
+            + f'<rect x="274" y="256" width="112" height="72" rx="18" {_s(c, 22)}/>'), 0, -17)
 
 
 def package_find(c):
@@ -3812,11 +3827,12 @@ def cinema_glow(c):
 
 
 def overflight(c):
-    """Projectivy Overflight - the aerial horizon the screensaver flies over."""
-    return (f'<path d="M 64 356 L 176 232 L 262 320 L 340 238 L 448 356 Z" '
+    """Projectivy Overflight - the aerial horizon the screensaver flies over.
+    Moved down 32: the scene sat 6% high (sweep 2026-10-18)."""
+    return _shifted((f'<path d="M 64 356 L 176 232 L 262 320 L 340 238 L 448 356 Z" '
             f'{_s(c, 30)}/>'
             f'<circle cx="358" cy="132" r="44" {_s(c, 26)}/>'
-            f'<path d="M 84 160 C 148 108 236 108 300 160" {_s(c, 22)}/>')
+            f'<path d="M 84 160 C 148 108 236 108 300 160" {_s(c, 22)}/>'), 0, 32)
 
 
 def media_wave_play(c):
@@ -4141,13 +4157,15 @@ def usb_plug(c):
 
     The connector block was 72x60 under a 26 stroke, so its opening shut. A
     larger block and a wider branch keep both ends readable.
+
+    Moved up 28: the long stem sat the box 5% low (sweep 2026-10-18).
     """
-    return (f'<path d="M 256 440 L 256 128" {_s(c, 32)}/>'
+    return _shifted((f'<path d="M 256 440 L 256 128" {_s(c, 32)}/>'
             f'<path d="M 192 192 L 256 128 L 320 192" {_s(c, 32)}/>'
             f'<circle cx="128" cy="330" r="40" {_s(c, 26)}/>'
             f'<path d="M 128 290 L 128 258 L 256 258" {_s(c, 24)}/>'
             f'<rect x="326" y="288" width="94" height="84" rx="20" {_s(c, 26)}/>'
-            f'<path d="M 326 330 L 256 330" {_s(c, 24)}/>')
+            f'<path d="M 326 330 L 256 330" {_s(c, 24)}/>'), 0, -28)
 
 
 def remote_pad(c):
@@ -5741,6 +5759,45 @@ GLYPHS.update({
 
 # --------------------------------------------------------------------------
 # Brand-informed marks, batch 5 (2026-09-26). Same contract as batches 1-4.
+
+def _shifted(markup, dx=0.0, dy=0.0):
+    """Move a glyph's ink by (dx, dy) without a transform, which the
+    core_monoline contract forbids: absolute path coordinates, circle and
+    ellipse centres, and rect corners move; radii, arc flags, stroke weights
+    and every other shape stay as reviewed."""
+    def path(m):
+        toks = re.findall(r"[A-Za-z]|-?\d+(?:\.\d+)?", m.group(1))
+        out, i, cmd = [], 0, None
+        while i < len(toks):
+            t = toks[i]
+            if t.isalpha():
+                if t.islower():
+                    raise ValueError(f"_shifted: relative path command {t!r}")
+                cmd = t
+                out.append(t)
+                i += 1
+                continue
+            if cmd == "A":
+                rx, ry, rot, large, sweep, x, y = toks[i:i + 7]
+                out.append(f"{rx} {ry} {rot} {large} {sweep} {float(x) + dx:g} {float(y) + dy:g}")
+                i += 7
+                continue
+            width = {"M": 2, "L": 2, "T": 2, "C": 6, "S": 4, "Q": 4, "H": 1, "V": 1}[cmd]
+            vals = [float(v) for v in toks[i:i + width]]
+            if cmd == "H":
+                moved = [vals[0] + dx]
+            elif cmd == "V":
+                moved = [vals[0] + dy]
+            else:
+                moved = [v + (dx if k % 2 == 0 else dy) for k, v in enumerate(vals)]
+            out.append(" ".join(f"{v:g}" for v in moved))
+            i += width
+        return f'd="{" ".join(out)}"'
+
+    markup = re.sub(r'\bd="([^"]*)"', path, markup)
+    markup = re.sub(r'\b(cx|x)="(-?[\d.]+)"', lambda m: f'{m.group(1)}="{float(m.group(2)) + dx:g}"', markup)
+    return re.sub(r'\b(cy|y)="(-?[\d.]+)"', lambda m: f'{m.group(1)}="{float(m.group(2)) + dy:g}"', markup)
+
 
 def _scaled(d, s, cx=256, cy=256):
     """Scale a path made only of M/L/C/Z pairs about (cx, cy)."""
@@ -8712,11 +8769,12 @@ def mitv_tvplus(c):
 def maxplayer_m(c):
     """MaxPlayer: the soft-cornered play triangle from its store tile with the
     m that cuts through it - two arcs fanning from the lower-left corner,
-    drawn as Core strokes inside the outline, not traced."""
-    return (f'<path d="M 172 117.8 L 339.8 214.4 A 48 48 0 0 1 339.8 297.6 '
+    drawn as Core strokes inside the outline, not traced.
+    Moved right 24: the box sat 5% left (sweep 2026-10-18)."""
+    return _shifted((f'<path d="M 172 117.8 L 339.8 214.4 A 48 48 0 0 1 339.8 297.6 '
             f'L 172 394.2 A 48 48 0 0 1 100 352.6 L 100 159.4 A 48 48 0 0 1 172 117.8 Z" {_s(c, 32)}/>'
             f'<path d="{_arc_cw(150, 330, 92, 285, 345)}" {_s(c, 26)}/>'
-            f'<path d="{_arc_cw(150, 330, 156, 290, 335)}" {_s(c, 26)}/>')
+            f'<path d="{_arc_cw(150, 330, 156, 290, 335)}" {_s(c, 26)}/>'), 24, 0)
 
 
 # drawable -> (logotype cue, device). Each read off the app's launcher icon in
@@ -8724,7 +8782,7 @@ def maxplayer_m(c):
 # case the logo itself uses, and the one device it carries, if any.
 _WM = {
     "airreceiverlite": ("Air", "play"), "aloulatv": ("AL", "under"),
-    "amazing_classics": ("AC", None), "ant1": ("ANT1", "plus"), "arte": ("a", None),
+    "amazing_classics": ("AC", None), "ant1": ("ANT1", "plus"), "arte": ("arte", None),
     "bet_plus": ("BET", "plus"), "blip": ("blip", None), "byutv": ("byu/tv", None),
     "caixaforum_plus": ("CF", "plus"), "cda_pl": ("cda", None), "chaupal": ("CH", "under"),
     "clone_hero": ("C/H", None), "cosmote_tv": ("CTV", None), "dudeperfect": ("DP", "under"),
@@ -8917,6 +8975,26 @@ _WM3 = {
     "max": ("HBO/max", None),
 }
 GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM3.items()})
+
+# Accuracy sweep 2026-10-18. Each of these drew a bare letter that another
+# brand drew too - TBS and TNT the same T, AMC+, A&E and ABC News the same A,
+# Kayo, Fox News and Kanopy the same K, Sling and Shudder the same S, ZEE5
+# and Zona the same Z - while the brand's own logo is a word. Several
+# glyphs' docstrings named a cue (TNT's crash bar, ABC's wave, ZEE5's play
+# notch) that their geometry never drew. The word is the brand's mark and
+# tells the two apart at a glance. Six-letter words set on two lines:
+# on one, MEGOGO's counters closed at 48 px (check_glyph). A frame costs
+# letter size: FOX NEWS framed set at 66 px and WATCH FREE at 47, under the
+# 96 px floor, so Fox News drops the frame and Watch Free UK keeps it
+# around its initials.
+_WM4 = {
+    "tbs": ("tbs", None), "tnt": ("TNT", None), "amcandroidtv": ("AMC", "plus"),
+    "androidtv_3": ("A&E", None), "abcnews": ("abc", "ring"), "sling_tv": ("sling", None),
+    "graymatrix": ("ZEE5", None), "kocowa": ("KOCO/WA", None), "kayo": ("kayo", None),
+    "foxnews": ("FOX/NEWS", None), "application": ("MEGO/GO", None), "binge": ("BINGE", None),
+    "amcnetworks": ("WF", "frame"),
+}
+GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM4.items()})
 
 
 # --------------------------------------------------------------------------

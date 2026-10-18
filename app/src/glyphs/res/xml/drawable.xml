@@ -146,6 +146,7 @@
     <item drawable="myiptv" />
     <item drawable="dcsapp" />
     <item drawable="oktv22" />
+    <item drawable="ott_navigator" />
     <item drawable="ottnavigator" />
     <item drawable="owntv" />
     <item drawable="siptv" />
@@ -365,7 +366,6 @@
     <item drawable="iptools" />
     <item drawable="jtv_go_server" />
     <item drawable="launch_on_boot" />
-    <item drawable="luckymanager" />
     <item drawable="magiconnect" />
     <item drawable="matvt_mouse_for_android_tv_toggle" />
     <item drawable="omnisoft" />
@@ -419,6 +419,7 @@
     <item drawable="launcher" />
     <item drawable="gamelauncher" />
     <item drawable="ltvlauncher" />
+    <item drawable="luckymanager" />
     <item drawable="launcher_manager" />
     <item drawable="leanbackonfire" />
     <item drawable="monet" />
@@ -802,7 +803,6 @@
     <item drawable="orftvthek" />
     <item drawable="osn" />
     <item drawable="otf_tv" />
-    <item drawable="ott_navigator" />
     <item drawable="ottplay" />
     <item drawable="panda_plus" />
     <item drawable="scrobble" />
