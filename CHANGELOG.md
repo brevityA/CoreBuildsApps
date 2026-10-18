@@ -46,8 +46,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
     `dovecoteescapee` namespace (#324, #333).
 
   The old components stay for older builds.
-- **Four more apps share an existing icon**, all reported from one SHIELD
-  (Android 11):
+- **Four more apps share an existing icon.** All four were reported from one
+  SHIELD (Android 11):
   - Plex: current builds launch `tv.plex.app.MainActivity` (#337). The old
     `SplashActivity` mapping stays.
   - Files: SHIELD ships Android's own build, `com.android.documentsui`, which
