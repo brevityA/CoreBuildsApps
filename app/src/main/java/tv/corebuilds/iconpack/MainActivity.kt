@@ -72,6 +72,8 @@ class MainActivity : TvActivity() {
     private var pendingUpdate: UpdateChecker.Result.Available? = null
     private var downloadedApk: File? = null
     private var installOffered = false
+    /** The bar's download is running: presses wait, and the button keeps the remote. */
+    private var updateDownloading = false
 
     /**
      * Keystrokes are filtered as a burst, not one at a time. See [scheduleFilter].
@@ -1096,13 +1098,21 @@ class MainActivity : TvActivity() {
     }
 
     private fun startDownload(update: UpdateChecker.Result.Available) {
+        if (updateDownloading) return
         if (update.apkUrl.isBlank()) {
             toast(getString(R.string.update_failed_fmt, "no apkUrl in version.json"))
             return
         }
         val label = findViewById<TextView>(R.id.update_label)
         val button = findViewById<TextView>(R.id.update_button)
-        button.isEnabled = false
+        // A busy flag, not isEnabled = false. Disabling the focused view makes
+        // Android clear its focus, and a TV is never in touch mode, so the
+        // framework hands the cursor to the next focusable view: Later, one OK
+        // press from dismissing the update. Every D-pad Download press ended
+        // there, and nothing moved it back when the button came back as
+        // Install (Shield report, updating 2.4.1 to 2.4.2). About's row has
+        // always used a flag and never had the problem.
+        updateDownloading = true
         button.text = getString(R.string.update_checking)
         UpdateInstaller.download(this, update.apkUrl, update.versionCode, update.apkSha256) { event ->
             when (event) {
@@ -1110,17 +1120,22 @@ class MainActivity : TvActivity() {
                     label.text = progressLabel(event.received, event.total)
                 }
                 is UpdateInstaller.Event.Ready -> {
+                    updateDownloading = false
                     downloadedApk = event.file
                     installOffered = false
-                    button.isEnabled = true
                     button.text = getString(R.string.update_install, update.versionName)
-                    findViewById<TextView>(R.id.update_sub).text =
-                        getString(R.string.update_sub_install)
+                    // The highlight line and this one share the row; the
+                    // instruction wins once there is something to press.
+                    findViewById<TextView>(R.id.update_highlights).visibility = View.GONE
+                    findViewById<TextView>(R.id.update_sub).apply {
+                        visibility = View.VISIBLE
+                        text = getString(R.string.update_sub_install)
+                    }
                     button.setOnClickListener { startInstall(event.file) }
                     startInstall(event.file)
                 }
                 is UpdateInstaller.Event.Failed -> {
-                    button.isEnabled = true
+                    updateDownloading = false
                     button.text = getString(R.string.update_download, update.versionName)
                     label.text = getString(R.string.update_failed_fmt, event.reason)
                     toast(getString(R.string.update_failed_fmt, event.reason))
