@@ -1,6 +1,6 @@
 # Supported applications
 
-`1012` icons · `1226` mapped components · pack v2.4.4
+`1012` icons · `1228` mapped components · pack v2.4.4
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -430,7 +430,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Liga Portugal | `ligaportugal` | `#00F880` | `#00F880` | `com.ligaportugal.ligatv/com.ligaportugal.ligatv.SplashActivity` |
 | Ligue 1+ | `ligueunpass` | `#0760FF` | `#0760FF` | `com.ligueunpass.app/com.ligueunpass.app.MainActivity` |
 | Live Channels | `tv` | `#0EA5EF` | `#0EA5EF` | `com.google.android.tv/com.android.tv.TvActivity` |
-| Live TV | `livetv` | `#00BCD4` | `#00BCD4` | `com.mediatek.wwtv.tvcenter/.nav.TurnkeyUiMainActivity` |
+| Live TV | `livetv` | `#00BCD4` | `#00BCD4` | `com.mediatek.wwtv.tvcenter/.nav.TurnkeyUiMainActivity`<br>`org.droidtv.playtv/org.droidtv.playtv.PlayTvActivity` |
 | Live Ultra | `live_ultra` | `#A24BFF` | `#A24BFF` | `com.google.liveultra/com.google.chuangke.page.SplashActivity` |
 | Live Ultra+ | `live_ultra_plus` | `#FFB83D` | `#FFB83D` | `com.google.liveultraplus/com.google.chuangke.page.SplashActivity` |
 | LiveNetTV Pro | `androidtv_10` | `#881010` | `#BF1616` | `com.playnet.androidtv.pro/com.playnet.androidtv.pro.DdfzCtdEstCn`<br>`com.playnet.androidtv.pro/com.playnet.androidtv.pro.plBqnAaqDlEns` |
@@ -921,7 +921,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Veezie | `veezie` | `#FF4D4D` | `#FF4D4D` | `st.veezie/st.veezie.MainActivity` |
 | Vega | `vega` | `#A366FF` | `#A366FF` | `com.vega/com.vega.LauncherDefault` |
 | Venevision Play | `venevision` | `#68C0E8` | `#68C0E8` | `com.cisneros.venevision.app/com.interfacectvapp.MainActivity` |
-| Vewd Internet Browser | `vewd_internet_browser` | `#E83F2D` | `#E83F2D` | `com.vewd.core.integration.dia/com.vewd.core.browser.BrowserActivity`<br>`com.vewd.core.integration.dia/com.vewd.core.browser.TVActivity` |
+| Vewd Internet Browser | `vewd_internet_browser` | `#E83F2D` | `#E83F2D` | `com.vewd.core.integration.dia/com.vewd.core.browser.BrowserActivity`<br>`com.vewd.core.integration.dia/com.vewd.core.browser.TVActivity`<br>`com.vewd.core.browser/com.vewd.core.browser.BrowserActivity` |
 | Viaplay | `viaplay` | `#FE365F` | `#FE365F` | `com.viaplay.android/com.viaplay.android.features.home.HomeActivity` |
 | Vibra | `vibra` | `#C82088` | `#C82088` | `com.vibra/com.ryanheise.audioservice.AudioServiceActivity` |
 | Victory Plus | `victory_plus` | `#FFE14D` | `#FFE14D` | `tv.apmc.android.victorysports/tv.kidoodle.android.ui.MainActivity` |

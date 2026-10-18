@@ -9,12 +9,12 @@
       "structure": "f832cfb0e1e65a9bebef24add743963024101c36053a26c249871151c1366009"
     },
     "app-ui-catalogue-update.png": {
-      "bytes": 163643,
-      "structure": "192d23b5bee6849cb137a46ac566b742359326891ced54ef93ab97c2ae179520"
+      "bytes": 163662,
+      "structure": "e0a4a561765a7e8472edfb736a39d59d05a9b3ec1680b21963e60947676e4474"
     },
     "app-ui-catalogue.png": {
-      "bytes": 176886,
-      "structure": "648b8d77f664698d9bac594cae0748d0b0b3ffba743c617529d39d1480916513"
+      "bytes": 177356,
+      "structure": "fc95d32dd6397b8c27626ad8330a95ca478a3046c0834174740812df6cce2449"
     },
     "app-ui-faq.png": {
       "bytes": 139797,
@@ -47,9 +47,9 @@
   },
   "generator": "tools/build_app_ui_mockups.py",
   "inputs": {
-    "app/src/main/assets/appfilter.xml": "6d1b284c7dc464950070e98a2c6a71986c60fecbb6381fb5ab9e66c77b615464",
+    "app/src/main/assets/appfilter.xml": "a9fbf9e36f40ea7358b0e00b3751a2b73f5c184cebb8ace3af5ac01012bfad37",
     "app/src/main/assets/manifest/wallpapers.json": "0bc4f85d2ff7d2e2c646088cd450957c5e7a58c0519be85923207356dafb3490",
-    "app/src/main/assets/version.json": "6becda62d08eb951f93fe91ff5c982b3ee124e4a7b2f776bbe3db05d84dad135",
+    "app/src/main/assets/version.json": "2601442032c86143d4e07122c32e376ced1857b3154d4804da518ed58201c176",
     "app/src/main/res/layout/activity_about.xml": "1d201c102b3b3251e6ec69f72163333db331f486cea72ac264185526fb6f289e",
     "app/src/main/res/layout/activity_auditor.xml": "98f1f377ab4224abc967d39994c07a120018d508584046272ae0139fd8baf1a7",
     "app/src/main/res/layout/activity_export_progress.xml": "3c388eb2b74cc0b5e362069cff6adfe219a4948eed7220f36a9a2d2d06d48210",
@@ -81,13 +81,13 @@
     "app/src/main/res/values/suite_hub.xml": "aff339700a9e6751b31ed189c2695e77ce18b80332f104f94e9235cdd05ef74a",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
     "tools/build_app_ui_mockups.py": "eec82c73031a7a054bde7b64ad4e9c515ea2f82b704529f0ebea742ea8fd4321",
-    "tools/catalog.json": "fd32694ebac2aed63d995f6fc8e39cc913a3fd1e93a2380093f405cd5eb1ae75",
+    "tools/catalog.json": "cc7e706eb28fb0512dd25b4f3557a846be2d35fcd0a6a1740e40beab46c71487",
     "tools/fonts/DejaVuSansMono-Bold.ttf": "2964f6dac8e6e9d71613928340f17bf868e9ea51692cca333c79e74962f02233",
     "tools/fonts/DejaVuSansMono.ttf": "0f5db4f1749979d961019838b160bec74abdf7f9eca69553fe1aa856bbff49a4",
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "bc4d7b1e286de00aa63065b56e0f3d8fbc3724c266f2adc307a10edae707209c",
+  "inputs_digest": "56934d5e5460d7920cd4808480d833e24498f137c8f9626552c0292d73186fec",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,

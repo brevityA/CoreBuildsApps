@@ -87,9 +87,9 @@ carries its one fix: the home screen fits the TV's largest text size.
 - **The component count counts each component once.** 31 icons listed a
   component twice, once in each name form (`pkg/.Activity` and
   `pkg/pkg.Activity`). The build writes both forms from one entry, so the
-  copies are folded and every appfilter is byte-identical. The pack's count
-  goes 1257 → 1226, and the unverified count 92 → 76: 16 of those copies
-  were unverified components counted twice.
+  copies are folded and every appfilter is byte-identical. Folding takes the
+  count from 1257 to 1226, and the unverified count from 92 to 76: 16 of
+  those copies were unverified components counted twice.
 - **New look-alike icons fail CI.** `tools/check_lookalikes.py` compares
   every built icon at 64 px and fails on any new pair of brands whose marks
   match at 0.80 alpha IoU or above. The 70 pairs accepted today, such as
@@ -125,8 +125,8 @@ carries its one fix: the home screen fits the TV's largest text size.
     `dovecoteescapee` namespace (#324, #333).
 
   The old components stay for older builds.
-- **Four more apps share an existing icon.** All four were reported from one
-  SHIELD (Android 11):
+- **Six more apps share an existing icon.** Four were reported from one
+  SHIELD (Android 11), and two from one Philips Google TV (TA1, Android 14):
   - Plex: current builds launch `tv.plex.app.MainActivity` (#337). The old
     `SplashActivity` mapping stays.
   - Files: SHIELD ships Android's own build, `com.android.documentsui`, which
@@ -138,6 +138,13 @@ carries its one fix: the home screen fits the TV's largest text size.
     (`tv.corebuilds.iconpack.glyphs`), now takes the Core Builds icon, the
     art it already ships with (#339). It was the one suite app the pack did
     not map.
+  - Vewd: the browser Philips ships installs as `com.vewd.core.browser`
+    (#344, listed in Spanish as *Navegador Vewd*). The pack had only the
+    `com.vewd.core.integration.dia` build, and both now share the Vewd
+    Internet Browser icon.
+  - Philips' own TV app (`org.droidtv.playtv`, the antenna and cable tuner,
+    labelled *TV*) now takes the Live TV icon, the pack's mark for a TV's
+    built-in tuner app (#345).
 - **Not-applying reports from Monet users are accepted.** The report form
   offers 12 launchers, but the auto-reply only accepted 5, so a report
   naming Monet, AT4K, Leanback on Fire, L TV Launcher, ChillHub, Apex or ADW

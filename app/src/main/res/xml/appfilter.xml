@@ -1252,6 +1252,8 @@
     <!-- Live TV -->
     <item component="ComponentInfo{com.mediatek.wwtv.tvcenter/com.mediatek.wwtv.tvcenter.nav.TurnkeyUiMainActivity}" drawable="livetv_banner"/>
     <item component="ComponentInfo{com.mediatek.wwtv.tvcenter/.nav.TurnkeyUiMainActivity}" drawable="livetv_banner"/>
+    <item component="ComponentInfo{org.droidtv.playtv/org.droidtv.playtv.PlayTvActivity}" drawable="livetv_banner"/>
+    <item component="ComponentInfo{org.droidtv.playtv/.PlayTvActivity}" drawable="livetv_banner"/>
     <!-- Live Ultra -->
     <item component="ComponentInfo{com.google.liveultra/com.google.chuangke.page.SplashActivity}" drawable="live_ultra_banner"/>
     <!-- Live Ultra+ -->
@@ -2672,6 +2674,8 @@
     <!-- Vewd Internet Browser -->
     <item component="ComponentInfo{com.vewd.core.integration.dia/com.vewd.core.browser.BrowserActivity}" drawable="vewd_internet_browser_banner"/>
     <item component="ComponentInfo{com.vewd.core.integration.dia/com.vewd.core.browser.TVActivity}" drawable="vewd_internet_browser_banner"/>
+    <item component="ComponentInfo{com.vewd.core.browser/com.vewd.core.browser.BrowserActivity}" drawable="vewd_internet_browser_banner"/>
+    <item component="ComponentInfo{com.vewd.core.browser/.BrowserActivity}" drawable="vewd_internet_browser_banner"/>
     <!-- Viaplay -->
     <item component="ComponentInfo{com.viaplay.android/com.viaplay.android.features.home.HomeActivity}" drawable="viaplay_banner"/>
     <item component="ComponentInfo{com.viaplay.android/.features.home.HomeActivity}" drawable="viaplay_banner"/>

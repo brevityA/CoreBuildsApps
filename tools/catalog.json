@@ -5743,7 +5743,8 @@
       "color": "#00BCD4",
       "glyph": "monitor_wave",
       "components": [
-        "com.mediatek.wwtv.tvcenter/.nav.TurnkeyUiMainActivity"
+        "com.mediatek.wwtv.tvcenter/.nav.TurnkeyUiMainActivity",
+        "org.droidtv.playtv/org.droidtv.playtv.PlayTvActivity"
       ],
       "category": "LIVE",
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -12076,7 +12077,8 @@
       "glyph": "vewd_browser",
       "components": [
         "com.vewd.core.integration.dia/com.vewd.core.browser.BrowserActivity",
-        "com.vewd.core.integration.dia/com.vewd.core.browser.TVActivity"
+        "com.vewd.core.integration.dia/com.vewd.core.browser.TVActivity",
+        "com.vewd.core.browser/com.vewd.core.browser.BrowserActivity"
       ],
       "category": "BROWSER",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
