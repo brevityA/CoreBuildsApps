@@ -8,15 +8,22 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
-- **9 new icons.** Flixed (#323), Background Apps & Processes (#325), Eclipse
-  (#329, #331), Porter (#330), DELTA TV (#332), ESET Smart TV Security
-  (#334), VAX Player (#335), AquaPlay (#338) and WatchBridge TV (#341). Each
-  is a new original mark, and each component was reported by the pack's
-  Missing icons scanner. Eclipse was reported on two TVs; the others on one.
+- **10 new icons.** Flixed (#323), Background Apps & Processes (#325),
+  Eclipse (#329, #331), Porter (#330), DELTA TV (#332), ESET Smart TV
+  Security (#334), VAX Player (#335), AquaPlay (#338), WatchBridge TV (#341)
+  and Uyanik TV. Each is a new original mark, and each component was
+  reported by the pack's Missing icons scanner. Eclipse was reported on two
+  TVs; the others on one. Uyanik TV came from scanner screenshots shared
+  directly, not an issue.
   - Each takes the colour sampled from its own icon: the Google Play listing
     (Background Apps & Processes, DELTA TV, ESET, WatchBridge TV), the app's
-    site (Flixed, Eclipse, AquaPlay), its GitHub repository (Porter) or the
-    TV banner inside its APK (VAX Player).
+    site (Flixed, Eclipse, AquaPlay), its GitHub repository (Porter), the TV
+    banner inside its APK (VAX Player) or the launcher icon in the scanner
+    screenshot (Uyanik TV).
+  - Uyanik TV's mark is an infinity loop with a play triangle in its right
+    loop. AllDebrid's bare infinity loop is not among its four closest
+    matches. Its closest, IP Address and DNS Changer at 0.768 alpha IoU, share
+    only a wide, low silhouette: a pill and a DNS wordmark.
   - WatchBridge TV maps the sideloaded `com.tunombre.tvbridge` the TV
     reported. Its Play build, `com.tunombre.tvbridge.play`, has no report
     yet.
@@ -31,9 +38,9 @@ All notable changes to the Core Builds Icon Pack. Format follows
     VAX Player under Missing icons, and one report adds it.
   - VAX Player's first draft, a play outline with a V inside, matched Nuvio
     and IPTV3U at 0.82–0.83 alpha IoU. It is now an open V holding a solid
-    play triangle. The closest match to any of the nine new icons in the
-    built pack is now 0.694 (VAX Player and Voltra TV).
-  - 1002 → 1011 icons, 1241 → 1256 components.
+    play triangle. Its closest match in the built pack is now 0.694 (Voltra
+    TV).
+  - 1002 → 1012 icons, 1241 → 1257 components.
 
 ### Fixed
 

@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 1011
+    "count": 1012
   },
   "icons": [
     {
@@ -14285,6 +14285,20 @@
       "color_source": "sampled from the Google Play launcher icon (com.tunombre.tvbridge.play): the screen's cyan #38C8F8, the light end of its cyan-to-violet gradient (2026-10-17)",
       "color_reviewed": "2026-10-17",
       "glyph_source": "original Core monoline mark: a screen with a play triangle carried on an arch bridge - the link from a TV recommendation to the app that plays it; no vendor art traced (2026-10-17)"
+    },
+    {
+      "name": "Uyanik TV",
+      "drawable": "uyaniktv",
+      "color": "#880038",
+      "glyph": "uyaniktv_loop",
+      "components": [
+        "com.makersoft.uyaniktv/com.makersoft.uyaniktv.MainActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "device-reported via the pack's Missing icons scanner (device screenshots shared 2026-10-18; Projectivy Launcher, 38 launchable apps checked, Uyanik TV the one without an icon): com.makersoft.uyaniktv/com.makersoft.uyaniktv.MainActivity is the activity the launcher opened for Uyanik TV on that device. Not confirmed on a second TV",
+      "color_source": "sampled from the launcher icon in the scanner screenshot (a device screenshot, not a photo of the screen): the disc's maroon #880038 (2026-10-18)",
+      "color_reviewed": "2026-10-18",
+      "glyph_source": "original Core monoline mark: an infinity loop with a solid play triangle in its right loop - the app's always-on loop and its action; no vendor art traced (2026-10-18)"
     }
   ],
   "artwork": {

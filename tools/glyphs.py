@@ -9313,3 +9313,16 @@ def watchbridge_arch(c):
 
 
 GLYPHS.update({"aquaplay_wave": aquaplay_wave, "watchbridge_arch": watchbridge_arch})
+
+
+def uyaniktv_loop(c):
+    """Uyanik TV: an infinity loop with a solid play triangle in its right
+    loop - the app's always-on loop and its action. Kept apart from
+    alldebrid_infinity (a bare loop) by the play cue and the wider, flatter
+    loop."""
+    return (f'<path d="M 256 256 C 312 168 440 168 440 256 C 440 344 312 344 256 256 '
+            f'C 200 168 72 168 72 256 C 72 344 200 344 256 256 Z" {_s(c, 32)}/>'
+            f'<path d="M 340 226 L 390 256 L 340 286 Z" {_f(c)}/>')
+
+
+GLYPHS.update({"uyaniktv_loop": uyaniktv_loop})

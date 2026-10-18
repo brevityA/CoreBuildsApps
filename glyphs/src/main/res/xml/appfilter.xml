@@ -2653,6 +2653,9 @@
     <item component="ComponentInfo{com.tcl.usercenter/.activity.WelActivity}" drawable="user_center"/>
     <!-- UStreme -->
     <item component="ComponentInfo{com.maz.tvod169/com.maz.activities.ViewerLaunchActivity}" drawable="tvod169"/>
+    <!-- Uyanik TV -->
+    <item component="ComponentInfo{com.makersoft.uyaniktv/com.makersoft.uyaniktv.MainActivity}" drawable="uyaniktv"/>
+    <item component="ComponentInfo{com.makersoft.uyaniktv/.MainActivity}" drawable="uyaniktv"/>
     <!-- VAX Player -->
     <item component="ComponentInfo{com.vaapp.app/com.vaapp.app.MainActivityAlt}" drawable="vax_player"/>
     <item component="ComponentInfo{com.vaapp.app/.MainActivityAlt}" drawable="vax_player"/>

@@ -909,6 +909,7 @@
         <item>androidtv_9</item>
         <item>user_center</item>
         <item>tvod169</item>
+        <item>uyaniktv</item>
         <item>vax_player</item>
         <item>vbtv</item>
         <item>veezie</item>
@@ -1922,6 +1923,7 @@
         <item>USA Network</item>
         <item>User Center</item>
         <item>UStreme</item>
+        <item>Uyanik TV</item>
         <item>VAX Player</item>
         <item>VBTV</item>
         <item>Veezie</item>
@@ -2935,6 +2937,7 @@
         <item>APP</item>
         <item>SYSTEM</item>
         <item>APP</item>
+        <item>LIVE</item>
         <item>PLAYER</item>
         <item>APP</item>
         <item>APP</item>
@@ -3995,6 +3998,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -4053,5 +4057,5 @@
         <item>1</item>
         <item>1</item>
     </integer-array>
-    <integer name="icon_count">1011</integer>
+    <integer name="icon_count">1012</integer>
 </resources>

@@ -1,6 +1,6 @@
 # Supported applications
 
-`1011` icons · `1256` mapped components · pack v2.4.3
+`1012` icons · `1257` mapped components · pack v2.4.3
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -915,6 +915,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | USA Network | `androidtv_9` | `#F83837` | `#F83837` | `com.nbcu.tve.usatv.androidtv/com.nbc.nbctvapp.ui.main.view.MainActivity` |
 | User Center | `user_center` | `#F04DE0` | `#F04DE0` | `com.tcl.usercenter/com.tcl.usercenter.activity.WelActivity` |
 | UStreme | `tvod169` | `#BB9836` | `#BB9836` | `com.maz.tvod169/com.maz.activities.ViewerLaunchActivity` |
+| Uyanik TV | `uyaniktv` | `#880038` | `#C0004F` | `com.makersoft.uyaniktv/com.makersoft.uyaniktv.MainActivity` |
 | VAX Player | `vax_player` | `#20B8A8` | `#20B8A8` | `com.vaapp.app/com.vaapp.app.MainActivityAlt` |
 | VBTV | `vbtv` | `#C7F300` | `#C7F300` | `dce.fivb.volleyballtv/com.applicaster.ui.activities.MainActivity` |
 | Veezie | `veezie` | `#FF4D4D` | `#FF4D4D` | `st.veezie/st.veezie.MainActivity` |
