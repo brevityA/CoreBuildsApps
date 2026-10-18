@@ -1,15 +1,20 @@
 {
-  "versionCode": 55,
-  "versionName": "2.4.2",
-  "iconCount": 1002,
-  "componentCount": 1241,
-  "releaseDate": "2026-10-15",
+  "versionCode": 57,
+  "versionName": "2.4.4",
+  "iconCount": 1012,
+  "componentCount": 1228,
+  "releaseDate": "2026-10-18",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Re-rendered live loops play their new animation",
-    "Circuit Core thumbnails show the wallpapers they open",
-    "Six walls redrawn in 2.3.3 open their new picture"
+    "10 new icons",
+    "28 icons are redrawn, resized or re-centred",
+    "The component count counts each component once",
+    "New look-alike icons fail CI",
+    "Download on the update bar works with the remote",
+    "Setting a wallpaper no longer crashes when you move to the next one",
+    "Weyd and ByeByeDPI icons apply on current builds",
+    "Six more apps share an existing icon"
   ]
 }
