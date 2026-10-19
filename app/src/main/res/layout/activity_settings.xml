@@ -575,6 +575,118 @@
             android:textSize="@dimen/cb_text_label" />
     </LinearLayout>
 
+    <!-- CORE BUILDS PLUS (Google Play build only; SettingsActivity shows the
+         group once Plus is on sale or owned). Each row's value reads "Plus"
+         until it is owned, and pressing a locked row opens the Plus card. -->
+    <LinearLayout
+        android:id="@+id/set_plus_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_md"
+        android:fontFamily="monospace"
+        android:letterSpacing="0.16"
+        android:text="@string/settings_group_plus"
+        android:textColor="@color/cb_signal_cyan"
+        android:textSize="@dimen/cb_text_kicker"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/set_rotate_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/bg_card"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/cb_card_padding">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_rotate_title"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_body"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/settings_rotate_sub"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/set_rotate_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/cb_space_md"
+            android:fontFamily="monospace"
+            android:textColor="@color/cb_signal_cyan"
+            android:textSize="@dimen/cb_text_label" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/set_requests_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/bg_card"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/cb_card_padding">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/settings_requests_title"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_body"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/settings_requests_sub"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/set_requests_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/cb_space_md"
+            android:fontFamily="monospace"
+            android:textColor="@color/cb_signal_cyan"
+            android:textSize="@dimen/cb_text_label" />
+    </LinearLayout>
+    </LinearLayout>
+
     <!-- HELP -->
     <TextView
         android:layout_width="wrap_content"

@@ -247,7 +247,8 @@ class LoopCatalogueTests(unittest.TestCase):
         self.assertEqual(self.loops_body.count("stillSeries = ICON_ECHO_SERIES"), 12)
         self.assertNotIn("series = CINEMA_SERIES", self.loops_body)
         browser = kt("WallpapersActivity.kt")
-        self.assertIn("all.filter { !it.isLive }.map { it.series }.distinct()", browser)
+        # Plus walls (Google Play) have their own chip too; see test_play_build.
+        self.assertIn("all.filter { !it.isLive && !it.plus }.map { it.series }.distinct()", browser)
         manifest = json.loads(read(ROOT / "Wallpapers" / "manifest.json"))
         series = {w["series"] for w in manifest["wallpapers"]}
         self.assertNotIn("series-live", series, "the Live set is not a stills folder")
@@ -459,7 +460,7 @@ class BrowserIntegrationTests(unittest.TestCase):
 
     def test_browser_appends_the_loops_to_the_catalog(self):
         src = kt("WallpapersActivity.kt")
-        self.assertIn("WallpaperCatalog.load(this) + LiveLoop.asWallpapers()", src)
+        self.assertIn("WallpaperCatalog.load(this) + plusWalls + LiveLoop.asWallpapers()", src)
 
     def test_bulk_save_routes_loops_to_movies(self):
         # A loop is saved like a still, but as video into Movies/CoreBuilds
@@ -471,11 +472,12 @@ class BrowserIntegrationTests(unittest.TestCase):
         self.assertIn("WallpaperSetter.copyFileToMovies(context, file, loop.fileName)", src)
         self.assertIn("WallpaperSetter.alreadyExportedVideo(", src)
         act = kt("WallpapersActivity.kt")
-        self.assertIn("startExport(adapter.selectedItems())", act)
+        # Back from the storage prompt, through the same gate as the button.
+        self.assertIn("if (granted) beginExport(adapter.selectedItems())", act)
 
     def test_adapter_badges_and_describes_live_tiles(self):
         src = kt("WallpaperAdapter.kt")
-        self.assertIn("holder.badge.visibility = if (item.isLive)", src)
+        self.assertIn("holder.badge.visibility = if (item.isLive || item.plus)", src)
         self.assertIn("R.string.wp_live_spoken", src)
 
     def test_loops_are_selectable_for_bulk_save(self):

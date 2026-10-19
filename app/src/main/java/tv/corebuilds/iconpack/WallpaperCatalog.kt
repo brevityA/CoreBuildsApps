@@ -42,7 +42,13 @@ data class Wallpaper(
      * or "" for walls that predate the field. The browser's New chip shows
      * the walls carrying the newest value in the manifest.
      */
-    val since: String = ""
+    val since: String = "",
+    /**
+     * A Core Builds Plus wall (Wallpapers/plus-manifest.json, series 15):
+     * listed only in the Google Play build, and opened or saved only with
+     * Plus owned.
+     */
+    val plus: Boolean = false
 ) : Parcelable {
 
     private constructor(parcel: Parcel) : this(
@@ -53,7 +59,8 @@ data class Wallpaper(
         resolution = parcel.readString().orEmpty(),
         thumbAsset = parcel.readString().orEmpty(),
         isLive = parcel.readInt() == 1,
-        since = parcel.readString().orEmpty()
+        since = parcel.readString().orEmpty(),
+        plus = parcel.readInt() == 1
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -65,6 +72,7 @@ data class Wallpaper(
         parcel.writeString(thumbAsset)
         parcel.writeInt(if (isLive) 1 else 0)
         parcel.writeString(since)
+        parcel.writeInt(if (plus) 1 else 0)
     }
 
     override fun describeContents(): Int = 0
@@ -100,6 +108,10 @@ object WallpaperCatalog {
     private const val MANIFEST = "manifest/wallpapers.json"
     const val THUMB_DIR = "wallpapers_thumbs"
 
+    /** Core Builds Plus walls: bundled by the play build type only (src/play/assets). */
+    private const val PLUS_MANIFEST = "manifest/plus-wallpapers.json"
+    const val PLUS_THUMB_DIR = "plus_thumbs"
+
     /**
      * Load the bundled manifest. Returns an empty list if the asset is missing
      * or malformed rather than crashing — the browser simply shows nothing.
@@ -111,6 +123,23 @@ object WallpaperCatalog {
             android.util.Log.e("CoreBuilds/WP", "manifest missing", e)
             return emptyList()
         }
+        return parse(json, THUMB_DIR, plus = false)
+    }
+
+    /**
+     * The Core Builds Plus walls, or none: a GitHub build has no such asset,
+     * which is not an error, so nothing is logged.
+     */
+    fun loadPlus(context: Context): List<Wallpaper> {
+        val json = try {
+            context.assets.open(PLUS_MANIFEST).bufferedReader().use { it.readText() }
+        } catch (_: Exception) {
+            return emptyList()
+        }
+        return parse(json, PLUS_THUMB_DIR, plus = true)
+    }
+
+    private fun parse(json: String, thumbDir: String, plus: Boolean): List<Wallpaper> {
         val root = JSONObject(json)
         val arr = root.optJSONArray("wallpapers") ?: return emptyList()
         val out = ArrayList<Wallpaper>(arr.length())
@@ -124,8 +153,9 @@ object WallpaperCatalog {
                 url = url,
                 thumbUrl = o.optString("thumb"),
                 resolution = o.optString("resolution"),
-                thumbAsset = "$THUMB_DIR/${url.substringAfterLast('/').substringBeforeLast('.')}.jpg",
-                since = o.optString("since")
+                thumbAsset = "$thumbDir/${url.substringAfterLast('/').substringBeforeLast('.')}.jpg",
+                since = o.optString("since"),
+                plus = plus
             )
         }
         return out

@@ -186,6 +186,8 @@ class AuditorActivity : TvActivity() {
                                PlusStore.purchaseToken(this)) { issue ->
             requestInFlight = false
             if (issue > 0) {
+                // My requests (Core Builds Plus) lists it; a no-op off Play.
+                RequestLog.record(this, issue, item.label, item.component, item.mapped)
                 Toast.makeText(this,
                                getString(R.string.audit_request_sent_fmt, issue),
                                Toast.LENGTH_LONG).show()

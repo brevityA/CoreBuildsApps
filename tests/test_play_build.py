@@ -238,7 +238,11 @@ class Plus(unittest.TestCase):
         self.assertIn('if (plusToken != null) put("plus_token", plusToken)', sender)
         self.assertIn("PlusStore.purchaseToken(this)", read(KT / "AuditorActivity.kt"))
         users = sorted(p.name for p in KT.glob("*.kt") if "purchaseToken(" in read(p))
-        self.assertEqual(users, ["AuditorActivity.kt"])
+        self.assertEqual(users, ["AuditorActivity.kt", "Plus.kt"])
+        # Plus.kt only asks whether there is one; it never passes it on.
+        plus = read(KT / "Plus.kt")
+        self.assertEqual(re.findall(r"purchaseToken\([^)]*\)[^\n]*", plus),
+                         ["purchaseToken(context) != null"])
 
     def test_purchases_are_acknowledged_and_refunds_clear_the_token(self):
         play = read(self.PLAY)
@@ -246,6 +250,83 @@ class Plus(unittest.TestCase):
         self.assertIn("storeToken(activity, null)", play)
         self.assertIn('PRODUCT_ID = "core_builds_plus"', play)
         self.assertIn("enableOneTimeProducts()", play)
+
+
+class PlusExtras(unittest.TestCase):
+    """What Plus unlocks beyond priority, and that none of it reaches a GitHub build."""
+
+    def test_extras_appear_only_where_plus_is_sold(self):
+        plus = read(KT / "Plus.kt")
+        shown = plus.split("fun shown(", 1)[1].split("\n\n", 1)[0]
+        self.assertIn("PlusStore.AVAILABLE", shown)
+        self.assertIn("audit_request_endpoint", shown)
+        owned = plus.split("fun owned(", 1)[1].split("\n\n", 1)[0]
+        self.assertIn("PlusStore.AVAILABLE &&", owned)
+        settings = read(APP / "src/main/res/layout/activity_settings.xml")
+        group = settings.split('android:id="@+id/set_plus_group"', 1)[1].split(">", 1)[0]
+        self.assertIn('android:visibility="gone"', group)
+        self.assertIn("if (Plus.shown(this))", read(KT / "SettingsActivity.kt"))
+        self.assertIn("if (Plus.shown(this))", read(KT / "AboutActivity.kt"))
+        self.assertIn("if (Plus.shown(this)) WallpaperCatalog.loadPlus(this)",
+                      read(KT / "WallpapersActivity.kt"))
+
+    def test_locked_controls_open_the_plus_card(self):
+        unlocked = read(KT / "Plus.kt").split("fun unlocked(", 1)[1].split("\n    }\n", 1)[0]
+        self.assertIn("SupportActivity::class.java", unlocked)
+        settings = read(KT / "SettingsActivity.kt")
+        self.assertEqual(settings.count("if (Plus.unlocked(this))"), 2)
+        browser = read(KT / "WallpapersActivity.kt")
+        self.assertIn("if (item.plus && !Plus.unlocked(this)) return@WallpaperAdapter", browser)
+        # The preview pages through its list: locked walls never go in it.
+        self.assertIn("adapter.currentItems().filter { !it.plus || owned }", browser)
+        self.assertIn("picked.filter { !it.plus || owned }", browser)
+        self.assertNotIn("startExport(adapter.selectedItems())", browser)
+        # And My requests refuses to open without Plus, whatever started it.
+        requests = read(KT / "RequestsActivity.kt")
+        self.assertLess(requests.index("if (!Plus.owned(this))"), requests.index("setContentView"))
+
+    def test_rotation_runs_in_the_wallpaper_engine_and_needs_plus(self):
+        engine = read(KT / "LiveWallpaperService.kt")
+        self.assertIn("if (shown) LoopRotation.advanceIfDue(applicationContext)", engine)
+        rotation = read(KT / "LoopRotation.kt")
+        due = rotation.split("fun advanceIfDue(", 1)[1]
+        self.assertLess(due.index("Plus.owned(context)"), due.index("Prefs.setLiveLoopId"))
+        # It only ever plays what is already on the TV; the engine never downloads.
+        self.assertIn("LiveLoopDownloader.playable(context, it) != null", rotation)
+        self.assertNotIn("fetch(", rotation)
+        # A hand-picked loop restarts the interval.
+        prefs = read(KT / "Prefs.kt")
+        setter = prefs.split("fun setLiveLoopId(", 1)[1].split("\n    }\n", 1)[0]
+        self.assertIn("KEY_LIVE_LOOP_CHANGED_AT", setter)
+        # Every interval the row cycles through has its own label.
+        self.assertIn("val HOURS = intArrayOf(0, 1, 6, 24)", rotation)
+        labels = read(KT / "SettingsActivity.kt").split("private fun showPlusRows()", 1)[1]
+        for hours, name in ((1, "settings_rotate_hour"), (6, "settings_rotate_6h"),
+                            (24, "settings_rotate_day")):
+            self.assertIn(f"{hours} -> R.string.{name}", labels)
+
+    def test_my_requests_records_only_on_play_and_reads_github_by_number(self):
+        log = read(KT / "RequestLog.kt")
+        self.assertIn("if (!PlusStore.AVAILABLE || issue <= 0) return", log)
+        status = read(KT / "RequestStatus.kt")
+        self.assertIn('"https://api.github.com/repos/brevityA/CoreBuildsApps/issues/"', status)
+        self.assertIn('PRIORITY_LABEL = "priority"', status)
+        broker = read(ROOT / "tools/icon_request_broker/constants.mjs")
+        self.assertIn('PRIORITY_LABEL = "priority"', broker)
+        screen = read(KT / "RequestsActivity.kt")
+        self.assertIn("unchecked.drop(MAX_CHECKS)", screen)
+        self.assertIn("R.string.requests_state_later", screen)
+        auditor = read(KT / "AuditorActivity.kt")
+        self.assertIn("RequestLog.record(this, issue, item.label, item.component, item.mapped)", auditor)
+        # About and the policy list the reads.
+        self.assertIn('android:id="@+id/about_network_tracker"',
+                      read(APP / "src/main/res/layout/activity_about.xml"))
+        self.assertIn("My requests", read(ROOT / "PRIVACY.md"))
+
+    def test_plus_walls_ship_in_the_play_build_only(self):
+        self.assertTrue((APP / "src/play/assets/manifest/plus-wallpapers.json").exists())
+        self.assertFalse((APP / "src/main/assets/manifest/plus-wallpapers.json").exists())
+        self.assertFalse(list((APP / "src/main/assets").rglob("*spectra*")))
 
 
 if __name__ == "__main__":

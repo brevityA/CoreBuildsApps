@@ -89,6 +89,9 @@ class MainActivity : TvActivity() {
         Prefs.applyChrome(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        // Google Play only (a no-op elsewhere): settle Core Builds Plus with
+        // Play once per process, so its extras follow purchases and refunds.
+        PlusStore.sync(this)
 
         pickMode = IconPicker.isPickRequest(intent)
         if (pickMode) {

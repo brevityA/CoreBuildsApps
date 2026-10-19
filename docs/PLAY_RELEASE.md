@@ -13,10 +13,19 @@ builds so neither ever updates the other:
 | Devices | Android TV only (`leanback` required) | any |
 
 **Core Builds Plus** is one managed product, `core_builds_plus`, bought once.
-It changes the order icon requests are done in, nothing else: every icon,
-wallpaper and screen ships to everyone. A Plus owner's one-press request
-carries their Play purchase token; the request broker asks Google whether
-it is a real, unrefunded purchase and labels the issue `priority`.
+Every icon, the 132-wall collection and every screen ship to everyone, on
+Play and GitHub alike. Plus adds four things, on Google Play only:
+
+| Extra | Where | How it works |
+|---|---|---|
+| Priority requests | Missing icons | The one-press request carries the Play purchase token; the broker checks it with Google and labels the issue `priority` |
+| My requests | Settings | Each request's issue state, read from GitHub's API by number |
+| Live loop rotation | Settings | The wallpaper engine moves to the next downloaded loop as the home screen comes back (hourly, 6-hourly or daily) |
+| Spectra (series 15) | Wallpapers, Plus chip | 12 4K walls, indexed by `Wallpapers/plus-manifest.json`, thumbs bundled into the Play build only |
+
+Only priority is checked off the TV, because only priority reaches other
+people. The other three unlock on the TV's own Play-confirmed purchase,
+which the app re-reads from Play at every start.
 
 This page is the order to do things in. Steps marked **repo** are done in
 this repository; everything else is the owner's, in Play Console and
@@ -30,6 +39,7 @@ Google Cloud. Facts that can change are dated and sourced at the bottom.
 | TV-only Play manifests (`leanback` required) | done; see step 7 for why |
 | Target API | `targetSdk = 34`: the floor for Android TV apps. Phones would need 36 |
 | Play Billing 8.0.0, Plus screen, token on requests | done, `tests/test_play_build.py` (`Plus`) |
+| Plus extras: My requests, loop rotation, Spectra | done, `tests/test_play_build.py` (`PlusExtras`), `tests/test_wallpapers.py` (`PlusCollectionTests`) |
 | Broker checks Plus with Google, labels `priority` | done, `tools/icon_request_broker/` (50 tests) |
 | Broker deploy pushes the Plus key | done in Core-Builds `deploy-icon-request-broker.yml` |
 | `play.yml` builds both signed bundles | done; hand-run from `main` |
@@ -133,6 +143,9 @@ that bakes the endpoint in.
 | Financial info → **Purchase history** | Yes, optional | No | App functionality | Only from Plus owners: the purchase token, checked with Google. Not stored; a SHA-256 of it is cached for at most six hours |
 | Everything else | No | No | | No account, analytics, location or identifiers |
 
+*My requests* reads public GitHub issues by number, the same kind of
+public-content fetch as a wallpaper download, so it adds no data type.
+
 Also answer: data is **encrypted in transit** (HTTPS everywhere), and users
 **can ask for deletion** (an issue on the repo; the cached data expires by
 itself). The TV model and Android version sent with a request match no
@@ -185,8 +198,10 @@ Draft copy for the icon pack (house voice: numbers, no adjectives):
 > Missing icons lists the apps on your TV the pack does not draw yet. Press
 > one to request it.
 >
-> Core Builds Plus (optional, one purchase) marks your icon requests
-> priority. Every icon, wallpaper and screen ships to everyone either way.
+> Core Builds Plus (optional, one purchase) adds priority icon requests,
+> My requests, live loop rotation and Spectra, 12 more wallpapers. Every
+> icon, the 132-wall collection and every screen ship to everyone either
+> way.
 >
 > No account, no ads, no analytics. About lists everything the app sends.
 
@@ -210,8 +225,9 @@ Play Console only offers in-app products once a bundle with the
 1. *Monetize with Play → Products → One-time products → Create*.
 2. Product ID **`core_builds_plus`**: it must match `PlusStore.PRODUCT_ID`
    and the broker's `PLUS_PRODUCT_ID`, and an ID can never be reused.
-3. Name `Core Builds Plus`; description `Marks your icon requests priority.
-   One purchase, no subscription.`
+3. Name `Core Builds Plus`; description (200 characters max):
+   `Priority icon requests, My requests, live loop rotation and the 12
+   Spectra wallpapers. One purchase, no subscription.`
 4. One purchase option, **Buy**, $2.99 USD, local prices filled in by Play.
    No offers: the app reads the default option's price.
 5. Activate.
@@ -244,8 +260,11 @@ priority requests are the whole of what it adds.
 
 1. **Internal testing** (up to 100 testers, available within minutes, no
    review): upload both bundles, add yourself, install on a TV from the
-   Play Store link. Buy Plus as a license tester; check About, Support,
-   and that a request is filed with `priority`.
+   Play Store link. Buy Plus as a license tester, then check each extra:
+   a request is filed with `priority`; *My requests* lists it; *Rotate
+   live loops* set to every hour moves the live wallpaper after an hour
+   (with two or more loops downloaded); the Plus chip's walls open and
+   download. Before buying, each of those must open the Plus card instead.
 2. **Closed testing** (personal accounts: the 12 × 14 rule). Make a Google
    Group, share its opt-in link (r/CoreBuilds is the obvious place), and
    keep more than 12 opted in: testers who leave can break the 14-day run.
@@ -275,7 +294,8 @@ priority requests are the whole of what it adds.
 
 - No device has bought Plus. Internal testing (step 11.1) is the first
   real proof of the purchase sheet on a TV and of the broker's `priority`
-  label.
+  label. Loop rotation, My requests and the Spectra lock have only been
+  compiled and source-tested, not run on a TV.
 - The Data safety answers above are our reading of Google's form; a
   reviewer has the last word.
 - Fees, target API floors and tester rules are Google's and change. They

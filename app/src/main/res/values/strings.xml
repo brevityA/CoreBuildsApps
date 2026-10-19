@@ -32,6 +32,7 @@
     <string name="chip_all">All</string>
     <string name="chip_new_fmt">New (%1$d)</string>
     <string name="chip_live">Live</string>
+    <string name="chip_plus">Plus</string>
     <string name="chip_brandmarks">Brandmarks</string>
     <string name="icon_selected_fmt">%1$s · %2$s. Assign it from the launcher icon picker if it did not auto-apply.</string>
     <string name="picker_hint">Tap an icon to assign it to the app.</string>
@@ -194,6 +195,9 @@
     <string name="wp_done">Done</string>
     <string name="wp_live_badge">LIVE</string>
     <string name="wp_live_spoken">, live wallpaper</string>
+    <string name="wp_plus_badge">PLUS</string>
+    <string name="wp_plus_spoken">, Core Builds Plus wallpaper</string>
+    <string name="wp_plus_held_fmt">Plus walls left out (%1$d): they need Core Builds Plus.</string>
     <string name="wp_set_live">Set live wallpaper</string>
     <string name="wp_save_for_monet">Save for Monet</string>
     <string name="wp_live_sub">Plays on the home screen. Downloads once, then runs offline.</string>
@@ -235,6 +239,30 @@
     <string name="settings_appinfo_title">Launcher app info</string>
     <string name="settings_appinfo_sub">The system page for the detected launcher. Force Stop there clears a bitmap cache re-applying cannot reach.</string>
     <string name="settings_group_suite">SUITE</string>
+    <string name="settings_group_plus">CORE BUILDS PLUS</string>
+    <string name="settings_rotate_title">Rotate live loops</string>
+    <string name="settings_rotate_sub">The live wallpaper moves to your next downloaded loop when you come back home after this long.</string>
+    <string name="settings_rotate_off">Off</string>
+    <string name="settings_rotate_hour">Every hour</string>
+    <string name="settings_rotate_6h">Every 6 hours</string>
+    <string name="settings_rotate_day">Every day</string>
+    <string name="settings_requests_title">My requests</string>
+    <string name="settings_requests_sub">Every icon you requested from this TV, and how far each one has got.</string>
+    <string name="settings_requests_open">Open</string>
+    <string name="settings_plus_locked">Plus</string>
+    <string name="requests_label">My requests</string>
+    <string name="requests_kicker">CORE BUILDS PLUS</string>
+    <string name="requests_summary_fmt">Requested from this TV: %1$d \u00b7 in this pack: %2$d \u00b7 drawn, waiting for an update: %3$d</string>
+    <string name="requests_empty">Nothing requested from this TV yet. Press an app under Missing icons and its request appears here.</string>
+    <string name="requests_issue_fmt">#%1$d \u00b7 %2$s</string>
+    <string name="requests_state_checking">Checking\u2026</string>
+    <string name="requests_state_in_pack">In this pack</string>
+    <string name="requests_state_done">Drawn: update to get it</string>
+    <string name="requests_state_priority">Open, priority</string>
+    <string name="requests_state_open">Open</string>
+    <string name="requests_state_closed">Closed without an icon</string>
+    <string name="requests_state_unknown">GitHub did not answer</string>
+    <string name="requests_state_later">Checked on a later visit</string>
     <string name="settings_group_help">HELP</string>
     <string name="settings_faq_title">Troubleshooting and FAQ</string>
     <string name="settings_faq_sub">Stale icons, manual overrides, Monet handoffs, unmapped apps. The repo docs, readable from the sofa.</string>
@@ -345,6 +373,7 @@
     <string name="about_network_two">2.  A request for each wallpaper or live loop you choose to download, and for Core Builds Glyphs Pack the first time you switch the art style to Glyphs.</string>
     <string name="about_network_none">That is the whole list. No analytics, no installed-app list, no device model, no identifier. Icons ship inside the app and are never fetched.</string>
     <string name="about_network_request">3.  When you press an app under Missing icons: its name and component, and this TV\'s model, Android version and pack version, so the request can be filed.</string>
+    <string name="about_network_tracker">4.  With Core Builds Plus, when you open My requests: one request to GitHub for each of your requests\' issue, by number, to show how far it has got.</string>
     <string name="about_network_none_request">That is the whole list. No analytics, no installed-app list, no identifier. Icons ship inside the app and are never fetched.</string>
     <string name="about_links">LINKS</string>
     <!-- About > Check for updates. The row's title is the button through the
@@ -385,12 +414,12 @@
     <string name="plus_loading">Asking Google Play\u2026</string>
     <string name="plus_loading_button">Plus</string>
     <string name="plus_buy_fmt">Get Plus \u00b7 %1$s</string>
-    <string name="plus_for_sale">One purchase, no subscription. Every icon request you press is marked priority and done first.</string>
-    <string name="plus_owned">Plus is active on this Google account. Your icon requests are marked priority. Thank you.</string>
+    <string name="plus_for_sale">One purchase, no subscription: priority icon requests, My requests, live loop rotation and the 12 Spectra wallpapers.</string>
+    <string name="plus_owned">Plus is active on this Google account: priority requests, My requests (Settings), loop rotation (Settings) and Spectra (Wallpapers). Thank you.</string>
     <string name="plus_owned_button">Plus is active</string>
     <string name="plus_pending">Payment pending. Plus switches on when Google Play confirms it.</string>
     <string name="plus_pending_button">Pending</string>
     <string name="plus_unavailable_fmt">Google Play can\'t sell Plus here: %1$s.</string>
     <string name="plus_unavailable_button">Unavailable</string>
-    <string name="plus_not_yet">Plus goes on sale when priority icon requests are live. There is nothing to buy yet.</string>
+    <string name="plus_not_yet">Plus goes on sale when one-press icon requests are live, since priority is part of it. There is nothing to buy yet.</string>
 </resources>

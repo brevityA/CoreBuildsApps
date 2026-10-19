@@ -27,8 +27,9 @@ import com.android.billingclient.api.QueryPurchasesParams
  * unrefunded purchase before it labels the issue priority. The app itself
  * grants nothing on the token's word, so a copied token buys nothing either.
  *
- * Every screen visit re-reads Play's own list of purchases, so a refund
- * clears the stored token the next time Support opens.
+ * Every app start ([sync]) and every Support visit re-read Play's own list
+ * of purchases, so a refund or a reinstall settles the stored token without
+ * anyone opening Support.
  */
 object PlusStore {
     const val AVAILABLE = true
@@ -51,6 +52,52 @@ object PlusStore {
 
     fun session(activity: Activity, onState: (PlusState) -> Unit): PlusSession =
         BillingSession(activity, onState).also { it.start() }
+
+    @Volatile private var synced = false
+
+    /**
+     * Once per process, quietly: ask Play what this account owns and make the
+     * stored token agree. A purchase made on another TV, one that cleared
+     * after being pending, and a refund all land here. Any failure leaves the
+     * token as it was; Support's own refresh is the fallback.
+     */
+    fun sync(context: Context) {
+        if (synced) return
+        synced = true
+        val app = context.applicationContext
+        val client = BillingClient.newBuilder(app)
+            .setListener { _, _ -> }
+            .enablePendingPurchases(PendingPurchasesParams.newBuilder().enableOneTimeProducts().build())
+            .build()
+        client.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(result: BillingResult) {
+                if (result.responseCode != BillingResponseCode.OK) {
+                    client.endConnection()
+                    return
+                }
+                val params = QueryPurchasesParams.newBuilder().setProductType(ProductType.INAPP).build()
+                client.queryPurchasesAsync(params) { answer, purchases ->
+                    if (answer.responseCode != BillingResponseCode.OK) {
+                        client.endConnection()
+                        return@queryPurchasesAsync
+                    }
+                    val plus = purchases.firstOrNull {
+                        PRODUCT_ID in it.products && it.purchaseState == Purchase.PurchaseState.PURCHASED
+                    }
+                    storeToken(app, plus?.purchaseToken)
+                    if (plus != null && !plus.isAcknowledged) {
+                        val ack = AcknowledgePurchaseParams.newBuilder()
+                            .setPurchaseToken(plus.purchaseToken).build()
+                        client.acknowledgePurchase(ack) { client.endConnection() }
+                    } else {
+                        client.endConnection()
+                    }
+                }
+            }
+
+            override fun onBillingServiceDisconnected() = Unit
+        })
+    }
 
     private class BillingSession(
         private val activity: Activity,

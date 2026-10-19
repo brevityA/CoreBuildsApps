@@ -65,6 +65,9 @@ class AboutActivity : TvActivity() {
             findViewById<View>(R.id.about_network_request).visibility = View.VISIBLE
             findViewById<TextView>(R.id.about_network_none).setText(R.string.about_network_none_request)
         }
+        if (Plus.shown(this)) {
+            findViewById<View>(R.id.about_network_tracker).visibility = View.VISIBLE
+        }
 
         findViewById<View>(R.id.about_source).setOnClickListener {
             open(getString(R.string.about_source_url))

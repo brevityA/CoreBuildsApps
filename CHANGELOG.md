@@ -20,15 +20,26 @@ All notable changes to the Core Builds Icon Pack. Format follows
   are unchanged. Both Play apps require Android TV: Play would otherwise
   list them for phones, where the target API floor is 36 rather than 34.
 - **Core Builds Plus, on Google Play only.** A one-time purchase
-  (`core_builds_plus`, $2.99) through Play Billing that marks your icon
-  requests priority, and changes nothing else: every icon, wallpaper and
-  screen still ships to everyone. It replaces the Sponsors and Ko-fi codes
-  on the Play build's Support screen, which Play's Payments policy rules
-  out, and goes on sale only once the request broker is baked in. A Plus
-  owner's one-press request carries the Play purchase token; the broker
-  checks it with Google, labels the issue `priority`, and never logs,
-  files or stores the token. The GitHub builds carry no billing code and
-  keep their codes.
+  (`core_builds_plus`, $2.99) through Play Billing, in place of the
+  Sponsors and Ko-fi codes Play's Payments policy rules out of a Play app.
+  It adds four things; every icon, the 132-wall collection and every screen
+  still ship to everyone:
+  - **Priority requests.** A Plus owner's one-press request carries the
+    Play purchase token; the broker checks it with Google, labels the issue
+    `priority`, and never logs, files or stores the token.
+  - **My requests** (Settings): every icon requested from this TV and how
+    far it has got (open, priority, drawn, in this pack), read from GitHub
+    by issue number.
+  - **Live loop rotation** (Settings): every hour, 6 hours or day, the live
+    wallpaper moves to the next downloaded loop as the home screen comes
+    back. No background work: the wallpaper engine does it.
+  - **Spectra**, series 15: 12 4K walls of light split into its colours
+    (`tools/build_plus_wallpapers.py`), under their own Plus chip.
+
+  Plus goes on sale only once the request broker is baked in, and is
+  re-read from Play at every app start, so refunds and purchases on another
+  TV settle by themselves. The GitHub builds carry no billing code, keep
+  their codes, and list none of the extras.
 - **About lists the icon request once a build can send one.** With the
   request broker baked in, About's "everything this app sends" gains line
   3 (the pressed app's name and component, and the TV's model, Android

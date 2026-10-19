@@ -39,6 +39,7 @@ Nothing. It has no network code: its icons ship inside it.
 | GitHub build only: you switch the art style to Glyphs for the first time | A request for the Glyphs Pack APK | GitHub |
 | You press an app under *Missing icons*, in a build with one-press requests switched on | That app's name and component name; your TV's model, Android version and icon pack version | The Core Builds request broker, which files a public GitHub issue |
 | As above, on Google Play, if you own Core Builds Plus | Also your Google Play purchase token for Plus | The Core Builds request broker, which checks it with Google |
+| Google Play, with Core Builds Plus: you open *My requests* | One request per issue you filed, by issue number only, for its state (open, priority, done) | GitHub (`api.github.com`) |
 
 Every request travels over HTTPS. Requests to GitHub are subject to
 [GitHub's privacy statement](https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement);
@@ -83,8 +84,11 @@ Refunds go through Google Play.
 
 ## On the TV itself
 
-The apps keep their settings, downloaded wallpapers and, on Google Play,
-the Plus purchase token in their own app storage. Uninstalling an app
+The apps keep their settings and downloaded wallpapers in their own app
+storage. On Google Play they also keep the Plus purchase token and, for
+*My requests*, the list of requests this TV filed (each app's name,
+component and issue number, which are already public in the issue).
+Live loop rotation runs on the TV and sends nothing. Uninstalling an app
 removes all of it.
 
 ## Children

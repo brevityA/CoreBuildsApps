@@ -257,6 +257,18 @@
                     android:textSize="@dimen/cb_text_label"
                     android:visibility="gone" />
 
+                <!-- Google Play build with Core Builds Plus on sale or owned:
+                     My requests reads issue states from GitHub. -->
+                <TextView
+                    android:id="@+id/about_network_tracker"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/cb_space_xs"
+                    android:text="@string/about_network_tracker"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_label"
+                    android:visibility="gone" />
+
                 <TextView
                     android:id="@+id/about_network_none"
                     android:layout_width="match_parent"
