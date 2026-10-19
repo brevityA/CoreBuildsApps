@@ -1104,8 +1104,13 @@ class PhoneCompanionActivity : AppCompatActivity() {
                 } else {
                     hostField.setText(found.host)
                     portField.setText(found.port.toString())
-                    discoveryLine.text = getString(R.string.phone_find_tv_found, found.name, found.host)
+                    discoveryLine.text = getString(R.string.phone_find_tv_woke, found.name, found.host)
                     codeField.requestFocus()
+                    // Ask the TV to show its pairing code. A failed wake is harmless: the user
+                    // can still type the code, or use Scan TV QR, from the TV's own screen.
+                    thread(name = "CoreEqWake") {
+                        runCatching { CompanionClient(found.host, found.port, ByteArray(0)).wake() }
+                    }
                 }
             },
             onDone = { foundAny ->

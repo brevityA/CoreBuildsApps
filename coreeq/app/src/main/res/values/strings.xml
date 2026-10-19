@@ -416,6 +416,7 @@
     <string name="phone_scan_downloading">Downloading the QR scanner from Google Play services. This happens once.</string>
     <string name="phone_scan_unavailable">Google Play services could not provide the QR scanner on this phone. Enter the TV address and code instead.</string>
     <string name="phone_find_tv_searching">Looking for a Core EQ TV on this network. Open the phone link on the TV first.</string>
+    <string name="phone_find_tv_woke">Found %1$s at %2$s. Asked the TV to show its pairing code: scan the code on its screen, or type it here.</string>
     <string name="phone_find_tv_found">Found %1$s at %2$s. Enter the pairing code shown on the TV.</string>
     <string name="phone_find_tv_found_kept">Found %1$s at %2$s. Kept the address you entered.</string>
     <string name="phone_find_tv_none">No Core EQ TV found. Open the phone link on the TV, check you are on the same Wi-Fi, or enter the address below.</string>

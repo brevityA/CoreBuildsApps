@@ -91,6 +91,14 @@ internal class CompanionServer(
     @Volatile private var measurement: MeasurementSession? = null
     @Volatile private var measurementTimeout: Runnable? = null
     @Volatile private var lastError: String? = null
+    /**
+     * Called (on the server thread) when a phone asks the TV to show its pairing screen. The
+     * request carries nothing and grants nothing: it only opens the screen, which still needs
+     * the one-time code.
+     */
+    @Volatile var onWake: (() -> Unit)? = null
+    private val wakeLock = Any()
+    private var lastWakeMs: Long? = null
 
     private enum class MeasurementPhase { FIRST_SWEEP, WAITING_FOR_REPEAT, REPEAT_SWEEP }
 
@@ -393,6 +401,7 @@ internal class CompanionServer(
         return when (request.path) {
             PAIR_PATH -> pair(request.body, peerAddress)
             RPC_PATH -> rpc(request.body)
+            WAKE_PATH -> wake()
             else -> plain(404, "Unknown endpoint")
         }
     }
@@ -1135,6 +1144,19 @@ internal class CompanionServer(
         synchronized(nonceLock) { replayedNonces.clear() }
     }
 
+    /** Unauthenticated: opens the pairing screen at most once per [WakeLimiter.MIN_INTERVAL_MS]. */
+    private fun wake(): HttpResponse {
+        val now = SystemClock.elapsedRealtime()
+        val accepted = synchronized(wakeLock) {
+            if (WakeLimiter.shouldWake(now, lastWakeMs)) {
+                lastWakeMs = now
+                true
+            } else false
+        }
+        if (accepted) onWake?.invoke()
+        return HttpResponse(200, JSONObject().put("ok", true).toString().toByteArray(StandardCharsets.UTF_8))
+    }
+
     private fun plain(status: Int, message: String): HttpResponse =
         HttpResponse(status, JSONObject().put("error", message).toString().toByteArray(StandardCharsets.UTF_8))
 
@@ -1197,6 +1219,7 @@ internal class CompanionServer(
     companion object {
         const val PAIR_PATH = "/v1/pair"
         const val RPC_PATH = "/v1/rpc"
+        const val WAKE_PATH = "/v1/wake"
         private const val PREFS = "core_eq_companion"
         private const val KEY_TOKEN = "paired_phone_token"
         private const val KEY_CLIENT_NAME = "paired_phone_name"
