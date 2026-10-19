@@ -245,7 +245,20 @@
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_label" />
 
+                <!-- Shown only when audit_request_endpoint is baked in:
+                     without a broker, a request is a QR code and sends nothing. -->
                 <TextView
+                    android:id="@+id/about_network_request"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/cb_space_xs"
+                    android:text="@string/about_network_request"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_label"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/about_network_none"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/cb_space_sm"

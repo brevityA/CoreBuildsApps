@@ -182,7 +182,8 @@ class AuditorActivity : TvActivity() {
         Toast.makeText(this, R.string.audit_request_sending,
                        Toast.LENGTH_SHORT).show()
         IconRequestSender.send(endpoint, item.label, item.component,
-                               deviceNote(), item.mapped) { issue ->
+                               deviceNote(), item.mapped,
+                               PlusStore.purchaseToken(this)) { issue ->
             requestInFlight = false
             if (issue > 0) {
                 Toast.makeText(this,

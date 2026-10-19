@@ -344,6 +344,8 @@
     <string name="about_network_one">1.  A request for the update manifest, when update checks are on or when you press Check for updates here, and the update itself when you choose to download it.</string>
     <string name="about_network_two">2.  A request for each wallpaper or live loop you choose to download, and for Core Builds Glyphs Pack the first time you switch the art style to Glyphs.</string>
     <string name="about_network_none">That is the whole list. No analytics, no installed-app list, no device model, no identifier. Icons ship inside the app and are never fetched.</string>
+    <string name="about_network_request">3.  When you press an app under Missing icons: its name and component, and this TV\'s model, Android version and pack version, so the request can be filed.</string>
+    <string name="about_network_none_request">That is the whole list. No analytics, no installed-app list, no identifier. Icons ship inside the app and are never fetched.</string>
     <string name="about_links">LINKS</string>
     <!-- About > Check for updates. The row's title is the button through the
          flow: this label, then update_download / update_install. -->
@@ -376,4 +378,19 @@
     <string name="support_kofi_url">https://ko-fi.com/branding_brevity</string>
     <string name="support_sponsors_qr_hint">QR code for GitHub Sponsors</string>
     <string name="support_kofi_qr_hint">QR code for Ko-fi</string>
+
+    <!-- Core Builds Plus, the Google Play build's one-time unlock (Plus.kt).
+         The GitHub builds never show these: their PlusStore is not AVAILABLE. -->
+    <string name="plus_name">Core Builds Plus</string>
+    <string name="plus_loading">Asking Google Play\u2026</string>
+    <string name="plus_loading_button">Plus</string>
+    <string name="plus_buy_fmt">Get Plus \u00b7 %1$s</string>
+    <string name="plus_for_sale">One purchase, no subscription. Every icon request you press is marked priority and done first.</string>
+    <string name="plus_owned">Plus is active on this Google account. Your icon requests are marked priority. Thank you.</string>
+    <string name="plus_owned_button">Plus is active</string>
+    <string name="plus_pending">Payment pending. Plus switches on when Google Play confirms it.</string>
+    <string name="plus_pending_button">Pending</string>
+    <string name="plus_unavailable_fmt">Google Play can\'t sell Plus here: %1$s.</string>
+    <string name="plus_unavailable_button">Unavailable</string>
+    <string name="plus_not_yet">Plus goes on sale when priority icon requests are live. There is nothing to buy yet.</string>
 </resources>

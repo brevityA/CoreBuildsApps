@@ -81,6 +81,8 @@
     <!-- Support shows two codes side by side, so each is smaller. Its URLs
          encode at 29 modules, about 6dp a module here. -->
     <dimen name="cb_support_qr">220dp</dimen>
+    <!-- The Plus card (Google Play build): wide enough for two lines of status. -->
+    <dimen name="cb_support_plus_width">380dp</dimen>
 
     <!-- Stacked action buttons share a minimum width so they align as a column
          instead of jagging to their text length. -->

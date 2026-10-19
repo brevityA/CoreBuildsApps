@@ -58,6 +58,14 @@ class AboutActivity : TvActivity() {
         findViewById<TextView>(R.id.about_wallpapers).text =
             WallpaperCatalog.load(this).size.toString()
 
+        // The list is the whole list only if it follows the build: with a
+        // request broker baked in, pressing a Missing icons row sends the
+        // device model, so the line appears and "no device model" goes.
+        if (getString(R.string.audit_request_endpoint).isNotBlank()) {
+            findViewById<View>(R.id.about_network_request).visibility = View.VISIBLE
+            findViewById<TextView>(R.id.about_network_none).setText(R.string.about_network_none_request)
+        }
+
         findViewById<View>(R.id.about_source).setOnClickListener {
             open(getString(R.string.about_source_url))
         }

@@ -197,6 +197,16 @@ android {
         buildConfig = true
     }
 
+    // Core Builds Plus, the Play build's one-time unlock: src/play/java holds
+    // PlusStore over Google Play Billing, and every other build type compiles
+    // the no-op twin in src/github/java, so the sideload APKs carry no Google
+    // library and nothing to buy.
+    sourceSets {
+        getByName("debug").java.srcDir("src/github/java")
+        getByName("release").java.srcDir("src/github/java")
+        getByName("candidate").java.srcDir("src/github/java")
+    }
+
     androidResources {
         // Already-compressed formats; don't re-crunch.
         noCompress += listOf("png", "webp")
@@ -219,4 +229,8 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+    // Play only. 8.0.0 is the newest that still builds against compileSdk 34
+    // and minSdk 21 (9.x pulls androidx.core 1.15, which needs compileSdk 35,
+    // and declares minSdk 23); Play accepts 8.x until 2027-08-31.
+    "playImplementation"("com.android.billingclient:billing:8.0.0")
 }

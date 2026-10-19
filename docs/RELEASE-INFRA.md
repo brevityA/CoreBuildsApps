@@ -136,8 +136,14 @@ Runtime behavior:
 
 ## Google Play release runbook
 
+The icon pack's full step-by-step, from developer account to staged
+rollout, is [`PLAY_RELEASE.md`](PLAY_RELEASE.md). The list below is the
+suite-wide summary.
+
 1. Ensure the app's target API satisfies current Play requirements.
-   - Android TV apps: target API 34+ under the verified 2026 rule.
+   - Android TV apps: target API 34+ under the verified 2026 rule. Only a
+     TV-only app counts: with `android.software.leanback` optional, Play
+     lists the app for phones too and applies the phone floor.
    - Non-TV/general apps: target API 36+ for new apps/updates after 2026-08-31.
 2. Use the AAB from `suite-release.yml`.
 3. Enroll/use Play App Signing; keep upload key in GitHub secrets only.

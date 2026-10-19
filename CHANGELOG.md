@@ -17,7 +17,27 @@ All notable changes to the Core Builds Icon Pack. Format follows
   them), and the Art style switch opens the Glyphs listing on Play instead
   of downloading it. A new hand-run workflow, `play.yml`, builds both App
   Bundles (`core-builds-play-bundles`). The GitHub builds and `build.yml`
-  are unchanged.
+  are unchanged. Both Play apps require Android TV: Play would otherwise
+  list them for phones, where the target API floor is 36 rather than 34.
+- **Core Builds Plus, on Google Play only.** A one-time purchase
+  (`core_builds_plus`, $2.99) through Play Billing that marks your icon
+  requests priority, and changes nothing else: every icon, wallpaper and
+  screen still ships to everyone. It replaces the Sponsors and Ko-fi codes
+  on the Play build's Support screen, which Play's Payments policy rules
+  out, and goes on sale only once the request broker is baked in. A Plus
+  owner's one-press request carries the Play purchase token; the broker
+  checks it with Google, labels the issue `priority`, and never logs,
+  files or stores the token. The GitHub builds carry no billing code and
+  keep their codes.
+- **About lists the icon request once a build can send one.** With the
+  request broker baked in, About's "everything this app sends" gains line
+  3 (the pressed app's name and component, and the TV's model, Android
+  version and pack version), and stops claiming no device model is sent.
+  Without the broker a request is a QR code and sends nothing, and the
+  list is as before.
+- **Privacy policy and Play release guide.** `PRIVACY.md` lists what each
+  build sends and when; `docs/PLAY_RELEASE.md` is the step-by-step for
+  Play Console, the Plus product and the broker.
 
 ### Changed
 

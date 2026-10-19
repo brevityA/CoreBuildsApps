@@ -32,6 +32,8 @@ id = "REPLACE_WITH_NAMESPACE_ID"
 # Discord fallback / interim path (used automatically when the GitHub App
 # trio is absent — the webtools worker runs this exact pattern today):
 #   npx wrangler secret put ICON_REQUEST_DISCORD_WEBHOOK_URL
+# Core Builds Plus priority (optional; README.md "Core Builds Plus"):
+#   npx wrangler secret put GOOGLE_SERVICE_ACCOUNT_JSON   # the whole key file
 [vars]
 RATE_LIMIT_PER_HOUR = "5"
 

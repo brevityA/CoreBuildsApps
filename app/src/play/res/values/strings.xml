@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Play build wording: what the Play build actually sends, and where its
-     updates come from. Play's Device and Network Abuse policy rules out the
-     GitHub update row, so About's row opens this app's Play listing. -->
+<!-- Play build wording: what the Play build actually sends, where its
+     updates come from, and what Support sells. Play's Device and Network
+     Abuse policy rules out the GitHub update row, so About's row opens this
+     app's Play listing; its Payments policy rules out the Ko-fi and Sponsors
+     codes, so Support is Core Builds Plus over Play Billing. -->
 <resources>
     <string name="about_network_one">1.  Nothing for updates: Google Play updates this app.</string>
     <string name="about_network_two">2.  A request for each wallpaper or live loop you choose to download. Core Builds Glyphs Pack comes from its own Google Play listing.</string>
+    <string name="about_network_request">3.  When you press an app under Missing icons: its name and component, and this TV\'s model, Android version and pack version, so the request can be filed. With Plus, also its Google Play purchase token, which is checked with Google and never stored or filed.</string>
     <string name="about_update_label">Updates from Google Play</string>
     <string name="about_update_sub">Google Play updates this app. Press to open its listing.</string>
+
+    <string name="about_support_label">Core Builds Plus</string>
+    <string name="settings_support_title">Core Builds Plus</string>
+    <string name="settings_support_sub">One purchase that marks your icon requests priority.</string>
+    <string name="support_label">Plus</string>
+    <string name="support_kicker">PLUS</string>
+    <string name="support_title">Core Builds Plus</string>
+    <string name="support_body">Plus is a one-time purchase through Google Play. Every app you press under Missing icons is filed as a priority request, and priority requests are drawn first.</string>
+    <string name="support_mode">Optional. Every icon, wallpaper and screen ships to everyone; Plus changes the order requests are done in, nothing else.</string>
+    <string name="support_footer">Price and payment come from Google Play. Core Builds never sees your card or your Google account.</string>
 </resources>
