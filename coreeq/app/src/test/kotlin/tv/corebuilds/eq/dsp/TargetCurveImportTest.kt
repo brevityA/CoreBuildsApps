@@ -147,4 +147,13 @@ class TargetCurveImportTest {
         assertEquals(0.0, db[0], 1e-9)
         assertEquals(0.0, db[1], 1e-9)
     }
+
+    @Test
+    fun `a decimal comma with a space separator is read as one point, not four numbers`() {
+        val points = ok("20,5 -3,2\n1000 0\n10000 1,5\n").points
+        // 20.5 Hz is in the file; the misread 20 Hz / 5 dB point must not be.
+        assertTrue(points.any { kotlin.math.abs(it.first - 20.5) < 1e-9 })
+        assertTrue(points.none { kotlin.math.abs(it.first - 20.0) < 1e-9 })
+    }
 }
+

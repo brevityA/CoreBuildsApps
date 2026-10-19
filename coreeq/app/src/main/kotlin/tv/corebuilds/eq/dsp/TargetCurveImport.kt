@@ -103,7 +103,11 @@ object TargetCurveImport {
             val line = rawLine.trim()
             if (line.isEmpty() || line.startsWith("*") || line.startsWith("#") || line.startsWith("//")) continue
             // ';' or a tab between columns means a comma is the decimal mark (20,5;-3,2).
-            val decimalComma = line.contains(';') || line.contains('\t')
+            // So does exactly two space-separated fields whose first holds a comma ("20,5 -3,2").
+            // Without this, "20,5 -3,2" split on commas into four numbers and read as 20 Hz at 5 dB.
+            val spaced = line.split(Regex("\\s+")).filter { it.isNotEmpty() }
+            val decimalComma = line.contains(';') || line.contains('\t') ||
+                (spaced.size == 2 && spaced[0].contains(','))
             val tokens = line.split(if (decimalComma) Regex("[;\\t ]+") else Regex("[,\\s]+"))
                 .filter { it.isNotEmpty() }
                 .map { if (decimalComma) it.replace(',', '.') else it }
