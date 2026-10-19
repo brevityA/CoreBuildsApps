@@ -16,8 +16,8 @@ import tv.corebuilds.eq.export.Profile
 /** Correction follows the output: a profile belongs to the chain it was measured on. */
 class OutputRouteTest {
 
-    private fun profile(id: String, at: Long, kind: String?) =
-        Profile(id = id, name = id, timestampMs = at, target = "flat", micType = "test", outputKind = kind)
+    private fun profile(id: String, at: Long, kind: String?, outputName: String? = null) =
+        Profile(id = id, name = id, timestampMs = at, target = "flat", micType = "test", outputKind = kind, outputName = outputName)
 
     private val speakers = profile("speakers", 100, SPEAKER)
     private val soundbar = profile("soundbar", 200, HDMI_ARC)
@@ -81,8 +81,14 @@ class OutputRouteTest {
     }
 
     @Test
-    fun anUnknownOutputKeepsTheChosenProfile() {
-        assertEquals("soundbar", OutputRoute.pick(listOf(speakers, soundbar), "soundbar", null).profile?.id)
+    fun anUnknownOutputDoesNotBorrowAKnownOutputProfile() {
+        // A specific room curve cannot safely be applied when Android cannot
+        // identify the current chain. Legacy and explicitly-unknown profiles
+        // remain applicable under their documented rules.
+        assertNull(OutputRoute.pick(listOf(speakers, soundbar), "soundbar", null).profile)
+        assertEquals("legacy", OutputRoute.pick(listOf(soundbar, legacy), "soundbar", null).profile?.id)
+        val unknown = profile("unknown-output", 300, OutputRoute.UNKNOWN)
+        assertEquals("unknown-output", OutputRoute.pick(listOf(soundbar, unknown), "soundbar", null).profile?.id)
         assertNull(OutputRoute.pick(emptyList(), null, SPEAKER).profile)
     }
 
@@ -93,14 +99,18 @@ class OutputRouteTest {
     }
 
     @Test
-    fun theKeyStaysTheRankedGuessButTheNameIsWhatTheSweepReached() {
-        // Soundbar connected, but this TV kept the sweep on its own speakers:
-        // the setup keys as ARC (so play time finds it in the same setup), and
-        // the profile says what was really measured.
+    fun aReportedSweepRouteDeterminesTheProfileKeyAndPreventsCrossOutputApplication() {
+        // The connected-output estimate favours the soundbar, but the sweep's
+        // AudioTrack actually reached the TV speakers. Save it as a speaker
+        // profile; do not relabel it as ARC and later apply it to a soundbar.
         val ranked = OutputRoute.Output(HDMI_ARC, "Sonos Beam")
         val tagged = OutputRoute.tag(ranked, AudioDeviceInfo.TYPE_BUILTIN_SPEAKER, "MiTV", model = "MiTV")
-        assertEquals(HDMI_ARC, tagged?.kind)
+        assertEquals(SPEAKER, tagged?.kind)
         assertEquals("TV speakers", tagged?.name)
+
+        val measuredOnSpeakers = profile("measured-speakers", 500, tagged?.kind, tagged?.name)
+        assertEquals("measured-speakers", OutputRoute.pick(listOf(measuredOnSpeakers), null, SPEAKER)?.profile?.id)
+        assertNull(OutputRoute.pick(listOf(measuredOnSpeakers), null, HDMI_ARC, "Sonos Beam").profile)
     }
 
     @Test
@@ -131,5 +141,36 @@ class OutputRouteTest {
         assertNull(OutputRoute.pick(listOf(unnamed), "unnamed", SPEAKER).profile)
         // A real output finds its own profile past the unnamed one.
         assertEquals("speakers", OutputRoute.pick(listOf(unnamed, speakers), "unnamed", SPEAKER).profile?.id)
+    }
+
+    @Test
+    fun anExactOutputNameBeatsTheChosenProfileOnTheSameKind() {
+        val beam = profile("beam", 300, HDMI_ARC, "Sonos Beam")
+        val denon = profile("denon", 400, HDMI_ARC, "Denon AVR")
+        val pick = OutputRoute.pick(listOf(beam, denon), "denon", HDMI_ARC, "sonos beam")
+        assertEquals("beam", pick.profile?.id)
+        assertTrue(pick.switched)
+    }
+
+    @Test
+    fun aDifferentNamedOutputDoesNotBorrowAnotherDevicesCurve() {
+        val beam = profile("beam", 300, HDMI_ARC, "Sonos Beam")
+        val denon = profile("denon", 400, HDMI_ARC, "Denon AVR")
+        assertNull(OutputRoute.pick(listOf(beam, denon), "beam", HDMI_ARC, "Yamaha Receiver").profile)
+    }
+
+    @Test
+    fun anUnnamedRouteDoesNotBorrowADeviceSpecificProfile() {
+        val beam = profile("beam", 300, HDMI_ARC, "Sonos Beam")
+        val generic = profile("generic", 200, HDMI_ARC)
+        assertNull(OutputRoute.pick(listOf(beam), "beam", HDMI_ARC, null).profile)
+        assertEquals("generic", OutputRoute.pick(listOf(beam, generic), "beam", HDMI_ARC, null).profile?.id)
+    }
+
+    @Test
+    fun aGenericProfileIsTheFallbackForAnUnmatchedOutputName() {
+        val beam = profile("beam", 300, HDMI_ARC, "Sonos Beam")
+        val generic = profile("generic", 200, HDMI_ARC)
+        assertEquals("generic", OutputRoute.pick(listOf(beam, generic), "beam", HDMI_ARC, "Yamaha Receiver").profile?.id)
     }
 }

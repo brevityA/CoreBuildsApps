@@ -271,12 +271,26 @@
             android:exported="false"
             android:label="@string/about_label"
             android:theme="@style/Theme.CoreBuilds" />
+        <!-- Opened from About. Draws two QR codes locally; sends nothing. -->
+        <activity
+            android:name=".SupportActivity"
+            android:exported="false"
+            android:label="@string/support_label"
+            android:theme="@style/Theme.CoreBuilds" />
         <!-- The walk through a launcher that has no inbound apply (Monet).
              Opened from the sheet's CTA and from Settings; not exported. -->
         <activity
             android:name=".LauncherSetupActivity"
             android:exported="false"
             android:label="@string/setup_label"
+            android:theme="@style/Theme.CoreBuilds" />
+        <!-- The per-launcher compatibility summary: what art each known
+             launcher applies, how the pack reaches it, and its notes.
+             Opened from About and from the auditor's launcher line. -->
+        <activity
+            android:name=".LauncherCompatActivity"
+            android:exported="false"
+            android:label="@string/launcher_compat_label"
             android:theme="@style/Theme.CoreBuilds" />
         <activity
             android:name=".ExportProgressActivity"

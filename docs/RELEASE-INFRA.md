@@ -36,9 +36,12 @@ Triggers:
 Icon Pack is not on this list, and its `iconpack-v*` trigger was removed rather
 than reconciled: the pack's `tagPrefix` in `suite.json` is bare `v`, and only
 `build.yml` (which triggers on `v*`) moves the floating `iconpack` tag, ships the
-legacy `app-release.apk` the existing Downloader code reads, and publishes the
-Glyphs companion. A release cut here for Icon Pack would carry a versioned APK
-and nothing users actually install from. `tools/check_suite_truth.py` now fails if
+legacy `app-release.apk` the existing Downloader code reads, and publishes both
+glyph artifacts from the same release — `iconpack-glyphs-release.apk`, the
+Glyphs companion the Art style toggle fetches and the asset Downloader `5804177`
+resolves to, and `corebuilds-glyphs-release.apk`, the glyphs-only build of the
+pack itself, which is URL-only. A release cut here for Icon Pack would carry a
+versioned APK and nothing users actually install from. `tools/check_suite_truth.py` now fails if
 any workflow triggers on a prefix `suite.json` does not declare, or declares a
 prefix no workflow triggers on, so the two halves cannot drift apart again.
 
@@ -159,9 +162,12 @@ can sit on one TV and neither ever updates the other:
 | Updates | in-app, from GitHub | Play only |
 
 The `play` build type (`app/` and `glyphs/` `build.gradle.kts`) drops
-`REQUEST_INSTALL_PACKAGES` and the GitHub update check, and the Art style
-switch opens the Glyphs twin's Play listing instead of downloading an APK.
-`tests/test_play_build.py` pins all of it.
+`REQUEST_INSTALL_PACKAGES` and the GitHub update check, About's update row
+opens the app's Play listing, and the Art style switch opens the Glyphs
+twin's Play listing instead of downloading an APK. Only the `banners` flavor
+has a Play variant: the `glyphs` flavor (Core Builds Glyphs,
+`tv.corebuilds.glyphs`) would take the Play icon pack's FileProvider
+authority. `tests/test_play_build.py` pins all of it.
 
 Secrets for `play.yml` (a new upload keystore, never the sideload key):
 
@@ -170,7 +176,7 @@ Secrets for `play.yml` (a new upload keystore, never the sideload key):
 
 Without them the workflow still builds, warns, and uploads unsigned bundles
 Play Console will refuse. With them set, an unsigned bundle fails the run.
-The artifact `core-builds-play-bundles` holds `app-play.aab` and
+The artifact `core-builds-play-bundles` holds `app-banners-play.aab` and
 `glyphs-play.aab`; upload each to its own Play Console app.
 
 ## Release checklist artifact contents

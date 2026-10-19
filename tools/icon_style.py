@@ -91,7 +91,7 @@ OFFWHITE_INK = "#E6EDF3"  # the one sanctioned secondary paint (Brand Guide ink)
 
 def core_monoline_errors(body: str, accent: str, *, gradient: bool = False,
                          ink: str | None = None,
-                         secondary: str | None = None) -> list[str]:
+                         secondary: str | list[str] | None = None) -> list[str]:
     """Check glyph ink before the common banner placement transform.
 
     A vendor silhouette or fixed-white wordmark must fail even if its brand
@@ -106,7 +106,8 @@ def core_monoline_errors(body: str, accent: str, *, gradient: bool = False,
     white hook. Undeclared whites, gradients or effects still fail.
 
     A catalog ``secondary`` (duotone) is the third declared extension: its
-    drawn paint joins the allowed set, and nothing else does.
+    drawn paint joins the allowed set, and nothing else does. Its optional
+    nested ``tertiary`` (Silo, 2.1.2) is passed in the same list.
     """
     import xml.etree.ElementTree as ET
 
@@ -122,8 +123,8 @@ def core_monoline_errors(body: str, accent: str, *, gradient: bool = False,
         paints.add("URL(#CBGRAD)")
     if ink:
         paints.add(ink.upper())
-    if secondary:
-        paints.add(secondary.upper())
+    for paint in ([secondary] if isinstance(secondary, str) else secondary or []):
+        paints.add(paint.upper())
     if not len(root):
         return ["empty monoline glyph"]
     for node in root.iter():

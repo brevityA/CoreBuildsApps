@@ -127,6 +127,20 @@
                     android:focusable="false"
                     android:importantForAccessibility="no" />
             </LinearLayout>
+
+            <!-- Card floor: how dark the lower third is, where a launcher
+                 parks its rows. Computed from the decoded image beside the
+                 seed; GONE until then. -->
+            <TextView
+                android:id="@+id/preview_floor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:fontFamily="monospace"
+                android:textAllCaps="true"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_kicker"
+                android:visibility="gone" />
         </LinearLayout>
 
         <TextView

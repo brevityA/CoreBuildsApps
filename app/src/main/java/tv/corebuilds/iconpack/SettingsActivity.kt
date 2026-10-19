@@ -124,6 +124,14 @@ class SettingsActivity : TvActivity() {
             startActivity(Intent(this, FaqActivity::class.java))
         }
 
+        row(R.id.set_about_row) {
+            startActivity(Intent(this, AboutActivity::class.java))
+        }
+
+        row(R.id.set_support_row) {
+            startActivity(Intent(this, SupportActivity::class.java))
+        }
+
         findViewById<View>(R.id.set_cache_clear).setOnClickListener {
             clearCache()
             showCacheSize()

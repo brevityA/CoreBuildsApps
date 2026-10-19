@@ -51,7 +51,14 @@ CATEGORY = re.compile(r'^\s*<category title="([^"]+)" />$')
 STRINGS = """<?xml version="1.0" encoding="utf-8"?>
 {header}
 <resources>
-    <string name="app_name">Core Builds Glyphs</string>
+    <!-- "Pack" on the end since the :app module grew a glyphs flavor
+         (tv.corebuilds.glyphs), which is a full app called Core Builds
+         Glyphs. Both appear in a launcher's icon-pack list and both map
+         square glyphs; without the suffix they were the same label twice,
+         and the one a user can actually open was indistinguishable from
+         the resource pack the Art style toggle installs. Kept in step with
+         GlyphsCompanion.LABEL by tests/test_glyphs_pack.py. -->
+    <string name="app_name">Core Builds Glyphs Pack</string>
 </resources>
 """
 
@@ -128,6 +135,32 @@ def outputs() -> dict[Path, str]:
     }
 
 
+FLAVOR_MAIN = ROOT / "app" / "src" / "glyphs"
+GLYPH_FILES = ("res/xml/appfilter.xml", "assets/appfilter.xml",
+               "res/xml/drawable.xml", "assets/drawable.xml")
+
+
+def check_flavor_sync() -> None:
+    """The standalone glyph app maps exactly what the companion maps.
+
+    tools/build_icons.py writes both trees in one run, so they can only
+    differ if one was hand-edited - and a hand-edited appfilter is the
+    failure that ships silently, because the pack still builds and the
+    launcher simply applies nothing for the components that moved.
+    """
+    drifted = []
+    for name in GLYPH_FILES:
+        companion, flavor = GLYPH_MAIN / name, FLAVOR_MAIN / name
+        if not companion.is_file() or not flavor.is_file():
+            drifted.append(name + " (missing)")
+        elif (companion.read_text(encoding="utf-8")
+                != flavor.read_text(encoding="utf-8")):
+            drifted.append(name)
+    if drifted:
+        fail("the :app glyphs flavor and Core Builds Glyphs disagree: "
+             + ", ".join(drifted) + "; run python tools/build_icons.py")
+
+
 def check_art(files: dict[Path, str]) -> None:
     """Every banner the icon pack names must exist in its own art."""
     aliases = read_aliases(APP_MAIN / "res" / "values")
@@ -151,6 +184,7 @@ def main(argv: list[str] | None = None) -> int:
 
     files = outputs()
     check_art(files)
+    check_flavor_sync()
     if args.check:
         stale = [p for p, text in files.items()
                  if not p.is_file() or p.read_text(encoding="utf-8") != text]

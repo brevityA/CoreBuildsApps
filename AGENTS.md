@@ -6,30 +6,61 @@
 
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
-| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `2.0.0` | `5270601` / `iconpack` |
+| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `2.4.4` | `5270601` / `iconpack` |
 | Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.4.4` | `7375676` / `coreline` |
 | Core Shift | `shift/` | `dev.corebuilds.shift` | `2.3.5` | `8829421` / `shift` |
 | Core Motion | `motion-plugin/` | `tv.corebuilds.motion` | `1.0.0` | `[USER TO SUPPLY]` / `motion` |
 | Core Doctor | `doctor/` | `dev.corebuilds.doctor` | `0.1.0` | `8664938` / `doctor` |
-| Core EQ | `coreeq/` | `tv.corebuilds.eq` | `1.0.0` | `7946159` / `coreeq` |
+| Core EQ | `coreeq/` | `tv.corebuilds.eq` | `1.5.2` | `7946159` / `coreeq` |
 
 (Retired 2026-09-24: Core Builds Pixel Neon and Core Builds Pop. The suite
 keeps one icon pack. Their shipped tags stay as history; do not resurrect
 their modules, manifests or workflows.)
 
+Three packages ship square or banner art, and only two of them are apps the
+user opens. `tv.corebuilds.iconpack` is the icon pack (banners, the default);
+`tv.corebuilds.glyphs` is its `glyphs` flavor — the same code, catalog and
+wallpapers with the square appfilter, for a launcher that should apply glyphs
+and nothing else; `tv.corebuilds.iconpack.glyphs` is the resource-only
+companion the in-app toggle installs. The flavor, not a second module, because
+two source sets cannot both provide `res/xml/appfilter.xml`: a second module
+means a second copy of every resource, which is the drift that retired Pixel
+Neon. It is not a suite product — no `suite.json` entry and no tag of its own;
+it ships in the icon pack's `v*` release as `corebuilds-glyphs-release.apk`,
+URL-only, with no Downloader code yet.
+
+The companion (`tv.corebuilds.iconpack.glyphs`) is the one those two builds'
+codes name: Downloader `5804177` resolves to its asset,
+`iconpack-glyphs-release.apk`. Like the pack's own `5270601`, it is a
+convenience pointer registered outside the repo, read out of the README suite
+stamp (and the install steps in `docs/apps/icon-pack.md`) rather than a registry row — it must
+never be repointed at another asset, exactly like a floating tag. Do not move
+it to the flavor's `corebuilds-glyphs-release.apk`: the two assets are one
+edit apart and the labels are one word apart, so `tests/test_glyphs_pack.py`
+and the doc comment in `tools/build_readme_badge.py` are what keep this
+straight.
+
 `glyphs/` is the one intentional exception to "one app, one Gradle root",
-and it is not a separate product: Core Builds Glyphs
+and it is not a separate product: Core Builds Glyphs Pack
 (`tv.corebuilds.iconpack.glyphs`) is the icon pack's square companion,
 released in the same `v*` release as `iconpack-glyphs-release.apk` and
 versioned from `app/build.gradle.kts`. Banners are the icon pack's default
 (again, since 1.9.5): its appfilter maps every app to the 16:9 banner. A
 launcher auto-applies whatever the selected package's appfilter maps, so the
 in-app Banners/Glyphs toggle works by pointing launchers at one package or the
-other (`GlyphsCompanion.kt`). The companion has no Kotlin, no dependencies, no
-launcher entry and no committed art: `python tools/build_icons.py` writes its
-square appfilter and browser, `python tools/build_banners_pack.py` derives the
-icon pack's banner XML from them (run it after `build_icons.py` and
-`build_banners.py`), and its Gradle build copies the glyph WebP from `app/`.
+other (`GlyphsCompanion.kt`). The companion has no Kotlin, no dependencies and
+no committed art: `python tools/build_icons.py` writes its square appfilter and
+browser (and the `glyphs` flavor's identical copies under `app/src/glyphs/`,
+which `build_banners_pack.py --check` holds byte-equal),
+`python tools/build_banners_pack.py` derives the icon pack's banner XML
+from them (run it after `build_icons.py` and `build_banners.py`), and its Gradle
+build copies the glyph WebP from `app/`. Its two Java activities split by window:
+`.GlyphsActivity` is the translucent carrier for the launcher discovery filters
+and forwards icon picks to the icon pack, and `.GlyphsHomeActivity` is the
+drawer / TV-row entry, so an installed companion can actually be opened and says
+what it covers. That entry is deliberate but bounded — one framework-widget
+screen, no dependencies, and the discovery filters stay on the carrier;
+`tests/test_glyphs_pack.py` pins all three. It is still not a second icon pack.
 `tests/test_glyphs_pack.py` holds the package name, manifest filters, asset
 filename and release workflow together. (1.9.4 shipped the opposite split, a
 Banners companion `tv.corebuilds.iconpack.banners`; it is retired - do not
@@ -53,18 +84,25 @@ python tools/build_banners_pack.py   # the icon pack's banner XML from the glyph
 python tools/build_branding.py
 python tools/build_brand_preview.py
 python tools/validate.py
-python tests/test_icon_identity.py    # 66 style/colour/reference/mapping regressions
+python tools/check_lookalikes.py     # no new pair of brands whose icons match at tile size (ratchet baseline)
+python tests/test_icon_identity.py    # 70 style/colour/reference/mapping regressions
 ```
 
-Paste the validator receipt. Current receipt: `Validated 976 icons · 1850 components`.
+A glyph that is a bare letter or a bare shape will usually collide with
+another brand's. When `check_lookalikes.py` names a new pair, give one of
+them the cue its brand actually has (the word, if its logo is a word),
+never an entry in `tools/lookalike_baseline.json`.
+
+Paste the validator receipt. Current receipt: `Validated 1012 icons · 1933 components`.
 
 **The pack identity takes precedence over literal vendor-logo reproduction.**
 Reviewed brand entries use `style: core_monoline`: 32px rounded primary strokes,
 26.2px / 21.8px detail, no solid fills/effects/containers, and one accent —
 or, where the brand's own logo is two-tone, a catalog `secondary`
 (`color`, the glyph `parts` it paints, and a `source`; white is drawn as the
-Brand Guide off-white, the rail keeps the primary colour). Keep
-the common Outfit + icon-coloured category + rail banner for NoBuffr and every
+Brand Guide off-white, the kicker keeps the primary colour). Keep
+the common stroke-letter name + icon-coloured category banner (no rail since
+2.0.1) for NoBuffr and every
 other reviewed app. Do not reintroduce vendor-wordmark-only banners.
 
 Catalog `artwork` entries are `usage: reference-only`: pinned SVG hashes, URLs
@@ -77,7 +115,7 @@ For the visual receipt, run `python tools/build_icon_review.py` after the pack
 has built. It must show the new icons beside established, unchanged
 neighbours and actual-size banners, not only an isolated vendor-logo gallery.
 
-`Wallpapers/manifest.json` belongs to the icon pack and currently has 102 entries.
+`Wallpapers/manifest.json` belongs to the icon pack and currently has 132 entries.
 
 ## Truth gates
 

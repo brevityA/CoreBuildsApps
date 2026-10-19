@@ -25,7 +25,7 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from glyphs import (GLYPHS, apply_secondary, family_body, family_glyph_for,  # noqa: E402
-                    is_monogram, monoline, render_svg, secondary_color,
+                    declared_paints, is_monogram, monoline, render_svg, secondary_color,
                     secondary_errors)
 from icon_style import CORE_MONOLINE, core_monoline_errors, display_accent  # noqa: E402
 from typeface import MIN_LOCKUP_CAP  # noqa: E402
@@ -43,6 +43,11 @@ XML_DIR = ROOT / "app" / "src" / "main" / "res" / "xml"
 # browser are written here; the icon pack's own, which map to banners, are
 # derived from them by tools/build_banners_pack.py.
 GLYPH_MAIN = ROOT / "glyphs" / "src" / "main"
+# The :app module's glyphs flavor — the standalone glyph app,
+# tv.corebuilds.glyphs. It maps exactly what the companion maps, so the same
+# generated text is written into both trees and tests/test_glyphs_pack.py
+# holds the two identical. One generator, two committed copies, one gate.
+GLYPH_FLAVOR = ROOT / "app" / "src" / "glyphs"
 VAL_DIR = ROOT / "app" / "src" / "main" / "res" / "values"
 DOC_DIR = ROOT / "docs"
 
@@ -131,7 +136,7 @@ def validate(icons, artwork=None):
             errors.append(f"{n}: unknown Classic style {style!r}")
         if style == CORE_MONOLINE:
             if i.get("banner_style", "standard") != "standard":
-                errors.append(f"{n}: Core monoline apps must use the standard Outfit/category/rail banner")
+                errors.append(f"{n}: Core monoline apps must use the standard glyph/category/name banner")
             if i.get("glyph") in GLYPHS and re.fullmatch(r"#[0-9A-Fa-f]{6}", i.get("color", "")):
                 accent = display_accent(i["color"],
                                        monochrome=i.get("color_note") == "monochrome")
@@ -140,7 +145,7 @@ def validate(icons, artwork=None):
                     body = apply_secondary(body, accent, i["secondary"])
                 errors.extend(f"{n}: {e}" for e in core_monoline_errors(
                     body, accent, gradient=bool(i.get("gradient")), ink=i.get("ink"),
-                    secondary=secondary_color(i)))
+                    secondary=declared_paints(i)))
         for comp in i.get("components", []):
             if "/" not in comp:
                 errors.append(f"{n}: component '{comp}' missing '/activity'")
@@ -388,18 +393,23 @@ def main():
                 emitted_count += 1
     lines.append('</resources>')
     appfilter_text = "\n".join(lines) + "\n"
-    # This is the square mapping, and it ships in Core Builds Glyphs. The
-    # icon pack itself maps the same components to their banners - the
-    # default style since 1.9.5 - and tools/build_banners_pack.py derives
-    # that appfilter from this one, so the two cannot disagree.
-    write(GLYPH_MAIN / "res" / "xml" / "appfilter.xml", appfilter_text)
+    # This is the square mapping, and it ships in both glyph packages: Core
+    # Builds Glyphs (the resource-only companion the Art style toggle
+    # installs) and the :app module's glyphs flavor (the standalone glyph
+    # app). The icon pack itself maps the same components to their banners -
+    # the default style since 1.9.5 - and tools/build_banners_pack.py derives
+    # that appfilter from this one, so the three cannot disagree.
+    #
     # The ADW convention permits res/xml, res/raw, or assets. Modern launchers
     # prefer res/xml, while several older picker/request implementations only
     # inspect assets. Generate identical files so mappings cannot drift.
-    write(GLYPH_MAIN / "assets" / "appfilter.xml", appfilter_text)
+    for tree in (GLYPH_MAIN, GLYPH_FLAVOR):
+        write(tree / "res" / "xml" / "appfilter.xml", appfilter_text)
+        write(tree / "assets" / "appfilter.xml", appfilter_text)
     print(f"\u2713 appfilter.xml written \u2014 {comp_count} catalog components "
           f"\u2192 {emitted_count} entries (both name forms) "
-          f"\u2192 {len(icons)} drawables (res/xml + assets)")
+          f"\u2192 {len(icons)} drawables (glyph companion + glyphs flavor, "
+          f"res/xml + assets)")
 
     # 4. drawable.xml — launcher icon picker, grouped by catalog category
     # so Projectivy's browser can jump a section instead of scrolling 500
@@ -436,8 +446,9 @@ def main():
             d.append(f'    <item drawable="{i["drawable"]}" />')
     d.append('</resources>')
     drawable_text = "\n".join(d) + "\n"
-    write(GLYPH_MAIN / "res" / "xml" / "drawable.xml", drawable_text)
-    write(GLYPH_MAIN / "assets" / "drawable.xml", drawable_text)
+    for tree in (GLYPH_MAIN, GLYPH_FLAVOR):
+        write(tree / "res" / "xml" / "drawable.xml", drawable_text)
+        write(tree / "assets" / "drawable.xml", drawable_text)
 
     # 5. iconpack.xml — legacy/alt launcher discovery
     p = ['<?xml version="1.0" encoding="utf-8"?>', '<iconpack>']
@@ -549,7 +560,9 @@ def main():
                  f'stroke="rgba(255,255,255,.06)"/>')
         s.append(f'<g transform="translate({cx + 33},{cy + 20}) '
                  f'scale({84 / 512})">{inner}</g>')
-        label = esc(i["name"])[:17]
+        # Cut the name, then escape it: cutting escaped text can end mid-entity
+        # ("Background Apps &amp; ..." -> "...Apps &") and break the SVG.
+        label = esc(i["name"][:17])
         s.append(f'<text x="{cx + cell / 2}" y="{cy + cell - 12}" '
                  f'fill="#8b949e" font-family="ui-monospace,monospace" '
                  f'font-size="10.5" text-anchor="middle">{label}</text>')

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -47,6 +48,8 @@
         <!-- Left rail: the probed paths, scroll-bounded so an added row can
              never clip on a 540dp panel -->
         <ScrollView
+            android:requiresFadingEdge="vertical"
+            android:fadingEdgeLength="@dimen/cb_space_xl"
             android:layout_width="380dp"
             android:layout_height="match_parent"
             android:scrollbars="none">
@@ -69,7 +72,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Global output mix (session 0)"
+                    android:text="@string/cap_global_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_data"
                     android:textStyle="bold" />
@@ -78,13 +81,13 @@
                     android:id="@+id/status_session0"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Deprecated in 2012, never removed. Probing..."
+                    tools:text="Deprecated in 2012, never removed. Probing..."
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:layout_marginTop="2dp" />
             </LinearLayout>
 
-            <!-- Row 2: Session broadcasts -->
+            <!-- Row 2: session/playback signals trigger rescans only -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -97,7 +100,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Session open/close broadcasts"
+                    android:text="@string/cap_signals_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_data"
                     android:textStyle="bold" />
@@ -105,7 +108,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Players that announce a session. Netflix and YouTube do not."
+                    android:text="@string/cap_signals_note"
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:layout_marginTop="2dp" />
@@ -163,7 +166,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="This app's own playback"
+                    android:text="@string/cap_own_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_data"
                     android:textStyle="bold" />
@@ -171,7 +174,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Always works. The correction applies to what Core EQ plays."
+                    android:text="@string/cap_own_note"
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:layout_marginTop="2dp" />
@@ -190,7 +193,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="DynamicsProcessing (API 28+)"
+                    android:text="@string/cap_dp_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_data"
                     android:textStyle="bold" />
@@ -199,7 +202,7 @@
                     android:id="@+id/status_dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Your own band layout, up to 31 bands, plus a limiter."
+                    tools:text="Your own band layout, up to 31 bands, plus a limiter."
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:layout_marginTop="2dp" />
@@ -217,7 +220,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Platform Equalizer"
+                    android:text="@string/cap_eq_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_data"
                     android:textStyle="bold" />
@@ -226,10 +229,142 @@
                     android:id="@+id/status_platform_eq"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Device reports its own bands and millibel range. Always present."
+                    tools:text="Device reports its own bands and millibel range. Always present."
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:layout_marginTop="2dp" />
+            </LinearLayout>
+
+            <!-- Row 7: App updates. Same release feed the other Core apps poll;
+                 the card exists so a user can ask for a check on a build whose
+                 automatic check is off, and so the test channel can say why it
+                 has no feed instead of silently never offering one. -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/cb_card_padding"
+                android:layout_marginTop="@dimen/cb_space_sm">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/update_title"
+                    android:textColor="@color/cb_signal_cyan"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:fontFamily="monospace"
+                    android:textAllCaps="true"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/text_update_installed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_data"
+                    android:textStyle="bold"
+                    android:layout_marginTop="4dp" />
+
+                <TextView
+                    android:id="@+id/text_update_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:fontFamily="monospace"
+                    android:layout_marginTop="2dp" />
+
+                <Button
+                    android:id="@+id/btn_check_update"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:background="@drawable/bg_ghost"
+                    android:text="@string/update_check_now"
+                    android:textColor="@color/ghost_text"
+                    android:textSize="@dimen/cb_text_label"
+                    android:focusable="true"
+                    android:layout_marginTop="@dimen/cb_space_sm" />
+
+                <Button
+                    android:id="@+id/btn_install_update"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:background="@drawable/bg_cta"
+                    android:text="@string/update_now"
+                    android:textColor="@color/cta_text"
+                    android:textSize="@dimen/cb_text_label"
+                    android:textStyle="bold"
+                    android:focusable="true"
+                    android:visibility="gone"
+                    android:layout_marginTop="@dimen/cb_space_xs" />
+
+                <Button
+                    android:id="@+id/btn_update_auto"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:background="@drawable/bg_toggle"
+                    android:drawableEnd="@drawable/ic_switch"
+                    android:drawablePadding="@dimen/cb_space_sm"
+                    android:text="@string/update_auto_on"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_data"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="@dimen/cb_card_padding"
+                    android:paddingEnd="@dimen/cb_card_padding"
+                    android:focusable="true"
+                    android:layout_marginTop="@dimen/cb_space_xs" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/update_note"
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:layout_marginTop="@dimen/cb_space_xs" />
+            </LinearLayout>
+
+            <!-- Row 8: Support. Here beside the installed build rather than on
+                 Home, whose menu has no row to spare at 540dp. Opens the two
+                 QR codes; this card itself shows no code and sends nothing. -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="@dimen/cb_card_padding"
+                android:layout_marginTop="@dimen/cb_space_sm">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/support_card_title"
+                    android:textColor="@color/cb_signal_cyan"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:fontFamily="monospace"
+                    android:textAllCaps="true"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/support_card_note"
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:layout_marginTop="4dp" />
+
+                <Button
+                    android:id="@+id/btn_open_support"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:background="@drawable/bg_ghost"
+                    android:text="@string/action_support"
+                    android:textColor="@color/ghost_text"
+                    android:textSize="@dimen/cb_text_label"
+                    android:focusable="true"
+                    android:layout_marginTop="@dimen/cb_space_sm" />
             </LinearLayout>
 
         </LinearLayout>
@@ -265,7 +400,7 @@
                     android:id="@+id/text_verdict_bands"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="5 bands"
+                    tools:text="5 bands"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_title"
                     android:textStyle="bold"
@@ -275,7 +410,7 @@
                     android:id="@+id/text_verdict_session"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="session broadcast: no"
+                    tools:text="app identity: DUMP not granted"
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:fontFamily="monospace"
@@ -285,7 +420,7 @@
                     android:id="@+id/text_verdict_global"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="global mix: not supported"
+                    tools:text="global mix: not supported"
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:fontFamily="monospace"
@@ -294,7 +429,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Profiles from other sets keep the limits they were built under."
+                    android:text="@string/cap_verdict_note"
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
                     android:layout_marginTop="@dimen/cb_space_xs" />
@@ -323,7 +458,7 @@
                 android:layout_height="@dimen/cb_target_min"
                 android:background="@drawable/bg_cta"
                 android:text="@string/action_tv_export"
-                android:textColor="@color/cb_cta_ink"
+                android:textColor="@color/cta_text"
                 android:textSize="@dimen/cb_text_label"
                 android:textStyle="bold"
                 android:focusable="true"

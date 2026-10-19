@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Chip label: dark ink on the filled (activated) cyan chip, light ink otherwise. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_activated="true" android:color="@color/cb_cta_ink" />
+    <item android:color="@color/cb_ink" />
+</selector>

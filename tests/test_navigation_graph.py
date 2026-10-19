@@ -55,6 +55,7 @@ ACTIVITY_OWNER = {
     "wallpaper_preview": "WallpaperPreviewActivity.kt",
     "settings": "SettingsActivity.kt",
     "about": "AboutActivity.kt",
+    "support": "SupportActivity.kt",
     "faq": "FaqActivity.kt",
     "auditor": "AuditorActivity.kt",
     "inspector": "InspectorActivity.kt",
@@ -62,6 +63,7 @@ ACTIVITY_OWNER = {
     "export_progress": "ExportProgressActivity.kt",
     "whats_new": "WhatsNewActivity.kt",
     "launcher_setup": "LauncherSetupActivity.kt",
+    "launcher_compat": "LauncherCompatActivity.kt",
 }
 
 # Naming a view that is not focusable is how a chain says "stay put" instead of

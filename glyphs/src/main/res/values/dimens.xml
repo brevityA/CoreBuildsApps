@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Home screen metrics. TV-first: the side padding is the overscan safe area,
+  and every size here is chosen to be legible at 3m rather than at arm's
+  length. One screen, so no scale-per-panel table is needed.
+-->
+<resources>
+    <dimen name="glyphs_home_pad_h">48dp</dimen>
+    <dimen name="glyphs_home_pad_v">40dp</dimen>
+    <dimen name="glyphs_home_gap">16dp</dimen>
+    <dimen name="glyphs_home_leading">4dp</dimen>
+    <dimen name="glyphs_home_title">32sp</dimen>
+    <dimen name="glyphs_home_counts">18sp</dimen>
+    <dimen name="glyphs_home_body">16sp</dimen>
+    <dimen name="glyphs_home_hint">14sp</dimen>
+    <dimen name="glyphs_home_button_gap">28dp</dimen>
+    <dimen name="glyphs_home_button_h">56dp</dimen>
+    <dimen name="glyphs_home_button_w">320dp</dimen>
+    <dimen name="glyphs_home_button_pad">28dp</dimen>
+    <dimen name="glyphs_home_button_text">18sp</dimen>
+    <dimen name="glyphs_home_radius">14dp</dimen>
+</resources>

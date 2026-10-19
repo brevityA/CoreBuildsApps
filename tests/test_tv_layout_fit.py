@@ -307,9 +307,99 @@ def test_settings_keeps_its_scroll_container():
     assert checked == len(MODULES), f"only {checked} of {len(MODULES)} modules carried the screen"
 
 
+# ---- Large system text on the home rail ------------------------------------
+#
+# The estimate above models text at the default size. A TV's text-size setting
+# multiplies every sp, and on 2.4.0 at ~1.3x the home rail broke in three ways
+# (Brevity's TV, 2026-10-15): the wordmark and the icon count each wrapped to two
+# lines, Support | Settings | About broke mid-word ("Setting / s"), and the rail
+# ran ~20dp past the screen, so D-pad focus scrolled the header half under the
+# update bar. These pin the fix. It was checked by rendering activity_main.xml at
+# 1920x1080 with 1.0x, 1.3x and 1.5x text; nothing here can render.
+
+APP_NS = "{http://schemas.android.com/apk/res-auto}"
+HOME = ROOT / "app/src/main/res/layout/activity_main.xml"
+MAIN_KT = ROOT / "app/src/main/java/tv/corebuilds/iconpack/MainActivity.kt"
+ONE_LINE_FIT = ("kicker", "count", "support_entry", "settings_entry", "about_entry")
+
+
+def _home_views() -> dict:
+    views = {}
+    for node in ET.parse(HOME).getroot().iter():
+        view_id = node.get(ANDROID + "id", "")
+        if view_id.startswith("@+id/"):
+            views[view_id[len("@+id/"):]] = node
+    return views
+
+
+def _kotlin_function(name: str) -> str:
+    src = MAIN_KT.read_text(encoding="utf-8")
+    start = src.index(f"fun {name}(")
+    end = src.find("\n    }\n", start)
+    return src[start:end]
+
+
+def _called_outside(name: str) -> bool:
+    """[name]() is called somewhere other than its own definition."""
+    src = MAIN_KT.read_text(encoding="utf-8")
+    return src.count(f"{name}()") > src.count(f"fun {name}()")
+
+
+def test_home_rail_labels_shrink_rather_than_wrap():
+    """The wordmark, the count and Support | Settings | About stay on one line
+    and shrink to their slot (AppCompat autoSize) instead of wrapping, never
+    below the app's 12sp floor, and end in an ellipsis rather than a cut past it."""
+    views = _home_views()
+    assert load_dimens(MODULES["app"]).get("cb_text_fit_min") == 12.0, (
+        "cb_text_fit_min must be the app's 12sp floor")
+    for view_id in ONE_LINE_FIT:
+        node = views[view_id]
+        assert node.get(ANDROID + "maxLines") == "1", f"{view_id} can wrap again"
+        assert node.get(APP_NS + "autoSizeTextType") == "uniform", f"{view_id} does not shrink to fit"
+        assert node.get(APP_NS + "autoSizeMinTextSize") == "@dimen/cb_text_fit_min", view_id
+        assert node.get(APP_NS + "autoSizeMaxTextSize") == node.get(ANDROID + "textSize"), (
+            f"{view_id}: autoSize must top out at the size the layout draws by default")
+        assert node.get(ANDROID + "ellipsize") == "end", (
+            f"{view_id}: past the floor the label must end in an ellipsis, not be cut")
+
+
+def test_home_row_labels_share_one_size():
+    """Each autoSized label shrinks on its own; MainActivity gives the three the
+    smallest so About is not drawn larger than Settings."""
+    body = _kotlin_function("matchRowTextSizes")
+    for view_id in ("support_entry", "settings_entry", "about_entry"):
+        assert f"R.id.{view_id}" in body
+    assert "minOf" in body and "AUTO_SIZE_TEXT_TYPE_NONE" in body
+    assert _called_outside("matchRowTextSizes"), "matchRowTextSizes is never called"
+
+
+def test_home_rail_fades_and_returns_to_its_top():
+    """When the rail has to scroll, its cut edges fade, and leaving it scrolls it
+    back to the top so the header is never left half under the update bar."""
+    rail = _home_views()["rail"]
+    assert tag_of(rail) == "ScrollView"
+    assert rail.get(ANDROID + "requiresFadingEdge") == "vertical"
+    body = _kotlin_function("bindRailScroll")
+    assert "addOnGlobalFocusChangeListener" in body
+    assert "smoothScrollTo(0, 0)" in body and "scrollTo(0, 0)" in body
+    assert "reduceMotion" in body, "Reduce motion must turn the scroll back into a jump"
+    assert _called_outside("bindRailScroll"), "bindRailScroll is never called"
+
+
+def test_update_bar_takes_the_count_and_later_gives_it_back():
+    """With the bar up, the count steps aside (the bar states the new count) so
+    the whole rail fits at the default text size; Later puts it back."""
+    assert "R.id.count).visibility = View.GONE" in _kotlin_function("showUpdateAvailable")
+    assert "R.id.count).visibility = View.VISIBLE" in _kotlin_function("dismissUpdate")
+
+
 if __name__ == "__main__":
     for module, path, needed, label in survey():
         print(f"{module + '/' + path.name:46s} {needed:6.0f}dp fixed   scrolls: {label}")
     test_full_screen_layouts_fit_or_scroll()
     test_settings_keeps_its_scroll_container()
+    test_home_rail_labels_shrink_rather_than_wrap()
+    test_home_row_labels_share_one_size()
+    test_home_rail_fades_and_returns_to_its_top()
+    test_update_bar_takes_the_count_and_later_gives_it_back()
     print("ok")

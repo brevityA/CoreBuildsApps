@@ -1,0 +1,13 @@
+[
+  {
+    "name": "EV6_REW_Slope1.5",
+    "preamp": -9.744647979736328,
+    "parametric": true,
+    "bands": [
+      {"type":0,"channels":0,"frequency":90,"q":0.800000011920929,"gain":0.0,"color":0},
+      {"type":1,"channels":0,"frequency":10000,"q":0.6000000238418579,"gain":0.0,"color":0},
+      {"type":2,"channels":0,"frequency":29,"q":5.71221923828125,"gain":-2.6101746559143066,"color":-15649895},
+      {"type":2,"channels":0,"frequency":38,"q":5.002120494842529,"gain":4.608360290527344,"color":-15623885}
+    ]
+  }
+]

@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "2.0.0",
+    "version": "2.4.4",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 976
+    "count": 1012
   },
   "icons": [
     {
@@ -103,13 +103,14 @@
       "name": "A&E",
       "drawable": "androidtv_3",
       "color": "#C95CFF",
-      "glyph": "a_e_mark",
+      "glyph": "androidtv_3_wm",
       "components": [
         "com.aetn.aetv.watch.androidtv/com.aetn.android.tveapps.app.MainActivity"
       ],
       "category": "STREAM",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "Core stroke-letter wordmark (A&E), the brand's own logo being a word. Replaced a_e_mark, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "ABC iview",
@@ -131,13 +132,14 @@
       "name": "ABC News",
       "drawable": "abcnews",
       "color": "#000000",
-      "glyph": "abcnews_mark",
+      "glyph": "abcnews_wm",
       "components": [
         "com.abc.abcnews/com.disney.datg.android.androidtv.splash.AbcNewsSplashScreenActivity"
       ],
       "category": "SPORT",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "Core stroke-letter wordmark (abc in a ring), the brand's own logo being a word. Replaced abcnews_mark, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "Ace Stream",
@@ -267,6 +269,20 @@
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null
+    },
+    {
+      "name": "AIOStreams",
+      "drawable": "aiostreams",
+      "color": "#E6EDF3",
+      "glyph": "aiostreams_a",
+      "components": [
+        "io.github.viren070.aiostreams/io.github.viren070.aiostreams.MainActivity"
+      ],
+      "category": "STREAM",
+      "mapping_source": "issue #293 (device-reported on onn 4K Plus Streaming, Android 14, pack 2.3.1; #290 is its package-only duplicate): io.github.viren070.aiostreams.MainActivity is the activity the launcher opened for AIOStreams on that device. Not confirmed on a second TV",
+      "color_source": "monochrome brand: the AIOStreams mark is a white gradient on black, and its launcher icon is a white mark on black (GitHub Viren070/AIOStreams branding assets and ic_launcher, checked 2026-10-11); drawn in the pack's off-white per the white-ink convention",
+      "color_reviewed": "2026-10-11",
+      "glyph_source": "original Core monoline mark: a diagonal stroke rising to the right with the circle at its upper right - the app's A cue - in Core stroke geometry, after the brand's own two-shape mark, not a trace (2026-10-11)"
     },
     {
       "name": "Local 10+",
@@ -465,27 +481,29 @@
     {
       "name": "Watch Free UK",
       "drawable": "amcnetworks",
-      "color": "#D10000",
-      "glyph": "amc_a",
+      "color": "#7030F8",
+      "glyph": "amcnetworks_wm",
       "components": [
         "com.amcnetworks.cbscatchup/com.simplestream.presentation.startup.StartUpActivity"
       ],
       "category": "APP",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null,
-      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.amcnetworks.cbscatchup (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Watch Free UK logo for this package (2026-09-27)"
+      "color_source": "sampled from the Google Play launcher icon (com.amcnetworks.cbscatchup, listed as WatchFreeUK): the tile's purple #7030F8; replaced an unsourced red that belonged to AMC (accuracy sweep 2026-10-18)",
+      "color_reviewed": "2026-10-18",
+      "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.amcnetworks.cbscatchup (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the Watch Free UK logo for this package (2026-09-27)",
+      "glyph_source": "Core stroke-letter wordmark: WF in a frame, the initials of the boxed WATCH FREE logo on its Google Play icon. The full words framed set at 47 px, under the pack's 96 px letter floor. Replaced amc_a, AMC+'s film-strip A, which is not this app's mark (accuracy sweep 2026-10-18)"
     },
     {
       "name": "AMC+",
       "drawable": "amcandroidtv",
       "color": "#000000",
-      "glyph": "amc_a",
+      "glyph": "amcandroidtv_wm",
       "components": [
         "com.amcplus.amcandroidtv/com.amcplus.tv.MainActivity"
       ],
       "category": "APP",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "Core stroke-letter wordmark (AMC with a plus), the brand's own logo being a word. Replaced amc_a, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "Amnis",
@@ -830,7 +848,7 @@
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the official launcher icon (Google Play listing for tv.arte.plus7): dominant brand accent #FC4700 (2026-09-26)",
       "color_reviewed": "2026-09-26",
-      "glyph_source": "wordmark-derived mark from the Projectivy Icon Pack 1.1.9 artwork for tv.arte.plus7 (github.com/SicMundus86/ProjectivyIconPack, used as reference only): the logotype's cue 'a', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
+      "glyph_source": "Core stroke-letter wordmark (arte), the brand's lower-case logo. Was the single letter a, which rendered at 52% of the canvas (accuracy sweep 2026-10-18)"
     },
     {
       "name": "Artlume",
@@ -926,11 +944,13 @@
       "color": "#00C2FF",
       "glyph": "store_bag",
       "components": [
-        "com.aurora.store/.MainActivity"
+        "com.aurora.store/.MainActivity",
+        "com.aurora.store/com.aurora.store.ComposeActivity"
       ],
       "category": "STORE",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mapping_source": "issue #255 (device-reported on Google TV Streamer, Android 14, pack 2.1.1): current Aurora Store builds launch com.aurora.store.ComposeActivity"
     },
     {
       "name": "Void",
@@ -1141,7 +1161,7 @@
       "name": "Binge",
       "drawable": "binge",
       "color": "#B80472",
-      "glyph": "binge_wave",
+      "glyph": "binge_wm",
       "components": [
         "au.com.streamotion.ares/.MainActivity",
         "au.com.binge.tv/.MainActivity",
@@ -1154,7 +1174,22 @@
       "unverified": [
         "au.com.binge.tv/au.com.foxsports.martian.tv.main.MainActivity",
         "au.com.streamotion.ares/au.com.foxsports.martian.tv.main.MainActivity"
-      ]
+      ],
+      "glyph_source": "Core stroke-letter wordmark (BINGE), the brand's own logo being a word. Replaced binge_wave, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
+    },
+    {
+      "name": "Binged",
+      "drawable": "binged",
+      "color": "#E8453C",
+      "glyph": "binged_b",
+      "components": [
+        "net.binged.tv/net.binged.tv.MainActivity"
+      ],
+      "category": "STREAM",
+      "mapping_source": "device-reported via the pack's Missing icons scanner (screenshot, Android TV, pack 2.3.3, 2026-10-11): net.binged.tv/net.binged.tv.MainActivity is the activity the launcher opened for Binged on that device. Not confirmed on a second TV",
+      "color_source": "eyeballed from the app's own launcher icon as shown in the scanner screenshot (a white B over a red underline, 'Binged for the family' banner): coral red #E8453C; approximate, not sampled from a vendor asset (2026-10-13)",
+      "color_reviewed": "2026-10-13",
+      "glyph_source": "original Core monoline mark: a capital B with a short bar beneath it - the launcher icon's cue - in Core stroke geometry, not the vendor letterform and not traced (2026-10-13)"
     },
     {
       "name": "Bitdefender",
@@ -1235,6 +1270,20 @@
       "color_reviewed": null
     },
     {
+      "name": "Buzz TV 6",
+      "drawable": "buzztv6",
+      "color": "#FFE14D",
+      "glyph": "buzztv_bolt",
+      "components": [
+        "com.buzztv.iptv.tv/com.buzztv.iptv.MainActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "issue #300 (device-reported on G Series, Android 14, pack 2.3.3): com.buzztv.iptv.tv/com.buzztv.iptv.MainActivity is the activity the launcher opened for Buzz TV 6 on that device; Play listing play.google.com/store/apps/details?id=com.buzztv.iptv.tv. Not confirmed on a second TV",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: a television screen with a lightning bolt - a buzz - inside it, the name drawn literally in Core stroke geometry; no vendor logo traced (2026-10-13)"
+    },
+    {
       "name": "İnat Box",
       "drawable": "box",
       "color": "#E86830",
@@ -1309,8 +1358,7 @@
       "color": "#BAAA16",
       "glyph": "browser_globe",
       "components": [
-        "org.mlm.browkorftv/org.mlm.browkorftv.activity.main.MainActivity",
-        "org.mlm.browkorftv/.activity.main.MainActivity"
+        "org.mlm.browkorftv/org.mlm.browkorftv.activity.main.MainActivity"
       ],
       "category": "BROWSER",
       "mapping_source": "Browkorf TV official repository AndroidManifest.xml, 2026-09",
@@ -1365,10 +1413,11 @@
       "color": "#09457F",
       "glyph": "byedpi_dove",
       "components": [
-        "io.github.romanvht.byedpi/io.github.dovecoteescapee.byedpi.activities.MainActivity"
+        "io.github.romanvht.byedpi/io.github.dovecoteescapee.byedpi.activities.MainActivity",
+        "io.github.romanvht.byedpi/io.github.romanvht.byedpi.activities.MainActivity"
       ],
       "category": "APP",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "mapping_source": "Projectivy Icon Pack 1.1.9 (io.github.dovecoteescapee.byedpi.activities.MainActivity); issues #324 (haierATV, Android 11, pack 2.4.0) and #333 (4K Android TV Box, Android 14, pack 2.4.2, Monet), both device-reported via the pack's Missing icons scanner: current ByeByeDPI builds launch io.github.romanvht.byedpi.activities.MainActivity, the class moved out of the dovecoteescapee namespace",
       "color_source": "sampled from the official launcher icon (APKCombo mirror of the Google Play listing for io.github.romanvht.byedpi): dominant brand accent #09457F (2026-09-26)",
       "color_reviewed": "2026-09-26",
       "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for io.github.romanvht.byedpi (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)",
@@ -1718,11 +1767,13 @@
       "color": "#4FACFE",
       "glyph": "cloud_box",
       "components": [
-        "com.lagradost.cloudstream3/com.lagradost.cloudstream3.ui.account.AccountSelectActivity"
+        "com.lagradost.cloudstream3/com.lagradost.cloudstream3.ui.account.AccountSelectActivity",
+        "com.lagradost.cloudstream3.prerelease/com.lagradost.cloudstream3.ui.account.AccountSelectActivity2"
       ],
       "category": "STREAM",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mapping_source": "issue #314 (device-reported via the pack's Missing icons scanner on a Smart TV, Android 14, pack 2.4.0, 2026-10-14): CloudStream's pre-release build installs as com.lagradost.cloudstream3.prerelease and launches ui.account.AccountSelectActivity2; the stable mapping is pre-provenance"
     },
     {
       "name": "CNBC",
@@ -1783,11 +1834,13 @@
       "color": "#00D4FF",
       "glyph": "core_mark",
       "components": [
-        "tv.corebuilds.iconpack/.MainActivity"
+        "tv.corebuilds.iconpack/.MainActivity",
+        "tv.corebuilds.iconpack.glyphs/.GlyphsHomeActivity"
       ],
       "category": "CORE",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mapping_source": "pre-provenance; issue #339 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.4.2, 2026-10-17): the Core Builds Glyphs companion (tv.corebuilds.iconpack.glyphs, built from glyphs/ in this repo) launches .GlyphsHomeActivity and ships the same Core Builds launcher art and banner, so it shares this icon"
     },
     {
       "name": "Core Doctor",
@@ -1934,12 +1987,14 @@
       "color": "#E81820",
       "glyph": "cricfy_ball",
       "components": [
-        "com.cricfy.tv/com.android.vending.tv.activities.Splash"
+        "com.cricfy.tv/com.android.vending.tv.activities.Splash",
+        "com.cricfytv.sports/com.android.vending.activities.Splash"
       ],
       "category": "APP",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.cricfy.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #E81820 (2026-09-27)",
       "color_reviewed": "2026-09-27",
-      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.cricfy.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)"
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.cricfy.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)",
+      "mapping_source": "issue #315 (device-reported via the pack's Missing icons scanner on a Smart TV, Android 14, pack 2.4.0, 2026-10-14): the CRICFy TV build from cricfyapk.io installs as com.cricfytv.sports and launches com.android.vending.activities.Splash. Same Cricfy brand as com.cricfy.tv. Not confirmed on a second TV"
     },
     {
       "name": "Criterion Channel",
@@ -2027,8 +2082,7 @@
       "glyph": "folder",
       "components": [
         "com.cxinventor.file.explorer/com.alphainventor.filemanager.activity.MainActivity",
-        "com.alphainventor.filemanager/.activity.MainActivity",
-        "com.alphainventor.filemanager/com.alphainventor.filemanager.activity.MainActivity"
+        "com.alphainventor.filemanager/.activity.MainActivity"
       ],
       "category": "FILES",
       "color_source": "core-builds palette (no published brand colour found)",
@@ -2470,8 +2524,7 @@
       "glyph": "downloader_arrow",
       "components": [
         "com.esaba.downloader/.ui.main.MainActivity",
-        "com.esaba.downloader/.MainActivity",
-        "com.esaba.downloader/com.esaba.downloader.MainActivity"
+        "com.esaba.downloader/.MainActivity"
       ],
       "category": "TOOL",
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -2621,12 +2674,10 @@
       "category": "MUSIC",
       "components": [
         "com.synology.dsaudio/com.synology.dsaudio.ui.SplashActivity",
-        "com.synology.dsaudio/.ui.SplashActivity",
         "com.synology.dsaudio/com.synology.dsaudio.MainActivity"
       ],
       "unverified": [
         "com.synology.dsaudio/com.synology.dsaudio.ui.SplashActivity",
-        "com.synology.dsaudio/.ui.SplashActivity",
         "com.synology.dsaudio/com.synology.dsaudio.MainActivity"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -2640,13 +2691,11 @@
       "category": "FILES",
       "components": [
         "com.synology.DSfile/com.synology.DSfile.ui.activity.SplashActivity",
-        "com.synology.DSfile/.ui.activity.SplashActivity",
         "com.synology.DSfile/com.synology.DSfile.MainActivity",
         "com.hisona.dsfile/com.hisona.dsfile.MainActivity"
       ],
       "unverified": [
         "com.synology.DSfile/com.synology.DSfile.ui.activity.SplashActivity",
-        "com.synology.DSfile/.ui.activity.SplashActivity",
         "com.synology.DSfile/com.synology.DSfile.MainActivity",
         "com.hisona.dsfile/com.hisona.dsfile.MainActivity"
       ],
@@ -2661,12 +2710,10 @@
       "category": "TOOL",
       "components": [
         "com.synology.DSfinder/com.synology.DSfinder.ui.SplashActivity",
-        "com.synology.DSfinder/.ui.SplashActivity",
         "com.synology.DSfinder/com.synology.DSfinder.MainActivity"
       ],
       "unverified": [
         "com.synology.DSfinder/com.synology.DSfinder.ui.SplashActivity",
-        "com.synology.DSfinder/.ui.SplashActivity",
         "com.synology.DSfinder/com.synology.DSfinder.MainActivity"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -2680,12 +2727,10 @@
       "category": "TOOL",
       "components": [
         "com.synology.DSget/com.synology.DSget.ui.SplashActivity",
-        "com.synology.DSget/.ui.SplashActivity",
         "com.synology.DSget/com.synology.DSget.MainActivity"
       ],
       "unverified": [
         "com.synology.DSget/com.synology.DSget.ui.SplashActivity",
-        "com.synology.DSget/.ui.SplashActivity",
         "com.synology.DSget/com.synology.DSget.MainActivity"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -2699,12 +2744,10 @@
       "category": "FILES",
       "components": [
         "com.synology.dsphoto/com.synology.dsphoto.ui.SplashActivity",
-        "com.synology.dsphoto/.ui.SplashActivity",
         "com.synology.dsphoto/com.synology.dsphoto.MainActivity"
       ],
       "unverified": [
         "com.synology.dsphoto/com.synology.dsphoto.ui.SplashActivity",
-        "com.synology.dsphoto/.ui.SplashActivity",
         "com.synology.dsphoto/com.synology.dsphoto.MainActivity"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -2732,13 +2775,11 @@
       "category": "MEDIA",
       "components": [
         "com.synology.dsvideo/com.synology.dsvideo.ui.SplashActivity",
-        "com.synology.dsvideo/.ui.SplashActivity",
         "com.synology.dsvideo/com.synology.dsvideo.MainActivity",
         "com.synology.dsvideo/com.synology.dsvideo.ui.WelcomeActivity"
       ],
       "unverified": [
         "com.synology.dsvideo/com.synology.dsvideo.ui.SplashActivity",
-        "com.synology.dsvideo/.ui.SplashActivity",
         "com.synology.dsvideo/com.synology.dsvideo.MainActivity"
       ],
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.synology.dsvideo (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #E83238, replacing an accent that did not match it (2026-09-28)",
@@ -3229,7 +3270,8 @@
       "components": [
         "com.google.android.documentsui/.files.FilesActivity",
         "com.google.android.documentsui/com.android.documentsui.files.FilesActivity",
-        "com.google.android.apps.nbu.files/.home.HomeActivity"
+        "com.google.android.apps.nbu.files/.home.HomeActivity",
+        "com.android.documentsui/com.android.documentsui.LauncherActivity"
       ],
       "category": "SYSTEM",
       "unverified": [
@@ -3237,7 +3279,8 @@
         "com.google.android.apps.nbu.files/.home.HomeActivity"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mapping_source": "pre-provenance; issue #342 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.4.2, 2026-10-17, listed in Spanish as Archivos): SHIELD ships the AOSP build of Files (com.android.documentsui), which launches LauncherActivity"
     },
     {
       "name": "FileSynced",
@@ -3504,14 +3547,15 @@
     {
       "name": "Flix Vision",
       "drawable": "flix_vision",
-      "color": "#E5533D",
-      "glyph": "film_reel",
+      "color": "#866EAD",
+      "glyph": "flixvision_f",
       "components": [
         "flix.com.vision/.activities.SplashScreenActivity"
       ],
       "category": "STREAM",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "sampled from the Projectivy Icon Pack artwork for flix.com.vision (github.com/SicMundus86/ProjectivyIconPack, reference only): the logo ring's purple #866EAD, replacing a pre-provenance red-orange #E5533D the logo never used (2026-10-07)",
+      "color_reviewed": "2026-10-07",
+      "glyph_source": "original mark from the Projectivy Icon Pack artwork for flix.com.vision (reference only): a ring round a leaning F whose stem sweeps into its top arm, after the logo's ringed, folded F; not the vendor geometry (2026-10-07)"
     },
     {
       "name": "FlixNest",
@@ -3666,13 +3710,14 @@
       "name": "Fox News",
       "drawable": "foxnews",
       "color": "#003580",
-      "glyph": "foxnews_mark",
+      "glyph": "foxnews_wm",
       "components": [
         "com.foxnews.android/com.foxnews.androidtv.ui.splash.SplashScreenActivity"
       ],
       "category": "SPORT",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "Core stroke-letter wordmark (FOX NEWS on two lines), the brand's own logo being a word. Replaced foxnews_mark, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "FOX One",
@@ -4021,12 +4066,10 @@
       "glyph": "folder",
       "category": "FILES",
       "components": [
-        "com.ghostsq.commander/com.ghostsq.commander.FileCommander",
-        "com.ghostsq.commander/.FileCommander"
+        "com.ghostsq.commander/com.ghostsq.commander.FileCommander"
       ],
       "unverified": [
-        "com.ghostsq.commander/com.ghostsq.commander.FileCommander",
-        "com.ghostsq.commander/.FileCommander"
+        "com.ghostsq.commander/com.ghostsq.commander.FileCommander"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -4971,7 +5014,6 @@
       "glyph": "jellyfin_chevrons",
       "components": [
         "org.jellyfin.androidtv/.ui.startup.StartupActivity",
-        "org.jellyfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity",
         "org.jellyfin.mobile/.MainActivity"
       ],
       "category": "MEDIA",
@@ -5160,7 +5202,7 @@
       "name": "Kayo",
       "drawable": "kayo",
       "color": "#58B068",
-      "glyph": "kayo_bolt",
+      "glyph": "kayo_wm",
       "components": [
         "au.com.kayosports.tv/.MainActivity",
         "au.com.streamotion.hyperion/.MainActivity",
@@ -5173,7 +5215,8 @@
       ],
       "color_source": "sampled (current logo green)",
       "color_reviewed": "2026-09-08",
-      "color_note": null
+      "color_note": null,
+      "glyph_source": "Core stroke-letter wordmark (kayo), the brand's own logo being a word. Replaced kayo_bolt, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "KDE Connect",
@@ -5321,13 +5364,14 @@
       "name": "Kocowa",
       "drawable": "kocowa",
       "color": "#FF4D4D",
-      "glyph": "kocowa_mark",
+      "glyph": "kocowa_wm",
       "components": [
         "com.kocowa.android.tv/com.kocowa.base.a_view.launcher.LauncherActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "Core stroke-letter wordmark (KOCOWA), the brand's own logo being a word. Replaced kocowa_mark, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "Kodi",
@@ -5336,7 +5380,6 @@
       "glyph": "kodi_box",
       "components": [
         "org.xbmc.kodi/.Splash",
-        "org.xbmc.kodi/org.xbmc.kodi.Splash",
         "org.xbmc.kodi_touch/.Splash"
       ],
       "category": "MEDIA",
@@ -5503,14 +5546,16 @@
     {
       "name": "Launcher Manager",
       "drawable": "luckymanager",
-      "color": "#FBBF24",
-      "glyph": "tools_wrench",
+      "color": "#4080F0",
+      "glyph": "launchermanager_gear",
       "components": [
         "com.wolf.google.lm/.main.MainActivity"
       ],
-      "category": "TOOL",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "category": "LAUNCHER",
+      "color_source": "shared with Launcher Manager (launcher_manager): com.wolf.google.lm is the Google TV build of the same developer's Launcher Manager; was #FBBF24 (accuracy sweep 2026-10-18)",
+      "color_reviewed": "2026-09-28",
+      "brand": "launchermanager",
+      "glyph_source": "shared with launcher_manager: com.wolf.google.lm is the Google TV build of the same developer's Launcher Manager; was tools_wrench (accuracy sweep 2026-10-18)"
     },
     {
       "name": "Launcher Manager",
@@ -5530,7 +5575,8 @@
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.wolf.lm (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #4080F0 (2026-09-28)",
       "color_reviewed": "2026-09-28",
-      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.wolf.lm (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
+      "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.wolf.lm (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)",
+      "brand": "launchermanager"
     },
     {
       "name": "Lazy IPTV Deluxe",
@@ -5697,7 +5743,8 @@
       "color": "#00BCD4",
       "glyph": "monitor_wave",
       "components": [
-        "com.mediatek.wwtv.tvcenter/.nav.TurnkeyUiMainActivity"
+        "com.mediatek.wwtv.tvcenter/.nav.TurnkeyUiMainActivity",
+        "org.droidtv.playtv/org.droidtv.playtv.PlayTvActivity"
       ],
       "category": "LIVE",
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -5933,12 +5980,10 @@
       "glyph": "folder",
       "category": "FILES",
       "components": [
-        "me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity",
-        "me.zhanghai.android.files/.filelist.FileListActivity"
+        "me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity"
       ],
       "unverified": [
-        "me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity",
-        "me.zhanghai.android.files/.filelist.FileListActivity"
+        "me.zhanghai.android.files/me.zhanghai.android.files.filelist.FileListActivity"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -5959,20 +6004,23 @@
       "style": "core_monoline"
     },
     {
-      "name": "Max",
+      "name": "HBO Max",
       "drawable": "max",
       "color": "#0046FF",
-      "glyph": "max_wave",
+      "glyph": "max_wm",
       "components": [
         "com.wbd.stream/.MainActivity",
         "com.hbo.hbonow/.MainActivity",
         "com.wbd.hbomax/.MainActivity",
-        "com.wbd.hbomax/com.wbd.hbomax.MainActivity",
-        "com.wbd.stream/com.wbd.beam.BeamActivity"
+        "com.wbd.stream/com.wbd.beam.BeamActivity",
+        "com.wbd.hbomax/com.wbd.beam.BeamActivity"
       ],
       "category": "VOD",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mapping_source": "issue #256 (device-reported on Google TV Streamer, Android 14, pack 2.1.1): com.wbd.beam.BeamActivity is the launch activity of com.wbd.hbomax",
+      "name_source": "the service's own name since its 2025 return from Max to HBO Max; the package id com.wbd.hbomax and issue #256 both name it HBO Max (2026-10-07)",
+      "glyph_source": "wordmark cue from the HBO Max logo since its 2025 return to the HBO Max name: HBO stacked over lowercase max in the pack's stroke letters, replacing the lone Max wave (2026-10-07)"
     },
     {
       "name": "Rover's Morning Glory",
@@ -6104,13 +6152,14 @@
       "name": "MEGOGO",
       "drawable": "application",
       "color": "#22C3B1",
-      "glyph": "megogo_mark",
+      "glyph": "application_wm",
       "components": [
         "com.megogo.application/net.megogo.tv.main.MainActivity"
       ],
       "category": "APP",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.megogo.application (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #22C3B1, replacing an accent that did not match it (2026-09-28)",
-      "color_reviewed": "2026-09-28"
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "Core stroke-letter wordmark (MEGOGO), the brand's own logo being a word. Replaced megogo_mark, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "MEO",
@@ -6251,8 +6300,7 @@
       "glyph": "folder",
       "components": [
         "com.mixplorer.silver/com.mixplorer.activities.BrowseActivity",
-        "com.mixplorer/.activities.BrowseActivity",
-        "com.mixplorer/com.mixplorer.activities.BrowseActivity"
+        "com.mixplorer/.activities.BrowseActivity"
       ],
       "category": "FILES",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.mixplorer.silver (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #1D87E3, replacing an accent that did not match it (2026-09-28)",
@@ -6318,8 +6366,7 @@
       "color": "#B388FF",
       "glyph": "droplet",
       "components": [
-        "com.klevico.monet/com.klevico.monet.HomeActivity",
-        "com.klevico.monet/.HomeActivity"
+        "com.klevico.monet/com.klevico.monet.HomeActivity"
       ],
       "category": "LAUNCHER",
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -6447,6 +6494,20 @@
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.movieboxpro.androidtv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #FFDE45, replacing an accent that did not match it (2026-09-28)",
       "color_reviewed": "2026-09-28",
       "style": "core_monoline"
+    },
+    {
+      "name": "MovieBoxTV",
+      "drawable": "movieboxtv",
+      "color": "#89FF5A",
+      "glyph": "movieboxtv_strip",
+      "components": [
+        "com.community.mbox.tv/com.transsion.subroom.activity.SplashActivity"
+      ],
+      "category": "STREAM",
+      "mapping_source": "issue #294 (device-reported on onn 4K Plus Streaming, Android 14, pack 2.3.1; #291 is its package-only duplicate): com.transsion.subroom.activity.SplashActivity is the activity the launcher opened for MovieBoxTV on that device. Not confirmed on a second TV",
+      "color_source": "sampled arrow green #89FF5A from the current Play Store icon of the same brand family (MovieBox: Movies & TV Shows, com.community.mbox.ng - the developer's flagship beside com.community.mbox.tv on apkmb.com); the TV build shares the film-strip + play + arrow mark. The triangle blue #31C7FD was recorded, not used (2026-10-11)",
+      "color_reviewed": "2026-10-11",
+      "glyph_source": "original Core monoline mark: a film strip with its sprockets beside a play triangle - the app's download-and-play cue - in Core stroke geometry, not a trace of the vendor icon (2026-10-11)"
     },
     {
       "name": "MovieLab",
@@ -6600,8 +6661,8 @@
     {
       "name": "MX Player",
       "drawable": "mxplayer",
-      "color": "#3AB4F2",
-      "glyph": "play_round",
+      "color": "#3C8CEB",
+      "glyph": "mxplayer_mark",
       "components": [
         "com.mxtech.videoplayer.ad/.ActivityMediaList",
         "com.mxtech.videoplayer.pro/.ActivityMediaList",
@@ -6609,8 +6670,10 @@
         "com.mxtech.videoplayer.ad/com.mxtech.videoplayer.ad.ActivityWelcomeMX"
       ],
       "category": "PLAYER",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "shared with MX Player TV (videoplayer): MX Player and MX Player TV are one brand; this play arrow is MX Player's own mark, not the generic circle-play four other players share; was #3AB4F2 (accuracy sweep 2026-10-18)",
+      "color_reviewed": "2026-09-28",
+      "brand": "mxplayer",
+      "glyph_source": "shared with videoplayer: MX Player and MX Player TV are one brand; this play arrow is MX Player's own mark, not the generic circle-play four other players share; was play_round (accuracy sweep 2026-10-18)"
     },
     {
       "name": "MX Player TV",
@@ -6622,7 +6685,8 @@
       ],
       "category": "STREAM",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.mxtech.videoplayer.television (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #3C8CEB, replacing an accent that did not match it (2026-09-28)",
-      "color_reviewed": "2026-09-28"
+      "color_reviewed": "2026-09-28",
+      "brand": "mxplayer"
     },
     {
       "name": "My Family Cinema Player",
@@ -7270,14 +7334,14 @@
       "components": [
         "com.nuvio.app/com.nuvio.tv.MainActivity",
         "com.nuvio.tv/.MainActivity",
-        "com.nuvio.tv/com.nuvio.tv.MainActivity",
         "com.nuviodebug.com/com.nuvio.tv.MainActivity",
         "com.nuvio.tv/.launcher.AppIconDefault",
         "com.nuvio.tv/.launcher.AppIconArcticBlue",
         "com.nuvio.tv/.launcher.AppIconEmerald",
         "com.nuvio.tv/.launcher.AppIconRoseGold",
         "com.nuvio.tv/.launcher.AppIconCopper",
-        "com.nuvio.tv/.launcher.AppIconGraphite"
+        "com.nuvio.tv/.launcher.AppIconGraphite",
+        "com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault"
       ],
       "category": "STREAM",
       "color_source": "brand reference — nuvio lockup gradient, violet end (sampled 2026-09-14)",
@@ -7285,7 +7349,8 @@
       "gradient": [
         "#2FCCE6",
         "#A238F0"
-      ]
+      ],
+      "mapping_source": "existing set per docs/research/community-input-icons-2026-09.md P0 (official com.nuvio.tv manifest, six launcher activities, read 2026-09-14); com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault added from issue #288 (device-reported on Smart TV Pro, Android 14, pack 2.3.0): the com.nuvio.app package variant ships the same AppIconDefault activity, which the P0 pass mapped only under com.nuvio.tv. Not confirmed on a second TV"
     },
     {
       "name": "NV Player",
@@ -7637,15 +7702,18 @@
     {
       "name": "Ott Navigator",
       "drawable": "ott_navigator",
-      "color": "#FFE14D",
-      "glyph": "ott_navigator",
+      "color": "#4FACFE",
+      "glyph": "broadcast_O",
       "components": [
         "studio.scillarium.ottnavigator/studio.scillarium.ottnavigator.MainActivity"
       ],
-      "category": "APP",
+      "category": "LIVE",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
-      "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_source": "shared with OTT Navigator (ottnavigator): studio.scillarium.ottnavigator and live.h24.ottnavigator are the same OTT Navigator app under two packages; was #FFE14D (accuracy sweep 2026-10-18)",
+      "color_reviewed": null,
+      "brand": "ottnavigator",
+      "glyph_source": "shared with ottnavigator: studio.scillarium.ottnavigator and live.h24.ottnavigator are the same OTT Navigator app under two packages; was ott_navigator (accuracy sweep 2026-10-18)",
+      "mark": "ON"
     },
     {
       "name": "OTTplay",
@@ -7693,11 +7761,13 @@
       "color": "#4CAF50",
       "glyph": "satellite",
       "components": [
-        "tv.own.owntv/tv.own.owntv.MainActivity"
+        "tv.own.owntv/tv.own.owntv.MainActivity",
+        "tv.own.owntv.glcn/tv.own.owntv.MainActivity"
       ],
       "category": "LIVE",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mapping_source": "pre-provenance; issue #340 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.4.2, 2026-10-17): OwnTV Fanart, a fork of OwnTV, installs as tv.own.owntv.glcn and launches the same tv.own.owntv.MainActivity, so it shares the OwnTV icon"
     },
     {
       "name": "Pac Man 256",
@@ -8124,13 +8194,15 @@
       "glyph": "plex_chevron",
       "components": [
         "com.plexapp.android/com.plexapp.plex.activities.SplashActivity",
-        "com.plexapp.mediaserver.smb/.MainActivity"
+        "com.plexapp.mediaserver.smb/.MainActivity",
+        "com.plexapp.android/tv.plex.app.MainActivity"
       ],
       "category": "MEDIA",
       "brand": "plex",
       "style": "core_monoline",
       "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "mapping_source": "pre-provenance; issue #337 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.4.2, 2026-10-17, Monet): current Plex builds launch tv.plex.app.MainActivity"
     },
     {
       "name": "Plexamp",
@@ -8927,12 +8999,10 @@
       "category": "FILES",
       "components": [
         "com.rs.explorer.filemanager/com.rs.explorer.filemanager.MainActivity",
-        "com.rs.explorer.filemanager/.MainActivity",
         "com.rs.explorer.filemanager/com.edili.filemanager.module.activity.FirstActivity"
       ],
       "unverified": [
-        "com.rs.explorer.filemanager/com.rs.explorer.filemanager.MainActivity",
-        "com.rs.explorer.filemanager/.MainActivity"
+        "com.rs.explorer.filemanager/com.rs.explorer.filemanager.MainActivity"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
@@ -9103,7 +9173,6 @@
       "glyph": "iptv_player",
       "components": [
         "com.s0und.s0undtv/.MainActivity",
-        "com.s0und.s0undtv/com.s0und.s0undtv.MainActivity",
         "com.s0und.s0undtv/com.s0und.s0undtv.activities.FireTVMainActivity",
         "com.s0und.s0undtv/com.s0und.s0undtv.activities.MainActivity"
       ],
@@ -9602,14 +9671,15 @@
       "name": "Sling TV",
       "drawable": "sling_tv",
       "color": "#19A9E0",
-      "glyph": "sling_s",
+      "glyph": "sling_tv_wm",
       "components": [
         "com.sling/com.sling.MainActivity"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.sling (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #19A9E0, replacing an accent that did not match it (2026-09-28)",
-      "color_reviewed": "2026-09-28"
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "Core stroke-letter wordmark (sling), the brand's own logo being a word. Replaced sling_s, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "Smart Tube",
@@ -9721,12 +9791,10 @@
       "category": "FILES",
       "components": [
         "pl.solidexplorer2/pl.solidexplorer2.SolidExplorer",
-        "pl.solidexplorer2/.SolidExplorer",
         "pl.solidexplorer2/pl.solidexplorer.SolidExplorer"
       ],
       "unverified": [
-        "pl.solidexplorer2/pl.solidexplorer2.SolidExplorer",
-        "pl.solidexplorer2/.SolidExplorer"
+        "pl.solidexplorer2/pl.solidexplorer2.SolidExplorer"
       ],
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for pl.solidexplorer2 (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #049BE5, replacing an accent that did not match it (2026-09-28)",
       "color_reviewed": "2026-09-28"
@@ -9848,15 +9916,13 @@
       "glyph": "sportseverywhere_wm",
       "components": [
         "com.Arena4Viewer.Sportseverywhere/com.Arena4Viewer.Sportseverywhere.MainActivitysplachscren",
-        "com.bone.android.a4v.oficial/com.bone.android.a4v.oficial.AVActivity",
-        "com.bone.android.a4v.oficial/.AVActivity"
+        "com.bone.android.a4v.oficial/com.bone.android.a4v.oficial.AVActivity"
       ],
       "category": "SPORT",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for com.Arena4Viewer.Sportseverywhere (github.com/SicMundus86/ProjectivyIconPack, used as reference only): #F84048 (2026-09-27)",
       "color_reviewed": "2026-09-27",
       "unverified": [
-        "com.bone.android.a4v.oficial/com.bone.android.a4v.oficial.AVActivity",
-        "com.bone.android.a4v.oficial/.AVActivity"
+        "com.bone.android.a4v.oficial/com.bone.android.a4v.oficial.AVActivity"
       ],
       "mapping_source": "Arena4Viewer official site + issue #175 package; AVActivity entrypoint from indexed APK manifest analysis, 2026-09-26",
       "glyph_source": "wordmark-derived mark from the Projectivy Icon Pack 1.1.9 artwork for com.Arena4Viewer.Sportseverywhere (github.com/SicMundus86/ProjectivyIconPack, used as reference only): the logotype's cue '4V' with its under, set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
@@ -10126,7 +10192,6 @@
       "glyph": "stremio_square",
       "components": [
         "com.stremio.one/com.stremio.one.MainActivity",
-        "com.stremio.one/.MainActivity",
         "com.stremio.one/com.stremio.tv.MainActivity"
       ],
       "category": "STREAM",
@@ -10141,12 +10206,10 @@
       "color": "#34EB7A",
       "glyph": "stremize_z",
       "components": [
-        "com.stremize.player/.MainActivity",
-        "com.stremize.player/com.stremize.player.MainActivity"
+        "com.stremize.player/.MainActivity"
       ],
       "unverified": [
-        "com.stremize.player/.MainActivity",
-        "com.stremize.player/com.stremize.player.MainActivity"
+        "com.stremize.player/.MainActivity"
       ],
       "category": "STREAM",
       "brand": "stremize",
@@ -10186,8 +10249,7 @@
       "color": "#7453B7",
       "glyph": "tv_stack",
       "components": [
-        "com.strmr.ps/com.strmr.ps.ui.auth.SignInActivity",
-        "com.strmr.ps/.ui.auth.SignInActivity"
+        "com.strmr.ps/com.strmr.ps.ui.auth.SignInActivity"
       ],
       "category": "STREAM",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.strmr.ps (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #7453B7, replacing an accent that did not match it (2026-09-28)",
@@ -10402,13 +10464,11 @@
       "category": "FILES",
       "components": [
         "com.synology.server.SynologyDrive/com.synology.server.SynologyDrive.ui.SplashActivity",
-        "com.synology.dscloud/com.synology.dscloud.ui.SplashActivity",
-        "com.synology.dscloud/.ui.SplashActivity"
+        "com.synology.dscloud/com.synology.dscloud.ui.SplashActivity"
       ],
       "unverified": [
         "com.synology.server.SynologyDrive/com.synology.server.SynologyDrive.ui.SplashActivity",
-        "com.synology.dscloud/com.synology.dscloud.ui.SplashActivity",
-        "com.synology.dscloud/.ui.SplashActivity"
+        "com.synology.dscloud/com.synology.dscloud.ui.SplashActivity"
       ],
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null,
@@ -10581,14 +10641,15 @@
       "name": "TBS",
       "drawable": "tbs",
       "color": "#F19A65",
-      "glyph": "tbs_mark",
+      "glyph": "tbs_wm",
       "components": [
         "com.turner.tbs.android.networkapp/com.wme.app.MainActivityTv"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.turner.tbs.android.networkapp (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #F19A65, replacing a palette fallback (2026-09-28)",
-      "color_reviewed": "2026-09-28"
+      "color_reviewed": "2026-09-28",
+      "glyph_source": "Core stroke-letter wordmark (tbs), the brand's own logo being a word. Replaced tbs_mark, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "TCL Channel",
@@ -10811,6 +10872,20 @@
       "color_source": "sampled from the official launcher icon (Google Play listing for tv.fournetwork.android.box.digi): dominant brand accent #1E1EC8 (2026-09-26)",
       "color_reviewed": "2026-09-26",
       "glyph_source": "wordmark-derived mark from the Projectivy Icon Pack 1.1.9 artwork for tv.fournetwork.android.box.digi (github.com/SicMundus86/ProjectivyIconPack, used as reference only): the logotype's cue 'Telly', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
+    },
+    {
+      "name": "Telly Player",
+      "drawable": "tellyplayer",
+      "color": "#4FACFE",
+      "glyph": "tellyplayer_screen",
+      "components": [
+        "com.desktoptelly.tv/com.desktoptelly.tv.MainActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "issue #301 (device-reported on SHIELD Android TV, Android 11, pack 2.3.1): com.desktoptelly.tv/com.desktoptelly.tv.MainActivity is the activity the launcher opened for Telly Player on that device; distributed by Downloader code 5393783, no store link given. Confirmed on a second TV by issue #306 (a different reporter, via the pack's Missing icons scanner on MiTV-AFMU0, Android 14, pack 2.3.3, 2026-10-14): the same component, with the vendor's APK at download.desktoptelly.com",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: a telly - a rounded screen on a stand - with a play triangle inside, the name drawn literally in Core stroke geometry; no vendor art traced (2026-10-13)"
     },
     {
       "name": "Tencent Video",
@@ -11060,15 +11135,15 @@
     {
       "name": "TiviMate",
       "drawable": "tvplayer",
-      "color": "#028AD5",
-      "glyph": "tivimate_grid",
+      "color": "#97C1FF",
+      "glyph": "tivimate_guide",
       "components": [
-        "ar.tvplayer.tv/ar.tvplayer.tv.ui.MainActivity",
-        "ar.tvplayer.tv/.ui.MainActivity"
+        "ar.tvplayer.tv/ar.tvplayer.tv.ui.MainActivity"
       ],
       "category": "LIVE",
-      "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for ar.tvplayer.tv (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #028AD5, replacing an accent that did not match it (2026-09-28)",
-      "color_reviewed": "2026-09-28"
+      "color_source": "sampled from the official launcher icon (Google Play listing for ar.tvplayer.tv, 512px): the 'tivi' wordmark's light blue #97C1FF, the icon's dominant ink; #028AD5 came from third-party artwork (2026-10-07)",
+      "color_reviewed": "2026-10-07",
+      "glyph_source": "original Core mark from research into TiviMate (Google Play listing for ar.tvplayer.tv: an IPTV player built around its TV guide grid, reference only): the guide's channel column and programme rows, with the logo's tick-shaped v on the slot playing now; not a trace (2026-10-07)"
     },
     {
       "name": "TizenTube",
@@ -11118,14 +11193,15 @@
       "name": "TNT",
       "drawable": "tnt",
       "color": "#C95CFF",
-      "glyph": "tnt_mark",
+      "glyph": "tnt_wm",
       "components": [
         "com.turner.tnt.android.networkapp/com.wme.app.MainActivityTv"
       ],
       "category": "APP",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "Core stroke-letter wordmark (TNT), the brand's own logo being a word. Replaced tnt_mark, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "TOD",
@@ -11491,14 +11567,14 @@
     {
       "name": "YouTube TV",
       "drawable": "tvunplugged",
-      "color": "#FF0000",
+      "color": "#FF0033",
       "glyph": "iptv_player",
       "components": [
         "com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.MainActivity"
       ],
       "category": "VIDEO",
-      "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.google.android.youtube.tvunplugged (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #FF0000, replacing an accent that did not match it (2026-09-28)",
-      "color_reviewed": "2026-09-28",
+      "color_source": "YouTube Red #FF0033, the logo palette's primary red in Google's YouTube brand palette (partnermarketinghub.withgoogle.com, YouTube Kids visual identity), which replaced #FF0000 (2026-10-07)",
+      "color_reviewed": "2026-10-07",
       "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.google.android.youtube.tvunplugged (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the YouTube TV logo for this package (2026-09-27)"
     },
     {
@@ -11867,13 +11943,11 @@
       "glyph": "ufm_folder_arrow",
       "components": [
         "za.kilowatch.ultimatefilemanager/.MainActivity",
-        "za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity",
         "za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.onboarding.LanguageWelcomeActivity"
       ],
       "category": "FILES",
       "unverified": [
-        "za.kilowatch.ultimatefilemanager/.MainActivity",
-        "za.kilowatch.ultimatefilemanager/za.kilowatch.ultimatefilemanager.MainActivity"
+        "za.kilowatch.ultimatefilemanager/.MainActivity"
       ],
       "color_source": "sampled from the launcher tile in a supporter's device screenshot (2026-09-27): the folder mark's steel blue #80A0B0",
       "color_reviewed": "2026-09-27",
@@ -12003,7 +12077,8 @@
       "glyph": "vewd_browser",
       "components": [
         "com.vewd.core.integration.dia/com.vewd.core.browser.BrowserActivity",
-        "com.vewd.core.integration.dia/com.vewd.core.browser.TVActivity"
+        "com.vewd.core.integration.dia/com.vewd.core.browser.TVActivity",
+        "com.vewd.core.browser/com.vewd.core.browser.BrowserActivity"
       ],
       "category": "BROWSER",
       "mapping_source": "Projectivy Icon Pack 1.1.9",
@@ -12365,12 +12440,14 @@
       "color": "#F8C0B8",
       "glyph": "zenderapp_wm",
       "components": [
-        "be.vmma.vtm.zenderapp/be.persgroep.vtmgo.presentation.VtmGoMainActivity"
+        "be.vmma.vtm.zenderapp/be.persgroep.vtmgo.presentation.VtmGoMainActivity",
+        "be.vmma.vtm.zenderapp/be.persgroep.vtmgo.VtmGoMainActivity"
       ],
       "category": "APP",
       "color_source": "sampled from the Google Play listing launcher icon for be.vmma.vtm.zenderapp (reference only): #F8C0B8 (2026-09-28)",
       "color_reviewed": "2026-09-28",
-      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for be.vmma.vtm.zenderapp (reference only): the logotype's cue 'VTM', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)"
+      "glyph_source": "wordmark-derived mark from the Google Play listing launcher icon for be.vmma.vtm.zenderapp (reference only): the logotype's cue 'VTM', set in the pack's own single-stroke letters, not the vendor letterforms (2026-09-28)",
+      "mapping_source": "issue #308 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, pack 2.4.0, 2026-10-14): current VTM GO builds launch be.persgroep.vtmgo.VtmGoMainActivity, without the .presentation package the original mapping (pre-provenance) names; both are kept so older builds still match"
     },
     {
       "name": "VTVcab ON",
@@ -12407,10 +12484,11 @@
       "color": "#885CA3",
       "glyph": "waipu_pills",
       "components": [
-        "de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity"
+        "de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity",
+        "de.exaring.waipu/de.exaring.waipu.MainActivity"
       ],
       "category": "APP",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "mapping_source": "Projectivy Icon Pack 1.1.9; de.exaring.waipu.MainActivity from issue #286 (device-reported on Hybrid Stick, Android 12, pack 2.3.0, via Projectivy): the activity the launcher opens for this package on that device",
       "color_source": "sampled from the Projectivy Icon Pack 1.1.9 artwork for de.exaring.waipu (github.com/SicMundus86/ProjectivyIconPack, used as reference only): gradient start #885CA3 (2026-09-28)",
       "color_reviewed": "2026-09-28",
       "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for de.exaring.waipu (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the waipu.tv logo for this package (2026-09-28)",
@@ -12482,10 +12560,11 @@
       "color": "#7C74FF",
       "glyph": "waveiptv_antenna",
       "components": [
-        "com.smartwave.wave_iptv/com.smartwave.wave_iptv.SplashActivity"
+        "com.smartwave.wave_iptv/com.smartwave.wave_iptv.SplashActivity",
+        "com.smartwave.waveo/com.smartwave.wave_iptv.SplashActivity"
       ],
       "category": "LIVE",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "mapping_source": "Projectivy Icon Pack 1.1.9; com.smartwave.waveo/com.smartwave.wave_iptv.SplashActivity from issue #246 (device-reported on SHIELD Android TV, Android 11, pack 2.0.1): WAVEO, the same app's beta published on Google Play under a new package name (play.google.com/store/apps/details?id=com.smartwave.waveo), same splash activity class",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
       "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for com.smartwave.wave_iptv (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-28)"
@@ -12563,13 +12642,15 @@
       "color": "#6C5CE7",
       "glyph": "weyd_mark",
       "components": [
-        "app.weyd.player/app.weyd.player.ui.SplashScreenActivity"
+        "app.weyd.player/app.weyd.player.ui.SplashScreenActivity",
+        "app.weyd.player/app.weyd.player.ui.splashscreen.SplashScreenActivity"
       ],
       "category": "STREAM",
       "brand": "weyd",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null,
-      "style": "core_monoline"
+      "style": "core_monoline",
+      "mapping_source": "pre-provenance (app.weyd.player.ui.SplashScreenActivity); issue #327 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.4.2, 2026-10-16): current Weyd builds launch app.weyd.player.ui.splashscreen.SplashScreenActivity"
     },
     {
       "name": "Wholphin",
@@ -12724,8 +12805,7 @@
       "color": "#FFFFFF",
       "glyph": "yinyang_play",
       "components": [
-        "app.wuplay.androidtv/app.wuplay.androidtv.MainActivity",
-        "app.wuplay.androidtv/.MainActivity"
+        "app.wuplay.androidtv/app.wuplay.androidtv.MainActivity"
       ],
       "category": "STREAM",
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -12751,8 +12831,7 @@
       "color": "#FFA512",
       "glyph": "folder",
       "components": [
-        "com.lonelycatgames.Xplore/com.lonelycatgames.Xplore.Browser",
-        "com.lonelycatgames.Xplore/.Browser"
+        "com.lonelycatgames.Xplore/com.lonelycatgames.Xplore.Browser"
       ],
       "category": "FILES",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.lonelycatgames.Xplore (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #FFA512, replacing an accent that did not match it (2026-09-28)",
@@ -12993,7 +13072,7 @@
     {
       "name": "YouTube",
       "drawable": "youtube",
-      "color": "#FF0000",
+      "color": "#FF0033",
       "secondary": {
         "color": "#E6EDF3",
         "parts": [
@@ -13009,13 +13088,13 @@
       "category": "VIDEO",
       "brand": "youtube",
       "style": "core_monoline",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "YouTube Red #FF0033, the logo palette's primary red in Google's YouTube brand palette (partnermarketinghub.withgoogle.com, YouTube Kids visual identity), which replaced #FF0000 (2026-10-07)",
+      "color_reviewed": "2026-10-07"
     },
     {
       "name": "YouTube Kids",
       "drawable": "youtube_2",
-      "color": "#FF0000",
+      "color": "#FF0033",
       "glyph": "yt_kids",
       "components": [
         "com.google.android.youtube.tvkids/com.google.android.apps.youtube.tvkids.activity.MainActivity"
@@ -13023,13 +13102,13 @@
       "category": "VIDEO",
       "brand": "youtubekids",
       "style": "core_monoline",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "YouTube Red #FF0033, the logo palette's primary red in Google's YouTube brand palette (partnermarketinghub.withgoogle.com, YouTube Kids visual identity), which replaced #FF0000 (2026-10-07)",
+      "color_reviewed": "2026-10-07"
     },
     {
       "name": "YouTube Music",
       "drawable": "tvmusic",
-      "color": "#FF0000",
+      "color": "#FF0033",
       "glyph": "yt_music",
       "components": [
         "com.google.android.youtube.tvmusic/com.google.android.apps.youtube.tvmusic.activity.MainActivity"
@@ -13037,8 +13116,8 @@
       "category": "MUSIC",
       "brand": "youtubemusic",
       "style": "core_monoline",
-      "color_source": "brand reference (pre-provenance, unverified)",
-      "color_reviewed": null
+      "color_source": "YouTube Red #FF0033, the logo palette's primary red in Google's YouTube brand palette (partnermarketinghub.withgoogle.com, YouTube Kids visual identity), which replaced #FF0000 (2026-10-07)",
+      "color_reviewed": "2026-10-07"
     },
     {
       "name": "YoWindow",
@@ -13131,13 +13210,14 @@
       "name": "ZEE5",
       "drawable": "graymatrix",
       "color": "#FF5CA8",
-      "glyph": "zee5_mark",
+      "glyph": "graymatrix_wm",
       "components": [
         "com.graymatrix.did/com.zee5.android.launch.presentation.AppStartActivity"
       ],
       "category": "APP",
       "color_source": "core-builds palette (no published brand colour found)",
-      "color_reviewed": null
+      "color_reviewed": null,
+      "glyph_source": "Core stroke-letter wordmark (ZEE5), the brand's own logo being a word. Replaced zee5_mark, a bare letter another brand drew too (accuracy sweep 2026-10-18)"
     },
     {
       "name": "Zen IPTV",
@@ -13370,16 +13450,15 @@
       "mark": "ON",
       "category": "LIVE",
       "components": [
-        "live.h24.ottnavigator/live.h24.ottnavigator.ui.MainLeanbackActivity",
-        "live.h24.ottnavigator/.ui.MainLeanbackActivity"
+        "live.h24.ottnavigator/live.h24.ottnavigator.ui.MainLeanbackActivity"
       ],
       "mapping_source": "research document 2026-09-18 (component unverified against APK)",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
       "unverified": [
-        "live.h24.ottnavigator/live.h24.ottnavigator.ui.MainLeanbackActivity",
-        "live.h24.ottnavigator/.ui.MainLeanbackActivity"
-      ]
+        "live.h24.ottnavigator/live.h24.ottnavigator.ui.MainLeanbackActivity"
+      ],
+      "brand": "ottnavigator"
     },
     {
       "name": "Televizo",
@@ -13389,15 +13468,13 @@
       "mark": "TE",
       "category": "LIVE",
       "components": [
-        "ru.vovasoft.televizo/ru.vovasoft.televizo.ui.MainActivity",
-        "ru.vovasoft.televizo/.ui.MainActivity"
+        "ru.vovasoft.televizo/ru.vovasoft.televizo.ui.MainActivity"
       ],
       "mapping_source": "research document 2026-09-18 (component unverified against APK)",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
       "unverified": [
-        "ru.vovasoft.televizo/ru.vovasoft.televizo.ui.MainActivity",
-        "ru.vovasoft.televizo/.ui.MainActivity"
+        "ru.vovasoft.televizo/ru.vovasoft.televizo.ui.MainActivity"
       ]
     },
     {
@@ -13690,6 +13767,101 @@
       "gradient_source": "the same APK background shape: #EB1E54 to #6900FF (2026-10-03)"
     },
     {
+      "name": "HeatVod",
+      "drawable": "heatvod",
+      "color": "#2F7BFF",
+      "glyph": "heatvod_drop",
+      "components": [
+        "com.google.heatvod/com.chuangkevideo.SplashActivity"
+      ],
+      "category": "VOD",
+      "mapping_source": "issue #243 (device-reported on V6-Plus, Android 14, pack 2.0.1, heat-vod-v6.9.6.apk): com.chuangkevideo.SplashActivity is the launch activity of com.google.heatvod",
+      "color_source": "its tile's blue: light blue over the deep blue of its own splash screen #0042DF (a user's photo of the splash, r/vSeeBox_Support_Gurus; tile sampled from the vSeeBox launcher's Recommend row as photographed by its users (r/vSeeBox 'Confused about apps' and 'What Are Heat Apps?' home-screen screenshots, JPEG, reference only), so approximate) (2026-10-05)",
+      "color_reviewed": "2026-10-05",
+      "glyph_source": "brand-informed redraw in the HeatLive construction (vSeeBox home-screen tiles and the examples attached to issue #243, reference only): the family's Core stroke teardrop, point up, with a solid play standing on its floor where HeatLive has the flame - on demand, the play its logotype hides in the o of Vod, drawn on the pack grid, not traced (2026-10-05)",
+      "gradient": [
+        "#2F7BFF",
+        "#0042DF"
+      ],
+      "gradient_source": "its tile, top to bottom: #2F7BFF to #0042DF (2026-10-05)"
+    },
+    {
+      "name": "HeatVod Ultra",
+      "drawable": "heatvod_ultra",
+      "color": "#FF5A7E",
+      "glyph": "heatvod_ultra_drop",
+      "components": [
+        "com.google.heatvodultra/com.google.chuangke.page.SplashActivity"
+      ],
+      "category": "VOD",
+      "mapping_source": "issue #245 (device-reported on V6-Plus, Android 14, pack 2.0.1, heat-vod-ultra-v3.8.2.apk): com.google.chuangke.page.SplashActivity is the launch activity of com.google.heatvodultra",
+      "color_source": "the pink-to-magenta of its VOD Ultra tile, sampled from the vSeeBox launcher's Recommend row as photographed by its users (r/vSeeBox 'Confused about apps' and 'What Are Heat Apps?' home-screen screenshots, JPEG, reference only), so approximate (2026-10-05)",
+      "color_reviewed": "2026-10-05",
+      "glyph_source": "brand-informed redraw in the HeatLive construction (vSeeBox home-screen tiles and the examples attached to issue #243, reference only): the family's Core stroke teardrop, point up, with HeatVod's solid play on its floor and the play-cone its VOD Ultra tile carries at the top-right corner, where the pack's wordmark cues sit, drawn on the pack grid, not traced (2026-10-05)",
+      "gradient": [
+        "#FF5A7E",
+        "#D7267A"
+      ],
+      "gradient_source": "its tile, top to bottom: #FF5A7E to #D7267A (2026-10-05)"
+    },
+    {
+      "name": "Live Ultra",
+      "drawable": "live_ultra",
+      "color": "#A24BFF",
+      "glyph": "live_ultra_drop",
+      "components": [
+        "com.google.liveultra/com.google.chuangke.page.SplashActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "issue #247 (device-reported on V6-Plus, Android 14, pack 2.0.1, LiveUltra-v580.apk): com.google.chuangke.page.SplashActivity is the launch activity of com.google.liveultra",
+      "color_source": "the purple-to-violet of its LIVE Ultra tile, sampled from the vSeeBox launcher's Recommend row as photographed by its users (r/vSeeBox 'Confused about apps' and 'What Are Heat Apps?' home-screen screenshots, JPEG, reference only), so approximate (2026-10-05)",
+      "color_reviewed": "2026-10-05",
+      "glyph_source": "brand-informed redraw in the HeatLive construction (vSeeBox home-screen tiles and the examples attached to issue #243, reference only): the family's Core stroke teardrop, point up, with HeatLive's solid flame on its floor - live TV and the play-cone its LIVE Ultra tile carries at the top-right corner, drawn on the pack grid, not traced (2026-10-05)",
+      "gradient": [
+        "#A24BFF",
+        "#6A1FD6"
+      ],
+      "gradient_source": "its tile, top to bottom: #A24BFF to #6A1FD6 (2026-10-05)"
+    },
+    {
+      "name": "Live Ultra+",
+      "drawable": "live_ultra_plus",
+      "color": "#FFB83D",
+      "glyph": "live_ultra_plus_drop",
+      "components": [
+        "com.google.liveultraplus/com.google.chuangke.page.SplashActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "issue #248 (device-reported on V6-Plus, Android 14, pack 2.0.1, LiveUltraPlus-v580.apk): com.google.chuangke.page.SplashActivity is the launch activity of com.google.liveultraplus",
+      "color_source": "the amber-to-orange of its LIVE+ Ultra tile (the family's one warm tile, which is what tells it from Live Ultra on the shelf), sampled from the vSeeBox launcher's Recommend row as photographed by its users (r/vSeeBox 'Confused about apps' and 'What Are Heat Apps?' home-screen screenshots, JPEG, reference only), so approximate (2026-10-05)",
+      "color_reviewed": "2026-10-05",
+      "glyph_source": "brand-informed redraw in the HeatLive construction (vSeeBox home-screen tiles and the examples attached to issue #243, reference only): the family's Core stroke teardrop, point up, with HeatLive's solid flame on its floor and the plus of its LIVE+ tile at the top-right corner, drawn on the pack grid, not traced (2026-10-05)",
+      "gradient": [
+        "#FFB83D",
+        "#F07A1E"
+      ],
+      "gradient_source": "its tile, top to bottom: #FFB83D to #F07A1E (2026-10-05)"
+    },
+    {
+      "name": "HeatLive Backup",
+      "drawable": "heatlive_backup",
+      "color": "#C83CC8",
+      "glyph": "heatlive_backup_drop",
+      "components": [
+        "com.google.heatlivebackup/com.google.chuangke.page.SplashActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "issue #242 (device-reported on V6-Plus, Android 14, pack 2.0.1, heat-live-backup-v.4.7.8.apk): com.google.chuangke.page.SplashActivity is the launch activity of com.google.heatlivebackup",
+      "color_source": "the magenta-to-violet of its BACKUP BY HEAT tile, sampled from the vSeeBox launcher's Recommend row as photographed by its users (r/vSeeBox 'Confused about apps' and 'What Are Heat Apps?' home-screen screenshots, JPEG, reference only), so approximate (2026-10-05)",
+      "color_reviewed": "2026-10-05",
+      "glyph_source": "brand-informed redraw in the HeatLive construction (vSeeBox home-screen tiles and the examples attached to issue #243, reference only): the family's Core stroke teardrop, point up, with HeatLive's solid flame on its floor, set left, and a second, smaller, empty drop standing beside it on the same floor - the spare, drawn on the pack grid, not traced (2026-10-05)",
+      "gradient": [
+        "#C83CC8",
+        "#6E1EC8"
+      ],
+      "gradient_source": "its tile, top to bottom: #C83CC8 to #6E1EC8 (2026-10-05)"
+    },
+    {
       "name": "AnimeTV",
       "drawable": "animetv",
       "color": "#440066",
@@ -13724,6 +13896,387 @@
         ],
         "source": "the same Play listing icon: the violet #9058F8 tiles on the right of the patchwork (2026-10-03)"
       }
+    },
+    {
+      "name": "ARD Sounds",
+      "drawable": "ard_sounds",
+      "color": "#2D92FF",
+      "glyph": "ard_sounds_wave",
+      "components": [
+        "de.ard.audiothek.tv/com.mitxp.androidtv.MainActivity"
+      ],
+      "category": "MUSIC",
+      "mapping_source": "issue #283 (device-reported on Hybrid Stick, Android 12, pack 2.1.2; #280 is its package-only duplicate): de.ard.audiothek.tv launched via com.mitxp.androidtv.MainActivity on that device. Confirm on a second TV before treating as the stock launcher activity",
+      "color_source": "ARD brand blue #2D92FF (Brandfetch brand colours for ard.de, the ARD main-site palette; ARD Sounds has no published hex of its own) (2026-10-11)",
+      "color_reviewed": "2026-10-11",
+      "glyph_source": "original Core monoline mark: five rounded bars rising and falling from centre, the audio-play cue of the ARD Sounds platform; not the ARD ring-and-1 and not traced (2026-10-10)"
+    },
+    {
+      "name": "Morphe",
+      "drawable": "morphe",
+      "color": "#7355F8",
+      "glyph": "morphe_m",
+      "components": [
+        "app.morphe.manager/app.morphe.manager.MainActivity_Dark_2"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #287 (device-reported on onn 4K Pro Streaming Device, Android 14, pack 2.3.0): app.morphe.manager/app.morphe.manager.MainActivity_Dark_2 is the activity the launcher opened for Morphe on that device. Not confirmed on a second TV; the MainActivity_Dark_2 alias is the reporter's, not the stock launcher activity",
+      "color_source": "sampled leading gradient stop #7355F8 from a third-party Morphe icon copy (morpheapk.com, not the official asset); approximate (2026-10-11)",
+      "color_reviewed": "2026-10-11",
+      "glyph_source": "original Core monoline mark: a capital M with a filled dot on the right leg, in Core stroke geometry; not the Morphe gradient icon and not traced (2026-10-11)"
+    },
+    {
+      "name": "Pixee",
+      "drawable": "pixee",
+      "color": "#19D3C5",
+      "glyph": "pixee_frame",
+      "components": [
+        "com.pixee.tv/com.pixee.tv.MainActivity"
+      ],
+      "category": "MEDIA",
+      "mapping_source": "issue #284 (device-reported on Hybrid Stick, Android 12, pack 2.1.2; #282 is its package-only duplicate): com.pixee.tv.MainActivity is the activity the launcher opened for com.pixee.tv on that device. Confirm on a second TV before treating as the stock launcher activity",
+      "color_source": "Brand Guide Teal #19D3C5, matched by eye to the teal-to-blue hummingbird on the Pixee Play listing icon (screenshot, 2026-10-10); approximate, not sampled",
+      "color_reviewed": "2026-10-10",
+      "glyph_source": "original Core monoline mark: a photo frame with a sun and a hill, the slideshow the app shows; not the Pixee hummingbird and not traced (2026-10-10)"
+    },
+    {
+      "name": "Pocket Casts",
+      "drawable": "pocketcasts",
+      "color": "#F43E37",
+      "glyph": "pocketcasts_arcs",
+      "components": [
+        "au.com.shiftyjelly.pocketcasts/au.com.shiftyjelly.pocketcasts.TvActivity"
+      ],
+      "category": "MUSIC",
+      "mapping_source": "issue #257 (device-reported on Google TV Streamer, Android 14, pack 2.1.1): TvActivity is the TV launch activity of au.com.shiftyjelly.pocketcasts",
+      "color_source": "Pocket Casts red #F43E37, as Simple Icons records it from the Pocket Casts press page (blog.pocketcasts.com/press) (2026-10-07)",
+      "color_reviewed": "2026-10-07",
+      "glyph_source": "brand-informed redraw of the Pocket Casts mark (Simple Icons pocketcasts.svg, reference only): a Core stroke ring around two concentric three-quarter arcs open at the lower right, drawn on the pack grid, not traced (2026-10-07)"
+    },
+    {
+      "name": "Silo",
+      "drawable": "silo",
+      "color": "#0034FB",
+      "glyph": "silo_stack",
+      "components": [
+        "org.siloserver.silo/org.siloserver.silo.tv.MainTvActivity"
+      ],
+      "category": "MEDIA",
+      "mapping_source": "issue #258 (device-reported on Smart TV, Android 12, pack 2.1.1; #259 is its duplicate): MainTvActivity is the Android TV launch activity of org.siloserver.silo, the Silo media server client",
+      "color_source": "Silo brand blue #0034FB from the official wordmark (siloserver.org/brand/silo-wordmark-dark.svg, (c) Silo Media L.L.C., reference only) (2026-10-07)",
+      "color_reviewed": "2026-10-07",
+      "glyph_source": "logo-derived mark from Silo's own logo (siloserver.org/brand/silo-wordmark-dark.svg, (c) Silo Media L.L.C., reference only): the play on three slotted bars rising to the right, kept in shape and colour and redrawn as the pack's outlined strokes, not a trace; replaces the 2.1.2 storage-tower mark after community feedback that the logo itself should lead (2026-10-08)",
+      "secondary": {
+        "color": "#F50B4F",
+        "parts": [
+          2
+        ],
+        "source": "Silo pink #F50B4F, the middle bar of the official wordmark (siloserver.org/brand/silo-wordmark-dark.svg, reference only) (2026-10-08)",
+        "tertiary": {
+          "color": "#FA7604",
+          "parts": [
+            3
+          ],
+          "source": "Silo orange #FA7604, the foot bar of the official wordmark (siloserver.org/brand/silo-wordmark-dark.svg, reference only) (2026-10-08)"
+        }
+      }
+    },
+    {
+      "name": "Yango Play",
+      "drawable": "yangoplay",
+      "color": "#FC3F1D",
+      "glyph": "yangoplay_y",
+      "components": [
+        "com.yango.saft.tv/ru.kinopoisk.tv.presentation.splash.SplashActivity"
+      ],
+      "category": "STREAM",
+      "mapping_source": "issue #305 (device-reported via the pack's Missing icons scanner on MiTV-AFMU0, Android 14, pack 2.3.3, 2026-10-13): com.yango.saft.tv/ru.kinopoisk.tv.presentation.splash.SplashActivity is the activity the launcher opened for Yango Play on that device - Kinopoisk's international build under its own package, same splash activity class. Not confirmed on a second TV",
+      "color_source": "Yango brand red as published in Yango's own app and web branding; approximate hex #FC3F1D, not sampled from a vendor asset (2026-10-14)",
+      "color_reviewed": "2026-10-14",
+      "glyph_source": "original Core monoline mark: a capital Y with a play triangle on its stem - the service's letter and its play cue - in Core stroke geometry, not the vendor letterform and not traced (2026-10-14)"
+    },
+    {
+      "name": "Nuyo Device Info",
+      "drawable": "nuyodeviceinfo",
+      "color": "#2F80ED",
+      "glyph": "nuyodeviceinfo_phone",
+      "components": [
+        "com.roysolberg.android.deviceinfo/com.roysolberg.android.deviceinfo.ui.MainActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #296 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, pack 2.3.1, 2026-10-12): com.roysolberg.android.deviceinfo/com.roysolberg.android.deviceinfo.ui.MainActivity is the activity the launcher opened for Nuyo Device Info on that device. Not confirmed on a second TV",
+      "color_source": "eyeballed from the app's Play Store launcher icon (a white handset-and-i on blue): #2F80ED; approximate, not sampled from a vendor asset (2026-10-14)",
+      "color_reviewed": "2026-10-14",
+      "glyph_source": "original Core monoline mark: a rounded handset outline with an information dot and stem inside - the app's subject drawn literally in Core stroke geometry; no vendor art traced (2026-10-14)"
+    },
+    {
+      "name": "IPTV Deck",
+      "drawable": "iptvdeck",
+      "color": "#4FACFE",
+      "glyph": "iptvdeck_cards",
+      "components": [
+        "com.mistykuu.iptvdeck/com.mistykuu.iptvdeck.MainActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "device-reported via the pack's Missing icons scanner (photo of the TV screen, shared 2026-10-15): com.mistykuu.iptvdeck/com.mistykuu.iptvdeck.MainActivity is the activity the launcher opened for IPTV Deck on that device. No store listing found. Not confirmed on a second TV",
+      "color_source": "core-builds palette: the launcher icon in the scanner photo is white cards on a blue tile, but a photo of a TV screen gives no reliable value, so the pack's Build Blue stands in (no published brand colour found)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: an upright card with a play triangle and two cards stacked behind it up and to the right - a deck, the app's name drawn literally in Core stroke geometry; no vendor art traced (2026-10-15)"
+    },
+    {
+      "name": "REC TV",
+      "drawable": "rectv",
+      "color": "#FF7A2E",
+      "glyph": "rectv_viewfinder",
+      "components": [
+        "com.rectv.shot/com.rectv.shot.MainActivity"
+      ],
+      "category": "STREAM",
+      "mapping_source": "issue #319 (device-reported via the pack's Missing icons scanner on Box R 4K, Android 14, pack 2.4.0, 2026-10-14): com.rectv.shot/com.rectv.shot.MainActivity is the activity the launcher opened for REC TV on that device. Not confirmed on a second TV; #318 is the same request",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: a viewfinder - four rounded corner brackets - framing a solid record dot, the REC of the name; no vendor art traced (2026-10-15)"
+    },
+    {
+      "name": "Vega",
+      "drawable": "vega",
+      "color": "#A366FF",
+      "glyph": "vega_star",
+      "components": [
+        "com.vega/com.vega.LauncherDefault"
+      ],
+      "category": "STREAM",
+      "mapping_source": "issue #317 (device-reported via the pack's Missing icons scanner on a Smart TV, Android 14, pack 2.4.0, 2026-10-14): com.vega/com.vega.LauncherDefault is the activity the launcher opened for Vega on that device. Not confirmed on a second TV",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: a V whose right arm points at a four-point star - Vega, the star; no vendor art traced (2026-10-15)"
+    },
+    {
+      "name": "PlayboxTV",
+      "drawable": "playboxtv",
+      "color": "#EB262D",
+      "glyph": "playboxtv_box",
+      "components": [
+        "playboxtv.tv.android.in/playboxtv.tv.in.SplashScreenActivity"
+      ],
+      "category": "STREAM",
+      "mapping_source": "issue #316 (device-reported via the pack's Missing icons scanner on a Smart TV, Android 14, pack 2.4.0, 2026-10-14): playboxtv.tv.android.in/playboxtv.tv.in.SplashScreenActivity is the activity the launcher opened for PlayboxTV on that device. Not confirmed on a second TV",
+      "color_source": "sampled from the Google Play listing art for playboxtv.tv.android.in: the mark's red #EB262D (2026-10-15)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: an open box, both flaps folded out, with a play triangle on its front - the name drawn literally; no vendor art traced (2026-10-15)"
+    },
+    {
+      "name": "Mi Home",
+      "drawable": "mihome",
+      "color": "#1AC886",
+      "glyph": "mihome_house",
+      "components": [
+        "com.xiaomi.smarthome.tv.global4/com.xiaomi.smarthome.tv.ui.MainActivity"
+      ],
+      "category": "APP",
+      "mapping_source": "issue #313 (device-reported via the pack's Missing icons scanner on MiTV-AFMU0, Android 14, pack 2.4.0, 2026-10-14): com.xiaomi.smarthome.tv.global4/com.xiaomi.smarthome.tv.ui.MainActivity is the activity the launcher opened for Mi Home on that device. Not confirmed on a second TV",
+      "color_source": "sampled from the Google Play launcher icon of the phone app (com.xiaomi.smarthome, listed as Xiaomi Home; the TV build has no listing of its own): the tile's green #1AC886 (2026-10-15)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: a house holding a signal fan - the connected home; no vendor art traced (2026-10-15)"
+    },
+    {
+      "name": "Nuyo WiFi Analyzer",
+      "drawable": "nuyowifianalyzer",
+      "color": "#00BCD6",
+      "glyph": "nuyowifi_channels",
+      "components": [
+        "com.roysolberg.android.wifianalyzer/com.roysolberg.android.wifianalyzer.tv.TvMainActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #312 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, pack 2.4.0, 2026-10-14): com.roysolberg.android.wifianalyzer/com.roysolberg.android.wifianalyzer.tv.TvMainActivity is the activity the launcher opened for Nuyo WiFi Analyzer on that device. Not confirmed on a second TV",
+      "color_source": "sampled from the Google Play launcher icon (com.roysolberg.android.wifianalyzer): #00BCD6, the middle of the arcs' cyan-to-blue gradient (2026-10-15)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: a channel graph - two overlapping signal humps on a baseline, the view the app is built around; no vendor art traced (2026-10-15)"
+    },
+    {
+      "name": "TV Calibration",
+      "drawable": "tvcalibration",
+      "color": "#FFB020",
+      "glyph": "tvcalibration_card",
+      "components": [
+        "net.damota.android.tvcalibration/net.damota.android.tvcalibration.MainActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #311 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, pack 2.4.0, 2026-10-14): net.damota.android.tvcalibration/net.damota.android.tvcalibration.MainActivity is the activity the launcher opened for TV Calibration on that device. Not confirmed on a second TV",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: a screen on a stand showing a test card - a circle and its crosshair; no vendor art traced (2026-10-15)"
+    },
+    {
+      "name": "Universal Manager",
+      "drawable": "universalmanager",
+      "color": "#B6F23A",
+      "glyph": "universalmanager_braces",
+      "components": [
+        "com.universal.manager/com.universal.manager.LauncherActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #310 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, pack 2.4.0, 2026-10-14): com.universal.manager/com.universal.manager.LauncherActivity is the activity the launcher opened for Universal Manager on that device. Not confirmed on a second TV. Google Play lists the package as XAPK Installer APK Downloader",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: curly braces around an arrow coming down onto a tray - a package, installed; no vendor art traced (2026-10-15)"
+    },
+    {
+      "name": "Play",
+      "drawable": "goplay_app",
+      "color": "#FF4052",
+      "glyph": "goplay_split",
+      "components": [
+        "be.goplay.app/be.goplay.app.ui.splash.SplashActivity"
+      ],
+      "category": "VOD",
+      "mapping_source": "issue #309 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, pack 2.4.0, 2026-10-14): be.goplay.app/be.goplay.app.ui.splash.SplashActivity is the activity the launcher opened for Play on that device. Not confirmed on a second TV. Not the GoPlay icon (com.eitv.goplay), a different app",
+      "color_source": "sampled from the Google Play launcher icon (be.goplay.app): the tile's #FF4052 (2026-10-15)",
+      "color_reviewed": null,
+      "glyph_source": "original Core monoline mark: a play triangle split into two stacked halves - the two rows of the stacked wordmark, without its letters; no vendor art traced (2026-10-15)"
+    },
+    {
+      "name": "Flixed",
+      "drawable": "flixed",
+      "color": "#303888",
+      "glyph": "flixed_cat",
+      "components": [
+        "tv.flixed.app/tv.flixed.app.MainActivity"
+      ],
+      "category": "STREAM",
+      "mapping_source": "issue #323 (device-reported via the pack's Missing icons scanner on onn. 4K Plus Streaming, Android 14, pack 2.4.2, 2026-10-15): tv.flixed.app/tv.flixed.app.MainActivity is the activity the launcher opened for Flixed on that device; download page flixed.to/apk. Not confirmed on a second TV",
+      "color_source": "sampled from the app's launcher icon (flixed.to/icon.png): the tile's indigo #303888 (2026-10-17)",
+      "color_reviewed": "2026-10-17",
+      "glyph_source": "original Core monoline mark: a cat-eared ghost head with two tall oval eyes - the app's mascot reduced to its silhouette; no vendor art traced (2026-10-17)"
+    },
+    {
+      "name": "Background Apps & Processes",
+      "drawable": "background_apps_processes",
+      "banner_name": "Apps & Processes",
+      "color": "#0888E8",
+      "glyph": "bgprocesses_stack",
+      "components": [
+        "com.backgroundapps.v1.fm.ut.android/com.backgroundapps.v1.fm.ut.android.Activities.MainActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #325 (device-reported via the pack's Missing icons scanner on onn. Full HD Streaming Device, Android 14, pack 2.4.2, 2026-10-15): com.backgroundapps.v1.fm.ut.android/com.backgroundapps.v1.fm.ut.android.Activities.MainActivity is the activity the launcher opened for Background Apps and Processes on that device. A different app from Background Apps And Process List (io.github.visnkmr.bapl). Not confirmed on a second TV",
+      "color_source": "sampled from the Google Play launcher icon (com.backgroundapps.v1.fm.ut.android): the gear card's blue #0888E8 (2026-10-17)",
+      "color_reviewed": "2026-10-17",
+      "glyph_source": "original Core monoline mark: a card with a gear on it and two shorter cards stacked behind - work running in the background; no vendor art traced (2026-10-17)"
+    },
+    {
+      "name": "Eclipse",
+      "drawable": "eclipse",
+      "color": "#E05040",
+      "glyph": "eclipse_vinyl",
+      "components": [
+        "com.eclipse.android/com.eclipse.android.tv.TvActivity"
+      ],
+      "category": "MUSIC",
+      "mapping_source": "issues #329 (Google TV Streamer, Android 14, pack 2.4.2, Projectivy) and #331 (BRAVIA 4K VH21, Android 12, pack 2.4.2, Monet), both device-reported via the pack's Missing icons scanner, 2026-10-16: com.eclipse.android/com.eclipse.android.tv.TvActivity is the activity both launchers opened for Eclipse; site eclipsemusic.app",
+      "color_source": "sampled from the app's icon (eclipsemusic.app/img/icon.png): the eclipsed sun's red-orange #E05040 (2026-10-17)",
+      "color_reviewed": "2026-10-17",
+      "glyph_source": "original Core monoline mark: a record passing in front of a sun - a solid crescent beside a disc with its label and one groove; no vendor art traced (2026-10-17)"
+    },
+    {
+      "name": "Porter",
+      "drawable": "porter",
+      "color": "#48E088",
+      "glyph": "porter_key",
+      "components": [
+        "eu.darken.porter/eu.darken.porter.manager.MainActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #330 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, pack 2.4.2, 2026-10-16): eu.darken.porter/eu.darken.porter.manager.MainActivity is the activity the launcher opened for Porter on that device; source github.com/d4rken-org/porter. Not confirmed on a second TV",
+      "color_source": "sampled from the launcher icon in github.com/d4rken-org/porter: the mascot's green #48E088 (2026-10-17)",
+      "color_reviewed": "2026-10-17",
+      "glyph_source": "original Core monoline mark: a key whose bow holds a keyhole - system access, and the keyhole that stands in for the O of the wordmark; no vendor art traced (2026-10-17)"
+    },
+    {
+      "name": "DELTA TV",
+      "drawable": "deltatv_nl",
+      "color": "#0080C0",
+      "glyph": "deltatv_arcs",
+      "components": [
+        "com.nep.delta.tv/com.stoneroos.deltatv.main.MainActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "issue #332 (device-reported via the pack's Missing icons scanner on Box R 4K Plus, Android 14, pack 2.4.2, Projectivy, 2026-10-16): com.nep.delta.tv/com.stoneroos.deltatv.main.MainActivity is the activity the launcher opened for DELTA TV on that device. A different app from Delta TV (com.nowcast.deltatv). Not confirmed on a second TV",
+      "color_source": "sampled from the Google Play launcher icon (com.nep.delta.tv): the tile's blue #0080C0 (2026-10-17)",
+      "color_reviewed": "2026-10-17",
+      "glyph_source": "original Core monoline mark: a capital D with three signal arcs fanning up from its foot - the provider's initial and its broadcast cue; no vendor art traced (2026-10-17)"
+    },
+    {
+      "name": "ESET Smart TV Security",
+      "drawable": "eset_smart_tv_security",
+      "banner_name": "ESET Smart TV",
+      "color": "#0090A0",
+      "glyph": "esetsmarttv_shield",
+      "components": [
+        "com.eset.etvs.gp/com.eset.tv.next.main.presentation.EstvsMainActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #334 (device-reported via the pack's Missing icons scanner on 4K Android TV Box, Android 14, pack 2.4.2, 2026-10-17): com.eset.etvs.gp/com.eset.tv.next.main.presentation.EstvsMainActivity is the activity the launcher opened for ESET Smart TV Security on that device; Play listing play.google.com/store/apps/details?id=com.eset.etvs.gp. Not confirmed on a second TV",
+      "color_source": "sampled from the Google Play launcher icon (com.eset.etvs.gp): the outline's teal #0090A0 (2026-10-17)",
+      "color_reviewed": "2026-10-17",
+      "glyph_source": "original Core monoline mark: a television whose top-right corner gives way to a shield - the screen, protected; no vendor art traced (2026-10-17)",
+      "name_source": "Google Play listing title for com.eset.etvs.gp; the request named it Smart TV Security (2026-10-17)"
+    },
+    {
+      "name": "VAX Player",
+      "drawable": "vax_player",
+      "color": "#20B8A8",
+      "glyph": "vax_play",
+      "components": [
+        "com.vaapp.app/com.vaapp.app.MainActivityAlt"
+      ],
+      "category": "PLAYER",
+      "mapping_source": "issue #335 (device-reported via the pack's Missing icons scanner on 4K Android TV Box, Android 14, pack 2.4.2, 2026-10-17): com.vaapp.app/com.vaapp.app.MainActivityAlt is the activity the launcher opened for VAX Player on that device. The APK the request links (github.com/youngbi/vaxapp, release NewUpdate) declares com.vaapp.app.MainActivity as its launch activity; it is not mapped, because no device has reported it and the unverified ceiling only moves down. Not confirmed on a second TV",
+      "color_source": "sampled from the TV banner inside the linked APK: the play mark's teal #20B8A8 (2026-10-17)",
+      "color_reviewed": "2026-10-17",
+      "glyph_source": "original Core monoline mark: an open V with a solid play triangle resting in its crook - the player's initial holding its action; no vendor art traced (2026-10-17)"
+    },
+    {
+      "name": "AquaPlay",
+      "drawable": "aquaplay",
+      "color": "#88C8E8",
+      "glyph": "aquaplay_wave",
+      "components": [
+        "com.aquaplay.tv/com.aquaplay.tv.MainActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "issue #338 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.4.2, 2026-10-17): com.aquaplay.tv/com.aquaplay.tv.MainActivity is the activity the launcher opened for AquaPlay on that device; site aquaplayiptv.github.io. Not confirmed on a second TV",
+      "color_source": "sampled from the logo on aquaplayiptv.github.io: the wave-cut letters' blue #88C8E8 (2026-10-17)",
+      "color_reviewed": "2026-10-17",
+      "glyph_source": "original Core monoline mark: a play triangle above a wave - water and play, the two halves of the name; no vendor art traced (2026-10-17)"
+    },
+    {
+      "name": "WatchBridge TV",
+      "drawable": "watchbridge_tv",
+      "color": "#38C8F8",
+      "glyph": "watchbridge_arch",
+      "components": [
+        "com.tunombre.tvbridge/com.tunombre.tvbridge.MainActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #341 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.4.2, 2026-10-17): com.tunombre.tvbridge/com.tunombre.tvbridge.MainActivity is the activity the launcher opened for WatchBridge TV on that device. The Play listing the request links is com.tunombre.tvbridge.play, a different package; it is not mapped. Not confirmed on a second TV",
+      "color_source": "sampled from the Google Play launcher icon (com.tunombre.tvbridge.play): the screen's cyan #38C8F8, the light end of its cyan-to-violet gradient (2026-10-17)",
+      "color_reviewed": "2026-10-17",
+      "glyph_source": "original Core monoline mark: a screen with a play triangle carried on an arch bridge - the link from a TV recommendation to the app that plays it; no vendor art traced (2026-10-17)"
+    },
+    {
+      "name": "Uyanik TV",
+      "drawable": "uyaniktv",
+      "color": "#880038",
+      "glyph": "uyaniktv_loop",
+      "components": [
+        "com.makersoft.uyaniktv/com.makersoft.uyaniktv.MainActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "device-reported via the pack's Missing icons scanner (device screenshots shared 2026-10-18; Projectivy Launcher, 38 launchable apps checked, Uyanik TV the one without an icon): com.makersoft.uyaniktv/com.makersoft.uyaniktv.MainActivity is the activity the launcher opened for Uyanik TV on that device. Not confirmed on a second TV",
+      "color_source": "sampled from the launcher icon in the scanner screenshot (a device screenshot, not a photo of the screen): the disc's maroon #880038 (2026-10-18)",
+      "color_reviewed": "2026-10-18",
+      "glyph_source": "original Core monoline mark: an infinity loop with a solid play triangle in its right loop - the app's always-on loop and its action; no vendor art traced (2026-10-18)"
     }
   ],
   "artwork": {

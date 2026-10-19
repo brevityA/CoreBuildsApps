@@ -1,0 +1,57 @@
+[
+  {
+    "name": "Soundcore Q21i NC - Final",
+    "preamp": -6.049314498901367,
+    "parametric": true,
+    "bands": [
+      {
+        "type": 0,
+        "channels": 0,
+        "frequency": 90,
+        "q": 0.800000011920929,
+        "gain": 7.486961841583252,
+        "color": 0
+      },
+      {
+        "type": 1,
+        "channels": 0,
+        "frequency": 10000,
+        "q": 0.6000000238418579,
+        "gain": 7.455280780792236,
+        "color": 0
+      },
+      {
+        "type": 4,
+        "channels": 0,
+        "frequency": 105,
+        "q": 0.699999988079071,
+        "gain": 7.5,
+        "color": -7859968
+      },
+      {
+        "type": 3,
+        "channels": 0,
+        "frequency": 181,
+        "q": 0.18000000715255737,
+        "gain": -5.999999523162842,
+        "color": -16772728
+      },
+      {
+        "type": 2,
+        "channels": 0,
+        "frequency": 897,
+        "q": 1.5,
+        "gain": 11.399999618530273,
+        "color": -6710989
+      },
+      {
+        "type": 5,
+        "channels": 0,
+        "frequency": 6667,
+        "q": 0.699999988079071,
+        "gain": 9.0,
+        "color": -7864184
+      }
+    ]
+  }
+]

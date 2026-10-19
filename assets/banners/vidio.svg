@@ -1,9 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
-  <g transform="translate(140.5,0.0)">
-  <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FB0E4D"/><stop offset="100%" stop-color="#7C1436"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
-  <g transform="translate(299,180) scale(0.70312)"><g transform="translate(256 256) scale(1.4925) translate(-256 -256)"><path d="M 184.6 156.0 L 256.0 356.0 L 327.4 156.0" fill="none" stroke="#FB0E4D" stroke-width="21.44" stroke-linecap="round" stroke-linejoin="round"/></g></g>
-  <path d="M 645.7 301.5 L 657.9 267.5 L 670.1 301.5 M 650.1 289.9 L 665.7 289.9 M 690.5 301.5 L 690.5 267.5 L 700.1 267.5 C 709.6 267.5 709.6 285.9 700.1 285.9 L 690.5 285.9 M 730.0 301.5 L 730.0 267.5 L 739.5 267.5 C 749.0 267.5 749.0 285.9 739.5 285.9 L 730.0 285.9" fill="none" stroke="#FB0E4D" stroke-width="9.0" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M 645.7 336.8 L 676.0 423.6 L 706.4 336.8 M 737.7 368.0 L 737.7 423.6 M 812.3 336.8 L 812.3 423.6 M 812.3 393.2 C 812.3 375.8 803.6 362.8 790.6 362.8 C 777.6 362.8 768.9 375.8 768.9 393.2 C 768.9 410.5 777.6 423.6 790.6 423.6 C 803.6 423.6 812.3 410.5 812.3 393.2 M 843.6 368.0 L 843.6 423.6 M 897.4 362.8 C 911.3 362.8 920.0 375.8 920.0 393.2 C 920.0 410.5 911.3 423.6 897.4 423.6 C 883.5 423.6 874.8 410.5 874.8 393.2 C 874.8 375.8 883.5 362.8 897.4 362.8 Z" fill="none" stroke="#E6EDF3" stroke-width="16.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="737.7" cy="345.4" r="10.2" fill="#E6EDF3" stroke="none"/>
-  <circle cx="843.6" cy="345.4" r="10.2" fill="#E6EDF3" stroke="none"/></g>
+  <g transform="translate(-5.0,0.0)">
+  <g transform="translate(246,152) scale(0.81250)"><g transform="translate(256 256) scale(1.4925) translate(-256 -256)"><path d="M 184.6 156.0 L 256.0 356.0 L 327.4 156.0" fill="none" stroke="#FB0E4D" stroke-width="21.44" stroke-linecap="round" stroke-linejoin="round"/></g></g>
+  <path d="M 634.2 290.8 L 646.4 256.8 L 658.6 290.8 M 638.6 279.2 L 654.2 279.2 M 679.0 290.8 L 679.0 256.8 L 688.6 256.8 C 698.1 256.8 698.1 275.1 688.6 275.1 L 679.0 275.1 M 716.1 290.8 L 716.1 256.8 L 725.7 256.8 C 735.2 256.8 735.2 275.1 725.7 275.1 L 716.1 275.1" fill="none" stroke="#FB0E4D" stroke-width="9.0" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 634.2 330.2 L 669.2 430.3 L 704.2 330.2 M 734.3 366.3 L 734.3 430.3 M 814.3 330.2 L 814.3 430.3 M 814.3 395.3 C 814.3 375.3 804.3 360.2 789.3 360.2 C 774.3 360.2 764.3 375.3 764.3 395.3 C 764.3 415.3 774.3 430.3 789.3 430.3 C 804.3 430.3 814.3 415.3 814.3 395.3 M 844.4 366.3 L 844.4 430.3 M 900.4 359.2 C 916.4 359.2 926.5 374.7 926.5 395.3 C 926.5 415.9 916.4 431.4 900.4 431.4 C 884.4 431.4 874.4 415.9 874.4 395.3 C 874.4 374.7 884.4 359.2 900.4 359.2 Z" fill="none" stroke="#E6EDF3" stroke-width="19.0" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="734.3" cy="340.2" r="11.8" fill="#E6EDF3" stroke="none"/>
+  <circle cx="844.4" cy="340.2" r="11.8" fill="#E6EDF3" stroke="none"/></g>
 </svg>

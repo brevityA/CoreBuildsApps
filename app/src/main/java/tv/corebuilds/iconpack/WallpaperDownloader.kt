@@ -58,14 +58,14 @@ object WallpaperDownloader {
 
     /** Return the cached file if present, else null. */
     fun cached(context: Context, wallpaper: Wallpaper): File? =
-        cachedFile(context, wallpaper.cacheName)
+        cachedFile(context, wallpaper.storeName)
 
     fun cacheDir(context: Context): File =
         File(context.cacheDir, "wallpapers").apply { mkdirs() }
 
     /** Fetch by [Wallpaper]. See [fetchUrl]. */
     fun fetch(context: Context, wallpaper: Wallpaper, callback: Callback) {
-        fetchUrl(context, wallpaper.url, wallpaper.cacheName, callback)
+        fetchUrl(context, wallpaper.url, wallpaper.storeName, callback)
     }
 
     /**

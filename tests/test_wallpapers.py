@@ -51,20 +51,29 @@ class ManifestTests(unittest.TestCase):
     def test_count_matches_entries(self):
         self.assertEqual(self.manifest["count"], len(self.walls))
 
-    def test_active_series_use_twelve_wall_units(self):
+    def test_active_series_use_fixed_wall_units(self):
         from collections import Counter
         counts = Counter(w["series"] for w in self.walls)
         self.assertEqual(counts, {
-            "series-1-fieldwork": 24,
+            # Fieldwork (series 1, 24 walls) retired in 2.4.0: twenty-four
+            # near-identical gradient washes, the feedback's "blurs". Numbers
+            # 01-24 stay empty, as series 4 and 5 do.
             "series-2-motion": 12,
             "series-3-horizons": 12,
             "series-6-circuit-core": 12,
             "series-7-retrowave": 12,
             "series-8-amoled": 12,
             "series-9-deep-space": 12,
-            # A half unit on purpose: every Cinema wall is also drawn as a
-            # 60 fps live loop, so the set grows six at a time.
-            "series-10-cinema": 6,
+            # 2.4.0 equalises every active series at twelve. Cinema, Earth
+            # and Wild are still being brought up (six Cinema scenes are
+            # drawn with their loops; Earth and Wild are generated imagery
+            # at 1376x768, Circuit Core's precedent) - update these as each
+            # lands, and never leave a series at an odd count.
+            "series-10-cinema": 12,
+            "series-11-icon-echo": 12,
+            "series-12-earth": 12,
+            "series-13-wild": 12,
+            "series-14-flux": 12,
         })
 
     def test_entries_are_https_github(self):
@@ -75,6 +84,29 @@ class ManifestTests(unittest.TestCase):
     def test_names_unique_and_numbered(self):
         names = [w["name"] for w in self.walls]
         self.assertEqual(len(names), len(set(names)), "duplicate wallpaper names")
+
+    def test_since_is_a_version_and_the_new_chip_has_a_set(self):
+        """`since` is optional, but where present it is dotted-numeric and the
+        newest value marks a non-empty set - that is what WallpapersActivity's
+        New chip and the home rail's "N new" hint count. A release that ships
+        walls without stamping them makes the chip lie by omission."""
+        import re
+        stamped = [w for w in self.walls if "since" in w]
+        for w in stamped:
+            self.assertRegex(w["since"], r"^\d+\.\d+\.\d+$", w["name"])
+        self.assertTrue(stamped, "no wall carries `since`; the New chip would never show")
+        newest = max((w["since"] for w in stamped),
+                     key=lambda v: tuple(int(p) for p in v.split(".")))
+        new = [w for w in stamped if w["since"] == newest]
+        self.assertGreaterEqual(len(new), 1)
+        # A stamped wall's file is at least as new as an unstamped one's
+        # cannot be checked from the manifest; what can is that the stamp
+        # never names a release newer than the app's own version.
+        import re as _re
+        gradle = (ROOT / "app" / "build.gradle.kts").read_text(encoding="utf-8")
+        app_v = _re.search(r'versionName\s*=\s*"([^"]+)"', gradle).group(1)
+        self.assertLessEqual(tuple(int(p) for p in newest.split(".")),
+                             tuple(int(p) for p in app_v.split(".")), f"since={newest} is after app {app_v}")
 
     def test_resolution_matches_the_file_on_disk(self):
         """The manifest promises a size; the bytes must be that size.
@@ -149,6 +181,78 @@ class ThumbnailTests(unittest.TestCase):
                 for w in self.walls}
         have = {p.name for p in BUNDLED_THUMBS.glob("*.jpg")}
         self.assertEqual(have, want)
+
+    def test_bundled_thumbs_match_the_repo_thumbs(self):
+        # A re-render keeps its file names, so a name check passes on stale
+        # art: 2.4.0 and 2.4.1 shipped Circuit Core's old thumbs this way.
+        stale = []
+        for w in self.walls:
+            fname = w["url"].rsplit("/", 1)[-1].rsplit(".", 1)[0] + ".jpg"
+            bundled = BUNDLED_THUMBS / fname
+            if bundled.exists() and bundled.read_bytes() != (THUMBS / fname).read_bytes():
+                stale.append(fname)
+        self.assertFalse(stale, "bundled thumbs differ from Wallpapers/thumbs "
+                                f"(run tools/sync_wallpaper_manifest.py): {stale}")
+
+
+def _cache_keys():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "check_wallpaper_cache_keys", ROOT / "tools" / "check_wallpaper_cache_keys.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+class CacheNameTests(unittest.TestCase):
+    """A re-render keeps its URL, so it must move to a new cache name.
+
+    The full check reads the release tags (tools/check_wallpaper_cache_keys.py,
+    a prepare_release gate); CI's shallow clone has none, so these pin the rule
+    and the walls 2.3.3 redrew without a stamp."""
+
+    def setUp(self):
+        self.mod = _cache_keys()
+        self.walls = json.loads(_read(MANIFEST))["wallpapers"]
+
+    def test_redraw_under_the_same_cache_name_is_caught(self):
+        history = [("2.3.2", {"w.png": ("old", "")}), ("2.4.1", {"w.png": ("new", "")})]
+        problems = self.mod.collisions({"w.png": ("new", "")}, history)
+        self.assertEqual(len(problems), 1)
+        self.assertIn("v2.3.2", problems[0])
+
+    def test_a_new_stamp_moves_the_cache_name(self):
+        history = [("2.3.2", {"w.png": ("old", "")}), ("2.4.1", {"w.png": ("new", "")})]
+        self.assertEqual(self.mod.collisions({"w.png": ("new", "2.3.3")}, history), [])
+
+    def test_a_stamp_reused_across_a_redraw_is_caught(self):
+        # 2.4.1+ apps cache under <since>-<file>; a redraw that keeps the stamp
+        # hits the copy downloaded under it.
+        history = [("2.4.1", {"w.png": ("old", "2.4.0")})]
+        self.assertEqual(len(self.mod.collisions({"w.png": ("new", "2.4.0")}, history)), 1)
+
+    def test_unchanged_pictures_need_no_stamp(self):
+        history = [("1.2.0", {"w.png": ("same", "")})]
+        self.assertEqual(self.mod.collisions({"w.png": ("same", "")}, history), [])
+
+    def test_the_tool_models_the_apps_cache_name(self):
+        src = _read(JAVA / "WallpaperCatalog.kt")
+        self.assertIn("since.filter { it.isLetterOrDigit() || it == '.' || it == '-' }", src)
+        self.assertIn('if (stamp.isEmpty()) cacheName else "$stamp-$cacheName"', src)
+        self.assertEqual(self.mod.store_name("a.png", "2.3.3", (2, 4, 2)), "2.3.3-a.png")
+        self.assertEqual(self.mod.store_name("a.png", "2.3.3", (2, 4, 0)), "a.png")
+
+    def test_walls_redrawn_in_2_3_3_carry_their_stamp(self):
+        # Redrawn in 2.3.3 (#299) with no stamp; devices kept the old pictures
+        # through 2.4.1.
+        redrawn = {"52 Shockwave", "97 Marquee Lights", "99 Projector Beam",
+                   "100 Neon Lounge", "101 Late Rentals", "102 Box Office"}
+        stamps = {w["name"]: w.get("since") for w in self.walls if w["name"] in redrawn}
+        self.assertEqual(stamps, {n: "2.3.3" for n in redrawn})
+
+    def test_release_runs_the_check(self):
+        self.assertIn('"tools/check_wallpaper_cache_keys.py"',
+                      _read(ROOT / "tools" / "prepare_release.py"))
 
 
 class Series6FileTests(unittest.TestCase):
@@ -243,6 +347,44 @@ class AndroidWiringTests(unittest.TestCase):
         main = _read(JAVA / "MainActivity.kt")
         self.assertIn("WallpapersActivity", main)
         self.assertIn("wallpapers_entry", main)
+
+    def test_card_floor_uses_the_generators_dark_threshold(self):
+        # The preview's card-floor label and the generators' dark-coverage
+        # floor are one measure: share of pixels at or under 14% luma. The
+        # generators work on 0-1 (`L / 255 <= 0.14`); WallpaperSeed.luma is
+        # 0-255, so its threshold must be scaled. Compared against a bare
+        # 0.14f, only pure black counted and nearly every wall read bright.
+        seed = _read(JAVA / "WallpaperSeed.kt")
+        self.assertIn("DARK_LUMA = 0.14f * 255f", seed)
+        self.assertRegex(seed, r"luma\(p\) <= DARK_LUMA")
+        self.assertNotRegex(seed, r"luma\(\w+\) <= 0\.\d+f\)")
+        classic = _read(ROOT / "tools/build_classic_wallpapers.py")
+        self.assertIn("/ 255.0", classic)
+        self.assertIn("(a <= 0.14)", classic)
+
+    def test_cache_name_changes_when_a_wall_is_re_rendered(self):
+        # 2.4.0 re-rendered walls under their old URLs. Cached under the bare
+        # file name, a wall downloaded on 2.3.x kept showing its old picture
+        # behind the new thumbnail. The cache key carries the manifest's
+        # `since`; the export name (Pictures/CoreBuilds) stays the file name.
+        catalog = _read(JAVA / "WallpaperCatalog.kt")
+        self.assertIn("val storeName: String", catalog)
+        self.assertIn('"$stamp-$cacheName"', catalog)
+        downloader = _read(JAVA / "WallpaperDownloader.kt")
+        self.assertIn("cachedFile(context, wallpaper.storeName)", downloader)
+        self.assertIn("fetchUrl(context, wallpaper.url, wallpaper.storeName, callback)", downloader)
+        self.assertNotIn("wallpaper.cacheName", downloader)
+        preview = _read(JAVA / "WallpaperPreviewActivity.kt")
+        self.assertIn("fetchUrl(this, wp.url, wp.storeName)", preview)
+        self.assertNotIn("fetchUrl(this, wp.url, wp.cacheName)", preview)
+        exporter = _read(JAVA / "WallpaperExporter.kt")
+        self.assertIn("val cacheName = wp.cacheName", exporter)
+        # The stamp goes into a file name the downloader validates against
+        # [A-Za-z0-9._-]+, so the manifest may only use those characters.
+        manifest = json.loads(_read(ROOT / "Wallpapers/manifest.json"))
+        walls = manifest["wallpapers"] if isinstance(manifest, dict) else manifest
+        for wall in walls:
+            self.assertRegex(wall.get("since", ""), r"^[0-9A-Za-z.-]*$", wall["name"])
 
     def test_no_full_wallpapers_bundled_into_apk(self):
         # Full 4K images download on demand; assets should only hold thumbs + manifest.

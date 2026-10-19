@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+    <cloud-backup>
+        <!-- Pairing grants control of the TV; keep it local to this install. -->
+        <exclude domain="sharedpref" path="core_eq_companion.xml" />
+        <exclude domain="sharedpref" path="core_eq_phone_pairing.xml" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="sharedpref" path="core_eq_companion.xml" />
+        <exclude domain="sharedpref" path="core_eq_phone_pairing.xml" />
+    </device-transfer>
+</data-extraction-rules>

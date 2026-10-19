@@ -1,9 +1,9 @@
 # Core EQ — build plan
 
 A standalone, Core Builds-branded **room measurement and equaliser app for
-Android TV**: play pink noise, listen with the remote microphone, and hand back
-an equaliser setting for *this* room — with the limits of the device it is
-running on stated out loud.
+Android TV**: play a swept sine, capture through the input Android actually
+routes to the app (often a voice remote), and build an equaliser profile for
+*this* room — with the route and limits of that capture stated out loud.
 
 **Research first.** The plan in `docs/research/core-eq-measurement-and-capability-2026-09.md`
 is what this document is built on, and it changed the shape of the product in
@@ -12,6 +12,9 @@ two places:
 - The **remote mic is supported** (the TV hardware guide says the controller
   microphone is "fully supported"), but it is not a measurement microphone.
   Core EQ corrects **40 Hz–8 kHz** and refuses to invent a curve outside it.
+  From the remote's 16 kHz capture the measured bands run 31.5 Hz-6.3 kHz
+  (1.3.2): the 8 kHz band straddles the capture's anti-alias edge, and a
+  remote with a narrower codec ends the measurement where its band ends.
 - Android has **no global equaliser API**. Session 0 is deprecated and never
   removed; the supported path is an opt-in broadcast most players do not send.
   So the product is built around a **capability probe** whose verdict is shown,
@@ -32,15 +35,49 @@ re-derivation.
 | **Package** | `tv.corebuilds.eq` (`AGENTS.md`: new apps use `tv.corebuilds.<name>`) |
 | **Path** | `coreeq/` — its own Gradle root, like `doctor/` and `shift/` |
 | **Tag prefix** | `coreeq-v*`, floating tag `coreeq`, stable APK `coreeq-release.apk` |
-| **Audience** | Android TV / Google TV / Fire TV owners who want their set to sound better and do not own a measurement microphone |
-| **Promise** | *Measure the room you are sitting in, with the remote you already hold.* |
+| **Audience** | Android TV / Google TV / Fire TV owners who want their set to sound better, plus Android phone owners using the paired companion |
+| **Promise** | *Measure with the TV remote you already hold, or pair an Android phone to control Core EQ and capture one listening position.* |
 
-It is **not** a headphone equaliser (Wavelet's territory), not a player
-companion (Poweramp EQ's), and not hardware-bound room correction (Dirac,
-Audyssey). Those are the three things already done well; this is the fourth
-thing that is not done at all.
+It is **not** a headphone equaliser (Wavelet's territory), a player-specific
+EQ companion (Poweramp EQ's), or hardware-bound room correction (Dirac,
+Audyssey). Its phone companion is an app-owned Android TV remote and a
+single-position measurement sensor, not a system-wide audio remote or a claim
+of phone-microphone calibration.
 
-## 2. The four screens
+**One measured base belongs to one output.** Profiles record the sweep's
+reported `AudioTrack` output kind and, where Android supplies it, its device
+name; the connected-output estimate is only a fallback when the track route is
+unavailable or unrecognized. Core EQ first selects an exact same-kind/name
+match, then a generic same-kind profile; it does not borrow a named curve from
+another device. At apply time, API 33+ uses Android's anticipated media route
+when available; older versions rank connected outputs. Neither proves where
+another app's stream is actually routed. If Android supplies no recognized
+route or the estimate does not match a measured profile, on-device correction
+pauses rather than guessing with another chain's curve; only a legacy
+all-output profile or an explicitly unknown-output profile applies while the
+route remains unidentified.
+
+**Android phone companion (selected v1 scope).** Pairing is initiated on the
+TV from a user-visible screen. A short-lived, one-time code establishes an
+app-layer AES-GCM key; the phone's long-term token is encrypted with Android
+Keystore. Pairing preferences are excluded from cloud backup and device
+transfer. The TV listener binds only for that screen, uses an ephemeral port,
+and accepts private-LAN IPv4 peers only. RPCs are limited to status, profiles,
+correction enable/disable, listening mode, and a bounded measurement session.
+This is not a cloud service or an ADB transport; use it only on a trusted local
+network and do not port-forward it.
+
+A phone measurement is explicit and foreground-only: the phone opens
+`AudioRecord`, starts buffering, asks the TV to play its sweep, captures the
+full sweep and decay, then uploads the PCM to the TV for analysis and profile
+saving. The TV suspends correction during the sweep and resumes it afterwards.
+The workflow records available route, sample-rate, device, and processing
+metadata, but cannot guarantee Android's selected route or processing state.
+Phone microphones are not presumed calibrated; their reported response is
+provenance only. This remains single-position: multi-position averaging is a
+research candidate, not an implemented feature.
+
+## 2. The screens
 
 Two-pane shell, icon-pack furniture throughout: `TvActivity` dp-box
 normalisation, `cb_*` tokens, the 3dp ring / 3dp gap focus treatment, Outfit +
@@ -48,37 +85,52 @@ DejaVu Sans Mono, a 12sp type floor.
 
 | Screen | Job | D-pad contract |
 |---|---|---|
-| **Home** | Active profile card + the four entries; live measured-vs-correction graph; the platform band row | `Re-measure` focused at open. Down: Measure → Profiles → Targets → Capability. Right: into the graph/band row. |
+| **Home** | Output-matched room profile and its recording score (1.3.2: the recording only), with Correction, Mode and Re-measure in one card at the top (1.3.0); measured-vs-total-EQ graph; applied-engine band preview; a menu grouped Sound (Manual EQ, Extra effects, Content type) and Set up (Profiles, Setup check and ADB, Capability, Phone companion, Display calibration) | `Measure` / `Re-measure` is focused at open. Everything fits 960 x 540dp; the menu scrolls only while the update bar is showing. |
+| **Manual EQ** | Ten editable peaking bands from 40 Hz to 8 kHz, with separate Movie / TV, Everyday and Gaming overlays, presets, and a graph of the selected layer over room correction. Imports one Poweramp JSON preset or AutoEq / Equalizer APO correction text as an editable, explicitly approximate 10-band preset. Poweramp type codes are versionless and handled only by a narrow best-effort subset; unsupported-only files are refused. | Choose the overlay to edit; left/right selects a band; up/down changes it by 0.5 dB within ±6 dB. A manual-only profile is labelled as not room-measured. Imported stereo-specific filters are averaged; a pre-apply review lists skipped shapes/codes, mapping uncertainty and fit error. |
+| **Modes** | Remote-selectable Movie / TV, Everyday and Gaming; optional app rules; sticky or temporary manual override; current mode/reason and detected players | Single-action mode controls and dialogs are D-pad reachable. Automatic detection is best-effort and runs while correction is on. Conflicts choose Everyday. |
 | **Measure** | Three numbered steps, live capture graph, progress bar, Stop / Start over | Step 1 focused. OK starts the stimulus. Back cancels and restores Home's focus. |
-| **Profiles** | Saved corrections with their own mic, target, limits and capability verdict; export row | Rows first, then export chips, then Export / Delete. |
+| **Phone companion** | TV pairing screen starts/stops the local listener and shows the private IPv4 address, temporary port, one-time code, paired-phone state and revoke action; non-Leanback Android launches show phone controls and measurement | TV D-pad pairing; phone touchscreen controls. The phone screen requests local-network access on API 37+ and microphone access only when measuring. |
+| **Profiles** | Saved room bases per output or explicitly marked manual-only profiles; per-mode tone overlays; output-matched preview and selected-mode export | Rows first, then export chips, then Export / Delete. |
 | **Capability** | Every path the app can use to apply an equaliser, probed, with a verdict and a fallback | Rows focusable; the verdict card is read-only but focusable so it can be narrated. |
 
-Frames: `docs/core-eq-home.png`, `core-eq-measure.png`, `core-eq-profiles.png`,
-`core-eq-capability.png`, generated by `tools/build_core_eq_mockups.py` and
-checked against their sources.
+The existing mockup set (`docs/core-eq-home.png`, `core-eq-measure.png`,
+`core-eq-profiles.png`, `core-eq-capability.png`) predates the Manual EQ
+editor; it remains a four-frame snapshot of the original measurement workflow.
+The manual screen is implemented in `ManualEqActivity` and will need a matching
+fifth frame before a visual release receipt is claimed.
 
 ## 3. The measurement → correction chain
 
 ```
 exponential sine sweep (10 s, Farina) — primary
 pink noise (20 s, deterministic) — cross-check and live RTA
-  → AudioRecord(VOICE_RECOGNITION, 48 kHz), read ~3 s past the stop
+  → AudioRecord(VOICE_RECOGNITION): try 16 kHz, then 48 kHz, then Android's guaranteed 44.1 kHz fallback
+  → record the AudioRecord stream rate, input route, effect state, and optional active-microphone metadata
+  → resample to the 16 kHz analysis rate (band-limited integer decimation or fractional 44.1-to-16 kHz polyphase sinc)
+  → timing markers before and after the sweep → clock drift (ppm)
+        → stretch the capture back onto the player's clock (5-300 ppm; over 300 is a dropout, refused)
   → deconvolve with the time-reversed inverse filter → impulse response
-        ├→ RT60 (Schroeder backward integration)
+        ├→ RT60 (T20 per octave, 125 Hz-2 kHz: Lundeby crosspoint + tail compensation;
+        │        none under 35 dB of decay range; the 500 Hz-1 kHz mean is the room's)
         │      → Schroeder f_s = 2000·√(RT60/V)   [room dims are asked for]
         ├→ excess group delay → minimum-phase gate
-        └→ magnitude response
-  → 3 captures within the seat envelope (head height, ±25 cm), energy-averaged
+        └→ magnitude response, 1/3-octave from 31.5 Hz
+              → band SNR against the noise ahead of the arrival
+              → capture bandwidth edge (from 2 kHz: under 10 dB SNR or 20 dB under the mids)
+              → bands under 10 dB SNR are shown, not corrected
+  → one capture at the user-selected listening position (head height, remote still)
+  → no multi-position averaging: it remains a research candidate and the saved profile is single-position
   → measured vs target (Flat / B&K / Room / Olive / Dialogue / House)
   → room model
         transition  = min(2·f_s, 400 Hz), or 300 Hz when the room is unknown
         nulls       = dips deeper than 6 dB below the 2-octave trend
         floor       = wherever the loudspeaker's own roll-off is detected
+                      (walking down from 250 Hz; steps over up to 2 null bands)
   → correction, in two regimes
         below the transition   variable smoothing (1/6 oct) → invert
                                → never boost into a null
                                → honour the minimum-phase gate
-                               → clamp(+6/−12) → slope limit(6 dB/oct)
+                               → clamp(+6/−12; +2 from one seat) → slope limit(6 dB/oct)
                                → recentre → clamp again
         above the transition   shaping only, ±3 dB, one-octave smoothing
         → taper the edges → zero outside floor–8 kHz
@@ -87,6 +139,33 @@ pink noise (20 s, deterministic) — cross-check and live RTA
   → export: parametric .txt (Preamp + band limit + "Bands Overlap = Cascade")
             / GraphicEQ: / profile .json (transition, nulls, room, capability)
 ```
+
+The room curve is never overwritten by hand. Each profile has a measured room
+base and three independent manual tone overlays (Movie / TV, Everyday and
+Gaming), each holding ten fixed-frequency peaking filters (40 Hz–8 kHz, ±6 dB
+in 0.5 dB steps), with Flat, Bass lift, Speech clarity and Less bass presets
+plus user-saved presets. The same `BandMapping` composes the selected overlay
+with room correction for DynamicsProcessing, the platform Equalizer fallback
+and TV-settings export, shifting any positive peak down to preserve digital
+headroom. Parametric exports include the selected mode's overlay and a
+combined filter-based preamp. GraphicEQ exports include the selected overlay;
+when tone filters are present, their preamp is calculated from the exact curve
+points serialized and preserves any more-conservative room reserve. Base-only
+GraphicEQ exports still omit a preamp line (a pre-existing limitation). Profile
+JSON backups preserve the room base and all three mode overlays separately,
+record the selected mode, and calculate its combined preamp. A manual-only
+profile is allowed, but is labelled as not measured.
+
+Mode selection is manual by default. Optional app rules use only DUMP-discovered
+media/game session UIDs, and a UID selects a rule only when `PackageManager`
+returns one distinct non-Core-EQ package. Session broadcasts and public playback
+callbacks are rescan triggers only; their session/package extras are ignored.
+Android documents DUMP as not for third-party apps, so an ADB grant may be
+refused by a stock or release build. Unmapped or unidentified active players,
+and simultaneous conflicting app rules, fall back to Everyday while
+automatic switching is on because Core EQ has one shared curve. A manual choice
+in automatic mode creates a configurable sticky override or a temporary
+override that lasts until the detected player set changes.
 
 Every constant in that pipeline is commented with its reason in
 `tools/core_eq_dsp.py`. The order of the clamp / recentre / taper steps is
@@ -116,19 +195,34 @@ such dips, leaves them at zero, and the UI says so out loud.
 
 ## 4. Applying the correction — the ladder
 
-Probe in order, stop at the first that works, and **write the verdict into the
-profile**:
+The current runtime is **not an ordered capability probe**. `EqService.applyAll()`
+tries the output-mix/session-0 path first, configures and verifies the chosen
+engine, and releases per-session effects to avoid applying the same curve
+twice. Only if that path cannot be created or configured does it attach to
+DUMP-discovered sessions. The same DUMP snapshot may supply app identity while
+the output-mix path is active. Session-open/close broadcasts and public
+playback callbacks only request a debounced DUMP rescan; their extras are not
+used as session IDs or package claims. If no on-device path attaches, the user
+can export the selected profile and mode.
 
-| Rung | Path | Expected reach |
+| Runtime path | What Core EQ does | What the result does **not** prove |
 |---|---|---|
-| 1 | `ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION` broadcast | Players that announce sessions. Netflix, YouTube do not. |
-| 2 | Broadcast + `DUMP`-assisted session discovery (one-time ADB grant) — **v1.1**, not in v1 | Most of the rest, Wavelet-style. |
-| 3 | `Equalizer(0, 0)` / `DynamicsProcessing(0)` global mix | Deprecated but real on some sets. Probed, never promised. |
-| 4 | Nothing applies | Export the profile for the TV's own sound settings. The curve is still the curve. |
+| Output mix (`DynamicsProcessing(0)` / `Equalizer(0, 0)`) | Tries this first. API 28+ prefers DynamicsProcessing, then falls back to the platform Equalizer; the service checks control/configuration and reads settings back. | A constructible/configured session-0 effect does not prove that every app, codec or output route traverses it. |
+| Session/playback signals | Treats session-open/close broadcasts and public playback callbacks as rescan triggers only; ignores their session/package extras. | Signals do not identify another app's active audio session or route. |
+| Optional DUMP discovery | If Android grants `android.permission.DUMP`, parses `dumpsys media.audio_flinger` and `dumpsys audio` for candidate session IDs, UID, usage and activity. It may attach sessions when the output-mix path failed. A UID selects an app rule only when its package mapping is unique. | Android says DUMP is not for third-party apps; an ADB grant may be refused on stock/release builds. Dump text is firmware/version-dependent and fixtures are not TV captures; a discovered session still does not prove effect coverage. |
+| TV / companion export | Exports the measured room base plus selected mode overlay for the TV's own sound controls or a compatible companion equalizer. | Export success does not mean the external EQ was entered or is applied on the measured signal chain. |
 
-Engine choice: `DynamicsProcessing` on API 28+ (own band layout, own limiter,
-limiter **on**), `android.media.audiofx.Equalizer` below. Band UI always draws
-the device's reported bands and clamps to its reported `getBandLevelRange()`.
+`EffectLadder.probe()` itself only attempts session-0 effect construction and
+checks DynamicsProcessing control; it does not test session announcements,
+run DUMP discovery or verify end-to-end coverage. The existing Capability
+screen copy still treats some of these probes as a device-level verdict; that
+pre-existing overstatement is recorded in the audio-routing research rather
+than silently presenting construction as proof.
+
+Engine choice at apply time: `DynamicsProcessing` on API 28+ (own band layout,
+own limiter, limiter **on**), `android.media.audiofx.Equalizer` below. Band UI
+draws the device's reported bands when available and clamps to the reported
+`getBandLevelRange()`.
 
 A foreground service keeps the effect chain alive, and gains are re-applied on
 every session open — the two bugs that define this category
@@ -171,9 +265,9 @@ That is `docs/BRAND-GUIDE.md`'s "Honest utility" pillar applied to audio.
 ```
 coreeq/
   settings.gradle.kts            # own Gradle root — do not merge
-  app/build.gradle.kts           # AGP 8.5.2, Kotlin 1.9.24, compileSdk 35,
-                                 # minSdk 26 (DynamicsProcessing), inside the
-                                 # envelope in tools/gradle_envelope.json
+  app/build.gradle.kts           # AGP 9.4.0, built-in Kotlin, compileSdk /
+                                 # targetSdk 37, minSdk 30 (Android 11), with
+                                 # a Core-EQ-only envelope exception
   app/src/main/kotlin/tv/corebuilds/eq/
     TvActivity.kt                # dp-box normaliser, same as the icon pack
     MainActivity.kt              # Home
@@ -187,11 +281,19 @@ coreeq/
               EqService.kt       # foreground service, re-apply on session open
     export/   Profile.kt         # corebuilds.core-eq/1
               Formats.kt
+    companion/ CompanionActivity.kt       # opt-in TV pairing / listener screen
+              PhoneCompanionActivity.kt   # Android phone controls + mic measurement
+              CompanionServer.kt          # bounded, encrypted local RPC and capture upload
+              CompanionClient.kt          # phone RPC and Android Keystore token store
+              PhoneCaptureEngine.kt       # foreground AudioRecord PCM capture + provenance
 ```
 
-Gradle stays inside `tools/gradle_envelope.json`: AGP 8.5.2, Kotlin 1.9.24,
-`core-ktx` 1.13.1, `appcompat` 1.7.0, `recyclerview` 1.3.2, `okhttp` 4.12.0.
-No Compose — the icon pack's `Theme.CoreBuilds` note applies here too.
+Core EQ uses its own Gradle root and is the suite's API 37 exception: AGP
+9.4.0, Gradle 9.7.0 and AGP built-in Kotlin. The other suite roots remain on
+AGP 8.5.2 / Kotlin 1.9.24; `tools/gradle_envelope.json` keeps those ceilings
+root-specific. Core EQ dependencies remain `core-ktx` 1.13.1, `appcompat` 1.7.0
+and `recyclerview` 1.3.2. No Compose — the icon pack's `Theme.CoreBuilds` note
+applies here too.
 
 ## 7. Gates
 
@@ -207,6 +309,7 @@ this order:
 | `python tools/check_gradle_envelope.py` | Every coordinate inside its ceiling |
 | `python tests/test_ci_coverage.py` | The new tests are wired into `suite-ci.yml` |
 | `python tests/test_changelog_contract.py` | The Unreleased block is well-formed |
+| `python tests/test_core_eq_update_contract.py` | The release feed never leads the build, the test package carries no feed, and the tag build publishes the manifest after the releases |
 
 Plus, once `coreeq/` exists: `check_ui_resources.py`, `test_navigation_graph.py`
 and `test_tv_layout_fit.py` extended to the new module, and
@@ -217,10 +320,11 @@ and `test_tv_layout_fit.py` extended to the new module, and
 | | Ships | Verifiable without hardware |
 |---|---|---|
 | **M0** | DSP reference, tests, research, frames, plan — **this change** | yes |
-| **M1** | `coreeq/` module: Home + Measure + Profiles + Capability, View-based UI, no audio yet — the curve shown comes from the reference chain | yes (lint, tests, frame gates) |
+| **M1** | `coreeq/` module: Home + Manual EQ + Modes + Measure + Profiles + Capability, output-aware profiles, View-based TV UI, audio effects and exports | yes (lint, tests, hardware apply gates) |
 | **M2** | Stimulus playback + capture + live graph; the correction is computed on-device and compared against the reference chain on the same synthetic input | yes, with an emulator mic |
 | **M3** | Effect ladder + foreground service + export formats | needs a device |
 | **M4** | `suite.json`, README stamp, dependabot, workflow, release tags | CI |
+| **M5** | Selected Android phone companion: opt-in LAN pairing/control and single-position phone-mic capture; app build and real TV/phone qualification still required | no, not without Android hardware |
 
 M2 is the milestone that matters: it is where the Kotlin has to agree with
 `tools/core_eq_dsp.py` numerically, and it should be proved by feeding both the
@@ -230,15 +334,24 @@ same WAV and asserting the corrections match within a stated tolerance.
 
 1. **Downloader code** — *decided: `7946159`*, generated by the maintainer at
    https://go.aftvnews.com/ and recorded in `suite.json`.
-2. **DUMP-assisted session detection** — *decided: v1.1.* v1 ships rungs 1,
-   3 and 4 of the ladder; rung 2 lands in v1.1 as an optional, clearly-labeled
-   mode behind the one-time ADB grant. Until then, players that do not
-   announce sessions (Netflix, YouTube) fall through to rung 3 or to export.
-3. **USB measurement microphone support** (UMIK-1 and similar) — *decided:
-   later, after v1.1.* It changes the correction floor from 40 Hz down to
-   ~20 Hz and makes the result a real measurement rather than a good estimate;
-   until it lands, `CorrectionLimits.MIN_HZ` stays at 40 Hz.
-4. **Name** — *Core EQ* keeps the `core-*` tag-prefix family legible next to
+2. **Automatic app-based modes** — *decided and implemented best-effort.*
+   Manual mode selection always remains available. Optional rules use
+   DUMP-discovered UID/package mappings; session broadcasts and public playback
+   callbacks only trigger rescans. Android may refuse a DUMP grant to a
+   third-party release. Unmapped/unidentified players and conflicting demands
+   select Everyday because only one global curve is available. Device/app
+   coverage remains a hardware-validation question.
+3. **Generic stock Android TV coverage** — *target, not yet proven.* Verify on
+   representative stock TV hardware whether session-0 effects reach common
+   streaming apps, which outputs are actually routed through the mixer, and
+   how PCM/passthrough settings affect HDMI audio. No root, privileged install,
+   or system-image change is in scope; a one-time ADB grant is acceptable.
+4. **USB measurement microphone support** (UMIK-1 and similar) — later. It
+   changes the correction floor from 40 Hz down to ~20 Hz and makes the result
+   a real measurement rather than a good estimate; until it lands,
+   `CorrectionLimits.MIN_HZ` stays at 40 Hz.
+5. **Phone companion** — *scope resolved:* do both TV control and phone-microphone measurement, Android phones first. The local pairing, remote controls, and capture flow are implemented as a prototype; build verification and physical Android TV/phone qualification are still open. Phone microphones remain uncalibrated, Android route/processing is not guaranteed, and v1 remains single-position.
+6. **Name** — *Core EQ* keeps the `core-*` tag-prefix family legible next to
    `coreline-v*` and `coreshift-*`. Alternatives considered and rejected:
    Core Tone, Core Room, Core Tune.
 
@@ -247,10 +360,12 @@ same WAV and asserting the corrections match within a stated tolerance.
 ## Receipt
 
 ```
-python tools/core_eq_dsp.py --selftest   → all 30 invariants hold
-python tests/test_core_eq_dsp.py         → 41 passed
-python tools/build_core_eq_mockups.py --check → mockups ok - 4 frames match the sources
+python tools/core_eq_dsp.py --selftest   → all invariants hold
+python tests/test_core_eq_dsp.py         → 73 passed
+python tools/check_gradle_envelope.py    → every root inside its limits
+python tools/check_suite_truth.py        → suite truth checks passed
 ```
 
-No Android SDK in this environment, so no APK was built. Named rather than
-implied, per `AGENTS.md`.
+Gradle build and Android unit tests were not run: this environment has no
+`java` executable and `JAVA_HOME` is unset. No Android TV/phone hardware
+qualification has been performed. Named rather than implied, per `AGENTS.md`.

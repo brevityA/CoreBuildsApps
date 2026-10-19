@@ -1,5 +1,6 @@
 import json
 import os
+import functools
 import math
 import re
 
@@ -345,10 +346,12 @@ def core_mark(c):
 
 
 def store_bag(c):
-    """App stores — shopping bag with a download arc."""
+    """App stores — shopping bag with a download arrow. Drawn since the
+    2026-10-18 sweep; before it the bag was empty and matched Aptoide's."""
     return (f'<path d="M 118 172 L 394 172 L 372 404 L 140 404 Z" {_s(c, 32)}/>'
             f'<path d="M 196 224 L 196 148 C 196 108 226 84 256 84 '
-            f'C 286 84 316 108 316 148 L 316 224" {_s(c, 30)}/>')
+            f'C 286 84 316 108 316 148 L 316 224" {_s(c, 30)}/>'
+            f'<path d="M 256 236 L 256 344 M 212 300 L 256 344 L 300 300" {_s(c, 26.2)}/>')
 
 
 def install_box(c):
@@ -659,7 +662,13 @@ def apply_secondary(body, color, secondary):
             return tag
         return (tag.replace(f'stroke="{color}"', f'stroke="{paint}"')
                 .replace(f'fill="{color}"', f'fill="{paint}"'))
-    return _PRIMITIVE_RE.sub(repaint, body)
+    body = _PRIMITIVE_RE.sub(repaint, body)
+    # A third brand colour rides inside the secondary (see secondary_errors),
+    # so every caller that paints a duotone paints the tritone too. Its parts
+    # are disjoint from the secondary's, so they still carry the accent here.
+    if secondary.get("tertiary"):
+        body = apply_secondary(body, color, secondary["tertiary"])
+    return body
 
 
 def primitive_count(body):
@@ -681,8 +690,8 @@ def secondary_errors(icon):
     if not isinstance(sec, dict):
         return ["secondary must be {color, parts, source}"]
     errors = []
-    if set(sec) - {"color", "parts", "source"}:
-        errors.append(f"secondary has unknown keys {sorted(set(sec) - {'color', 'parts', 'source'})}")
+    if set(sec) - {"color", "parts", "source", "tertiary"}:
+        errors.append(f"secondary has unknown keys {sorted(set(sec) - {'color', 'parts', 'source', 'tertiary'})}")
     if not re.fullmatch(r"#[0-9A-Fa-f]{6}", str(sec.get("color", ""))):
         return errors + ["secondary color must be #RRGGBB"]
     if not str(sec.get("source", "")).strip():
@@ -710,6 +719,43 @@ def secondary_errors(icon):
         elif len(parts) >= count:
             errors.append(f"secondary repaints every part of '{glyph}' - "
                           "that is a recolour, not a duotone")
+    return errors + _tertiary_errors(icon, sec, accent)
+
+
+def _tertiary_errors(icon, sec, accent):
+    """A third brand colour (2.1.2, Silo only - see test_icon_identity): the
+    same contract as the secondary, on parts of its own, and the accent must
+    still own at least one part, or the mark is a recolour."""
+    ter = sec.get("tertiary")
+    if ter is None:
+        return []
+    if not isinstance(ter, dict) or set(ter) - {"color", "parts", "source"}:
+        return ["tertiary must be {color, parts, source}"]
+    if not re.fullmatch(r"#[0-9A-Fa-f]{6}", str(ter.get("color", ""))):
+        return ["tertiary color must be #RRGGBB"]
+    errors = []
+    if not str(ter.get("source", "")).strip():
+        errors.append("tertiary carries no source - where was the third brand colour seen?")
+    paint = secondary_paint(ter).upper()
+    if paint in (accent.upper(), secondary_paint(sec).upper()):
+        errors.append("tertiary renders the same as the accent or the secondary")
+    parts = ter.get("parts")
+    if (not isinstance(parts, list) or not parts
+            or not all(isinstance(k, int) and not isinstance(k, bool) for k in parts)
+            or len(set(parts)) != len(parts)):
+        return errors + ["tertiary parts must be a non-empty list of distinct part indexes"]
+    if set(parts) & set(sec.get("parts") or []):
+        errors.append("tertiary and secondary parts overlap")
+    for glyph in {icon.get("glyph"), icon.get("banner_glyph") or icon.get("glyph")}:
+        if glyph not in GLYPHS:
+            continue
+        count = primitive_count(monoline(family_body(glyph, accent, icon.get("mark"),
+                                                     icon.get("mark_style"))))
+        if min(parts) < 0 or max(parts) >= count:
+            errors.append(f"tertiary parts {parts} out of range for '{glyph}' ({count} parts)")
+        elif len(set(parts) | set(sec.get("parts") or [])) >= count:
+            errors.append(f"secondary and tertiary repaint every part of '{glyph}' - "
+                          "the accent must keep one")
     return errors
 
 
@@ -719,6 +765,19 @@ def secondary_color(icon):
     if not sec or secondary_errors(icon) or icon.get("color_note") == "monochrome":
         return None
     return secondary_paint(sec)
+
+
+def tertiary_color(icon):
+    """The drawn third paint an icon declares, or None."""
+    if not secondary_color(icon):
+        return None
+    ter = icon["secondary"].get("tertiary")
+    return secondary_paint(ter) if ter else None
+
+
+def declared_paints(icon):
+    """Every extra paint an icon declares beyond its accent, in order."""
+    return [p for p in (secondary_color(icon), tertiary_color(icon)) if p]
 
 
 def gradient_defs(stops, y0=80, y1=432, gid="cbGrad"):
@@ -983,10 +1042,13 @@ def music_note(c):
 
 
 def bag_play(c):
-    """Aptoide: bag with a play mark."""
+    """Aptoide: bag with a play mark. The play was named here but never
+    drawn, which left Aptoide, Aurora Store and APKPure the same empty bag
+    (sweep 2026-10-18)."""
     return (f'<path d="M 118 172 L 394 172 L 372 404 L 140 404 Z" {_s(c, 32)}/>'
             f'<path d="M 196 224 L 196 148 C 196 108 226 84 256 84 '
-            f'C 286 84 316 108 316 148 L 316 224" {_s(c, 30)}/>')
+            f'C 286 84 316 108 316 148 L 316 224" {_s(c, 30)}/>'
+            f'<path d="M 226 240 L 226 348 L 316 294 Z" {_s(c, 26.2)}/>')
 
 
 def aurora_a(c):
@@ -2446,9 +2508,10 @@ GLYPHS.update({
 # Tier 6 — VPN, browsers, files and gaming marks.
 # ==========================================================================
 def nordvpn_arrow(c):
-    """NordVPN's mountain/dome, not a generic shield; all ink is monoline."""
-    return (f'<path d="M 112 364 A 180 180 0 1 1 400 364" {_s(c, 32)}/>'
-            f'<path d="M 112 364 L 220 202 L 258 266 L 286 166 L 400 364" {_s(c, 32)}/>')
+    """NordVPN's mountain/dome, not a generic shield; all ink is monoline.
+    Moved down 36: the dome sat 7% high on the card (sweep 2026-10-18)."""
+    return _shifted((f'<path d="M 112 364 A 180 180 0 1 1 400 364" {_s(c, 32)}/>'
+            f'<path d="M 112 364 L 220 202 L 258 266 L 286 166 L 400 364" {_s(c, 32)}/>'), 0, 36)
 
 
 def proton_shield(c):
@@ -2692,8 +2755,10 @@ def ted_mark(c):
 
 
 def nasa_mark(c):
-    """NASA: the meatball orbit — a wing over a globe."""
-    return (f'<path d="M 148 210 C 216 140 360 150 396 220" {_s(c, 28)}/>'
+    """NASA: the meatball orbit — a wing over a globe. The wing sits 24 higher
+    than it did: at a 96 px tile the gaps between it and the globe closed
+    (sweep 2026-10-18)."""
+    return (f'<path d="M 148 186 C 216 116 360 126 396 196" {_s(c, 28)}/>'
             f'<circle cx="250" cy="286" r="96" {_s(c, 30)}/>'
             f'<path d="M 250 190 L 250 382" {_s(c, 20)}/>'
             f'<path d="M 154 286 L 346 286" {_s(c, 20)}/>')
@@ -3016,10 +3081,13 @@ def windscribe_mark(c):
 
 
 def apkpure_d(c):
-    """APKPure: the pure bag — a shopping bag with a play."""
+    """APKPure: the pure bag — a shopping bag carrying an A, the app's
+    initial. The play this once named was never drawn, and a play would
+    now repeat Aptoide's (sweep 2026-10-18)."""
     return (f'<path d="M 118 176 L 394 176 L 372 404 L 140 404 Z" {_s(c, 32)}/>'
             f'<path d="M 196 228 L 196 150 C 196 110 226 86 256 86 '
-            f'C 286 86 316 110 316 150 L 316 228" {_s(c, 28)}/>')
+            f'C 286 86 316 110 316 150 L 316 228" {_s(c, 28)}/>'
+            f'<path d="M 210 352 L 256 240 L 302 352 M 228 310 L 284 310" {_s(c, 26.2)}/>')
 
 
 def apkmirror_mark(c):
@@ -3244,8 +3312,10 @@ def moviesanywhere_mark(c):
 
 
 def mxplayer_mark(c):
-    """MX Player: the play arrow — a bold play on a flag."""
-    return (f'<path d="M 170 180 L 170 332 L 292 256 Z" {_s(c, 40)}/>')
+    """MX Player: the play arrow — one bold play triangle, MX Player's own
+    mark. Redrawn at the pack's size in the 2026-10-18 sweep: at 122x152 it
+    rendered at 55% of the canvas even after the classic fit's 1.5x cap."""
+    return (f'<path d="M 150 120 L 150 392 L 386 256 Z" {_s(c, 40)}/>')
 
 
 def boosteroid_mark(c):
@@ -3685,11 +3755,12 @@ def folder_tree(c):
 
 
 def folder_sync_one(c):
-    """FileSynced - a folder under a sync arc."""
-    return (_folder(c)
+    """FileSynced - a folder under a sync arc.
+    Moved up 17, to sit with the pack's other folders (sweep 2026-10-18)."""
+    return _shifted((_folder(c)
             + f'<path d="M 176 320 C 176 276 214 244 258 244 C 296 244 328 '
               f'266 340 298" {_s(c, 24)}/>'
-            + f'<path d="M 300 298 L 344 298 L 344 254" {_s(c, 22)}/>')
+            + f'<path d="M 300 298 L 344 298 L 344 254" {_s(c, 22)}/>'), 0, -17)
 
 
 def folder_sync_two(c):
@@ -3714,10 +3785,11 @@ def ftp_server(c):
 
 
 def folder_grid(c):
-    """Mecool File Manager - a folder full of tiles."""
-    return (_folder(c)
+    """Mecool File Manager - a folder full of tiles.
+    Moved up 17, to sit with the pack's other folders (sweep 2026-10-18)."""
+    return _shifted((_folder(c)
             + f'<rect x="126" y="256" width="112" height="72" rx="18" {_s(c, 22)}/>'
-            + f'<rect x="274" y="256" width="112" height="72" rx="18" {_s(c, 22)}/>')
+            + f'<rect x="274" y="256" width="112" height="72" rx="18" {_s(c, 22)}/>'), 0, -17)
 
 
 def package_find(c):
@@ -3755,11 +3827,12 @@ def cinema_glow(c):
 
 
 def overflight(c):
-    """Projectivy Overflight - the aerial horizon the screensaver flies over."""
-    return (f'<path d="M 64 356 L 176 232 L 262 320 L 340 238 L 448 356 Z" '
+    """Projectivy Overflight - the aerial horizon the screensaver flies over.
+    Moved down 32: the scene sat 6% high (sweep 2026-10-18)."""
+    return _shifted((f'<path d="M 64 356 L 176 232 L 262 320 L 340 238 L 448 356 Z" '
             f'{_s(c, 30)}/>'
             f'<circle cx="358" cy="132" r="44" {_s(c, 26)}/>'
-            f'<path d="M 84 160 C 148 108 236 108 300 160" {_s(c, 22)}/>')
+            f'<path d="M 84 160 C 148 108 236 108 300 160" {_s(c, 22)}/>'), 0, 32)
 
 
 def media_wave_play(c):
@@ -4084,13 +4157,15 @@ def usb_plug(c):
 
     The connector block was 72x60 under a 26 stroke, so its opening shut. A
     larger block and a wider branch keep both ends readable.
+
+    Moved up 28: the long stem sat the box 5% low (sweep 2026-10-18).
     """
-    return (f'<path d="M 256 440 L 256 128" {_s(c, 32)}/>'
+    return _shifted((f'<path d="M 256 440 L 256 128" {_s(c, 32)}/>'
             f'<path d="M 192 192 L 256 128 L 320 192" {_s(c, 32)}/>'
             f'<circle cx="128" cy="330" r="40" {_s(c, 26)}/>'
             f'<path d="M 128 290 L 128 258 L 256 258" {_s(c, 24)}/>'
             f'<rect x="326" y="288" width="94" height="84" rx="20" {_s(c, 26)}/>'
-            f'<path d="M 326 330 L 256 330" {_s(c, 24)}/>')
+            f'<path d="M 326 330 L 256 330" {_s(c, 24)}/>'), 0, -28)
 
 
 def remote_pad(c):
@@ -5684,6 +5759,45 @@ GLYPHS.update({
 
 # --------------------------------------------------------------------------
 # Brand-informed marks, batch 5 (2026-09-26). Same contract as batches 1-4.
+
+def _shifted(markup, dx=0.0, dy=0.0):
+    """Move a glyph's ink by (dx, dy) without a transform, which the
+    core_monoline contract forbids: absolute path coordinates, circle and
+    ellipse centres, and rect corners move; radii, arc flags, stroke weights
+    and every other shape stay as reviewed."""
+    def path(m):
+        toks = re.findall(r"[A-Za-z]|-?\d+(?:\.\d+)?", m.group(1))
+        out, i, cmd = [], 0, None
+        while i < len(toks):
+            t = toks[i]
+            if t.isalpha():
+                if t.islower():
+                    raise ValueError(f"_shifted: relative path command {t!r}")
+                cmd = t
+                out.append(t)
+                i += 1
+                continue
+            if cmd == "A":
+                rx, ry, rot, large, sweep, x, y = toks[i:i + 7]
+                out.append(f"{rx} {ry} {rot} {large} {sweep} {float(x) + dx:g} {float(y) + dy:g}")
+                i += 7
+                continue
+            width = {"M": 2, "L": 2, "T": 2, "C": 6, "S": 4, "Q": 4, "H": 1, "V": 1}[cmd]
+            vals = [float(v) for v in toks[i:i + width]]
+            if cmd == "H":
+                moved = [vals[0] + dx]
+            elif cmd == "V":
+                moved = [vals[0] + dy]
+            else:
+                moved = [v + (dx if k % 2 == 0 else dy) for k, v in enumerate(vals)]
+            out.append(" ".join(f"{v:g}" for v in moved))
+            i += width
+        return f'd="{" ".join(out)}"'
+
+    markup = re.sub(r'\bd="([^"]*)"', path, markup)
+    markup = re.sub(r'\b(cx|x)="(-?[\d.]+)"', lambda m: f'{m.group(1)}="{float(m.group(2)) + dx:g}"', markup)
+    return re.sub(r'\b(cy|y)="(-?[\d.]+)"', lambda m: f'{m.group(1)}="{float(m.group(2)) + dy:g}"', markup)
+
 
 def _scaled(d, s, cx=256, cy=256):
     """Scale a path made only of M/L/C/Z pairs about (cx, cy)."""
@@ -7316,24 +7430,123 @@ def animetv_curl(c):
 GLYPHS.update({"animetv_curl": animetv_curl})
 
 
+# HeatLive's exact v2.0.0 geometry is the canonical base for the family.
+# Keep the drop and flame in one source so future variants cannot drift.
+_HEAT_DROP = ("M 256 56 C 300 128 404 208 404 300 A 148 148 0 0 1 108 300 "
+              "C 108 208 212 128 256 56 Z")
+
+
+def _heat_flame_d(cx=256, fb=396, hw=76):
+    """The original HeatLive flame: a solid drop whose tip bends right, with
+    the left-shoulder lick, standing on the shared drop's bowl floor."""
+    return (f"M {cx + 10} {fb - 206} C {cx + 40} {fb - 158} {cx + hw} {fb - 120} {cx + hw} {fb - 70} "
+            f"C {cx + hw} {fb - 26} {cx + 42} {fb} {cx} {fb} C {cx - 42} {fb} {cx - hw} {fb - 26} {cx - hw} {fb - 70} "
+            f"C {cx - hw} {fb - 108} {cx - 50} {fb - 128} {cx - 36} {fb - 150} "
+            f"C {cx - 28} {fb - 120} {cx - 18} {fb - 108} {cx - 4} {fb - 104} "
+            f"C {cx - 6} {fb - 140} {cx - 6} {fb - 176} {cx + 10} {fb - 206} Z")
+
+
 def heatlive_drop(c):
-    """HeatLive: the logo's flame inside a teardrop. The drop is a Core
-    stroke outline, point up; the flame stands on its floor as one solid
-    teardrop whose tip bends right, with a lick split off its left shoulder.
-    Drawn on the pack grid, not traced."""
-    drop = ('M 256 56 C 300 128 404 208 404 300 A 148 148 0 0 1 108 300 '
-            'C 108 208 212 128 256 56 Z')
-    cx, fb, hw = 256, 396, 76
-    flame = _solid(
-        f"M {cx + 10} {fb - 206} C {cx + 40} {fb - 158} {cx + hw} {fb - 120} {cx + hw} {fb - 70} "
-        f"C {cx + hw} {fb - 26} {cx + 42} {fb} {cx} {fb} C {cx - 42} {fb} {cx - hw} {fb - 26} {cx - hw} {fb - 70} "
-        f"C {cx - hw} {fb - 108} {cx - 50} {fb - 128} {cx - 36} {fb - 150} "
-        f"C {cx - 28} {fb - 120} {cx - 18} {fb - 108} {cx - 4} {fb - 104} "
-        f"C {cx - 6} {fb - 140} {cx - 6} {fb - 176} {cx + 10} {fb - 206} Z", c, 10)
-    return f'<path d="{drop}" {_s(c, 34)}/>{flame}'
+    """HeatLive 2.0.0: the canonical point-up stroke drop and solid flame.
+
+    The drop is the family's shared outline; the flame stands on its floor.
+    This remains the source shape for the HeatLive variants, not a trace."""
+    return f'<path d="{_HEAT_DROP}" {_s(c, 34)}/>{_solid(_heat_flame_d(), c, 10)}'
 
 
 GLYPHS.update({"heatlive_drop": heatlive_drop})
+
+
+# --------------------------------------------------------------------------
+# The vSeeBox Heat family (issues #242 #243 #245 #247 #248, 2026-10-05).
+# HeatLive's construction is the family's: a Core stroke teardrop, point up,
+# with a solid shape standing on its floor. What stands there says which
+# kind of app it is - the flame for live TV, a play for on demand - and one
+# small device, placed as the wordmark cues are, says which variant: the
+# play-cone the Ultra tiles carry, the plus of LIVE+, and for Backup a
+# second, smaller, empty drop beside the first. Each app keeps the gradient
+# of its own tile, so the five read apart on a shelf where they sit side
+# by side. All geometry is baked on the pack grid: no transforms.
+# --------------------------------------------------------------------------
+# The play that stands where the flame does: optically centred in the
+# drop's bowl (circle centre 256,300 r 148), a touch right of true centre.
+_HEAT_PLAY = "M 204 216 L 204 384 L 350 300 Z"
+
+
+def _heat_scaled(d, s, dx, dy):
+    """`d` scaled by `s` about the grid origin and moved by (dx, dy), baked
+    into the path numbers. Handles M/L/C pairs and A's radii, flags and end."""
+    out, toks, i = [], d.split(), 0
+    while i < len(toks):
+        t = toks[i]
+        if t in "MLC":
+            out.append(t)
+            i += 1
+            while i < len(toks) and toks[i] not in "MLCAZ":
+                out.append(f"{float(toks[i]) * s + dx:.1f} {float(toks[i + 1]) * s + dy:.1f}")
+                i += 2
+        elif t == "A":
+            rx, ry, rot, laf, sf, x, y = toks[i + 1:i + 8]
+            out.append(f"A {float(rx) * s:.1f} {float(ry) * s:.1f} {rot} {laf} {sf} "
+                       f"{float(x) * s + dx:.1f} {float(y) * s + dy:.1f}")
+            i += 8
+        else:
+            out.append(t)
+            i += 1
+    return " ".join(out)
+
+
+def _heat_mark(c, inner, s=1.0, dx=0, dy=0, cue=""):
+    drop = _heat_scaled(_HEAT_DROP, s, dx, dy)
+    body = _heat_scaled(inner, s, dx, dy)
+    return f'<path d="{drop}" {_s(c, 34)}/>' + _solid(body, c, 10) + cue
+
+
+# Room for a corner device: the drop at .88, anchored bottom-left, the way
+# the wordmark cue boxes leave the top-right corner free.
+_HEAT_CUE_FIT = dict(s=.88, dx=13, dy=54)
+_HEAT_CONE = ("M 362 86 L 388 86 L 388 66 L 446 100 L 388 134 L 388 114 L 362 114 Z")
+
+
+def heatvod_drop(c):
+    """HeatVod: the family drop with a solid play standing on its floor -
+    on demand where HeatLive has the flame. Blue, from its splash and tile."""
+    return _heat_mark(c, _HEAT_PLAY)
+
+
+def heatvod_ultra_drop(c):
+    """HeatVod Ultra: the HeatVod drop and play, with the play-cone its VOD
+    Ultra tile carries at the top-right corner, drawn solid like the play."""
+    return _heat_mark(c, _HEAT_PLAY, cue=_solid(_HEAT_CONE, c, 10), **_HEAT_CUE_FIT)
+
+
+def live_ultra_drop(c):
+    """Live Ultra: the HeatLive drop and flame, with the play-cone its LIVE
+    Ultra tile carries at the top-right corner."""
+    return _heat_mark(c, _heat_flame_d(), cue=_solid(_HEAT_CONE, c, 10), **_HEAT_CUE_FIT)
+
+
+def live_ultra_plus_drop(c):
+    """Live Ultra+: the HeatLive drop and flame with the plus of its LIVE+
+    tile at the top-right corner."""
+    plus = f'<path d="M 404 64 L 404 136 M 368 100 L 440 100" {_s(c, 28)}/>'
+    return _heat_mark(c, _heat_flame_d(), cue=plus, **_HEAT_CUE_FIT)
+
+
+def heatlive_backup_drop(c):
+    """HeatLive Backup: the HeatLive drop and flame at the left, and a
+    second, smaller, empty drop standing beside it on the same floor - the
+    spare. The two never overlap, so no clipping is needed."""
+    main = _heat_mark(c, _heat_flame_d(), s=.82, dx=-24, dy=81)
+    spare = _heat_scaled(_HEAT_DROP, .44, 262, 251)
+    return main + f'<path d="{spare}" {_s(c, 26)}/>'
+
+
+GLYPHS.update({
+    "heatvod_drop": heatvod_drop, "heatvod_ultra_drop": heatvod_ultra_drop,
+    "live_ultra_drop": live_ultra_drop, "live_ultra_plus_drop": live_ultra_plus_drop,
+    "heatlive_backup_drop": heatlive_backup_drop,
+})
 
 
 # --------------------------------------------------------------------------
@@ -8118,7 +8331,9 @@ _STROKE_LETTERS = {
     "i": (0, "M 0 .36 L 0 1 D 0 .1"),
     "j": (.16, "M .16 .36 L .16 1.14 C .16 1.28 .08 1.34 0 1.34 D .16 .1"),
     "k": (.44, "M 0 0 L 0 1 M .44 .32 L 0 .72 M .14 .6 L .44 1"),
-    "l": (0, "M 0 0 L 0 1"),
+    # l turns out at its foot (2.1.2): a bare stem made it the same shape as
+    # I, so "Il", "IlI" and every name with both read as one letter twice.
+    "l": (.24, "M 0 0 L 0 .72 C 0 .91 .09 1 .24 1"),
     "m": (.78, "M 0 1 L 0 .3 M 0 .52 C 0 .38 .08 .3 .2 .3 C .32 .3 .39 .38 .39 .52 L .39 1 M .39 .52 C .39 .38 .47 .3 .59 .3 C .71 .3 .78 .38 .78 .52 L .78 1"),
     "n": (.48, "M 0 1 L 0 .3 M 0 .56 C 0 .4 .1 .3 .24 .3 C .38 .3 .48 .4 .48 .56 L .48 1"),
     "o": (.52, "M .26 .3 C .42 .3 .52 .45 .52 .65 C .52 .85 .42 1 .26 1 C .1 1 0 .85 0 .65 C 0 .45 .1 .3 .26 .3 Z"),
@@ -8203,12 +8418,105 @@ def _clamp(v, lo, hi):
     return max(lo, min(hi, v))
 
 
+# Optical spacing (2.1.2). The letter gap used to run box edge to box edge, so
+# a T, an L or an open curve carried its own empty side bearing on top of the
+# gap and "To", "LY" or "rt" set visibly looser than "HH". Each pair now gives
+# back a share of the white its two shapes leave between them, measured on the
+# skeletons band by band. It never gives back more than the narrowest band
+# holds, so the closest strokes of any pair stay at least the full gap apart.
+_KERN_SHARE = .55     # share of the average white given back
+_KERN_CAP = .18       # most white either side may count, in cap units
+_KERN_BANDS = tuple(round(-.3 + i * .05, 2) for i in range(34))   # accents to descenders
+
+
+def _skeleton_points(spec, steps=48):
+    toks = _STROKE_TOKEN.findall(spec)
+    pts, cur, k = [], (0.0, 0.0), 0
+    while k < len(toks):
+        t = toks[k]
+        if t == "Z":
+            k += 1; continue
+        n = {"M": 1, "L": 1, "C": 3, "D": 1}[t]
+        p = [(float(toks[k + 1 + 2 * j]), float(toks[k + 2 + 2 * j])) for j in range(n)]
+        k += 1 + 2 * n
+        if t in "MD":
+            cur = p[0]; pts.append(cur)
+        elif t == "L":
+            (x1, y1), (x0, y0) = p[0], cur
+            pts += [(x0 + (x1 - x0) * i / steps, y0 + (y1 - y0) * i / steps) for i in range(1, steps + 1)]
+            cur = p[0]
+        else:
+            a, b, c = p
+            for i in range(1, steps + 1):
+                u = i / steps; v = 1 - u
+                pts.append((v ** 3 * cur[0] + 3 * v * v * u * a[0] + 3 * v * u * u * b[0] + u ** 3 * c[0],
+                            v ** 3 * cur[1] + 3 * v * v * u * a[1] + 3 * v * u * u * b[1] + u ** 3 * c[1]))
+            cur = c
+    return pts
+
+
+@functools.lru_cache(maxsize=None)
+def _side_white(ch):
+    """({band: white left of the ink}, {band: white right of it}), in cap units."""
+    w, spec = _STROKE_LETTERS[ch]
+    pts = _skeleton_points(spec) if spec else []
+    left, right = {}, {}
+    for yb in _KERN_BANDS:
+        xs = [x for x, y in pts if abs(y - yb) <= .05]
+        if xs:
+            left[yb], right[yb] = min(xs), w - max(xs)
+    return left, right
+
+
+@functools.lru_cache(maxsize=None)
+def _pair_kern(a, b):
+    """Cap units the gap after `a` closes up when `b` follows it."""
+    if a.isdigit() and b.isdigit():
+        return 0.0                       # figures stay tabular: 24 and 42 set alike
+    ra, lb = _side_white(a)[1], _side_white(b)[0]
+    if not ra or not lb:
+        return 0.0                       # a space, or a shape with no ink
+    shared = [ra[y] + lb[y] for y in _KERN_BANDS if y in ra and y in lb]
+    bands = [y for y in _KERN_BANDS if y in ra or y in lb]
+    avg = math.fsum(min(ra.get(y, _KERN_CAP), _KERN_CAP) + min(lb.get(y, _KERN_CAP), _KERN_CAP)
+                    for y in bands) / len(bands)
+    kern = _KERN_SHARE * avg
+    if shared:
+        kern = min(kern, min(shared))
+    return math.floor(max(kern, 0.0) * 1000) / 1000   # down, never past the white
+
+
+def _line_units(line):
+    """A line's advance in cap units, the letter gaps aside."""
+    return (math.fsum(_STROKE_LETTERS[ch][0] for ch in line)
+            - math.fsum(_pair_kern(a, b) for a, b in zip(line, line[1:])))
+
+
+# Overshoot (2.1.2). A curve touches the cap line or baseline at one point
+# while a flat runs the whole way along it, so an O set exactly cap-high reads
+# smaller than the H beside it. Letters that are round at both top and foot
+# reach 1.5% past each line, scaled about the middle of their own body.
+_OVERSHOOT = .03
+_ROUND_CAPS = frozenset("OCGQS03689")
+_ROUND_LOWER = frozenset("oces")
+
+
+def _overshoot_mid(ch):
+    """(middle of the body, stretch) for `ch`: no stretch for flat letters."""
+    if ch in _ROUND_CAPS:
+        return .5, 1 + _OVERSHOOT
+    if ch in _ROUND_LOWER:
+        return .65, 1 + _OVERSHOOT     # x-height .3 to baseline 1
+    return 0.0, 1.0
+
+
 def _stroke_line(text, x0, y0, s, gap=_STROKE_GAP):
     """One line of stroke letters at scale `s`, top-left of the cap box at x0,y0.
     Returns (path d, dots [(x, y)])."""
     d, dots, x = [], [], x0
-    for ch in text:
+    for i, ch in enumerate(text):
         w, spec = _STROKE_LETTERS[ch]
+        mid, stretch = _overshoot_mid(ch)
         toks = _STROKE_TOKEN.findall(spec)
         k = 0
         while k < len(toks):
@@ -8218,19 +8526,20 @@ def _stroke_line(text, x0, y0, s, gap=_STROKE_GAP):
             n = {"M": 1, "L": 1, "C": 3, "D": 1}[t]
             pts = [(float(toks[k + 1 + 2 * j]), float(toks[k + 2 + 2 * j])) for j in range(n)]
             k += 1 + 2 * n
-            xy = [(x + px * s, y0 + py * s) for px, py in pts]
+            xy = [(x + px * s, y0 + (mid + (py - mid) * stretch) * s) for px, py in pts]
             if t == "D":
                 dots.append(xy[0])
             else:
                 d.append(t + " " + " ".join(f"{a:.1f} {b:.1f}" for a, b in xy))
-        x += w * s + gap
+        nxt = text[i + 1] if i + 1 < len(text) else None
+        x += w * s + gap - (_pair_kern(ch, nxt) * s if nxt else 0)
     return " ".join(d), dots
 
 
 def _stroke_px(text, s, gap=_STROKE_GAP):
     # math.fsum, not sum: CPython 3.12 made sum() compensated, so the two
     # disagree in the last bit and a .x5 coordinate rounds differently in CI.
-    return math.fsum(_STROKE_LETTERS[ch][0] for ch in text) * s + gap * (len(text) - 1)
+    return _line_units(text) * s + gap * (len(text) - 1)
 
 
 def _stroke_fit(text, box, gap=_STROKE_GAP):
@@ -8242,7 +8551,7 @@ def _stroke_fit(text, box, gap=_STROKE_GAP):
     desc = any(ch in "gjpqy" for ch in lines[-1])
     s = (by1 - by0 - 44 * (len(lines) - 1)) / (len(lines) * letter_body(text) + (.34 if desc else 0))
     for line in lines:
-        units_w = math.fsum(_STROKE_LETTERS[ch][0] for ch in line) or .01
+        units_w = _line_units(line) or .01
         s = min(s, (bx1 - bx0 - gap * (len(line) - 1)) / units_w)
     return s
 
@@ -8282,7 +8591,9 @@ def stroke_label_metrics(size):
     # .19 of the cap sits a step under the glyph's own banner stroke (34 on
     # the 512 grid at 360 = 24), so the mark leads and the name follows;
     # spacing opens with the weight so counters and gaps stay level.
-    return cap, min(24.0, max(8.0, .19 * cap)), .36 * cap, .3 * cap
+    # Gap .3 of the cap since 2.1.2, the icons' own _WM_SPACING ratio: at .36
+    # names tracked out wider than the same letters inside the marks.
+    return cap, min(24.0, max(8.0, .19 * cap)), _WM_SPACING[0] * cap, .3 * cap
 
 
 def stroke_label_width(text, size, gap=None):
@@ -8396,8 +8707,7 @@ def _settle(text, max_w, cap_h):
     """(cap, gap) for `text` held to `max_w` and to `cap_h` of letter size."""
     body = letter_body(text)
     gap = _STROKE_GAP
-    units = max(math.fsum(_STROKE_LETTERS[ch][0] for ch in line)
-                for line in text.split("/")) or .01
+    units = max(_line_units(line) for line in text.split("/")) or .01
     longest = max(len(line) for line in text.split("/"))
     for _ in range(3):
         cap = min(min(cap_h, _WM_CAP_MAX) / body, (max_w - gap * (longest - 1)) / units)
@@ -8459,11 +8769,12 @@ def mitv_tvplus(c):
 def maxplayer_m(c):
     """MaxPlayer: the soft-cornered play triangle from its store tile with the
     m that cuts through it - two arcs fanning from the lower-left corner,
-    drawn as Core strokes inside the outline, not traced."""
-    return (f'<path d="M 172 117.8 L 339.8 214.4 A 48 48 0 0 1 339.8 297.6 '
+    drawn as Core strokes inside the outline, not traced.
+    Moved right 24: the box sat 5% left (sweep 2026-10-18)."""
+    return _shifted((f'<path d="M 172 117.8 L 339.8 214.4 A 48 48 0 0 1 339.8 297.6 '
             f'L 172 394.2 A 48 48 0 0 1 100 352.6 L 100 159.4 A 48 48 0 0 1 172 117.8 Z" {_s(c, 32)}/>'
             f'<path d="{_arc_cw(150, 330, 92, 285, 345)}" {_s(c, 26)}/>'
-            f'<path d="{_arc_cw(150, 330, 156, 290, 335)}" {_s(c, 26)}/>')
+            f'<path d="{_arc_cw(150, 330, 156, 290, 335)}" {_s(c, 26)}/>'), 24, 0)
 
 
 # drawable -> (logotype cue, device). Each read off the app's launcher icon in
@@ -8471,7 +8782,7 @@ def maxplayer_m(c):
 # case the logo itself uses, and the one device it carries, if any.
 _WM = {
     "airreceiverlite": ("Air", "play"), "aloulatv": ("AL", "under"),
-    "amazing_classics": ("AC", None), "ant1": ("ANT1", "plus"), "arte": ("a", None),
+    "amazing_classics": ("AC", None), "ant1": ("ANT1", "plus"), "arte": ("arte", None),
     "bet_plus": ("BET", "plus"), "blip": ("blip", None), "byutv": ("byu/tv", None),
     "caixaforum_plus": ("CF", "plus"), "cda_pl": ("cda", None), "chaupal": ("CH", "under"),
     "clone_hero": ("C/H", None), "cosmote_tv": ("CTV", None), "dudeperfect": ("DP", "under"),
@@ -8660,5 +8971,436 @@ _WM3 = {
     "oktv22": ("OK", None), "onepixmedia": ("PIX", "dot"), "apksrebrand": ("PL", "play"),
     "sportseverywhere": ("4V", "under"), "xtreamplayeranddownloader": ("9X", None),
     "animetv": ("Anime/TV", None),
+    # 2.1.2: HBO Max is HBO Max again; its stacked HBO over lowercase max.
+    "max": ("HBO/max", None),
 }
 GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM3.items()})
+
+# Accuracy sweep 2026-10-18. Each of these drew a bare letter that another
+# brand drew too - TBS and TNT the same T, AMC+, A&E and ABC News the same A,
+# Kayo, Fox News and Kanopy the same K, Sling and Shudder the same S, ZEE5
+# and Zona the same Z - while the brand's own logo is a word. Several
+# glyphs' docstrings named a cue (TNT's crash bar, ABC's wave, ZEE5's play
+# notch) that their geometry never drew. The word is the brand's mark and
+# tells the two apart at a glance. Six-letter words set on two lines:
+# on one, MEGOGO's counters closed at 48 px (check_glyph). A frame costs
+# letter size: FOX NEWS framed set at 66 px and WATCH FREE at 47, under the
+# 96 px floor, so Fox News drops the frame and Watch Free UK keeps it
+# around its initials.
+_WM4 = {
+    "tbs": ("tbs", None), "tnt": ("TNT", None), "amcandroidtv": ("AMC", "plus"),
+    "androidtv_3": ("A&E", None), "abcnews": ("abc", "ring"), "sling_tv": ("sling", None),
+    "graymatrix": ("ZEE5", None), "kocowa": ("KOCO/WA", None), "kayo": ("kayo", None),
+    "foxnews": ("FOX/NEWS", None), "application": ("MEGO/GO", None), "binge": ("BINGE", None),
+    "amcnetworks": ("WF", "frame"),
+}
+GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM4.items()})
+
+
+# --------------------------------------------------------------------------
+# 2.1.2 requests: Pocket Casts (#257) and Silo (#258). Drawn on the pack
+# grid from each brand's published mark, as reference only; not traced.
+# --------------------------------------------------------------------------
+def pocketcasts_arcs(c):
+    """Pocket Casts: the disc with two concentric arcs, each a three-quarter
+    turn left open at the lower right. The disc is a Core stroke ring; the
+    arcs run from three o'clock round over the top to six o'clock."""
+    def arc(r):
+        return f"M {256 + r} 256 A {r} {r} 0 1 0 256 {256 + r}"
+    return (f'<circle cx="256" cy="256" r="184" {_s(c, 32)}/>'
+            f'<path d="{arc(118)}" {_s(c, 26.2)}/>'
+            f'<path d="{arc(54)}" {_s(c, 26.2)}/>')
+
+
+def silo_stack(c):
+    """Silo: its own logo, flattened - the play on a stack of three slotted
+    bars rising to the right. Silo's mark is already flat geometry, so the
+    pack keeps its shape and its three colours (blue play and top bar, pink
+    middle, orange foot: catalog secondary and tertiary) and draws it in the
+    pack's line: each bar an outlined parallelogram whose open centre is the
+    slot. Original strokes on the pack grid, not a trace of the Silo mark
+    (a Silo Media L.L.C. trademark). Replaces 2.1.2's storage tower after
+    community feedback that the logo itself should lead."""
+    play = "M 183 57 L 183 151 L 297 104 Z"
+    bars = "".join(
+        f'<path d="M 181 {207 + y} L 331 {181 + y} L 331 {233 + y} L 181 {259 + y} Z" {_s(c, 26.2)}/>'
+        for y in (0, 96, 192))
+    return f'<path d="{play}" {_s(c, 32)}/>{bars}'
+
+
+def tivimate_guide(c):
+    """TiviMate: the guide, with the tick on now.
+
+    TiviMate is an IPTV player for Android TV whose centre is its TV guide:
+    the full schedule "in a fast, clear grid". The frame is that grid - a
+    channel column and three programme rows - and the slot playing now
+    carries the one distinctive stroke of TiviMate's logo, the v drawn as a
+    tick. Original geometry on the pack grid; the logo is reference only."""
+    return (f'<rect x="56" y="104" width="400" height="304" rx="40" {_s(c, 32)}/>'
+            f'<path d="M 152 104 L 152 408" {_s(c, 21.8)}/>'
+            f'<path d="M 152 205 L 456 205 M 152 307 L 456 307" {_s(c, 21.8)}/>'
+            f'<path d="M 214 248 L 248 280 L 304 228" {_s(c, 26.2)}/>'
+            f'<path d="M 340 254 L 404 254" {_s(c, 21.8)}/>'
+            f'<path d="M 200 156 L 300 156 M 200 358 L 260 358" {_s(c, 21.8)}/>')
+
+
+def flixvision_f(c):
+    """Flix Vision: a ring round an italic F whose stem sweeps up into its top
+    arm. The app's logo is a thin purple ring holding a leaning, folded F; the
+    pack had drawn it as a red film reel. Here the stem and top arm are one
+    rising curve and the bar a shorter one beneath it, on the pack's stroke
+    widths. Original geometry; the logo is reference only."""
+    return (f'<circle cx="256" cy="256" r="190" {_s(c, 26)}/>'
+            f'<path d="M 186 362 C 204 284 214 214 240 176 C 252 158 268 152 290 152 L 348 152" {_s(c, 34)}/>'
+            f'<path d="M 208 258 C 224 248 240 244 262 244 L 322 244" {_s(c, 34)}/>')
+
+
+GLYPHS.update({"pocketcasts_arcs": pocketcasts_arcs, "silo_stack": silo_stack,
+               "tivimate_guide": tivimate_guide, "flixvision_f": flixvision_f})
+
+
+def ard_sounds_wave(c):
+    """ARD Sounds: five rounded bars rising and falling from the centre, the
+    audio-play mark of the Sounds platform. Deliberately not the ARD ring-and-1
+    (ard_one), which is the ARD Mediathek mark."""
+    bars = [(136, 216, 296), (200, 176, 336), (264, 136, 376),
+            (328, 176, 336), (392, 216, 296)]
+    return ''.join(f'<path d="M {x} {y0} L {x} {y1}" {_s(c, 32)}/>'
+                   for x, y0, y1 in bars)
+
+
+GLYPHS.update({"ard_sounds_wave": ard_sounds_wave})
+
+
+def pixee_frame(c):
+    """Pixee: a photo frame on the wall - a rounded frame with a sun and a
+    hill inside it, the slideshow the app puts on the screen. Core stroke
+    geometry, not a trace of the Pixee icon."""
+    return (f'<rect x="112" y="136" width="288" height="240" rx="24" {_s(c, 32)}/>'
+            f'<circle cx="206" cy="216" r="18" {_f(c)}/>'
+            f'<path d="M 152 336 L 236 258 L 288 302 L 326 270 L 360 336" {_s(c, 26.2)}/>')
+
+
+GLYPHS.update({"pixee_frame": pixee_frame})
+
+
+def morphe_m(c):
+    """Morphe: a monoline capital M with a filled dot on its right leg - the
+    patcher's letter mark, drawn in Core stroke geometry, not a trace of the
+    Morphe gradient icon."""
+    return (f'<path d="M 128 384 L 128 176 L 256 272 L 384 176 L 384 384" {_s(c, 32)}/>'
+            f'<circle cx="420" cy="372" r="22" {_f(c)}/>')
+
+
+GLYPHS.update({"morphe_m": morphe_m})
+
+
+def aiostreams_a(c):
+    """AIOStreams: a diagonal stroke rising to the right, and the circle at
+    its upper right — the app's A cue, drawn in Core stroke geometry. The
+    brand's own mark is the same two shapes (monochrome white on black);
+    this is not a trace of it."""
+    return (f'<path d="M 152 372 L 282 152" {_s(c, 40)}/>'
+            f'<circle cx="352" cy="248" r="72" {_s(c, 34)}/>')
+
+
+GLYPHS.update({"aiostreams_a": aiostreams_a})
+
+
+def movieboxtv_strip(c):
+    """MovieBoxTV: a film strip with its sprockets beside a play triangle —
+    the app's download-and-play cue in Core stroke geometry, not a trace of
+    the vendor icon (whose film strip, triangle and arrow share this
+    composition)."""
+    return (f'<rect x="96" y="96" width="120" height="320" rx="44" {_s(c, 34)}/>'
+            f'<circle cx="156" cy="148" r="15" {_f(c)}/>'
+            f'<circle cx="156" cy="206" r="15" {_f(c)}/>'
+            f'<circle cx="156" cy="264" r="15" {_f(c)}/>'
+            f'<circle cx="156" cy="322" r="15" {_f(c)}/>'
+            f'<circle cx="156" cy="380" r="15" {_f(c)}/>'
+            f'<path d="M 288 168 L 424 256 L 288 344 Z" {_s(c, 34)}/>')
+
+
+GLYPHS.update({"movieboxtv_strip": movieboxtv_strip})
+
+
+def binged_b(c):
+    """Binged: a monoline capital B with a short bar beneath it — the app's
+    launcher cue (a bold B over a red underline) in Core stroke geometry,
+    not the vendor letterform."""
+    return (f'<path d="M 160 136 L 160 344 M 160 136 L 272 136 '
+            f'A 52 52 0 0 1 272 240 L 160 240 M 272 240 L 292 240 '
+            f'A 52 52 0 0 1 292 344 L 160 344" {_s(c, 32)}/>'
+            f'<path d="M 160 400 L 352 400" {_s(c, 26.2)}/>')
+
+
+GLYPHS.update({"binged_b": binged_b})
+
+
+def buzztv_bolt(c):
+    """Buzz TV: a rounded television screen with a buzz — a lightning bolt —
+    inside it, the IPTV box brand's name drawn literally in Core stroke
+    geometry; no vendor logo is traced."""
+    return (f'<rect x="88" y="120" width="336" height="236" rx="32" {_s(c, 32)}/>'
+            f'<path d="M 272 158 L 216 248 L 268 248 L 240 318" {_s(c, 26.2)}/>'
+            f'<path d="M 200 404 L 312 404" {_s(c, 26.2)}/>')
+
+
+GLYPHS.update({"buzztv_bolt": buzztv_bolt})
+
+
+def tellyplayer_screen(c):
+    """Telly Player: a telly — a rounded screen on a stand — with a play
+    triangle inside, the app's name drawn literally in Core stroke geometry;
+    no vendor art is traced."""
+    return (f'<rect x="88" y="104" width="336" height="236" rx="32" {_s(c, 32)}/>'
+            f'<path d="M 226 170 L 310 222 L 226 274 Z" {_s(c, 26.2)}/>'
+            f'<path d="M 256 340 L 256 388 M 176 404 L 336 404" {_s(c, 26.2)}/>')
+
+
+GLYPHS.update({"tellyplayer_screen": tellyplayer_screen})
+
+
+def yangoplay_y(c):
+    """Yango Play: a monoline capital Y whose two arms meet a play triangle
+    standing on the stem — the service's letter with its play cue, drawn in
+    Core stroke geometry; not a trace of the Yango Play mark."""
+    return (f'<path d="M 108 120 L 228 240 L 348 120 M 228 240 L 228 400" {_s(c, 32)}/>'
+            f'<path d="M 316 292 L 408 348 L 316 404 Z" {_s(c, 26.2)}/>')
+
+
+GLYPHS.update({"yangoplay_y": yangoplay_y})
+
+
+def nuyodeviceinfo_phone(c):
+    """Nuyo Device Info: a rounded handset outline with an information mark
+    (dot over a short stem) inside it — the app's subject stated literally
+    in Core stroke geometry; not a trace of the vendor icon."""
+    return (f'<rect x="156" y="88" width="200" height="336" rx="40" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="188" r="18" {_f(c)}/>'
+            f'<path d="M 256 240 L 256 344" {_s(c, 26.2)}/>')
+
+
+GLYPHS.update({"nuyodeviceinfo_phone": nuyodeviceinfo_phone})
+
+
+def iptvdeck_cards(c):
+    """IPTV Deck: a deck - an upright card with a play triangle on it and two
+    cards stacked up and to the right behind it, only their visible edges
+    drawn so no line crosses the front card - the app's name stated in Core
+    stroke geometry; not a trace of the vendor icon."""
+    return (f'<path d="M 200 116 L 200 92 A 28 28 0 0 1 228 64 L 380 64 '
+            f'A 28 28 0 0 1 408 92 L 408 308 A 28 28 0 0 1 380 336 L 356 336" {_s(c, 26.2)}/>'
+            f'<path d="M 148 168 L 148 144 A 28 28 0 0 1 176 116 L 328 116 '
+            f'A 28 28 0 0 1 356 144 L 356 360 A 28 28 0 0 1 328 388 L 304 388" {_s(c, 26.2)}/>'
+            f'<rect x="96" y="168" width="208" height="272" rx="28" {_s(c, 32)}/>'
+            f'<path d="M 172 256 L 248 304 L 172 352 Z" {_s(c, 26.2)}/>')
+
+
+GLYPHS.update({"iptvdeck_cards": iptvdeck_cards})
+
+
+# Issue batch 2026-10-15 (#309-#317, #319): eight scanner-reported apps, each
+# drawn from its subject in Core stroke geometry; no vendor art traced.
+def rectv_viewfinder(c):
+    """REC TV: a viewfinder - four rounded corner brackets - framing a solid
+    record dot, the "REC" of the name."""
+    corners = ("M 72 168 L 72 116 A 44 44 0 0 1 116 72 L 168 72",
+               "M 344 72 L 396 72 A 44 44 0 0 1 440 116 L 440 168",
+               "M 440 344 L 440 396 A 44 44 0 0 1 396 440 L 344 440",
+               "M 168 440 L 116 440 A 44 44 0 0 1 72 396 L 72 344")
+    return ("".join(f'<path d="{d}" {_s(c, 32)}/>' for d in corners)
+            + f'<circle cx="256" cy="256" r="84" {_f(c)}/>')
+
+
+def vega_star(c):
+    """Vega: the brightest star in Lyra - a V whose right arm points at a
+    four-point star."""
+    return (f'<path d="M 88 128 L 220 408 L 318 200" {_s(c, 34)}/>'
+            f'<path d="M 376 64 Q 384 128 440 136 Q 384 144 376 208 '
+            f'Q 368 144 312 136 Q 368 128 376 64 Z" {_s(c, 26.2)}/>')
+
+
+def playboxtv_box(c):
+    """PlayboxTV: an open box, both flaps folded out, with a play triangle on
+    its front - the name drawn literally."""
+    return (f'<rect x="112" y="216" width="288" height="216" rx="28" {_s(c, 32)}/>'
+            f'<path d="M 112 216 L 64 136 L 200 136 L 240 192" {_s(c, 28)}/>'
+            f'<path d="M 400 216 L 448 136 L 312 136 L 272 192" {_s(c, 28)}/>'
+            f'<path d="M 224 276 L 312 324 L 224 372 Z" {_s(c, 26.2)}/>')
+
+
+def mihome_house(c):
+    """Mi Home: a house holding a signal fan - the connected home. Kept apart
+    from home_bar (a bar inside) by its interior."""
+    return (f'<path d="M 72 240 L 256 88 L 440 240" {_s(c, 32)}/>'
+            f'<path d="M 128 232 L 128 400 A 32 32 0 0 0 160 432 L 352 432 '
+            f'A 32 32 0 0 0 384 400 L 384 232" {_s(c, 30)}/>'
+            f'<path d="M 188 304 A 96 96 0 0 1 324 304" {_s(c, 26.2)}/>'
+            f'<path d="M 222 340 A 48 48 0 0 1 290 340" {_s(c, 26.2)}/>'
+            f'<circle cx="256" cy="380" r="17" {_f(c)}/>')
+
+
+def nuyowifi_channels(c):
+    """Nuyo WiFi Analyzer: a channel graph - two overlapping signal humps on a
+    baseline, the view the app is built around."""
+    return (f'<path d="M 64 416 L 448 416" {_s(c, 30)}/>'
+            f'<path d="M 88 416 C 120 96 312 96 344 416" {_s(c, 32)}/>'
+            f'<path d="M 248 416 C 272 216 400 216 424 416" {_s(c, 26.2)}/>')
+
+
+def tvcalibration_card(c):
+    """TV Calibration: a screen on a stand showing a test card - a circle and
+    its crosshair."""
+    return (f'<rect x="56" y="104" width="400" height="280" rx="40" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="244" r="84" {_s(c, 26.2)}/>'
+            f'<path d="M 256 136 L 256 352 M 140 244 L 372 244" {_s(c, 26.2)}/>'
+            f'<path d="M 184 436 L 328 436" {_s(c, 30)}/>')
+
+
+def universalmanager_braces(c):
+    """Universal Manager: curly braces around an arrow coming down onto a tray
+    - a package, installed."""
+    return (f'<path d="M 152 72 Q 104 72 104 120 L 104 216 Q 104 256 64 256 '
+            f'Q 104 256 104 296 L 104 392 Q 104 440 152 440" {_s(c, 30)}/>'
+            f'<path d="M 360 72 Q 408 72 408 120 L 408 216 Q 408 256 448 256 '
+            f'Q 408 256 408 296 L 408 392 Q 408 440 360 440" {_s(c, 30)}/>'
+            f'<path d="M 256 128 L 256 320 M 192 256 L 256 320 L 320 256" {_s(c, 32)}/>'
+            f'<path d="M 184 384 L 328 384" {_s(c, 30)}/>')
+
+
+def goplay_split(c):
+    """Play (be.goplay.app): a play triangle split into two stacked halves -
+    the two rows of the stacked wordmark, without its letters."""
+    return (f'<path d="M 128 92 L 128 232 L 384 232 Z" {_s(c, 30)}/>'
+            f'<path d="M 128 280 L 128 420 L 384 280 Z" {_s(c, 30)}/>')
+
+
+GLYPHS.update({"rectv_viewfinder": rectv_viewfinder, "vega_star": vega_star,
+               "playboxtv_box": playboxtv_box, "mihome_house": mihome_house,
+               "nuyowifi_channels": nuyowifi_channels,
+               "tvcalibration_card": tvcalibration_card,
+               "universalmanager_braces": universalmanager_braces,
+               "goplay_split": goplay_split})
+
+
+# Issue batch 2026-10-17 (#323, #325, #329-#332, #334, #335): seven requested
+# apps, each drawn from its subject in Core stroke geometry; no vendor art
+# traced.
+def flixed_cat(c):
+    """Flixed: a cat-eared ghost head with two tall oval eyes - the app's
+    mascot reduced to its silhouette."""
+    return (f'<path d="M 256 432 C 148 432 96 388 96 304 C 96 244 108 204 124 176 '
+            f'L 136 84 Q 140 68 154 76 L 214 120 C 240 112 272 112 298 120 '
+            f'L 358 76 Q 372 68 376 84 L 388 176 C 404 204 416 244 416 304 '
+            f'C 416 388 364 432 256 432 Z" {_s(c, 32)}/>'
+            f'<ellipse cx="204" cy="292" rx="26" ry="42" {_f(c)}/>'
+            f'<ellipse cx="308" cy="292" rx="26" ry="42" {_f(c)}/>')
+
+
+def eclipse_vinyl(c):
+    """Eclipse: a record passing in front of a sun - the sun is the solid
+    crescent left showing beside the disc, held off the record's rim by a
+    gap; the record has its label and one groove."""
+    return (f'<path d="M 202.6 116.6 A 140 140 0 0 0 202.6 395.4 '
+            f'A 170 170 0 0 1 202.6 116.6 Z" {_f(c)}/>'
+            f'<circle cx="300" cy="256" r="140" {_s(c, 32)}/>'
+            f'<path d="M 300 164 A 92 92 0 0 1 392 256" {_s(c, 21.8)}/>'
+            f'<circle cx="300" cy="256" r="36" {_s(c, 26.2)}/>')
+
+
+def porter_key(c):
+    """Porter: a key whose bow holds a keyhole - system access, the app's
+    subject, and the keyhole that stands in for a letter in its name."""
+    return (f'<circle cx="168" cy="168" r="84" {_s(c, 32)}/>'
+            f'<circle cx="168" cy="152" r="22" {_f(c)}/>'
+            f'<path d="M 158 166 L 150 208 L 186 208 L 178 166 Z" {_f(c)}/>'
+            f'<path d="M 228 228 L 424 424" {_s(c, 32)}/>'
+            f'<path d="M 344 344 L 300 388 M 392 392 L 356 428" {_s(c, 26.2)}/>')
+
+
+def deltatv_arcs(c):
+    """DELTA TV: a capital D with three signal arcs fanning up and out from
+    its foot - the provider's initial and its broadcast cue."""
+    arcs = "".join(
+        f'<path d="M {264 - r} 360 A {r} {r} 0 0 1 {264 - r / 2:g} {360 - r * 0.866:.0f}" '
+        f'{_s(c, 26.2)}/>' for r in (64, 120, 176))
+    return (f'<path d="M 264 168 L 312 168 A 96 96 0 0 1 312 360 L 264 360 Z" {_s(c, 32)}/>'
+            + arcs)
+
+
+def esetsmarttv_shield(c):
+    """ESET Smart TV Security: a television whose top-right corner gives way
+    to a shield - the screen, protected."""
+    return (f'<path d="M 272 152 L 112 152 A 40 40 0 0 0 72 192 L 72 352 '
+            f'A 40 40 0 0 0 112 392 L 352 392 A 40 40 0 0 0 392 352 L 392 284" {_s(c, 32)}/>'
+            f'<path d="M 368 88 L 432 112 L 432 172 C 432 212 404 236 368 252 '
+            f'C 332 236 304 212 304 172 L 304 112 Z" {_s(c, 26.2)}/>'
+            f'<path d="M 176 432 L 336 432" {_s(c, 26.2)}/>')
+
+
+def bgprocesses_stack(c):
+    """Background Apps & Processes: a card with a gear on it and two shorter
+    cards stacked behind - work running in the background."""
+    pts = []
+    for i in range(8):
+        a = math.radians(i * 45)
+        for da, r in ((-18, 48), (-10, 68), (10, 68), (18, 48)):
+            t = a + math.radians(da)
+            pts.append(f"{256 + r * math.cos(t):.1f} {304 + r * math.sin(t):.1f}")
+    gear = "M " + " L ".join(pts) + " Z"
+    return (f'<path d="M 216 88 L 296 88" {_s(c, 26.2)}/>'
+            f'<path d="M 176 136 L 336 136" {_s(c, 26.2)}/>'
+            f'<rect x="112" y="184" width="288" height="240" rx="36" {_s(c, 32)}/>'
+            f'<path d="{gear}" {_s(c, 21.8)}/>'
+            f'<circle cx="256" cy="304" r="18" {_s(c, 21.8)}/>')
+
+
+def vax_play(c):
+    """VAX Player: an open V with a solid play triangle resting in its crook -
+    the player's initial holding its action. Not a play triangle with a V on
+    it: that outline matched Nuvio's and IPTV3U's at 0.82-0.83 alpha IoU."""
+    return (f'<path d="M 104 112 L 256 408 L 408 112" {_s(c, 32)}/>'
+            f'<path d="M 220 128 L 300 176 L 220 224 Z" {_f(c)}/>')
+
+
+GLYPHS.update({"flixed_cat": flixed_cat, "eclipse_vinyl": eclipse_vinyl,
+               "porter_key": porter_key, "deltatv_arcs": deltatv_arcs,
+               "esetsmarttv_shield": esetsmarttv_shield,
+               "bgprocesses_stack": bgprocesses_stack, "vax_play": vax_play})
+
+
+# Issue batch 2026-10-17 (#338, #341): two more scanner-reported apps, drawn
+# from their subject in Core stroke geometry; no vendor art traced.
+def aquaplay_wave(c):
+    """AquaPlay: a play triangle above a wave - water and play, the two
+    halves of the name."""
+    return (f'<path d="M 184 72 L 384 188 L 184 304 Z" {_s(c, 32)}/>'
+            f'<path d="M 72 400 C 136 344 200 344 256 384 C 312 424 376 424 440 368" '
+            f'{_s(c, 26.2)}/>')
+
+
+def watchbridge_arch(c):
+    """WatchBridge TV: a screen with a play triangle, carried on a bridge - a
+    deck with an arch rising to meet it at mid-span - the app as the link
+    between a recommendation and the streaming app that plays it."""
+    return (f'<rect x="104" y="64" width="304" height="208" rx="32" {_s(c, 32)}/>'
+            f'<path d="M 226 124 L 298 168 L 226 212 Z" {_s(c, 26.2)}/>'
+            f'<path d="M 64 336 L 448 336" {_s(c, 30)}/>'
+            f'<path d="M 96 440 Q 256 232 416 440" {_s(c, 26.2)}/>')
+
+
+GLYPHS.update({"aquaplay_wave": aquaplay_wave, "watchbridge_arch": watchbridge_arch})
+
+
+def uyaniktv_loop(c):
+    """Uyanik TV: an infinity loop with a solid play triangle in its right
+    loop - the app's always-on loop and its action. Kept apart from
+    alldebrid_infinity (a bare loop) by the play cue and the wider, flatter
+    loop."""
+    return (f'<path d="M 256 256 C 312 168 440 168 440 256 C 440 344 312 344 256 256 '
+            f'C 200 168 72 168 72 256 C 72 344 200 344 256 256 Z" {_s(c, 32)}/>'
+            f'<path d="M 340 226 L 390 256 L 340 286 Z" {_f(c)}/>')
+
+
+GLYPHS.update({"uyaniktv_loop": uyaniktv_loop})

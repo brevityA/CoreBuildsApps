@@ -28,10 +28,15 @@ keep them there — a whole-manifest grep would pass on the app's own
 intent-filter, which declares `LEANBACK_LAUNCHER` too, while the scan came up
 empty on the box.
 
-`AuditorActivity` (Settings → HELP → *Scan for unmapped apps*) diffs that scan
-against the bundled `appfilter.xml` asset at package level, lists the
-unmapped apps label-over-component, and pressing one draws a QR code that
-opens the icon-request form with the app name, the exact component and a
+`AuditorActivity` (Home → *Missing icons*, or Settings → HELP → *Missing
+icons*) lists what `AppAudit` finds when it diffs that scan against the
+bundled `appfilter.xml` asset at component level. Since 2.1.3 it splits the
+result in two: ICON NOT APPLYING, where the pack maps the package under
+another activity (shown on the row) and a press files the not-applying form,
+and NO ICON YET, where a press files a new-icon request. Each row carries the
+app's own launcher icon, TV or phone app, and whether it came preinstalled;
+the home row shows the same scan's count. Pressing a row draws a QR code
+that opens the right form with the app name, the exact component and a
 device note already filled in. Three details carry the weight:
 
 - **The deep link is generated, not typed.** `tools/build_issue_prefills.py`

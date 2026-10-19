@@ -176,6 +176,26 @@ MIN_PHASE_TOLERANCE_MS = 5.0
 #: measurement says the speaker actually stops.
 ROLLOFF_DROP_DB = 6.0
 
+# Null bands in a row the roll-off walk may step over (`detect_low_rolloff`):
+# a room cancellation spans one or two third-octaves; a longer run is the
+# speaker rolling off steeply.
+MAX_NULL_SKIP = 2
+
+# The most a correction may lift below the transition from one seat and an
+# uncalibrated microphone (1.3.2). Neither can tell a dip that belongs to the
+# room from one that belongs to that seat or to the microphone's own bass
+# roll-off, so bass dips get at most this much; peaks are still cut in full.
+SINGLE_SEAT_BOOST_DB = 2.0
+
+# Decay range a T20 needs (ISO 3382-2:2008): under it `rt60_from_ir` refuses
+# rather than reading short.
+MIN_DECAY_RANGE_DB = 35.0
+RT60_MAX_TAIL_S = 1.5
+
+# The lowest band a sweep analysis reports: a 170 ms window's main lobe is
+# 6.7 Hz wide, wider than the 20 and 25 Hz bands, and the sweep starts at 20 Hz.
+MIN_BAND_HZ = 31.5
+
 #: Filters the parametric export is fitted with. Matches the "8 peaking plus
 #: shelves" preset shape that parametric-EQ users already recognise.
 PEAKING_FILTERS = 8
@@ -463,11 +483,17 @@ def detect_low_rolloff(freqs: np.ndarray, measured_db: np.ndarray,
                        drop_db: float = ROLLOFF_DROP_DB) -> float:
     """Where the loudspeaker stops working, as opposed to where the room dips.
 
-    Scans down from a reference plateau around [plateau_hz] and returns the
-    lowest frequency still within [drop_db] of it. The correction floor is
-    raised to that point: Audyssey does the same thing, and it is why a fixed
-    40 Hz floor is wrong for a TV — below the roll-off there is nothing to
-    correct but microphone noise.
+    Walks down from a reference plateau around [plateau_hz] and returns the
+    last band before the first one more than [drop_db] under it. The
+    correction floor is raised to that point: Audyssey does the same thing,
+    and it is why a fixed 40 Hz floor is wrong for a TV — below the roll-off
+    there is nothing to correct but microphone noise.
+
+    Until 1.3.2 this took the lowest band *anywhere* within [drop_db], so a
+    band below the roll-off that climbed back (noise lifting an empty band)
+    dragged the floor down. A room null is not the speaker running out, so
+    the walk steps over up to ``MAX_NULL_SKIP`` bands in a row that
+    `detect_nulls` flags. [freqs] must be ascending.
 
     Returns ``F_MIN`` when the measurement never rolls off inside the band,
     which is the honest answer rather than zero.
@@ -478,12 +504,24 @@ def detect_low_rolloff(freqs: np.ndarray, measured_db: np.ndarray,
         return F_MIN
 
     ref = (f >= plateau_hz / 1.5) & (f <= plateau_hz * 1.5)
-    level = float(np.mean(db[ref])) if ref.any() else float(np.max(db))
-
-    usable = np.where(db >= level - drop_db)[0]
-    if usable.size == 0:
+    if not ref.any():
         return F_MIN
-    return float(max(F_MIN, f[usable].min()))
+    level = float(np.mean(db[ref]))
+    first_ref = int(np.argmax(ref))
+
+    nulls = detect_nulls(f, db)
+    lowest = float(f[first_ref])
+    skipped = 0
+    for i in range(first_ref - 1, -1, -1):
+        below = db[i] < level - drop_db
+        if below and nulls[i] and skipped < MAX_NULL_SKIP:
+            skipped += 1
+            continue
+        if below:
+            break
+        skipped = 0
+        lowest = float(f[i])
+    return float(max(F_MIN, lowest))
 
 
 # ---------------------------------------------------------------------------
@@ -647,6 +685,7 @@ def correction_curve(
     max_slope: float = MAX_SLOPE_DB_PER_OCT,
     null_mask: np.ndarray | None = None,
     min_phase_ok: np.ndarray | None = None,
+    max_boost_below_transition: float | None = None,
 ) -> np.ndarray:
     """The correction to apply: what to add to the measured response to reach target.
 
@@ -720,7 +759,11 @@ def correction_curve(
     mix[ramp] = 0.5 * (1.0 - np.cos(np.pi * np.log2(f[ramp] / lo_t)))
     mix[f >= hi_t] = 1.0
 
-    ceiling = float(max_boost) + (MAX_SHAPING_DB - float(max_boost)) * mix
+    # Below the transition a single-seat, uncalibrated sweep may lift only
+    # [max_boost_below_transition]: see SINGLE_SEAT_BOOST_DB.
+    low_boost = float(max_boost) if max_boost_below_transition is None \
+        else min(float(max_boost), float(max_boost_below_transition))
+    ceiling = low_boost + (MAX_SHAPING_DB - low_boost) * mix
     floor = -float(max_cut) + (float(max_cut) - MAX_SHAPING_DB) * mix
     if cut_only:
         ceiling = np.zeros_like(ceiling)
@@ -910,34 +953,68 @@ def min_phase_gate(freqs: np.ndarray, excess_ms: np.ndarray,
     return np.asarray(excess_ms, dtype=float) <= float(tolerance_ms)
 
 
-def rt60_from_ir(ir: np.ndarray, fs: int = FS) -> float:
-    """Reverberation time by Schroeder backward integration, in seconds.
+def rt60_from_ir(ir: np.ndarray, fs: int = FS, noise_power: float | None = None) -> float:
+    """Reverberation time as a T20 with Lundeby-style noise handling, in seconds.
 
-    This is the RT60 that `schroeder_hz` wants. Estimated rather than assumed,
-    because an assumed RT60 underestimates the Schroeder frequency by 30-50 %
-    in a reverberant room — which would set the correction ceiling too high by
-    exactly the amount that matters.
+    This is the RT60 that `schroeder_hz` wants, and the twin of the app's
+    `SweepAnalysis.decay` (1.3.2). Estimated rather than assumed, because an
+    assumed RT60 underestimates the Schroeder frequency by 30-50 % in a
+    reverberant room.
+
+    1. The 10 ms envelope after the peak is fitted by regression down to
+       10 dB above [noise_power]; where that line meets the noise is the
+       crosspoint, and its level at the peak over the noise is the decay
+       range.
+    2. Up to the crosspoint ``v^2 - N`` is integrated signed, and the energy
+       an exponential decay holds past it is added back, so the Schroeder
+       curve is not truncated. Truncating it made the curve plunge at the
+       cut and the fit read 22-39 % short at 35 dB of SNR.
+    3. The T20 is fitted over -5 to -25 dB and kept only if the decay range
+       is ``MIN_DECAY_RANGE_DB`` or more (ISO 3382-2).
+
+    [noise_power] is the mean square of the response ahead of the peak; when
+    it is not given, the last tenth of [ir] stands in for it (Lundeby's own
+    first guess). Returns 0.0 when no T20 can be read.
     """
     ir = np.asarray(ir, dtype=float)
     if ir.size < 16:
         raise ValueError("impulse response too short for an RT60 estimate")
     peak = int(np.argmax(np.abs(ir)))
-    tail = ir[peak:] ** 2
-    energy = np.cumsum(tail[::-1])[::-1]
-    with np.errstate(divide="ignore"):
-        edb = 10.0 * np.log10(np.maximum(energy, 1e-20))
-    edb -= edb[0]
-
-    # Fit the -5 to -35 dB part of the decay: outside that range the estimate
-    # is dominated by noise at the bottom and by the direct arrival at the top.
-    t = np.arange(edb.size) / float(fs)
-    mask = (edb <= -5.0) & (edb >= -35.0)
-    if mask.sum() < 8:
+    after = ir[peak:]
+    if noise_power is None:
+        noise_power = float(np.mean(after[-max(1, after.size // 10):] ** 2))
+    tail = after[: int(RT60_MAX_TAIL_S * fs)]
+    block = max(1, fs // 100)
+    n_blocks = tail.size // block
+    if n_blocks < 5:
         return 0.0
-    slope, _ = np.polyfit(t[mask], edb[mask], 1)
+    noise = max(float(noise_power), 1e-30)
+    noise_db = 10.0 * math.log10(noise)
+    env = 10.0 * np.log10(np.maximum(
+        (tail[: n_blocks * block] ** 2).reshape(n_blocks, block).mean(axis=1), 1e-300))
+    k = 1
+    while k < n_blocks and env[k] > noise_db + 10.0:
+        k += 1
+    if k - 1 < 3:
+        return 0.0
+    s, c = np.polyfit((np.arange(1, k) + 0.5) * block / float(fs), env[1:k], 1)
+    if s >= 0:
+        return 0.0
+    range_db = c - noise_db
+    end = min(tail.size, max(int((noise_db - c) / s * fs), block))
+    tail_energy = noise * (10.0 / (-s * math.log(10.0))) * fs
+    energy = np.maximum(np.cumsum((tail[:end] ** 2 - noise)[::-1])[::-1] + tail_energy, 1e-300)
+    edb = 10.0 * np.log10(energy / energy[0])
+    top = np.nonzero(edb <= -5.0)[0]
+    bottom = np.nonzero(edb <= -25.0)[0]
+    if top.size == 0 or bottom.size == 0 or bottom[0] - top[0] < 3 * block:
+        return 0.0
+    i5, i25 = int(top[0]), int(bottom[0])
+    slope, _ = np.polyfit(np.arange(i5, i25) / float(fs), edb[i5:i25], 1)
     if slope >= 0:
         return 0.0
-    return float(-60.0 / slope)
+    rt60 = float(-60.0 / slope)
+    return rt60 if range_db >= MIN_DECAY_RANGE_DB and 0.05 <= rt60 <= 3.0 else 0.0
 
 
 def average_measurements(measurements: list[np.ndarray]) -> np.ndarray:
@@ -1321,8 +1398,8 @@ def analyze_sweep_recording(
     """Analyze a recorded room sweep and generate custom Poweramp EQ filters.
 
     Performs Farina deconvolution against the inverse sweep filter, extracts the
-    impulse response direct arrival, calculates room RT60 (Schroeder backward
-    integration), sets the room transition frequency, detects loudspeaker roll-off
+    impulse response direct arrival, calculates room RT60 (a Lundeby-style T20),
+    sets the room transition frequency, detects loudspeaker roll-off
     and acoustic cancellations (nulls), runs minimum-phase gating, and generates
     the two-regime correction curve and peaking filters.
     """
@@ -1334,13 +1411,18 @@ def analyze_sweep_recording(
     ir_full = deconvolve_ir(recording, inverse, fs=fs)
     peak = int(np.argmax(np.abs(ir_full)))
 
-    # Estimate RT60 from decay tail
-    rt60 = rt60_from_ir(ir_full[peak:], fs=fs)
-    t_hz = transition_hz(room_volume_m3, rt60)
+    # T20 against the noise just ahead of the arrival, as the app reads it.
+    lead = ir_full[max(0, peak - int(0.30 * fs)): max(0, peak - int(0.02 * fs))]
+    noise_power = float(np.mean(lead ** 2)) if lead.size else None
+    rt60 = rt60_from_ir(ir_full[peak:], fs=fs, noise_power=noise_power)
+    t_hz = transition_hz(room_volume_m3, rt60 if rt60 > 0 else None)
 
     # Both analyses window from 2 ms before the direct arrival themselves.
     freqs, mag_db = ir_magnitude_db(ir_full, fs=fs)
     centres, measured_db = octave_bands(freqs, mag_db, n=3.0)
+    # The window cannot resolve the 20 and 25 Hz bands (MIN_BAND_HZ).
+    keep = centres >= MIN_BAND_HZ * 2 ** (-1.0 / 12.0)
+    centres, measured_db = centres[keep], measured_db[keep]
 
     nulls = detect_nulls(centres, measured_db)
     rolloff = detect_low_rolloff(centres, measured_db)
@@ -1363,6 +1445,7 @@ def analyze_sweep_recording(
         cut_only=cut_only,
         null_mask=nulls,
         min_phase_ok=min_phase_ok,
+        max_boost_below_transition=SINGLE_SEAT_BOOST_DB,
     )
 
     filters = fit_peaking_filters(centres, corr, n_filters=n_filters)
@@ -1370,7 +1453,7 @@ def analyze_sweep_recording(
 
     return {
         "fs": fs,
-        "rt60_s": rt60,
+        "rt60_s": rt60 if rt60 > 0 else None,
         "transition_hz": t_hz,
         "rolloff_hz": rolloff,
         "f_floor_hz": f_floor,
@@ -1772,7 +1855,8 @@ def main(argv: list[str] | None = None) -> int:
         )
         Path(args.out).write_text(res["preset_txt"], encoding="utf-8")
         print(f"Room analysis:")
-        print(f"  RT60 decay:           {res['rt60_s']:.2f} s")
+        rt = res["rt60_s"]
+        print(f"  RT60 decay:           {f'{rt:.2f} s' if rt else 'not measurable (decay too close to the noise)'}")
         print(f"  Schroeder transition: {res['transition_hz']:.0f} Hz (inversion below, shaping above)")
         print(f"  Loudspeaker roll-off: {res['rolloff_hz']:.0f} Hz (correction floor: {res['f_floor_hz']:.0f} Hz)")
         print(f"  Nulls left alone:     {res['nulls_detected']} band(s)")

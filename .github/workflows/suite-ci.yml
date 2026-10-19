@@ -37,6 +37,8 @@ jobs:
         run: python tools/audit_contract.py
       - name: Check prefilled icon-request links against the issue forms
         run: python tools/build_issue_prefills.py --check
+      - name: Test the icon-request auto-reply against the issue forms
+        run: python tests/test_issue_triage.py
       - name: Check the Banners companion matches the glyph pack
         run: python tools/build_banners_pack.py --check
       # Depends on no Android SDK and no Gradle, so it runs here rather than in
@@ -55,13 +57,22 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # Variant tasks are named explicitly because :app has an art flavor
+          # dimension: lintDebug would name no variant once flavors exist.
           - name: Icon Pack
             dir: .
-            tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
+            tasks: :app:lintBannersDebug :app:testBannersDebugUnitTest :app:assembleBannersDebug
             gradle: app/build.gradle.kts
             compileSdk: 34
             workflow: .github/workflows/build.yml
-            artifact: app/build/outputs/apk/debug/*.apk
+            artifact: app/build/outputs/apk/banners/debug/*.apk
+          - name: Core Builds Glyphs app
+            dir: .
+            tasks: :app:lintGlyphsDebug :app:testGlyphsDebugUnitTest :app:assembleGlyphsDebug
+            gradle: app/build.gradle.kts
+            compileSdk: 34
+            workflow: .github/workflows/build.yml
+            artifact: app/build/outputs/apk/glyphs/debug/*.apk
           - name: Core Builds Glyphs
             dir: .
             tasks: :glyphs:lintDebug :glyphs:testDebugUnitTest :glyphs:assembleDebug
@@ -97,6 +108,21 @@ jobs:
             compileSdk: 34
             workflow: .github/workflows/core-motion-apk.yml
             artifact: motion-plugin/app/build/outputs/apk/debug/*.apk
+          # Core EQ is its own Gradle root on AGP 9.4.0 / compileSdk 37. Its
+          # build-tools floor is the toolchain's, not the platform's: AGP
+          # 9.4.0's floor is 36.0.0 and this entry names it explicitly rather
+          # than inheriting whatever the runner image happens to carry. API 37
+          # carries a minor version, declared as platformId below; compileSdk
+          # stays the plain 37.
+          - name: Core EQ
+            dir: coreeq
+            tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
+            gradle: coreeq/app/build.gradle.kts
+            compileSdk: 37
+            platformId: 37.0
+            buildTools: 36
+            workflow: .github/workflows/core-eq-apk.yml
+            artifact: coreeq/app/build/outputs/apk/debug/*.apk
     steps:
       - uses: actions/checkout@v4
 
@@ -119,9 +145,21 @@ jobs:
       # compileSdk in the build file it points at.
       - name: Install Android platform ${{ matrix.compileSdk }}
         run: |
+          # buildTools defaults to the platform version (what every entry used
+          # before the field existed); Core EQ pins 36, the AGP 9.4.0 floor,
+          # so the job states its toolchain instead of inheriting the image's.
+          # The parameterised line is the job's own statement of its platform
+          # requirement; platformId is the package id when it is not simply
+          # the compileSdk (the 37 entry carries a minor version that way).
+          # The fallback covers an SDK level that only exists as a preview
+          # codename on the canary channel; if no id resolves, Gradle resolves
+          # the platform itself and names the hash string it cannot find. See
+          # tools/install_android_platform.sh.
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
-            "platforms;android-${{ matrix.compileSdk }}" \
-            "build-tools;${{ matrix.compileSdk }}.0.0"
+            "platforms;android-${{ matrix.platformId || matrix.compileSdk }}" \
+            "build-tools;${{ matrix.buildTools || matrix.compileSdk }}.0.0" \
+            || bash tools/install_android_platform.sh \
+                 "${{ matrix.platformId || matrix.compileSdk }}" "${{ matrix.buildTools || matrix.compileSdk }}.0.0"
       - uses: gradle/actions/setup-gradle@v6
       - name: Verify tracked workflow/build files exist
         run: |
@@ -134,17 +172,22 @@ jobs:
         if: failure()
         working-directory: ${{ matrix.dir }}
         run: |
-          # Re-run compile + lint (config-cache warm, cheap) with all output
-          # captured, then post the failure cause and first errors as
-          # annotations - readable without downloading job logs.
-          # The module comes from this entry's own tasks (":glyphs:lintDebug ..."
-          # -> glyphs), so a Glyphs failure reports Glyphs, not
-          # :app. compileDebugSources covers Java-only modules too.
+          # Re-run the entry's own tasks (config-cache warm, cheap) with all
+          # output captured, then post the failure cause and first errors as
+          # annotations - readable without downloading job logs. The tasks are
+          # re-run as written, NOT as ":<module>:compileDebugSources": with
+          # :app's art flavor dimension that shorthand is ambiguous
+          # (compileBannersDebugSources vs compileGlyphsDebugSources), so the
+          # diagnostic fails before the real error is ever reached and posts
+          # the ambiguity instead of the cause.
           MOD=$(printf '%s' "${{ matrix.tasks }}" | awk '{print $1}' | cut -d: -f2)
-          ./gradlew ":$MOD:compileDebugSources" ":$MOD:lintDebug" --no-daemon > build_out.txt 2>&1 || true
+          ./gradlew ${{ matrix.tasks }} --no-daemon > build_out.txt 2>&1 || true
           {
             grep -A 8 "What went wrong" build_out.txt | head -10 || true
             grep -E "^e: |error: " build_out.txt | head -5 || true
+            # Lint's console format is "path:line: Error: ..." - the two
+            # patterns above never match it.
+            grep -E " Error: " build_out.txt | head -5 || true
             LINT_TXT=$(find "$MOD/build" -name "lint-results-*.txt" 2>/dev/null | head -1)
             if [ -n "$LINT_TXT" ]; then
               grep -iE "Error" "$LINT_TXT" | head -4 || true
@@ -188,6 +231,11 @@ jobs:
         run: python tools/fit_classic_glyphs.py --check
       - name: Check fallback palette colours match their assignment
         run: python tools/icon_palette.py --check
+      # build.yml runs this after it regenerates the art; here it reads the
+      # committed drawables, which build.yml holds to the catalog. Both, because
+      # build.yml is path-filtered and this job is not.
+      - name: No new look-alike icons (64 px alpha IoU >= 0.80)
+        run: python tools/check_lookalikes.py
       # This job installs the render deps and runs no asset builder, so the
       # rasters the frames paste are the committed ones. build.yml runs the
       # same check, ahead of its regeneration step, for that reason. The check
@@ -228,17 +276,26 @@ jobs:
           python tests/test_ui_wiring.py
           python tests/test_brandmark_badge.py
           python tests/test_gradle_envelope.py
+          python tests/test_core_eq_release_contract.py
           python tests/test_navigation_graph.py
           python tests/test_tv_scale.py
           python tests/test_mapping_hygiene.py
+          python tests/test_lookalikes.py
           python tests/test_monet_handoff.py
           python tests/test_launcher_handoff.py
+          python tests/test_launcher_compat.py
           python tests/test_presence.py
           python tests/test_render_stack.py
           python tests/test_changelog_contract.py
           python tests/test_glyphs_pack.py
           python tests/test_icon_palette.py
+          # The coverage report's CI half: no network - it only proves the
+          # committed docs/COVERAGE.md exists and the weekly refresh
+          # (coverage-report.yml) has not lapsed.
+          python tools/coverage_report.py --check
           python tests/test_update_manifest_gate.py
+          python tests/test_core_eq_update_contract.py
+          python tests/test_support_links.py
           # Meta-gate, last: it reads the workflows above and fails if any
           # tests/test_*.py or tools/check_*.py has stopped being invoked. This
           # job has no path filter, so it is the one place a new test can be

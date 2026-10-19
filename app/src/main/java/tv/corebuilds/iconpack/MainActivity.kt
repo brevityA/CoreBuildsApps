@@ -8,14 +8,18 @@ import android.os.Looper
 import android.view.KeyEvent
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.view.doOnLayout
+import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +27,7 @@ import java.io.File
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.max
+import java.text.NumberFormat
 
 /**
  * Front door. Apply targets the Home launcher. An update bar appears
@@ -67,6 +72,8 @@ class MainActivity : TvActivity() {
     private var pendingUpdate: UpdateChecker.Result.Available? = null
     private var downloadedApk: File? = null
     private var installOffered = false
+    /** The bar's download is running: presses wait, and the button keeps the remote. */
+    private var updateDownloading = false
 
     /**
      * Keystrokes are filtered as a burst, not one at a time. See [scheduleFilter].
@@ -149,6 +156,8 @@ class MainActivity : TvActivity() {
         bindSearch()
         bindEmptyActions()
         syncFocusChain()
+        bindRailScroll()
+        matchRowTextSizes()
         if (pickMode) {
             // Icon-picker mode has no use for the wallpapers entry or apply.
             findViewById<View>(R.id.wallpapers_group).visibility = View.GONE
@@ -160,19 +169,15 @@ class MainActivity : TvActivity() {
             // made the affordance read as prose rather than as something you
             // press, which is why the sheet draws three rows of title + sub.
             val wpEntry = findViewById<View>(R.id.wallpapers_entry)
-            val wpSub = findViewById<TextView>(R.id.wallpapers_entry_sub)
-            val wpCount = WallpaperCatalog.load(this).size
-            // No subtitle rather than repeating the row's own label.
-            wpSub.text = if (wpCount > 0) {
-                getString(R.string.wp_entry_sub_fmt, wpCount)
-            } else {
-                ""
-            }
+            bindWallpapersSub()
             wpEntry.setOnClickListener { startActivity(Intent(this, WallpapersActivity::class.java)) }
-            findViewById<TextView>(R.id.about_entry_sub).text =
-                getString(R.string.about_entry_sub_fmt, BuildConfig.VERSION_NAME)
-
             bindStyleRow()
+            findViewById<View>(R.id.missing_entry).setOnClickListener {
+                startActivity(Intent(this, AuditorActivity::class.java))
+            }
+            findViewById<View>(R.id.support_entry).setOnClickListener {
+                startActivity(Intent(this, SupportActivity::class.java))
+            }
             findViewById<View>(R.id.settings_entry).setOnClickListener {
                 startActivity(Intent(this, SettingsActivity::class.java))
             }
@@ -204,11 +209,82 @@ class MainActivity : TvActivity() {
     }
 
     /**
+     * The rail scrolls when it is taller than the screen: large system text, the
+     * update bar and the launcher note under Apply can each push its last row
+     * past the bottom edge. D-pad focus scrolls it down to the row it lands on;
+     * when focus leaves the rail it goes back to the top, so the wordmark and the
+     * icon count are on screen again instead of half a line clipped under the
+     * update bar (2.4.0 at the TV's largest text size).
+     */
+    private fun bindRailScroll() {
+        val rail = findViewById<ScrollView>(R.id.rail)
+        rail.viewTreeObserver.addOnGlobalFocusChangeListener { _, newFocus ->
+            if (newFocus == null || rail.scrollY == 0 || isInside(newFocus, rail)) {
+                return@addOnGlobalFocusChangeListener
+            }
+            if (Prefs.reduceMotion(this)) rail.scrollTo(0, 0) else rail.smoothScrollTo(0, 0)
+        }
+    }
+
+    /**
+     * Support | Settings | About each shrink to fit a third of the rail under
+     * large system text (autoSize in activity_main.xml), but each on its own, so
+     * "About" would stay larger than "Settings". After the first layout all three
+     * take the smallest size and keep it, so the row reads as one control. At the
+     * default text size all three already fit at full size and nothing changes.
+     */
+    private fun matchRowTextSizes() {
+        val labels = intArrayOf(R.id.support_entry, R.id.settings_entry, R.id.about_entry)
+            .map { findViewById<TextView>(it) }
+        (labels.first().parent as View).doOnLayout {
+            val smallest = labels.minOf { it.textSize }
+            for (label in labels) {
+                TextViewCompat.setAutoSizeTextTypeWithDefaults(label, TextViewCompat.AUTO_SIZE_TEXT_TYPE_NONE)
+                label.setTextSize(TypedValue.COMPLEX_UNIT_PX, smallest)
+            }
+        }
+    }
+
+    private fun isInside(view: View, ancestor: View): Boolean {
+        var node: Any? = view
+        while (node is View) {
+            if (node === ancestor) return true
+            node = node.parent
+        }
+        return false
+    }
+
+    /**
+     * The Wallpapers row's subtitle: the count, and - until the browser has
+     * been opened once since the manifest's newest release - how many walls
+     * that release added or re-rendered, so an update taken for the
+     * wallpapers says where they are. Re-bound in onResume so returning from
+     * the browser clears the "new" the same visit.
+     */
+    private fun bindWallpapersSub() {
+        val wpSub = findViewById<TextView>(R.id.wallpapers_entry_sub)
+        val walls = WallpaperCatalog.load(this)
+        if (walls.isEmpty()) {
+            // No subtitle rather than repeating the row's own label.
+            wpSub.text = ""
+            return
+        }
+        val newest = WallpaperCatalog.newestSince(walls)
+        val fresh = WallpaperCatalog.newWalls(walls).size
+        wpSub.text = if (newest != null && fresh > 0 && Prefs.wallpapersNewSeen(this) != newest) {
+            getString(R.string.wp_entry_sub_new_fmt, walls.size, fresh)
+        } else {
+            getString(R.string.wp_entry_sub_fmt, walls.size)
+        }
+    }
+
+    /**
      * Rewrite the vertical D-pad chain around the containers that come and go,
      * at the moment their visibility changes.
      *
      * The sheet's screen order is apply_button -> update_bar -> style_entry ->
-     * wallpapers_entry -> settings_entry -> about_entry -> apply_targets ->
+     * missing_entry -> wallpapers_entry -> support_entry | settings_entry |
+     * about_entry (one row) -> apply_targets ->
      * search -> chip_row ->
      * grid, and three of those stops are conditional: the update bar only when a
      * newer manifest exists, the ALSO APPLIES TO row only with a second launcher
@@ -255,12 +331,15 @@ class MainActivity : TvActivity() {
             findViewById<View>(id).nextFocusDownId =
                 if (groupShown) R.id.style_entry else R.id.search
         }
+        // Support, Settings and About share the rail's last row: all step down.
+        findViewById<View>(R.id.support_entry).nextFocusDownId = belowRows
+        findViewById<View>(R.id.settings_entry).nextFocusDownId = belowRows
         findViewById<View>(R.id.about_entry).nextFocusDownId = belowRows
         findViewById<View>(R.id.apply_targets).nextFocusUpId =
-            if (groupShown) R.id.about_entry else aboveRows
+            if (groupShown) R.id.support_entry else aboveRows
         findViewById<View>(R.id.apply_targets).nextFocusDownId = R.id.search
         findViewById<View>(R.id.search).nextFocusUpId = belowRows.takeIf { targetsShown }
-            ?: if (groupShown) R.id.about_entry else aboveRows
+            ?: if (groupShown) R.id.support_entry else aboveRows
         findViewById<View>(R.id.chip_row).nextFocusUpId = R.id.search
         // Down from the category row: the grid, or the empty state's undo when
         // the grid is the container that just went GONE. The search field always
@@ -406,6 +485,7 @@ class MainActivity : TvActivity() {
         syncArtStyle()
         if (!pickMode) {
             bindApplyButton()
+            refreshMissingCount()
             // What's New fires once per upgrade, independently of the update
             // checker's switch: it reads the APK's own asset, so it works
             // with the network check off. Fresh installs seed the gate
@@ -429,10 +509,11 @@ class MainActivity : TvActivity() {
                     startActivity(Intent(this, WhatsNewActivity::class.java))
                 }
             }
-            // Gated by Settings. Off means UpdateChecker is never called, so
-            // the app issues no network request of its own at all — which is
-            // what the About screen's network list claims, and the claim has
-            // to stay checkable.
+            bindWallpapersSub()
+            // Gated by Settings. Off means this startup check never runs, so
+            // the only update request left is the one the user asks for in
+            // About - which is what the About screen's network list says, and
+            // the claim has to stay checkable.
             // Play builds update through Play only (Device and Network Abuse
             // policy), so they never check GitHub or offer an APK.
             if (!Distribution.PLAY && !updateChecked && Prefs.updateChecks(this)) {
@@ -440,9 +521,28 @@ class MainActivity : TvActivity() {
                 checkForUpdate()
             }
             downloadedApk?.let { file ->
-                if (file.exists() && UpdateInstaller.canInstall(this) && !installOffered) {
-                    installOffered = true
-                    startInstall(file)
+                if (!file.exists()) {
+                    downloadedApk = null
+                    return@let
+                }
+                // The update flow is mid-round-trip: the APK is downloaded
+                // and verified, and this resume is either back from the
+                // permission screen or the installer's task returning.
+                val bar = findViewById<View>(R.id.update_bar)
+                if (bar.visibility == View.VISIBLE) {
+                    val button = findViewById<TextView>(R.id.update_button)
+                    if (UpdateInstaller.canInstall(this) && !installOffered) {
+                        // The permission was granted: open the installer
+                        // without a second press and park the remote on the
+                        // button underneath.
+                        installOffered = true
+                        button.requestFocus()
+                        startInstall(file)
+                    } else if (!UpdateInstaller.canInstall(this)) {
+                        // Back without granting: the sub-line says what is
+                        // owed; the remote lands on the button, not the grid.
+                        button.requestFocus()
+                    }
                 }
             }
         }
@@ -953,28 +1053,34 @@ class MainActivity : TvActivity() {
             highlights.visibility = View.VISIBLE
             highlights.text = "•  " + update.highlights.first()
         }
-        // Give the bar the two rows it outranks, so the grid keeps a full row of
+        // Give the bar the rows it outranks, so the grid keeps a full row of
         // tiles: the header's launcher list and the ALSO APPLIES TO band are
-        // both secondary chrome, and Later puts them back.
+        // both secondary chrome, and Later puts them back. The icon count goes
+        // too: the bar states the new release's count, and without that line
+        // the rail's last row (Support | Settings | About) fits under the bar
+        // at the default text size instead of being cut in half.
         findViewById<View>(R.id.apply_sub).visibility = View.GONE
+        findViewById<View>(R.id.count).visibility = View.GONE
         setTargetsBand(shown = false)
         syncFocusChain()
         findViewById<TextView>(R.id.update_later).setOnClickListener { dismissUpdate() }
         button.isEnabled = true
         button.text = getString(R.string.update_download, update.versionName)
         button.setOnClickListener { startDownload(update) }
-        // Reveal, do not grab. This runs on a network callback, which resolves
-        // whenever it likes — a second after launch is normal, and a second
-        // after launch is exactly when someone has reached the search field and
-        // started typing. The unconditional requestFocus() this replaces took
-        // the cursor out of the field mid-word and closed the keyboard with it,
-        // which from the sofa looks like the search box losing focus for no
-        // reason. The bar is a stop on the vertical D-pad chain (apply_targets
-        // → update_bar → chip_row), so it is reachable without the grab; the
-        // grab is kept only for the case it was for, a screen nobody has
-        // touched yet.
+        // Hand the remote to the button. This used to be "reveal, do not
+        // grab": an unconditional focus stole the cursor out of the search
+        // field mid-word and closed the keyboard, because the check resolves
+        // a second after launch - exactly when someone has reached the field
+        // and started typing. The counter-case is a D-pad user who does not
+        // know the bar is there: the bar sits between the apply button and
+        // the chips, and "I keep pressing but nothing updates" is what that
+        // looks like from the sofa (issue from a Shield, 2026-10). So the bar
+        // now takes focus whenever it appears, with the one carve-out the
+        // regression was about - never while the user is typing.
         val current = currentFocus
-        if (current == null || current === window.decorView || current.id == R.id.apply_button) {
+        val typingInSearch = current is EditText && current.id == R.id.search
+            && current.text.isNotEmpty()
+        if (!typingInSearch) {
             button.requestFocus()
         }
     }
@@ -988,6 +1094,7 @@ class MainActivity : TvActivity() {
     private fun dismissUpdate() {
         updateDismissed = true
         findViewById<LinearLayout>(R.id.update_bar).visibility = View.GONE
+        findViewById<View>(R.id.count).visibility = View.VISIBLE
         if (!pickMode) {
             // Recomputes the launcher list under the CTA and the ALSO APPLIES TO
             // band from what is installed, then resyncs the chain.
@@ -997,13 +1104,21 @@ class MainActivity : TvActivity() {
     }
 
     private fun startDownload(update: UpdateChecker.Result.Available) {
+        if (updateDownloading) return
         if (update.apkUrl.isBlank()) {
             toast(getString(R.string.update_failed_fmt, "no apkUrl in version.json"))
             return
         }
         val label = findViewById<TextView>(R.id.update_label)
         val button = findViewById<TextView>(R.id.update_button)
-        button.isEnabled = false
+        // A busy flag, not isEnabled = false. Disabling the focused view makes
+        // Android clear its focus, and a TV is never in touch mode, so the
+        // framework hands the cursor to the next focusable view: Later, one OK
+        // press from dismissing the update. Every D-pad Download press ended
+        // there, and nothing moved it back when the button came back as
+        // Install (Shield report, updating 2.4.1 to 2.4.2). About's row has
+        // always used a flag and never had the problem.
+        updateDownloading = true
         button.text = getString(R.string.update_checking)
         UpdateInstaller.download(this, update.apkUrl, update.versionCode, update.apkSha256) { event ->
             when (event) {
@@ -1011,17 +1126,22 @@ class MainActivity : TvActivity() {
                     label.text = progressLabel(event.received, event.total)
                 }
                 is UpdateInstaller.Event.Ready -> {
+                    updateDownloading = false
                     downloadedApk = event.file
                     installOffered = false
-                    button.isEnabled = true
                     button.text = getString(R.string.update_install, update.versionName)
-                    findViewById<TextView>(R.id.update_sub).text =
-                        getString(R.string.update_sub_install)
+                    // The highlight line and this one share the row; the
+                    // instruction wins once there is something to press.
+                    findViewById<TextView>(R.id.update_highlights).visibility = View.GONE
+                    findViewById<TextView>(R.id.update_sub).apply {
+                        visibility = View.VISIBLE
+                        text = getString(R.string.update_sub_install)
+                    }
                     button.setOnClickListener { startInstall(event.file) }
                     startInstall(event.file)
                 }
                 is UpdateInstaller.Event.Failed -> {
-                    button.isEnabled = true
+                    updateDownloading = false
                     button.text = getString(R.string.update_download, update.versionName)
                     label.text = getString(R.string.update_failed_fmt, event.reason)
                     toast(getString(R.string.update_failed_fmt, event.reason))
@@ -1034,15 +1154,37 @@ class MainActivity : TvActivity() {
     private fun startInstall(file: File) {
         if (!UpdateInstaller.canInstall(this)) {
             installOffered = false
+            // A toast is gone before the permission toggle has been found
+            // and flipped, so the bar's sub-line carries the instruction
+            // persistently: it is still there when the user is back. onResume
+            // re-offers the install the moment the permission is granted, so
+            // there is no second press to remember.
+            findViewById<TextView>(R.id.update_highlights).visibility = View.GONE
+            val sub = findViewById<TextView>(R.id.update_sub)
+            sub.visibility = View.VISIBLE
+            sub.text = getString(R.string.update_need_permission)
             toast(getString(R.string.update_need_permission))
             if (!UpdateInstaller.requestInstallPermission(this)) {
                 toast(getString(R.string.update_permission_missing))
             }
             return
         }
+        // Mark it offered before the installer opens: coming back from a
+        // cancelled install fires onResume, which would otherwise launch it
+        // again. The button stays live for a deliberate retry.
+        installOffered = true
         try {
             UpdateInstaller.install(this, file)
+        } catch (e: android.content.ActivityNotFoundException) {
+            // No APK receiver on this build at all: the download is still
+            // verified and on disk, but this intent will never resolve. Keep
+            // the offer live and name the door that does work.
+            installOffered = false
+            toast(getString(R.string.update_no_installer))
         } catch (e: Exception) {
+            // A refused start is not a verdict: keep the offer live so the
+            // next press or resume tries again.
+            installOffered = false
             toast(getString(R.string.update_failed_fmt, e.message ?: "installer refused"))
         }
     }
@@ -1130,6 +1272,48 @@ class MainActivity : TvActivity() {
      * Glyphs first when it is not installed. Builds without a companion
      * switch the catalogue only.
      */
+    /**
+     * The Missing icons row's count, from the same [AppAudit] scan the
+     * auditor lists, so the number on the home screen and the rows behind it
+     * cannot disagree. Off the main thread on every resume: an app installed
+     * since the last visit shows up without a restart, and the parsed
+     * appfilter is cached for the process, so a repeat costs only the
+     * PackageManager query. A failed scan leaves the row as a plain way in.
+     * Two quick resumes start two scans; only the latest one may write, so
+     * a slower, older scan cannot put a stale count back on the badge.
+     */
+    private var missingScanGeneration = 0
+
+    private fun refreshMissingCount() {
+        val sub = findViewById<TextView>(R.id.missing_entry_sub)
+        val badge = findViewById<TextView>(R.id.missing_entry_count)
+        val generation = ++missingScanGeneration
+        Thread {
+            val result = runCatching { AppAudit.scan(applicationContext) }.getOrNull()
+            runOnUiThread {
+                if (isFinishing || isDestroyed || generation != missingScanGeneration) return@runOnUiThread
+                val missing = result?.items?.size
+                when {
+                    missing == null -> {
+                        sub.setText(R.string.missing_entry_failed)
+                        badge.visibility = View.GONE
+                    }
+                    missing == 0 -> {
+                        sub.setText(R.string.missing_entry_none)
+                        badge.visibility = View.GONE
+                    }
+                    else -> {
+                        sub.setText(R.string.missing_entry_sub)
+                        badge.text = NumberFormat.getIntegerInstance().format(missing)
+                        badge.contentDescription =
+                            getString(R.string.missing_entry_count_cd_fmt, missing)
+                        badge.visibility = View.VISIBLE
+                    }
+                }
+            }
+        }.start()
+    }
+
     private fun bindStyleRow() {
         findViewById<View>(R.id.style_entry).setOnClickListener {
             Prefs.set(this, Prefs.KEY_PICK_BANNERS, !Prefs.pickerPrefersBanners(this))

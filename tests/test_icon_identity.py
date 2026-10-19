@@ -24,7 +24,8 @@ import brandmarks
 from build_banners import render, render_glyph_only
 from build_icons import validate
 from drawable_art import art_path, read_aliases
-from glyphs import GLYPHS, monoline, render_svg, secondary_color, secondary_errors
+from glyphs import (GLYPHS, declared_paints, monoline, render_svg, secondary_color,
+                    secondary_errors, tertiary_color)
 from icon_style import (CARD, CORE_MONOLINE, CORE_STROKES, LIGHT_INK, MIN_CONTRAST,
                         core_monoline_errors, contrast, display_accent)
 from inspect_icon_apk import activity_name, launcher_components, resource_path
@@ -285,7 +286,10 @@ class IdentityTests(unittest.TestCase):
     def test_youtube_play_counter_is_really_transparent(self):
         image = Image.open(art_path(NODPI, "youtube", ALIASES)).convert("RGBA")
         self.assertEqual(image.getpixel((256, 256))[3], 0)
-        self.assertEqual(image.getpixel((64, 256))[:3], (255, 0, 0))
+        # The ring wears the catalog's YouTube red (#FF0033 since 2.1.2).
+        red = next(i["color"] for i in ICONS if i["drawable"] == "youtube")
+        self.assertEqual(image.getpixel((64, 256))[:3],
+                         tuple(int(red[k:k + 2], 16) for k in (1, 3, 5)))
         self.assertEqual(image.getpixel((0, 0))[3], 0)
         self.assertEqual(image.getpixel((100, 256))[3], 0)  # no solid button fill
         for background in ("#334155", "#7C3AED"):
@@ -394,7 +398,7 @@ class CoreStyleTests(unittest.TestCase):
     def test_catalog_rejects_a_private_wordmark_only_banner(self):
         icon = copy.deepcopy(BY_ID["nobuffr"])
         icon["banner_style"] = "glyph"
-        self.assertTrue(any("standard Outfit" in e for e in validate([icon])))
+        self.assertTrue(any("standard glyph/category/name" in e for e in validate([icon])))
 
     def test_catalog_rejects_direct_rendering_of_reference_art(self):
         refs = copy.deepcopy(CATALOG["artwork"])
@@ -408,7 +412,7 @@ class CoreStyleTests(unittest.TestCase):
             self.assertEqual(core_monoline_errors(
                 body, display_accent(icon["color"]),
                 gradient=bool(icon.get("gradient")), ink=icon.get("ink"),
-                secondary=secondary_color(icon)), [], icon["name"])
+                secondary=declared_paints(icon)), [], icon["name"])
 
     def test_standard_banner_recipe_is_used_for_every_revised_app(self):
         from build_banners import recentre
@@ -419,7 +423,8 @@ class CoreStyleTests(unittest.TestCase):
                                        gradient=icon.get("gradient"),
                                        secondary=icon.get("secondary")))
             self.assertEqual(actual, expected, icon["name"])
-            self.assertIn('id="cbRail"', actual)
+            # No left-edge rail since 2.0.1.
+            self.assertNotIn('id="cbRail"', actual)
             # the name in the shared stroke letters and light ink, not vendor type
             self.assertIn('stroke="#E6EDF3"', actual)
 
@@ -448,6 +453,46 @@ class CoreStyleTests(unittest.TestCase):
                 # small name can land on the same weight after it)
                 self.assertEqual(kick.findall(text)[:1], [accent])
                 self.assertNotIn('fill="#00d4ff"', text)
+
+    def test_banner_scale_includes_the_follow_up_five_percent(self):
+        """Cumulative +15% scale over v2.1.1; category and gap stay fixed."""
+        import build_banners
+        self.assertEqual(build_banners.GLYPH_H, 416)
+        self.assertEqual(build_banners.MAX_TYPE, 143)
+        self.assertEqual(build_banners.MIN_TYPE, 71)
+        self.assertAlmostEqual(build_banners.INK_W / build_banners.W, 0.882)
+        self.assertLess(build_banners.INK_W / build_banners.W, 0.90)
+        self.assertAlmostEqual(build_banners.GLYPH_H / 360, 1.156, places=2)
+        self.assertAlmostEqual(build_banners.MAX_TYPE / 124, 1.153, places=2)
+        self.assertEqual(build_banners.KICKER, 46)
+        self.assertEqual(build_banners.GAP, 80)
+
+    def test_heat_family_keeps_the_exact_v200_heatlive_anchor(self):
+        """The v2.0.0 HeatLive vector is the unchanged source for the family."""
+        import hashlib
+        from glyphs import _HEAT_DROP, _heat_flame_d, _solid, _s
+
+        source = (ROOT / "assets/svg/heatlive.svg").read_bytes()
+        self.assertEqual(
+            hashlib.sha256(source).hexdigest(),
+            "4d7c1323e06af9dcd6d5688cb392586d0906dec84a52d2e35b1a7cfbd8b77e87",
+        )
+        color = "#EB1E54"
+        expected = (f'<path d="{_HEAT_DROP}" {_s(color, 34)}/>'
+                    f'{_solid(_heat_flame_d(), color, 10)}')
+        self.assertEqual(GLYPHS["heatlive_drop"](color), expected)
+        family = {
+            "heatlive": "heatlive_drop",
+            "heatvod": "heatvod_drop",
+            "heatvod_ultra": "heatvod_ultra_drop",
+            "live_ultra": "live_ultra_drop",
+            "live_ultra_plus": "live_ultra_plus_drop",
+            "heatlive_backup": "heatlive_backup_drop",
+        }
+        for drawable, glyph in family.items():
+            with self.subTest(drawable=drawable):
+                self.assertEqual(BY_ID[drawable]["glyph"], glyph)
+                self.assertIn(glyph, GLYPHS)
 
     def test_revised_rasters_are_open_ink_and_clear_the_shared_safe_area(self):
         for icon in self.revised():
@@ -753,7 +798,11 @@ class DuotoneTests(unittest.TestCase):
                 self.assertEqual(
                     [k for k, p in enumerate(drawn) if p == paint],
                     sorted(icon["secondary"]["parts"]))
-                self.assertTrue(all(p in (accent, paint) for p in drawn), drawn)
+                third = tertiary_color(icon)
+                if third:
+                    self.assertEqual([k for k, p in enumerate(drawn) if p == third],
+                                     sorted(icon["secondary"]["tertiary"]["parts"]))
+                self.assertTrue(all(p in (accent, paint, third) for p in drawn), drawn)
 
     def test_shipped_square_and_banner_carry_the_duotone(self):
         for icon in self.DUO:
@@ -763,15 +812,19 @@ class DuotoneTests(unittest.TestCase):
                     text = (ROOT / "assets" / kind / f"{icon['drawable']}.svg").read_text()
                     self.assertIn(f'stroke="{paint}"', text)
 
-    def test_banner_rail_stays_the_primary_brand_colour(self):
-        # Colour-sampling launchers (Monet) read the rail; the second colour
-        # is detail inside the mark, never the card's headline hue.
+    def test_no_banner_carries_the_retired_rail(self):
+        # The left-edge accent bar left in 2.0.1. Colour-sampling launchers
+        # (Monet) now read the glyph and the kicker, both the primary colour;
+        # the second colour stays detail inside the mark.
         yt = next(i for i in self.DUO if i["name"] == "YouTube")
         banner = render("YouTube", yt["glyph"], yt["color"], yt.get("category"),
                         secondary=yt["secondary"])
-        rail = banner.split('id="cbRail"', 1)[1].split("</linearGradient>", 1)[0]
-        self.assertIn(display_accent(yt["color"]), rail)
-        self.assertNotIn(secondary_color(yt), rail)
+        self.assertNotIn("cbRail", banner)
+        self.assertNotIn("linearGradient", banner)
+        self.assertIn(display_accent(yt["color"]), banner)
+        shipped = [p.name for p in (ROOT / "assets/banners").glob("*.svg")
+                   if "cbRail" in p.read_text()]
+        self.assertEqual(shipped, [])
 
     def test_the_contract_passes_the_declared_paint_and_rejects_others(self):
         yt = next(i for i in self.DUO if i["name"] == "YouTube")
@@ -800,6 +853,40 @@ class DuotoneTests(unittest.TestCase):
         self.assertTrue(secondary_errors(with_gradient))
         mono = dict(copy.deepcopy(base), color_note="monochrome")
         self.assertTrue(secondary_errors(mono))
+
+    def test_a_third_colour_is_silo_only(self):
+        # 2.1.2: Silo's logo is blue, pink and orange bars, and folding the
+        # orange into the pink lost it. A tertiary is a deliberate exception:
+        # widening it to another icon means changing this list on purpose.
+        tri = {i["name"] for i in ICONS if (i.get("secondary") or {}).get("tertiary")}
+        self.assertEqual(tri, {"Silo"})
+        silo = next(i for i in ICONS if i["name"] == "Silo")
+        self.assertEqual(declared_paints(silo),
+                         [display_accent("#F50B4F"), display_accent("#FA7604")])
+        for kind in ("svg", "banners"):
+            text = (ROOT / "assets" / kind / "silo.svg").read_text()
+            for paint in [display_accent(silo["color"])] + declared_paints(silo):
+                self.assertIn(f'stroke="{paint}"', text, kind)
+
+    def test_unsound_tertiaries_are_refused(self):
+        base = copy.deepcopy(next(i for i in ICONS if i["name"] == "Silo"))
+        cases = {
+            "no source": {"source": ""},
+            "overlaps secondary": {"parts": [2]},
+            "takes the accent's last part": None,
+            "out of range": {"parts": [9]},
+            "same as secondary": {"color": base["secondary"]["color"]},
+            "bad hex": {"color": "orange"},
+        }
+        for label, change in cases.items():
+            with self.subTest(case=label):
+                icon = copy.deepcopy(base)
+                if change is None:
+                    icon["secondary"]["parts"] = [0, 1]
+                    icon["secondary"]["tertiary"]["parts"] = [2, 3]
+                else:
+                    icon["secondary"]["tertiary"].update(change)
+                self.assertTrue(secondary_errors(icon), label)
 
     def test_monochrome_rendering_ignores_a_secondary(self):
         yt = next(i for i in self.DUO if i["name"] == "YouTube")

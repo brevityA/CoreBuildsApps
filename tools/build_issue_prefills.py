@@ -79,8 +79,6 @@ FIELD_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
 MAX_URL = 1500
 # Generator flags mapped to the field id both icon forms use.
 ALIASES = {"app": "app_name", "component": "component"}
-SAMPLE = {"app_name": "Stremio",
-          "component": "com.stremio.one/com.stremio.tv.MainActivity"}
 
 
 def fail(message: str) -> None:
@@ -275,24 +273,18 @@ def label_for(template: dict, field_id: str) -> str:
     return f"`{field_id}`"
 
 
-def sample_form(templates: list[dict]) -> dict:
-    """The form the README walks through: the mis-mapping one, if it exists."""
-    return next((t for t in templates if "not_applying" in t["slug"]), templates[0])
-
-
 def block(templates: list[dict]) -> str:
-    """The README block between the issue-prefills markers."""
-    form = sample_form(templates)
-    values = {key: value for key, value in SAMPLE.items() if key in form["prefillable"]}
-    app = values.get("app_name", "Stremio")
-    parts = [f"--app {app}", f"--template {form['file']}"]
-    if "component" in values:
-        parts.append(f"--component {values['component']}")
-    flags = " \\\n    ".join(parts)
-    sample_url = prefill_url(form, values, title=form["title"] + app)
+    """The README block between the issue-prefills markers.
 
+    It is for the people filing: the two links and what each one fills in.
+    How to run the generator for one app lives in CONTRIBUTING.md, and the
+    provenance is an HTML comment, so the public page carries no maintainer
+    instructions.
+    """
     lines = [
         START,
+        "<!-- Generated from .github/ISSUE_TEMPLATE/ by tools/build_issue_prefills.py. "
+        "Edit the forms and re-run it; --check fails this block on drift. -->",
         SECTION_HEADING,
         "",
         "Both issue forms are deep-linked: a report opens on the right template with",
@@ -318,20 +310,8 @@ def block(templates: list[dict]) -> str:
         "",
         "One app per issue, and check [docs/IconPackList.md](docs/IconPackList.md) by",
         "name, drawable and package first — a listed app that isn't applying belongs",
-        "on the other form.",
-        "",
-        "For one specific app, let the generator build the link you paste into a reply:",
-        "",
-        "```bash",
-        f"python tools/build_issue_prefills.py {flags}",
-        "```",
-        "",
-        "```text",
-        sample_url,
-        "```",
-        "",
-        "Generated from `.github/ISSUE_TEMPLATE/` by `tools/build_issue_prefills.py`.",
-        "Edit the forms, re-run the generator — `--check` fails this block on drift.",
+        "on the other form. On the TV, the Icon Pack's **Missing icons** row builds",
+        "the same links for the apps it finds and shows them as a QR code.",
         END,
     ]
     return "\n".join(lines)

@@ -70,7 +70,7 @@ def main() -> int:
     square_row(row, 325)
 
     text(48, 552, "The same layout at TV-card size", 28)
-    text(48, 591, "Monoline glyph + Outfit name + category + cyan/violet rail. No private wordmark-only exception.", 17, "#9AAABD")
+    text(48, 591, "Monoline glyph + stroke-letter name + category, no rail. No private wordmark-only exception.", 17, "#9AAABD")
     for n, key in enumerate(("emby", "nobuffr", tivimate)):
         x, y = 48 + n * 400, 634
         tile(x, y, 384, 266, key == "nobuffr")

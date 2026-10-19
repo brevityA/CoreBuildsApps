@@ -121,6 +121,21 @@ object Correction {
         return mask
     }
 
+    /**
+     * Where the loudspeaker stops working: walking down from the plateau
+     * around [plateauHz], the last band before the first one that falls more
+     * than [dropDb] under the plateau (1.3.2). Until then this took the lowest
+     * band *anywhere* within [dropDb], so a band below the roll-off that
+     * climbed back, a room mode or noise lifting an empty band, dragged the
+     * floor down: in simulation a soundbar rolling off at 63 Hz read 40 Hz at
+     * 35 dB SNR, and the corrector then boosted bass the speaker cannot make.
+     *
+     * A room null is not the speaker running out: the walk steps over up to
+     * [MAX_NULL_SKIP] bands in a row that [detectNulls] flags, so a narrow
+     * cancellation above a mode does not end it. A steep roll-off can look
+     * like a run of nulls, so a longer run stops the walk. [freqs] must be
+     * ascending.
+     */
     fun detectLowRolloff(
         freqs: DoubleArray,
         measuredDb: DoubleArray,
@@ -133,24 +148,35 @@ object Correction {
 
         var refSum = 0.0
         var refCount = 0
-        var maxDb = Double.NEGATIVE_INFINITY
+        var firstRef = -1
         for (i in freqs.indices) {
-            if (measuredDb[i] > maxDb) maxDb = measuredDb[i]
             if (freqs[i] in loRef..hiRef) {
                 refSum += measuredDb[i]
                 refCount++
+                if (firstRef < 0) firstRef = i
             }
         }
-        val refLevel = if (refCount > 0) refSum / refCount else maxDb
+        if (refCount == 0) return DspConstants.F_MIN
+        val refLevel = refSum / refCount
 
-        var lowestUsable = Double.POSITIVE_INFINITY
-        for (i in freqs.indices) {
-            if (measuredDb[i] >= refLevel - dropDb) {
-                if (freqs[i] < lowestUsable) lowestUsable = freqs[i]
+        val nulls = detectNulls(freqs, measuredDb)
+        var lowestUsable = freqs[firstRef]
+        var skipped = 0
+        for (i in firstRef - 1 downTo 0) {
+            val below = measuredDb[i] < refLevel - dropDb
+            if (below && nulls[i] && skipped < MAX_NULL_SKIP) {
+                skipped++
+                continue
             }
+            if (below) break
+            skipped = 0
+            lowestUsable = freqs[i]
         }
-        return if (lowestUsable.isInfinite()) DspConstants.F_MIN else max(DspConstants.F_MIN, lowestUsable)
+        return max(DspConstants.F_MIN, lowestUsable)
     }
+
+    /** Null bands in a row the roll-off walk may step over: a room cancellation spans one or two third-octaves. */
+    const val MAX_NULL_SKIP = 2
 
     fun limitSlope(
         freqs: DoubleArray,
@@ -226,7 +252,8 @@ object Correction {
         cutOnly: Boolean = false,
         maxSlope: Double = DspConstants.MAX_SLOPE_DB_PER_OCT,
         nullMask: BooleanArray? = null,
-        minPhaseOk: BooleanArray? = null
+        minPhaseOk: BooleanArray? = null,
+        maxBoostBelowTransition: Double = maxBoost
     ): DoubleArray {
         val n = freqs.size
         val smoothed = smoothVariable(freqs, measuredDb, transitionHz)
@@ -257,7 +284,10 @@ object Correction {
                 f >= hiT -> 1.0
                 else -> 0.5 * (1.0 - cos(Math.PI * log2(f / loT)))
             }
-            ceiling[i] = if (cutOnly) 0.0 else maxBoost + (DspConstants.MAX_SHAPING_DB - maxBoost) * mix
+            // Below the transition a single-seat, uncalibrated sweep may lift
+            // only [maxBoostBelowTransition]: see SweepAnalysis.SINGLE_SEAT_BOOST_DB.
+            val lowBoost = min(maxBoost, maxBoostBelowTransition)
+            ceiling[i] = if (cutOnly) 0.0 else lowBoost + (DspConstants.MAX_SHAPING_DB - lowBoost) * mix
             floor[i] = -maxCut + (maxCut - DspConstants.MAX_SHAPING_DB) * mix
             raw[i] = raw[i].coerceIn(floor[i], ceiling[i])
         }

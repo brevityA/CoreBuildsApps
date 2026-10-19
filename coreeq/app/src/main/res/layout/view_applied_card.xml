@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The on-screen card (1.3.0), drawn over whatever is playing for a few
+  seconds when correction takes effect or pauses. Three lines at ten feet:
+  the state rail, the profile, and what it is applied as. Never focusable:
+  it lives in a touch-through overlay window (AppliedCard).
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:minWidth="@dimen/cb_overlay_card_min"
+    android:orientation="vertical"
+    android:background="@drawable/bg_applied_card"
+    android:paddingStart="@dimen/cb_card_padding"
+    android:paddingEnd="@dimen/cb_space_lg"
+    android:paddingTop="@dimen/cb_space_sm"
+    android:paddingBottom="@dimen/cb_space_sm"
+    android:focusable="false"
+    android:accessibilityLiveRegion="polite">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <View
+            android:id="@+id/card_dot"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_marginEnd="@dimen/cb_space_xs"
+            android:background="@drawable/dot_card"
+            android:importantForAccessibility="no" />
+
+        <TextView
+            android:id="@+id/card_rail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/cb_signal_cyan"
+            android:textSize="@dimen/cb_text_kicker"
+            android:fontFamily="monospace"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:letterSpacing="0.08"
+            tools:text="Core EQ · Correction on" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/card_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="@dimen/cb_overlay_card_text_max"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/cb_ink"
+        android:textSize="@dimen/cb_text_section"
+        android:textStyle="bold"
+        android:singleLine="true"
+        android:ellipsize="end"
+        tools:text="Living room · HDMI ARC" />
+
+    <TextView
+        android:id="@+id/card_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="@dimen/cb_overlay_card_text_max"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_data"
+        android:maxLines="2"
+        android:ellipsize="end"
+        tools:text="Everyday · TV speakers · 32 bands" />
+
+    <TextView
+        android:id="@+id/card_extras"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="@dimen/cb_overlay_card_text_max"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/cb_glow_cyan"
+        android:textSize="@dimen/cb_text_kicker"
+        android:fontFamily="monospace"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:visibility="gone"
+        tools:text="Dialogue +2 dB · Low-volume bass +1.5 dB"
+        tools:visibility="visible" />
+</LinearLayout>

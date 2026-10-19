@@ -99,7 +99,7 @@ jobs:
           # name what was actually built.
           SOURCE_COMMIT: ${{ steps.src.outputs.source_commit }}
         run: |
-          ./gradlew :app:lintCandidate :app:testCandidateUnitTest :app:assembleCandidate \
+          ./gradlew :app:lintBannersCandidate :app:testBannersCandidateUnitTest :app:assembleBannersCandidate \
             -PtestSourceCommit="${SOURCE_COMMIT:0:7}" --no-daemon --stacktrace
 
       - name: Name the APK for the stable Downloader URL
@@ -107,7 +107,7 @@ jobs:
           SOURCE_COMMIT: ${{ steps.src.outputs.source_commit }}
           VERSION: ${{ steps.src.outputs.version }}
         run: |
-          APK=$(find app/build/outputs/apk/candidate -maxdepth 1 -type f -name '*.apk' | head -1)
+          APK=$(find app/build/outputs/apk/banners/candidate -maxdepth 1 -type f -name '*.apk' | head -1)
           test -n "$APK"
           mkdir -p test-apk
           # One fixed name, forever. The Downloader code is generated once

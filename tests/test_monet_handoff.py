@@ -117,6 +117,20 @@ class PreviewFlowTests(unittest.TestCase):
         self.assertLess(on_set.index("sendToMonet()"), on_set.index("requiredPermission()"))
         self.assertIn("R.string.wp_send_to_monet", src)
 
+    def test_apply_uses_the_file_it_started_with(self):
+        # applyNow runs the setter on a background thread, and D-pad left/right
+        # still navigates meanwhile: showWallpaper() clears `downloaded` and
+        # loads the neighbour. The Projectivy fallback re-read the field as
+        # `downloaded!!` - a crash on that thread, or the wrong wall handed to
+        # Projectivy - and the gallery branch took its MIME type from it.
+        src = read(APP / "java/tv/corebuilds/iconpack/WallpaperPreviewActivity.kt")
+        start = src.index("private fun applyNow()")
+        body = src[start:src.index("\n    private fun ", start + 1)]
+        body = re.sub(r"//[^\n]*", "", body)   # code, not the comments explaining it
+        self.assertIn("val file = downloaded ?: run {", body)
+        self.assertEqual(body.count("downloaded"), 1,
+                         "applyNow reads `downloaded` after capturing it; use `file`")
+
     def test_no_hardcoded_monet_settings_path_in_kotlin(self):
         # 1.0.80 moved settings around; UI copy lives in strings.xml only.
         src = read(APP / "java/tv/corebuilds/iconpack/WallpaperPreviewActivity.kt")

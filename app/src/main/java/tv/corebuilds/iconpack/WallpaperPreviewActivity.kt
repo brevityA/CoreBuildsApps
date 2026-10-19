@@ -191,6 +191,7 @@ class WallpaperPreviewActivity : TvActivity() {
         // use for it, so the button leaves the chain rather than disabling.
         saveButton.visibility = if (wp.isLive) View.GONE else View.VISIBLE
         seedRow.visibility = View.GONE
+        findViewById<View>(R.id.preview_floor).visibility = View.GONE
 
         titleView.text = wp.title
         if (wallpapers.size > 1) {
@@ -276,7 +277,7 @@ class WallpaperPreviewActivity : TvActivity() {
     }
 
     private fun beginDownload(wp: Wallpaper, gen: Int) {
-        WallpaperDownloader.fetchUrl(this, wp.url, wp.cacheName) { event ->
+        WallpaperDownloader.fetchUrl(this, wp.url, wp.storeName) { event ->
             if (destroyed || gen != generation) return@fetchUrl
             when (event) {
                 is WallpaperDownloader.Event.Progress -> {
@@ -330,6 +331,9 @@ class WallpaperPreviewActivity : TvActivity() {
             val palette = if (bmp != null) {
                 try { WallpaperSeed.from(bmp) } catch (_: Exception) { null }
             } else null
+            val floor = if (bmp != null) {
+                try { WallpaperSeed.cardFloor(bmp) } catch (_: Exception) { null }
+            } else null
             runOnUiThread {
                 if (destroyed || gen != generation) {
                     bmp?.recycle()
@@ -342,6 +346,7 @@ class WallpaperPreviewActivity : TvActivity() {
                 }
                 fullBitmap = bmp
                 image.setImageBitmap(bmp)
+                floor?.let { showFloor(it) }
                 setButton.isEnabled = true
                 saveButton.isEnabled = true
                 sub.text = if (wallpapers.size > 1) {
@@ -380,6 +385,23 @@ class WallpaperPreviewActivity : TvActivity() {
         runOnUiThread {
             if (!destroyed && gen == generation && fullBitmap == null) paintSeed(palette)
         }
+    }
+
+    /**
+     * "Card floor 92% dark" / "60%" / "busy": whether launcher rows will be
+     * readable over the lower third. The generators hold procedural walls to
+     * a 45% dark-coverage floor; the photographic series are not held to
+     * it, which is exactly when a user wants to know.
+     */
+    private fun showFloor(dark: Float) {
+        val pct = (dark * 100).toInt()
+        val label = findViewById<TextView>(R.id.preview_floor)
+        label.text = when {
+            dark >= 0.75f -> getString(R.string.wp_floor_calm_fmt, pct)
+            dark >= 0.45f -> getString(R.string.wp_floor_mixed_fmt, pct)
+            else -> getString(R.string.wp_floor_busy_fmt, pct)
+        }
+        label.visibility = View.VISIBLE
     }
 
     private fun paintSeed(palette: WallpaperSeed.Palette) {
@@ -436,7 +458,11 @@ class WallpaperPreviewActivity : TvActivity() {
                         val homePkg = ApplyIconPack.homePackage(this@WallpaperPreviewActivity)
                         if (homePkg == "com.spocky.projengmenu") {
                             Thread {
-                                val fallback = WallpaperSetter.copyFileToPictures(this@WallpaperPreviewActivity, downloaded!!, downloaded!!.name)
+                                // The file this apply started with, not the field:
+                                // D-pad left/right during the apply loads the next
+                                // wallpaper and clears `downloaded`, which crashed
+                                // this thread (or handed Projectivy the wrong wall).
+                                val fallback = WallpaperSetter.copyFileToPictures(this@WallpaperPreviewActivity, file, file.name)
                                 runOnUiThread {
                                     if (destroyed) return@runOnUiThread
                                     if (fallback is WallpaperSetter.Result.SavedToGallery) {
@@ -469,7 +495,7 @@ class WallpaperPreviewActivity : TvActivity() {
                             }
                         } else {
                             try {
-                                val mime = if (downloaded?.name?.endsWith(".png", ignoreCase = true) == true) "image/png" else "image/jpeg"
+                                val mime = if (file.name.endsWith(".png", ignoreCase = true)) "image/png" else "image/jpeg"
                                 openSetter.launch(
                                     WallpaperSetter.setIntent(result.uri, mime)
                                 )

@@ -7,12 +7,14 @@ This repo ships five products from independent Gradle roots. Keep versioned tags
 | Product | Versioned tag | Floating tag | Stable APK asset | Downloader |
 |---|---|---|---|---|
 | Icon Pack | `v<version>` | `iconpack` | `iconpack-release.apk` plus legacy `app-release.apk` | `5270601` |
+| Icon Pack (glyph flavor) | none — ships in the icon pack's `v*` release | none | `corebuilds-glyphs-release.apk` | none |
+| Icon Pack (glyph companion) | none — ships in the icon pack's `v*` release | none | `iconpack-glyphs-release.apk` | none |
 | Core Line | `coreline-v<version>` | `coreline` | `coreline-release.apk` | `7375676` |
 | Core Shift | `shift-v<version>` | `shift` | `coreshift-release.apk` | `8829421` |
 | Core Motion | `motion-v<version>` | `motion` | `coremotion-release.apk` | `[USER TO SUPPLY]` |
 | Core Doctor | `doctor-v<version>` | `doctor` | `coredoctor-release.apk` | `8664938` |
 | Core EQ | `coreeq-v<version>` | `coreeq` | `coreeq-release.apk` | `7946159` |
-| Core EQ (test channel) | none — pushes to `main` only | `coreeq-test` | `coreeq-debug.apk` | none |
+| Core EQ (legacy test channel; publication disabled) | none | `coreeq-test` | `coreeq-debug.apk` | none |
 | Icon Pack (test channel) | none — `workflow_dispatch` only | `iconpack-test` | `iconpack-test.apk` | `9255317` |
 
 Do not create `line-v*` tags. Core Line is `coreline-v*`.
@@ -34,12 +36,40 @@ Each dispatch force-moves the `iconpack-test` tag and replaces the asset, so the
 filename is load-bearing: `iconpack-test.apk` is baked into a numeric code that
 cannot be repointed afterwards. Never add a version or commit sha to it.
 
+### Core EQ test channel
+
+`coreeq-test` is a retained legacy prerelease; automatic publication is disabled.
+Do not update, delete or retract it without explicit user confirmation. Its APK
+has package ID `tv.corebuilds.eq.debug`, separate from the requested main app.
+Core EQ itself is beta: publish beta testing builds of `tv.corebuilds.eq` through
+`coreeq-v<version>`, which updates `coreeq` and its updater feed only after signing
+and API 30/37 emulator install checks. These checks do not qualify real TV/phone
+audio paths, acoustic response or microphone calibration. Record outstanding
+hardware qualification in the app changelog and release notes; it does not block
+beta availability.
+
+The first test APK signed by the stable certificate cannot update an older
+runner-debug-signed test APK: uninstall only the test package once, then install
+the new build. Production `tv.corebuilds.eq` is a separate package and is not
+removed.
+
+Release builds also carry an in-app updater of their own:
+`Latestrelease/coreeq-version.json` is the feed, a `coreeq-v*` tag writes it
+from the APK it just published, and nothing else may touch it — a feed that
+names a build before the release carries that APK is how users are told about
+an update that cannot install. The test package is handed a blank feed by
+Gradle, so `coreeq-test` never offers an APK it could not install over itself.
+`tests/test_core_eq_update_contract.py` holds both halves.
+
 ## Before tagging
 
 1. Update `suite.json`.
 2. Update the selected app Gradle `versionName` and `versionCode`.
 3. For Icon Pack, also update `tools/catalog.json` `meta.version`, `Latestrelease/version.json`, and run all four generators.
-4. For updater apps, ensure matching metadata in `Latestrelease/`.
+4. For updater apps, ensure matching metadata in `Latestrelease/`. Core EQ is the
+   exception during preparation: leave its published feed unchanged until the
+   tag workflow writes it from the downloadable signed APK. It may lag the build,
+   never lead it.
 5. Run:
 
 ```bash
@@ -48,7 +78,8 @@ python tools/check_suite_truth.py
 python tools/audit_contract.py
 ```
 
-6. Let PR CI pass.
+6. Let PR CI pass, merge the version-bump PR, and tag only a commit on `main`
+   whose Gradle version matches the tag.
 
 ## Tagging
 
@@ -87,5 +118,11 @@ Keystores and Play credentials never go in git. GitHub Actions secrets:
 - `KEYSTORE_PASSWORD`
 - `KEY_ALIAS`
 - `KEY_PASSWORD`
+
+Every Android app in this repo, including Core EQ and the `coreeq-test` lane,
+signs from this one set — there are no per-app secret names to add when a new
+app, or a new channel for an existing app, starts publishing. `KEYSTORE_PATH`
+is not a secret: the workflow decodes the bytes above to a runner temp file and
+exports the path to Gradle.
 
 Play credentials are `[USER TO SUPPLY]` and must be environment-scoped if Play upload automation is added.

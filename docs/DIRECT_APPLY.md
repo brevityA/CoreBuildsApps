@@ -90,3 +90,39 @@ contract. Nothing else is needed to be a well-behaved icon pack.
 Ten new checks assert the exact intent strings and every `<queries>` entry.
 Verified they fail correctly: deleting the `<queries>` block produces four named
 failures rather than a silent pass.
+
+## The per-launcher compatibility summary
+
+The apply flow knew every launcher's mechanism all along — the gaps were the
+things a launcher does that the apply button does not: what **art** it
+consumes (a TV launcher takes the 16:9 banners from `xml/appfilter`; a phone
+launcher like Nova or Lawnchair has no banner surface and takes the square
+glyphs from Core Builds Glyphs), whether it needs the user's hand in its own
+settings (Monet, AT4K), or takes no pack at all (Leanback on Fire assigns per
+app; FLauncher does not apply icon packs and is listed as deliberately
+unsupported).
+
+Since 2.3.3 that knowledge is data on the launcher itself, in
+`ApplyIconPack.kt` (`art`, `applyMode`, `notes`), and it is surfaced three
+ways:
+
+1. **Launcher compatibility screen** (About → Launcher compatibility;
+   `LauncherCompatActivity`): one row per launcher in
+   `ApplyIconPack.COMPATIBILITY` — name, active/installed, the art sentence,
+   the mode, and the first note. The top line names this TV's detected HOME
+   launcher, and says plainly when it is not in the known list.
+2. **Unmapped apps screen** opens with the same detected-launcher line above
+   the list — because half of "icon not applying" is the launcher, not the
+   mapping.
+3. **The not-applying report** carries the detected launcher in its device
+   line (GitHub prefills text inputs, not dropdowns), and the form's launcher
+   dropdown covers every known launcher plus FLauncher and Other.
+
+The screen is a projection of the apply data, not a second source of truth: a
+launcher added to `ApplyIconPack` appears on the screen with its art, mode and
+notes in the same commit, and `tests/test_launcher_compat.py` pins the
+invariants (a WALK entry must not probe, a GLYPHS entry must name Core Builds
+Glyphs, a NONE entry must claim no art, FLauncher's package must stay
+`<queries>`-visible). The per-launcher facts the notes paraphrase:
+`docs/research/launcher-style-audit-2026-09.md`, `docs/MONET_LAUNCHER.md`, and
+the comments on each entry in `ApplyIconPack.kt`.

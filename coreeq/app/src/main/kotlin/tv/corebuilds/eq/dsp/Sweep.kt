@@ -6,6 +6,7 @@ import kotlin.math.exp
 import kotlin.math.ln
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 import kotlin.math.sin
 
 /**
@@ -18,6 +19,12 @@ import kotlin.math.sin
  * only over the part of the sweep below that rate's Nyquist limit. The
  * deconvolved response is therefore band-limited to [bandTopHz], which is
  * above the 8 kHz correction ceiling the remote mic imposes anyway.
+ *
+ * What is played is [stimulus]: a short timing [marker], the sweep, and the
+ * marker again. The remote's clock and the TV's are separate crystals, so
+ * the capture can run tens of ppm fast or slow against the sweep; the
+ * markers' spacing in the capture measures that, the way REW times its
+ * sweeps (1.3.2).
  */
 object Sweep {
 
@@ -26,6 +33,20 @@ object Sweep {
     const val SECONDS = DspConstants.ESS_SECONDS
     const val AMPLITUDE = 0.5
     const val TAPER_SECONDS = 0.05
+
+    /** The timing marker: a linear chirp, Hann-shaped, inside even an 8 kHz-codec remote's band. */
+    const val MARKER_SECONDS = 0.1
+    const val MARKER_F_START = 800.0
+    const val MARKER_F_END = 3000.0
+    /** Silence between each marker and the sweep. */
+    const val MARKER_GAP_SECONDS = 0.25
+    /** Where the sweep starts inside [stimulus]. */
+    const val SWEEP_OFFSET_SECONDS = MARKER_SECONDS + MARKER_GAP_SECONDS
+    /** Length of [stimulus]: both markers, both gaps and the sweep. */
+    const val STIMULUS_SECONDS = 2 * SWEEP_OFFSET_SECONDS + SECONDS
+
+    /** Start-to-start distance between the two markers for a [seconds]-long sweep. */
+    fun markerSpacingSeconds(seconds: Double = SECONDS): Double = SWEEP_OFFSET_SECONDS + seconds + MARKER_GAP_SECONDS
 
     private fun rate(seconds: Double, fStart: Double, fEnd: Double) = seconds / ln(fEnd / fStart)
 
@@ -60,6 +81,29 @@ object Sweep {
             val t = i.toDouble() / fs
             AMPLITUDE * taper(t, seconds) * sample(t, seconds, fStart, fEnd)
         }
+    }
+
+    /** One timing marker at rate [fs]: [MARKER_F_START] to [MARKER_F_END] Hz over [MARKER_SECONDS], [AMPLITUDE] peak. */
+    fun marker(fs: Int): DoubleArray {
+        val n = (MARKER_SECONDS * fs).roundToInt()
+        val chirp = (MARKER_F_END - MARKER_F_START) / (2.0 * MARKER_SECONDS)
+        return DoubleArray(n) { i ->
+            val t = i.toDouble() / fs
+            val w = 0.5 * (1.0 - cos(2.0 * PI * i / (n - 1)))
+            AMPLITUDE * w * sin(2.0 * PI * (MARKER_F_START * t + chirp * t * t))
+        }
+    }
+
+    /** What the TV plays: marker, [MARKER_GAP_SECONDS] of silence, the sweep, silence, marker. */
+    fun stimulus(fs: Int = DspConstants.FS, seconds: Double = SECONDS): DoubleArray {
+        val m = marker(fs)
+        val sweep = generate(fs, seconds)
+        val second = (markerSpacingSeconds(seconds) * fs).roundToInt()
+        val out = DoubleArray(second + m.size)
+        m.copyInto(out, 0)
+        sweep.copyInto(out, (SWEEP_OFFSET_SECONDS * fs).roundToInt())
+        m.copyInto(out, second)
+        return out
     }
 
     /** Highest frequency the inverse covers at capture rate [fs]. */

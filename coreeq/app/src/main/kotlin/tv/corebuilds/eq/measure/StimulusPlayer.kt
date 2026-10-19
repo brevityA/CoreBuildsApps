@@ -10,7 +10,8 @@ import tv.corebuilds.eq.dsp.Sweep
 import kotlin.concurrent.thread
 
 /**
- * Plays the measurement sweep ([Sweep.generate]) at [DspConstants.FS].
+ * Plays the measurement stimulus ([Sweep.stimulus]: timing marker, sweep,
+ * timing marker) at [DspConstants.FS].
  *
  * The whole stimulus is rendered before playback starts, so a slow device
  * cannot starve the track mid-sweep and put a gap in the measurement.
@@ -30,7 +31,7 @@ class StimulusPlayer {
         stop()
         playing = true
         thread(name = "CoreEqStimulus") {
-            val pcm = Sweep.generate(DspConstants.FS).let { s ->
+            val pcm = Sweep.stimulus(DspConstants.FS).let { s ->
                 ShortArray(s.size) { (s[it] * Short.MAX_VALUE).toInt().toShort() }
             }
             val track = try {

@@ -1,7 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
-  <g transform="translate(119.5,0.0)">
-  <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#34EB7A"/><stop offset="100%" stop-color="#23774A"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
-  <g transform="translate(300,180) scale(0.70312)"><path d="M 88.0 191.5 L 173.1 320.5 M 173.1 191.5 L 88.0 320.5 M 212.1 191.5 L 294.7 191.5 M 253.4 191.5 L 253.4 320.5 M 333.7 191.5 L 378.8 320.5 L 424.0 191.5" fill="none" stroke="#34EB7A" stroke-width="26.2" stroke-linecap="round" stroke-linejoin="round"/></g>
-  <path d="M 689.5 301.5 L 701.7 267.5 L 713.9 301.5 M 693.9 289.9 L 709.5 289.9 M 734.3 301.5 L 734.3 267.5 L 743.9 267.5 C 753.4 267.5 753.4 285.9 743.9 285.9 L 734.3 285.9 M 773.8 301.5 L 773.8 267.5 L 783.3 267.5 C 792.8 267.5 792.8 285.9 783.3 285.9 L 773.8 285.9" fill="none" stroke="#34EB7A" stroke-width="9.0" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M 689.5 336.8 L 746.7 423.6 M 746.7 336.8 L 689.5 423.6 M 814.4 336.8 L 870.0 336.8 M 842.2 336.8 L 842.2 423.6 M 901.2 336.8 L 931.6 423.6 L 962.0 336.8" fill="none" stroke="#E6EDF3" stroke-width="16.5" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <g transform="translate(-6.5,14.0)">
+  <g transform="translate(244,152) scale(0.81250)"><path d="M 88.0 191.5 L 173.1 320.5 M 173.1 191.5 L 88.0 320.5 M 212.1 191.5 L 294.7 191.5 M 253.4 191.5 L 253.4 320.5 M 333.7 191.5 L 378.8 320.5 L 424.0 191.5" fill="none" stroke="#34EB7A" stroke-width="26.2" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <path d="M 681.8 290.8 L 694.0 256.8 L 706.2 290.8 M 686.2 279.2 L 701.8 279.2 M 726.6 290.8 L 726.6 256.8 L 736.2 256.8 C 745.7 256.8 745.7 275.1 736.2 275.1 L 726.6 275.1 M 763.7 290.8 L 763.7 256.8 L 773.3 256.8 C 782.8 256.8 782.8 275.1 773.3 275.1 L 763.7 275.1" fill="none" stroke="#34EB7A" stroke-width="9.0" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 681.8 330.2 L 747.8 430.3 M 747.8 330.2 L 681.8 430.3 M 813.9 330.2 L 878.0 330.2 M 845.9 330.2 L 845.9 430.3 M 908.0 330.2 L 943.0 430.3 L 978.1 330.2" fill="none" stroke="#E6EDF3" stroke-width="19.0" stroke-linecap="round" stroke-linejoin="round"/></g>
 </svg>

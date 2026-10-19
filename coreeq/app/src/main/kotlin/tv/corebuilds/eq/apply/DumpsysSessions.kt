@@ -26,6 +26,12 @@ data class DiscoveredSession(
     )
 }
 
+internal data class DumpsysParseResult(
+    val sessions: List<DiscoveredSession>,
+    /** True only when a supported table/row or known-empty AudioService shape is present. */
+    val recognized: Boolean
+)
+
 /**
  * Parses `dumpsys media.audio_flinger` and `dumpsys audio` into sessions.
  *
@@ -77,23 +83,34 @@ object DumpsysSessions {
     )
 
     /** Every session the dumps mention, merged across sources, deduplicated by session id. */
-    fun parse(text: String): List<DiscoveredSession> {
+    fun parse(text: String): List<DiscoveredSession> = parseWithStatus(text).sessions
+
+    /** Also reports whether an empty result came from a dump shape we recognize. */
+    internal fun parseWithStatus(text: String): DumpsysParseResult {
         val byId = LinkedHashMap<Int, DiscoveredSession>()
+        var recognized = false
         var columns: Map<String, Int>? = null
         for (raw in text.lineSequence()) {
             val line = raw.trimEnd()
+            if (isKnownEmptyShape(line)) recognized = true
             val header = parseHeader(line)
             if (header != null) {
+                recognized = true
                 columns = header
                 continue
             }
             val row = parseTableRow(line, columns) ?: parseKeyValueLine(line)
             if (row != null) {
+                recognized = true
                 byId[row.sessionId] = byId[row.sessionId]?.filledFrom(row) ?: row
             }
         }
-        return byId.values.toList()
+        return DumpsysParseResult(byId.values.toList(), recognized)
     }
+
+    /** An AOSP AudioService section marker that is present even with no players. */
+    private fun isKnownEmptyShape(line: String): Boolean =
+        line.trim().startsWith("PlaybackActivityMonitor dump time:", ignoreCase = true)
 
     /** Merges per-dump lists into one table, one row per session id. */
     fun merge(vararg lists: List<DiscoveredSession>): List<DiscoveredSession> {
@@ -126,6 +143,18 @@ object DumpsysSessions {
             s.sessionId > 0 &&
                 s.uid != null &&
                 s.uid != ourUid &&
+                s.active != false &&
+                attachableUsage(s.usage)
+        }
+
+    /**
+     * Conservative arbitration-only signal: a media/game-like session with no
+     * UID may require Everyday, but is never eligible for effect attachment.
+     */
+    fun hasUnidentifiedCandidate(sessions: List<DiscoveredSession>): Boolean =
+        sessions.any { s ->
+            s.sessionId > 0 &&
+                s.uid == null &&
                 s.active != false &&
                 attachableUsage(s.usage)
         }

@@ -52,8 +52,12 @@ REFERENCE = ROOT / "tools" / "reference" / "projectivy-1.1.9-appfilter.xml"
 # package plus indexed APK manifest evidence. The app is present in the
 # official site, but these exact TV launcher components still need a device
 # scan before the flag can be cleared.
+# 92 -> 76 (accuracy sweep 2026-10-18): 16 components were listed twice, once
+# per name form (`pkg/.Act` and `pkg/pkg.Act`), both flagged. The build emits
+# both forms from one entry, so the copies are folded; appfilter.xml is
+# byte-identical and no flag changed hands.
 # The ceiling may only move back down.
-UNVERIFIED_CEILING = 92
+UNVERIFIED_CEILING = 76
 
 
 def _canonical(component: str) -> str:
@@ -112,6 +116,18 @@ class MappingHygieneTests(unittest.TestCase):
             total, UNVERIFIED_CEILING,
             f"{total} unverified components, above the {UNVERIFIED_CEILING} "
             "ratchet ceiling — the ceiling may only move down")
+
+    def test_no_component_is_listed_in_both_name_forms(self):
+        # build_icons.py writes both spellings (`pkg/.Act`, `pkg/pkg.Act`) from
+        # one entry. Listing both counted 31 components twice in the
+        # published total (1257 for 1226) and 16 unverified ones twice.
+        def full(c):
+            pkg, act = c.split("/", 1)
+            return f"{pkg}/{pkg}{act}" if act.startswith(".") else c
+        twice = [(icon["drawable"], c) for icon in self.icons
+                 for c in {full(c) for c in icon["components"]}
+                 if sum(full(x) == c for x in icon["components"]) > 1]
+        self.assertEqual(twice, [], f"components listed in both name forms: {twice[:5]}")
 
 
 if __name__ == "__main__":

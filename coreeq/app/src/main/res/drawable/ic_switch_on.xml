@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- On: filled cyan track, knob at the end. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:width="36dp" android:height="20dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/cb_signal_cyan" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+    <item android:width="14dp" android:height="14dp"
+        android:gravity="end|center_vertical" android:end="3dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/cb_cta_ink" />
+        </shape>
+    </item>
+</layer-list>

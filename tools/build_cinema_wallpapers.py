@@ -61,9 +61,12 @@ VOID = (4, 7, 15)
 NIGHT = (13, 17, 23)
 CYAN = (0, 212, 255)
 GLOW_CYAN = (126, 238, 255)
-VIOLET = (138, 72, 144)
+# Icon-echo retune (2026-10-11): the dim violet/ember bases sit on the icon
+# pack's accent families; the lifted tube colours (ORCHID, FLAME) already do
+# (see build_classic_wallpapers.py and Wallpapers/README.md).
+VIOLET = (151, 84, 168)
 ORCHID = (196, 110, 214)     # violet lifted for a lit tube
-EMBER = (192, 58, 32)
+EMBER = (210, 72, 42)
 FLAME = (255, 96, 60)        # ember lifted for a lit tube
 BULB = (255, 204, 140)       # marquee bulb white - the one warm addition
 BUILD_BLUE = (79, 172, 254)
@@ -76,13 +79,24 @@ WALLS = [
     (100, "neon-lounge", "Neon Lounge"),
     (101, "late-rentals", "Late Rentals"),
     (102, "box-office", "Box Office"),
+    (151, "drive-in", "Drive-In"),
+    (152, "aisle-lights", "Aisle Lights"),
+    (153, "film-reel", "Film Reel"),
+    (154, "popcorn-stand", "Popcorn Stand"),
+    (155, "exit-sign", "Exit Sign"),
+    (156, "intermission", "Intermission"),
 ]
 
 TWO_PI = 2 * math.pi
 
 
 def clip_name(index: int, slug: str) -> str:
-    return f"coremotion-live-{FIRST_CLIP + index:02d}-cinema-{slug}"
+    # Numbered by tools/live_roster.py, the one list every loop consumer reads.
+    import os
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from live_roster import CINEMA
+    assert CINEMA[index].slug == slug, (index, slug)
+    return CINEMA[index].stem
 
 
 # --------------------------------------------------------------------------
@@ -664,6 +678,285 @@ def scene_box_office(c: Canvas) -> Scene:
     return sc
 
 
+# --------------------------------------------------------------------------
+# The six added in 2.4.0 (151-156), bringing the set to twelve
+# --------------------------------------------------------------------------
+
+def scene_drive_in(c: Canvas) -> Scene:
+    """A drive-in at night: the big screen over a field of car roofs."""
+    sc = Scene(c)
+    sc.base = gradient(c, (5, 7, 16), (3, 4, 9))
+    # stars, upper band only
+    rnd = random.Random(1501)
+    m, d = c.mask()
+    for _ in range(260):
+        x, y = rnd.uniform(0, BW), rnd.uniform(0, 420)
+        r = c.s * rnd.uniform(0.6, 1.6)
+        d.ellipse((c.p(x) - r, c.p(y) - r, c.p(x) + r, c.p(y) + r), fill=int(255 * rnd.uniform(0.3, 1)))
+    sc.base += tint(blur(m, c.p(0.8)), (200, 220, 255), 0.55)
+    # the screen on its dark frame
+    frame, fd = c.mask()
+    fd.rectangle(c.box(520, 150, 1400, 620), fill=255)
+    sc.base += tint(frame, (14, 16, 24), 1.0)
+    scr, sd = c.mask()
+    sd.rectangle(c.box(548, 176, 1372, 596), fill=255)
+    screen = np.asarray(blur(scr, c.p(1.2)), "float32")[..., None] / 255
+    sc.base += tint(blur(scr, c.p(60)), (60, 90, 130), 0.5)
+    sx = np.linspace(0, 1, c.w, dtype="float32")[None, :]
+    sy = np.linspace(0, 1, c.h, dtype="float32")[:, None]
+    # posts
+    pm, pd = c.mask()
+    pd.rectangle(c.box(600, 620, 640, 760), fill=255)
+    pd.rectangle(c.box(1280, 620, 1320, 760), fill=255)
+    sc.base = sc.base * (1 - np.asarray(pm, "float32")[..., None] / 255 * 0.9)
+    # car roofs: dark rounded shapes, screen light on their tops
+    cm, cd = c.mask()
+    for row, (y, hgt) in enumerate(((740, 70), (820, 90), (920, 120))):
+        for i in range(-1, 14):
+            x = i * 160 + (80 if row % 2 else 0) + rnd.uniform(-10, 10)
+            cd.rounded_rectangle(c.box(x, y, x + 130 + row * 10, y + hgt), radius=c.p(24), fill=255)
+    cars = np.asarray(cm, "float32")[..., None] / 255
+    sc.base = sc.base * (1 - cars * 0.85)
+    sc.base += tint(blur(cm.filter(ImageFilter.FIND_EDGES), c.p(1.5)), (70, 100, 140), 0.3)
+    film = [np.array(v, "float32") for v in ((220, 200, 170), BUILD_BLUE, VIOLET, (200, 220, 240), FLAME)]
+    speakers = particles(c, 18, 1502, (0, 700, BW, 980), (255, 120, 60), size=1.6, gain=0.5, drift=(0, 0))
+
+    def show(t):
+        k = t * len(film)
+        i = int(k) % len(film)
+        f = k - int(k)
+        e = (1 - math.cos(math.pi * f)) / 2
+        col = film[i] * (1 - e) + film[(i + 1) % len(film)] * e
+        bx = 0.5 + 0.12 * math.sin(TWO_PI * t)
+        by = 0.36 + 0.08 * math.sin(TWO_PI * 2 * t + 0.7)
+        blob = np.exp(-(((sx - bx) / 0.16) ** 2 + ((sy - by) / 0.16) ** 2))[..., None]
+        shutter = 0.95 + 0.05 * math.sin(TWO_PI * 24 * DURATION * t)
+        return screen * (col * (0.14 + 0.3 * blob) + 8 + 24 * blob) * shutter + speakers(t)
+
+    sc.dynamic = show
+    sc.base = calm_floor(c, sc.base * vignette(c, 0.4), start=0.7, keep=0.45)
+    sc.still_t = 0.12
+    return sc
+
+
+def scene_aisle(c: Canvas) -> Scene:
+    """Down the aisle: seat rows in the dark, amber floor lights receding."""
+    sc = Scene(c)
+    sc.base = gradient(c, (7, 6, 12), (4, 3, 8))
+    # the screen glow far ahead, a pale band at the vanishing point
+    m, d = c.mask()
+    d.rectangle(c.box(760, 300, 1160, 520), fill=255)
+    sc.base += tint(blur(m, c.p(70)), (50, 70, 110), 0.5)
+    sc.add(tint(blur(m, c.p(6)), (90, 120, 170), 0.4), lambda t: 0.85 + 0.15 * pulse(2 * t, 1.5))
+    # seat rows converging: each row a run of dark backs, rim-lit
+    seats, sd = c.mask()
+    for k in range(9):
+        t = k / 8
+        y = 520 + 560 * t ** 1.7
+        h = 30 + 150 * t ** 1.5
+        spread = 0.2 + 0.8 * t
+        for side in (-1, 1):
+            for i in range(7):
+                x = 960 + side * (120 * spread + i * 95 * spread)
+                w = 60 * spread
+                sd.rounded_rectangle(c.box(x - w / 2, y, x + w / 2, y + h), radius=c.p(12 * spread + 2), fill=255)
+    sarr = np.asarray(seats, "float32")[..., None] / 255
+    sc.base = sc.base * (1 - sarr * 0.9)
+    sc.base += tint(blur(seats.filter(ImageFilter.FIND_EDGES), c.p(1.2)), (60, 70, 110), 0.3)
+    # aisle floor lights, two converging lines, amber, in chase groups
+    pts = []
+    for k in range(11):
+        t = k / 10
+        y = 540 + 540 * t ** 1.5
+        off = 40 + 160 * t
+        pts += [(960 - off, y), (960 + off, y)]
+    lit, sockets = bulb_layers(c, pts, 3, 3.0)
+    sc.base += sockets * 0.4
+    for g, layer in enumerate(lit):
+        sc.add(layer * 0.8, lambda t, g=g: 0.45 + 0.55 * pulse(3 * t - g / 3, 1.8))
+    # exit sign, top left, green, one stutter
+    ex = tube_text(c, "EXIT", 250, 150, 54, stroke=3)
+    sc.add(glow(c, ex, (90, 230, 120), far=0.55), lambda t: flicker(t, 1511, dips=1, depth=0.7))
+    sc.base = calm_floor(c, sc.base * vignette(c, 0.5), start=0.72, keep=0.55)
+    sc.still_t = 0.05
+    return sc
+
+
+def scene_reel(c: Canvas) -> Scene:
+    """The booth: a film reel turning in front of the lamp, light through its spokes."""
+    sc = Scene(c)
+    sc.base = gradient(c, (9, 7, 10), (4, 3, 7))
+    sc.base += brick_wall(c, 0, 0, BW, 700, (40, 30, 34), 1521, gain=0.35)
+    cx, cy, R = 1240, 400, 230
+    # the lamp behind the reel
+    lm, ld = c.mask()
+    ld.ellipse(c.box(cx - R * 0.9, cy - R * 0.9, cx + R * 0.9, cy + R * 0.9), fill=255)
+    lamp = tint(blur(lm, c.p(50)), (255, 200, 140), 0.55)
+    # the reel body: a disc with spoke holes; drawn per frame, rotating
+    def reel_mask(angle):
+        m, d = c.mask()
+        d.ellipse(c.box(cx - R, cy - R, cx + R, cy + R), fill=255)
+        for k in range(5):
+            a = angle + k * TWO_PI / 5
+            hx, hy = cx + math.cos(a) * R * 0.55, cy + math.sin(a) * R * 0.55
+            hr = R * 0.19
+            d.ellipse(c.box(hx - hr, hy - hr, hx + hr, hy + hr), fill=0)
+        d.ellipse(c.box(cx - R * 0.14, cy - R * 0.14, cx + R * 0.14, cy + R * 0.14), fill=0)
+        return m
+    # a second, smaller take-up reel, lower left of it
+    cx2, cy2, R2 = 760, 470, 150
+    # the film strip running between them
+    fm, fd = c.mask()
+    fd.line([(c.p(cx2), c.p(cy2 - R2)), (c.p(cx), c.p(cy - R))], fill=255, width=c.p(10))
+    fd.line([(c.p(cx2), c.p(cy2 + R2)), (c.p(cx), c.p(cy + R))], fill=255, width=c.p(10))
+    sc.base += tint(fm, (20, 18, 22), 1.0)
+    sc.base += tint(blur(fm.filter(ImageFilter.FIND_EDGES), c.p(1)), (120, 90, 60), 0.25)
+    # the beam leaving frame right, dusty
+    bm, bd = c.mask()
+    bd.polygon([(c.p(cx + R), c.p(cy - 40)), (c.p(cx + R), c.p(cy + 40)), (c.p(BW), c.p(cy + 260)), (c.p(BW), c.p(cy - 260))], fill=255)
+    beam = np.asarray(blur(bm, c.p(16)), "float32")[..., None] / 255 * np.array((200, 180, 150), "float32") * 0.25
+    motes = particles(c, 220, 1522, (cx + R, cy - 220, BW, cy + 220), (255, 230, 200), size=1.2, gain=1.0, drift=(60, 20))
+    cache = {}
+
+    def show(t):
+        a = TWO_PI * 2 * t            # two turns per loop
+        k = int(a / TWO_PI * 60) % 60  # 60 steps per turn -> seamless
+        if k not in cache:
+            rm = reel_mask(k / 60 * TWO_PI)
+            rarr = np.asarray(rm, "float32")[..., None] / 255
+            rm2m, rd2 = c.mask()
+            rd2.ellipse(c.box(cx2 - R2, cy2 - R2, cx2 + R2, cy2 + R2), fill=255)
+            for j in range(5):
+                aa = -k / 60 * TWO_PI * (R / R2) + j * TWO_PI / 5
+                hx, hy = cx2 + math.cos(aa) * R2 * 0.55, cy2 + math.sin(aa) * R2 * 0.55
+                rd2.ellipse(c.box(hx - R2 * 0.19, hy - R2 * 0.19, hx + R2 * 0.19, hy + R2 * 0.19), fill=0)
+            r2arr = np.asarray(rm2m, "float32")[..., None] / 255
+            rim = tint(blur(rm.filter(ImageFilter.FIND_EDGES), c.p(1.2)), (255, 200, 140), 0.5)
+            rim2 = tint(blur(rm2m.filter(ImageFilter.FIND_EDGES), c.p(1.2)), (200, 150, 100), 0.35)
+            cache[k] = (lamp * (1 - rarr * 0.92) + rim + rim2, r2arr)
+        light, r2arr = cache[k]
+        hum = 0.96 + 0.04 * math.sin(TWO_PI * 24 * DURATION * t)
+        return (light + beam) * hum + motes(t) - r2arr * 6
+
+    sc.dynamic = show
+    sc.base = calm_floor(c, sc.base * vignette(c, 0.5), start=0.68, keep=0.4)
+    sc.still_t = 0.0
+    return sc
+
+
+def scene_popcorn(c: Canvas) -> Scene:
+    """The concession stand: a POPCORN tube sign over the warm kettle light."""
+    sc = Scene(c)
+    sc.base = gradient(c, (10, 7, 10), (5, 3, 7))
+    sc.base += brick_wall(c, 0, 0, BW, 640, (52, 32, 40), 1531, row=30, col=70, gain=0.45)
+    word = tube_text(c, "POPCORN", 960, 250, 170, stroke=6)
+    sc.add(glow(c, word, FLAME, far=0.7), lambda t: flicker(t, 1532, dips=2))
+    # letters that chase: a thin underline of bulbs
+    pts = [(560 + i * 56, 370) for i in range(16)]
+    lit, sockets = bulb_layers(c, pts, 4, 5.0)
+    sc.base += sockets
+    for g, layer in enumerate(lit):
+        sc.add(layer, chase(g, 4, 6))
+    # the counter: a dark slab with a glowing glass case on it
+    cm, cd = c.mask()
+    cd.rectangle(c.box(300, 640, 1620, 1080), fill=255)
+    sc.base = sc.base * (1 - np.asarray(cm, "float32")[..., None] / 255 * 0.6)
+    case, kd = c.mask()
+    kd.rounded_rectangle(c.box(640, 450, 1280, 650), radius=c.p(16), fill=255)
+    sc.base += tint(blur(case, c.p(30)), (255, 180, 90), 0.28)
+    sc.add(tint(blur(case, c.p(4)), (255, 200, 120), 0.35), lambda t: 0.9 + 0.1 * pulse(3 * t, 1.5))
+    # kernels: warm specks inside the case, a few popping (blinking) on cycles
+    kernels = particles(c, 90, 1533, (660, 480, 1260, 630), (255, 220, 160), size=2.2, gain=0.9, drift=(3, 2))
+    butter = tube_text(c, "HOT", 1500, 500, 70, stroke=3.5)
+    sc.add(glow(c, butter, CYAN, far=0.5), lambda t: flicker(t, 1534, dips=3, depth=0.9))
+    sc.dynamic = lambda t: kernels(t)
+    sc.base = calm_floor(c, sc.base * vignette(c, 0.45), start=0.7, keep=0.45)
+    sc.still_t = 0.08
+    return sc
+
+
+def scene_exit(c: Canvas) -> Scene:
+    """The corridor after the credits: an EXIT tube and a cyan floor strip."""
+    sc = Scene(c)
+    sc.base = gradient(c, (6, 7, 12), (3, 4, 8))
+    # corridor: two converging wall lines and a far door
+    wm, wd = c.mask()
+    wd.polygon([(c.p(0), c.p(0)), (c.p(760), c.p(380)), (c.p(760), c.p(700)), (c.p(0), c.p(1080))], fill=120)
+    wd.polygon([(c.p(BW), c.p(0)), (c.p(1160), c.p(380)), (c.p(1160), c.p(700)), (c.p(BW), c.p(1080))], fill=120)
+    sc.base += tint(blur(wm, c.p(2)), (18, 20, 30), 1.0)
+    door, dd = c.mask()
+    dd.rectangle(c.box(880, 420, 1040, 700), fill=255)
+    sc.base += tint(blur(door, c.p(40)), (40, 70, 90), 0.5)
+    sc.add(tint(blur(door, c.p(3)), (60, 120, 150), 0.5), lambda t: 0.9 + 0.1 * pulse(t, 1))
+    # the sign
+    ex = tube_text(c, "EXIT", 960, 300, 120, stroke=5)
+    sc.add(glow(c, ex, (90, 230, 120), far=0.75), lambda t: flicker(t, 1541, dips=2, depth=0.85))
+    arrow, ad = c.mask()
+    ad.polygon([(c.p(1150), c.p(300)), (c.p(1210), c.p(270)), (c.p(1210), c.p(330))], fill=255)
+    sc.add(glow(c, arrow, (90, 230, 120), far=0.5), lambda t: 0.3 + 0.7 * (math.sin(TWO_PI * 8 * t) > 0))
+    # floor strips: two cyan lines running to the door, light travelling along
+    for side in (-1, 1):
+        sm, sd = c.mask()
+        sd.line([(c.p(960 + side * 700), c.p(1080)), (c.p(960 + side * 90), c.p(700))], fill=255, width=c.p(5))
+        strip = glow(c, sm, CYAN, far=0.5)
+        sc.add(strip * 0.6, 1.0)
+        # a pulse running up the strip: a moving bright segment
+        segs = []
+        for k in range(6):
+            pm_, pd_ = c.mask()
+            a0 = k / 6
+            x0, y0 = 960 + side * (700 - 610 * a0), 1080 - 380 * a0
+            x1, y1 = 960 + side * (700 - 610 * (a0 + 1 / 6)), 1080 - 380 * (a0 + 1 / 6)
+            pd_.line([(c.p(x0), c.p(y0)), (c.p(x1), c.p(y1))], fill=255, width=c.p(5))
+            segs.append(glow(c, pm_, GLOW_CYAN, far=0.4))
+        for k, layer in enumerate(segs):
+            sc.add(layer * 0.7, lambda t, k=k: pulse(4 * t - k / 6, 3.0))
+    # the reflection of the sign on the floor
+    sc.add(reflect(c, glow(c, ex, (90, 230, 120)), 700, gain=0.12, smear=14), lambda t: flicker(t, 1541, dips=2, depth=0.85))
+    sc.base = calm_floor(c, sc.base * vignette(c, 0.5), start=0.72, keep=0.6)
+    sc.still_t = 0.02
+    return sc
+
+
+def scene_intermission(c: Canvas) -> Scene:
+    """The screen between features: INTERMISSION and a ring counting round."""
+    sc = Scene(c)
+    sc.base = gradient(c, (8, 8, 14), (4, 4, 9))
+    # the screen, lit evenly and faintly
+    m, d = c.mask()
+    d.rectangle(c.box(260, 120, 1660, 760), fill=255)
+    sc.base += tint(m, (16, 18, 28), 1.0) + tint(blur(m, c.p(60)), (40, 50, 80), 0.4)
+    word = tube_text(c, "INTERMISSION", 960, 330, 150, stroke=5)
+    sc.add(glow(c, word, CYAN, far=0.7), lambda t: flicker(t, 1551, dips=1, depth=0.6))
+    # the countdown ring: a static dim ring, a bright arc sweeping once per loop
+    rm, rd = c.mask()
+    rd.ellipse(c.box(860, 460, 1060, 660), outline=255, width=c.p(8))
+    sc.add(glow(c, rm, VIOLET, far=0.4) * 0.5, 1.0)
+    arcs = []
+    for k in range(24):
+        am, ad = c.mask()
+        ad.arc(c.box(860, 460, 1060, 660), -90 + k * 15, -90 + (k + 1) * 15 + 2, fill=255, width=c.p(8))
+        arcs.append(glow(c, am, ORCHID, far=0.5))
+    for k, layer in enumerate(arcs):
+        sc.add(layer, lambda t, k=k: 0.0 if (t * 24) % 24 < k else 1.0 if int(t * 24) >= k else 0.0)
+    # a curtain edge each side, dark red
+    for side in (0, 1):
+        cm, cd = c.mask()
+        x0 = 0 if side == 0 else 1760
+        cd.rectangle(c.box(x0, 0, x0 + 160, 800), fill=255)
+        sc.base += tint(cm, (40, 10, 14), 1.0)
+    # seat heads, low
+    sm, sd = c.mask()
+    for i in range(-1, 24):
+        sd.ellipse(c.box(i * 90 + 20, 840, i * 90 + 90, 920), fill=255)
+        sd.rounded_rectangle(c.box(i * 90, 900, i * 90 + 110, 1080), radius=c.p(20), fill=255)
+    sc.base = sc.base * (1 - np.asarray(sm, "float32")[..., None] / 255 * 0.9)
+    sc.base += tint(blur(sm.filter(ImageFilter.FIND_EDGES), c.p(1.5)), (60, 90, 130), 0.25)
+    sc.base = calm_floor(c, sc.base * vignette(c, 0.45), start=0.72, keep=0.5)
+    sc.still_t = 0.4
+    return sc
+
+
 SCENES = {
     97: scene_marquee,
     98: scene_velvet,
@@ -671,6 +964,12 @@ SCENES = {
     100: scene_lounge,
     101: scene_rentals,
     102: scene_box_office,
+    151: scene_drive_in,
+    152: scene_aisle,
+    153: scene_reel,
+    154: scene_popcorn,
+    155: scene_exit,
+    156: scene_intermission,
 }
 
 
@@ -746,7 +1045,8 @@ def contact_sheet() -> None:
     tiles = [Image.open(ROOT / "Wallpapers" / "thumbs" / f"corebuilds-{n}-{s}.jpg")
              for n, s, _ in WALLS]
     cols = 3
-    sheet = Image.new("RGB", (cols * THUMB_W, 2 * THUMB_H), VOID)
+    rows = (len(tiles) + cols - 1) // cols
+    sheet = Image.new("RGB", (cols * THUMB_W, rows * THUMB_H), VOID)
     for i, t in enumerate(tiles):
         sheet.paste(t, ((i % cols) * THUMB_W, (i // cols) * THUMB_H))
     sheet.save(CONTACT_SHEET, optimize=True)

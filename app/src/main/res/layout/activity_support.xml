@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Support. Opened from About. Why and what it unlocks on the left, two codes
+  on the right, side by side because a TV is wide and short.
+
+  Nothing in the body takes focus: a QR code is something a phone reads, not
+  a control a remote presses, so Back is the screen's one stop.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/cb_night"
+    android:paddingStart="@dimen/cb_gutter_side"
+    android:paddingEnd="@dimen/cb_gutter_side"
+    android:paddingTop="@dimen/cb_gutter_top"
+    android:paddingBottom="@dimen/cb_gutter_bottom">
+
+    <!-- HEADER -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="top">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_chip"
+                android:fontFamily="monospace"
+                android:paddingStart="@dimen/cb_space_sm"
+                android:paddingEnd="@dimen/cb_space_sm"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:letterSpacing="0.18"
+                android:text="@string/support_kicker"
+                android:textColor="@color/cb_signal_cyan"
+                android:textSize="@dimen/cb_text_kicker"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_md"
+                android:letterSpacing="-0.025"
+                android:text="@string/support_title"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_title"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/support_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="@dimen/cb_button_min_width"
+            android:minHeight="@dimen/cb_target_min"
+            android:background="@drawable/bg_ghost"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:text="@string/action_back"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_body" />
+    </LinearLayout>
+
+    <!-- BODY -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/cb_space_lg"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <!-- LEFT: what this is and what it is not -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="@dimen/cb_space_lg"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="3dp"
+                android:text="@string/support_body"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_body" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_md"
+                android:lineSpacingExtra="3dp"
+                android:text="@string/support_mode"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:text="@string/support_footer"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_kicker" />
+        </LinearLayout>
+
+        <!-- RIGHT: the two codes. White quiet zones come from the bitmaps
+             (QrBitmap), so the dark card behind them cannot eat one. -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:padding="@dimen/cb_card_padding">
+
+            <ImageView
+                android:id="@+id/support_sponsors_qr"
+                android:layout_width="@dimen/cb_support_qr"
+                android:layout_height="@dimen/cb_support_qr"
+                android:contentDescription="@string/support_sponsors_qr_hint"
+                android:focusable="false"
+                android:scaleType="fitCenter" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_sm"
+                android:text="@string/support_sponsors_label"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_section"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/support_sponsors_url"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="monospace"
+                android:maxLines="1"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_kicker" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/cb_space_md"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:padding="@dimen/cb_card_padding">
+
+            <ImageView
+                android:id="@+id/support_kofi_qr"
+                android:layout_width="@dimen/cb_support_qr"
+                android:layout_height="@dimen/cb_support_qr"
+                android:contentDescription="@string/support_kofi_qr_hint"
+                android:focusable="false"
+                android:scaleType="fitCenter" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_sm"
+                android:text="@string/support_kofi_label"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_section"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/support_kofi_url"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="monospace"
+                android:maxLines="1"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_kicker" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

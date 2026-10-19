@@ -33,9 +33,10 @@ So the shape the stamper depends on is asserted here:
    churn, not correctness;
 5. every released heading is `## [<label>] — <YYYY-MM-DD or Unreleased>`, the
    icon pack's bare-semver labels descend, dates do not run backwards, and the
-   one section ever prepared without a tag (`1.8.7`, cut as versionCode 17 and
-   deliberately never released) stays the only one - a second undated version
-   section means someone stamped a release they did not publish;
+   sections prepared without a tag (`1.8.7`, cut as versionCode 17 and never
+   released; `2.4.3`, merged and left untagged when 2.4.4 replaced it) stay the
+   only ones - another undated version section means someone stamped a release
+   they did not publish;
 6. `changelog_highlights()` on the current `[Unreleased]` returns between one
    and eight leads, none of them a receipt (a lead starting with a backticked
    `tests/` or `tools/` path is a receipt, deliberately kept off the card).
@@ -65,9 +66,11 @@ HOUSE_KINDS = KINDS + ("Receipts",)
 # Verification) and renaming shipped notes to satisfy a linter is churn. From
 # 1.8.20 on, the convention holds and this file enforces it.
 VOCABULARY_FROM = (1, 8, 20)
-# The only version section ever prepared without a release tag. Pinned so a new
-# one is a question, not a habit.
-UNTAGGED_ALLOWED = {"1.8.7"}
+# Version sections prepared without a release tag. Pinned so a new one is a
+# question, not a habit. 1.8.7 was cut as versionCode 17 and never released;
+# 2.4.3 (versionCode 56) was merged, then left untagged by owner decision
+# (2026-10-18) once the #326 update-bar fix was found, and shipped in 2.4.4.
+UNTAGGED_ALLOWED = {"1.8.7", "2.4.3"}
 # The order prepare_release.py emits highlights in, and therefore the order the
 # section is written in.
 CANONICAL = ("Added", "Changed", "Fixed")
@@ -224,8 +227,8 @@ class ChangelogContract(unittest.TestCase):
             set(untagged),
             UNTAGGED_ALLOWED,
             f"version sections stamped without a release date: {untagged}. "
-            f"{sorted(UNTAGGED_ALLOWED)} is history - prepared as versionCode "
-            "17 and deliberately never tagged. A new one means a release was "
+            f"{sorted(UNTAGGED_ALLOWED)} is history - each was prepared and "
+            "deliberately never tagged. A new one means a release was "
             "stamped and not published: tag it, or fold it back into "
             "[Unreleased].",
         )

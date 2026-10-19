@@ -3,20 +3,24 @@ package tv.corebuilds.iconpack
 /**
  * The motion loops that can play as the system live wallpaper.
  *
- * The twelve Deep Space loops are the `series-9-deep-space` walls themselves,
- * moving (rendered from the stills by tools/build_deep_space_loops.py: each
- * scene's own stars twinkle and its glow shimmers). They live in
- * `Motion/live/` in the repo and are fetched on demand from raw GitHub, exactly
- * like a full-size still: nothing is bundled except a still frame for the grid
- * and for the engine's fallback while the MP4 is not on the device yet.
+ * Every loop is the moving form of a committed wall (tools/live_roster.py is
+ * the one list): the Motion, Deep Space and Icon Echo sets are rendered from
+ * their stills by tools/build_still_loops.py (each scene's own points of
+ * light twinkle, its soft light shimmers, the camera drifts); the Cinema set
+ * is drawn with its stills by tools/build_cinema_wallpapers.py (marquee bulbs
+ * chase, neon stutters, dust drifts through the beam). All 1080p 60 fps 20 s,
+ * seamless.
  *
- * The six Cinema loops (series-10-cinema, tools/build_cinema_wallpapers.py)
- * are drawn with their stills rather than from them: marquee bulbs chase,
- * neon tubes stutter, dust drifts through a projector beam, all at 60 fps.
+ * They live in `Motion/live/` in the repo and are fetched on demand from raw
+ * GitHub, exactly like a full-size still: nothing is bundled except a still
+ * frame for the grid and for the engine's fallback while the MP4 is not on
+ * the device yet.
  *
- * One loop per wall and nothing else: the list is exactly the Deep Space and
- * Cinema sets in Motion/live-feed.json (tests/test_live_wallpaper.py holds
- * them equal). Nothing is fetched until it is previewed or saved.
+ * In the browser the loops are a set of their own - the Live chip - rather
+ * than riding under the still series they came from, so a series chip shows
+ * stills only and one press gathers every moving wallpaper. The list is
+ * exactly the feed (tests/test_live_wallpaper.py holds them equal). Nothing
+ * is fetched until it is previewed or saved.
  */
 data class Loop(
     /** Stable preference value: the wall's slug, e.g. "event-horizon". Never renamed once shipped. */
@@ -25,6 +29,12 @@ data class Loop(
     val title: String,
     /** MP4 file name in `Motion/live/`, e.g. "coremotion-live-11-deep-space-event-horizon.mp4". */
     val fileName: String,
+    /**
+     * First 12 hex digits of the MP4's sha256 (tools/live_roster.py). A
+     * re-render keeps [fileName] and [url], so this is what tells a device
+     * its cached copy is an older render. Empty means "unstamped".
+     */
+    val revision: String = "",
     /** Full-resolution MP4 URL (raw GitHub). */
     val url: String,
     /** Thumbnail URL (raw GitHub). Fallback only; the frame is bundled. */
@@ -32,21 +42,41 @@ data class Loop(
     /** Bundled still frame under assets/, shown in the grid and by the engine
      *  before the MP4 has been downloaded. */
     val thumbAsset: String,
-    /** The still series this loop is the moving form of; its grid chip. */
-    val series: String = LiveLoop.SERIES
-)
+    /** The loop's grid chip: always [LiveLoop.SERIES], the Live set. */
+    val series: String = LiveLoop.SERIES,
+    /** The still series this loop is the moving form of (for the preview's caption). */
+    val stillSeries: String
+) {
+    /**
+     * The name the download is cached under: `<revision>-<fileName>`. Keyed on
+     * [fileName] alone, a loop downloaded before 2.4.0 re-rendered it kept
+     * playing the old animation. [fileName] stays the name it is saved to
+     * Movies under.
+     */
+    val storeName: String
+        get() = if (revision.isEmpty()) fileName else "$revision-$fileName"
+
+    /** True when [name] is a cached copy of this loop: any revision, or the pre-2.4.2 bare [fileName]. */
+    fun isCopy(name: String): Boolean {
+        if (name == fileName) return true
+        val stamp = name.removeSuffix("-$fileName")
+        return stamp != name && stamp.isNotEmpty() && stamp.all { it in '0'..'9' || it in 'a'..'f' }
+    }
+}
 
 object LiveLoop {
 
     /**
-     * The series the loops ride with. They are the moving half of Deep Space,
-     * so they appear under that series chip in the browser grid, not in a
-     * series of their own that would split one wallpaper's two forms.
+     * The chip the loops sit under. Not a manifest series: the stills keep
+     * their own chips, and WallpapersActivity gives this key the Live label.
      */
-    const val SERIES = "series-9-deep-space"
+    const val SERIES = "series-live"
 
-    /** The Cinema set's series (walls 97-102, loops 23-28). */
+    /** Still series the sets are the moving forms of (preview caption). */
+    const val MOTION_SERIES = "series-2-motion"
+    const val DEEP_SPACE_SERIES = "series-9-deep-space"
     const val CINEMA_SERIES = "series-10-cinema"
+    const val ICON_ECHO_SERIES = "series-11-icon-echo"
 
     /** Asset directory holding the bundled still frames. */
     const val THUMB_DIR = "live_thumbs"
@@ -54,9 +84,13 @@ object LiveLoop {
     private const val RAW_BASE =
         "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/live/"
 
+    // LOOPS-BEGIN (generated by tools/build_live_loop_kt.py)
     /**
-     * The twelve Deep Space loops (walls 85-96) then the six Cinema loops
-     * (97-102), in wall order.
+     * The twelve Motion loops, the twelve Deep Space loops, the
+     * twelve Cinema loops and the twelve Icon Echo loops, each in wall
+     * order - forty-eight, the order the Live chip shows. Generated from
+     * tools/live_roster.py by tools/build_live_loop_kt.py; edit the roster,
+     * not this list.
      *
      * The first entry is the default: [Prefs.liveLoopId] falls back to it, and
      * so does the engine when it reads a value it does not recognise, so a
@@ -65,156 +99,487 @@ object LiveLoop {
      */
     val LOOPS: List<Loop> = listOf(
         Loop(
+            id = "orbitals",
+            title = "Orbitals",
+            fileName = "coremotion-live-32-motion-orbitals.mp4",
+            revision = "0085bf160dbd",
+            url = RAW_BASE + "coremotion-live-32-motion-orbitals.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-32-motion-orbitals.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-32-motion-orbitals.jpg",
+            stillSeries = MOTION_SERIES
+        ),
+        Loop(
+            id = "warp",
+            title = "Warp",
+            fileName = "coremotion-live-33-motion-warp.mp4",
+            revision = "d9c0e805a610",
+            url = RAW_BASE + "coremotion-live-33-motion-warp.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-33-motion-warp.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-33-motion-warp.jpg",
+            stillSeries = MOTION_SERIES
+        ),
+        Loop(
+            id = "fogbanks",
+            title = "Fogbanks",
+            fileName = "coremotion-live-34-motion-fogbanks.mp4",
+            revision = "af2d3bb45660",
+            url = RAW_BASE + "coremotion-live-34-motion-fogbanks.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-34-motion-fogbanks.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-34-motion-fogbanks.jpg",
+            stillSeries = MOTION_SERIES
+        ),
+        Loop(
+            id = "spiral",
+            title = "Spiral",
+            fileName = "coremotion-live-35-motion-spiral.mp4",
+            revision = "78f6f8a643fb",
+            url = RAW_BASE + "coremotion-live-35-motion-spiral.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-35-motion-spiral.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-35-motion-spiral.jpg",
+            stillSeries = MOTION_SERIES
+        ),
+        Loop(
+            id = "slipstream",
+            title = "Slipstream",
+            fileName = "coremotion-live-36-motion-slipstream.mp4",
+            revision = "3eb7f0480c9a",
+            url = RAW_BASE + "coremotion-live-36-motion-slipstream.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-36-motion-slipstream.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-36-motion-slipstream.jpg",
+            stillSeries = MOTION_SERIES
+        ),
+        Loop(
+            id = "embers",
+            title = "Embers",
+            fileName = "coremotion-live-37-motion-embers.mp4",
+            revision = "e7cedc81918b",
+            url = RAW_BASE + "coremotion-live-37-motion-embers.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-37-motion-embers.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-37-motion-embers.jpg",
+            stillSeries = MOTION_SERIES
+        ),
+        Loop(
+            id = "tracer",
+            title = "Tracer",
+            fileName = "coremotion-live-38-motion-tracer.mp4",
+            revision = "9e3f8b873eda",
+            url = RAW_BASE + "coremotion-live-38-motion-tracer.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-38-motion-tracer.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-38-motion-tracer.jpg",
+            stillSeries = MOTION_SERIES
+        ),
+        Loop(
+            id = "pendulum",
+            title = "Pendulum",
+            fileName = "coremotion-live-39-motion-pendulum.mp4",
+            revision = "6f06c1837767",
+            url = RAW_BASE + "coremotion-live-39-motion-pendulum.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-39-motion-pendulum.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-39-motion-pendulum.jpg",
+            stillSeries = MOTION_SERIES
+        ),
+        Loop(
+            id = "vortex",
+            title = "Vortex",
+            fileName = "coremotion-live-40-motion-vortex.mp4",
+            revision = "90a57a936b5e",
+            url = RAW_BASE + "coremotion-live-40-motion-vortex.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-40-motion-vortex.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-40-motion-vortex.jpg",
+            stillSeries = MOTION_SERIES
+        ),
+        Loop(
+            id = "shockwave",
+            title = "Shockwave",
+            fileName = "coremotion-live-41-motion-shockwave.mp4",
+            revision = "981decab0554",
+            url = RAW_BASE + "coremotion-live-41-motion-shockwave.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-41-motion-shockwave.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-41-motion-shockwave.jpg",
+            stillSeries = MOTION_SERIES
+        ),
+        Loop(
+            id = "cascade",
+            title = "Cascade",
+            fileName = "coremotion-live-42-motion-cascade.mp4",
+            revision = "b0dcdec07776",
+            url = RAW_BASE + "coremotion-live-42-motion-cascade.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-42-motion-cascade.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-42-motion-cascade.jpg",
+            stillSeries = MOTION_SERIES
+        ),
+        Loop(
+            id = "drift-field",
+            title = "Drift Field",
+            fileName = "coremotion-live-43-motion-drift-field.mp4",
+            revision = "67c6d562b4ae",
+            url = RAW_BASE + "coremotion-live-43-motion-drift-field.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-43-motion-drift-field.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-43-motion-drift-field.jpg",
+            stillSeries = MOTION_SERIES
+        ),
+        Loop(
             id = "event-horizon",
             title = "Event Horizon",
             fileName = "coremotion-live-11-deep-space-event-horizon.mp4",
+            revision = "2588b892da92",
             url = RAW_BASE + "coremotion-live-11-deep-space-event-horizon.mp4",
             thumbUrl = RAW_BASE + "thumbs/coremotion-live-11-deep-space-event-horizon.jpg",
-            thumbAsset = "$THUMB_DIR/coremotion-live-11-deep-space-event-horizon.jpg"
+            thumbAsset = "$THUMB_DIR/coremotion-live-11-deep-space-event-horizon.jpg",
+            stillSeries = DEEP_SPACE_SERIES
         ),
         Loop(
             id = "nebula-drift",
             title = "Nebula Drift",
             fileName = "coremotion-live-12-deep-space-nebula-drift.mp4",
+            revision = "f3964f0f2dd9",
             url = RAW_BASE + "coremotion-live-12-deep-space-nebula-drift.mp4",
             thumbUrl = RAW_BASE + "thumbs/coremotion-live-12-deep-space-nebula-drift.jpg",
-            thumbAsset = "$THUMB_DIR/coremotion-live-12-deep-space-nebula-drift.jpg"
+            thumbAsset = "$THUMB_DIR/coremotion-live-12-deep-space-nebula-drift.jpg",
+            stillSeries = DEEP_SPACE_SERIES
         ),
         Loop(
             id = "starfield",
             title = "Starfield",
             fileName = "coremotion-live-13-deep-space-starfield.mp4",
+            revision = "f12498762114",
             url = RAW_BASE + "coremotion-live-13-deep-space-starfield.mp4",
             thumbUrl = RAW_BASE + "thumbs/coremotion-live-13-deep-space-starfield.jpg",
-            thumbAsset = "$THUMB_DIR/coremotion-live-13-deep-space-starfield.jpg"
+            thumbAsset = "$THUMB_DIR/coremotion-live-13-deep-space-starfield.jpg",
+            stillSeries = DEEP_SPACE_SERIES
         ),
         Loop(
             id = "ringed-planet",
             title = "Ringed Planet",
             fileName = "coremotion-live-14-deep-space-ringed-planet.mp4",
+            revision = "0d24027783c8",
             url = RAW_BASE + "coremotion-live-14-deep-space-ringed-planet.mp4",
             thumbUrl = RAW_BASE + "thumbs/coremotion-live-14-deep-space-ringed-planet.jpg",
-            thumbAsset = "$THUMB_DIR/coremotion-live-14-deep-space-ringed-planet.jpg"
+            thumbAsset = "$THUMB_DIR/coremotion-live-14-deep-space-ringed-planet.jpg",
+            stillSeries = DEEP_SPACE_SERIES
         ),
         Loop(
             id = "galaxy-spiral",
             title = "Galaxy Spiral",
             fileName = "coremotion-live-15-deep-space-galaxy-spiral.mp4",
+            revision = "cf745d2ac001",
             url = RAW_BASE + "coremotion-live-15-deep-space-galaxy-spiral.mp4",
             thumbUrl = RAW_BASE + "thumbs/coremotion-live-15-deep-space-galaxy-spiral.jpg",
-            thumbAsset = "$THUMB_DIR/coremotion-live-15-deep-space-galaxy-spiral.jpg"
+            thumbAsset = "$THUMB_DIR/coremotion-live-15-deep-space-galaxy-spiral.jpg",
+            stillSeries = DEEP_SPACE_SERIES
         ),
         Loop(
             id = "aurora-orbit",
             title = "Aurora Orbit",
             fileName = "coremotion-live-16-deep-space-aurora-orbit.mp4",
+            revision = "5460eddc0860",
             url = RAW_BASE + "coremotion-live-16-deep-space-aurora-orbit.mp4",
             thumbUrl = RAW_BASE + "thumbs/coremotion-live-16-deep-space-aurora-orbit.jpg",
-            thumbAsset = "$THUMB_DIR/coremotion-live-16-deep-space-aurora-orbit.jpg"
+            thumbAsset = "$THUMB_DIR/coremotion-live-16-deep-space-aurora-orbit.jpg",
+            stillSeries = DEEP_SPACE_SERIES
         ),
         Loop(
             id = "comet-lane",
             title = "Comet Lane",
             fileName = "coremotion-live-17-deep-space-comet-lane.mp4",
+            revision = "7d2e209d7431",
             url = RAW_BASE + "coremotion-live-17-deep-space-comet-lane.mp4",
             thumbUrl = RAW_BASE + "thumbs/coremotion-live-17-deep-space-comet-lane.jpg",
-            thumbAsset = "$THUMB_DIR/coremotion-live-17-deep-space-comet-lane.jpg"
+            thumbAsset = "$THUMB_DIR/coremotion-live-17-deep-space-comet-lane.jpg",
+            stillSeries = DEEP_SPACE_SERIES
         ),
         Loop(
             id = "deep-field",
             title = "Deep Field",
             fileName = "coremotion-live-18-deep-space-deep-field.mp4",
+            revision = "8fbf3fee1a7d",
             url = RAW_BASE + "coremotion-live-18-deep-space-deep-field.mp4",
             thumbUrl = RAW_BASE + "thumbs/coremotion-live-18-deep-space-deep-field.jpg",
-            thumbAsset = "$THUMB_DIR/coremotion-live-18-deep-space-deep-field.jpg"
+            thumbAsset = "$THUMB_DIR/coremotion-live-18-deep-space-deep-field.jpg",
+            stillSeries = DEEP_SPACE_SERIES
         ),
         Loop(
             id = "ember-nova",
             title = "Ember Nova",
             fileName = "coremotion-live-19-deep-space-ember-nova.mp4",
+            revision = "837085f2cd69",
             url = RAW_BASE + "coremotion-live-19-deep-space-ember-nova.mp4",
             thumbUrl = RAW_BASE + "thumbs/coremotion-live-19-deep-space-ember-nova.jpg",
-            thumbAsset = "$THUMB_DIR/coremotion-live-19-deep-space-ember-nova.jpg"
+            thumbAsset = "$THUMB_DIR/coremotion-live-19-deep-space-ember-nova.jpg",
+            stillSeries = DEEP_SPACE_SERIES
         ),
         Loop(
             id = "hex-station",
             title = "Hex Station",
             fileName = "coremotion-live-20-deep-space-hex-station.mp4",
+            revision = "f827dae80ca0",
             url = RAW_BASE + "coremotion-live-20-deep-space-hex-station.mp4",
             thumbUrl = RAW_BASE + "thumbs/coremotion-live-20-deep-space-hex-station.jpg",
-            thumbAsset = "$THUMB_DIR/coremotion-live-20-deep-space-hex-station.jpg"
+            thumbAsset = "$THUMB_DIR/coremotion-live-20-deep-space-hex-station.jpg",
+            stillSeries = DEEP_SPACE_SERIES
         ),
         Loop(
             id = "cyan-supernova",
             title = "Cyan Supernova",
             fileName = "coremotion-live-21-deep-space-cyan-supernova.mp4",
+            revision = "f37a2d67e864",
             url = RAW_BASE + "coremotion-live-21-deep-space-cyan-supernova.mp4",
             thumbUrl = RAW_BASE + "thumbs/coremotion-live-21-deep-space-cyan-supernova.jpg",
-            thumbAsset = "$THUMB_DIR/coremotion-live-21-deep-space-cyan-supernova.jpg"
+            thumbAsset = "$THUMB_DIR/coremotion-live-21-deep-space-cyan-supernova.jpg",
+            stillSeries = DEEP_SPACE_SERIES
         ),
         Loop(
             id = "dark-side-moon",
             title = "Dark Side Moon",
             fileName = "coremotion-live-22-deep-space-dark-side-moon.mp4",
+            revision = "07ac3c618cc5",
             url = RAW_BASE + "coremotion-live-22-deep-space-dark-side-moon.mp4",
             thumbUrl = RAW_BASE + "thumbs/coremotion-live-22-deep-space-dark-side-moon.jpg",
-            thumbAsset = "$THUMB_DIR/coremotion-live-22-deep-space-dark-side-moon.jpg"
+            thumbAsset = "$THUMB_DIR/coremotion-live-22-deep-space-dark-side-moon.jpg",
+            stillSeries = DEEP_SPACE_SERIES
         ),
         Loop(
             id = "marquee-lights",
             title = "Marquee Lights",
             fileName = "coremotion-live-23-cinema-marquee-lights.mp4",
+            revision = "d668862d0de5",
             url = RAW_BASE + "coremotion-live-23-cinema-marquee-lights.mp4",
             thumbUrl = RAW_BASE + "thumbs/coremotion-live-23-cinema-marquee-lights.jpg",
             thumbAsset = "$THUMB_DIR/coremotion-live-23-cinema-marquee-lights.jpg",
-            series = CINEMA_SERIES
+            stillSeries = CINEMA_SERIES
         ),
         Loop(
             id = "velvet-curtain",
             title = "Velvet Curtain",
             fileName = "coremotion-live-24-cinema-velvet-curtain.mp4",
+            revision = "bbebd4b642d2",
             url = RAW_BASE + "coremotion-live-24-cinema-velvet-curtain.mp4",
             thumbUrl = RAW_BASE + "thumbs/coremotion-live-24-cinema-velvet-curtain.jpg",
             thumbAsset = "$THUMB_DIR/coremotion-live-24-cinema-velvet-curtain.jpg",
-            series = CINEMA_SERIES
+            stillSeries = CINEMA_SERIES
         ),
         Loop(
             id = "projector-beam",
             title = "Projector Beam",
             fileName = "coremotion-live-25-cinema-projector-beam.mp4",
+            revision = "5f47c0f67271",
             url = RAW_BASE + "coremotion-live-25-cinema-projector-beam.mp4",
             thumbUrl = RAW_BASE + "thumbs/coremotion-live-25-cinema-projector-beam.jpg",
             thumbAsset = "$THUMB_DIR/coremotion-live-25-cinema-projector-beam.jpg",
-            series = CINEMA_SERIES
+            stillSeries = CINEMA_SERIES
         ),
         Loop(
             id = "neon-lounge",
             title = "Neon Lounge",
             fileName = "coremotion-live-26-cinema-neon-lounge.mp4",
+            revision = "b98ac62a2573",
             url = RAW_BASE + "coremotion-live-26-cinema-neon-lounge.mp4",
             thumbUrl = RAW_BASE + "thumbs/coremotion-live-26-cinema-neon-lounge.jpg",
             thumbAsset = "$THUMB_DIR/coremotion-live-26-cinema-neon-lounge.jpg",
-            series = CINEMA_SERIES
+            stillSeries = CINEMA_SERIES
         ),
         Loop(
             id = "late-rentals",
             title = "Late Rentals",
             fileName = "coremotion-live-27-cinema-late-rentals.mp4",
+            revision = "a1e4909564d1",
             url = RAW_BASE + "coremotion-live-27-cinema-late-rentals.mp4",
             thumbUrl = RAW_BASE + "thumbs/coremotion-live-27-cinema-late-rentals.jpg",
             thumbAsset = "$THUMB_DIR/coremotion-live-27-cinema-late-rentals.jpg",
-            series = CINEMA_SERIES
+            stillSeries = CINEMA_SERIES
         ),
         Loop(
             id = "box-office",
             title = "Box Office",
             fileName = "coremotion-live-28-cinema-box-office.mp4",
+            revision = "a4ca06097e24",
             url = RAW_BASE + "coremotion-live-28-cinema-box-office.mp4",
             thumbUrl = RAW_BASE + "thumbs/coremotion-live-28-cinema-box-office.jpg",
             thumbAsset = "$THUMB_DIR/coremotion-live-28-cinema-box-office.jpg",
-            series = CINEMA_SERIES
+            stillSeries = CINEMA_SERIES
         ),
+        Loop(
+            id = "drive-in",
+            title = "Drive-In",
+            fileName = "coremotion-live-53-cinema-drive-in.mp4",
+            revision = "86d0e96da948",
+            url = RAW_BASE + "coremotion-live-53-cinema-drive-in.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-53-cinema-drive-in.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-53-cinema-drive-in.jpg",
+            stillSeries = CINEMA_SERIES
+        ),
+        Loop(
+            id = "aisle-lights",
+            title = "Aisle Lights",
+            fileName = "coremotion-live-54-cinema-aisle-lights.mp4",
+            revision = "d27280ac84aa",
+            url = RAW_BASE + "coremotion-live-54-cinema-aisle-lights.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-54-cinema-aisle-lights.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-54-cinema-aisle-lights.jpg",
+            stillSeries = CINEMA_SERIES
+        ),
+        Loop(
+            id = "film-reel",
+            title = "Film Reel",
+            fileName = "coremotion-live-55-cinema-film-reel.mp4",
+            revision = "68ca51a1317f",
+            url = RAW_BASE + "coremotion-live-55-cinema-film-reel.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-55-cinema-film-reel.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-55-cinema-film-reel.jpg",
+            stillSeries = CINEMA_SERIES
+        ),
+        Loop(
+            id = "popcorn-stand",
+            title = "Popcorn Stand",
+            fileName = "coremotion-live-56-cinema-popcorn-stand.mp4",
+            revision = "a3d0e7efe215",
+            url = RAW_BASE + "coremotion-live-56-cinema-popcorn-stand.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-56-cinema-popcorn-stand.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-56-cinema-popcorn-stand.jpg",
+            stillSeries = CINEMA_SERIES
+        ),
+        Loop(
+            id = "exit-sign",
+            title = "Exit Sign",
+            fileName = "coremotion-live-57-cinema-exit-sign.mp4",
+            revision = "13ae2bd300a4",
+            url = RAW_BASE + "coremotion-live-57-cinema-exit-sign.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-57-cinema-exit-sign.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-57-cinema-exit-sign.jpg",
+            stillSeries = CINEMA_SERIES
+        ),
+        Loop(
+            id = "intermission",
+            title = "Intermission",
+            fileName = "coremotion-live-58-cinema-intermission.mp4",
+            revision = "57b2f3f4eb60",
+            url = RAW_BASE + "coremotion-live-58-cinema-intermission.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-58-cinema-intermission.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-58-cinema-intermission.jpg",
+            stillSeries = CINEMA_SERIES
+        ),
+        Loop(
+            id = "signal-sweep",
+            title = "Signal Red",
+            fileName = "coremotion-live-29-signal-sweep.mp4",
+            revision = "5e02e5865592",
+            url = RAW_BASE + "coremotion-live-29-signal-sweep.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-29-signal-sweep.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-29-signal-sweep.jpg",
+            stillSeries = ICON_ECHO_SERIES
+        ),
+        Loop(
+            id = "green-current",
+            title = "Green Current",
+            fileName = "coremotion-live-30-green-current.mp4",
+            revision = "90f3ac1adbb0",
+            url = RAW_BASE + "coremotion-live-30-green-current.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-30-green-current.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-30-green-current.jpg",
+            stillSeries = ICON_ECHO_SERIES
+        ),
+        Loop(
+            id = "molten-orbit",
+            title = "Molten Orbit",
+            fileName = "coremotion-live-31-molten-orbit.mp4",
+            revision = "3d0a0cf4abed",
+            url = RAW_BASE + "coremotion-live-31-molten-orbit.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-31-molten-orbit.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-31-molten-orbit.jpg",
+            stillSeries = ICON_ECHO_SERIES
+        ),
+        Loop(
+            id = "thermal-bloom",
+            title = "Thermal Bloom",
+            fileName = "coremotion-live-44-icon-echo-thermal-bloom.mp4",
+            revision = "61b0dbcffc14",
+            url = RAW_BASE + "coremotion-live-44-icon-echo-thermal-bloom.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-44-icon-echo-thermal-bloom.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-44-icon-echo-thermal-bloom.jpg",
+            stillSeries = ICON_ECHO_SERIES
+        ),
+        Loop(
+            id = "frost-line",
+            title = "Frost Line",
+            fileName = "coremotion-live-45-icon-echo-frost-line.mp4",
+            revision = "0ab1da7d9124",
+            url = RAW_BASE + "coremotion-live-45-icon-echo-frost-line.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-45-icon-echo-frost-line.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-45-icon-echo-frost-line.jpg",
+            stillSeries = ICON_ECHO_SERIES
+        ),
+        Loop(
+            id = "signal-azure",
+            title = "Signal Azure",
+            fileName = "coremotion-live-46-icon-echo-signal-azure.mp4",
+            revision = "2f2d2fc249e1",
+            url = RAW_BASE + "coremotion-live-46-icon-echo-signal-azure.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-46-icon-echo-signal-azure.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-46-icon-echo-signal-azure.jpg",
+            stillSeries = ICON_ECHO_SERIES
+        ),
+        Loop(
+            id = "violet-stream",
+            title = "Violet Stream",
+            fileName = "coremotion-live-47-icon-echo-violet-stream.mp4",
+            revision = "dd1770355ef9",
+            url = RAW_BASE + "coremotion-live-47-icon-echo-violet-stream.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-47-icon-echo-violet-stream.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-47-icon-echo-violet-stream.jpg",
+            stillSeries = ICON_ECHO_SERIES
+        ),
+        Loop(
+            id = "ember-reel",
+            title = "Ember Reel",
+            fileName = "coremotion-live-48-icon-echo-ember-reel.mp4",
+            revision = "2ecd37f9e548",
+            url = RAW_BASE + "coremotion-live-48-icon-echo-ember-reel.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-48-icon-echo-ember-reel.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-48-icon-echo-ember-reel.jpg",
+            stillSeries = ICON_ECHO_SERIES
+        ),
+        Loop(
+            id = "teal-tide",
+            title = "Teal Tide",
+            fileName = "coremotion-live-49-icon-echo-teal-tide.mp4",
+            revision = "f3e3eb6e2bd0",
+            url = RAW_BASE + "coremotion-live-49-icon-echo-teal-tide.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-49-icon-echo-teal-tide.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-49-icon-echo-teal-tide.jpg",
+            stillSeries = ICON_ECHO_SERIES
+        ),
+        Loop(
+            id = "solar-band",
+            title = "Solar Band",
+            fileName = "coremotion-live-50-icon-echo-solar-band.mp4",
+            revision = "3bf6a1b826c1",
+            url = RAW_BASE + "coremotion-live-50-icon-echo-solar-band.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-50-icon-echo-solar-band.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-50-icon-echo-solar-band.jpg",
+            stillSeries = ICON_ECHO_SERIES
+        ),
+        Loop(
+            id = "magenta-veil",
+            title = "Magenta Veil",
+            fileName = "coremotion-live-51-icon-echo-magenta-veil.mp4",
+            revision = "af476e4ef834",
+            url = RAW_BASE + "coremotion-live-51-icon-echo-magenta-veil.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-51-icon-echo-magenta-veil.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-51-icon-echo-magenta-veil.jpg",
+            stillSeries = ICON_ECHO_SERIES
+        ),
+        Loop(
+            id = "indigo-drift",
+            title = "Indigo Drift",
+            fileName = "coremotion-live-52-icon-echo-indigo-drift.mp4",
+            revision = "d92df96bc21d",
+            url = RAW_BASE + "coremotion-live-52-icon-echo-indigo-drift.mp4",
+            thumbUrl = RAW_BASE + "thumbs/coremotion-live-52-icon-echo-indigo-drift.jpg",
+            thumbAsset = "$THUMB_DIR/coremotion-live-52-icon-echo-indigo-drift.jpg",
+            stillSeries = ICON_ECHO_SERIES
+        )
     )
+    // LOOPS-END
 
     /**
      * The loop [id] names, or the first loop for anything unrecognised.

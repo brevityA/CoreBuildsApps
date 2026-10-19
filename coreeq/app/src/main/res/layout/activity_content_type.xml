@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fits 960 x 540dp without scrolling at the default text size. The
+     ScrollView is for a TV whose system text size is turned up: the chips
+     and Done then scroll into view as the D-pad reaches them, instead of
+     sitting below the screen with no way to reach them. -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cb_night"
+    android:fillViewport="true"
+    android:requiresFadingEdge="vertical"
+    android:fadingEdgeLength="@dimen/cb_space_xl"
+    android:scrollbars="none">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/cb_gutter_side"
+    android:paddingRight="@dimen/cb_gutter_side"
+    android:paddingTop="@dimen/cb_gutter_top"
+    android:paddingBottom="@dimen/cb_gutter_bottom">
+
+    <!-- Header -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/content_type_kicker"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_kicker"
+        android:fontFamily="monospace"
+        android:textAllCaps="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/content_type_heading"
+        android:textColor="@color/cb_ink"
+        android:textSize="@dimen/cb_text_title"
+        android:textStyle="bold"
+        android:layout_marginTop="4dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/content_type_subtitle"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_data"
+        android:layout_marginTop="2dp" />
+
+    <!-- Current selection -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_card"
+        android:padding="@dimen/cb_card_padding"
+        android:layout_marginTop="@dimen/cb_space_md">
+
+        <TextView
+            android:id="@+id/text_content_type_current"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/cb_signal_cyan"
+            android:textSize="@dimen/cb_text_section"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/text_content_type_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/cb_slate"
+            android:textSize="@dimen/cb_text_data"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/text_auto_detect_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/cb_slate"
+            android:textSize="@dimen/cb_text_kicker"
+            android:fontFamily="monospace"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+
+    <!-- Content types: two rows of five, the selected one filled (activated).
+         Labels come from ContentType.title, so the screen and the enum cannot drift. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:layout_marginTop="@dimen/cb_space_md">
+
+        <Button
+            android:id="@+id/btn_content_movie"
+            style="@style/CoreEQ.Chip"
+            tools:text="Movies" />
+
+        <Button
+            android:id="@+id/btn_content_anime"
+            style="@style/CoreEQ.Chip"
+            android:layout_marginStart="@dimen/cb_space_xs"
+            tools:text="Anime" />
+
+        <Button
+            android:id="@+id/btn_content_tv"
+            style="@style/CoreEQ.Chip"
+            android:layout_marginStart="@dimen/cb_space_xs"
+            tools:text="TV Shows" />
+
+        <Button
+            android:id="@+id/btn_content_sitcom"
+            style="@style/CoreEQ.Chip"
+            android:layout_marginStart="@dimen/cb_space_xs"
+            tools:text="Sitcoms" />
+
+        <Button
+            android:id="@+id/btn_content_documentary"
+            style="@style/CoreEQ.Chip"
+            android:layout_marginStart="@dimen/cb_space_xs"
+            tools:text="Documentaries" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:layout_marginTop="@dimen/cb_space_xs">
+
+        <Button
+            android:id="@+id/btn_content_news"
+            style="@style/CoreEQ.Chip"
+            tools:text="News / Live" />
+
+        <Button
+            android:id="@+id/btn_content_podcast"
+            style="@style/CoreEQ.Chip"
+            android:layout_marginStart="@dimen/cb_space_xs"
+            tools:text="Podcasts" />
+
+        <Button
+            android:id="@+id/btn_content_gaming"
+            style="@style/CoreEQ.Chip"
+            android:layout_marginStart="@dimen/cb_space_xs"
+            tools:text="Gaming" />
+
+        <Button
+            android:id="@+id/btn_content_music"
+            style="@style/CoreEQ.Chip"
+            android:layout_marginStart="@dimen/cb_space_xs"
+            tools:text="Music" />
+
+        <Button
+            android:id="@+id/btn_content_general"
+            style="@style/CoreEQ.Chip"
+            android:layout_marginStart="@dimen/cb_space_xs"
+            tools:text="Everyday" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:layout_marginTop="@dimen/cb_space_md">
+
+        <Button
+            android:id="@+id/btn_content_auto"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/cb_target_min"
+            android:layout_weight="1"
+            android:background="@drawable/bg_toggle"
+            android:drawableEnd="@drawable/ic_switch"
+            android:drawablePadding="@dimen/cb_space_sm"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_data"
+            android:gravity="start|center_vertical"
+            android:paddingStart="@dimen/cb_card_padding"
+            android:paddingEnd="@dimen/cb_card_padding"
+            android:focusable="true"
+            tools:text="Auto-detect: On" />
+
+        <Button
+            android:id="@+id/btn_content_done"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/cb_target_min"
+            android:minWidth="@dimen/cb_button_min_width"
+            android:background="@drawable/bg_cta"
+            android:text="@string/mode_done"
+            android:textColor="@color/cta_text"
+            android:textSize="@dimen/cb_text_label"
+            android:textStyle="bold"
+            android:focusable="true"
+            android:layout_marginStart="@dimen/cb_space_sm" />
+    </LinearLayout>
+</LinearLayout>
+</ScrollView>

@@ -552,6 +552,55 @@ def test_the_focus_chain_is_resynced_where_visibility_changes():
             f"runs before the first layout) without calling syncFocusChain(); "
             f"the edges around it then name whatever was visible last time"
         )
+
+
+def test_update_buttons_keep_the_remote_while_busy():
+    """Shield report, updating 2.4.1 to 2.4.2: Download could only be pressed
+    from a phone touchpad. startDownload() set `isEnabled = false` on the
+    button holding focus. A disabled view gives up focus, and outside touch
+    mode Android hands it to the next focusable view, Later. Touch mode never
+    reassigns focus, which is why the phone app worked. About's row used a busy
+    flag and never had the problem; both now must."""
+    body = function_body(source("MainActivity.kt"), "startDownload")
+    code = code_of(body)
+    assert not re.search(r"\.isEnabled\s*=\s*false", code), (
+        "MainActivity.startDownload disables a view again. If it is the focused "
+        "Download button, the D-pad cursor jumps to Later (one press from "
+        "dismissing the update) - use the updateDownloading flag instead"
+    )
+    first = code_lines(body)[0].strip()
+    assert first == "if (updateDownloading) return", (
+        f"startDownload must open by ignoring a press while a download runs; "
+        f"its first statement is {first!r}"
+    )
+    set_at = code.find("updateDownloading = true")
+    call_at = code.find("UpdateInstaller.download(")
+    assert 0 <= set_at < call_at, (
+        "startDownload must set updateDownloading before it starts the "
+        "download, or a second press in between starts a second one"
+    )
+    # One reset in each terminal branch, not two anywhere: two in Ready would
+    # pass a count and still leave the button dead after a failed download.
+    # code_lines drops brace-only lines, so a branch runs from its own header
+    # to the next one.
+    heads = list(re.finditer(r"is UpdateInstaller\.Event\.(\w+) ->", code))
+    branches = {m.group(1): code[m.end():(heads[i + 1].start()
+                                         if i + 1 < len(heads) else len(code))]
+                for i, m in enumerate(heads)}
+    for event in ("Ready", "Failed"):
+        assert "updateDownloading = false" in branches.get(event, ""), (
+            f"startDownload must clear updateDownloading on {event}, or the "
+            f"button stays dead after the first attempt"
+        )
+    about = source("AboutActivity.kt")
+    for name in ("onUpdatePressed", "startDownload"):
+        assert not re.search(r"\.isEnabled\s*=\s*false",
+                             code_of(function_body(about, name))), (
+            f"AboutActivity.{name} disables a view; the focused update row "
+            f"would hand the cursor away the same way"
+        )
+
+
 def test_preview_reveals_without_grabbing_focus():
     paths = [
         KOTLIN / "WallpaperPreviewActivity.kt",

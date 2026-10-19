@@ -63,13 +63,13 @@ jobs:
           PLAY_KEYSTORE_PASSWORD: ${{ secrets.PLAY_KEYSTORE_PASSWORD }}
           PLAY_KEY_ALIAS: ${{ secrets.PLAY_KEY_ALIAS }}
           PLAY_KEY_PASSWORD: ${{ secrets.PLAY_KEY_PASSWORD }}
-        run: ./gradlew :app:lintPlay :glyphs:lintPlay :app:bundlePlay :glyphs:bundlePlay --no-daemon
+        run: ./gradlew :app:lintBannersPlay :glyphs:lintPlay :app:bundleBannersPlay :glyphs:bundlePlay --no-daemon
 
       - name: Verify the bundles are signed
         # Play Console rejects an unsigned upload. With the upload key set,
         # an unsigned bundle is a broken key; without it, say so plainly.
         run: |
-          for AAB in app/build/outputs/bundle/play/*.aab glyphs/build/outputs/bundle/play/*.aab; do
+          for AAB in app/build/outputs/bundle/bannersPlay/*.aab glyphs/build/outputs/bundle/play/*.aab; do
             if jarsigner -verify "$AAB" | grep -q "jar verified"; then
               echo "$AAB signed."
             elif [ -n "$PLAY_KEYSTORE_BASE64" ]; then
@@ -85,6 +85,6 @@ jobs:
         with:
           name: core-builds-play-bundles
           path: |
-            app/build/outputs/bundle/play/*.aab
+            app/build/outputs/bundle/bannersPlay/*.aab
             glyphs/build/outputs/bundle/play/*.aab
           if-no-files-found: error

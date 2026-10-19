@@ -3,10 +3,102 @@ package tv.corebuilds.eq.dsp
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
+import kotlin.math.floor
 import kotlin.math.sin
 
-/** Integer-factor decimation for captures that arrive faster than the analysis rate. */
+/**
+ * Integer-factor decimation for captures that arrive faster than the analysis
+ * rate, and the fractional [stretch] that takes clock drift back out.
+ */
 object Resample {
+
+    /** Half-width, in input samples, of the [stretch] kernel. */
+    const val STRETCH_HALF = 24
+
+    /**
+     * Convert a capture to [outputRate] without lying about its time base.
+     * Integer-ratio downsampling reuses the established low-pass decimator;
+     * the 44.1 kHz Android fallback needs a fractional, anti-aliased sinc
+     * resampler rather than integer division by two.
+     */
+    fun toRate(x: DoubleArray, inputRate: Int, outputRate: Int): DoubleArray {
+        require(inputRate > 0 && outputRate > 0) { "sample rates must be positive" }
+        if (inputRate == outputRate) return x.copyOf()
+        require(inputRate > outputRate) { "toRate currently supports downsampling only" }
+        val factor = inputRate / outputRate
+        if (inputRate % outputRate == 0 && factor >= 2) return decimate(x, factor)
+        return resampleWindowedSinc(x, inputRate, outputRate)
+    }
+
+    /**
+     * Rational-rate low-pass resampler for non-integer downsampling ratios.
+     * Its Blackman-windowed sinc has a 0.45-output-Nyquist cutoff, matching
+     * [decimate]'s guard band. The filter is centered at each output instant,
+     * so capture timestamps stay on the original time origin.
+     */
+    fun resampleWindowedSinc(
+        x: DoubleArray,
+        inputRate: Int,
+        outputRate: Int,
+        halfWidth: Int = 48
+    ): DoubleArray {
+        require(inputRate > outputRate && outputRate > 0) {
+            "resampling requires positive outputRate below inputRate"
+        }
+        require(halfWidth >= 8) { "halfWidth must be at least 8" }
+        if (x.isEmpty()) return DoubleArray(0)
+
+        val outputSize = (x.size.toLong() * outputRate / inputRate).toInt()
+        if (outputSize == 0) return DoubleArray(0)
+        val cutoff = 0.45 * outputRate / inputRate
+        val out = DoubleArray(outputSize)
+        val taps = 2 * halfWidth
+        val phaseCount = outputRate / greatestCommonDivisor(inputRate, outputRate)
+        val phaseWeights = Array(phaseCount) { phase ->
+            val remainder = phase.toLong() * inputRate % outputRate
+            val fraction = remainder.toDouble() / outputRate
+            DoubleArray(taps) { tap ->
+                val distance = tap - halfWidth + 1 - fraction
+                val windowPosition = distance / halfWidth
+                val window = 0.42 + 0.5 * cos(PI * windowPosition) + 0.08 * cos(2.0 * PI * windowPosition)
+                val argument = 2.0 * PI * cutoff * distance
+                val sinc = if (abs(argument) < 1e-12) 1.0 else sin(argument) / argument
+                (2.0 * cutoff) * sinc * window
+            }
+        }
+        val phaseSums = DoubleArray(phaseCount) { phaseWeights[it].sum() }
+
+        for (o in out.indices) {
+            val numerator = o.toLong() * inputRate
+            val centre = (numerator / outputRate).toInt()
+            val first = maxOf(0, centre - halfWidth + 1)
+            val last = minOf(x.lastIndex, centre + halfWidth)
+            val phase = o % phaseCount
+            val weights = phaseWeights[phase]
+            var sum = 0.0
+            var clippedWeightSum = 0.0
+            for (i in first..last) {
+                val weight = weights[i - centre + halfWidth - 1]
+                sum += x[i] * weight
+                clippedWeightSum += weight
+            }
+            val fullWindow = first == centre - halfWidth + 1 && last == centre + halfWidth
+            val weightSum = if (fullWindow) phaseSums[phase] else clippedWeightSum
+            out[o] = if (abs(weightSum) < 1e-12) 0.0 else sum / weightSum
+        }
+        return out
+    }
+
+    private fun greatestCommonDivisor(a: Int, b: Int): Int {
+        var left = a
+        var right = b
+        while (right != 0) {
+            val remainder = left % right
+            left = right
+            right = remainder
+        }
+        return left
+    }
 
     /**
      * Low-pass at 0.45 of the output rate (Blackman-windowed sinc, 127 taps),
@@ -37,5 +129,49 @@ object Resample {
             out[o] = acc
         }
         return out
+    }
+
+    /**
+     * [x] read at positions n x [ratio] for n = 0, 1, ...: a capture whose
+     * clock ran [ratio] times as fast as the player's, put back on the
+     * player's time base (1.3.2). Blackman-windowed sinc over
+     * ±[STRETCH_HALF] samples, normalised to unit DC gain. The sinc and window
+     * terms are rebuilt by angle addition, so each output sample costs five
+     * trig calls whatever the kernel width.
+     */
+    fun stretch(x: DoubleArray, ratio: Double): DoubleArray {
+        require(ratio > 0.5 && ratio < 2.0) { "stretch ratio out of range: $ratio" }
+        if (x.isEmpty()) return x.copyOf()
+        val h = STRETCH_HALF
+        val width = (h + 1).toDouble()
+        val taps = 2 * h + 2 // m = -h .. h + 1
+        val cosM = DoubleArray(taps) { cos(PI * (it - h) / width) }
+        val sinM = DoubleArray(taps) { sin(PI * (it - h) / width) }
+        val cos2M = DoubleArray(taps) { cos(2.0 * PI * (it - h) / width) }
+        val sin2M = DoubleArray(taps) { sin(2.0 * PI * (it - h) / width) }
+        val n = ((x.size - 1) / ratio).toInt() + 1
+        return DoubleArray(n) { i ->
+            val pos = i * ratio
+            val base = floor(pos).toInt()
+            val frac = pos - base
+            if (frac < 1e-9) return@DoubleArray x.getOrElse(base) { 0.0 }
+            val sinF = sin(PI * frac)
+            val c1 = cos(PI * frac / width); val s1 = sin(PI * frac / width)
+            val c2 = cos(2.0 * PI * frac / width); val s2 = sin(2.0 * PI * frac / width)
+            var acc = 0.0
+            var norm = 0.0
+            for (t in 0 until taps) {
+                val m = t - h
+                // x = frac - m: sin(pi x) = (-1)^m sin(pi frac), and the window's
+                // cos(k pi x / width) by angle addition from the tables.
+                val sinc = (if (m and 1 == 0) sinF else -sinF) / (PI * (frac - m))
+                val w = 0.42 + 0.5 * (c1 * cosM[t] + s1 * sinM[t]) + 0.08 * (c2 * cos2M[t] + s2 * sin2M[t])
+                val k = sinc * w
+                norm += k
+                val idx = base + m
+                if (idx >= 0 && idx < x.size) acc += k * x[idx]
+            }
+            acc / norm
+        }
     }
 }

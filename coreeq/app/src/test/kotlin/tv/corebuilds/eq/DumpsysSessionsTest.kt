@@ -170,8 +170,8 @@ class DumpsysSessionsTest {
     }
 
     @Test
-    fun garbageIsNeverGuessed() {
-        val sessions = DumpsysSessions.parse(
+    fun garbageIsNeverGuessedAndIsNotACompleteEmptySnapshot() {
+        val garbage = DumpsysSessions.parseWithStatus(
             """
             complete nonsense
             session: notanumber
@@ -179,7 +179,52 @@ class DumpsysSessionsTest {
             Clients:
             """.trimIndent()
         )
-        assertTrue(sessions.isEmpty())
+        assertTrue(garbage.sessions.isEmpty())
+        assertFalse(garbage.recognized)
+
+        // An empty but supported Tracks table, or the AOSP playback-monitor
+        // section marker, is recognized; the discovery layer still checks exit status.
+        val emptyTracks = DumpsysSessions.parseWithStatus(
+            """
+            DUMP OF SERVICE media.audio_flinger:
+            Tracks:
+              Type Id Active Client(pid/uid) Session
+            """.trimIndent()
+        )
+        assertTrue(emptyTracks.sessions.isEmpty())
+        assertTrue(emptyTracks.recognized)
+
+        val emptyPlayers = DumpsysSessions.parseWithStatus(
+            "DUMP OF SERVICE audio:\nPlaybackActivityMonitor dump time: 12:00:00\nplayers:\n"
+        )
+        assertTrue(emptyPlayers.sessions.isEmpty())
+        assertTrue(emptyPlayers.recognized)
+
+        val newUnsupportedShape = DumpsysSessions.parseWithStatus(
+            "DUMP OF SERVICE audio:\nnew unsupported output format"
+        )
+        assertFalse(newUnsupportedShape.recognized)
+    }
+
+    @Test
+    fun uidlessMediaSessionTriggersEverydayArbitrationButIsNeverAttached() {
+        val uidless = DiscoveredSession(
+            sessionId = 28,
+            uid = null,
+            usage = DumpsysSessions.USAGE_MEDIA,
+            active = true
+        )
+        assertTrue(DumpsysSessions.hasUnidentifiedCandidate(listOf(uidless)))
+        assertTrue(DumpsysSessions.attachable(listOf(uidless), ourUid = 200).isEmpty())
+    }
+
+    @Test
+    fun stoppedOrKnownNonMediaUidlessSessionsDoNotTriggerEverydayFallback() {
+        val sessions = listOf(
+            DiscoveredSession(29, uid = null, usage = DumpsysSessions.USAGE_MEDIA, active = false),
+            DiscoveredSession(30, uid = null, usage = DumpsysSessions.USAGE_NOTIFICATION, active = true)
+        )
+        assertFalse(DumpsysSessions.hasUnidentifiedCandidate(sessions))
     }
 
     @Test

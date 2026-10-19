@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Text colour pair for drawable/glyphs_button_bg.xml: dark ink on the cyan
+     fill, cyan on the outline. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/glyphs_cta_ink" android:state_focused="true" />
+    <item android:color="@color/glyphs_cta_ink" android:state_pressed="true" />
+    <item android:color="@color/glyphs_cyan" />
+</selector>

@@ -1,8 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
-  <g transform="translate(165.5,0.0)">
-  <defs><linearGradient id="cbRail" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#53FC18"/><stop offset="100%" stop-color="#317F1E"/></linearGradient></defs><rect x="70" y="168" width="16" height="384" rx="8.0" fill="url(#cbRail)"/>
-  <g transform="translate(313,180) scale(0.70312)"><path d="M 300 90 L 200 270 L 268 270 L 212 422 L 344 230 L 276 230 Z" fill="none" stroke="#53FC18" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/></g>
-  <path d="M 646.3 301.5 L 658.5 267.5 L 670.7 301.5 M 650.7 289.9 L 666.3 289.9 M 691.1 301.5 L 691.1 267.5 L 700.7 267.5 C 710.2 267.5 710.2 285.9 700.7 285.9 L 691.1 285.9 M 730.6 301.5 L 730.6 267.5 L 740.1 267.5 C 749.6 267.5 749.6 285.9 740.1 285.9 L 730.6 285.9" fill="none" stroke="#53FC18" stroke-width="9.0" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M 646.3 336.8 L 646.3 423.6 M 698.3 336.8 L 646.3 390.6 M 663.6 373.2 L 698.3 423.6 M 729.6 368.0 L 729.6 423.6 M 800.8 371.5 C 795.6 365.4 788.6 362.8 782.5 362.8 C 769.5 362.8 760.8 375.8 760.8 393.2 C 760.8 410.5 769.5 423.6 782.5 423.6 C 788.6 423.6 795.6 421.0 800.8 414.9 M 832.0 336.8 L 832.0 423.6 M 870.2 364.5 L 832.0 399.3 M 844.2 388.8 L 870.2 423.6" fill="none" stroke="#E6EDF3" stroke-width="16.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="729.6" cy="345.4" r="10.2" fill="#E6EDF3" stroke="none"/></g>
+  <g transform="translate(-5.0,0.0)">
+  <g transform="translate(259,152) scale(0.81250)"><path d="M 300 90 L 200 270 L 268 270 L 212 422 L 344 230 L 276 230 Z" fill="none" stroke="#53FC18" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <path d="M 631.8 290.8 L 644.0 256.8 L 656.3 290.8 M 636.2 279.2 L 651.8 279.2 M 676.7 290.8 L 676.7 256.8 L 686.2 256.8 C 695.7 256.8 695.7 275.1 686.2 275.1 L 676.7 275.1 M 713.8 290.8 L 713.8 256.8 L 723.3 256.8 C 732.8 256.8 732.8 275.1 723.3 275.1 L 713.8 275.1" fill="none" stroke="#53FC18" stroke-width="9.0" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 631.8 330.2 L 631.8 430.3 M 691.8 330.2 L 631.8 392.3 M 651.8 372.3 L 691.8 430.3 M 721.9 366.3 L 721.9 430.3 M 798.0 369.5 C 791.9 362.3 783.9 359.2 776.9 359.2 C 761.9 359.2 751.9 374.7 751.9 395.3 C 751.9 415.9 761.9 431.4 776.9 431.4 C 783.9 431.4 791.9 428.3 798.0 421.1 M 828.0 330.2 L 828.0 430.3 M 872.0 362.2 L 828.0 402.3 M 842.0 390.3 L 872.0 430.3" fill="none" stroke="#E6EDF3" stroke-width="19.0" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="721.9" cy="340.2" r="11.8" fill="#E6EDF3" stroke="none"/></g>
 </svg>

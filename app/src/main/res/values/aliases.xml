@@ -8,8 +8,10 @@
     <drawable name="foxsports_2">@drawable/foxsports</drawable>
     <drawable name="iplayer">@drawable/bbc_iplayer</drawable>
     <drawable name="jawwy_tv">@drawable/intigral</drawable>
+    <drawable name="luckymanager">@drawable/launcher_manager</drawable>
     <drawable name="ninenow_2">@drawable/ninenow</drawable>
     <drawable name="ott">@drawable/cbs</drawable>
+    <drawable name="ottnavigator">@drawable/ott_navigator</drawable>
     <drawable name="rezka">@drawable/falcofemoralis</drawable>
     <drawable name="sevenplus">@drawable/seven_plus</drawable>
     <drawable name="shows">@drawable/bet_plus</drawable>
@@ -18,5 +20,6 @@
     <drawable name="syncler_beta">@drawable/syncler</drawable>
     <drawable name="tve">@drawable/cbs</drawable>
     <drawable name="tvquickactions">@drawable/tv_quick_actions</drawable>
+    <drawable name="videoplayer">@drawable/mxplayer</drawable>
     <drawable name="weyd_2">@drawable/weyd</drawable>
 </resources>

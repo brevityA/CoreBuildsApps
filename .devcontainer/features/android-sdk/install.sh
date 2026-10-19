@@ -13,7 +13,7 @@ rm -rf /var/lib/apt/lists/*
 
 SDK_ROOT=/usr/local/lib/android/sdk
 CMDLINE="${CMDLINETOOLSVERSION:-11076708}"
-PACKAGES="${PACKAGES:-platform-tools,platforms;android-34,platforms;android-35,build-tools;34.0.0,build-tools;35.0.0}"
+PACKAGES="${PACKAGES:-platform-tools,platforms;android-34,platforms;android-35,platforms;android-37.0,build-tools;34.0.0,build-tools;35.0.0,build-tools;36.0.0}"
 
 mkdir -p "$SDK_ROOT/cmdline-tools"
 TMP=$(mktemp -d)

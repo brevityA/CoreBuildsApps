@@ -9,14 +9,13 @@ All notable changes to the Core Builds Icon Pack. Format follows
 ### Added
 
 - **Google Play apps, separate from the sideload ones.** Core Builds Icon
-  Pack (`tv.corebuilds.iconpack.play`) and Core Builds Glyphs
+  Pack (`tv.corebuilds.iconpack.play`) and Core Builds Glyphs Pack
   (`tv.corebuilds.iconpack.glyphs.play`) are their own apps with their own
   upload key, so they install next to the GitHub builds and never update
   them. They drop everything Play forbids a Play app to do: no
   `REQUEST_INSTALL_PACKAGES`, no update check against GitHub (Play updates
   them), and the Art style switch opens the Glyphs listing on Play instead
-  of downloading it. The Play Glyphs app has a TV launcher entry that opens
-  the icon pack. A new hand-run workflow, `play.yml`, builds both App
+  of downloading it. A new hand-run workflow, `play.yml`, builds both App
   Bundles (`core-builds-play-bundles`). The GitHub builds and `build.yml`
   are unchanged.
 
@@ -25,8 +24,712 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Picking one icon follows the Art style switch.** Choosing a single
   card's icon through Core Builds now returns a banner or a square to match
   the switch, so one pack can hand out either shape card by card. Picks
-  through Core Builds Glyphs are still always square, and picking never
+  through Core Builds Glyphs Pack are still always square, and picking never
   changes what the launcher auto-applies.
+
+## [2.4.4] — 2026-10-18
+
+The first release after 2.4.2. 2.4.3 was never tagged, so this build also
+carries its one fix: the home screen fits the TV's largest text size.
+
+### Added
+
+- **10 new icons.** Flixed (#323), Background Apps & Processes (#325),
+  Eclipse (#329, #331), Porter (#330), DELTA TV (#332), ESET Smart TV
+  Security (#334), VAX Player (#335), AquaPlay (#338), WatchBridge TV (#341)
+  and Uyanik TV. Each is a new original mark, and each component was
+  reported by the pack's Missing icons scanner. Eclipse was reported on two
+  TVs; the others on one. Uyanik TV came from scanner screenshots shared
+  directly, not an issue.
+  - Each takes the colour sampled from its own icon: the Google Play listing
+    (Background Apps & Processes, DELTA TV, ESET, WatchBridge TV), the app's
+    site (Flixed, Eclipse, AquaPlay), its GitHub repository (Porter), the TV
+    banner inside its APK (VAX Player) or the launcher icon in the scanner
+    screenshot (Uyanik TV).
+  - Uyanik TV's mark is an infinity loop with a play triangle in its right
+    loop. AllDebrid's bare infinity loop is not among its four closest
+    matches. Its closest, IP Address and DNS Changer at 0.768 alpha IoU, share
+    only a wide, low silhouette: a pill and a DNS wordmark.
+  - WatchBridge TV maps the sideloaded `com.tunombre.tvbridge` the TV
+    reported. Its Play build, `com.tunombre.tvbridge.play`, has no report
+    yet.
+  - Two names were already in use. Background Apps & Processes
+    (`com.backgroundapps.v1.fm.ut.android`) is a different app from
+    Background Apps And Process List. DELTA TV (`com.nep.delta.tv`) is
+    likewise different from Delta TV (`com.nowcast.deltatv`).
+  - VAX Player maps only `com.vaapp.app.MainActivityAlt`, the alias the
+    reporting TV opened. The APK linked in #335 declares `MainActivity` as
+    its launch activity, but no device has reported it, and the pack's
+    unverified-mapping ceiling only moves down. A TV that opens it will list
+    VAX Player under Missing icons, and one report adds it.
+  - VAX Player's first draft, a play outline with a V inside, matched Nuvio
+    and IPTV3U at 0.82–0.83 alpha IoU. It is now an open V holding a solid
+    play triangle. Its closest match in the built pack is now 0.694 (Voltra
+    TV).
+  - 1002 → 1012 icons and 16 new components.
+
+### Changed
+
+- **28 icons are redrawn, resized or re-centred.** A sweep measured every
+  built icon at tile size, against each other and against its own source.
+  - **13 brands now draw their wordmark.** Nine drew a bare letter that
+    another brand drew too: TBS and TNT a T; AMC+, A&E and ABC News an A;
+    Kayo and Fox News a K, like Kanopy's; Sling an S, like Shudder's; ZEE5 a
+    Z, like Zona's. On a launcher row only colour told them apart, and
+    several glyphs' own notes named a cue they never drew, such as TNT's
+    crash bar or ABC's wave. They now read `tbs`, `TNT`, `AMC+`, `A&E`, `abc`
+    in a ring, `kayo`, `FOX NEWS`, `sling` and `ZEE5`. Four more become
+    words: Kocowa's bare play triangle (the same as MX Player TV's), MEGOGO's
+    play box (the same as Nova Video Player's), Binge's skip mark and Arte's
+    lone `a`. They read `KOCO WA` and `MEGO GO` (on two lines, because on
+    one MEGOGO's counters closed at 48 px), `BINGE` and `arte`.
+  - **Watch Free UK no longer wears AMC's A.** Its Play icon is a boxed
+    *WATCH FREE UK* on purple. It now draws `WF` in a frame in that purple
+    (`#7030F8`), replacing an unsourced red. The full words fit only at
+    47 px, under the pack's 96 px letter floor.
+  - **Aptoide TV, Aurora Store and APKPure were one empty bag.** Their notes
+    promised a play mark, a download arc and a play. The bags now carry a
+    play, a download arrow and an `A`.
+  - **Three apps installed under two packages now draw one icon.** Launcher
+    Manager's Google TV build drew a yellow wrench beside the original's
+    blue gear. OTT Navigator's two packages drew a compass and an `ON`
+    screen. MX Player drew the generic circle-play shared by four other
+    players, while MX Player TV drew MX's own play arrow. Each pair now
+    shares the sourced mark.
+  - **Four marks were too small.** Arte filled 52% of the canvas, MX Player
+    TV 55%, Binge 57% and Kocowa 61%, against a typical 67–84%. The
+    smallest icon in the pack now fills 62%.
+  - **Six marks sat off-centre.** NordVPN and Projectivy Overflight sat 6–7%
+    high, MaxPlayer 5% left, Virtualhere USB Server 5% low, and FileSynced
+    and Mecool File Manager twice as low as the pack's other folders. They
+    are moved, with no stroke or shape changed.
+  - **NASA's wing touched its globe at tile size.** It now sits higher, and
+    the gaps between the two stay open at 96 px.
+- **The component count counts each component once.** 31 icons listed a
+  component twice, once in each name form (`pkg/.Activity` and
+  `pkg/pkg.Activity`). The build writes both forms from one entry, so the
+  copies are folded and every appfilter is byte-identical. Folding takes the
+  count from 1257 to 1226, and the unverified count from 92 to 76: 16 of
+  those copies were unverified components counted twice.
+- **New look-alike icons fail CI.** `tools/check_lookalikes.py` compares
+  every built icon at 64 px and fails on any new pair of brands whose marks
+  match at 0.80 alpha IoU or above. The 70 pairs accepted today, such as
+  NBC's shared peacock and generic shapes, are listed in
+  `tools/lookalike_baseline.json`, which may only shrink.
+
+### Fixed
+
+- **Download on the update bar works with the remote.** Pressing Download
+  greyed the button out while the APK came down, and Android moves the
+  remote's cursor off a greyed-out button. On a TV it jumped to Later, one
+  press from dismissing the update, and did not come back when the button
+  turned into Install. Only a phone touchpad could press it, because touch
+  mode never moves the cursor (reported from a Shield Pro, updating 2.4.1 to
+  2.4.2).
+  - The button now stays live and keeps the cursor. A second press while it
+    downloads does nothing, as About's update row already did.
+  - When the download finishes, the line under the title says to press
+    Install instead of showing the release highlight.
+  - This fixes updates from 2.4.4 on. To install 2.4.4 itself from an older
+    version with the remote, use About → Update.
+- **Setting a wallpaper no longer crashes when you move to the next one.**
+  On a Projectivy home screen, pressing left or right while Set was still
+  applying cleared the wallpaper the apply was using. When it finished, the
+  app crashed on a background thread, or handed Projectivy the next
+  wallpaper instead. Set now keeps the file it started with.
+- **Weyd and ByeByeDPI icons apply on current builds.** Both apps moved
+  their launch activity, so the pack's mapping no longer matched:
+  - Weyd now launches
+    `app.weyd.player.ui.splashscreen.SplashScreenActivity` (#327).
+  - ByeByeDPI now launches
+    `io.github.romanvht.byedpi.activities.MainActivity`, out of the
+    `dovecoteescapee` namespace (#324, #333).
+
+  The old components stay for older builds.
+- **Six more apps share an existing icon.** Four were reported from one
+  SHIELD (Android 11), and two from one Philips Google TV (TA1, Android 14):
+  - Plex: current builds launch `tv.plex.app.MainActivity` (#337). The old
+    `SplashActivity` mapping stays.
+  - Files: SHIELD ships Android's own build, `com.android.documentsui`, which
+    launches `LauncherActivity` (#342, listed in Spanish as *Archivos*). The
+    pack had only Google's build.
+  - OwnTV Fanart, a fork of OwnTV, installs as `tv.own.owntv.glcn` with the
+    same activity, and now shares the OwnTV icon (#340).
+  - Core Builds Glyphs, this pack's own glyphs-only companion
+    (`tv.corebuilds.iconpack.glyphs`), now takes the Core Builds icon, the
+    art it already ships with (#339). It was the one suite app the pack did
+    not map.
+  - Vewd: the browser Philips ships installs as `com.vewd.core.browser`
+    (#344, listed in Spanish as *Navegador Vewd*). The pack had only the
+    `com.vewd.core.integration.dia` build, and both now share the Vewd
+    Internet Browser icon.
+  - Philips' own TV app (`org.droidtv.playtv`, the antenna and cable tuner,
+    labelled *TV*) now takes the Live TV icon, the pack's mark for a TV's
+    built-in tuner app (#345).
+- **Not-applying reports from Monet users are accepted.** The report form
+  offers 12 launchers, but the auto-reply only accepted 5, so a report
+  naming Monet, AT4K, Leanback on Fire, L TV Launcher, ChillHub, Apex or ADW
+  got `needs-info` (#333). The checker now accepts all 12. Its drift test now
+  compares the two lists both ways. The old test only checked that the
+  checker's options appeared in the form.
+
+## [2.4.3] — Unreleased
+
+Prepared as `versionCode 56` and merged to main on 2026-10-15, but never
+tagged; 2.4.4 replaced it, together with the update-bar fix from #326. The fix
+below first reaches devices in 2.4.4.
+
+### Fixed
+
+- **The home screen fits the TV's largest text size.** At about 1.3× system
+  text, the left rail ran ~20dp past the bottom of the screen on 2.4.0:
+  - the CORE BUILDS ICON PACK wordmark and the icon count each wrapped to two
+    lines;
+  - Support | Settings | About broke mid-word ("Setting / s");
+  - moving down the rail scrolled the header half under the update bar.
+
+  Now:
+  - The wordmark, the count and the three buttons stay on one line and shrink
+    to fit, never below 12sp at your text size. The three buttons share one
+    size and are centred.
+  - Where the rail still has to scroll (1.3× text with the update bar up), its
+    edges fade instead of cutting a line in half, and it returns to the top
+    when the cursor leaves it.
+  - While the update bar is up, the icon count steps aside as the launcher
+    note already did; the bar states the new release's count. At the default
+    text size the whole rail now fits under the bar, Support | Settings |
+    About included.
+  - Checked by rendering the home layout at 1920×1080 with 1.0×, 1.3× and 1.5×
+    text. The other 12 screens already reflow inside their scroll views at
+    1.3×.
+
+## [2.4.2] — 2026-10-15
+
+### Fixed
+
+- **Re-rendered live loops play their new animation.** 2.4.0 re-rendered the
+  live loops under the file names they already had, and the loop cache was
+  keyed on the file name alone. A loop downloaded before 2.4.0 kept playing
+  its old animation, including in preview. Each loop now carries a revision
+  (the first 12 hex digits of its MP4's sha256), and the cache keys on it:
+  - Preview, **Set live** and **Save** download the current render once.
+  - The home screen keeps playing the older copy until the new one has
+    downloaded, then switches the next time it comes into view. It never
+    drops to the still frame for an update.
+  - Opening Wallpapers fetches the new render of the loop your home screen
+    plays, only when this app's live wallpaper is the one set and an older
+    copy is what plays.
+  - Older copies are deleted once the new one is in. Saved loops keep their
+    names in `Movies/CoreBuilds`.
+- **Circuit Core thumbnails show the wallpapers they open.** 2.4.0 re-rendered
+  all 12 Circuit Core walls (41–50, 79, 80) but the APK kept their 2.3.x
+  thumbnails, so the grid showed the old art while opening, setting and
+  saving the new. 2.4.1's note blamed the download cache alone, and said the
+  grid already showed the new art: for Circuit Core it did not. The 12 bundled
+  thumbs now match `Wallpapers/thumbs/`; the other 120 already did.
+  - `tools/sync_wallpaper_manifest.py` compared thumb file names only, and a
+    re-render keeps its names. It now compares bytes, copies any thumb that
+    differs, and `--check` fails on one.
+  - `tests/test_wallpapers.py` holds every bundled thumb byte-identical to the
+    repo thumb; it fails on the 2.4.1 set with all 12 names.
+- **Six walls redrawn in 2.3.3 open their new picture.** 2.3.3 redrew
+  52 Shockwave and Cinema 97 Marquee Lights, 99 Projector Beam, 100 Neon
+  Lounge, 101 Late Rentals and 102 Box Office under their old file names, with
+  no `since` stamp. 2.4.1's cache fix moved only stamped walls to new cache
+  names, so a TV that opened one of the six on 2.3.2 or earlier still opened,
+  set and saved the old picture. They are now stamped `2.3.3`, the release
+  their current pictures first shipped in, so they stay out of the **New**
+  chip.
+  - `tools/check_wallpaper_cache_keys.py` compares every wall with every
+    release tag and fails when a picture changed under a cache name an
+    earlier release used. `prepare_release.py` runs it as a gate. It flagged
+    exactly these six, against 51 releases.
+  - An audit of every 2.4.1 preview found nothing else: the other 120 grid
+    thumbnails, all 48 live loops (thumbnail against video, and video against
+    the still it is made from) and `docs/wallpapers-collection.jpg` match.
+
+## [2.4.1] — 2026-10-15
+
+### Fixed
+
+- **Re-rendered wallpapers show their new art.** 2.4.0 re-rendered Motion,
+  Horizons, Circuit Core, Retrowave, AMOLED, Deep Space and Icon Echo under
+  the file names they already had, and the wallpaper cache was keyed on the
+  file name alone. A wall opened on 2.3.x (44 Monolith Grid, say) showed the
+  new thumbnail in the grid but kept opening, setting and saving the old
+  picture. The cache now keys each download on its release stamp too, so the
+  2.4.x art downloads once and the old copy ages out. Exported files keep
+  their names in `Pictures/CoreBuilds`.
+- **VTM GO, CloudStream Beta and CRICFy TV pick up their icons.** Each
+  launches a component the pack did not map:
+  - Current VTM GO builds open `be.persgroep.vtmgo.VtmGoMainActivity`, without
+    the `.presentation` package (#308). The old component stays for older
+    builds.
+  - CloudStream's pre-release build installs as
+    `com.lagradost.cloudstream3.prerelease` (#314) and now shares the
+    CloudStream icon.
+  - CRICFy TV installs as `com.cricfytv.sports` (#315) and now shares the
+    Cricfy icon.
+
+### Added
+
+- **9 new icons.** IPTV Deck, REC TV (#319), Vega (#317), PlayboxTV (#316),
+  Mi Home (#313), Nuyo WiFi Analyzer (#312), TV Calibration (#311),
+  Universal Manager (#310) and Play (#309, the Belgian app `be.goplay.app`;
+  the existing GoPlay icon belongs to a different app). Each is a new
+  original mark, and each component was reported by the pack's Missing icons
+  scanner on one TV.
+  - PlayboxTV, Mi Home, Nuyo WiFi Analyzer and Play take the colour sampled
+    from their Google Play icon.
+  - The other five take a pack palette colour: no store listing (IPTV Deck,
+    REC TV), a multicolour icon (TV Calibration, Universal Manager), or no
+    colour sourced (Vega).
+  - 993 → 1002 icons, 1229 → 1241 components.
+
+## [2.4.0] — 2026-10-14
+
+### Added
+
+- **Live is a set of its own.** The Wallpapers browser's *Live* chip now
+  owns every loop; a series chip shows stills only. Forty-eight loops, each
+  the moving form of a committed wall: the twelve Motion walls (new, clips
+  32–43), the twelve Deep Space walls (re-rendered from the 2.4.0 stills,
+  which the old loops predated), all twelve Cinema scenes (23–28, and
+  53–58 for the six new scenes), and all twelve Icon Echo walls (29–31
+  re-rendered, 44–52 new). One roster
+  (`tools/live_roster.py`) feeds the renderers, the feed, `LiveLoop.kt`
+  and the tests.
+- **Live loops, remade.** The ten loops that opened the set were ffmpeg
+  test patterns (gradients, cellular automaton, Mandelbrot, Sierpinski)
+  with Core Builds names on them, at 30 fps; so were the three Icon Echo
+  loops. All are retired or re-rendered: every loop is now a real wall
+  given time by one engine (`tools/build_still_loops.py`: points of light
+  twinkle on their own phase, soft light shimmers, the camera breathes and
+  drifts, seamless over 20 s) at 1080p 60 fps, CRF 22. Numbers 01–10 stay
+  empty; no shipped file name changed.
+- **Icon Echo to twelve.** Six more walls lit by catalogue accents, hues
+  chosen to be distinct from the first six: Violet Stream (Twitch
+  `#9146FF`), Ember Reel (Crunchyroll `#FF5E00`), Teal Tide (ABC iview
+  `#20B8B8`), Solar Band (Pluto TV `#FFF200`), Magenta Veil (Binge
+  `#B80472`), Indigo Drift (Disney+ `#113CCF`). Walls 133–138; palette
+  cues only, no marks.
+- **Icon Echo, relit.** All twelve walls keep their compositions and
+  catalogue accents, but the light is remade: lines draw at two and a half
+  times the weight and dots near twice, then every wall passes through a
+  relight that blooms the drawn light in two stages (a wide far glow, a
+  tight near halo, hot cores pushed toward white), lays a slow noise wash
+  of the deep tone behind it so the accent has a room to sit in, and
+  vignettes the frame. The first six were thin lines on faint washes,
+  invisible from the couch; now they read like the rest of the collection.
+  Their twelve loops are re-rendered from the new stills.
+
+- **Check for updates in About.** About now carries an on-demand update
+  check: press it and the row says *Up to date*, *Download vX* (with the
+  release's highlights), or why GitHub could not be reached — then walks
+  the same download → permission → install flow as the home-screen bar,
+  with the instruction written into the row rather than a toast. Until now
+  the only way to learn about a new build was the startup check, which
+  users with update checks off, or who had pressed Later, never saw again.
+- **Earth wallpaper series.** Twelve walls of the planet from orbit (series
+  12, walls 109–116 and 143–146): city lights, aurora from above, a
+  crescent, a storm, an orbital sunrise, Earth over the Moon, a coastline at
+  night, an ice sheet, a river delta at night, a cyclone eye on the
+  terminator, lightning from orbit, dunes from orbit. Generated imagery, shipped at the 1376×768 it was made at under the
+  same honesty rule as Circuit Core.
+- **Wild wallpaper series.** Twelve nature and landscape-photography walls
+  (series 13, walls 117–124 and 147–150): aurora over a fjord, a forest in
+  fog, the Milky Way over dunes, a glacier lagoon, a volcano at night,
+  bioluminescent surf, alpenglow, a plains thunderstorm, a blue-hour lake, a
+  sea cave under stars, a moonlit forest, a canyon at night. Generated the
+  same way as Earth, at the same resolution.
+- **Cinema to twelve.** Six more scenes in the same layered engine (walls
+  151–156): Drive-In, Aisle Lights, Film Reel, Popcorn Stand, Exit Sign,
+  Intermission — each a still and a seamless 60 fps loop (clips 53–58).
+- **Every series is twelve walls.** Motion, Horizons, Circuit Core,
+  Retrowave, AMOLED, Deep Space, Cinema, Icon Echo, Earth, Wild and Flux:
+  eleven series of twelve, 132 walls in all.
+- **Flux wallpaper series.** Twelve 4K abstract walls (series 14, walls
+  125–132 and 139–142) — domain-warped ink, folded silk, a plasma core,
+  streamlines, glass facets, caustics, a veil, a bent grid, warped smoke,
+  two ring systems beating against each other, a curtain of light, and iron
+  filings combed along a magnetic field — procedural and seeded in the
+  house palette (`tools/build_flux_wallpapers.py`).
+
+- **Binged icon.** Binged, the family streaming app (`net.binged.tv`), has
+  its own icon: a capital B over a short bar, the cue of its own launcher
+  icon, in the coral red of that icon's underline. Device-reported through
+  the pack's Missing icons scanner; the component is not yet confirmed on
+  a second TV.
+- **Buzz TV 6 icon.** The BuzzTV IPTV player (`com.buzztv.iptv.tv`) has its
+  own icon: a television screen with a buzz — a lightning bolt — inside it
+  (issue #300). No published brand colour was found, so it takes a pack
+  palette accent.
+- **Telly Player icon.** Telly Player (`com.desktoptelly.tv`), distributed
+  by Downloader code, has its own icon: a telly on its stand with a play
+  triangle inside (issue #301). No published brand colour was found, so it
+  takes a pack palette accent. A second TV reported the same component
+  through the pack's scanner (issue #306, a Xiaomi TV on Android 14), so
+  the mapping is confirmed on two devices.
+- **Yango Play icon.** Yango Play (`com.yango.saft.tv`), Kinopoisk's
+  international build under its own package, has its own icon: a Y with a
+  play triangle on its stem in Yango red (issue #305; scanner-reported on
+  a Xiaomi TV, Android 14).
+- **Nuyo Device Info icon.** Nuyo Device Info (`com.roysolberg.android.deviceinfo`)
+  has its own icon: a handset outline with an information mark inside
+  (issue #296; scanner-reported on a Google TV Streamer, Android 14).
+  With Binged, Buzz TV 6, Telly Player and Yango Play: 988 → 993 icons,
+  1224 → 1229 components.
+- **"New" chip in Wallpapers.** The browser's chip rail gains *New (122)*
+  after *All*: every wall stamped with this release in the manifest (the
+  three new series, the additions, and every refreshed series), so a
+  returning user finds what changed without scanning the whole grid. The home
+  rail's Wallpapers row says *132 walls · N new in this release* until the
+  chip has been seen once. Manifest entries carry an optional `since`
+  version; the chip counts the newest.
+- **Card floor in the wallpaper preview.** Under the launcher-seed swatches
+  the preview now says *Card floor · calm · 92% dark* (or *mixed* / *busy*):
+  the share of the lower third at or under 14% luma, measured from the
+  decoded image on the TV — the same floor the procedural generators are
+  held to, which the photographic series are not. One line that answers
+  "will my rows be readable over this" before pressing Set.
+- **Settings ↔ About ↔ Support.** Settings' Help group ends with *About*
+  and *Support* rows, so the version, update check and the Ko-fi/Discord
+  screen are reachable from Settings and not only from the home rail.
+- **Version badge in About.** After an update check the version line wears
+  a small badge: *LATEST* in cyan, or *vX AVAILABLE* in amber, so the state
+  survives scrolling away from the update row.
+- **Art style defaults to the launcher.** Until the Banners/Glyphs switch
+  is touched, its default follows the HOME launcher: a phone launcher
+  (Nova, Lawnchair, Apex, ADW) has no banner surface, so a first run there
+  starts on glyphs rather than on 16:9 cards it can never apply. TV
+  launchers and unknown HOMEs keep banners; a choice once made is kept.
+- **Motion, re-authored.** Walls 25–32 (Orbitals, Warp, Fogbanks, Spiral,
+  Slipstream, Embers, Tracer, Pendulum) were hand-made exports with no
+  generator in the repo: thin single-tone lines, flat at TV distance. They
+  are now drawn by `tools/build_motion_wallpapers.py` as long-exposure
+  light — every trail a hot core inside a wide glow, a bright head where
+  the light is now, depth from layers at different blur, a calm lower
+  third — keeping each wall's number, name and subject. Slipstream's
+  streamlines are integrated through a real potential flow round the
+  body; Pendulum is a decaying harmonograph. Their eight loops (32–39)
+  are re-rendered from the new stills.
+- **Circuit Core, re-rendered.** Walls 41–50 are new renders of the same
+  ten ideas as one coherent set - a single subject each (a blooming core,
+  circuit shards, a cooling cinder, a monolith, a foundry, a conduit, a
+  skyline of components, works, rising traces, a deep core), with depth
+  and a calm lower third, in place of the earlier centred clusters. Same
+  honesty rule: 1376×768 JPEG at the size they were made. 79–80 follow.
+- **Retrowave, refreshed.** Same twelve walls, seeds and palettes, with
+  atmosphere: the sun blooms, a haze band sits on the horizon, the sun
+  reflects down the grid plane, the grid emerges from fog instead of a
+  hard line, and ridge walls gain a far ridge lost in haze.
+- **AMOLED, refreshed.** Every stroke now carries a two-stage halo (tight
+  plus a wide faint one) and a hot core lifted toward white, so it reads
+  as light the panel emits rather than a line painted on it. True-black
+  coverage stays at 94–98%; the ≥50% contract still asserts.
+- **Collection sheet.** `docs/wallpapers-collection.jpg` shows every wall
+  by series, rebuilt from the shipped thumbs by
+  `tools/build_wallpaper_collection_sheet.py`; the Wallpapers README and the
+  top-level README link it.
+- **Design note for 2.5.0.** `docs/research/mapping-confirmation-channel-2026-10.md`
+  proposes how a second TV confirms (or contradicts) an issue-sourced icon
+  mapping with one press — per-mapping GitHub issues, 👍 to confirm, a
+  prefilled report carrying the real component when it does not apply.
+  Nothing is built; the note exists so the next release starts from a
+  decision.
+
+### Changed
+
+- **Support is on the home screen.** The rail's last row is now Support |
+  Settings | About, so the Ko-fi and Discord screen is one press from the
+  home screen instead of two hops through About. The version suffix About
+  carried on that row went with the third card; it is the About screen's
+  first fact.
+- **Horizons re-rendered.** The twelve Horizons walls were a gradient, a
+  line and a dot. Each is now a scene — graded sky, sun or moon with its own
+  atmosphere, cloud bands, a thinning star field and three to five ridgelines
+  of fBm terrain stepping into haze — keeping its number, name and accent
+  (`tools/build_horizons_wallpapers.py`, the first generator the series has
+  had for walls 33–40).
+- **Deep Space re-rendered.** Every large glow is shaped by ridged fBm
+  noise, so nebulae break into filaments and dust lanes, planet discs carry
+  bands and grain, the Milky Way band is a band, and a dense faint dust
+  field sits under the stars. Same walls, same seeds, more in them.
+- **Fieldwork wallpaper series retired.** The 24 mesh-gradient washes of series 1
+  (walls 01–24) are retired on user feedback — at TV distance they were one
+  blur in five colours. The numbers stay empty, as series 4 and 5 do.
+
+### Fixed
+
+- **Cancelling the update installer no longer reopens it.** Once an update
+  had downloaded, backing out of Android's installer brought the pack back
+  to the front, and the home-screen bar opened the installer again, over
+  and over, until the update was installed (2.3.x). The bar and the new
+  About row now count the first launch as the offer; pressing them still
+  retries.
+
+## [2.3.3] — 2026-10-12
+
+### Added
+
+- **MovieBoxTV icon.** The all-in-one movie and TV app for Android TV
+  (`com.community.mbox.tv`) has its own icon: a film strip with its sprockets
+  beside a play triangle, in the arrow green of the app's own mark
+  (issues #291, #294).
+- **AIOStreams icon.** AIOStreams, the Stremio-compatible media hub that now
+  ships its own Android TV app, has its own icon: the diagonal stroke and
+  circle of its A cue, in the pack's off-white (its mark is monochrome white
+  on black) (issues #290, #293).
+- **Icon Echo wallpaper series.** Six new 4K wallpapers (series 11, walls
+  103–108) lit by accents taken from the icon catalogue itself — HeatLive
+  magenta, YouTube red, Spotify green, Max Player amber, TiviMate light blue,
+  ARD azure — each shifted a step toward the night ground, so a wall and the
+  icons it backs glow the same colour a shade apart. The existing 102
+  wallpapers are untouched (2026-10 concept study, carried to full
+  resolution).
+- **Three Icon Echo live loops.** Signal Sweep, Green Current and Molten
+  Orbit (loops 29–31) move as system live wallpapers in the app and in the
+  Core Motion feed, in the same icon accents.
+- **Launcher compatibility summary.** A new screen (About → Launcher
+  compatibility) shows every launcher the pack knows: what art it applies
+  (the 16:9 banners, or the square glyphs from Core Builds Glyphs on phone
+  launchers), how the pack reaches it (auto-apply, the launcher's own
+  settings, per-app, or not at all), and its notes — Monet's premium
+  gate, AT4K's bundled theme, Projectivy's rescan-after-upgrade practice,
+  and FLauncher's deliberate "not supported". The Unmapped apps screen now
+  opens with which launcher this TV is on, and a not-applying report
+  carries the detected launcher in its device line; the report form's
+  launcher dropdown covers the full known set.
+- **Coverage and mapping-reliability report.** `docs/COVERAGE.md`, refreshed
+  weekly by workflow: the tracker cross-checked against the bundled
+  appfilter, so the loop's outcomes are standing numbers instead of a hand
+  derivation — distinct apps reported and how many are in the pack now,
+  the first-fix rate on closed not-applying reports (the exact reported
+  component shipped), resolution speed, and the open backlog. Shipped
+  numbers as of 2.3.3: 40 distinct apps reported, 22 in the pack,
+  8/9 reported components exact-fixed, median resolution 1.0 day.
+
+### Changed
+
+- **Wallpaper colours sit on the icon palette.** The generated wallpaper
+  series and their motion loops were retuned a step toward the icon pack's
+  own accents: the cyan light is now the pack's Signal `#00D4FF`, and Dusk
+  Violet and Ember are nudged toward the icon violet and coral families. The
+  walls each generator's list owns were re-rendered; the genre-palette sets
+  (series 0, 1, 6, 7) and earlier committed walls keep their colours.
+
+### Fixed
+
+- **Nuvio on the `com.nuvio.app` package.** The September P0 pass mapped
+  Nuvio's `AppIconDefault` launcher activity under `com.nuvio.tv` only; the
+  `com.nuvio.app` package variant ships the same activity, which issue #288
+  reported (device-reported, Smart TV Pro, Android 14). The component is now
+  mapped — the first gap the new coverage report itself surfaced.
+
+## [2.3.2] — 2026-10-12
+
+### Fixed
+
+- **Updating from a D-pad.** The update button takes focus the moment the
+  update bar appears (the one carve-out: not while you are mid-word in the
+  search field, which the old unconditional focus used to break), so a
+  remote user who has not noticed the bar is handed the button instead of
+  pressing nothing. After you flip the "allow installs" permission the
+  installer opens by itself when you come back — no second press to find —
+  and the bar's sub-line carries the instruction persistently instead of
+  only in a toast that is gone before the toggle is found. If the device
+  has no APK installer at all, the failure now says so and points at the
+  GitHub release instead of dying on a toast.
+
+## [2.3.1] — 2026-10-11
+
+### Added
+
+- **ARD Sounds icon.** The ARD Audiothek app, now called ARD Sounds, has its own
+  icon in the pack.
+  Its accent is now the published ARD brand blue (#2D92FF), not an eyeballed value.
+- **Pixee icon.** Pixee, the photo-frame slideshow app, has its own icon (issue #284).
+- **Morphe icon.** The Morphe patcher manager has its own icon (issue #287). The activity is
+  device-reported from a scan on one TV and is not yet confirmed on a second device.
+- **Core Builds Glyphs has its own icon.** The glyph-only app (`tv.corebuilds.glyphs`)
+  now has a violet launcher icon and TV banner, so it no longer looks like a second
+  copy of the icon pack in a launcher.
+
+### Changed
+
+- **New pack icon artwork.** The Core Builds Icon Pack launcher icon and TV banner
+  use a refreshed mark: the same rounded tile and Signal Cyan accent, with a circle, a square,
+  a play cue and a plus. Launcher icon only; the glyphs app is unchanged.
+
+### Fixed
+
+- **waipu.tv gets its icon on current devices.** The app opens a different
+  activity on current devices, and the pack now maps that one too (issue #286).
+
+## [2.3.0] — 2026-10-10
+
+### Added
+
+- **Support Core Builds, from About.** A new row in About's links, under
+  Settings, opens two QR codes, GitHub Sponsors and Ko-fi, for your phone's
+  camera, with each address printed under its code. It is optional, and
+  every feature ships either way. The codes are drawn on the TV, so About's
+  list of everything the app sends is unchanged.
+
+## [2.2.0] — 2026-10-09
+
+### Added
+
+- **Missing icons on the home screen.** A new row under Art style opens the
+  scan for apps without a Core Builds icon, with this TV's count on it. The
+  count comes from the same scan as the list, rerun each time you come back
+  to the home screen, so an app you just installed shows up without a
+  restart. The scan stays in Settings too.
+
+### Changed
+
+- **The missing-icon list says what each app needs.** Apps the pack already
+  draws under another activity, usually one an app update renamed, now have
+  their own section, ICON NOT APPLYING, which shows the activity the pack maps
+  and files a mapping report. Until now they were listed as "no icon yet" and
+  sent a new-icon request. Every row shows the app's own icon, whether it is a
+  TV or phone app, whether it came preinstalled, and what pressing it does
+  (REQUEST or REPORT). The header counts the launchable apps checked, and the
+  empty state says how many were covered.
+- **The request code sits beside the app, not under it.** The QR panel is two
+  columns: the app and the steps on the left, a 320dp code on the right. The
+  stacked layout ran past the bottom of a 1080p screen.
+- **A tidier home rail.** Every row's subtitle is one line, and Settings and
+  About share a row, with the version on About. With the new row the rail
+  still fits a 1080p screen, ALSO APPLIES TO included.
+
+### Fixed
+
+- **Scan for unmapped apps says what it is doing.** The screen stayed blank
+  until the scan finished, which on a slow box looked like a scanner that did
+  not work. It now reads "Scanning the apps on this TV…" from the first
+  frame. A scan that fails shows its cause on screen instead of closing the
+  app.
+
+## [2.1.2] — 2026-10-07
+
+### Changed
+
+- **Banners give the mark and name more room.** A follow-up 5% increase brings
+  the mark/name size caps to about 15% above v2.1.1 overall for better
+  shelf-distance legibility. Categories, accents, transparency, square glyphs,
+  mappings and wallpapers are unchanged.
+- **Max is HBO Max again.** The card says HBO Max, the service's own name
+  since 2025, its mark is HBO stacked over lowercase max in the pack's stroke
+  letters instead of a lone arc, and it applies to the `com.wbd.hbomax` build that launches
+  `com.wbd.beam.BeamActivity` (#256).
+- **TiviMate gets a mark of its own.** Its card was a generic TV with a
+  guide grid in a borrowed blue. It is now TiviMate's guide - channel column
+  and programme rows - with the tick-shaped v from its logo on the slot
+  playing now, in the light blue `#97C1FF` of its launcher icon.
+- **YouTube red is current.** YouTube, YouTube Music, YouTube Kids and
+  YouTube TV move from `#FF0000` to YouTube Red `#FF0033`, the primary red in
+  Google's own YouTube brand palette.
+- **Aurora Store applies again.** Current builds launch
+  `com.aurora.store.ComposeActivity`; it is mapped beside `.MainActivity`
+  (#255).
+- **Letters are spaced by their shapes.** Every name on a banner and every
+  letter in an icon used one gap, measured box edge to box edge, so open
+  pairs such as `To`, `LY` and `Pa` set looser than `HH`. Each pair now closes
+  up by part of the white its shapes leave, never past the full gap at its
+  narrowest point; figures stay evenly spaced. Lowercase `l` gains a foot, so
+  it no longer draws the same stem as capital `I`. Round letters (`O C G Q S
+  0 3 6 8 9 o c e s`) reach 1.5% past the cap line and baseline so they stand
+  as tall as the flat letters beside them, and banner names track at .3 of
+  the cap, the same gap the marks use, instead of .36.
+- **Flix Vision looks like Flix Vision.** Its card was a red-orange film
+  reel the app has never used. It is now a ring round a leaning F whose stem
+  sweeps into its top arm, after the app's ringed F, in its logo purple
+  `#866EAD`.
+
+### Added
+
+- **Pocket Casts** (#257): the disc with its two open arcs, in Pocket Casts
+  red.
+- **Silo** (#258): its own logo, flattened into the pack's line - the play on
+  three slotted bars rising to the right, in Silo's three colours: blue play
+  and top bar, pink `#F50B4F` middle, orange `#FA7604` foot. Silo is the
+  first icon with a third brand colour (a `tertiary` inside its `secondary`,
+  test-pinned to Silo alone).
+
+## [2.1.1] — 2026-10-05
+
+### Added
+
+- **The vSeeBox Heat family.** HeatLive shipped in 2.0.0; the four apps
+  that sit beside it on a vSeeBox's Recommend row, and the fifth that the
+  V6 Plus adds, now apply too, each drawn in HeatLive's own construction:
+  the stroke teardrop, point up, with a solid shape standing on its floor.
+  What stands there says what the app is - HeatLive's flame for live TV, a
+  play for on demand - and one small device says which one: **HeatVod**
+  (drop and play, in its splash's blue), **HeatVod Ultra** (drop and play
+  with the play-cone its tile carries, pink), **Live Ultra** (drop and
+  flame with the cone, purple), **Live Ultra+** (drop and flame with its
+  plus, and the family's one warm tile, amber) and **HeatLive Backup**
+  (drop and flame with a second, smaller, empty drop beside it - the
+  spare - magenta-violet). Each keeps the gradient of its own tile, so the
+  five read apart on a shelf where they sit side by side. Requested in
+  #243, #245, #247, #248 and #242 with every launch activity read off the
+  requester's V6-Plus (Android 14).
+- **WAVEO.** Wave IPTV's beta is on Google Play under a new package name,
+  `com.smartwave.waveo`, with the same splash activity; it now applies the
+  Wave IPTV icon. Reported in #246 off the requester's SHIELD Android TV
+  (Android 11). 976 → 981 icons, 1207 → 1213 components.
+
+## [2.1.0] — 2026-10-05
+
+### Added
+
+- **Core Builds Glyphs, the standalone app.** `tv.corebuilds.glyphs` is the
+  icon pack's own catalog, wallpapers, settings, auditor and inspector built
+  with the square appfilter, for a launcher that should apply glyphs and
+  nothing else. It is the `glyphs` flavor of `:app` rather than a second
+  module, because two source sets cannot both provide `res/xml/appfilter.xml`
+  and a second module would mean a second copy of every resource — the drift
+  that retired Pixel Neon. It ships in the same `v*` release as
+  `corebuilds-glyphs-release.apk`, with its own FileProvider authority so it
+  installs beside the icon pack, no Art style toggle (it has nothing to switch
+  to) and no update feed of its own yet, which the updater names instead of
+  failing on. The companion the toggle installs stays, and now answers to Core
+  Builds Glyphs Pack so the two are tellable apart in a launcher's list.
+  `tests/test_glyphs_pack.py` pins the flavor's joins: 26 tests → 34.
+
+### Changed
+
+- **Core Builds Glyphs can be opened.** The square companion shipped with no
+  launcher entry at all, so a user who installed it — or who let the Art style
+  toggle install it for them — had an app they could never open, and nothing
+  anywhere said what it was or whether it matched the pack. It now appears in
+  the drawer and on the Android TV row with one screen: the icon and component
+  counts read out of this package's own generated `drawable.xml` and
+  `appfilter.xml`, so the numbers cannot go stale when the catalog grows, and
+  a button through to the icon pack where the toggle lives. Still no Kotlin
+  and no dependencies — both activities are framework Java, the discovery
+  filters stay on the translucent one that forwards icon picks, and the module
+  now fails its own gate the day a dependency appears.
+  `tests/test_glyphs_pack.py` pinned the opposite contract, `test_no_launcher_entry`,
+  and pins this one instead: 21 tests → 26.
+
+## [2.0.1] — 2026-10-04
+
+### Changed
+
+- **Banners drop the left-edge bar.** Every 16:9 banner carried a 16px
+  accent bar down its left edge since 1.x; on the shelf it read as clutter
+  beside the mark (r/CoreBuilds feedback). All 976 banners now show only
+  the glyph, the category in the icon's colour and the name, and the
+  lockup sits dead centre on the card instead of shifting right to clear
+  the bar. Square glyphs are unchanged.
+
+### Removed
+
+- A stale `assets/banners/gridstreamr_tv.svg` from 1.9.2 that no catalog
+  entry used; GridStreamr ships as `gridstreamr`.
 
 ## [2.0.0] — 2026-10-03
 

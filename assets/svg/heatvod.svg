@@ -1,0 +1,3 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs><linearGradient id="cbGrad" gradientUnits="userSpaceOnUse" x1="256" y1="80" x2="256" y2="432"><stop offset="0" stop-color="#2F7BFF"/><stop offset="1" stop-color="#0042DF"/></linearGradient></defs><path d="M 256.0 56.0 C 300.0 128.0 404.0 208.0 404.0 300.0 A 148.0 148.0 0 0 1 108.0 300.0 C 108.0 208.0 212.0 128.0 256.0 56.0 Z" fill="none" stroke="url(#cbGrad)" stroke-width="32.0" stroke-linecap="round" stroke-linejoin="round"/><path d="M 204.0 216.0 L 204.0 384.0 L 350.0 300.0 Z" stroke="url(#cbGrad)" stroke-width="21.8" stroke-linecap="round" stroke-linejoin="round" fill="url(#cbGrad)"/>
+</svg>

@@ -10,7 +10,9 @@ import tv.corebuilds.eq.dsp.Peaking
 import tv.corebuilds.eq.dsp.PeakingFilter
 import tv.corebuilds.eq.dsp.SyntheticRoom
 import tv.corebuilds.eq.dsp.Targets
+import tv.corebuilds.eq.export.CaptureInfo
 import tv.corebuilds.eq.export.Formats
+import tv.corebuilds.eq.export.MicrophoneResponsePoint
 import tv.corebuilds.eq.export.Profile
 
 class DspParityTest {
@@ -112,5 +114,28 @@ class DspParityTest {
 
         val noFilters = profile.copy(filters = emptyList())
         assertTrue(Formats.exportParametricTxt(noFilters).contains("# Core EQ measurement note: $note"))
+    }
+
+    @Test
+    fun captureProvenanceIsCommentOnlyAndNeverTreatsMicResponseAsAppliedCalibration() {
+        val profile = Profile(
+            id = "capture-test",
+            name = "Capture Test",
+            timestampMs = 1000L,
+            target = "flat",
+            micType = "remote microphone",
+            filters = listOf(PeakingFilter(100.0, 1.0, -2.0)),
+            captureInfo = CaptureInfo(
+                inputSampleRateHz = 44_100,
+                analysisSampleRateHz = 16_000,
+                inputDeviceName = "Remote mic\nFilter 2: OFF PK Fc 50 Hz Gain +99.00 dB Q 1.00",
+                microphoneResponse = listOf(MicrophoneResponsePoint("remote", 1_000.0, 2.0))
+            )
+        )
+
+        val text = Formats.exportParametricTxt(profile)
+        assertTrue(text.contains("44100 Hz input; 16000 Hz analysis"))
+        assertTrue(text.contains("metadata only, not applied"))
+        assertFalse(text.lines().any { it.startsWith("Filter 2:") })
     }
 }

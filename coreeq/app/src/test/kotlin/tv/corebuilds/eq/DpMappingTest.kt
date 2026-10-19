@@ -52,6 +52,51 @@ class DpMappingTest {
     }
 
     @Test
+    fun backendFitUsesReportedCentresRangeAndGainReadBack() {
+        val p = profile(100.0 to 5.0, 500.0 to -1.0)
+        val fit = BandMapping.fitToBackend(
+            p,
+            listOf(100.0, 500.0),
+            minGainDb = -4.0,
+            maxGainDb = 0.0
+        )
+        assertEquals(5.0, fit.headroomDb, 1e-9)
+        assertEquals(0.0, fit.targetDb[0], 1e-9)
+        assertEquals(-6.0, fit.targetDb[1], 1e-9)
+        assertEquals(-4.0, fit.configuredDb[1], 1e-9)
+        assertEquals(1, fit.rangeLimitedBands)
+
+        // Equalizer read-back is compared to the headroom-shifted target, not
+        // mistaken for an acoustic response between its reported band centres.
+        val report = fit.report(doubleArrayOf(-0.1, -4.0))
+        assertEquals(2, report.bandCount)
+        assertEquals(1, report.rangeLimitedBands)
+        assertEquals(2.0, report.maxCentreGainResidualDb, 1e-9)
+        assertEquals(kotlin.math.sqrt(2.005), report.rmsCentreGainResidualDb, 1e-9)
+        assertTrue(report.statusSummary().contains("backend centre-gain fit"))
+    }
+
+    @Test
+    fun backendFitRejectsInvalidReportedLayoutOrRange() {
+        val p = profile(100.0 to 0.0)
+        assertThrows(IllegalArgumentException::class.java) {
+            BandMapping.fitToBackend(p, listOf(100.0, Double.NaN))
+        }
+        assertThrows(IllegalArgumentException::class.java) {
+            BandMapping.fitToBackend(p, listOf(200.0, 100.0))
+        }
+        assertThrows(IllegalArgumentException::class.java) {
+            BandMapping.fitToBackend(p, emptyList())
+        }
+        assertThrows(IllegalArgumentException::class.java) {
+            BandMapping.fitToBackend(p, listOf(100.0), minGainDb = -1.0)
+        }
+        assertThrows(IllegalArgumentException::class.java) {
+            BandMapping.fitToBackend(p, listOf(100.0), minGainDb = 2.0, maxGainDb = 1.0)
+        }
+    }
+
+    @Test
     fun millibelsClampToTheSuppliedRange() {
         val mbs = BandMapping.millibels(doubleArrayOf(0.0, -30.0, 1.5), -1500..1500)
         assertEquals(0.toShort(), mbs[0])

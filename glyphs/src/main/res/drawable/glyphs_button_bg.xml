@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The home screen's one focusable view, drawn for a TV remote.
+
+  No Material ripple here: this module has no library dependencies, so focus
+  is a fill change rather than an animation. Resting is a hairline outline
+  with cyan text; focused or pressed fills with Signal Cyan and the text
+  colour flips to the CTA ink (see color/glyphs_button_text.xml), which is the
+  contrast pair the icon pack's own buttons use.
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/glyphs_cyan" />
+            <corners android:radius="@dimen/glyphs_home_radius" />
+        </shape>
+    </item>
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/glyphs_cyan" />
+            <corners android:radius="@dimen/glyphs_home_radius" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <stroke
+                android:width="2dp"
+                android:color="@color/glyphs_hairline" />
+            <corners android:radius="@dimen/glyphs_home_radius" />
+        </shape>
+    </item>
+</selector>

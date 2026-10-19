@@ -12,7 +12,8 @@ import kotlin.math.abs
 data class DynamicsProcessingApplied(
     val effect: DynamicsProcessing,
     val bandCentresHz: List<Double>,
-    val bandGainsDb: List<Double>
+    val bandGainsDb: List<Double>,
+    val fitReport: BackendFitReport
 )
 
 /**
@@ -34,16 +35,20 @@ object DynamicsProcessingEngine {
     private const val VERIFY_CUTOFF_TOLERANCE_HZ = 0.2
     private const val VERIFY_LIMITER_TOLERANCE = 0.1
 
-    fun create(sessionId: Int, profile: Profile): DynamicsProcessingApplied {
-        val limiter = LimiterSettings()
+    fun create(
+        sessionId: Int,
+        profile: Profile,
+        limiter: LimiterSettings = LimiterSettings(),
+        layers: ToneLayers = ToneLayers.NONE
+    ): DynamicsProcessingApplied {
         check(limiter.isProtectionOnly()) { "Limiter settings must only protect, never boost" }
         val layout = DpBandLayout.specs()
-        val gains = BandMapping.gainsDb(profile, layout.map { it.centerHz })
-        val config = buildConfig(layout, gains, limiter)
+        val initialFit = BandMapping.fitToBackend(profile, layout.map { it.centerHz }, layers)
+        val config = buildConfig(layout, initialFit.targetDb, limiter)
         val effect = DynamicsProcessing(PRIORITY, sessionId, config)
         try {
             check(effect.hasControl()) { "DynamicsProcessing did not obtain control" }
-            val applied = configure(effect, profile, limiter)
+            val applied = configure(effect, profile, limiter, layers)
             Log.i(
                 TAG,
                 "Configured session=$sessionId channels=${effect.channelCount} bands=${applied.bandCentresHz.size} " +
@@ -67,7 +72,8 @@ object DynamicsProcessingEngine {
     fun configure(
         effect: DynamicsProcessing,
         profile: Profile,
-        limiter: LimiterSettings = LimiterSettings()
+        limiter: LimiterSettings = LimiterSettings(),
+        layers: ToneLayers = ToneLayers.NONE
     ): DynamicsProcessingApplied {
         check(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) { "DynamicsProcessing requires API 28" }
         check(limiter.isProtectionOnly()) { "Limiter settings must only protect, never boost" }
@@ -88,7 +94,8 @@ object DynamicsProcessingEngine {
             }
         }
         val centres = DpBandLayout.centresFromCutoffs(cutoffs)
-        val gains = BandMapping.gainsDb(profile, centres)
+        val fit = BandMapping.fitToBackend(profile, centres, layers)
+        val gains = fit.targetDb
         check(gains.size == cutoffs.size) { "DynamicsProcessing band layout changed unexpectedly" }
 
         for (channel in 0 until channelCount) {
@@ -104,15 +111,26 @@ object DynamicsProcessingEngine {
             }
         }
 
+        // Write the limiter too, so night mode switches on a held effect
+        // instead of failing verification and forcing a rebuild.
+        for (channel in 0 until channelCount) {
+            effect.setLimiterByChannelIndex(channel, limiterStage(limiter))
+        }
+
         verifyConfiguration(effect, channelCount, cutoffs, gains, limiter)
         check(effect.setEnabled(true) == AudioEffect.SUCCESS) { "DynamicsProcessing refused to enable" }
         check(effect.hasControl()) { "DynamicsProcessing lost control after enabling" }
         check(effect.getEnabled()) { "DynamicsProcessing reports disabled after enabling" }
 
-        val readBackGains = (0 until cutoffs.size).map { band ->
+        val readBackGains = DoubleArray(cutoffs.size) { band ->
             effect.getPreEqBandByChannelIndex(0, band).gain.toDouble()
         }
-        return DynamicsProcessingApplied(effect, centres, readBackGains)
+        return DynamicsProcessingApplied(
+            effect = effect,
+            bandCentresHz = centres,
+            bandGainsDb = readBackGains.toList(),
+            fitReport = fit.report(readBackGains)
+        )
     }
 
     private fun buildConfig(
@@ -132,16 +150,7 @@ object DynamicsProcessingEngine {
                 )
             )
         }
-        val limiter = DynamicsProcessing.Limiter(
-            true,
-            limiterSettings.enabled,
-            if (limiterSettings.linked) 0 else 1,
-            limiterSettings.attackMs,
-            limiterSettings.releaseMs,
-            limiterSettings.ratio,
-            limiterSettings.thresholdDb,
-            limiterSettings.postGainDb
-        )
+        val limiter = limiterStage(limiterSettings)
         return DynamicsProcessing.Config.Builder(
             DynamicsProcessing.VARIANT_FAVOR_FREQUENCY_RESOLUTION,
             CONFIG_CHANNELS,
@@ -155,6 +164,18 @@ object DynamicsProcessingEngine {
             .setLimiterAllChannelsTo(limiter)
             .build()
     }
+
+    private fun limiterStage(settings: LimiterSettings): DynamicsProcessing.Limiter =
+        DynamicsProcessing.Limiter(
+            true,
+            settings.enabled,
+            if (settings.linked) 0 else 1,
+            settings.attackMs,
+            settings.releaseMs,
+            settings.ratio,
+            settings.thresholdDb,
+            settings.postGainDb
+        )
 
     private fun verifyConfiguration(
         effect: DynamicsProcessing,

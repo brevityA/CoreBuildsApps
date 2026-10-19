@@ -73,6 +73,8 @@ class AndroidConfig(unittest.TestCase):
         sdk = self.cfg["features"]["../features/android-sdk"]
         self.assertIn("platforms;android-34", sdk["packages"])
         self.assertIn("platforms;android-35", sdk["packages"])
+        self.assertIn("platforms;android-37", sdk["packages"])
+        self.assertIn("build-tools;36.0.0", sdk["packages"])
         self.assertNotIn("system-images", sdk["packages"])
         self.assertNotIn("emulator", sdk["packages"])
 

@@ -2,7 +2,8 @@
 """Build Core Builds Classic ``series-8-amoled``.
 
 Twelve deterministic 3840x2160 wallpapers use exact RGB ``#000000`` as their
-canvas. Accents are deliberately narrow and sparse: an OLED pixel only turns
+canvas (refreshed in 2.4.0: two-stage halos and hot cores, see
+``_glow_mask``). Accents are deliberately narrow and sparse: an OLED pixel only turns
 off at true black, while broad near-black gradients defeat the point of an
 AMOLED set and can make low-level smearing more visible.
 
@@ -30,8 +31,11 @@ BLACK = (0, 0, 0)
 CYAN = (0, 212, 255)
 GLOW = (126, 238, 255)
 BLUE = (79, 172, 254)
-VIOLET = (138, 72, 144)
-EMBER = (192, 58, 32)
+# Icon-echo retune (2026-10-11): the violet and ember accents sit on the
+# icon pack's violet/coral accent families, a step apart in tone (see
+# build_classic_wallpapers.py and Wallpapers/README.md).
+VIOLET = (151, 84, 168)
+EMBER = (210, 72, 42)
 WHITE = (216, 236, 242)
 MIN_TRUE_BLACK = 0.50
 
@@ -43,13 +47,29 @@ def true_black_fraction(im: Image.Image) -> float:
 
 def _glow_mask(im: Image.Image, mask: Image.Image, colour: tuple[int, int, int],
                blur: int = 20, strength: float = 0.42) -> None:
-    """Composite a restrained coloured halo and then a crisp mask core."""
+    """Composite a coloured halo and then a crisp mask core.
+
+    2.4.0 refresh: the halo is two-stage - the tight one as before plus a
+    wide, faint one at three times the radius - and the core carries a
+    hot centre (the colour lifted toward white through an eroded mask), so
+    a stroke reads as light the panel emits rather than a line painted on
+    it. The wide halo falls to exact black within a few hundred pixels;
+    the >= 50% true-black contract still holds on every wall (main()
+    asserts it).
+    """
     if blur:
-        halo = mask.filter(ImageFilter.GaussianBlur(blur)).point(
-            lambda p: min(255, int(p * strength)))
+        tight = np.asarray(mask.filter(ImageFilter.GaussianBlur(blur)), dtype="float32") * strength
+        wide = np.asarray(mask.filter(ImageFilter.GaussianBlur(blur * 3)), dtype="float32") * strength * 0.3
+        halo = Image.fromarray(np.clip(np.maximum(tight, wide), 0, 255).astype("uint8"))
+        # Below ~2/255 the wash would only lift black pixels to near-black,
+        # the smear an OLED set exists to avoid; clamp those to zero.
+        halo = halo.point(lambda p: p if p >= 3 else 0)
         wash = Image.new("RGB", im.size, colour)
         im.paste(wash, (0, 0), halo)
     im.paste(Image.new("RGB", im.size, colour), (0, 0), mask)
+    hot = tuple(min(255, int(c + (255 - c) * 0.45)) for c in colour)
+    core = mask.filter(ImageFilter.MinFilter(3))
+    im.paste(Image.new("RGB", im.size, hot), (0, 0), core)
 
 
 def _line(im: Image.Image, points, colour=CYAN, width=4, blur=18,
