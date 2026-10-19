@@ -742,7 +742,14 @@ class MeasureActivity : TvActivity() {
         val tier = MeasurementQuality.tier(MeasurementQuality.score(capture.result))
         if (tier != MeasurementQuality.Tier.GREEN) return
         val profile = buildSweepProfile(capture.result, System.currentTimeMillis())
-        profileStore.saveProfile(profile, setAsActive = true)
+        // A failed save must not count as applied: the next clean measurement may still auto-apply.
+        try {
+            profileStore.saveProfile(profile, setAsActive = true)
+        } catch (e: Exception) {
+            Log.w(TAG, "Auto-apply could not save the profile", e)
+            textStatus.text = getString(R.string.measure_auto_apply_failed)
+            return
+        }
         EqService.send(this, EqService.ACTION_REAPPLY)
         prefs.edit()
             .putStringSet(KEY_AUTO_APPLIED, AutoApplyPolicy.recordApplied(device!!, applied))

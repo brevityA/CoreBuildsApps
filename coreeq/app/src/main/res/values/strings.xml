@@ -127,6 +127,7 @@
     <string name="measure_check_unscored">Check captured but not scored: too few trusted bands the two sweeps share. The correction is unchanged.</string>
     <string name="measure_check_provisional">%1$s Treat this check as provisional.</string>
     <string name="measure_saved">Saved and made active: %1$s</string>
+    <string name="measure_auto_apply_failed">The first measurement could not be applied automatically. Save it from the result, or measure again.</string>
     <string name="measure_auto_applied">Applied automatically for this output: %1$s. Later measurements are only shown until you save them.</string>
     <string name="measure_profile_name">Room · %1$s</string>
     <string name="measure_room_button">Room size: %1$s</string>
