@@ -8,6 +8,13 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
+- **A Play Console walkthrough that cannot drift from the build.**
+  `docs/PLAY-CONSOLE.md` gives each Console screen its answer in order — the
+  forms, the store listing, the TV-only form-factor choice, the bundle secrets
+  and the three tracks — quoting the package, title and asset paths straight
+  from `docs/play/listing.json`. A test holds it to them, because the most
+  expensive thing a walkthrough can do is confidently quote a package name
+  that Play will never let you change.
 - **The Play store listing is generated, and there is a privacy policy.** The
   store page needed a 512 icon, a 1024x500 feature graphic, a 1280x720 TV
   banner and 1920x1080 TV screenshots, none of which existed. They are now

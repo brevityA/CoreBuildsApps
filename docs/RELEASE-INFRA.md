@@ -206,6 +206,15 @@ note (pack version, TV model, Android version, detected launcher). The
 closing line denies only what is still true — no analytics, no installed-app
 list, no identifier.
 
+### Console, screen by screen
+
+`docs/PLAY-CONSOLE.md` is the operator's page: what to type into each Console
+screen, in Play's own order, with the values taken from `listing.json` and the
+assets in `docs/play/`. Start with §7 — a new personal account needs 12 testers
+opted in for 14 continuous days before it can apply for production, and
+internal testing does not count toward it. That clock is the launch's critical
+path, not the store copy.
+
 ### Listing assets and copy are generated, not exported
 
 `tools/build_play_listing.py` writes everything the store page needs into

@@ -126,6 +126,70 @@ class AssetLimits(unittest.TestCase):
                 self.assertEqual(out.height, 1080)
 
 
+class TheWalkthroughAgreesWithTheAssets(unittest.TestCase):
+    """docs/PLAY-CONSOLE.md is what someone types into Console.
+
+    A walkthrough quoting yesterday's app name, package or file path is worse
+    than none: it is confidently wrong at the exact moment a human is copying
+    values into a form that cannot be edited later (the package name).
+    """
+
+    DOC = ROOT / "docs/PLAY-CONSOLE.md"
+
+    def setUp(self):
+        self.doc = self.DOC.read_text(encoding="utf-8")
+
+    def test_it_quotes_the_listing_package(self):
+        self.assertIn(SPEC["package"], self.doc)
+        if SPEC["package"] != SPEC["sideload_package"]:
+            self.assertIn(SPEC["sideload_package"], self.doc,
+                          "the walkthrough must name the sideload id too, so the "
+                          "wrong one can never be pasted")
+
+    def test_it_quotes_the_shipped_title_and_limits(self):
+        self.assertIn(SPEC["copy"]["title"], self.doc)
+        self.assertIn("80-character limit", self.doc)
+        self.assertIn("4000 limit", self.doc)
+
+    def test_every_asset_it_names_exists(self):
+        named = set(re.findall(r"docs/play/[A-Za-z0-9._\-*]+", self.doc))
+        self.assertTrue(named)
+        for entry in sorted(named):
+            if "*" in entry:
+                # Globs are written relative to the repo root; PLAY already
+                # points at docs/play, so only the tail belongs in the pattern.
+                pattern = entry.split("/", 2)[2]
+                self.assertTrue(list(PLAY.glob(pattern)),
+                                f"{entry} matches no committed asset")
+                continue
+            self.assertTrue((ROOT / entry).exists(), f"{entry} does not exist")
+
+    def test_the_form_factor_it_tells_you_to_pick_is_the_listed_one(self):
+        if SPEC["form_factors"] == ["tv"]:
+            self.assertIn("TV only", self.doc)
+            self.assertIn("Form factors", self.doc)
+
+    def test_it_does_not_promise_purchases_the_listing_denies(self):
+        if not SPEC["content_rating"]["purchases"]:
+            self.assertIn("no purchases", self.doc)
+
+    def test_it_names_the_privacy_url_and_the_pages_step(self):
+        self.assertIn("brevityA.github.io/CoreBuildsApps/privacy.html", self.doc)
+        self.assertIn("Settings → Pages", self.doc)
+        self.assertTrue((ROOT / "docs/privacy.html").exists())
+
+    def test_it_states_the_twelve_tester_rule(self):
+        # The longest item in the launch; a walkthrough that omits it invites
+        # someone to perfect store copy for two weeks and then discover the wait.
+        self.assertIn("12 testers", self.doc)
+        self.assertIn("14", self.doc)
+
+    def test_it_names_the_secrets_the_bundle_build_needs(self):
+        for secret in ("PLAY_KEYSTORE_BASE64", "PLAY_KEYSTORE_PASSWORD",
+                       "PLAY_KEY_ALIAS", "PLAY_KEY_PASSWORD"):
+            self.assertIn(secret, self.doc)
+
+
 class CopyLimits(unittest.TestCase):
     """Play's field lengths, and that the text is the generated text."""
 
