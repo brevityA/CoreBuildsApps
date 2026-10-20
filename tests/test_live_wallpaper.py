@@ -480,10 +480,17 @@ class BrowserIntegrationTests(unittest.TestCase):
 
     def test_loops_are_selectable_for_bulk_save(self):
         # Saving loops one preview at a time was the complaint: Select all and
-        # long-press take loops like stills.
+        # long-press take loops like stills. Since the Play build's Premium
+        # purchase the set is "everything this account can save" rather than
+        # "everything in the grid" - the lock, not the loop badge, is what a
+        # selection leaves out, so loops are still selectable once bought.
         src = kt("WallpaperAdapter.kt")
         self.assertNotIn("if (item.isLive) return", src)
-        self.assertIn("selected.addAll(items.map { it.cacheName })", src)
+        self.assertIn("selected.addAll(items.filterNot { needsPurchase(it) }.map { it.cacheName })",
+                      src)
+        # The exclusion is the purchase, never the loop: a paid Play account
+        # selects its loops exactly as the GitHub build always has.
+        self.assertNotIn("item.isLive) continue", src)
 
     def test_live_chip_gathers_every_loop(self):
         src = kt("WallpapersActivity.kt")
@@ -622,17 +629,27 @@ class ResourceTests(unittest.TestCase):
         }
         self.assertIn(thumb, drawables, f"@drawable/{thumb} does not resolve")
 
-    def test_module_gains_no_dependency(self):
-        # "No new dependency" in the CHANGELOG is a contract: a looping video
-        # wallpaper is framework MediaPlayer plus WallpaperService.
+    def test_module_gains_no_media_dependency(self):
+        # "No new dependency" in the CHANGELOG is a contract about MEDIA: a
+        # looping video wallpaper is framework MediaPlayer plus WallpaperService.
+        # The list is pinned so any addition has to be argued for here, and the
+        # media check is separate so the pin cannot be the only thing standing
+        # between this module and an ExoPlayer-class library.
         deps = re.findall(r'implementation\("([^"]+)"\)', read(GRADLE))
         self.assertEqual(
             deps,
-            ["androidx.appcompat:appcompat:1.7.0",
+            ["com.android.billingclient:billing:7.0.0",   # Premium.kt: the Play purchase
+             "androidx.appcompat:appcompat:1.7.0",
              "androidx.core:core-ktx:1.13.1",
              "androidx.recyclerview:recyclerview:1.3.2"],
-            "the live wallpaper feature must not pull in a media library",
+            "a new dependency needs a deliberate edit to this list and a reason",
         )
+        for coord in deps:
+            self.assertNotRegex(
+                coord.lower(),
+                r"media3|exoplayer|ijkplayer|ffmpeg|vlc|videocache",
+                f"{coord} is a media library: the loop player is MediaPlayer",
+            )
 
 
 class CiWiringTests(unittest.TestCase):
