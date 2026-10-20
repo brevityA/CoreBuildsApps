@@ -33,6 +33,7 @@ object Prefs {
     const val KEY_WHATS_NEW_SEEN = "whats_new_seen_version"
     const val KEY_WP_NEW_SEEN = "wallpapers_new_seen_since"
     const val KEY_COMPANION_PENDING_APPLY = "glyphs_pending_apply"
+    const val KEY_PREMIUM_OWNED = "premium_owned"
 
     private fun prefs(context: Context): SharedPreferences =
         context.applicationContext.getSharedPreferences(FILE, Context.MODE_PRIVATE)
@@ -137,6 +138,22 @@ object Prefs {
 
     fun setLiveLoopId(context: Context, loopId: String) {
         prefs(context).edit().putString(KEY_LIVE_LOOP, loopId).apply()
+    }
+
+    /**
+     * Whether the one-off Core Builds Premium purchase is owned.
+     *
+     * A cache, not the source of truth: Play's own record of the purchase is.
+     * [Billing] writes it after every successful verification and reads it on
+     * every screen that gates, so the un-gating survives being offline, a
+     * fresh install restore, and a Play outage. Default false, and only the
+     * Play build reads it ([Premium.GATED]).
+     */
+    fun premiumOwned(context: Context): Boolean =
+        prefs(context).getBoolean(KEY_PREMIUM_OWNED, false)
+
+    fun setPremiumOwned(context: Context, owned: Boolean) {
+        prefs(context).edit().putBoolean(KEY_PREMIUM_OWNED, owned).apply()
     }
 
     fun set(context: Context, key: String, value: Boolean) {

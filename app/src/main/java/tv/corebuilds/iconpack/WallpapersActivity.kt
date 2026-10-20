@@ -65,18 +65,24 @@ class WallpapersActivity : TvActivity() {
         exportSelected = findViewById(R.id.wp_export_selected)
         count.text = getString(R.string.wp_sub_fmt, all.size)
 
-        adapter = WallpaperAdapter(all) { item ->
-            val visible = adapter.currentItems()
-            val index = visible.indexOfFirst { it.url == item.url }.coerceAtLeast(0)
-            startActivity(
-                Intent(this, WallpaperPreviewActivity::class.java).apply {
-                    putParcelableArrayListExtra(
-                        WallpaperPreviewActivity.EXTRA_WALLPAPERS, ArrayList(visible)
-                    )
-                    putExtra(WallpaperPreviewActivity.EXTRA_INDEX, index)
-                }
-            )
-        }
+        adapter = WallpaperAdapter(
+            all,
+            onSelect = { item ->
+                val visible = adapter.currentItems()
+                val index = visible.indexOfFirst { it.url == item.url }.coerceAtLeast(0)
+                startActivity(
+                    Intent(this, WallpaperPreviewActivity::class.java).apply {
+                        putParcelableArrayListExtra(
+                            WallpaperPreviewActivity.EXTRA_WALLPAPERS, ArrayList(visible)
+                        )
+                        putExtra(WallpaperPreviewActivity.EXTRA_INDEX, index)
+                    }
+                )
+            },
+            // Play build only, and only while the purchase is unowned: the
+            // tile is badged and this is what the badge promises.
+            onLocked = { openPremium() },
+        )
         // Keep the action bar in sync as selection changes from the adapter's
         // long-press/toggle path.
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
@@ -179,6 +185,16 @@ class WallpapersActivity : TvActivity() {
         val barStop = if (inMode) R.id.wp_select_all else R.id.wp_chips
         findViewById<View>(R.id.wp_back).nextFocusDownId = barStop
         findViewById<View>(R.id.wp_chips).nextFocusUpId = barStop
+    }
+
+    /**
+     * The Premium screen, from a badged tile. In the GitHub / Downloader build
+     * nothing is badged, so this is unreachable there; if a build ever mis-badges
+     * a tile the press still explains the purchase instead of previewing art the
+     * account has not bought.
+     */
+    private fun openPremium() {
+        startActivity(Intent(this, PremiumActivity::class.java))
     }
 
     private fun bindChips() {

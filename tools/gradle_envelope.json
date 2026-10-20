@@ -267,6 +267,20 @@
       "evidence": [
         "https://kotlinlang.org/docs/compose-compiler-migration-guide.html"
       ]
+    },
+    {
+      "coordinate": "com.android.billingclient:billing",
+      "max": "7.0.0",
+      "blockedUpdateTypes": [
+        "version-update:semver-patch",
+        "version-update:semver-minor",
+        "version-update:semver-major"
+      ],
+      "reason": "The one purchase in the Play build. 7.0.0 is the release whose API this code is written against (PendingPurchasesParams.enableOneTimeProducts, queryProductDetailsAsync) and the version the Play build type proves green. Nothing here has run against 7.1 or 8.x: Billing 8 moves the pending-purchases and product-details APIs again and needs a minSdk the icon pack cannot take (it ships minSdk 21 for Android 5.x Fire TV hardware). Lift this ceiling only after the play.yml bundles build at the newer version, not before.",
+      "evidence": [
+        "https://developer.android.com/google/play/billing/release-notes",
+        "https://developer.android.com/reference/com/android/billingclient/api/BillingClient"
+      ]
     }
   ],
   "migration": {

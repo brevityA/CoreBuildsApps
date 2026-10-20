@@ -156,6 +156,7 @@ jobs:
           python tests/test_play_build.py
           python tests/test_play_listing.py
           python tests/test_privacy_policy.py
+          python tests/test_premium_purchase.py
           python tests/test_lookalikes.py
           python tests/test_ci_coverage.py
 

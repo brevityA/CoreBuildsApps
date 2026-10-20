@@ -277,6 +277,15 @@
             android:exported="false"
             android:label="@string/support_label"
             android:theme="@style/Theme.CoreBuilds" />
+        <!-- The one-off Core Builds Premium purchase. Only the Play build
+             links here (Premium.GATED), and only because Play will not accept a
+             purchase that buys nothing: the good, its price and what stays free
+             are stated on this screen. Not exported. -->
+        <activity
+            android:name=".PremiumActivity"
+            android:exported="false"
+            android:label="@string/premium_title"
+            android:theme="@style/Theme.CoreBuilds" />
         <!-- The walk through a launcher that has no inbound apply (Monet).
              Opened from the sheet's CTA and from Settings; not exported. -->
         <activity

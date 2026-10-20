@@ -440,7 +440,26 @@ class WallpaperPreviewActivity : TvActivity() {
         applyNow()
     }
 
+    /**
+     * Whether the wall on screen needs the one-off purchase. The browser gates
+     * the press that opens this screen, but left/right can walk INTO a locked
+     * wall from a free neighbour, so the two actions that spend the art (Set
+     * and Save) are gated here as well: the preview doubles as the teaser.
+     */
+    private fun lockedHere(): Boolean {
+        val item = wallpapers.getOrNull(currentIndex) ?: return false
+        return Premium.needsPurchase(this, item)
+    }
+
+    private fun openPremium() {
+        startActivity(Intent(this, PremiumActivity::class.java))
+    }
+
     private fun applyNow() {
+        if (lockedHere()) {
+            openPremium()
+            return
+        }
         val file = downloaded ?: run {
             if (!loading) toast(getString(R.string.wp_load_failed))
             return
@@ -627,6 +646,10 @@ class WallpaperPreviewActivity : TvActivity() {
     }
 
     private fun saveNow() {
+        if (lockedHere()) {
+            openPremium()
+            return
+        }
         val file = downloaded ?: run {
             if (!loading) toast(getString(R.string.wp_load_failed))
             return

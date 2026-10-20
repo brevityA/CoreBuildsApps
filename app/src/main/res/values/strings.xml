@@ -387,4 +387,48 @@
     <string name="support_kofi_url">https://ko-fi.com/branding_brevity</string>
     <string name="support_sponsors_qr_hint">QR code for GitHub Sponsors</string>
     <string name="support_kofi_qr_hint">QR code for Ko-fi</string>
+
+    <!-- Core Builds Premium. The one-off purchase in the Play build: the live
+         loops and the eight later still series. Only the Play build shows any
+         of this - Premium.GATED is Distribution.PLAY - so the GitHub build
+         keeps every wall free and never names a price.
+
+         Written with real characters (— ’ …) rather than \u escapes: the
+         escapes compile, but docs/app-ui-premium.png is drawn from these
+         strings by tools/build_app_ui_mockups.py, which does no escape pass,
+         so an escaped dash showed up as literal backslash-u in the frame.
+
+         Two counts, two format strings: what the purchase adds, and what
+         stays free. Neither number is typed into copy anywhere. -->
+    <string name="premium_kicker">PREMIUM</string>
+    <string name="premium_title">Core Builds Premium</string>
+    <string name="premium_included_header">WHAT IT UNLOCKS</string>
+    <string name="premium_included_body">The live loops and the later wallpaper series: every animated wallpaper, from the twinkling Motion set to the Cinema marquees.\n\nOne purchase. Not a subscription, and nothing renews.</string>
+    <string name="premium_included_fmt">%1$d wallpapers in the later series, and all %2$d live loops — every animated wallpaper, from the twinkling Motion set to the Cinema marquees.\n\nOne purchase. Not a subscription, and nothing renews.</string>
+    <string name="premium_free_note">The other %1$d series — %2$d walls — stay free, along with every icon, every tool and Core Builds Glyphs Pack. Nothing already free becomes paid.</string>
+    <string name="premium_state_connecting">Checking with Google Play…</string>
+    <string name="premium_state_checking">Asking Google Play what this account owns…</string>
+    <string name="premium_state_opening">Opening Google Play…</string>
+    <string name="premium_state_locked">Not unlocked yet</string>
+    <string name="premium_state_owned">Premium is unlocked</string>
+    <string name="premium_state_unavailable">Google Play is not available here</string>
+    <string name="premium_price_unknown">The price is shown by Google Play</string>
+    <string name="premium_price_fmt">%1$s, once. Google Play handles the payment.</string>
+    <string name="premium_unavailable_sub">This device cannot buy from Google Play, so this purchase is not offered here. The pack’s free series and every icon still work.</string>
+    <string name="premium_unavailable_reason_fmt">Google Play said: %1$s</string>
+    <string name="premium_buy">Unlock Premium</string>
+    <string name="premium_buy_unavailable">Unavailable on this device</string>
+    <string name="premium_owned_done">Done</string>
+    <string name="premium_owned_sub">Already bought on this account. Restored from Google Play.</string>
+    <string name="premium_owned_note">Thank you. Every wallpaper and loop is unlocked on this TV.</string>
+    <string name="premium_restore">Restore purchase</string>
+    <string name="premium_note">Google Play handles the payment and the receipt: this app never sees your card, and buying sends nothing to Core Builds. A TV with no Play Store cannot buy it — the free series and the loops’ still frames still work there.</string>
+    <string name="premium_badge">PREMIUM</string>
+    <string name="premium_locked_spoken">, premium wallpaper, locked</string>
+    <string name="wp_premium_title">That wallpaper is in Core Builds Premium</string>
+    <string name="wp_premium_sub">A one-off purchase unlocks the live loops and the later series. The pack’s free series, every icon and every tool stay free.</string>
+    <string name="wp_premium_cta">See what’s included</string>
+    <string name="settings_premium_title">Core Builds Premium</string>
+    <string name="settings_premium_sub">The live loops and the later wallpaper series, as a one-off purchase.</string>
+    <string name="settings_premium_owned">Unlocked</string>
 </resources>
