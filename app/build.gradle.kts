@@ -197,6 +197,11 @@ android {
 
     buildFeatures {
         buildConfig = true
+        // The candidate build type renames itself through resValue("string",
+        // "app_name", ...). AGP 9 turns build-type resource values off by
+        // default and fails configuration outright rather than ignoring the
+        // call, so this is a required opt-in on the new toolchain.
+        resValues = true
     }
 
     androidResources {
