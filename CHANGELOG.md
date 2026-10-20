@@ -8,6 +8,16 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
+- **The Play store listing is generated, and there is a privacy policy.** The
+  store page needed a 512 icon, a 1024x500 feature graphic, a 1280x720 TV
+  banner and 1920x1080 TV screenshots, none of which existed. They are now
+  output from the same sources the app ships, and the copy's counts (icons,
+  walls, series, loops) are substituted from the catalog, so the listing cannot
+  advertise a number the build does not carry. The store banner is the
+  on-device Leanback banner rendered at 1280x720 rather than a second drawing.
+  `docs/privacy.html` replaces the `[USER TO SUPPLY]` gap, and its claims are
+  held to the code by a test. The listing is TV-only: there is no phone UI to
+  photograph yet, and a rendered one would be fiction.
 - **Google Play apps, separate from the sideload ones.** Core Builds Icon
   Pack (`tv.corebuilds.iconpack.play`) and Core Builds Glyphs Pack
   (`tv.corebuilds.iconpack.glyphs.play`) are their own apps with their own

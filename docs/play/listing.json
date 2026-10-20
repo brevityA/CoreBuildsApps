@@ -1,0 +1,135 @@
+{
+  "package": "tv.corebuilds.iconpack.play",
+  "form_factors": [
+    "tv"
+  ],
+  "sideload_package": "tv.corebuilds.iconpack",
+  "counts": {
+    "icons": 1012,
+    "walls": 132,
+    "series": 11,
+    "loops": 48
+  },
+  "copy": {
+    "title": "Core Builds Icon Pack",
+    "short_description": "1012 icons and 132 wallpapers built for Android TV. No ads, no account.",
+    "full_description": "A icon and wallpaper pack made for the television, not a phone app stretched onto one.\n\nICONS\n1012 icons, mapped for the apps people actually run on a TV: streaming services, players, launchers, tools. The pack ships both shapes - square art for launchers that draw square, banners for launchers that draw wide - so one install covers either.\n\nWALLPAPERS\n132 stills across 11 series, from deep space to circuit boards, each with a matching thumbnail bundled in the app. The grid works offline; the full-size image downloads when you pick it, and saves to your own Pictures folder if you would rather set it yourself.\n\nLIVE LOOPS\n48 animated wallpapers, played by the system rather than a video app, so they keep moving while you browse.\n\nHONEST ABOUT YOUR TV\nThe auditor lists which of your installed apps the pack covers, shows the exact icon file it would draw for any app, and can request a missing icon in one press. There is no account and no sign-in. Nothing is analysed in the background.\n\nWORKS WITH\nLaunchers that accept icon packs, including Projectivy, FLauncher, AT4K, Leanback Launcher and Lawnchair variants. Where a launcher cannot be driven directly, the app says so and points you at the manual picker instead of pretending.\n\nPRIVACY\nNo advertising, no analytics, no tracking, no account. Wallpapers are fetched from a public address; an icon request sends the app name, the component and a device note, and only when you press it."
+  },
+  "assets": {
+    "icon": {
+      "file": "icon-512.png",
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA",
+      "max_bytes": 1048576
+    },
+    "feature_graphic": {
+      "file": "feature-graphic-1024x500.png",
+      "width": 1024,
+      "height": 500,
+      "mode": "RGB"
+    },
+    "tv_banner": {
+      "file": "tv-banner-1280x720.png",
+      "width": 1280,
+      "height": 720,
+      "mode": "RGB"
+    },
+    "tv_screenshots": [
+      {
+        "file": "tv-1-wallpapers-1920x1080.png",
+        "frame": "wallpapers",
+        "depicts": "every series, thumbnails bundled so the grid works offline",
+        "width": 1920,
+        "height": 1080,
+        "mode": "RGB"
+      },
+      {
+        "file": "tv-2-catalogue-1920x1080.png",
+        "frame": "catalogue",
+        "depicts": "the icon catalogue, searchable and sorted by category",
+        "width": 1920,
+        "height": 1080,
+        "mode": "RGB"
+      },
+      {
+        "file": "tv-3-inspector-1920x1080.png",
+        "frame": "inspector",
+        "depicts": "any app's unfiltered icon, and the file the pack would draw",
+        "width": 1920,
+        "height": 1080,
+        "mode": "RGB"
+      },
+      {
+        "file": "tv-4-auditor-1920x1080.png",
+        "frame": "auditor",
+        "depicts": "which installed apps are covered, and one-press icon requests",
+        "width": 1920,
+        "height": 1080,
+        "mode": "RGB"
+      },
+      {
+        "file": "tv-5-launcher-compat-1920x1080.png",
+        "frame": "launcher-compat",
+        "depicts": "which launchers on this TV can apply the pack",
+        "width": 1920,
+        "height": 1080,
+        "mode": "RGB"
+      },
+      {
+        "file": "tv-6-suite-1920x1080.png",
+        "frame": "suite",
+        "depicts": "the rest of the Core Builds apps on this TV",
+        "width": 1920,
+        "height": 1080,
+        "mode": "RGB"
+      }
+    ]
+  },
+  "data_safety": {
+    "collects_user_data": false,
+    "shares_user_data": false,
+    "has_ads": false,
+    "encrypted_in_transit": true,
+    "deletion_request_url": null,
+    "rationale": "No analytics, advertising or crash SDKs are linked; the app has no account, no identifier and no background upload. The one POST the user can trigger (an icon request) carries the app name, the component and a device note - no device ID, no advertising ID, no IP-derived store beyond a rate-limit window on the broker - and the policy states it verbatim.",
+    "user_initiated_icon_request": {
+      "endpoint_owner": "icon request broker (tools/icon_request_broker)",
+      "fields": [
+        "app_name",
+        "component",
+        "device"
+      ],
+      "identifiers": [],
+      "trigger": "the user presses Request icon on an auditor row"
+    }
+  },
+  "content_rating": {
+    "violence": false,
+    "sexuality": false,
+    "language": false,
+    "controlled_substances": false,
+    "gambling": false,
+    "user_generated_content_shared": false,
+    "location_sharing": false,
+    "purchases": false,
+    "ads": false,
+    "expected_rating": "Everyone / PEGI 3",
+    "note": "A wallpaper and icon pack. Nothing here is user-generated, shared or interactive with strangers. When the premium unlock ships in its own change, 'purchases' becomes true and this answer has to move with it."
+  },
+  "sources": {
+    "generator": "94328b016bd1670fcf55932c293928ca4a741e200cf35e4fa7886d6602803ba7",
+    "branding": "77d63a0d0ef7c7fc21eaddf7ce54a6a7aed88d5e3a8ac733079ae869f1424f54",
+    "icon_pack_xml": "524eaa6952a4da1c823bf600340b8d61f9b0e5486ef74cb00462451ab3fd647b",
+    "wallpapers_json": "0bc4f85d2ff7d2e2c646088cd450957c5e7a58c0519be85923207356dafb3490",
+    "live_loop_kt": "cd1799653c6278c75142804c137eefa3fc5ad8f893b28331d8f8ed5acc3c8720",
+    "frames": {
+      "app-ui-wallpapers.png": "77efc54344e91cb0f24a4d1073de3ce5951454e75429786c77d0a9c89d3b85f7",
+      "app-ui-catalogue.png": "3ea17dfa44dbecd815a41443c5d79cba48f3c74fa5a327e2ae2dcdb1742c8c24",
+      "app-ui-inspector.png": "d5378f5082edd66813901240608b0c94d6a2cb8fc1f6d7c24fc4dec0518699e8",
+      "app-ui-auditor.png": "b0ed4c209362841cc5b2f75dacb3ab1b87f7651034f16ed024b90c70a287f964",
+      "app-ui-launcher-compat.png": "df1ca2cfab3fcdf91cae315ef31b2ddb9e1a32e4b59b26fe7e6bd2a1ee65ab68",
+      "app-ui-suite.png": "98f7585d22b481c1390d5ed1e8692024cd2b1cc2168bd313ec9318fe542e57cb"
+    }
+  }
+}

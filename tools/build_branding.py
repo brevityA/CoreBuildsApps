@@ -91,6 +91,33 @@ def png(svg_text, out, w, h):
                      output_width=w, output_height=h, background_color=None)
 
 
+def banner_svg():
+    """The 320x180 Leanback banner, as SVG, so every size renders from one
+    composition: the app's cb_banner (640x360) and the Play store banner
+    (1280x720, tools/build_play_listing.py) are the same art at two scales
+    rather than two drawings that can drift."""
+    TV_SAFE = 16                      # 5% of 320
+    TEXT_X = 164                      # clear of the mark, which ends near 150
+    limit = 320 - TV_SAFE
+
+    wm, _ = wordmark_spans(["Core Builds"], 23, TEXT_X, [82], "#e6edf3")
+    sub, _ = wordmark_spans(["Icon Pack"], 19, TEXT_X, [106], "#00d4ff")
+
+    strap, strap_size = "Projectivy \u00b7 Android TV", 9
+    strap_w = type_measure(strap, strap_size, FONT_MONO)
+    assert TEXT_X + strap_w <= limit, (
+        f"banner strapline overruns the safe area: ends at "
+        f"{TEXT_X + strap_w:.1f}, limit {limit}")
+    tag, _ = wordmark_spans([strap], strap_size, TEXT_X, [130], "#8b949e",
+                            font_path=FONT_MONO)
+
+    return svg(
+        320, 180,
+        f'<g transform="translate(14,22) scale(0.265)">{PACK_ICON}</g>'
+        f'{wm}{sub}{tag}',
+        bg="#0d1117")
+
+
 def main():
     # The mark must pass the same contract as every catalog icon before it is
     # allowed to represent the pack. Fail loudly, by name, before any asset
@@ -143,22 +170,7 @@ def main():
     TEXT_X = 164                      # clear of the mark, which ends near 150
     limit = 320 - TV_SAFE
 
-    wm, _ = wordmark_spans(["Core Builds"], 23, TEXT_X, [82], "#e6edf3")
-    sub, _ = wordmark_spans(["Icon Pack"], 19, TEXT_X, [106], "#00d4ff")
-
-    strap, strap_size = "Projectivy \u00b7 Android TV", 9
-    strap_w = type_measure(strap, strap_size, FONT_MONO)
-    assert TEXT_X + strap_w <= limit, (
-        f"banner strapline overruns the safe area: ends at "
-        f"{TEXT_X + strap_w:.1f}, limit {limit}")
-    tag, _ = wordmark_spans([strap], strap_size, TEXT_X, [130], "#8b949e",
-                            font_path=FONT_MONO)
-
-    banner = svg(
-        320, 180,
-        f'<g transform="translate(14,22) scale(0.265)">{PACK_ICON}</g>'
-        f'{wm}{sub}{tag}',
-        bg="#0d1117")
+    banner = banner_svg()
     p = RES / "drawable-nodpi" / "cb_banner.png"
     png(banner, p, 640, 360)
     written.append("drawable-nodpi/cb_banner.png (640x360)")

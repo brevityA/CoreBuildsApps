@@ -206,6 +206,39 @@ note (pack version, TV model, Android version, detected launcher). The
 closing line denies only what is still true — no analytics, no installed-app
 list, no identifier.
 
+### Listing assets and copy are generated, not exported
+
+`tools/build_play_listing.py` writes everything the store page needs into
+`docs/play/`, from the same sources the app ships:
+
+| Asset | Size | Comes from |
+|---|---|---|
+| `icon-512.png` | 512x512, RGBA, < 1 MB | the adaptive background plus `PACK_ICON` in `tools/build_branding.py` |
+| `feature-graphic-1024x500.png` | 1024x500, no alpha | the mark, the wordmark and the live counts |
+| `tv-banner-1280x720.png` | 1280x720, no alpha | `build_branding.banner_svg()` — the *same drawing* as the on-device 320x180 Leanback banner, at store size |
+| `tv-1..6-*.png` | 1920x1080, no alpha | the committed `docs/app-ui-*.png` frames, caption band cropped off |
+| `listing.json` | — | title, short and full description, Data safety and content-rating answers, every count and source digest |
+
+The counts in the copy (icons, walls, series, loops) are substituted from
+`icon_pack.xml`, `wallpapers.json` and `LiveLoop.kt`. `tests/test_play_listing.py`
+holds the committed copy to them, so a catalog that grows cannot leave a stale
+number on the store page; `--check` does the same for anyone editing by hand.
+
+**TV-only, deliberately.** `form_factors: ["tv"]`. There are no phone
+screenshots because there is no tested phone UI — the layouts are TV-first, and
+rendering fake ones is exactly the drift this repo generates its way out of.
+Listing for phones needs real captures from a phone build and a decision about
+supporting phones at all. Note the irony: the pack is *built* to target API 36
+because it lists for phones; a TV-only listing could have stayed at 34. If the
+phone listing slips, the API 36 migration is still correct and worth keeping.
+
+**Privacy policy:** `docs/privacy.html`. Serve it over GitHub Pages
+(Settings → Pages → source `main` / `/docs`) and the URL to paste into Play
+Console is
+`https://brevityA.github.io/CoreBuildsApps/privacy.html`. `tests/test_privacy_policy.py`
+holds every claim in it to the code — the hosts the app calls, the one POST
+payload, the Play build's removed permission and absent update check.
+
 ### The two Play listings go out together
 
 Icon Pack and Glyphs Pack are separate Play listings, and the pack checks the

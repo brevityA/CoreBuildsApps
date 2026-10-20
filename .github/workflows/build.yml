@@ -154,6 +154,8 @@ jobs:
           python tests/test_stroke_spacing.py
           python tests/test_icon_review.py
           python tests/test_play_build.py
+          python tests/test_play_listing.py
+          python tests/test_privacy_policy.py
           python tests/test_lookalikes.py
           python tests/test_ci_coverage.py
 
