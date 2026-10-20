@@ -341,9 +341,17 @@
     <string name="about_label_icons">ICONS</string>
     <string name="about_label_wallpapers">WALLPAPERS</string>
     <string name="about_network_header">EVERYTHING THIS APP SENDS</string>
+    <!-- Three items, and the third is the one that used to be missing: the
+         missing-icon report POSTs to the icon-request broker, and its device
+         note carries the model, the Android version, the pack version and the
+         detected launcher. The closing sentence used to deny the device model
+         while that was true, which the Play Data safety form would have
+         inherited as a false declaration. tests/test_play_build.py holds the
+         items against what the code actually sends. -->
     <string name="about_network_one">1.  A request for the update manifest, when update checks are on or when you press Check for updates here, and the update itself when you choose to download it.</string>
     <string name="about_network_two">2.  A request for each wallpaper or live loop you choose to download, and for Core Builds Glyphs Pack the first time you switch the art style to Glyphs.</string>
-    <string name="about_network_none">That is the whole list. No analytics, no installed-app list, no device model, no identifier. Icons ship inside the app and are never fetched.</string>
+    <string name="about_network_three">3.  A request when you report a missing icon: the app name, the component it runs as, and a one-line note with this build&#8217;s pack version, the TV&#8217;s model, its Android version and the launcher in use.</string>
+    <string name="about_network_none">That is the whole list. No analytics, no installed-app list, no identifier. Icons ship inside the app and are never fetched.</string>
     <string name="about_links">LINKS</string>
     <!-- About > Check for updates. The row's title is the button through the
          flow: this label, then update_download / update_install. -->

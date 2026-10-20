@@ -27,6 +27,22 @@ All notable changes to the Core Builds Icon Pack. Format follows
   through Core Builds Glyphs Pack are still always square, and picking never
   changes what the launcher auto-applies.
 
+### Fixed
+
+- **The Play build has no route to a tip.** Support is two QR codes for
+  GitHub Sponsors and Ko-fi, and Play's Payments policy forbids a Play app
+  leading users to any payment method but Play Billing (a tip to one
+  developer is not the tax-exempt donation the policy exempts). The Play
+  build now hides every door: the home rail closes up to Settings | About
+  and rewrites the D-pad edges that named the hidden entry, and Settings and
+  About hide their rows. The GitHub/Downloader build keeps Support.
+- **About's "everything this app sends" list names the icon request.** The
+  list had two items and a closing line that said no device model is sent,
+  but reporting a missing icon POSTs a device note with the pack version,
+  the TV's model, its Android version and the detected launcher. It is now
+  item 3, and the closing line no longer denies the model — which also
+  keeps the Play Data safety form from inheriting a false declaration.
+
 ## [2.4.4] — 2026-10-18
 
 The first release after 2.4.2. 2.4.3 was never tagged, so this build also

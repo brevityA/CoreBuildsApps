@@ -70,6 +70,12 @@ class AboutActivity : TvActivity() {
         findViewById<View>(R.id.about_support).setOnClickListener {
             startActivity(Intent(this, SupportActivity::class.java))
         }
+        // Play's Payments policy: the Play build has no Support row here either
+        // (MainActivity and Settings hide theirs too), so the About sheet shows
+        // no route to a tip.
+        if (Distribution.PLAY) {
+            findViewById<View>(R.id.about_support).visibility = View.GONE
+        }
         // Play builds update through Play only (Device and Network Abuse
         // policy): the row opens this app's listing and never fetches an APK.
         findViewById<View>(R.id.about_update).setOnClickListener {

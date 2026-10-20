@@ -82,6 +82,76 @@ class PlayBuild(unittest.TestCase):
                                  "about_update_label", "about_update_sub"})
         self.assertIn("Google Play", play)
 
+    def test_play_build_has_no_route_to_a_tip(self):
+        # Play's Payments policy: an app on Play may not lead users to a
+        # payment method other than Play Billing, and 100% of a tip to one
+        # developer is not a tax-exempt donation. Support is two QR codes for
+        # GitHub Sponsors and Ko-fi, so every door to it is shut on Play -
+        # the home rail, Settings, and About - or a hidden one is a rejection.
+        main = read(KT / "MainActivity.kt")
+        self.assertIn("findViewById<View>(R.id.support_entry).visibility = View.GONE", main)
+        self.assertIn("if (Distribution.PLAY) {\n            findViewById<View>(R.id.support_entry)", main)
+        settings = read(KT / "SettingsActivity.kt")
+        self.assertIn("findViewById<View>(R.id.set_support_row).visibility = View.GONE", settings)
+        self.assertIn("if (Distribution.PLAY) {\n            findViewById<View>(R.id.set_support_row)", settings)
+        about = read(KT / "AboutActivity.kt")
+        self.assertIn("findViewById<View>(R.id.about_support).visibility = View.GONE", about)
+        self.assertIn("if (Distribution.PLAY) {\n            findViewById<View>(R.id.about_support)", about)
+        # Every door to SupportActivity is wired (a press handler exists in all
+        # three screens) and every one of them is shut on Play. A new door
+        # added without its own Distribution.PLAY test shows up here as a
+        # handler with no gate beside it.
+        for name, anchor in (
+            ("MainActivity.kt", "R.id.support_entry"),
+            ("SettingsActivity.kt", "R.id.set_support_row"),
+            ("AboutActivity.kt", "R.id.about_support"),
+        ):
+            src = read(KT / name)
+            handler = src.split(f"startActivity(Intent(this, SupportActivity::class.java))", 1)[0]
+            self.assertIn(anchor, handler, f"{name}: no press handler for {anchor}")
+            self.assertIn(f"findViewById<View>({anchor}).visibility = View.GONE", src, name)
+
+    def test_play_rail_does_not_focus_a_hidden_support_entry(self):
+        # A GONE view that is focusable still takes the cursor (MainActivity
+        # says so above syncFocusChain), so hiding Support is only half the
+        # job: no D-pad edge may keep naming it. railHead is the first entry
+        # that is still there.
+        main = read(KT / "MainActivity.kt")
+        self.assertIn(
+            "if (Distribution.PLAY) R.id.settings_entry else R.id.support_entry", main)
+        self.assertIn("findViewById<View>(R.id.settings_entry).setNextFocusLeftId(View.NO_ID)", main)
+        self.assertIn("findViewById<View>(R.id.wallpapers_entry).setNextFocusDownId(railHead)", main)
+        chain = main.split("private fun syncFocusChain()", 1)[1].split("\n    }\n", 1)[0]
+        self.assertIn("if (groupShown) railHead else aboveRows", chain)
+        self.assertNotIn("if (groupShown) R.id.support_entry else aboveRows", chain)
+
+    def test_the_sends_list_names_the_icon_request(self):
+        # About's list is a complete enumeration, not a summary: the missing-
+        # icon report POSTs a device note (model, Android version, pack
+        # version, launcher), and the list used to say "no device model"
+        # while that was true. Play inherits item 3 unchanged, so the Data
+        # safety form does not get a false declaration to copy.
+        main = read(APP / "src/main/res/values/strings.xml")
+        for item in ("about_network_one", "about_network_two", "about_network_three"):
+            self.assertRegex(main, rf'<string name="{item}">[1-3]\.')
+        self.assertIn("about_network_three", read(APP / "src/main/res/layout/activity_about.xml"))
+        three = re.search(r'<string name="about_network_three">([^<]*)</string>', main).group(1)
+        for fact in ("model", "Android version", "pack version", "launcher"):
+            self.assertIn(fact, three)
+        none = re.search(r'<string name="about_network_none">([^<]*)</string>', main).group(1)
+        self.assertNotIn("device model", none)
+        # The Play overlay replaces items 1 and 2 only; item 3 is the same
+        # POST in both builds, so it is inherited from main by design.
+        play = read(APP / "src/play/res/values/strings.xml")
+        self.assertIn('name="about_network_one"', play)
+        self.assertNotIn('name="about_network_three"', play)
+        # ...and deviceNote() still sends exactly what item 3 lists.
+        auditor = read(KT / "AuditorActivity.kt")
+        note = auditor.split("private fun deviceNote(): String =", 1)[1].split("\n\n", 1)[0]
+        for field in ("Build.MODEL", "Build.VERSION.RELEASE", "BuildConfig.VERSION_NAME",
+                      "ApplyIconPack.detectDefault"):
+            self.assertIn(field, note)
+
     def test_about_update_row_never_fetches_an_apk_on_play(self):
         # About's row is the second update path (the first is the home check
         # above). On Play it opens the listing instead: a Play app may not

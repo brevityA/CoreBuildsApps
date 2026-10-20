@@ -245,6 +245,17 @@
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_label" />
 
+                <!-- The missing-icon report. It is the one request that carries
+                     anything about the device, so it gets its own numbered item
+                     rather than a clause on another. -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/cb_space_xs"
+                    android:text="@string/about_network_three"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_label" />
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -131,6 +131,12 @@ class SettingsActivity : TvActivity() {
         row(R.id.set_support_row) {
             startActivity(Intent(this, SupportActivity::class.java))
         }
+        // Play's Payments policy: no route to a tip (see MainActivity). The
+        // screen stays in the APK — Settings is the only way in, and this is
+        // the row that would be it — but the Play build never shows the door.
+        if (Distribution.PLAY) {
+            findViewById<View>(R.id.set_support_row).visibility = View.GONE
+        }
 
         findViewById<View>(R.id.set_cache_clear).setOnClickListener {
             clearCache()

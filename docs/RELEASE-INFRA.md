@@ -179,6 +179,23 @@ Play Console will refuse. With them set, an unsigned bundle fails the run.
 The artifact `core-builds-play-bundles` holds `app-banners-play.aab` and
 `glyphs-play.aab`; upload each to its own Play Console app.
 
+**No tips in the Play build.** Play's Payments policy forbids leading a user
+to a payment method other than Play Billing, and a tip to one developer is
+not the tax-exempt donation the policy exempts — Google rejected real apps
+over exactly this (AnkiDroid, August 2026). Support is two QR codes for
+GitHub Sponsors and Ko-fi, so the Play build hides every door to it: the home
+rail closes up to `Settings | About` and rewrites the D-pad edges that named
+the hidden entry (`MainActivity.railHead`), Settings hides its row, and About
+hides its row. The GitHub/Downloader build keeps all three. Adding a tip jar
+to the Play build means Play Billing consumables, not a link.
+
+**Data safety.** About's "everything this app sends" list is the source for
+the Console form, so it is an enumeration and not a summary. Item 3 is the
+missing-icon report, which POSTs the app name, the component and a device
+note (pack version, TV model, Android version, detected launcher). The
+closing line denies only what is still true — no analytics, no installed-app
+list, no identifier.
+
 ## Release checklist artifact contents
 
 Every `suite-release.yml` run writes a checklist summary with:
