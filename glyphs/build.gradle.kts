@@ -125,7 +125,11 @@ android {
 
     sourceSets {
         getByName("main") {
-            res.srcDir(generatedRes)
+            // AGP 9 refuses a Provider here: "You cannot add Provider instances
+            // to the Android SourceSet API". Resolving it eagerly costs only
+            // the laziness, not correctness - copyGlyphArt already writes this
+            // directory and preBuild depends on it either way.
+            res.srcDir(generatedRes.get().asFile)
         }
     }
 
