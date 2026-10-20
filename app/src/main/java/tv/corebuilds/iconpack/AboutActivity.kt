@@ -70,7 +70,17 @@ class AboutActivity : TvActivity() {
         findViewById<View>(R.id.about_support).setOnClickListener {
             startActivity(Intent(this, SupportActivity::class.java))
         }
-        findViewById<View>(R.id.about_update).setOnClickListener { onUpdatePressed() }
+        // Play's Payments policy: the Play build has no Support row here either
+        // (MainActivity and Settings hide theirs too), so the About sheet shows
+        // no route to a tip.
+        if (Distribution.PLAY) {
+            findViewById<View>(R.id.about_support).visibility = View.GONE
+        }
+        // Play builds update through Play only (Device and Network Abuse
+        // policy): the row opens this app's listing and never fetches an APK.
+        findViewById<View>(R.id.about_update).setOnClickListener {
+            if (Distribution.PLAY) openPlayListing() else onUpdatePressed()
+        }
         findViewById<View>(R.id.about_back).setOnClickListener { finish() }
     }
 
@@ -224,6 +234,14 @@ class AboutActivity : TvActivity() {
      * is the difference between "this box has no browser" and "the icon pack
      * crashed".
      */
+    private fun openPlayListing() {
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(Distribution.playListing(packageName))))
+        } catch (e: android.content.ActivityNotFoundException) {
+            open(Distribution.playListingWeb(packageName))
+        }
+    }
+
     private fun open(url: String) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         try {

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Play build wording: what the Play build actually sends, and where its
+     updates come from. Play's Device and Network Abuse policy rules out the
+     GitHub update row, so About's row opens this app's Play listing.
+
+     This overlay must keep the main list's shape, item for item: Play replaces
+     the update item and the wallpaper item, but the missing-icon report on
+     item 3 is the same POST in both builds, so main's about_network_three is
+     inherited unchanged. tests/test_play_build.py holds that. -->
+<resources>
+    <string name="about_network_one">1.  Nothing for updates: Google Play updates this app.</string>
+    <string name="about_network_two">2.  A request for each wallpaper or live loop you choose to download. Core Builds Glyphs Pack comes from its own Google Play listing.</string>
+    <string name="about_update_label">Updates from Google Play</string>
+    <string name="about_update_sub">Google Play updates this app. Press to open its listing.</string>
+</resources>

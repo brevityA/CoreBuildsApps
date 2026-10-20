@@ -38,6 +38,7 @@
     <string name="picker_hint_banner">Assigning the 16:9 banner. Switch to Square for the 1:1 glyph.</string>
     <string name="picker_hint_square">Assigning the 1:1 glyph. Switch to Banner for the 16:9 card.</string>
     <string name="picker_hint_glyphs_only">Assigning the 1:1 glyph. For the 16:9 banner, pick from Core Builds Icon Pack in your launcher.</string>
+    <string name="picker_hint_square_by_style">Assigning the 1:1 glyph. For the 16:9 banner, set Art style to Banners on the Core Builds home screen.</string>
     <string name="picker_hint_banners_only">Assigning the 16:9 banner. For the 1:1 glyph, pick from Core Builds Glyphs Pack in your launcher.</string>
     <string name="picker_chip_banner">Banner</string>
     <string name="picker_chip_square">Square</string>
@@ -101,6 +102,8 @@
     <string name="glyphs_install_permission">Allow installs from Core Builds, then switch to Glyphs again to fetch Core Builds Glyphs Pack</string>
     <string name="glyphs_failed_fmt">Couldn\'t fetch Core Builds Glyphs Pack: %1$s. Art style is back to Banners.</string>
     <string name="glyphs_declined">Core Builds Glyphs Pack wasn\'t installed, so your launcher keeps the banners. Art style is back to Banners.</string>
+    <string name="glyphs_play_listing">Install Core Builds Glyphs Pack from Google Play, then come back here: your launcher switches to the square pack</string>
+    <string name="glyphs_no_store">Google Play isn\'t available on this device, so your launcher keeps the banners. Art style is back to Banners.</string>
     <string name="update_available_fmt">Update available — v%1$s · %2$d icons</string>
     <string name="update_current_fmt">Up to date — v%1$s.</string>
     <string name="update_failed_fmt">Update failed: %1$s</string>
@@ -328,6 +331,9 @@
     <string name="suite_not_installed">Not installed on this TV</string>
     <string name="suite_code_fmt">Downloader code %1$s</string>
     <string name="suite_no_code">Not on Downloader yet — grab the APK from the GitHub release</string>
+    <!-- Play build only: the Suite screen lists installed companions there and
+         Downloader codes are never shown, so it can legitimately be empty. -->
+    <string name="suite_none_play">No other Core Builds apps on this TV yet.</string>
     <string name="suite_open_failed_fmt">Could not open %1$s from here.</string>
 
     <!-- About -->
@@ -338,9 +344,17 @@
     <string name="about_label_icons">ICONS</string>
     <string name="about_label_wallpapers">WALLPAPERS</string>
     <string name="about_network_header">EVERYTHING THIS APP SENDS</string>
+    <!-- Three items, and the third is the one that used to be missing: the
+         missing-icon report POSTs to the icon-request broker, and its device
+         note carries the model, the Android version, the pack version and the
+         detected launcher. The closing sentence used to deny the device model
+         while that was true, which the Play Data safety form would have
+         inherited as a false declaration. tests/test_play_build.py holds the
+         items against what the code actually sends. -->
     <string name="about_network_one">1.  A request for the update manifest, when update checks are on or when you press Check for updates here, and the update itself when you choose to download it.</string>
     <string name="about_network_two">2.  A request for each wallpaper or live loop you choose to download, and for Core Builds Glyphs Pack the first time you switch the art style to Glyphs.</string>
-    <string name="about_network_none">That is the whole list. No analytics, no installed-app list, no device model, no identifier. Icons ship inside the app and are never fetched.</string>
+    <string name="about_network_three">3.  A request when you report a missing icon: the app name, the component it runs as, and a one-line note with this build&#8217;s pack version, the TV&#8217;s model, its Android version and the launcher in use.</string>
+    <string name="about_network_none">That is the whole list. No analytics, no installed-app list, no identifier. Icons ship inside the app and are never fetched.</string>
     <string name="about_links">LINKS</string>
     <!-- About > Check for updates. The row's title is the button through the
          flow: this label, then update_download / update_install. -->

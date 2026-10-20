@@ -19,19 +19,20 @@
     "so the ignore rules cannot be silently dropped again (they were, in",
     "9f5d266d, which is what produced PRs #122 #125 #126 #132)."
   ],
-  "asOf": "2026-10-05",
+  "asOf": "2026-10-20",
   "envelope": {
     "agpMaxExclusive": "10",
     "minGradleForAgp8": "8.7",
     "_comment": [
       "The Android Gradle toolchain is intentionally root-specific.",
-      "The repo root, ticker/android, shift, motion-plugin, and doctor remain at",
-      "AGP 8.5.2 / external Kotlin 1.9.24. AGP 8.13.2 fails on Gradle 9.7.0",
-      "because it binds an internal Gradle API removed in 9.6.0 (PRs #144-#149).",
-      "Core EQ is an isolated Gradle root and has migrated to AGP 9.4.0, Gradle",
-      "9.7.0, AGP built-in Kotlin, and compile/target API 37. AGP 9.4 requires",
-      "Gradle 9.6.0 and supports API 37; do not apply the Core EQ exception to",
-      "the other roots without a separate migration and CI evidence."
+      "The repo root (the icon pack: app/ + glyphs/) and Core EQ are on AGP",
+      "9.4.0 / Gradle 9.7.0 / built-in Kotlin. The root moved there for",
+      "compileSdk 36: AGP 8.6-8.13 bind org.gradle.api.problems.internal.",
+      "InternalProblems, removed in Gradle 9.6, so on the 9.7.0 wrapper every",
+      "AGP 8.x above 8.5.2 fails at plugin apply (PRs #144-#149) and no AGP 8",
+      "line can reach API 36. ticker/android, shift, motion-plugin, and doctor",
+      "remain at AGP 8.5.2 / external Kotlin 1.9.24 until each has its own",
+      "tested migration. AGP 9.4 requires Gradle 9.6.0 and supports API 37."
     ],
     "minGradleForAgp9": "9.6.0"
   },
@@ -51,13 +52,13 @@
   "ceilings": [
     {
       "coordinate": "com.android.application",
-      "max": "8.5.2",
+      "max": "9.4.0",
       "blockedUpdateTypes": [
         "version-update:semver-patch",
         "version-update:semver-minor",
         "version-update:semver-major"
       ],
-      "reason": "The repo root and the Core Line, Shift, Motion, and Doctor roots remain on AGP 8.5.2. AGP 8.13.2 fails on their Gradle 9.7.0 wrapper because it binds org.gradle.api.problems.internal.InternalProblems, removed in Gradle 9.6.0. Core EQ is an explicitly tested per-root exception at AGP 9.4.0.",
+      "reason": "AGP 9.4.0 is the ceiling because it is the highest version proven green in this suite (Core EQ since its API 37 migration, and now the icon pack root). The repo root moved off AGP 8.5.2 for compileSdk 36, which Play requires of any new listing that is not TV-only: AGP 8.6-8.13 bind org.gradle.api.problems.internal.InternalProblems, removed in Gradle 9.6.0, so on the 9.7.0 wrapper every AGP 8.x above 8.5.2 fails at plugin apply. The Core Line, Shift, Motion, and Doctor roots stay at 8.5.2 by choice, not by ceiling - they have no compileSdk 36 requirement yet and move in their own tested migrations.",
       "evidence": [
         "https://github.com/brevityA/CoreBuildsApps/pull/146",
         "https://github.com/gradle/gradle/issues/38073",
@@ -65,10 +66,20 @@
         "https://developer.android.com/build/migrate-to-built-in-kotlin"
       ],
       "maxByDirectory": {
-        "/coreeq": "9.4.0"
+        "/": "9.4.0",
+        "/coreeq": "9.4.0",
+        "/ticker/android": "8.5.2",
+        "/shift": "8.5.2",
+        "/motion-plugin": "8.5.2",
+        "/doctor": "8.5.2"
       },
       "reasonByDirectory": {
-        "/coreeq": "Core EQ has its own Gradle root and has migrated to AGP 9.4.0 with built-in Kotlin, Gradle 9.7.0, and compileSdk/targetSdk 37. AGP 9.4 supports API 37 and requires Gradle 9.6.0 or newer."
+        "/ticker/android": "Core Line has no compileSdk 36 requirement yet; AGP 8.13.2 fails at plugin apply on its Gradle 9.7.0 wrapper (PRs #144-#149), so it holds at the proven 8.5.2.",
+        "/shift": "Core Shift has no compileSdk 36 requirement yet, and its media3 ceiling is tied to compileSdk 34. Holds at the proven AGP 8.5.2.",
+        "/motion-plugin": "Core Motion has no compileSdk 36 requirement yet. Holds at the proven AGP 8.5.2.",
+        "/doctor": "Core Doctor compiles at 35 and still sets composeOptions.kotlinCompilerExtensionVersion, which ties it to Kotlin 1.9.24. Holds at the proven AGP 8.5.2.",
+        "/coreeq": "Core EQ has its own Gradle root and has migrated to AGP 9.4.0 with built-in Kotlin, Gradle 9.7.0, and compileSdk/targetSdk 37. AGP 9.4 supports API 37 and requires Gradle 9.6.0 or newer.",
+        "/": "The icon pack root (app/ + glyphs/) moved to the same AGP 9.4.0 / built-in Kotlin toolchain for compileSdk/targetSdk 36. Gradle wrapper 9.7.0 already satisfied the 9.6.0 floor, and Kotlin moved from the external 1.9.24 plugin to AGP built-in Kotlin."
       }
     },
     {
@@ -225,7 +236,7 @@
         "version-update:semver-minor",
         "version-update:semver-major"
       ],
-      "reason": "Kotlin 2.0 moves the Compose compiler out of the Kotlin repository into org.jetbrains.kotlin.plugin.compose. doctor/ still sets composeOptions.kotlinCompilerExtensionVersion = \"1.5.14\", which is hard-tied to Kotlin 1.9.24. All five Kotlin modules also use the kotlinOptions DSL rather than compilerOptions (glyphs/ is Java-only). This is a source migration, not a version bump.",
+      "reason": "Kotlin 2.0 moves the Compose compiler out of the Kotlin repository into org.jetbrains.kotlin.plugin.compose. doctor/ still sets composeOptions.kotlinCompilerExtensionVersion = \"1.5.14\", which is hard-tied to Kotlin 1.9.24. The root no longer declares this plugin at all - AGP 9 provides built-in Kotlin there - but ticker/android, shift, motion-plugin and doctor still declare it and still use the kotlinOptions DSL, so the migration is incomplete and the ceiling holds.",
       "evidence": [
         "https://kotlinlang.org/docs/compose-compiler-migration-guide.html",
         "https://android-developers.googleblog.com/2024/04/jetpack-compose-compiler-moving-to-kotlin-repository.html"
@@ -267,7 +278,7 @@
     ],
     "steps": [
       "Decide whether the repo-root icon pack still needs Android 5.x Fire TV support at minSdk 21. That question is separate from Core EQ, which now starts at Android 11 / API 30.",
-      "Keep the repo root, ticker/android, shift, motion-plugin, and doctor on the proven AGP 8.5.2 / Kotlin 1.9.24 envelope until each has a separately tested migration.",
+      "The repo-root icon pack (app/ + glyphs/) is DONE: AGP 9.4.0, Gradle 9.7.0, AGP built-in Kotlin, compileSdk/targetSdk 36. Keep ticker/android, shift, motion-plugin and doctor on AGP 8.5.2 / Kotlin 1.9.24 until each has a separately tested migration of the same shape.",
       "Core EQ is the isolated exception: AGP 9.4.0, Gradle 9.7.0, AGP built-in Kotlin, compileSdk/targetSdk 37; its Dependabot ceiling and workflow platform are checked independently.",
       "For the remaining roots, resolve the AGP/wrapper pair before moving AGP, then migrate doctor/ off the Kotlin 1.9 Compose compiler DSL before raising Kotlin on the roots that still use it.",
       "Raise compileSdk per root only after its AGP supports that API level and its CI workflow installs the matching platform; then lift the matching AndroidX ceilings as each root goes green.",

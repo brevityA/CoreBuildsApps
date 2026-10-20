@@ -195,8 +195,9 @@ class GradleParsing(unittest.TestCase):
 
     def test_reads_compile_and_min_sdk(self):
         app = self.roots[""].modules[0]
-        self.assertEqual(app.compile_sdk, 34)
+        self.assertEqual(app.compile_sdk, 36)
         self.assertEqual(app.min_sdk, 21)
+        self.assertEqual(app.target_sdk, 36)
         doctor = self.roots["doctor"].modules[0]
         self.assertEqual(doctor.compile_sdk, 35)
         coreeq = self.roots["coreeq"].modules[0]
@@ -206,7 +207,7 @@ class GradleParsing(unittest.TestCase):
 
     def test_reads_the_toolchain_versions(self):
         for rel, root in self.roots.items():
-            if rel == "coreeq":
+            if rel in ("coreeq", ""):
                 self.assertEqual(root.agp, "9.4.0", f"{rel} AGP")
                 self.assertIsNone(root.kotlin, f"{rel} should use AGP built-in Kotlin")
                 self.assertTrue(root.builtin_kotlin)
@@ -378,16 +379,25 @@ class EnvelopeTable(unittest.TestCase):
                     f"{root.label}: {coord} {version} is above its own ceiling {maximum}",
                 )
 
-    def test_api37_toolchain_exception_is_limited_to_coreeq(self):
+    def test_agp9_is_limited_to_the_two_migrated_roots(self):
+        # AGP 9 is not a blanket upgrade: it is the answer to compileSdk 36 on
+        # the icon pack root and API 37 on Core EQ. The other four roots have
+        # no such requirement and stay on the proven AGP 8.5.2 envelope, so the
+        # ceiling names them explicitly rather than letting a future bump ride
+        # along on this one.
         agp = next(c for c in self.table["ceilings"] if c["coordinate"] == "com.android.application")
-        self.assertEqual(agp["max"], "8.5.2")
-        self.assertEqual(agp.get("maxByDirectory"), {"/coreeq": "9.4.0"})
+        self.assertEqual(agp["max"], "9.4.0")
         self.assertEqual(self.table["envelope"]["minGradleForAgp9"], "9.6.0")
-        coreeq_root = next(root for root in self.roots if root.rel == "coreeq")
-        self.assertGreaterEqual(
-            gate.parse_version(coreeq_root.wrapper),
-            gate.parse_version("9.6.0"),
-        )
+        for rel in ("coreeq", ""):
+            migrated = next(root for root in self.roots if root.rel == rel)
+            self.assertGreaterEqual(
+                gate.parse_version(migrated.wrapper),
+                gate.parse_version("9.6.0"),
+                f"{rel} is on AGP 9 but its wrapper is below the 9.6.0 floor",
+            )
+        for rel in ("ticker/android", "shift", "motion-plugin", "doctor"):
+            unmigrated = next(root for root in self.roots if root.rel == rel)
+            self.assertEqual(unmigrated.agp, "8.5.2", f"{rel} moved without a migration")
 
     def test_migration_path_is_recorded(self):
         steps = self.table["migration"]["steps"]
@@ -585,14 +595,14 @@ class Mutants(unittest.TestCase):
             )
             repo.assert_blocked("must match Kotlin", "parcelize out of lockstep")
 
-    def test_agp_9_is_caught_on_roots_without_the_api37_migration(self):
+    def test_agp_10_is_caught_everywhere(self):
         with ScratchRepo() as repo:
-            repo.edit("build.gradle.kts", 'version "8.5.2"', 'version "9.0.0"')
-            repo.assert_blocked("above its ceiling 8.5.2", "AGP 9 on the repo root")
+            repo.edit("build.gradle.kts", 'version "9.4.0"', 'version "10.0.0"')
+            repo.assert_blocked("next breaking major", "AGP 10 on the repo root")
 
     def test_next_breaking_agp_major_is_caught(self):
         with ScratchRepo() as repo:
-            repo.edit("build.gradle.kts", 'version "8.5.2"', 'version "10.0.0"')
+            repo.edit("build.gradle.kts", 'version "9.4.0"', 'version "10.0.0"')
             repo.assert_blocked("next breaking major", "AGP 10")
 
     def test_an_agp_8x_bump_on_the_9_7_0_wrapper_is_caught(self):
@@ -601,7 +611,7 @@ class Mutants(unittest.TestCase):
         # apply. It is a ceiling, not a warning: Dependabot must stop being
         # offered the combination at all.
         with ScratchRepo() as repo:
-            repo.edit("build.gradle.kts", 'version "8.5.2"', 'version "8.13.2"')
+            repo.edit("shift/build.gradle.kts", 'version "8.5.2"', 'version "8.13.2"')
             repo.assert_blocked("above its ceiling 8.5.2", "AGP 8.13.2 on the 9.7.0 wrapper")
 
     def test_a_wrapper_below_the_agp_floor_is_caught(self):

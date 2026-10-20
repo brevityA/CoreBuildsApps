@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Core Builds Icon Pack — Privacy Policy</title>
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0 auto; max-width: 46rem; padding: 2.5rem 1.25rem 5rem;
+    background: #0d1117; color: #e6edf3;
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  h1 { font-size: 1.6rem; line-height: 1.25; margin: 0 0 .35rem; }
+  h2 { font-size: 1.05rem; margin: 2.4rem 0 .6rem; color: #00d4ff; }
+  p, li { color: #c3ccd6; }
+  .kicker { font: 700 .72rem/1 ui-monospace, monospace; letter-spacing: .14em;
+            color: #00d4ff; text-transform: uppercase; margin-bottom: .9rem; }
+  .lede { color: #e6edf3; font-size: 1.02rem; }
+  table { border-collapse: collapse; width: 100%; margin: .8rem 0 0; }
+  th, td { text-align: left; padding: .55rem .6rem; border-bottom: 1px solid #26303c;
+           vertical-align: top; }
+  th { font-size: .8rem; letter-spacing: .04em; text-transform: uppercase; color: #8b949e; }
+  code { font: .88em ui-monospace, monospace; color: #e6edf3; }
+  .note { border-left: 2px solid #00d4ff; padding: .1rem 0 .1rem .9rem; margin: 1rem 0; }
+  a { color: #4facfe; }
+  footer { margin-top: 3rem; color: #8b949e; font-size: .85rem; }
+</style>
+</head>
+<body>
+
+<p class="kicker">Core Builds</p>
+<h1>Core Builds Icon Pack — Privacy Policy</h1>
+<p class="lede">The app collects nothing about you. This page is the complete account of
+what leaves your device, when, and where it goes.</p>
+
+<p><strong>Applies to:</strong> Core Builds Icon Pack, package
+<code>tv.corebuilds.iconpack</code> (GitHub / Downloader build) and
+<code>tv.corebuilds.iconpack.play</code> (Google Play build), including the
+companion Core Builds Glyphs Pack.</p>
+
+<p><strong>Effective:</strong> 20 October 2026.</p>
+
+<h2>There is no account, and no profile</h2>
+<p>The app has no sign-in, no user identifier and no analytics, advertising or
+crash-reporting library. It does not read your advertising ID, your contacts,
+your location, your files or your installed-app list beyond the launcher query
+described below. Nothing is collected in the background.</p>
+
+<h2>What is sent, and only when</h2>
+<table>
+  <tr><th>When</th><th>What is sent</th><th>To</th></tr>
+  <tr>
+    <td>You open a wallpaper or live loop</td>
+    <td>The address of that one image or video file. Your IP address is visible
+        to the server serving it, as with any download.</td>
+    <td><code>raw.githubusercontent.com</code> (GitHub)</td>
+  </tr>
+  <tr>
+    <td>Update check — GitHub / Downloader build only</td>
+    <td>A request for a small version file. The Play build performs no update
+        check: Google Play updates it.</td>
+    <td><code>raw.githubusercontent.com</code> (GitHub)</td>
+  </tr>
+  <tr>
+    <td>Downloading the Glyphs companion — GitHub / Downloader build only</td>
+    <td>A request for that release's APK. The Play build has no such path and
+        does not request the install permission.</td>
+    <td><code>github.com</code> releases</td>
+  </tr>
+  <tr>
+    <td>You press <em>Request icon</em> on an auditor row</td>
+    <td>The app name, the component name and a device note (model and Android
+        version), plus one flag saying whether the pack already maps that app
+        under another activity. No identifier of any kind. On the current
+        build this opens a pre-filled GitHub issue in your browser, which you
+        can edit or abandon before submitting.</td>
+    <td><code>github.com</code> — or, when the anonymous request broker is
+        enabled, the Core Builds broker, which files the issue on your behalf</td>
+  </tr>
+  <tr>
+    <td>You switch the Art style to square glyphs on the Play build</td>
+    <td>Nothing is sent by the app: it opens the Glyphs companion's listing,
+        which your browser or the Play Store app loads from Google.</td>
+    <td><code>play.google.com</code> (Google)</td>
+  </tr>
+  <tr>
+    <td>Google Play build: installing and updating the app</td>
+    <td>Handled by Google Play itself under
+        <a href="https://policies.google.com/privacy">Google's privacy
+        policy</a>. We receive only the aggregate statistics Play Console gives
+        every developer.</td>
+    <td>Google</td>
+  </tr>
+</table>
+
+<div class="note">
+  <p><strong>No third party receives anything else.</strong> There is no
+  advertising network, no data broker, no analytics provider and no server of
+  ours that stores your activity. The broker, when it is enabled, keeps only a
+  rate-limit window so one device cannot file hundreds of requests.</p>
+</div>
+
+<h2>What the app reads on your device</h2>
+<p>To tell you which of your apps the icon pack covers, the auditor asks Android
+which apps have a launcher entry. It reads app names and component names to
+show you that list. That list stays on your device; it is sent nowhere, in whole
+or in part, unless you press <em>Request icon</em> for one specific app, which
+sends only that app's name and component.</p>
+
+<h2>What the app writes</h2>
+<p>If you use <em>Export</em>, wallpaper masters are copied into
+<code>Pictures/CoreBuilds</code> on your own storage so a launcher such as Monet
+can rotate them. Downloaded wallpapers and loops are cached in the app's private
+storage. Both are yours, and both are removed when you clear the app's data or
+uninstall it.</p>
+
+<h2>Permissions, and why each exists</h2>
+<ul>
+  <li><strong>Internet</strong> — to download wallpapers, loops and (on the
+      GitHub build) the update check.</li>
+  <li><strong>Network state</strong> — to report "no connection" instead of
+      failing silently when you tap a wallpaper.</li>
+  <li><strong>Set wallpaper</strong> — to apply a wallpaper you choose.</li>
+  <li><strong>Write external storage (Android 9 and older only)</strong> — for
+      the Pictures export on those versions.</li>
+  <li><strong>Install unknown apps</strong> — GitHub / Downloader build only,
+      for its own self-update and the Glyphs companion. The Play build removes
+      this permission entirely.</li>
+</ul>
+
+<h2>Purchases</h2>
+<p>The Google Play version currently offers no purchases. If an optional paid
+upgrade is added later, payment is processed by Google Play, and no card or
+billing detail ever reaches the app — the app would learn only whether your
+account owns the item.</p>
+
+<h2>Children</h2>
+<p>The app is a wallpaper and icon pack. It has no social features, no user
+content, no chat and no advertising, and it collects no personal information
+from anyone, including children.</p>
+
+<h2>Your control</h2>
+<p>Because nothing is collected, there is nothing to request, correct, export or
+delete. Clearing the app's data removes its settings and cache. If you have
+already filed an icon request as a GitHub issue, that issue lives in a public
+repository and can be edited or deleted by you from your GitHub account.</p>
+
+<h2>Changes to this policy</h2>
+<p>If a future version sends anything the table above does not list, this page
+grows a row for it before that version ships, and the effective date changes.
+The app's own About screen carries the same complete list, so the two can be
+compared rather than trusted.</p>
+
+<h2>Contact</h2>
+<p>Questions, or a correction to this page:
+<a href="https://github.com/brevityA/CoreBuildsApps/issues">open an issue</a>.</p>
+
+<footer>
+  <p>Core Builds Icon Pack. This policy describes the app as built from the
+  published source; that source is the authority on what the app sends.</p>
+</footer>
+
+</body>
+</html>

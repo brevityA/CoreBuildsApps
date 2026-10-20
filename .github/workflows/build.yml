@@ -153,6 +153,9 @@ jobs:
           python tests/test_wordmark_type.py
           python tests/test_stroke_spacing.py
           python tests/test_icon_review.py
+          python tests/test_play_build.py
+          python tests/test_play_listing.py
+          python tests/test_privacy_policy.py
           python tests/test_lookalikes.py
           python tests/test_ci_coverage.py
 
@@ -212,7 +215,12 @@ jobs:
                 ;;
             esac
           done
-          SIGNER="$ANDROID_HOME/build-tools/34.0.0/apksigner"
+          # Build-tools 36 now that the modules compile at 36; the fallback
+          # keeps this check working if a runner image carries a different
+          # patch level (the binary, not the number, is what matters here).
+          SIGNER="$ANDROID_HOME/build-tools/36.0.0/apksigner"
+          [[ -x "$SIGNER" ]] || SIGNER="$(find "$ANDROID_HOME/build-tools" \
+            -maxdepth 2 -name apksigner -type f | sort -V | tail -1)"
           A=$("$SIGNER" verify --print-certs "$APK" | grep 'SHA-256 digest')
           for CANDIDATE in "$GLYPHS_APP" "$GLYPHS"; do
             B=$("$SIGNER" verify --print-certs "$CANDIDATE" | grep 'SHA-256 digest')

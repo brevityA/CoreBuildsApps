@@ -72,7 +72,10 @@ class SettingsActivity : TvActivity() {
         amoledSwitch.isChecked = Prefs.amoled(this)
         bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
 
-        row(R.id.set_updates_row) {
+        if (Distribution.PLAY) {
+            // Google Play updates the Play build; it has no updater to switch.
+            findViewById<android.view.View>(R.id.set_updates_row).visibility = android.view.View.GONE
+        } else row(R.id.set_updates_row) {
             val next = !updateSwitch.isChecked
             updateSwitch.isChecked = next
             Prefs.set(this, Prefs.KEY_UPDATE_CHECKS, next)
@@ -127,6 +130,12 @@ class SettingsActivity : TvActivity() {
 
         row(R.id.set_support_row) {
             startActivity(Intent(this, SupportActivity::class.java))
+        }
+        // Play's Payments policy: no route to a tip (see MainActivity). The
+        // screen stays in the APK — Settings is the only way in, and this is
+        // the row that would be it — but the Play build never shows the door.
+        if (Distribution.PLAY) {
+            findViewById<View>(R.id.set_support_row).visibility = View.GONE
         }
 
         findViewById<View>(R.id.set_cache_clear).setOnClickListener {

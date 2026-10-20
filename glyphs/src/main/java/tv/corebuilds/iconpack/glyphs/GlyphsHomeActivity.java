@@ -59,7 +59,8 @@ public class GlyphsHomeActivity extends Activity {
      * sideloaded on its own, in which case say so rather than do nothing.
      */
     private void openIconPack() {
-        Intent open = getPackageManager().getLaunchIntentForPackage(GlyphsActivity.ICON_PACK);
+        Intent open = getPackageManager().getLaunchIntentForPackage(
+                GlyphsActivity.iconPackFor(getPackageName()));
         if (open == null) {
             Toast.makeText(this, R.string.glyphs_home_missing_pack, Toast.LENGTH_LONG).show();
             return;
