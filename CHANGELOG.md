@@ -21,6 +21,17 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Changed
 
+- **The icon pack builds against API 36 and targets it.** Play stopped
+  accepting new listings that target below Android 16 unless they are TV-only,
+  and this pack lists for phones as well as TV — so the phone floor was the
+  one that bound. Reaching it meant moving the build onto AGP 9.4.0 with
+  built-in Kotlin, the combination `coreeq/` already runs: on the Gradle 9.7.0
+  wrapper every AGP 8.6 and later fails at plugin apply, which is why 8.5.2
+  was the ceiling before. Kotlin 1.9.24 is gone from this root (the jvmTarget
+  now lives in the built-in `kotlin {}` block); the compiler the app actually
+  builds with is AGP 9's. `minSdk` stays 21 for Fire TV. The suite's other
+  four roots stay on the proven AGP 8.5.2 envelope, and the dependency gate
+  now pins each root separately so this migration cannot drag them along.
 - **Picking one icon follows the Art style switch.** Choosing a single
   card's icon through Core Builds now returns a banner or a square to match
   the switch, so one pack can hand out either shape card by card. Picks

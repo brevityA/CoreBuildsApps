@@ -1,16 +1,21 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
 }
 
 android {
     namespace = "tv.corebuilds.iconpack"
-    compileSdk = 34
+    // compileSdk 36 with targetSdk 36: Play rejects a new app that targets
+    // anything below API 36 unless it is a TV-only listing. This pack lists
+    // for phones as well (LAUNCHER next to LEANBACK_LAUNCHER), so the phone
+    // floor is the one that binds. minSdk stays 21 for Fire TV.
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "tv.corebuilds.iconpack"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 57
         versionName = "2.4.4"
 
@@ -189,9 +194,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 
     buildFeatures {
         buildConfig = true
@@ -200,6 +202,15 @@ android {
     androidResources {
         // Already-compressed formats; don't re-crunch.
         noCompress += listOf("png", "webp")
+    }
+}
+
+// AGP 9 has built-in Kotlin, so there is no separate kotlin-android plugin
+// and no kotlinOptions block: jvmTarget is stated here instead. Core EQ does
+// the same on the same toolchain.
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17
     }
 }
 

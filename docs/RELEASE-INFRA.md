@@ -137,8 +137,18 @@ Runtime behavior:
 ## Google Play release runbook
 
 1. Ensure the app's target API satisfies current Play requirements.
-   - Android TV apps: target API 34+ under the verified 2026 rule.
-   - Non-TV/general apps: target API 36+ for new apps/updates after 2026-08-31.
+   - The icon pack is at **compileSdk/targetSdk 36**, so it satisfies the
+     general rule and the TV one. It lists for phones as well as TV (the
+     manifest carries `LAUNCHER` beside `LEANBACK_LAUNCHER` and touchscreen is
+     `required="false"`), and the phone floor is the one that binds: an app
+     that Play offers to phones must target API 36 as of 2026-08-31.
+   - A **TV-only listing** (Console restricts form factors to TV) would be
+     allowed to sit at API 34, which is the loophole this repo did *not*
+     take — it would have cost every phone user. If a future module has no
+     phone ambition, that exception is legitimate.
+   - Reaching 36 needed AGP 9.4.0 and built-in Kotlin (see
+     `tools/gradle_envelope.json`): on the Gradle 9.7.0 wrapper every AGP 8.6+
+     fails at plugin apply, so 8.5.2 could never compile API 36.
 2. Use the AAB from `suite-release.yml`.
 3. Enroll/use Play App Signing; keep upload key in GitHub secrets only.
 4. Fill Play Console app content:
