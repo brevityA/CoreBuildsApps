@@ -56,6 +56,10 @@ ACTIVITY_OWNER = {
     "settings": "SettingsActivity.kt",
     "about": "AboutActivity.kt",
     "support": "SupportActivity.kt",
+    # Play build only: the one-off purchase. Listed here so the graph test
+    # still walks every layout a screen inflates, even though the GitHub build
+    # never opens it.
+    "premium": "PremiumActivity.kt",
     "faq": "FaqActivity.kt",
     "auditor": "AuditorActivity.kt",
     "inspector": "InspectorActivity.kt",

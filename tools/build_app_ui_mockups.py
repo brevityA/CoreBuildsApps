@@ -210,9 +210,46 @@ for _el in _xml(RES / "values/issue_prefill.xml"):
 CHIP_ORDER = re.findall(r'"([A-Z]+)" to "([^"]+)"',
                         (ROOT / "app/src/main/java/tv/corebuilds/iconpack/MainActivity.kt").read_text())
 
+# What the Premium screen counts, read from the same sources the screen reads:
+# the shipped catalogue for the walls, LiveLoop.kt for the loops, Premium.kt for
+# the free series. Typing these numbers here would let the frame and the screen
+# disagree about what the purchase buys, which is the one thing this frame is
+# for.
+def premium_data() -> dict:
+    catalog = json.loads((ROOT / "app/src/main/assets/manifest/wallpapers.json")
+                         .read_text(encoding="utf-8"))["wallpapers"]
+    premium_kt = (ROOT / "app/src/main/java/tv/corebuilds/iconpack/Premium.kt"
+                  ).read_text(encoding="utf-8")
+    block = premium_kt.split("val FREE_SERIES: Set<String> = setOf(", 1)[1].split(")", 1)[0]
+    free = re.findall(r'"([^"]+)"', block)
+    loop_kt = (ROOT / "app/src/main/java/tv/corebuilds/iconpack/LiveLoop.kt"
+               ).read_text(encoding="utf-8")
+    loops = len(re.findall(r"\n            stillSeries = ", loop_kt))
+    return {
+        "walls": sum(1 for w in catalog if w["series"] not in free),
+        "walls_total": len(catalog),
+        "free_walls": sum(1 for w in catalog if w["series"] in free),
+        "free_series": len(free),
+        "series": len({w["series"] for w in catalog}),
+        "loops": loops,
+        # Play Console owns the price; this is the placeholder the frame shows
+        # only because a mockup cannot ask the store.
+        "price": "A$4.49",
+    }
+
+
 PACK = ICON_PACK["icon_pack"]
 NAMES = ICON_PACK["icon_names"]
 CATS = ICON_PACK["icon_categories"]
+
+_PREMIUM: dict | None = None
+
+
+def premium_numbers() -> dict:
+    global _PREMIUM
+    if _PREMIUM is None:
+        _PREMIUM = premium_data()
+    return _PREMIUM
 BESPOKE = [b == "1" for b in ICON_PACK["icon_bespoke"]]
 
 ICONS_DIR = RES / "drawable-nodpi"
@@ -1311,6 +1348,88 @@ def inspector_frame() -> tuple[Image.Image, str]:
     return img, note
 
 
+def paragraphs(draw, text: str, f, max_width: int, gap: int) -> list[tuple[str, int]]:
+    """Wrap a resource string that contains \\n, as a TextView would render it.
+
+    Android honours \\n in a resource; wrap() would draw the escape itself. This
+    splits on it first, wraps each paragraph, and returns (line, dy) pairs where
+    a paragraph break carries the extra [gap].
+    """
+    parts = text.split("\\n")
+    out: list[tuple[str, int]] = []
+    y = 0
+    for index, para in enumerate(parts):
+        for line in (wrap(draw, para, f, max_width) if para else []):
+            out.append((line, y))
+            y += dp(22)
+        if index < len(parts) - 1:
+            y += gap
+    return out
+
+
+def premium_frame() -> tuple[Image.Image, str]:
+    """What the purchase buys, the price, and the button — the one screen in the
+    pack whose job is a sale, so the frame has to show the goods and the terms
+    rather than a logo."""
+    d = premium_numbers()
+    img = new_frame()
+    draw = ImageDraw.Draw(img, "RGBA")
+    top = header(img, STRINGS["premium_kicker"], STRINGS["premium_title"])
+    g = dp(DIMENS["cb_gutter_side"])
+    y = top + dp(DIMENS["cb_space_lg"])
+    bottom = H - dp(DIMENS["cb_gutter_bottom"])
+    mid = (W - 2 * g - dp(DIMENS["cb_space_lg"])) // 2
+    left = [g, y, g + mid, bottom]
+    right = [g + mid + dp(DIMENS["cb_space_lg"]), y, W - g, bottom]
+    pad = dp(DIMENS["cb_focus_inset"]) + dp(DIMENS["cb_card_padding"])
+
+    # LEFT: what it unlocks, counted the way PremiumActivity counts it.
+    card(img, left)
+    f_kick = font("mono", DIMENS["cb_text_kicker"], bold=True)
+    f_body = font("sans", DIMENS["cb_text_label"])
+    f_small = font("sans", DIMENS["cb_text_data"])
+    draw_text(draw, (left[0] + pad, left[1] + pad), STRINGS["premium_included_header"],
+              f_kick, colour("cb_success"))
+    ty = left[1] + pad + dp(22)
+    col_w = left[2] - left[0] - 2 * pad
+    goods = paragraphs(draw, fmt(STRINGS["premium_included_fmt"], d["walls"], d["loops"]),
+                       f_body, col_w, dp(DIMENS["cb_space_sm"]))
+    for line, dy in goods:
+        draw_text(draw, (left[0] + pad, ty + dy), line, f_body, colour("cb_ink"))
+    # Below the last line of the goods, plus the card's own spacing: the free
+    # note is a separate claim, not a continuation of the list.
+    ty += max(dy for _, dy in goods) + dp(22) + dp(DIMENS["cb_space_md"])
+    free_text = fmt(STRINGS["premium_free_note"], d["free_series"], d["free_walls"])
+    for line, dy in paragraphs(draw, free_text, f_small, col_w, dp(DIMENS["cb_space_sm"])):
+        draw_text(draw, (left[0] + pad, ty + dy), line, f_small, colour("cb_slate"))
+
+    # RIGHT: the purchase.
+    card(img, right)
+    f_state = font("sans", DIMENS["cb_text_section"], bold=True)
+    draw_text(draw, (right[0] + pad, right[1] + pad), STRINGS["premium_state_locked"],
+              f_state, colour("cb_ink"))
+    py = right[1] + pad + dp(30)
+    for line in wrap(draw, fmt(STRINGS["premium_price_fmt"], d["price"]), f_small,
+                     right[2] - right[0] - 2 * pad):
+        draw_text(draw, (right[0] + pad, py), line, f_small, colour("cb_slate"))
+        py += dp(19)
+    by = py + dp(DIMENS["cb_space_md"])
+    # The button owns the focus treatment: a hand-drawn ring round the card
+    # would show a focus box wider than the thing it focuses.
+    button(img, right[0] + pad, by, STRINGS["premium_buy"], "cta", focused=True)
+    ry = by + dp(DIMENS["cb_target_min"]) + dp(DIMENS["cb_space_sm"])
+    button(img, right[0] + pad, ry, STRINGS["premium_restore"], "ghost")
+    ny = ry + dp(DIMENS["cb_target_min"]) + dp(DIMENS["cb_space_sm"])
+    for line, dy in paragraphs(draw, STRINGS["premium_note"], f_small,
+                               right[2] - right[0] - 2 * pad, dp(DIMENS["cb_space_xs"])):
+        draw_text(draw, (right[0] + pad, ny + dy), line, f_small, colour("cb_slate"))
+
+    note = ("MOCKUP - premium frame from activity_premium.xml + strings.xml + "
+            "Premium.kt; counted from the shipped catalogue (Play build only, "
+            "price is whichever Play Console sets)")
+    return img, note
+
+
 def suite_frame() -> tuple[Image.Image, str]:
     img = new_frame()
     draw = ImageDraw.Draw(img, "RGBA")
@@ -1478,6 +1597,7 @@ FRAMES = [
     ("app-ui-inspector.png", inspector_frame),
     ("app-ui-suite.png", suite_frame),
     ("app-ui-launcher-compat.png", launcher_compat_frame),
+    ("app-ui-premium.png", premium_frame),
 ]
 
 

@@ -11,4 +11,9 @@
         android:name="android.permission.REQUEST_INSTALL_PACKAGES"
         tools:node="remove" />
 
+    <!-- The one purchase. Declared here rather than in src/main so the
+         GitHub / Downloader APK — where every wallpaper and every loop is
+         free — carries no billing permission at all. -->
+    <uses-permission android:name="com.android.vending.BILLING" />
+
 </manifest>

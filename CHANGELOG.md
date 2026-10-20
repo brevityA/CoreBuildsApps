@@ -35,6 +35,16 @@ All notable changes to the Core Builds Icon Pack. Format follows
   of downloading it. A new hand-run workflow, `play.yml`, builds both App
   Bundles (`core-builds-play-bundles`). The GitHub builds and `build.yml`
   are unchanged.
+- **Core Builds Premium, one purchase, Play build only.** The Play listing is
+  free with a single non-consumable purchase (`premium_unlock`) that unlocks
+  the live loops and the eight later wallpaper series — 96 walls plus all 48
+  loops. The three series the pack shipped first (Motion, Horizons, Circuit
+  Core: 36 walls), every icon, every tool and Core Builds Glyphs Pack stay
+  free. The GitHub / Downloader build gates nothing at all and carries no
+  billing permission, because Play's rules bind the app Play distributes. A
+  locked tile carries a PREMIUM badge and opens the purchase screen instead of
+  previewing; the purchase is acknowledged on first sight and cached so it
+  survives offline use and a reinstall.
 
 ### Changed
 

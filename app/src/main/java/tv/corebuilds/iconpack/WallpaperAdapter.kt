@@ -26,7 +26,14 @@ import java.util.concurrent.Executors
  */
 class WallpaperAdapter(
     private var items: List<Wallpaper>,
-    private val onSelect: (Wallpaper) -> Unit
+    private val onSelect: (Wallpaper) -> Unit,
+    /**
+     * A tile the user asked for that needs the purchase. Separate from
+     * [onSelect] so the grid decides once what a locked press means (the
+     * Premium screen) instead of every call site re-testing the rule, and so
+     * selection can refuse a locked tile without opening a preview for it.
+     */
+    private val onLocked: (Wallpaper) -> Unit = {}
 ) : RecyclerView.Adapter<WallpaperAdapter.VH>() {
 
     private val selected = HashSet<String>()  // cacheNames
@@ -38,6 +45,7 @@ class WallpaperAdapter(
         val label: TextView = view.findViewById(R.id.wp_name)
         val ring: View = view.findViewById(R.id.wp_selected_ring)
         val badge: TextView = view.findViewById(R.id.wp_live_badge)
+        val premiumBadge: TextView = view.findViewById(R.id.wp_premium_badge)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -48,6 +56,7 @@ class WallpaperAdapter(
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val item = items[position]
+        bindingContext = holder.itemView.context
         holder.image.setImageBitmap(null)
         holder.image.tag = item.thumbAsset
         loadThumb(holder.image.context, item.thumbAsset) { bmp ->
@@ -55,10 +64,16 @@ class WallpaperAdapter(
         }
         holder.label.text = item.title
         holder.badge.visibility = if (item.isLive) View.VISIBLE else View.GONE
-        holder.itemView.contentDescription = if (item.isLive) {
-            item.title + holder.itemView.context.getString(R.string.wp_live_spoken)
-        } else {
-            item.title
+        // The lock is drawn from the same rule the press is gated on, so a
+        // badge can never promise something the press then refuses (or the
+        // reverse). On the GitHub build nothing is gated, so nothing is badged.
+        val locked = Premium.needsPurchase(holder.itemView.context, item)
+        holder.premiumBadge.visibility = if (locked) View.VISIBLE else View.GONE
+        val context = holder.itemView.context
+        holder.itemView.contentDescription = buildString {
+            append(item.title)
+            if (item.isLive) append(context.getString(R.string.wp_live_spoken))
+            if (locked) append(context.getString(R.string.premium_locked_spoken))
         }
         holder.itemView.isFocusable = true
         holder.itemView.isFocusableInTouchMode = true
@@ -66,7 +81,11 @@ class WallpaperAdapter(
         bindSelection(holder, position)
 
         holder.itemView.setOnClickListener {
-            if (selectionMode) toggle(item) else onSelect(item)
+            when {
+                Premium.needsPurchase(holder.itemView.context, item) -> onLocked(item)
+                selectionMode -> toggle(item)
+                else -> onSelect(item)
+            }
         }
         holder.itemView.setOnLongClickListener {
             // Loops select like stills: a bulk save sends them to
@@ -145,6 +164,12 @@ class WallpaperAdapter(
     }
 
     fun toggle(item: Wallpaper) {
+        // Bulk save must not carry a wall the account has not bought: the
+        // selection is the export list, so the gate has to be here too.
+        if (needsPurchase(item)) {
+            onLocked(item)
+            return
+        }
         if (!selectionMode) enterSelectionMode()
         if (!selected.add(item.cacheName)) selected.remove(item.cacheName)
         notifyItemChanged(
@@ -154,7 +179,8 @@ class WallpaperAdapter(
     }
 
     fun selectAll() {
-        selected.addAll(items.map { it.cacheName })
+        // "Select all" means all of what this account can save.
+        selected.addAll(items.filterNot { needsPurchase(it) }.map { it.cacheName })
         notifyItemRangeChanged(0, itemCount, SELECTION_PAYLOAD)
     }
 
@@ -164,7 +190,15 @@ class WallpaperAdapter(
     }
 
     fun selectedItems(): List<Wallpaper> =
-        items.filter { selected.contains(it.cacheName) }
+        items.filter { selected.contains(it.cacheName) && !needsPurchase(it) }
+
+    private fun needsPurchase(item: Wallpaper): Boolean {
+        val context = bindingContext ?: return false
+        return Premium.needsPurchase(context, item)
+    }
+
+    /** Held from the first bind so selection helpers can consult the gate. */
+    private var bindingContext: Context? = null
 
     fun selectedCount(): Int = selected.size
 

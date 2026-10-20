@@ -77,6 +77,31 @@
         android:textStyle="bold"
         android:visibility="gone" />
 
+    <!-- PREMIUM badge, Play build only: this tile needs the one-off purchase.
+         Opposite corner from LIVE so a loop tile can carry both. Visibility is
+         set by the adapter from Premium.needsPurchase, so the GitHub build
+         never shows one. -->
+    <TextView
+        android:id="@+id/wp_premium_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="@dimen/cb_space_sm"
+        android:layout_marginEnd="@dimen/cb_space_sm"
+        android:background="@drawable/bg_live_badge"
+        android:clickable="false"
+        android:focusable="false"
+        android:importantForAccessibility="no"
+        android:paddingStart="@dimen/cb_space_sm"
+        android:paddingEnd="@dimen/cb_space_sm"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:text="@string/premium_badge"
+        android:textColor="@color/cb_signal_cyan"
+        android:textSize="@dimen/cb_text_kicker"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
     <!-- Selection-mode frame. Drawn on top; visibility toggled by the adapter.
          Inset to the card edge so it never coincides with the focus ring. -->
     <View

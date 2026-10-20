@@ -232,6 +232,12 @@ androidComponents {
 }
 
 dependencies {
+    // Play Billing, for the one non-consumable purchase (Premium.kt). In main
+    // rather than a play-only configuration on purpose: one set of Kotlin
+    // sources in every variant, and the permission that makes billing usable
+    // is declared only in src/play, so the GitHub APK neither declares it nor
+    // ever calls into this. Capped in tools/gradle_envelope.json.
+    implementation("com.android.billingclient:billing:7.0.0")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.recyclerview:recyclerview:1.3.2")

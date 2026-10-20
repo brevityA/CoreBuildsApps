@@ -131,6 +131,20 @@ class SettingsActivity : TvActivity() {
         row(R.id.set_support_row) {
             startActivity(Intent(this, SupportActivity::class.java))
         }
+
+        // Play build only. The row is `gone` in the layout and revealed here,
+        // so the GitHub build never grows a door to a purchase it does not
+        // have (Premium.GATED is Distribution.PLAY).
+        if (Premium.GATED) {
+            findViewById<View>(R.id.set_premium_row).visibility = View.VISIBLE
+            if (Prefs.premiumOwned(this)) {
+                findViewById<TextView>(R.id.set_premium_sub).text =
+                    getString(R.string.settings_premium_owned)
+            }
+            row(R.id.set_premium_row) {
+                startActivity(Intent(this, PremiumActivity::class.java))
+            }
+        }
         // Play's Payments policy: no route to a tip (see MainActivity). The
         // screen stays in the APK — Settings is the only way in, and this is
         // the row that would be it — but the Play build never shows the door.

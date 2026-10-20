@@ -282,6 +282,51 @@ PR) is complete and tested, but nothing can be uploaded until the owner has:
 Until (1) and (2) exist, the premium PR stays parked — the gate only lives in
 the Play build, so there is nothing to gate.
 
+### Core Builds Premium (the one purchase)
+
+The Play listing is **free with one non-consumable purchase**. Play will not let
+a free app become paid, so this is the decision that has to be right before the
+first upload, and it is the only purchase the suite has.
+
+| | Free | Premium (`premium_unlock`) |
+|---|---|---|
+| Icon pack, every tool, the auditor, Glyphs Pack | yes | — |
+| Wallpaper series: Motion, Horizons, Circuit Core (36 walls) | yes | — |
+| The other eight series (AMOLED, deep space, cinema, icon echo, earth, wild, flux, retrowave) | — | yes |
+| Every live loop (the whole animated set) | — | yes |
+
+Only the **Play** build gates any of it. `Premium.GATED` is
+`Distribution.PLAY`, so the GitHub / Downloader APK — still the build most
+users install — has every series and every loop for nothing, and carries no
+`com.android.vending.BILLING` permission either (it is declared only in
+`app/src/play/AndroidManifest.xml`).
+
+Where the gate bites, all off one rule (`Premium.needsPurchase`): the tile's
+PREMIUM badge, the tile press, long-press selection and Select all, and the
+preview's Set / Save. A locked wall still shows its thumbnail and its price
+card — hiding art behind a purchase is allowed, showing a purchase that buys
+nothing is not.
+
+**Play Console setup, once:**
+
+1. Play Console → the app → Monetise → Products → In-app products → **Create
+   product**. Product ID `premium_unlock` (`Premium.PRODUCT`; never rename it,
+   a rename orphans every existing purchase). Name it "Core Builds Premium".
+2. Set the price, **Activate** the product. Nothing can be bought until it is
+   active, and `Billing.kt` reports the screen as unavailable until Play
+   returns product details.
+3. Play Console → Setup → License testing, add the accounts you test with;
+   they buy the product for free and can cancel it to re-test.
+4. Test on a device with Play Store installed. Android TV boxes often have
+   none, which is the `UNAVAILABLE` path: the screen says so in words and the
+   free series keep working.
+
+The purchase is acknowledged on first sight (`acknowledgeIfNeeded`) — an
+unacknowledged purchase is refunded by Play after three days — and the
+entitlement is cached in `Prefs` so it survives offline use, a Play outage and
+a reinstall (Restore re-queries Play, it never charges again).
+`tests/test_premium_purchase.py` holds all of that.
+
 ## Release checklist artifact contents
 
 Every `suite-release.yml` run writes a checklist summary with:
