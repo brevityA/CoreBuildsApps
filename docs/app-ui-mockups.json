@@ -50,7 +50,7 @@
     "app/src/main/assets/appfilter.xml": "a9fbf9e36f40ea7358b0e00b3751a2b73f5c184cebb8ace3af5ac01012bfad37",
     "app/src/main/assets/manifest/wallpapers.json": "0bc4f85d2ff7d2e2c646088cd450957c5e7a58c0519be85923207356dafb3490",
     "app/src/main/assets/version.json": "2601442032c86143d4e07122c32e376ced1857b3154d4804da518ed58201c176",
-    "app/src/main/res/layout/activity_about.xml": "1d201c102b3b3251e6ec69f72163333db331f486cea72ac264185526fb6f289e",
+    "app/src/main/res/layout/activity_about.xml": "3b4b145f50d701f25bb316e780936bc51b4d147492d13176a1910046f72433f3",
     "app/src/main/res/layout/activity_auditor.xml": "98f1f377ab4224abc967d39994c07a120018d508584046272ae0139fd8baf1a7",
     "app/src/main/res/layout/activity_export_progress.xml": "3c388eb2b74cc0b5e362069cff6adfe219a4948eed7220f36a9a2d2d06d48210",
     "app/src/main/res/layout/activity_faq.xml": "84a5cf1a80764f4621b72264929d74ae40b12e5ff4417d5ac470673b5289ee09",
@@ -77,7 +77,7 @@
     "app/src/main/res/values/dimens.xml": "edc08c3b58d7894f6ae002aeacf4c37cd26a8b9bd92d73ad4a7391d8edbe97c7",
     "app/src/main/res/values/icon_pack.xml": "524eaa6952a4da1c823bf600340b8d61f9b0e5486ef74cb00462451ab3fd647b",
     "app/src/main/res/values/issue_prefill.xml": "fd85418cdd4ccdc59f0f0793b32fc7d96e01f23f80f7f38a3e3d4d7699393ced",
-    "app/src/main/res/values/strings.xml": "ed91f1d203f137a8376e492997ac56e040538b83b92f7093d9779f94c873bf1e",
+    "app/src/main/res/values/strings.xml": "cc716311664ef33137e6af5020bfa71bbfc0e5665142015e508e29d1d7475f04",
     "app/src/main/res/values/suite_hub.xml": "aff339700a9e6751b31ed189c2695e77ce18b80332f104f94e9235cdd05ef74a",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
     "tools/build_app_ui_mockups.py": "eec82c73031a7a054bde7b64ad4e9c515ea2f82b704529f0ebea742ea8fd4321",
@@ -87,7 +87,7 @@
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "8c6fc0060aabe775c48f897e9b9eeb1a1405d2e0f4f657528f8271e4e1d63221",
+  "inputs_digest": "f682d5a7d912f22743476496ffa03a5f09a94ad1c2298bb3ac14f84f97447f8c",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
@@ -106,5 +106,5 @@
     "count": 19,
     "digest": "d9dc5c6e30087f7db5ef4958804d07e73799bb56d056a4b3f0e8ae688efef922"
   },
-  "renderer": "python 3.11.17, freetype 2.13.2, layout raqm, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
+  "renderer": "python 3.11.2, freetype 2.13.2, layout basic, PIL 10.4.0, qrcode installed, fontTools 4.67.0, resvg_py absent"
 }
