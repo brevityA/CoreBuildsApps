@@ -196,6 +196,40 @@ note (pack version, TV model, Android version, detected launcher). The
 closing line denies only what is still true — no analytics, no installed-app
 list, no identifier.
 
+### The two Play listings go out together
+
+Icon Pack and Glyphs Pack are separate Play listings, and the pack checks the
+companion's `versionCode` before pointing a launcher at it: `GlyphsCompanion.
+ready()` requires `>= BuildConfig.VERSION_CODE` (both numbers are parsed from
+`app/build.gradle.kts`, so they cannot drift in the repo). Play rolls listings
+out **independently**, which is the trap:
+
+- Pack reaches 100% while the companion is still staged at an older code →
+  the app decides the companion is stale, opens the pack's own banner art, and
+  a user who picked square glyphs silently stops getting them until the
+  companion catches up. Nothing crashes, nothing is logged — it just applies
+  the wrong shape.
+
+So: **submit both listings in the same window with matched staged rollouts.**
+If they must diverge, the companion goes first, never the pack. A pack that
+believes its companion is ahead is harmless; one that believes it is behind is
+not.
+
+### Blocked pending the Play Console account
+
+The Play work (the Play build type, `play.yml`, the premium purchase in its own
+PR) is complete and tested, but nothing can be uploaded until the owner has:
+
+1. A Play Console developer account, identity verified.
+2. A **payments profile** — merchant/tax/bank details. Needed for the premium
+   in-app product; without it `premium_unlock` cannot be created or priced.
+3. A privacy policy URL (About links it; the string is still
+   `[USER TO SUPPLY]`).
+4. Upload key + the `PLAY_KEYSTORE_*` repository secrets for `play.yml`.
+
+Until (1) and (2) exist, the premium PR stays parked — the gate only lives in
+the Play build, so there is nothing to gate.
+
 ## Release checklist artifact contents
 
 Every `suite-release.yml` run writes a checklist summary with:

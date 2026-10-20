@@ -29,6 +29,14 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Fixed
 
+- **The Play build's Suite screen names no way off Play.** It still listed
+  "Downloader code 5270601" for apps this TV did not have and told users to
+  grab the APK from the GitHub release — the last surviving invitation to
+  install something Play did not, and the kind of steer Play reads as
+  circumvention. On Play the screen now answers only what it can: which
+  companions are on this box, with a line of its own when the answer is none.
+  The sideload builds keep the full registry, because that is how their users
+  install.
 - **The Play build has no route to a tip.** Support is two QR codes for
   GitHub Sponsors and Ko-fi, and Play's Payments policy forbids a Play app
   leading users to any payment method but Play Billing (a tip to one

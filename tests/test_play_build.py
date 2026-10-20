@@ -125,6 +125,23 @@ class PlayBuild(unittest.TestCase):
         self.assertIn("if (groupShown) railHead else aboveRows", chain)
         self.assertNotIn("if (groupShown) R.id.support_entry else aboveRows", chain)
 
+    def test_suite_screen_names_no_way_off_play(self):
+        # The Suite screen was the last place the Play build still told users
+        # how to get an app Play did not install it: "Downloader code 5270601"
+        # and "grab the APK from the GitHub release". Play reads steering users
+        # to another install route as circumvention, so on Play the screen is
+        # only "what of ours is on this TV".
+        src = read(KT / "SuiteActivity.kt")
+        self.assertIn("if (onPlay && !installed) continue", src,
+                      "Play build must not show a row for an absent app")
+        self.assertIn("if (onPlay) {\n                codeLine.visibility = View.GONE", src)
+        self.assertIn("if (onPlay && rows == 0)", src,
+                      "an emptied column must say why, not look broken")
+        # The two off-Play strings must sit in the branch Play cannot reach.
+        branch = src.split("if (onPlay) {", 1)[1].split("} else {", 1)[0]
+        self.assertNotIn("R.string.suite_code_fmt", branch)
+        self.assertIn("R.string.suite_none_play", src)
+
     def test_the_sends_list_names_the_icon_request(self):
         # About's list is a complete enumeration, not a summary: the missing-
         # icon report POSTs a device note (model, Android version, pack

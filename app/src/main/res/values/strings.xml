@@ -331,6 +331,9 @@
     <string name="suite_not_installed">Not installed on this TV</string>
     <string name="suite_code_fmt">Downloader code %1$s</string>
     <string name="suite_no_code">Not on Downloader yet — grab the APK from the GitHub release</string>
+    <!-- Play build only: the Suite screen lists installed companions there and
+         Downloader codes are never shown, so it can legitimately be empty. -->
+    <string name="suite_none_play">No other Core Builds apps on this TV yet.</string>
     <string name="suite_open_failed_fmt">Could not open %1$s from here.</string>
 
     <!-- About -->
