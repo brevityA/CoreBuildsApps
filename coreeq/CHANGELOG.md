@@ -8,6 +8,15 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+**Known limits (beta).** Read these before relying on Core EQ.
+
+- **No hardware qualification.** Correction has been checked on the emulator and in CI only. Audio paths, acoustic response and microphone calibration have not been checked on a TV or phone.
+- **Auto-apply changes audio.** The first clean (GREEN) measurement per output kind is applied without a tap. Switch it off or switch back in Profiles if a correction sounds wrong.
+- **Imported targets are limited to +6 / −12 dB**, held to the same budget as a correction.
+- **Phone pairing and discovery are untested on real networks and devices.** Mesh routers, guest Wi-Fi and some QR scanners may fail. A failed pairing is visible; the code is required every time.
+- **The imported target curve is held process-wide.** It is only changed on the Measure screen, and each saved profile keeps its own copy.
+- **Preset soundbar tones are starting points** from spec sheets and reviews, not measurements.
+
 - **The Home badge says when correction is on.** While correction is switched on and no playback is reported, the badge reads `ON · WAITING FOR PLAYBACK` in cyan instead of the grey `STANDBY`. The playing and not-applied states are unchanged. Not tested on a TV.
 - **The on-screen card's display time is yours to set.** Profiles has a **Card on screen** button that cycles 1 to 10 seconds (4 by default). It applies to the applied-profile card and the test card. Not tested on a TV.
 - **Tone presets for more soundbars.** Samsung HW-Q800H (and F), Sony Bravia Theatre Bar 6, LG S80TR and JBL Bar 1000 MK2 now have Movie, Dialogue and Music presets. They are picked by the output's product name, as the JBL Bar 800 presets are. They are starting points written from spec sheets and listening reviews, not measurements by Core EQ, and they sit on top of the measured correction. Not tested on the soundbars.
