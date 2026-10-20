@@ -348,7 +348,7 @@ class MainActivity : TvActivity() {
                     CorrectionIndicator.FAULT ->
                         Triple(R.drawable.bg_fault_badge, R.color.cb_ember, R.string.indicator_not_applied)
                     CorrectionIndicator.STANDBY ->
-                        Triple(R.drawable.bg_idle_badge, R.color.cb_slate, R.string.indicator_standby)
+                        Triple(R.drawable.bg_on_badge, R.color.cb_signal_cyan, R.string.indicator_standby)
                     CorrectionIndicator.LIVE ->
                         Triple(R.drawable.bg_live_badge, R.color.cb_success, R.string.indicator_live)
                     CorrectionIndicator.OFF -> return // handled above

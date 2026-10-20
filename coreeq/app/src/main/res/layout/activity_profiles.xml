@@ -75,6 +75,21 @@
                 android:textSize="@dimen/cb_text_data"
                 android:focusable="true" />
 
+            <!-- How long the card stays up: 1 to 10 seconds, cycled on each press. -->
+            <Button
+                android:id="@+id/btn_card_seconds"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cb_target_min"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:background="@drawable/bg_toggle"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:text="@string/profiles_card_seconds"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:focusable="true" />
+
             <!-- How the notice shows on this TV, and the way to the card when
                  "Display over other apps" is not allowed yet. -->
             <TextView

@@ -148,7 +148,7 @@
 
     <!-- Correction indicator badge (Home screen, under the switch) -->
     <string name="indicator_live">PLAYING · COVERAGE UNKNOWN</string>
-    <string name="indicator_standby">STANDBY</string>
+    <string name="indicator_standby">ON · WAITING FOR PLAYBACK</string>
     <string name="indicator_not_applied">NOT APPLIED</string>
 
     <!-- Profiles screen -->
@@ -290,7 +290,8 @@
     <string name="card_description">%1$s. %2$s. %3$s.</string>
     <string name="profiles_announce_on">Notice when a profile is applied: On</string>
     <string name="profiles_announce_off">Notice when a profile is applied: Off</string>
-    <string name="profiles_card_allowed">Shown as a card at the top right for 4 seconds, over whatever is playing: profile, mode, output and extras.</string>
+    <string name="profiles_card_allowed">Shown as a card at the top right for %1$d seconds, over whatever is playing: profile, mode, output and extras.</string>
+    <string name="profiles_card_seconds">Card on screen: %1$d s (tap for 1 to 10)</string>
     <string name="profiles_card_needs_permission">Shown as a short text toast for now. Allow “Display over other apps” for the card with the profile, mode, output and extras.</string>
     <string name="profiles_card_off">Off: nothing is shown when a profile is applied.</string>
     <string name="profiles_playback_hud_on">Playback chip: On</string>

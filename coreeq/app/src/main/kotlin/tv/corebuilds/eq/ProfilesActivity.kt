@@ -40,6 +40,7 @@ class ProfilesActivity : TvActivity() {
     private lateinit var btnDelete: Button
     private lateinit var btnAnnounce: Button
     private lateinit var textAnnounceCard: TextView
+    private lateinit var btnCardSeconds: Button
     private lateinit var btnPlaybackHud: Button
     private lateinit var textPlaybackHud: TextView
     private lateinit var btnAllowOverlay: Button
@@ -79,6 +80,7 @@ class ProfilesActivity : TvActivity() {
         btnDelete = findViewById(R.id.btn_delete_profile)
         btnAnnounce = findViewById(R.id.btn_announce_applied)
         textAnnounceCard = findViewById(R.id.text_announce_card)
+        btnCardSeconds = findViewById(R.id.btn_card_seconds)
         btnPlaybackHud = findViewById(R.id.btn_playback_hud)
         textPlaybackHud = findViewById(R.id.text_playback_hud)
         btnAllowOverlay = findViewById(R.id.btn_allow_overlay)
@@ -92,6 +94,12 @@ class ProfilesActivity : TvActivity() {
         btnDelete.setOnClickListener { deleteCurrentProfile() }
         btnAnnounce.setOnClickListener {
             profileStore.announceApplied = !profileStore.announceApplied
+            refreshOverlaySettings()
+        }
+        btnCardSeconds.setOnClickListener {
+            // 1 to 10 s, then back to 1: one press per second, no keyboard needed.
+            val next = profileStore.cardSeconds % ProfileStore.CARD_SECONDS_RANGE.last + 1
+            profileStore.cardSeconds = next
             refreshOverlaySettings()
         }
         btnPlaybackHud.setOnClickListener {
@@ -111,13 +119,14 @@ class ProfilesActivity : TvActivity() {
         btnAnnounce.showSwitch(announce, R.string.profiles_announce_on, R.string.profiles_announce_off)
         btnPlaybackHud.showSwitch(playbackHud, R.string.profiles_playback_hud_on, R.string.profiles_playback_hud_off)
         val allowed = OverlayPermission.allowed(this)
-        textAnnounceCard.setText(
-            when {
-                !announce -> R.string.profiles_card_off
-                allowed -> R.string.profiles_card_allowed
-                else -> R.string.profiles_card_needs_permission
-            }
-        )
+        val seconds = profileStore.cardSeconds
+        btnCardSeconds.text = getString(R.string.profiles_card_seconds, seconds)
+        btnCardSeconds.visibility = if (announce) View.VISIBLE else View.GONE
+        textAnnounceCard.text = when {
+            !announce -> getString(R.string.profiles_card_off)
+            allowed -> getString(R.string.profiles_card_allowed, seconds)
+            else -> getString(R.string.profiles_card_needs_permission)
+        }
         textPlaybackHud.setText(
             when {
                 !playbackHud -> R.string.profiles_playback_hud_off_note

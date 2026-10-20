@@ -232,6 +232,15 @@ class ProfileStore(context: Context) {
         get() = prefs.getBoolean(KEY_ANNOUNCE_APPLIED, true)
         set(value) { prefs.edit().putBoolean(KEY_ANNOUNCE_APPLIED, value).apply() }
 
+    /**
+     * How long the on-screen card stays up, in seconds: 1 to 10, 4 by default.
+     * Out-of-range or unreadable values fall back to the default rather than
+     * showing a card that vanishes instantly or never leaves.
+     */
+    var cardSeconds: Int
+        get() = prefs.getInt(KEY_CARD_SECONDS, DEFAULT_CARD_SECONDS).takeIf { it in CARD_SECONDS_RANGE } ?: DEFAULT_CARD_SECONDS
+        set(value) { prefs.edit().putInt(KEY_CARD_SECONDS, value.coerceIn(CARD_SECONDS_RANGE)).apply() }
+
     /** Keep a truthful playback-status chip over other apps while playback is reported. Off by default. */
     var playbackHudEnabled: Boolean
         get() = prefs.getBoolean(KEY_PLAYBACK_HUD_ENABLED, false)
@@ -313,6 +322,9 @@ class ProfileStore(context: Context) {
         private const val KEY_ACTIVE_ID = "active_profile_id"
         private const val KEY_ENABLED = "correction_enabled"
         private const val KEY_ANNOUNCE_APPLIED = "announce_applied_v130"
+        private const val KEY_CARD_SECONDS = "card_seconds_v1_6"
+        const val DEFAULT_CARD_SECONDS = 4
+        val CARD_SECONDS_RANGE = 1..10
         private const val KEY_PLAYBACK_HUD_ENABLED = "playback_hud_enabled_v160"
         private const val KEY_CARD_PROMPT_DISMISSED = "card_prompt_dismissed_v132"
         private const val KEY_STATUS_MSG = "status_message"

@@ -8,6 +8,8 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+- **The Home badge says when correction is on.** While correction is switched on and no playback is reported, the badge reads `ON · WAITING FOR PLAYBACK` in cyan instead of the grey `STANDBY`. The playing and not-applied states are unchanged. Not tested on a TV.
+- **The on-screen card's display time is yours to set.** Profiles has a **Card on screen** button that cycles 1 to 10 seconds (4 by default). It applies to the applied-profile card and the test card. Not tested on a TV.
 - **Tone presets for more soundbars.** Samsung HW-Q800H (and F), Sony Bravia Theatre Bar 6, LG S80TR and JBL Bar 1000 MK2 now have Movie, Dialogue and Music presets. They are picked by the output's product name, as the JBL Bar 800 presets are. They are starting points written from spec sheets and listening reviews, not measurements by Core EQ, and they sit on top of the measured correction. Not tested on the soundbars.
 - **A phone that finds the TV opens its pairing code.** While the TV's Phone link screen is open, a phone that searches and finds the TV asks it to show its pairing code. The request carries no code and grants nothing: pairing still needs the code on the TV screen. The TV accepts at most one such request every five seconds, and ignores them once a phone is paired. Any device on the same Wi-Fi can send that request, so a stranger can make the code appear on the TV, but cannot pair without it. Not tested on a phone and TV.
 - **Target files with decimal commas.** A line such as `20,5 -3,2` (decimal commas, space-separated) is now read as 20.5 Hz at −3.2 dB. It was read as 20 Hz at 5 dB before, with no error.
