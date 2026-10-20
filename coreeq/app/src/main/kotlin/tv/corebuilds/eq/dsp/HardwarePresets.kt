@@ -202,8 +202,183 @@ object HardwarePresets {
             "No measured response found in October 2026. Character: reviews only. Not measured by Core EQ."
     )
 
+    /** Samsung HW-Q800H (5.1.2 Dolby Atmos, wireless subwoofer; the F version is the same tuning). */
+    private val SAMSUNG_Q800H = Model(
+        id = "samsung-hw-q800h",
+        brand = "Samsung",
+        name = "Samsung HW-Q800H",
+        kind = Kind.SOUNDBAR,
+        nameMatch = Regex("""(?<![a-z0-9])(?:samsung[\s_-]*)?(?:hw[\s_-]*)?q800[hf](?![a-z0-9])""", RegexOption.IGNORE_CASE),
+        nameExclude = null,
+        presets = listOf(
+            ManualEqPreset(
+                id = "samsung-q800h-movie",
+                name = "Samsung Q800H · Movie",
+                filters = listOf(
+                    bell(63.0, -1.0),    // the subwoofer's bass is generous on this bar
+                    bell(2_000.0, 1.0),  // dialogue presence
+                    bell(8_000.0, 1.0)   // the warm profile rolls off the top treble
+                )
+            ),
+            ManualEqPreset(
+                id = "samsung-q800h-dialogue",
+                name = "Samsung Q800H · Dialogue",
+                filters = listOf(
+                    bell(1_000.0, 1.0),
+                    bell(2_000.0, 1.5),
+                    bell(4_000.0, 1.0)
+                )
+            ),
+            ManualEqPreset(
+                id = "samsung-q800h-music",
+                name = "Samsung Q800H · Music",
+                filters = listOf(
+                    bell(63.0, -1.0),
+                    bell(8_000.0, 1.5)   // restores the air the warm profile takes away
+                )
+            )
+        ),
+        basis = "Specification: Samsung HW-Q800H (5.1.2 channel, 6.5-inch woofer plus passive radiator, " +
+            "wireless subwoofer). Character: Crutchfield describes a warm profile that emphasises bass and " +
+            "rolls off the top treble; Les Numériques finds balanced mids and detailed highs, with Standard " +
+            "mode the most natural. No measured response from Core EQ."
+    )
+
+    /** Sony Bravia Theatre Bar 6 (bar with a wireless subwoofer, centre channel, Dolby Atmos). */
+    private val SONY_BAR_6 = Model(
+        id = "sony-bravia-theatre-bar-6",
+        brand = "Sony",
+        name = "Sony Bravia Theatre Bar 6",
+        kind = Kind.SOUNDBAR,
+        nameMatch = Regex("""(?<![a-z0-9])(?:bravia[\s_-]*)?theat(?:re|er)[\s_-]*bar[\s_-]*6(?![0-9])""", RegexOption.IGNORE_CASE),
+        nameExclude = null,
+        presets = listOf(
+            ManualEqPreset(
+                id = "sony-bar-6-movie",
+                name = "Sony Bar 6 · Movie",
+                filters = listOf(
+                    bell(63.0, -2.0),    // reviews: the default sub level drowns the mids
+                    bell(250.0, -1.0),
+                    bell(2_000.0, 1.0)
+                )
+            ),
+            ManualEqPreset(
+                id = "sony-bar-6-dialogue",
+                name = "Sony Bar 6 · Dialogue",
+                filters = listOf(
+                    bell(63.0, -2.5),
+                    bell(250.0, -1.5),
+                    bell(1_000.0, 1.5),
+                    bell(2_000.0, 1.5)
+                )
+            ),
+            ManualEqPreset(
+                id = "sony-bar-6-music",
+                name = "Sony Bar 6 · Music",
+                filters = listOf(
+                    bell(63.0, -3.0),    // reviews: bass needs turning down for music
+                    bell(250.0, -1.0),
+                    bell(4_000.0, 1.0),
+                    bell(8_000.0, 1.0)
+                )
+            )
+        ),
+        basis = "Specification: Sony Bravia Theatre Bar 6 (Dolby Atmos, wireless subwoofer, dedicated centre " +
+            "channel). Character: What Hi-Fi finds the default bass drowns the midrange; RTINGS finds the mids " +
+            "well balanced and dialogue crisp; Yahoo Tech says bass needs reducing for music. No measured " +
+            "response from Core EQ."
+    )
+
+    /** LG S80TR (5.1.3 Dolby Atmos, 8-inch wireless subwoofer, up-firing centre channel, rear speakers). */
+    private val LG_S80TR = Model(
+        id = "lg-s80tr",
+        brand = "LG",
+        name = "LG S80TR",
+        kind = Kind.SOUNDBAR,
+        nameMatch = Regex("""(?<![a-z0-9])(?:lg[\s_-]*)?s80tr(?![a-z0-9])""", RegexOption.IGNORE_CASE),
+        nameExclude = null,
+        presets = listOf(
+            ManualEqPreset(
+                id = "lg-s80tr-movie",
+                name = "LG S80TR · Movie",
+                filters = listOf(
+                    bell(63.0, 2.0),     // HomeTheaterReview: bass rolls off below about 70 Hz
+                    bell(125.0, 1.0),
+                    bell(4_000.0, 0.5)
+                )
+            ),
+            ManualEqPreset(
+                id = "lg-s80tr-dialogue",
+                name = "LG S80TR · Dialogue",
+                filters = listOf(
+                    bell(250.0, -0.5),
+                    bell(2_000.0, 1.0),
+                    bell(4_000.0, 0.5)
+                )
+            ),
+            ManualEqPreset(
+                id = "lg-s80tr-music",
+                name = "LG S80TR · Music",
+                filters = listOf(
+                    bell(63.0, 1.5),
+                    bell(125.0, 1.0),
+                    bell(8_000.0, 0.5)
+                )
+            )
+        ),
+        basis = "Specification: LG S80TR (5.1.3 channel, 8-inch wireless subwoofer, up-firing centre channel, " +
+            "rear speakers). Character: HomeTheaterReview finds bass rolls off below about 70 Hz and the " +
+            "centre channel keeps dialogue clear; owner reviews describe the bass as modest. No measured " +
+            "response from Core EQ."
+    )
+
+    /** JBL Bar 1000 MK2 (7.1.4 Dolby Atmos, 10-inch wireless subwoofer, PureVoice 2.0). */
+    private val JBL_BAR_1000_MK2 = Model(
+        id = "jbl-bar-1000-mk2",
+        brand = "JBL",
+        name = "JBL Bar 1000 MK2",
+        kind = Kind.SOUNDBAR,
+        nameMatch = Regex("""(?<![a-z0-9])(?:jbl[\s_-]*)?bar[\s_-]*1000(?![0-9])""", RegexOption.IGNORE_CASE),
+        nameExclude = null,
+        presets = listOf(
+            ManualEqPreset(
+                id = "jbl-bar-1000-movie",
+                name = "JBL Bar 1000 MK2 · Movie",
+                filters = listOf(
+                    bell(63.0, -2.0),    // What Hi-Fi: the bass distracts from the other frequencies
+                    bell(250.0, -1.0),
+                    bell(2_000.0, 1.0),
+                    bell(4_000.0, 0.5)   // keeps this preset distinct from the Sony Bar 6 movie tone
+                )
+            ),
+            ManualEqPreset(
+                id = "jbl-bar-1000-dialogue",
+                name = "JBL Bar 1000 MK2 · Dialogue",
+                filters = listOf(
+                    bell(63.0, -2.5),
+                    bell(1_000.0, 1.0),  // TechRadar: dialogue is less crisp than rivals
+                    bell(2_000.0, 1.5),
+                    bell(4_000.0, 1.0)
+                )
+            ),
+            ManualEqPreset(
+                id = "jbl-bar-1000-music",
+                name = "JBL Bar 1000 MK2 · Music",
+                filters = listOf(
+                    bell(63.0, -3.0),
+                    bell(250.0, -1.0),
+                    bell(8_000.0, 0.5)
+                )
+            )
+        ),
+        basis = "Specification: JBL Bar 1000 MK2 (7.1.4 channel, 10-inch wireless subwoofer, PureVoice 2.0). " +
+            "Character: What Hi-Fi finds powerful bass that distracts from the other frequencies; TechRadar finds " +
+            "dialogue less crisp than rivals; HomeTheaterReview says PureVoice can sound heavy-handed. " +
+            "No measured response from Core EQ."
+    )
+
     /** Every shipped hardware model, in the order the picker lists them. */
-    val MODELS: List<Model> = listOf(JBL_BAR_800, JBL_BAR_2_0)
+    val MODELS: List<Model> = listOf(JBL_BAR_800, JBL_BAR_2_0, SAMSUNG_Q800H, SONY_BAR_6, LG_S80TR, JBL_BAR_1000_MK2)
 
     /** Every shipped hardware preset, flat across models. */
     val PRESETS: List<ManualEqPreset> = MODELS.flatMap { it.presets }
