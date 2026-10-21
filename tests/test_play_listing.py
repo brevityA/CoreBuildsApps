@@ -35,6 +35,8 @@ import build_play_listing as listing  # noqa: E402
 
 PLAY = ROOT / "docs" / "play"
 SPEC = json.loads((PLAY / "listing.json").read_text(encoding="utf-8"))
+GLYPHS = PLAY / "glyphs"
+GLYPHS_SPEC = json.loads((GLYPHS / "listing.json").read_text(encoding="utf-8"))
 
 
 class AssetLimits(unittest.TestCase):
@@ -152,7 +154,7 @@ class TheWalkthroughAgreesWithTheAssets(unittest.TestCase):
         self.assertIn("4000 limit", self.doc)
 
     def test_every_asset_it_names_exists(self):
-        named = set(re.findall(r"docs/play/[A-Za-z0-9._\-*]+", self.doc))
+        named = set(re.findall(r"docs/play/[A-Za-z0-9._\-*/]*[A-Za-z0-9._\-*]", self.doc))
         self.assertTrue(named)
         for entry in sorted(named):
             if "*" in entry:
@@ -200,6 +202,33 @@ class TheWalkthroughAgreesWithTheAssets(unittest.TestCase):
         for secret in ("PLAY_KEYSTORE_BASE64", "PLAY_KEYSTORE_PASSWORD",
                        "PLAY_KEY_ALIAS", "PLAY_KEY_PASSWORD"):
             self.assertIn(secret, self.doc)
+
+    def test_it_walks_the_glyphs_pack_listing_too(self):
+        # The second app is a second package name typed into a form that can
+        # never be edited; both of its ids and its own asset folder are named.
+        self.assertIn(f"`{GLYPHS_SPEC['package']}`", self.doc)
+        self.assertIn(f"`{GLYPHS_SPEC['sideload_package']}`", self.doc)
+        self.assertIn(GLYPHS_SPEC["copy"]["title"], self.doc)
+        self.assertIn("docs/play/glyphs/listing.json", self.doc)
+        self.assertIn("glyphs/build/outputs/bundle/play/", self.doc)
+
+    def test_the_numbers_it_quotes_are_the_current_ones(self):
+        # "currently 1449" is copied next to a form field; a stale one sends
+        # someone looking for text that is not in the paste.
+        flat = " ".join(self.doc.split())
+        for spec in (SPEC, GLYPHS_SPEC):
+            copy = spec["copy"]
+            self.assertIn(f"this is {len(copy['title'])})", flat)
+            self.assertIn(f"currently {len(copy['short_description'])})", flat)
+            self.assertIn(f"currently {len(copy['full_description'])})", flat)
+        n = GLYPHS_SPEC["counts"]
+        self.assertIn(f"same {n['components']} launcher components", flat)
+        self.assertIn(f"{n['icons']} square glyphs", flat)
+        # The broker-on Data safety count, as a word in both documents.
+        word = ("one", "two", "three", "four")[len(listing.BROKER_COLLECTED) - 1]
+        self.assertIn(f"collects {word} optional types", flat)
+        changelog = " ".join((ROOT / "CHANGELOG.md").read_text(encoding="utf-8").split())
+        self.assertIn(f"Data safety ({word} optional types collected", changelog)
 
 
 class CopyLimits(unittest.TestCase):
@@ -380,14 +409,189 @@ class StoreTruth(unittest.TestCase):
             listing.broker_enabled = original
 
 
+class GlyphsPackListing(unittest.TestCase):
+    """docs/play/glyphs/: the second Play app, held to the pack's own gates.
+
+    The Glyphs Pack is the store page the icon pack's Art style switch opens
+    on Play, so it fails in the same two ways - an asset Play rejects at
+    upload, or a count the build does not ship - plus one of its own: it is
+    easy to dress a companion in the main app's art, and then the store
+    banner is not the banner the TV shows.
+    """
+
+    def asset(self, key):
+        return GLYPHS / GLYPHS_SPEC["assets"][key]["file"]
+
+    def fresh(self, svg_text, size, background=None):
+        import tempfile
+        from svg_renderer import svg2png
+
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        out = Path(tmp.name) / "fresh.png"
+        svg2png(bytestring=svg_text.encode(), write_to=str(out),
+                output_width=size[0], output_height=size[1],
+                background_color=background)
+        return Image.open(out)
+
+    def test_assets_are_inside_plays_limits(self):
+        icon = self.asset("icon")
+        self.assertLessEqual(icon.stat().st_size, 1024 * 1024)
+        with Image.open(icon) as im:
+            self.assertEqual(im.size, (512, 512))
+            self.assertEqual(im.mode, "RGBA")
+            # Opaque edge to edge: Play rounds it, so it must not be pre-rounded.
+            self.assertEqual(im.getpixel((2, 2))[3], 255)
+        for key, size in (("feature_graphic", (1024, 500)), ("tv_banner", (1280, 720))):
+            with Image.open(self.asset(key)) as im:
+                self.assertEqual(im.size, size, key)
+                self.assertEqual(im.mode, "RGB", f"{key} has an alpha channel")
+        shots = GLYPHS_SPEC["assets"]["tv_screenshots"]
+        self.assertTrue(1 <= len(shots) <= 8)
+        for entry in shots:
+            with Image.open(GLYPHS / entry["file"]) as im:
+                self.assertEqual(im.size, (1920, 1080), entry["file"])
+                self.assertEqual(im.mode, "RGB", entry["file"])
+
+    def test_icon_and_banner_are_the_ones_the_tv_shows(self):
+        # Same drawing, store size: the launcher icon and the Leanback banner
+        # glyphs/ ships come from these two compositions, and the store's must
+        # be fresh renders of them, not the icon pack's art.
+        import build_glyphs_branding as glyphs_branding
+
+        with self.fresh(glyphs_branding.icon_svg(), (512, 512)) as rendered, \
+                Image.open(self.asset("icon")) as committed:
+            self.assertEqual(rendered.convert("RGBA").tobytes(),
+                             committed.convert("RGBA").tobytes(),
+                             "the store icon drifted from the companion's launcher icon")
+        banner = glyphs_branding.banner_svg(glyphs_branding.COMPANION_SUBTITLE)
+        with self.fresh(banner, (1280, 720)) as rendered, \
+                Image.open(self.asset("tv_banner")) as committed:
+            self.assertEqual(rendered.convert("RGB").tobytes(),
+                             committed.convert("RGB").tobytes(),
+                             "the store banner drifted from the companion's banner")
+        with Image.open(self.asset("tv_banner")) as glyphs_banner, \
+                Image.open(PLAY / SPEC["assets"]["tv_banner"]["file"]) as pack_banner:
+            self.assertNotEqual(glyphs_banner.tobytes(), pack_banner.tobytes(),
+                                "the Glyphs Pack is listed with the icon pack's banner")
+
+    def test_screenshot_is_the_glyphs_home_frame_without_its_caption(self):
+        (entry,) = GLYPHS_SPEC["assets"]["tv_screenshots"]
+        self.assertEqual(entry["frame"], "glyphs-home")
+        with Image.open(ROOT / "docs/app-ui-glyphs-home.png") as src, \
+                Image.open(GLYPHS / entry["file"]) as out:
+            self.assertEqual(src.convert("RGB").crop((0, 0, 1920, 1080)).tobytes(),
+                             out.tobytes())
+
+    def test_copy_fits_and_is_the_generated_copy(self):
+        copy = GLYPHS_SPEC["copy"]
+        self.assertLessEqual(len(copy["title"]), 30)
+        self.assertLessEqual(len(copy["short_description"]), 80)
+        self.assertLessEqual(len(copy["full_description"]), 4000)
+        self.assertEqual(copy, listing.glyphs_copy(),
+                         "docs/play/glyphs/listing.json is stale: run "
+                         "tools/build_play_listing.py")
+        text = " ".join(copy.values()).lower()
+        for banned in ("best ", "#1", "number one", "top rated", "award winning",
+                       "download now", "premium", "unlock"):
+            self.assertNotIn(banned, text, f"metadata policy: {banned!r}")
+
+    def test_title_is_the_label_launchers_list(self):
+        # Someone told "choose Core Builds Glyphs Pack" must find that string
+        # both on the store page and in the launcher's icon pack list.
+        root = ET.parse(ROOT / "glyphs/src/main/res/values/strings.xml").getroot()
+        label = root.find("string[@name='app_name']").text
+        self.assertEqual(GLYPHS_SPEC["copy"]["title"], label)
+        self.assertIn(f"Choose {label}", GLYPHS_SPEC["copy"]["full_description"])
+
+    def test_counts_are_the_ones_its_resources_carry(self):
+        res = ROOT / "glyphs/src/main/res/xml"
+
+        def items(name, attribute):
+            return [el.get(attribute) for el in ET.parse(res / name).getroot().iter("item")
+                    if el.get(attribute) is not None]
+
+        n = GLYPHS_SPEC["counts"]
+        self.assertEqual(n, listing.glyph_counts())
+        self.assertEqual(n["icons"], len(items("drawable.xml", "drawable")))
+        self.assertEqual(n["components"], len(items("appfilter.xml", "component")))
+        full = GLYPHS_SPEC["copy"]["full_description"]
+        self.assertIn(f"{n['icons']} icons", full)
+        self.assertIn(f"same {n['components']} launcher components", full)
+        self.assertIn(f"{n['icons']} square glyph icons",
+                      GLYPHS_SPEC["copy"]["short_description"])
+
+    def test_same_components_claim_holds(self):
+        # "Switching changes what an icon looks like, never which apps get
+        # one" is true only while both appfilters map the same set.
+        def components(path):
+            return {el.get("component") for el in ET.parse(path).getroot().iter("item")
+                    if el.get("component")}
+
+        pack = components(ROOT / "app/src/main/res/xml/appfilter.xml")
+        glyphs = components(ROOT / "glyphs/src/main/res/xml/appfilter.xml")
+        self.assertEqual(glyphs, pack)
+        self.assertEqual(GLYPHS_SPEC["counts"]["components"], len(pack))
+
+    def test_no_data_and_no_purchases_because_it_has_no_way_to_send_any(self):
+        # The fixed answers hold only while the app has no permission, no
+        # library and no network code. Any of those appearing fails here first.
+        for manifest in sorted((ROOT / "glyphs/src").glob("*/AndroidManifest.xml")):
+            self.assertNotIn("uses-permission", manifest.read_text(encoding="utf-8"),
+                             f"{manifest.relative_to(ROOT)} asks for a permission")
+        gradle = (ROOT / "glyphs/build.gradle.kts").read_text(encoding="utf-8")
+        self.assertIsNone(re.search(r"^\s*dependencies\s*\{", gradle, re.M),
+                          "glyphs/ links a library; Data safety says it links none")
+        for src in (ROOT / "glyphs/src").rglob("*.java"):
+            text = src.read_text(encoding="utf-8")
+            for net in ("java.net", "HttpURLConnection", "okhttp"):
+                self.assertNotIn(net, text, f"{src.name} has network code")
+        safety = GLYPHS_SPEC["data_safety"]
+        self.assertFalse(safety["collects_user_data"])
+        self.assertFalse(safety["shares_user_data"])
+        self.assertFalse(safety["has_ads"])
+        self.assertFalse(GLYPHS_SPEC["content_rating"]["purchases"])
+        self.assertIn("no internet permission", GLYPHS_SPEC["copy"]["full_description"].lower())
+
+    def test_package_ids_are_the_ones_gradle_builds(self):
+        gradle = (ROOT / "glyphs/build.gradle.kts").read_text(encoding="utf-8")
+        base = re.search(r'applicationId = "([a-z.]+)"', gradle).group(1)
+        suffix = re.search(r'create\("play"\) \{\s*initWith\(getByName\("release"\)\)'
+                           r'\s*applicationIdSuffix = "([a-z.]+)"', gradle).group(1)
+        self.assertEqual(GLYPHS_SPEC["sideload_package"], base)
+        self.assertEqual(GLYPHS_SPEC["package"], base + suffix)
+        # The pack's Art style switch sends Play users to this id.
+        self.assertEqual(GLYPHS_SPEC["package"].replace(".glyphs", ""), SPEC["package"])
+        self.assertEqual(GLYPHS_SPEC["form_factors"], SPEC["form_factors"])
+
+    def test_check_catches_a_stale_glyphs_listing(self):
+        import tempfile, shutil
+        with tempfile.TemporaryDirectory() as tmp:
+            copy = Path(tmp) / "play"
+            shutil.copytree(PLAY, copy)
+            spec = json.loads((copy / "glyphs/listing.json").read_text(encoding="utf-8"))
+            spec["counts"]["components"] -= 1
+            (copy / "glyphs/listing.json").write_text(json.dumps(spec), encoding="utf-8")
+            original = listing.PLAY
+            listing.PLAY = copy
+            try:
+                self.assertIn("glyphs counts moved", " ".join(listing.check_glyphs()))
+                self.assertEqual(listing.check(), 1)
+            finally:
+                listing.PLAY = original
+
+
 class RepeatedGeneration(unittest.TestCase):
     """The generator is deterministic in everything but antialiasing."""
 
     def test_rerendering_produces_the_same_spec(self):
         before = (PLAY / "listing.json").read_text(encoding="utf-8")
+        glyphs_before = (GLYPHS / "listing.json").read_text(encoding="utf-8")
         listing.render_all()
         after = (PLAY / "listing.json").read_text(encoding="utf-8")
         self.assertEqual(before, after, "the listing spec is not stable across runs")
+        self.assertEqual(glyphs_before, (GLYPHS / "listing.json").read_text(encoding="utf-8"),
+                         "the Glyphs Pack listing spec is not stable across runs")
 
     def test_check_passes_on_the_committed_tree(self):
         self.assertEqual(listing.check(), 0)

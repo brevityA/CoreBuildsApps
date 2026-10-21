@@ -1466,6 +1466,82 @@ def art_sentence(art: str) -> str:
             "NONE": STRINGS["launcher_compat_art_none"]}[art]
 
 
+# ---------------------------------------------------------------------------
+# Core Builds Glyphs Pack (the glyphs/ module): its one screen
+# ---------------------------------------------------------------------------
+
+GLYPHS_RES = ROOT / "glyphs/src/main/res"
+
+
+def _glyphs_values(file: str, tag: str) -> dict[str, str]:
+    out = {}
+    for element in _xml(GLYPHS_RES / "values" / file):
+        if element.tag == tag:
+            out[element.get("name")] = re.sub(
+                r"\s+", " ", "".join(element.itertext())).strip().replace("\\'", "'")
+    return out
+
+
+def _glyphs_count(xml_file: str, attribute: str) -> int:
+    """GlyphsHomeActivity.countItems: <item> rows carrying the attribute."""
+    return sum(1 for el in _xml(GLYPHS_RES / "xml" / xml_file).iter("item")
+               if el.get(attribute) is not None)
+
+
+def glyphs_home_frame() -> tuple[Image.Image, str]:
+    """GlyphsHomeActivity on glyphs_home.xml, the package's only screen, with
+    the button focused as it is on entry (<requestFocus/>). Every size, colour
+    and string is read from the glyphs/ module, and the counts are counted the
+    way the activity counts them."""
+    text = _glyphs_values("strings_home.xml", "string")
+    dimen = {k: float(v[:-2]) for k, v in _glyphs_values("dimens.xml", "dimen").items()}
+    hexes = _glyphs_values("colors.xml", "color")
+
+    def rgb(name: str) -> tuple:
+        h = hexes[name].lstrip("#")
+        return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4)) + (255,)
+
+    img = Image.new("RGBA", (W, H), rgb("glyphs_night"))
+    draw = ImageDraw.Draw(img, "RGBA")
+    x, y = dp(dimen["glyphs_home_pad_h"]), dp(dimen["glyphs_home_pad_v"])
+    width = W - 2 * x
+    gap, lead = dp(dimen["glyphs_home_gap"]), dp(dimen["glyphs_home_leading"])
+
+    def block(s: str, size: float, colour_name: str, bold: bool = False) -> None:
+        nonlocal y
+        f = font("sans", size, bold=bold)
+        for line in wrap(draw, s, f, width):
+            draw_text(draw, (x, y), line, f, rgb(colour_name))
+            y += dp(size) + int(dp(size) * 0.25) + lead
+
+    block(text["glyphs_home_title"], dimen["glyphs_home_title"], "glyphs_ink", bold=True)
+    y += gap
+    icons = _glyphs_count("drawable.xml", "drawable")
+    components = _glyphs_count("appfilter.xml", "component")
+    counts = text["glyphs_home_counts"].replace("%1$d", str(icons)).replace("%2$d", str(components))
+    block(counts, dimen["glyphs_home_counts"], "glyphs_cyan")
+    y += gap
+    block(text["glyphs_home_body"], dimen["glyphs_home_body"], "glyphs_slate")
+    y += dp(dimen["glyphs_home_button_gap"])
+
+    # The button: wrap_content with a 320dp minimum, cyan fill while focused,
+    # CTA ink text (drawable/glyphs_button_bg.xml, color/glyphs_button_text.xml).
+    f_btn = font("sans", dimen["glyphs_home_button_text"])
+    label = text["glyphs_home_open"]
+    bw = max(dp(dimen["glyphs_home_button_w"]),
+             text_width(draw, label, f_btn) + 2 * dp(dimen["glyphs_home_button_pad"]))
+    bh = dp(dimen["glyphs_home_button_h"])
+    rrect(draw, [x, y, x + bw, y + bh], dp(dimen["glyphs_home_radius"]), fill=rgb("glyphs_cyan"))
+    draw_text(draw, (x + bw // 2, y + bh // 2), label, f_btn, rgb("glyphs_cta_ink"), anchor="mm")
+    y += bh + gap
+
+    block(text["glyphs_home_hint"], dimen["glyphs_home_hint"], "glyphs_slate")
+    note = (f"Glyphs Pack home: counts from its drawable.xml ({icons}) and "
+            f"appfilter.xml ({components}), button focused; Outfit stands in for "
+            f"the system sans")
+    return img, note
+
+
 FRAMES = [
     ("app-ui-catalogue.png", lambda: catalogue_frame(False)),
     ("app-ui-catalogue-update.png", lambda: catalogue_frame(True)),
@@ -1478,6 +1554,7 @@ FRAMES = [
     ("app-ui-inspector.png", inspector_frame),
     ("app-ui-suite.png", suite_frame),
     ("app-ui-launcher-compat.png", launcher_compat_frame),
+    ("app-ui-glyphs-home.png", glyphs_home_frame),
 ]
 
 
@@ -1507,6 +1584,9 @@ INPUT_GLOBS = (
     "app/src/main/res/layout/*.xml",
     "app/src/main/res/values/*.xml",
     "tools/fonts/*.ttf",
+    "glyphs/src/main/res/layout/*.xml",
+    "glyphs/src/main/res/values/*.xml",
+    "glyphs/src/main/res/xml/*.xml",
 )
 MANIFEST = DOCS / "app-ui-mockups.json"
 

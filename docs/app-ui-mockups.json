@@ -20,6 +20,10 @@
       "bytes": 139797,
       "structure": "e942e547ee00b0ebd0c675d7762903c48e51199e6077ae34d8788371c71d9906"
     },
+    "app-ui-glyphs-home.png": {
+      "bytes": 86105,
+      "structure": "6c2d3f36778e939235162cc9cca222c3cc1b2fe6a4a1d4cc967f28acf1ceac83"
+    },
     "app-ui-inspector.png": {
       "bytes": 114729,
       "structure": "70a4bf2af668ccfc682ec0eeee14836d77162732cd97ccbd0cda97ca0d7b46bb"
@@ -82,14 +86,22 @@
     "app/src/main/res/values/strings.xml": "88bab87a6de7664f9c017ff294a3d9c8b395cbdf38c0c142f24e1a2080a4a206",
     "app/src/main/res/values/suite_hub.xml": "aff339700a9e6751b31ed189c2695e77ce18b80332f104f94e9235cdd05ef74a",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
-    "tools/build_app_ui_mockups.py": "eec82c73031a7a054bde7b64ad4e9c515ea2f82b704529f0ebea742ea8fd4321",
+    "glyphs/src/main/res/layout/glyphs_home.xml": "f937cab93c7cdd9a3e7c8707b05d3a4cb362bf07dce8d65bbc1745c0e1304f9c",
+    "glyphs/src/main/res/values/colors.xml": "899a929d4478679daaf9e1adf6f9a04e6214361f44631c3dbe1e6635289178fb",
+    "glyphs/src/main/res/values/dimens.xml": "a9b5758f1b31180fc8ce022edbc76bce21c93494b96a85a07b9f97eb610f72dc",
+    "glyphs/src/main/res/values/strings.xml": "d95d048d9c4e1c35c373d0cde1d93fa8bff6a11e63e99302cb936fd5b0be0a9a",
+    "glyphs/src/main/res/values/strings_home.xml": "17c322a7574c2409827d846ecea92c9c2d2d245c0a8641639ab3025929cc340f",
+    "glyphs/src/main/res/values/themes.xml": "04671aa0949e5c13039820d2762860c89ee84e240d061b9f5554ea00a3391c7f",
+    "glyphs/src/main/res/xml/appfilter.xml": "effaf4822e393dd1ffb1ef9f2a2b38457197455c6ad052bb051bca7e32adbdee",
+    "glyphs/src/main/res/xml/drawable.xml": "36063dd22345d82132d6cad2d98940dba04abbc5a88094583b6244d2e6d3dd10",
+    "tools/build_app_ui_mockups.py": "9d71487b5ffb41ad707d85384d759333d5f07348c33ccd8761678145e6d0d69d",
     "tools/catalog.json": "cc7e706eb28fb0512dd25b4f3557a846be2d35fcd0a6a1740e40beab46c71487",
     "tools/fonts/DejaVuSansMono-Bold.ttf": "2964f6dac8e6e9d71613928340f17bf868e9ea51692cca333c79e74962f02233",
     "tools/fonts/DejaVuSansMono.ttf": "0f5db4f1749979d961019838b160bec74abdf7f9eca69553fe1aa856bbff49a4",
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "835103c2570875fa0184e2002e5c99303c2e65d3e4c9537088dd54e1331b4ce9",
+  "inputs_digest": "42e2d780c7ee0d675c37072802baa79314300aaf766f8990a72966a5c9f653cd",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
@@ -101,7 +113,8 @@
     "sans-bold@38": 619.0,
     "sans-bold@64": 1045.0,
     "sans@28": 448.0,
-    "sans@32": 514.0
+    "sans@32": 514.0,
+    "sans@36": 580.0
   },
   "note": "Which sources the frames in docs/ were generated from, and what each one depicts. Written by build_app_ui_mockups.py; never hand-edit. The PNG bytes are not recorded on purpose: text rendering is not reproducible across machines, so --check compares the sources and the drawn structure instead. See the module docstring.",
   "pasted": {

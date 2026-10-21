@@ -1,10 +1,20 @@
 #!/usr/bin/env python3
-"""Branding for the glyphs-only app (`tv.corebuilds.glyphs`).
+"""Branding for the two glyph-art apps: the glyphs-only app
+(`tv.corebuilds.glyphs`) and Core Builds Glyphs Pack, the icon pack's square
+companion (`tv.corebuilds.iconpack.glyphs`, the `glyphs/` module).
 
 The `glyphs` product flavor of `:app` is the whole icon pack with the square
 appfilter, installed as its own app. Without this script it inherits the pack's
 launcher icon and TV banner, so in a launcher's drawer and on the TV row it
 looks like a second copy of the pack, told apart only by a label.
+
+The companion had the same problem in a sharper form. Its module copied the
+pack's launcher icon and banner at build time, so with both installed the TV
+row showed two banners reading "Core Builds Icon Pack", and on Google Play its
+store banner, which must be the on-device banner, would have advertised the
+wrong app. It now gets the glyph mark too, with "Glyphs Pack" on the banner,
+written into `glyphs/src/main/res/` (plus the adaptive xml, since that module
+no longer copies the pack's).
 
 This writes the flavor's own launcher and banner into `app/src/glyphs/res/`:
 
@@ -32,7 +42,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from build_branding import png, svg  # noqa: E402  (shared renderer)
+from build_branding import ADAPTIVE_XML, png, svg  # noqa: E402  (shared renderer)
 from icon_style import core_monoline_errors  # noqa: E402
 from presence import apply_presence_file  # noqa: E402
 from typeface import measure as type_measure, wordmark_spans, FONTS  # noqa: E402
@@ -40,6 +50,7 @@ from typeface import measure as type_measure, wordmark_spans, FONTS  # noqa: E40
 FONT_MONO = FONTS / "DejaVuSansMono.ttf"
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "app" / "src" / "glyphs" / "res"
+COMPANION_RES = ROOT / "glyphs" / "src" / "main" / "res"
 
 ACCENT = "#A366FF"   # Violet — a palette slot; not the pack's Signal Cyan
 NIGHT = "#0D1117"    # Brand Guide Night card
@@ -66,39 +77,32 @@ def glyph_mark(c: str) -> str:
 
 MARK = glyph_mark(ACCENT)
 
+# Subtitles under "Core Builds" on each app's banner: the app_name each one
+# carries, minus the shared first two words.
+FLAVOR_SUBTITLE = "Glyphs"
+COMPANION_SUBTITLE = "Glyphs Pack"
 
-def main() -> None:
-    errors = core_monoline_errors(MARK, ACCENT)
-    assert not errors, f"glyphs-app mark violates Core monoline: {errors}"
 
-    written = []
+def icon_svg() -> str:
+    """The legacy launcher composition: the mark on the night card. The
+    companion's Play store icon is this drawing at 512 px."""
+    return svg(512, 512, MARK, bg=NIGHT)
 
-    # Legacy launcher: the mark on the night card, with the presence pass.
-    legacy = svg(512, 512, MARK, bg=NIGHT)
-    for folder, size in [("mipmap-xhdpi", 160), ("mipmap-xxhdpi", 240)]:
-        p = RES / folder / "ic_launcher.png"
-        png(legacy, p, size, size)
-        apply_presence_file(p)
-        written.append(f"{folder}/ic_launcher.png ({size}px)")
 
-    # Adaptive: the mark inside the 66/108 safe zone, over a solid night card.
-    _S = 66.0 / 108.0
-    _off = 512 * (1 - _S) / 2
-    fg = svg(512, 512, f'<g transform="translate({_off:.1f},{_off:.1f}) '
-                       f'scale({_S:.4f})">{MARK}</g>')
-    bg = svg(512, 512, f'<rect width="512" height="512" fill="{NIGHT}"/>')
-    for folder, size in [("mipmap-xhdpi", 216), ("mipmap-xxhdpi", 324)]:
-        png(fg, RES / folder / "ic_launcher_foreground.png", size, size)
-        written.append(f"{folder}/ic_launcher_foreground.png ({size}px)")
-        png(bg, RES / folder / "ic_launcher_background.png", size, size)
-        written.append(f"{folder}/ic_launcher_background.png ({size}px)")
-
-    # Leanback banner, same lockup grammar as the pack's, glyphs wording.
+def banner_svg(subtitle: str) -> str:
+    """The 320x180 Leanback banner, same lockup grammar as the pack's. One
+    composition per app at every size: the on-device cb_banner (640x360) and,
+    for the companion, the Play store banner (1280x720,
+    tools/build_play_listing.py)."""
     TV_SAFE = 16
     TEXT_X = 164
     limit = 320 - TV_SAFE
     wm, _ = wordmark_spans(["Core Builds"], 23, TEXT_X, [82], "#e6edf3")
-    sub, _ = wordmark_spans(["Glyphs"], 19, TEXT_X, [106], ACCENT)
+    sub, _ = wordmark_spans([subtitle], 19, TEXT_X, [106], ACCENT)
+    sub_w = type_measure(subtitle, 19)
+    assert TEXT_X + sub_w <= limit, (
+        f"banner subtitle overruns the safe area: ends at {TEXT_X + sub_w:.1f}, "
+        f"limit {limit}")
     strap, strap_size = "Square icons \u00b7 Android TV", 9
     strap_w = type_measure(strap, strap_size, FONT_MONO)
     assert TEXT_X + strap_w <= limit, (
@@ -106,15 +110,60 @@ def main() -> None:
         f"limit {limit}")
     tag, _ = wordmark_spans([strap], strap_size, TEXT_X, [130], "#8b949e",
                             font_path=FONT_MONO)
-    banner = svg(320, 180,
-                 f'<g transform="translate(14,22) scale(0.265)">{MARK}</g>{wm}{sub}{tag}',
-                 bg=NIGHT)
-    png(banner, RES / "drawable-nodpi" / "cb_banner.png", 640, 360)
+    return svg(320, 180,
+               f'<g transform="translate(14,22) scale(0.265)">{MARK}</g>{wm}{sub}{tag}',
+               bg=NIGHT)
+
+
+def write_launcher(res: Path, label: str, written: list[str]) -> None:
+    """Legacy and adaptive layers. Legacy: the mark on the night card, with
+    the presence pass. Adaptive: the mark inside the 66/108 safe zone, over a
+    solid night card."""
+    legacy = icon_svg()
+    for folder, size in [("mipmap-xhdpi", 160), ("mipmap-xxhdpi", 240)]:
+        p = res / folder / "ic_launcher.png"
+        png(legacy, p, size, size)
+        apply_presence_file(p)
+        written.append(f"{label}{folder}/ic_launcher.png ({size}px)")
+
+    _S = 66.0 / 108.0
+    _off = 512 * (1 - _S) / 2
+    fg = svg(512, 512, f'<g transform="translate({_off:.1f},{_off:.1f}) '
+                       f'scale({_S:.4f})">{MARK}</g>')
+    bg = svg(512, 512, f'<rect width="512" height="512" fill="{NIGHT}"/>')
+    for folder, size in [("mipmap-xhdpi", 216), ("mipmap-xxhdpi", 324)]:
+        png(fg, res / folder / "ic_launcher_foreground.png", size, size)
+        written.append(f"{label}{folder}/ic_launcher_foreground.png ({size}px)")
+        png(bg, res / folder / "ic_launcher_background.png", size, size)
+        written.append(f"{label}{folder}/ic_launcher_background.png ({size}px)")
+
+
+def main() -> None:
+    errors = core_monoline_errors(MARK, ACCENT)
+    assert not errors, f"glyphs-app mark violates Core monoline: {errors}"
+
+    written = []
+
+    # The glyphs-only flavor of :app. Its adaptive xml is the pack's.
+    write_launcher(RES, "", written)
+    png(banner_svg(FLAVOR_SUBTITLE), RES / "drawable-nodpi" / "cb_banner.png", 640, 360)
     written.append("drawable-nodpi/cb_banner.png (640x360)")
+
+    # The companion module copies nothing of the pack's branding any more, so
+    # it carries its own adaptive wiring as well.
+    write_launcher(COMPANION_RES, "glyphs: ", written)
+    for name in ("ic_launcher.xml", "ic_launcher_round.xml"):
+        p = COMPANION_RES / "mipmap-anydpi-v26" / name
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(ADAPTIVE_XML)
+        written.append(f"glyphs: mipmap-anydpi-v26/{name}")
+    png(banner_svg(COMPANION_SUBTITLE),
+        COMPANION_RES / "drawable-nodpi" / "cb_banner.png", 640, 360)
+    written.append("glyphs: drawable-nodpi/cb_banner.png (640x360)")
 
     for w in written:
         print("\u2713 " + w)
-    print(f"\nGlyphs-app branding complete \u2014 {len(written)} files written.")
+    print(f"\nGlyphs branding complete \u2014 {len(written)} files written.")
 
 
 if __name__ == "__main__":

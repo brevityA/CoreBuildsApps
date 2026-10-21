@@ -11,6 +11,7 @@ checked by the repo, so nothing on this page is guessed:
 | Privacy policy | `docs/privacy.html`, served over GitHub Pages |
 | Package name | `tv.corebuilds.iconpack.play` (the Play build type) |
 | Core Builds Plus product ID | `core_builds_plus` (`PlusStore.PRODUCT_ID`, and the broker's `PLUS_PRODUCT_ID`) |
+| Core Builds Glyphs Pack, the second app | `docs/play/glyphs/` (§9) |
 
 `tests/test_play_listing.py` keeps the copy's numbers equal to what the build
 ships; `tests/test_privacy_policy.py` keeps the policy's claims equal to the
@@ -62,7 +63,7 @@ though there is nothing to declare.
 | **Ads** | **No ads** |
 | **Content rating** | IARC questionnaire: category *Utility / Productivity*, then "No" to violence, sexuality, language, controlled substances, gambling, user-generated content, location sharing and ads. **Purchases**: copy `listing.json → content_rating.purchases` — "no" until Core Builds Plus is on sale (§8), "yes" from then on. Expect **Everyone / PEGI 3**. Answers come from `listing.json → content_rating` |
 | **Target audience** | 13+ / adults. Do **not** select an audience including children: it drags in the Families policy for no benefit to a wallpaper pack |
-| **Data safety** | Copy `listing.json → data_safety`. Without the request broker: collects no data, shares no data, no ads, encrypted in transit. With it (§8): collects three optional types listed under `collected`, shares none. It carries the rationale and the one user-triggered request payload |
+| **Data safety** | Copy `listing.json → data_safety`. Without the request broker: collects no data, shares no data, no ads, encrypted in transit. With it (§8): collects two optional types listed under `collected`, shares none. It carries the rationale and the one user-triggered request payload |
 | **Government apps** | Not a government app |
 | **Financial features** | No financial features |
 | **Health apps** | No health features |
@@ -131,6 +132,24 @@ keytool -genkeypair -v -keystore play-upload.jks -alias play-upload \
 base64 -w0 play-upload.jks > play-upload.jks.b64
 ```
 
+On Windows, in an ordinary (not Administrator) PowerShell, from a folder you
+own rather than `C:\Windows\system32`. `keytool` ships with any JDK; if the
+search prints nothing, `winget install Microsoft.OpenJDK.21`, open a new
+window and search again:
+
+```powershell
+mkdir $HOME\play-keys; cd $HOME\play-keys
+$kt = (Get-ChildItem "C:\Program Files","C:\Program Files (x86)","$env:LOCALAPPDATA" -Filter keytool.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1).FullName; $kt
+& $kt -genkeypair -v -keystore play-upload.jks -alias play-upload -keyalg RSA -keysize 4096 -validity 10000
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("$PWD\play-upload.jks")) | Set-Clipboard
+```
+
+The last line puts the base64 on the clipboard for `PLAY_KEYSTORE_BASE64`,
+so there is no `.b64` file to delete. It names `$PWD` because .NET resolves a
+bare file name against its own working folder, not PowerShell's. A PKCS12
+keystore, the default since JDK 9, has one password, so `PLAY_KEY_PASSWORD`
+is the same as `PLAY_KEYSTORE_PASSWORD`.
+
 Before the first run, add four repository secrets (Settings → Secrets and
 variables → Actions), then delete the `.b64` file and keep the `.jks` and its
 passwords in a password manager:
@@ -145,7 +164,7 @@ passwords in a password manager:
 The workflow produces `app/build/outputs/bundle/bannersPlay/*.aab` and
 `glyphs/build/outputs/bundle/play/*.aab`, and fails loudly if either is
 unsigned. Upload the icon pack's AAB for this listing; the Glyphs Pack is its
-own listing and **both go out in the same window with matched rollouts** — see
+own listing (§9) and **both go out in the same window with matched rollouts** — see
 `docs/RELEASE-INFRA.md`, because the pack refuses a companion whose
 `versionCode` is behind its own.
 
@@ -228,6 +247,70 @@ it adds; until then the Play build sells nothing and the steps below wait.
 None of this has run on a TV yet: no device has bought Plus. Step 8 is the
 first real proof of the purchase sheet, the acknowledge call and the broker's
 label.
+
+## 9. Core Builds Glyphs Pack: the second app
+
+The Glyphs Pack (`glyphs/`) is the square companion: the same 1933 launcher
+components, drawn as 1012 square glyphs. On Play, the icon pack's **Art
+style** switch opens this app's listing when the pack is missing
+(`GlyphsCompanion.ensure`), so it has to exist before anyone can pick Square.
+In Console it is a separate app, with its own package, listing, forms and
+tester clock. §1–§7 apply again; only the values below differ.
+
+| Value | Source of truth |
+|---|---|
+| Title, short and full description | `docs/play/glyphs/listing.json` → `copy` |
+| Icon, feature graphic, TV banner, TV screenshot | `docs/play/glyphs/` |
+| Data safety and content-rating answers | `docs/play/glyphs/listing.json` → `data_safety`, `content_rating` |
+| Package name | `tv.corebuilds.iconpack.glyphs.play`. The sideload build is `tv.corebuilds.iconpack.glyphs`; never paste that one |
+
+1. **Create the app.** App name `Core Builds Glyphs Pack` (30-character
+   limit; this is 23), the same launcher label the TV lists. **Free**,
+   English (Australia), package `tv.corebuilds.iconpack.glyphs.play`. Register
+   that package under Android developer verification, as in §1.
+2. **App content.** The same privacy policy URL: `docs/privacy.html` already
+   names both Glyphs package ids. No restrictions on access, no ads, 13+, no
+   advertising ID. Content rating: the same IARC answers as §2, and
+   **purchases: no**, permanently. Plus is the icon pack's product, and this
+   app sells nothing. Data safety: **collects no data, shares no data**. The
+   app declares no permissions at all, `INTERNET` included, and links no
+   library. `listing.json` leaves encryption and deletion `null` because
+   nothing is sent.
+3. **Store listing.** Paste `copy.short_description` (80-character limit;
+   currently 69) and `copy.full_description` (4000 limit; currently 1015).
+   - **App icon**: `docs/play/glyphs/icon-512.png`
+   - **Feature graphic**: `docs/play/glyphs/feature-graphic-1024x500.png`
+   - **TV banner**: `docs/play/glyphs/tv-banner-1280x720.png`
+   - **TV screenshot**: `docs/play/glyphs/tv-1-glyphs-home-1920x1080.png`, its
+     one screen
+
+   The icon and banner are the companion's own violet glyph art
+   (`tools/build_glyphs_branding.py`), the same drawings its launcher icon and
+   Leanback banner use, not the icon pack's.
+4. **Store settings.** The same category and contact email as the pack.
+   **Form factors: TV only.** The Glyphs Play manifest requires
+   `android.software.leanback`, as the pack's does.
+5. **Upload only `glyphs-play.aab`** from the same `play.yml` run
+   (`glyphs/build/outputs/bundle/play/*.aab`). Both bundles are signed with
+   the same upload key. Play App Signing may give each app its own signing
+   key, and the pack allows for that: on Play it trusts a companion that Play
+   installed.
+6. **Its own closed test.** On a new personal account, the 12-tester, 14-day
+   rule applies to each app. Open this app's closed test **on the same day as
+   the pack's, with the same testers** (one Google Group on both tracks).
+   That way both clocks run together. A tester who flips Art style is sent to
+   this listing, and a tester missing from its track cannot install from it.
+7. **Every release after that, in step.** Both apps carry the same
+   `versionCode`, so ship them in the same window with matched staged
+   rollouts. If they must diverge, the Glyphs Pack goes first
+   (`docs/RELEASE-INFRA.md`, "The two Play listings go out together").
+
+`tools/build_play_listing.py --check` holds this listing to the same gates as
+the pack's: Play's asset limits, the counts read from `glyphs/`'s own
+`drawable.xml` and `appfilter.xml`, and copy equal to the generated copy.
+`tests/test_play_listing.py` adds the rest: the icon and banner must be fresh
+renders of the companion's art, the component set must equal the pack's, and
+neither Glyphs manifest may ask for a permission.
 
 ## What this app will not do, and why that is deliberate
 

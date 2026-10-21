@@ -64,6 +64,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import build_branding as branding  # noqa: E402
+import build_glyphs_branding as glyphs_branding  # noqa: E402
 from PIL import Image  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -520,6 +521,7 @@ def render_all() -> dict:
     }
     (PLAY / "listing.json").write_text(
         json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    render_glyphs()
     return payload
 
 
@@ -600,6 +602,8 @@ def check() -> int:
             if im.mode != "RGB":
                 problems.append(f"{path.name}: mode {im.mode}; Play wants no alpha")
 
+    problems += check_glyphs()
+
     if problems:
         print("Play listing is stale:")
         for p in problems:
@@ -607,10 +611,247 @@ def check() -> int:
         print("\nRe-run: python tools/build_play_listing.py")
         return 1
 
+    g = glyph_counts()
     print(f"Play listing ok - {len(shots)} TV screenshots, copy matches "
-          f"{n['icons']} icons / {n['walls']} walls / {n['loops']} loops, "
-          f"every asset inside Play's limits")
+          f"{n['icons']} icons / {n['walls']} walls / {n['loops']} loops; "
+          f"Glyphs Pack listing matches {g['icons']} icons / {g['components']} "
+          f"components; every asset inside Play's limits")
     return 0
+
+
+
+# ---------------------------------------------------------------------------
+# Core Builds Glyphs Pack: the second Play listing
+# ---------------------------------------------------------------------------
+#
+# The square companion (`glyphs/`, tv.corebuilds.iconpack.glyphs.play) is its
+# own Play app with its own listing, and the icon pack's Art style switch opens
+# that listing on Play. It gets the same treatment as the pack: every asset is
+# output from what the app ships, and the copy's numbers come from its own
+# resources. It lives in docs/play/glyphs/ beside the pack's.
+#
+# Its icon and TV banner are its own launcher icon and Leanback banner
+# (tools/build_glyphs_branding.py) at store size - one drawing at two scales,
+# as for the pack. Its one screenshot is its one screen, the glyphs-home frame
+# of tools/build_app_ui_mockups.py with the caption band cropped off.
+
+GLYPHS_RES = ROOT / "glyphs/src/main/res"
+GLYPHS_PACKAGE = "tv.corebuilds.iconpack.glyphs.play"
+GLYPHS_SIDELOAD = "tv.corebuilds.iconpack.glyphs"
+GLYPHS_SCREENSHOTS = [
+    ("glyphs-home", "the pack's one screen: its counts and the way to the icon pack"),
+]
+
+
+def glyphs_dir() -> Path:
+    # Resolved per call, so a test that points PLAY at a copy moves this too.
+    return PLAY / "glyphs"
+
+
+def _count_items(path: Path, attribute: str) -> int:
+    """GlyphsHomeActivity.countItems: <item> rows carrying the attribute."""
+    return sum(1 for el in ET.parse(path).getroot().iter("item")
+               if el.get(attribute) is not None)
+
+
+def glyph_counts() -> dict:
+    return {
+        "icons": _count_items(GLYPHS_RES / "xml/drawable.xml", "drawable"),
+        "components": _count_items(GLYPHS_RES / "xml/appfilter.xml", "component"),
+    }
+
+
+GLYPHS_COPY = {
+    "title": "Core Builds Glyphs Pack",
+    "short_description": (
+        "{icons} square glyph icons for Android TV launchers. No ads, no account."
+    ),
+    "full_description": (
+        "The square half of Core Builds Icon Pack: {icons} icons drawn as "
+        "flat, single-colour glyphs, for launchers that show square tiles.\n"
+        "\n"
+        "SAME APPS, SQUARE ART\n"
+        "Core Builds Icon Pack draws 16:9 banners. This pack draws the same "
+        "apps as square glyphs, mapped to the same {components} launcher "
+        "components, so switching between the two changes what an icon looks "
+        "like, never which apps get one.\n"
+        "\n"
+        "HOW TO USE IT\n"
+        "Choose Core Builds Glyphs Pack in your launcher's icon pack list (on "
+        "Projectivy: Settings, then Icon pack), or flip Art style inside Core "
+        "Builds Icon Pack, which brings you here if this pack is missing.\n"
+        "\n"
+        "WHAT IT IS\n"
+        "A resource pack with one screen, which shows how many icons it "
+        "carries and opens the icon pack. Applying the pack works on its own. "
+        "Picking a single icon by hand goes through Core Builds Icon Pack's "
+        "picker, so that needs the icon pack installed, and the catalogue, "
+        "the wallpapers and the settings live there too.\n"
+        "\n"
+        "PRIVACY\n"
+        "No internet permission, no ads, no analytics, no account. This pack "
+        "sends nothing at all."
+    ),
+}
+
+
+def glyphs_copy(n: dict | None = None) -> dict:
+    n = glyph_counts() if n is None else n
+    return {k: v.format(**n) for k, v in GLYPHS_COPY.items()}
+
+
+# No network code and no permissions at all (tests read both manifests), so
+# there is nothing to collect and no switch to follow: these answers are fixed.
+GLYPHS_DATA_SAFETY = {
+    "collects_user_data": False,
+    "shares_user_data": False,
+    "has_ads": False,
+    "encrypted_in_transit": None,
+    "deletion_request_url": None,
+    "rationale": (
+        "The app declares no permissions, INTERNET included, and links no SDK: "
+        "it is icon art, an appfilter and one screen. Nothing leaves the device."
+    ),
+}
+
+GLYPHS_CONTENT_RATING = {
+    **CONTENT_RATING,
+    "purchases": False,
+    "note": (
+        "A square icon pack. Nothing here is user-generated, shared or "
+        "interactive with strangers, and it sells nothing: Core Builds Plus "
+        "is the icon pack's, not this app's."
+    ),
+}
+
+
+def glyphs_feature_graphic_svg(n: dict) -> str:
+    """The pack's feature-graphic composition with the companion's mark,
+    name and violet accent, and its own counts."""
+    w, h = FEATURE_W, FEATURE_H
+    mark = 232
+    mx, my = 104, (h - mark) // 2
+    scale = mark / 512.0
+    accent = glyphs_branding.ACCENT
+    name, _ = branding.wordmark_spans(["Core Builds"], 66, 400, [212], "#e6edf3")
+    sub, _ = branding.wordmark_spans(["Glyphs Pack"], 40, 400, [286], accent)
+    strap = f"{n['icons']} SQUARE ICONS · {n['components']} COMPONENTS"
+    tag, _ = branding.wordmark_spans([strap], 17, 402, [336], "#8b949e",
+                                     font_path=branding.FONT_MONO)
+    rule = f'<rect x="402" y="368" width="330" height="2" fill="{accent}" opacity="0.55"/>'
+    return branding.svg(
+        w, h,
+        f'{branding.FIELD_DEFS}'
+        f'<rect width="{w}" height="{h}" fill="url(#fieldBg)"/>'
+        f'<g transform="translate({mx},{my}) scale({scale:.4f})">'
+        f'{glyphs_branding.MARK}</g>'
+        f'{name}{sub}{tag}{rule}',
+    )
+
+
+def render_glyphs() -> dict:
+    out_dir = glyphs_dir()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    n = glyph_counts()
+    from svg_renderer import svg2png
+
+    icon = out_dir / "icon-512.png"
+    branding.png(glyphs_branding.icon_svg(), icon, ICON_PX, ICON_PX)
+
+    feature = out_dir / "feature-graphic-1024x500.png"
+    svg2png(bytestring=glyphs_feature_graphic_svg(n).encode(), write_to=str(feature),
+            output_width=FEATURE_W, output_height=FEATURE_H, background_color="#0d1117")
+    flatten(feature)
+
+    banner = out_dir / "tv-banner-1280x720.png"
+    branding.png(glyphs_branding.banner_svg(glyphs_branding.COMPANION_SUBTITLE),
+                 banner, BANNER_W, BANNER_H)
+    flatten(banner)
+
+    shots = []
+    for index, (name, _) in enumerate(GLYPHS_SCREENSHOTS, start=1):
+        src = DOCS / f"app-ui-{name}.png"
+        if not src.exists():
+            raise SystemExit(f"missing frame {src}; run tools/build_app_ui_mockups.py")
+        img = Image.open(src).convert("RGB")
+        shot = out_dir / f"tv-{index}-{name}-{SHOT_W}x{SHOT_H}.png"
+        img.crop((0, 0, SHOT_W, SHOT_H)).save(shot, format="PNG", optimize=True)
+        shots.append(shot)
+
+    payload = {
+        "package": GLYPHS_PACKAGE,
+        "form_factors": FORM_FACTORS,
+        "sideload_package": GLYPHS_SIDELOAD,
+        "counts": n,
+        "copy": glyphs_copy(n),
+        "assets": {
+            "icon": {"file": icon.name, "width": ICON_PX, "height": ICON_PX,
+                     "mode": "RGBA", "max_bytes": ICON_MAX_BYTES},
+            "feature_graphic": {"file": feature.name, "width": FEATURE_W,
+                                "height": FEATURE_H, "mode": "RGB"},
+            "tv_banner": {"file": banner.name, "width": BANNER_W,
+                          "height": BANNER_H, "mode": "RGB"},
+            "tv_screenshots": [
+                {"file": p.name, "frame": GLYPHS_SCREENSHOTS[i][0],
+                 "depicts": GLYPHS_SCREENSHOTS[i][1],
+                 "width": SHOT_W, "height": SHOT_H, "mode": "RGB"}
+                for i, p in enumerate(shots)
+            ],
+        },
+        "data_safety": GLYPHS_DATA_SAFETY,
+        "content_rating": GLYPHS_CONTENT_RATING,
+        "sources": glyphs_sources(),
+    }
+    (out_dir / "listing.json").write_text(
+        json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return payload
+
+
+def glyphs_sources() -> dict:
+    return {
+        "generator": digest(Path(__file__)),
+        "branding": digest(Path(glyphs_branding.__file__)),
+        "drawable_xml": digest(GLYPHS_RES / "xml/drawable.xml"),
+        "appfilter_xml": digest(GLYPHS_RES / "xml/appfilter.xml"),
+        "frames": {f"app-ui-{name}.png": digest(DOCS / f"app-ui-{name}.png")
+                   for name, _ in GLYPHS_SCREENSHOTS},
+    }
+
+
+def check_glyphs() -> list[str]:
+    """The glyphs listing's problems, in check()'s wording; empty when fresh."""
+    path = glyphs_dir() / "listing.json"
+    if not path.exists():
+        return ["docs/play/glyphs/listing.json missing"]
+    spec = json.loads(path.read_text(encoding="utf-8"))
+    problems = []
+    n = glyph_counts()
+    if spec.get("counts") != n:
+        problems.append(f"glyphs counts moved: listing says {spec.get('counts')}, tree says {n}")
+    if spec.get("copy") != glyphs_copy(n):
+        problems.append("glyphs copy is stale")
+    if spec.get("data_safety") != GLYPHS_DATA_SAFETY:
+        problems.append("glyphs data_safety is stale")
+    if spec.get("content_rating") != GLYPHS_CONTENT_RATING:
+        problems.append("glyphs content_rating is stale")
+    if spec.get("sources") != glyphs_sources():
+        problems.append("a glyphs source changed since its assets were rendered")
+    assets = spec.get("assets", {})
+    entries = [assets.get(k, {}) for k in ("icon", "feature_graphic", "tv_banner")]
+    entries += assets.get("tv_screenshots", [])
+    if not assets.get("tv_screenshots"):
+        problems.append("glyphs: no TV screenshots: Play will not publish a TV listing")
+    for entry in entries:
+        asset = glyphs_dir() / entry.get("file", "")
+        if not asset.is_file():
+            problems.append(f"glyphs: {entry.get('file')} missing")
+            continue
+        with Image.open(asset) as im:
+            if (im.width, im.height) != (entry["width"], entry["height"]):
+                problems.append(f"glyphs: {asset.name} is {im.size}")
+            if im.mode != entry["mode"]:
+                problems.append(f"glyphs: {asset.name} mode {im.mode}, expected {entry['mode']}")
+    return problems
 
 
 def main(argv: list[str]) -> int:
@@ -627,6 +868,11 @@ def main(argv: list[str]) -> int:
     print(f"wrote docs/play/listing.json - title {len(payload['copy']['title'])} chars, "
           f"short {len(payload['copy']['short_description'])} chars, "
           f"full {len(payload['copy']['full_description'])} chars")
+    g = json.loads((glyphs_dir() / "listing.json").read_text(encoding="utf-8"))
+    print(f"wrote docs/play/glyphs/ - {len(g['assets']['tv_screenshots'])} TV screenshot, "
+          f"title {len(g['copy']['title'])} chars, short "
+          f"{len(g['copy']['short_description'])} chars, full "
+          f"{len(g['copy']['full_description'])} chars")
     return 0
 
 
