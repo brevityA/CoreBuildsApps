@@ -131,11 +131,22 @@ class SettingsActivity : TvActivity() {
         row(R.id.set_support_row) {
             startActivity(Intent(this, SupportActivity::class.java))
         }
+        // Play's Payments policy: no route to a tip (see MainActivity). The
+        // screen stays in the APK — Settings is the only way in, and this is
+        // the row that would be it — but the Play build never shows the door.
+        if (Distribution.PLAY) {
+            findViewById<View>(R.id.set_support_row).visibility = View.GONE
+        }
 
         // Core Builds Plus extras: Google Play only, and only once Plus is on
         // sale or owned. A locked row opens the Plus card (Plus.unlocked).
         if (Plus.shown(this)) {
             findViewById<View>(R.id.set_plus_group).visibility = View.VISIBLE
+            // Plus is sold through Play Billing, so this is not the tip door
+            // above: on Play, SupportActivity renders the Plus card only.
+            row(R.id.set_plus_row) {
+                startActivity(Intent(this, SupportActivity::class.java))
+            }
             row(R.id.set_rotate_row) {
                 if (Plus.unlocked(this)) {
                     Prefs.setLiveRotateHours(this, LoopRotation.nextHours(Prefs.liveRotateHours(this)))
@@ -172,6 +183,8 @@ class SettingsActivity : TvActivity() {
     private fun showPlusRows() {
         if (!Plus.shown(this)) return
         val owned = Plus.owned(this)
+        findViewById<TextView>(R.id.set_plus_value).setText(
+            if (owned) R.string.settings_plus_owned else R.string.settings_plus_buy)
         findViewById<TextView>(R.id.set_rotate_value).text = when {
             !owned -> getString(R.string.settings_plus_locked)
             else -> getString(when (Prefs.liveRotateHours(this)) {

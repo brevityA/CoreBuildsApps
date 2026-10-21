@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 
 /**
  * The living-room suite, one screen: what else from Core Builds is on this
@@ -18,6 +19,14 @@ import android.widget.Toast
  * code the registry still holds as `[USER TO SUPPLY]` arrives here as an
  * empty item and renders as "not on Downloader yet" rather than as a code
  * that would waste someone's evening.
+ *
+ * The Play build drops the second half of that: Downloader codes and "grab the
+ * APK from the GitHub release" are ways to get an app that Play did not
+ * install, and Play reads steering users to those as circumvention. So on
+ * Play the screen lists only the companions actually present on this TV -
+ * there it answers "what of ours is on this box", which is still the question
+ * a living-room user has. Everything else is unchanged, and the sideload
+ * builds keep the full registry because that is how their users install.
  *
  * Installed-state and version come from getPackageInfo, which sees these
  * packages at all because the manifest names every companion in `<queries>`
@@ -43,12 +52,17 @@ class SuiteActivity : TvActivity() {
         val column = findViewById<LinearLayout>(R.id.suite_rows)
         val inflater = LayoutInflater.from(this)
 
+        val onPlay = Distribution.PLAY
+        var rows = 0
         for (i in names.indices) {
             val pkg = pkgs.getOrElse(i) { "" }
             val code = codes.getOrElse(i) { "" }
+            val installed = with(ApplyIconPack) { isInstalled(pkg) }
+            // Play: a row for an app this TV does not have would be a dead end
+            // whose only other information is how to install it off Play.
+            if (onPlay && !installed) continue
             val row = inflater.inflate(R.layout.item_suite, column, false)
             row.findViewById<TextView>(R.id.suite_item_name).text = names[i]
-            val installed = with(ApplyIconPack) { isInstalled(pkg) }
             val version = if (installed) {
                 runCatching { packageManager.getPackageInfo(pkg, 0).versionName }
                     .getOrNull()
@@ -63,9 +77,13 @@ class SuiteActivity : TvActivity() {
                 installed -> getString(R.string.suite_installed_plain)
                 else -> getString(R.string.suite_not_installed)
             }
-            row.findViewById<TextView>(R.id.suite_item_code).text =
-                if (code.isNotEmpty()) getString(R.string.suite_code_fmt, code)
+            val codeLine = row.findViewById<TextView>(R.id.suite_item_code)
+            if (onPlay) {
+                codeLine.visibility = View.GONE
+            } else {
+                codeLine.text = if (code.isNotEmpty()) getString(R.string.suite_code_fmt, code)
                 else getString(R.string.suite_no_code)
+            }
             row.contentDescription = "${names[i]}, " + status.text
             row.setOnClickListener {
                 if (!openApp(pkg)) {
@@ -73,6 +91,18 @@ class SuiteActivity : TvActivity() {
                 }
             }
             column.addView(row)
+            rows++
+        }
+        // On Play an empty section is a real state (a TV with only this app on
+        // it). Say so rather than leaving a blank column that looks broken.
+        if (onPlay && rows == 0) {
+            val empty = TextView(this)
+            empty.text = getString(R.string.suite_none_play)
+            // ContextCompat, not getColor(): the latter is API 23 and this app
+            // ships minSdk 21 for Fire TV.
+            empty.setTextColor(ContextCompat.getColor(this, R.color.cb_slate))
+            empty.textSize = 16f
+            column.addView(empty)
         }
     }
 

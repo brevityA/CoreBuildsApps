@@ -58,13 +58,8 @@ class AboutActivity : TvActivity() {
         findViewById<TextView>(R.id.about_wallpapers).text =
             WallpaperCatalog.load(this).size.toString()
 
-        // The list is the whole list only if it follows the build: with a
-        // request broker baked in, pressing a Missing icons row sends the
-        // device model, so the line appears and "no device model" goes.
-        if (getString(R.string.audit_request_endpoint).isNotBlank()) {
-            findViewById<View>(R.id.about_network_request).visibility = View.VISIBLE
-            findViewById<TextView>(R.id.about_network_none).setText(R.string.about_network_none_request)
-        }
+        // The list is the whole list only if it follows the build: Plus adds
+        // the purchase token to a request and My requests' GitHub reads.
         if (Plus.shown(this)) {
             findViewById<View>(R.id.about_network_tracker).visibility = View.VISIBLE
         }
@@ -80,6 +75,12 @@ class AboutActivity : TvActivity() {
         }
         findViewById<View>(R.id.about_support).setOnClickListener {
             startActivity(Intent(this, SupportActivity::class.java))
+        }
+        // Play's Payments policy: the Play build has no Support row here either
+        // (MainActivity and Settings hide theirs too), so the About sheet shows
+        // no route to a tip.
+        if (Distribution.PLAY) {
+            findViewById<View>(R.id.about_support).visibility = View.GONE
         }
         // Play builds update through Play only (Device and Network Abuse
         // policy): the row opens this app's listing and never fetches an APK.

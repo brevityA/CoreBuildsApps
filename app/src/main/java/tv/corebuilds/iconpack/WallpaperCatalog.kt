@@ -188,7 +188,7 @@ object WallpaperCatalog {
      * Human label for a series id, e.g. "series-6-circuit-core" -> "Circuit Core".
      *
      * Strips the leading "series-N-" index prefix (the number is an ordering
-     * aid, not a word) and title-cases the remainder. Uses `toUpperCase(Locale)`
+     * aid, not a word) and title-cases the remainder. Uses `uppercase(Locale)`
      * rather than `CharSequence.titlecase()` because the latter is API 24+ and
      * minSdk is 21.
      */
@@ -200,7 +200,7 @@ object WallpaperCatalog {
         return words.split('-')
             .filter { it.isNotEmpty() }
             .joinToString(" ") { word ->
-                word.substring(0, 1).toUpperCase(Locale.ROOT) + word.substring(1)
+                word.substring(0, 1).uppercase(Locale.ROOT) + word.substring(1)
             }
     }
 }

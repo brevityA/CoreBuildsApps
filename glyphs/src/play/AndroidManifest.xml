@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Google Play build type of Core Builds Glyphs Pack. Leanback is required,
      as in the icon pack's Play build (app/src/play/AndroidManifest.xml):
-     with it optional Play lists the app for phones, where the target API
-     floor is 36 rather than Android TV's 34.
+     with it optional Play offers the app to phones, and its listing, like
+     the pack's, is TV-only.
 
      Lint reads this overlay on its own and misses the TV launcher entry and
      the optional touchscreen that src/main declares; the merged Play

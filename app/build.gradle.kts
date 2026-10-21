@@ -1,16 +1,22 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
 }
 
 android {
     namespace = "tv.corebuilds.iconpack"
-    compileSdk = 34
+    // compileSdk 36 with targetSdk 36: Play rejects a new app that targets
+    // anything below API 36 unless it is TV-only. The Play listing is TV-only
+    // (src/play's manifest requires leanback), which would allow 34, but 36
+    // meets both floors and keeps a later phone listing free of a target
+    // change. minSdk stays 21 for Fire TV.
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "tv.corebuilds.iconpack"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 57
         versionName = "2.4.4"
 
@@ -189,27 +195,39 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 
     buildFeatures {
         buildConfig = true
+        // The candidate build type renames itself through resValue("string",
+        // "app_name", ...). AGP 9 turns build-type resource values off by
+        // default and fails configuration outright rather than ignoring the
+        // call, so this is a required opt-in on the new toolchain.
+        resValues = true
     }
 
     // Core Builds Plus, the Play build's one-time unlock: src/play/java holds
     // PlusStore over Google Play Billing, and every other build type compiles
     // the no-op twin in src/github/java, so the sideload APKs carry no Google
-    // library and nothing to buy.
+    // library and nothing to buy. kotlin, not java: under AGP 9's built-in
+    // Kotlin a directory added to java.srcDir is not compiled as Kotlin.
     sourceSets {
-        getByName("debug").java.srcDir("src/github/java")
-        getByName("release").java.srcDir("src/github/java")
-        getByName("candidate").java.srcDir("src/github/java")
+        getByName("debug").kotlin.srcDir("src/github/java")
+        getByName("release").kotlin.srcDir("src/github/java")
+        getByName("candidate").kotlin.srcDir("src/github/java")
     }
 
     androidResources {
         // Already-compressed formats; don't re-crunch.
         noCompress += listOf("png", "webp")
+    }
+}
+
+// AGP 9 has built-in Kotlin, so there is no separate kotlin-android plugin
+// and no kotlinOptions block: jvmTarget is stated here instead. Core EQ does
+// the same on the same toolchain.
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17
     }
 }
 
@@ -229,8 +247,8 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
-    // Play only. 8.0.0 is the newest that still builds against compileSdk 34
-    // and minSdk 21 (9.x pulls androidx.core 1.15, which needs compileSdk 35,
-    // and declares minSdk 23); Play accepts 8.x until 2027-08-31.
+    // Play only. 8.0.0 is the last release that declares minSdk 21: 8.1.0
+    // through 9.x declare 23, and Fire TV needs 21. Play accepts 8.x until
+    // 2027-08-31.
     "playImplementation"("com.android.billingclient:billing:8.0.0")
 }

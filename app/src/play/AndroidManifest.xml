@@ -5,10 +5,11 @@
      permission its updater and the Glyphs download need. The FileProvider
      stays: wallpaper sharing uses it too.
 
-     Leanback is required here, unlike the sideload build: Play lists an app
-     whose leanback is optional for phones too, and a phone app must target
-     API 36 where an Android TV app may target 34 (targetSdk is 34). A TV-only
-     listing is also the only one this pack has a use for.
+     Leanback is required here, unlike the sideload build: Play offers an app
+     whose leanback is optional to phones too, and Console cannot take a
+     phone-compatible bundle off them. The listing is TV-only
+     (docs/play/listing.json form_factors), with no phone screenshots and no
+     tested phone UI, so the manifest makes it so.
 
      Lint reads this overlay on its own and misses the TV launcher entry and
      the optional touchscreen that src/main declares; the merged Play

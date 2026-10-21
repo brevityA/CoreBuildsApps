@@ -245,17 +245,16 @@
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_label" />
 
-                <!-- Shown only when audit_request_endpoint is baked in:
-                     without a broker, a request is a QR code and sends nothing. -->
+                <!-- The missing-icon report. It is the one request that carries
+                     anything about the device, so it gets its own numbered item
+                     rather than a clause on another. -->
                 <TextView
-                    android:id="@+id/about_network_request"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/cb_space_xs"
-                    android:text="@string/about_network_request"
+                    android:text="@string/about_network_three"
                     android:textColor="@color/cb_ink"
-                    android:textSize="@dimen/cb_text_label"
-                    android:visibility="gone" />
+                    android:textSize="@dimen/cb_text_label" />
 
                 <!-- Google Play build with Core Builds Plus on sale or owned:
                      My requests reads issue states from GitHub. -->

@@ -136,15 +136,23 @@ Runtime behavior:
 
 ## Google Play release runbook
 
-The icon pack's full step-by-step, from developer account to staged
-rollout, is [`PLAY_RELEASE.md`](PLAY_RELEASE.md). The list below is the
-suite-wide summary.
+The icon pack's step-by-step, from developer account to Core Builds Plus,
+is [`PLAY-CONSOLE.md`](PLAY-CONSOLE.md). The list below is the suite-wide
+summary.
 
 1. Ensure the app's target API satisfies current Play requirements.
-   - Android TV apps: target API 34+ under the verified 2026 rule. Only a
-     TV-only app counts: with `android.software.leanback` optional, Play
-     lists the app for phones too and applies the phone floor.
-   - Non-TV/general apps: target API 36+ for new apps/updates after 2026-08-31.
+   - The icon pack is at **compileSdk/targetSdk 36**, which meets the phone
+     floor (36 for new apps and updates after 2026-08-31) as well as the
+     Android TV one (34).
+   - The Play build is **TV-only**, as `docs/play/listing.json`
+     (`form_factors: ["tv"]`) and `PLAY-CONSOLE.md` §4 say: its manifest
+     overlays require `android.software.leanback`, so Play never offers it to
+     a phone. With leanback optional the bundle would be phone-compatible,
+     Play would list it for phones, and there are no phone screenshots and no
+     tested phone UI. The sideload builds keep leanback optional.
+   - Reaching 36 needed AGP 9.4.0 and built-in Kotlin (see
+     `tools/gradle_envelope.json`): on the Gradle 9.7.0 wrapper every AGP 8.6+
+     fails at plugin apply, so 8.5.2 could never compile API 36.
 2. Use the AAB from `suite-release.yml`.
 3. Enroll/use Play App Signing; keep upload key in GitHub secrets only.
 4. Fill Play Console app content:
@@ -184,6 +192,101 @@ Without them the workflow still builds, warns, and uploads unsigned bundles
 Play Console will refuse. With them set, an unsigned bundle fails the run.
 The artifact `core-builds-play-bundles` holds `app-banners-play.aab` and
 `glyphs-play.aab`; upload each to its own Play Console app.
+
+**No tips in the Play build.** Play's Payments policy forbids leading a user
+to a payment method other than Play Billing, and a tip to one developer is
+not the tax-exempt donation the policy exempts — Google rejected real apps
+over exactly this (AnkiDroid, August 2026). Support is two QR codes for
+GitHub Sponsors and Ko-fi, so the Play build hides every door to it: the home
+rail closes up to `Settings | About` and rewrites the D-pad edges that named
+the hidden entry (`MainActivity.railHead`), Settings hides its row, and About
+hides its row. The GitHub/Downloader build keeps all three. Adding a tip jar
+to the Play build means Play Billing consumables, not a link.
+
+**Data safety.** About's "everything this app sends" list is the source for
+the Console form, so it is an enumeration and not a summary. Item 3 is the
+missing-icon report, which POSTs the app name, the component and a device
+note (pack version, TV model, Android version, detected launcher). The
+closing line denies only what is still true — no analytics, no installed-app
+list, no identifier.
+
+### Console, screen by screen
+
+`docs/PLAY-CONSOLE.md` is the operator's page: what to type into each Console
+screen, in Play's own order, with the values taken from `listing.json` and the
+assets in `docs/play/`. Start with §7 — a new personal account needs 12 testers
+opted in for 14 continuous days before it can apply for production, and
+internal testing does not count toward it. That clock is the launch's critical
+path, not the store copy.
+
+### Listing assets and copy are generated, not exported
+
+`tools/build_play_listing.py` writes everything the store page needs into
+`docs/play/`, from the same sources the app ships:
+
+| Asset | Size | Comes from |
+|---|---|---|
+| `icon-512.png` | 512x512, RGBA, < 1 MB | the adaptive background plus `PACK_ICON` in `tools/build_branding.py` |
+| `feature-graphic-1024x500.png` | 1024x500, no alpha | the mark, the wordmark and the live counts |
+| `tv-banner-1280x720.png` | 1280x720, no alpha | `build_branding.banner_svg()` — the *same drawing* as the on-device 320x180 Leanback banner, at store size |
+| `tv-1..6-*.png` | 1920x1080, no alpha | the committed `docs/app-ui-*.png` frames, caption band cropped off |
+| `listing.json` | — | title, short and full description, Data safety and content-rating answers, every count and source digest. The Plus paragraph, the purchases answer and Data safety's `collected` follow `broker_enabled()` (Core Builds Plus is on sale exactly when the broker URL is baked in) |
+
+The counts in the copy (icons, walls, series, loops) are substituted from
+`icon_pack.xml`, `wallpapers.json` and `LiveLoop.kt`. `tests/test_play_listing.py`
+holds the committed copy to them, so a catalog that grows cannot leave a stale
+number on the store page; `--check` does the same for anyone editing by hand.
+
+**TV-only, deliberately.** `form_factors: ["tv"]`. There are no phone
+screenshots because there is no tested phone UI — the layouts are TV-first, and
+rendering fake ones is exactly the drift this repo generates its way out of.
+Listing for phones needs real captures from a phone build and a decision about
+supporting phones at all. The Play manifests make it stick: they require
+`android.software.leanback`, because Console cannot keep a phone-compatible
+bundle off phones. A TV-only app could have stayed at API 34; the API 36
+migration is still correct and worth keeping, because a phone listing later
+then needs no target change.
+
+**Privacy policy:** `docs/privacy.html`. Serve it over GitHub Pages
+(Settings → Pages → source `main` / `/docs`) and the URL to paste into Play
+Console is
+`https://brevityA.github.io/CoreBuildsApps/privacy.html`. `tests/test_privacy_policy.py`
+holds every claim in it to the code — the hosts the app calls, the one POST
+payload, the Play build's removed permission and absent update check.
+
+### The two Play listings go out together
+
+Icon Pack and Glyphs Pack are separate Play listings, and the pack checks the
+companion's `versionCode` before pointing a launcher at it: `GlyphsCompanion.
+ready()` requires `>= BuildConfig.VERSION_CODE` (both numbers are parsed from
+`app/build.gradle.kts`, so they cannot drift in the repo). Play rolls listings
+out **independently**, which is the trap:
+
+- Pack reaches 100% while the companion is still staged at an older code →
+  the app decides the companion is stale, opens the pack's own banner art, and
+  a user who picked square glyphs silently stops getting them until the
+  companion catches up. Nothing crashes, nothing is logged — it just applies
+  the wrong shape.
+
+So: **submit both listings in the same window with matched staged rollouts.**
+If they must diverge, the companion goes first, never the pack. A pack that
+believes its companion is ahead is harmless; one that believes it is behind is
+not.
+
+### Blocked pending the Play Console account
+
+The Play work (the Play build type, `play.yml`, the premium purchase in its own
+PR) is complete and tested, but nothing can be uploaded until the owner has:
+
+1. A Play Console developer account, identity verified.
+2. A **payments profile** — merchant/tax/bank details. Needed for the premium
+   in-app product; without it `premium_unlock` cannot be created or priced.
+3. A privacy policy URL (About links it; the string is still
+   `[USER TO SUPPLY]`).
+4. Upload key + the `PLAY_KEYSTORE_*` repository secrets for `play.yml`.
+
+Until (1) and (2) exist, the premium PR stays parked — the gate only lives in
+the Play build, so there is nothing to gate.
 
 ## Release checklist artifact contents
 

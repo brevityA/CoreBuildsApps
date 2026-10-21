@@ -8,6 +8,23 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
+- **A Play Console walkthrough that cannot drift from the build.**
+  `docs/PLAY-CONSOLE.md` gives each Console screen its answer in order — the
+  forms, the store listing, the TV-only form-factor choice, the bundle secrets
+  and the three tracks — quoting the package, title and asset paths straight
+  from `docs/play/listing.json`. A test holds it to them, because the most
+  expensive thing a walkthrough can do is confidently quote a package name
+  that Play will never let you change.
+- **The Play store listing is generated, and there is a privacy policy.** The
+  store page needed a 512 icon, a 1024x500 feature graphic, a 1280x720 TV
+  banner and 1920x1080 TV screenshots, none of which existed. They are now
+  output from the same sources the app ships, and the copy's counts (icons,
+  walls, series, loops) are substituted from the catalog, so the listing cannot
+  advertise a number the build does not carry. The store banner is the
+  on-device Leanback banner rendered at 1280x720 rather than a second drawing.
+  `docs/privacy.html` replaces the `[USER TO SUPPLY]` gap, and its claims are
+  held to the code by a test. The listing is TV-only: there is no phone UI to
+  photograph yet, and a rendered one would be fiction.
 - **Google Play apps, separate from the sideload ones.** Core Builds Icon
   Pack (`tv.corebuilds.iconpack.play`) and Core Builds Glyphs Pack
   (`tv.corebuilds.iconpack.glyphs.play`) are their own apps with their own
@@ -17,8 +34,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
   them), and the Art style switch opens the Glyphs listing on Play instead
   of downloading it. A new hand-run workflow, `play.yml`, builds both App
   Bundles (`core-builds-play-bundles`). The GitHub builds and `build.yml`
-  are unchanged. Both Play apps require Android TV: Play would otherwise
-  list them for phones, where the target API floor is 36 rather than 34.
+  are unchanged. Both Play apps require Android TV, so Play never offers
+  them to a phone: the listing is TV-only and no phone UI has been tested.
 - **Core Builds Plus, on Google Play only.** A one-time purchase
   (`core_builds_plus`, $2.99) through Play Billing, in place of the
   Sponsors and Ko-fi codes Play's Payments policy rules out of a Play app.
@@ -40,23 +57,63 @@ All notable changes to the Core Builds Icon Pack. Format follows
   re-read from Play at every app start, so refunds and purchases on another
   TV settle by themselves. The GitHub builds carry no billing code, keep
   their codes, and list none of the extras.
-- **About lists the icon request once a build can send one.** With the
-  request broker baked in, About's "everything this app sends" gains line
-  3 (the pressed app's name and component, and the TV's model, Android
-  version and pack version), and stops claiming no device model is sent.
-  Without the broker a request is a QR code and sends nothing, and the
-  list is as before.
-- **Privacy policy and Play release guide.** `PRIVACY.md` lists what each
-  build sends and when; `docs/PLAY_RELEASE.md` is the step-by-step for
-  Play Console, the Plus product and the broker.
+- **About names what Plus sends.** Wherever Plus is on sale or owned,
+  "everything this app sends" gains item 4: the purchase token a Plus
+  owner's request carries, and *My requests*' reads from GitHub by issue
+  number. Plus's door is a CORE BUILDS PLUS row in Settings; the tip doors
+  stay shut on Play.
+- **The store answers follow the broker.** `tools/build_play_listing.py`
+  reads one switch, whether the request broker's URL is baked in, which is
+  also when Plus goes on sale. It moves the content-rating purchases answer,
+  Data safety (three optional types collected, none shared) and a CORE
+  BUILDS PLUS paragraph in the copy, and `--check` fails if the switch moves
+  without a regenerated listing. Today's tree is unchanged: no broker, no
+  purchases, nothing collected. `docs/PLAY-CONSOLE.md` §8 covers the Plus
+  product, license testers, the broker and the internal-test checks, and
+  `docs/privacy.html` covers the token, *My requests* and payments.
 
 ### Changed
 
+- **The icon pack builds against API 36 and targets it.** Play stopped
+  accepting new listings that target below Android 16 unless they are TV-only.
+  The Play listing is TV-only, which would allow 34, but 36 meets both floors
+  and leaves a later phone listing free of a target change. Reaching it meant moving the build onto AGP 9.4.0 with
+  built-in Kotlin, the combination `coreeq/` already runs: on the Gradle 9.7.0
+  wrapper every AGP 8.6 and later fails at plugin apply, which is why 8.5.2
+  was the ceiling before. Kotlin 1.9.24 is gone from this root (the jvmTarget
+  now lives in the built-in `kotlin {}` block); the compiler the app actually
+  builds with is AGP 9's. `minSdk` stays 21 for Fire TV. The suite's other
+  four roots stay on the proven AGP 8.5.2 envelope, and the dependency gate
+  now pins each root separately so this migration cannot drag them along.
 - **Picking one icon follows the Art style switch.** Choosing a single
   card's icon through Core Builds now returns a banner or a square to match
   the switch, so one pack can hand out either shape card by card. Picks
   through Core Builds Glyphs Pack are still always square, and picking never
   changes what the launcher auto-applies.
+
+### Fixed
+
+- **The Play build's Suite screen names no way off Play.** It still listed
+  "Downloader code 5270601" for apps this TV did not have and told users to
+  grab the APK from the GitHub release — the last surviving invitation to
+  install something Play did not, and the kind of steer Play reads as
+  circumvention. On Play the screen now answers only what it can: which
+  companions are on this box, with a line of its own when the answer is none.
+  The sideload builds keep the full registry, because that is how their users
+  install.
+- **The Play build has no route to a tip.** Support is two QR codes for
+  GitHub Sponsors and Ko-fi, and Play's Payments policy forbids a Play app
+  leading users to any payment method but Play Billing (a tip to one
+  developer is not the tax-exempt donation the policy exempts). The Play
+  build now hides every door: the home rail closes up to Settings | About
+  and rewrites the D-pad edges that named the hidden entry, and Settings and
+  About hide their rows. The GitHub/Downloader build keeps Support.
+- **About's "everything this app sends" list names the icon request.** The
+  list had two items and a closing line that said no device model is sent,
+  but reporting a missing icon POSTs a device note with the pack version,
+  the TV's model, its Android version and the detected launcher. It is now
+  item 3, and the closing line no longer denies the model — which also
+  keeps the Play Data safety form from inheriting a false declaration.
 
 ## [2.4.4] — 2026-10-18
 

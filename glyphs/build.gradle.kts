@@ -59,12 +59,12 @@ val copyGlyphArt = tasks.register<Sync>("copyGlyphArt") {
 
 android {
     namespace = "tv.corebuilds.iconpack.glyphs"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "tv.corebuilds.iconpack.glyphs"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 36
         versionCode = packVersionCode
         versionName = packVersionName
         // The icon pack this twin forwards picks to and opens; GlyphsActivity
@@ -125,7 +125,11 @@ android {
 
     sourceSets {
         getByName("main") {
-            res.srcDir(generatedRes)
+            // AGP 9 refuses a Provider here: "You cannot add Provider instances
+            // to the Android SourceSet API". Resolving it eagerly costs only
+            // the laziness, not correctness - copyGlyphArt already writes this
+            // directory and preBuild depends on it either way.
+            res.srcDir(generatedRes.get().asFile)
         }
     }
 

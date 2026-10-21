@@ -240,6 +240,10 @@
     <string name="settings_appinfo_sub">The system page for the detected launcher. Force Stop there clears a bitmap cache re-applying cannot reach.</string>
     <string name="settings_group_suite">SUITE</string>
     <string name="settings_group_plus">CORE BUILDS PLUS</string>
+    <string name="settings_plus_title">Core Builds Plus</string>
+    <string name="settings_plus_sub">One purchase: priority requests, My requests, loop rotation and the Spectra wallpapers.</string>
+    <string name="settings_plus_owned">Owned</string>
+    <string name="settings_plus_buy">See it</string>
     <string name="settings_rotate_title">Rotate live loops</string>
     <string name="settings_rotate_sub">The live wallpaper moves to your next downloaded loop when you come back home after this long.</string>
     <string name="settings_rotate_off">Off</string>
@@ -359,6 +363,9 @@
     <string name="suite_not_installed">Not installed on this TV</string>
     <string name="suite_code_fmt">Downloader code %1$s</string>
     <string name="suite_no_code">Not on Downloader yet — grab the APK from the GitHub release</string>
+    <!-- Play build only: the Suite screen lists installed companions there and
+         Downloader codes are never shown, so it can legitimately be empty. -->
+    <string name="suite_none_play">No other Core Builds apps on this TV yet.</string>
     <string name="suite_open_failed_fmt">Could not open %1$s from here.</string>
 
     <!-- About -->
@@ -369,12 +376,18 @@
     <string name="about_label_icons">ICONS</string>
     <string name="about_label_wallpapers">WALLPAPERS</string>
     <string name="about_network_header">EVERYTHING THIS APP SENDS</string>
+    <!-- Three items, and the third is the one that used to be missing: the
+         missing-icon report POSTs to the icon-request broker, and its device
+         note carries the model, the Android version, the pack version and the
+         detected launcher. The closing sentence used to deny the device model
+         while that was true, which the Play Data safety form would have
+         inherited as a false declaration. tests/test_play_build.py holds the
+         items against what the code actually sends. -->
     <string name="about_network_one">1.  A request for the update manifest, when update checks are on or when you press Check for updates here, and the update itself when you choose to download it.</string>
     <string name="about_network_two">2.  A request for each wallpaper or live loop you choose to download, and for Core Builds Glyphs Pack the first time you switch the art style to Glyphs.</string>
-    <string name="about_network_none">That is the whole list. No analytics, no installed-app list, no device model, no identifier. Icons ship inside the app and are never fetched.</string>
-    <string name="about_network_request">3.  When you press an app under Missing icons: its name and component, and this TV\'s model, Android version and pack version, so the request can be filed.</string>
-    <string name="about_network_tracker">4.  With Core Builds Plus, when you open My requests: one request to GitHub for each of your requests\' issue, by number, to show how far it has got.</string>
-    <string name="about_network_none_request">That is the whole list. No analytics, no installed-app list, no identifier. Icons ship inside the app and are never fetched.</string>
+    <string name="about_network_three">3.  A request when you report a missing icon: the app name, the component it runs as, and a one-line note with this build&#8217;s pack version, the TV&#8217;s model, its Android version and the launcher in use.</string>
+    <string name="about_network_tracker">4.  With Core Builds Plus: a missing-icon report also carries this TV\'s Play purchase token, which the request service checks with Google and never stores, and My requests asks GitHub for each of your requests\' issue, by number.</string>
+    <string name="about_network_none">That is the whole list. No analytics, no installed-app list, no identifier. Icons ship inside the app and are never fetched.</string>
     <string name="about_links">LINKS</string>
     <!-- About > Check for updates. The row's title is the button through the
          flow: this label, then update_download / update_install. -->

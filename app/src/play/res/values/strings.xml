@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Play build wording: what the Play build actually sends, where its
-     updates come from, and what Support sells. Play's Device and Network
+     updates come from, and what the Plus card sells. Play's Device and Network
      Abuse policy rules out the GitHub update row, so About's row opens this
      app's Play listing; its Payments policy rules out the Ko-fi and Sponsors
-     codes, so Support is Core Builds Plus over Play Billing. -->
+     codes, so SupportActivity is the Core Builds Plus card over Play Billing,
+     reached from Settings > Core Builds Plus and never from a Support door.
+
+     This overlay must keep the main list's shape, item for item: Play replaces
+     the update item and the wallpaper item, but the missing-icon report on
+     item 3 is the same POST in both builds, so main's about_network_three is
+     inherited unchanged. tests/test_play_build.py holds that. -->
 <resources>
     <string name="about_network_one">1.  Nothing for updates: Google Play updates this app.</string>
     <string name="about_network_two">2.  A request for each wallpaper or live loop you choose to download. Core Builds Glyphs Pack comes from its own Google Play listing.</string>
-    <string name="about_network_request">3.  When you press an app under Missing icons: its name and component, and this TV\'s model, Android version and pack version, so the request can be filed. With Plus, also its Google Play purchase token, which is checked with Google and never stored or filed.</string>
     <string name="about_update_label">Updates from Google Play</string>
     <string name="about_update_sub">Google Play updates this app. Press to open its listing.</string>
 
-    <string name="about_support_label">Core Builds Plus</string>
-    <string name="settings_support_title">Core Builds Plus</string>
-    <string name="settings_support_sub">One purchase: priority requests, My requests, loop rotation and the Spectra wallpapers.</string>
     <string name="support_label">Plus</string>
     <string name="support_kicker">PLUS</string>
     <string name="support_title">Core Builds Plus</string>
