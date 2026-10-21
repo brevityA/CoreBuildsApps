@@ -192,7 +192,7 @@ COPY = {
         "No ads, no account."
     ),
     "full_description": (
-        "A icon and wallpaper pack made for the television, not a phone app "
+        "An icon and wallpaper pack made for the television, not a phone app "
         "stretched onto one.\n"
         "\n"
         "ICONS\n"
