@@ -106,6 +106,8 @@
     }
   },
   "content_rating": {
+    "category": "All Other App Types",
+    "online_content": true,
     "violence": false,
     "sexuality": false,
     "language": false,
@@ -116,10 +118,10 @@
     "purchases": false,
     "ads": false,
     "expected_rating": "Everyone / PEGI 3",
-    "note": "A wallpaper and icon pack. Nothing here is user-generated, shared or interactive with strangers. 'purchases' follows the broker: Core Builds Plus is on sale exactly when the broker is baked in, and the answer stays yes while a track still serves such a build (BROKER_SHIPPED)."
+    "note": "A wallpaper and icon pack. Nothing here is user-generated, shared or interactive with strangers. 'online_content' is the full-size wallpapers and live loops, downloaded after install from this repo; none of it is rated content. 'purchases' follows the broker: Core Builds Plus is on sale exactly when the broker is baked in, and the answer stays yes while a track still serves such a build (BROKER_SHIPPED)."
   },
   "sources": {
-    "generator": "93723f3d8d4c1bdbbf8928872614ef416d23afad028eb40718e03339e1fa33d3",
+    "generator": "37435ddfa505d232c5a7de501bc0630a4b67c1a917a70fe6b2c1a082c84bbac7",
     "branding": "77d63a0d0ef7c7fc21eaddf7ce54a6a7aed88d5e3a8ac733079ae869f1424f54",
     "icon_pack_xml": "524eaa6952a4da1c823bf600340b8d61f9b0e5486ef74cb00462451ab3fd647b",
     "wallpapers_json": "0bc4f85d2ff7d2e2c646088cd450957c5e7a58c0519be85923207356dafb3490",
