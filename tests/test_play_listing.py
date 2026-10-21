@@ -266,6 +266,15 @@ class CopyLimits(unittest.TestCase):
     def test_title_names_what_the_app_is(self):
         self.assertIn("Icon Pack", SPEC["copy"]["title"])
 
+    def test_square_glyphs_are_credited_to_the_app_that_applies_them(self):
+        # The pack's appfilter maps every app to its 16:9 banner; square
+        # glyphs auto-apply only from the Glyphs Pack. "One install covers
+        # either" was true for single picks, not for the whole launcher.
+        full = SPEC["copy"]["full_description"]
+        self.assertNotIn("one install covers", full.lower())
+        self.assertIn(GLYPHS_SPEC["copy"]["title"], full)
+        self.assertIn("16:9 banner, which this pack applies", full)
+
     def test_copy_avoids_the_claims_play_rejects(self):
         # Metadata policy: no rankings, no price bait, no other product names,
         # no promises of improvement over a competitor.

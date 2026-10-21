@@ -108,6 +108,20 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Fixed
 
+- **The store description credits square glyphs to the Glyphs Pack.** Its
+  ICONS paragraph said the pack "ships both shapes … so one install covers
+  either". That holds for picking one icon at a time. It doesn't hold for
+  applying the whole pack: the pack's appfilter maps every app to its 16:9
+  banner, and square glyphs auto-apply only from Core Builds Glyphs Pack. The
+  paragraph now says which app applies which shape, and that Art style leads
+  to the Glyphs Pack. The full description is 1549 characters, up from 1449.
+- **The walkthrough says what goes in the phone screenshot slot.**
+  `PLAY-CONSOLE.md` §3 said to leave it empty. Console marks it required on
+  the default listing even for a TV-only app. §3 now says to add Android TV
+  first, and, if the phone section is still required, to upload `tv-1` to
+  `tv-4`: real captures of the app, which the phone section accepts at 16:9.
+  The Play manifest still keeps the app off phones. §4's category is
+  *Personalization*, the one Console offers.
 - **The content-rating walkthrough answers Online Content.** Console's IARC
   questionnaire (category *All Other App Types*, not *Utility /
   Productivity*) asks whether the app reaches content that isn't part of

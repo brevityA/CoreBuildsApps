@@ -91,22 +91,27 @@ Play Console → **Grow → Store presence → Main store listing**.
 - **Short description**: paste `copy.short_description` from `listing.json`
   (80-character limit; currently 71)
 - **Full description**: paste `copy.full_description` (4000 limit; currently
-  1449)
+  1549)
 - **App icon**: `docs/play/icon-512.png`
 - **Feature graphic**: `docs/play/feature-graphic-1024x500.png`
 - **TV banner**: `docs/play/tv-banner-1280x720.png` — required for a TV listing
 - **TV screenshots**: `docs/play/tv-*.png` (Play wants at least one; the
   six committed files are 1920×1080, named by the frame they depict)
 
-Phone and tablet screenshots are deliberately empty: the app is listed for TV
-only, and there is no tested phone UI to photograph. See §4.
+**Phone screenshots.** Console marks the phone section required (\*) on the
+default listing even for a TV-only app (seen 2026-10-21, before the Android TV
+form factor was added). Add Android TV first (§4). If the phone section is
+still required, upload `docs/play/tv-1-*.png` … `docs/play/tv-4-*.png` there
+too: they are real captures of the app, at the 16:9 the phone section
+accepts, and the Play manifest still keeps the app off phones. Never render a
+phone UI for it; there is no tested phone layout to show. Tablet, desktop and
+XR stay empty.
 
 ## 4. Store settings
 
 Play Console → **Store settings**.
 
-- **App category**: *Tools* (or *Personalisation* if Console offers it for
-  this app type)
+- **App category**: App → *Personalization*
 - **Contact email**: a real address — Play shows it publicly
 - **Website**: optional; `https://github.com/brevityA/CoreBuildsApps` works
 - **Form factors**: **TV only**, matching `listing.json → form_factors`.
