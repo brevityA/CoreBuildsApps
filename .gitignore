@@ -24,3 +24,7 @@ tools/device_scan.txt
 # Local render venvs for the icon generators (per-machine, not repo state)
 .venv-pop/
 .venv/
+
+# Kotlin 2 (AGP 9 built-in Kotlin) writes per-project session data and
+# daemon crash logs here; none of it is source
+.kotlin/
