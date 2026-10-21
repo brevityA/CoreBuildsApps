@@ -206,12 +206,18 @@ class TheWalkthroughAgreesWithTheAssets(unittest.TestCase):
     def test_it_answers_the_rating_questions_the_listing_answers(self):
         # Console's questionnaire is category "All Other App Types" with an
         # Online Content question; "No to everything" got that one wrong.
-        flat = " ".join(self.doc.split())
-        self.assertIn(f"category **{SPEC['content_rating']['category']}**", flat)
+        # Each answer is read from its own app's section, so swapping the
+        # two apps' answers fails instead of matching somewhere in the page.
+        sections = {s.split("\n", 1)[0]: " ".join(s.split())
+                    for s in re.split(r"(?m)^## ", self.doc)}
+        pack_section = next(v for k, v in sections.items() if k.startswith("2. App content"))
+        glyphs_section = next(v for k, v in sections.items()
+                              if k.startswith("9. Core Builds Glyphs Pack"))
+        self.assertIn(f"category **{SPEC['content_rating']['category']}**", pack_section)
         pack = "Yes" if SPEC["content_rating"]["online_content"] else "No"
         glyphs = "yes" if GLYPHS_SPEC["content_rating"]["online_content"] else "no"
-        self.assertIn(f"**Online Content: {pack}**", flat)
-        self.assertIn(f"**Online Content: {glyphs}**", flat)
+        self.assertIn(f"**Online Content: {pack}**", pack_section)
+        self.assertIn(f"**Online Content: {glyphs}**", glyphs_section)
 
     def test_it_walks_the_glyphs_pack_listing_too(self):
         # The second app is a second package name typed into a form that can
