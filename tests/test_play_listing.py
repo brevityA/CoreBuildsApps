@@ -228,6 +228,8 @@ class TheWalkthroughAgreesWithTheAssets(unittest.TestCase):
             min_sdk = int(re.search(r"minSdk = (\d+)", text).group(1))
             if min_sdk < 24:
                 self.assertIn("Installer check", flat, gradle)
+                # The instruction, not just the name: "on" must fail here.
+                self.assertIn("turn **Installer check** off", flat, gradle)
                 self.assertIn(f"minimum SDK version of {min_sdk}", flat, gradle)
         for manifest in ("app/src/play/AndroidManifest.xml",
                          "glyphs/src/play/AndroidManifest.xml"):

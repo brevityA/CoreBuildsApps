@@ -196,9 +196,14 @@ that needs `minSdk` 24. Both bundles declare 21, so the upload is refused:
 The uploaded app bundle has a minimum SDK version of 21."* (seen 2026-10-21).
 Go to **Test and release → App integrity → Automatic protection**, turn
 **Installer check** off, Save, and reload to confirm it stayed off. Then
-remove the refused bundle from the release and upload it again. Nothing is
-lost: the check exists to block copies installed from outside Play, and the
-sideload build is deliberately free outside Play. Do it in both apps.
+remove the refused bundle from the release and upload it again. Do it in
+both apps.
+
+This is a trade-off, not a free switch. With the check off, a copy of the
+**Play build** installed from outside Play runs without Play's install
+check. Keeping it on means `minSdk` 24, which drops TV boxes still on
+Android 5 or 6 (Fire OS 5 is Android 5.1). The sideload build was never
+under the check: it is unrestricted on purpose.
 
 ## 6. Turn on the privacy policy URL
 
