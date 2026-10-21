@@ -24,6 +24,7 @@
     <item drawable="aircast" />
     <item drawable="airpin_pro" />
     <item drawable="receiver" />
+    <item drawable="airplay_touch" />
     <item drawable="airreceiverlite" />
     <item drawable="airscreen" />
     <item drawable="ak47sports" />
@@ -38,6 +39,7 @@
     <item drawable="amazon" />
     <item drawable="amcandroidtv" />
     <item drawable="amnis" />
+    <item drawable="ampchor" />
     <item drawable="fastest" />
     <item drawable="anexplorer_pro" />
     <item drawable="angel" />
@@ -132,6 +134,7 @@
     <item drawable="cinemaghar_tv" />
     <item drawable="danielkorgel" />
     <item drawable="cinemahd_stable" />
+    <item drawable="cinobo" />
     <item drawable="citytvplus" />
     <item drawable="metacubex" />
     <item drawable="clip_tv" />
@@ -214,6 +217,7 @@
     <item drawable="dudeperfect" />
     <item drawable="enhanced" />
     <item drawable="dw" />
+    <item drawable="eaglecast" />
     <item drawable="earthcamtv" />
     <item drawable="echogram" />
     <item drawable="eclipse" />
@@ -235,6 +239,7 @@
     <item drawable="eternaltviptvbox" />
     <item drawable="etube" />
     <item drawable="androidtv_6" />
+    <item drawable="euroleague_tv" />
     <item drawable="euronews" />
     <item drawable="expressvpn" />
     <item drawable="f_droid" />
@@ -405,6 +410,7 @@
     <item drawable="kuku_tv" />
     <item drawable="ltvlauncher" />
     <item drawable="l_equipe" />
+    <item drawable="la7" />
     <item drawable="laliga" />
     <item drawable="lampa" />
     <item drawable="laughafterdark" />
@@ -697,6 +703,7 @@
     <item drawable="sbsondemand" />
     <item drawable="scb_next" />
     <item drawable="scholastic" />
+    <item drawable="scorebox" />
     <item drawable="screen_recording_app" />
     <item drawable="screenscape" />
     <item drawable="sd_maid" />
@@ -983,6 +990,7 @@
     <item drawable="mitvplus" />
     <item drawable="xstream_play" />
     <item drawable="xumo_play" />
+    <item drawable="xuper_tv" />
     <item drawable="yacine_tv" />
     <item drawable="yandex_browser" />
     <item drawable="yangoplay" />

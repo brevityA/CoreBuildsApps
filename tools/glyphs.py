@@ -9404,3 +9404,62 @@ def uyaniktv_loop(c):
 
 
 GLYPHS.update({"uyaniktv_loop": uyaniktv_loop})
+
+
+# Issue batch 2026-10-21 (2.5.0): scanner-reported apps from #347/#350 to #365.
+# Wordmarks redraw each logotype's cue in the pack's stroke letters; the drawn
+# marks take each app's subject in Core stroke geometry. No vendor art traced.
+def euroleague_ball(c):
+    """EuroLeague TV: a basketball beside 'TV' in the pack's stroke letters -
+    the pairing on the app's own launcher icon, redrawn. The seams sit inside
+    a smaller ball than nba_ball's, which carries no lettering."""
+    return (f'<circle cx="164" cy="256" r="108" {_s(c, 28)}/>'
+            f'<path d="M 164 148 L 164 364 M 56 256 L 272 256" {_s(c, 26)}/>'
+            f'<path d="M 96 172 Q 136 256 96 340 M 232 172 Q 192 256 232 340" {_s(c, 26)}/>'
+            + stroke_lockup("TV", c, cap_h=148, max_w=156, cx=384))
+
+
+def airplaytouch_cursor(c):
+    """AirPlay Touch: a screen whose lower-right corner gives way to a cursor
+    arrow - casting a screen you steer by touch. The open corner keeps it
+    apart from airplay_screen (closed screen, cast triangle) and cursor_mark."""
+    return (f'<path d="M 268 352 L 116 352 Q 80 352 80 316 L 80 132 Q 80 96 116 96 '
+            f'L 396 96 Q 432 96 432 132 L 432 236" {_s(c, 32)}/>'
+            f'<path d="M 300 248 L 300 448 L 346 404 L 380 472 L 412 458 L 378 390 '
+            f'L 440 390 Z" {_s(c, 26)}/>')
+
+
+def ampchor_power(c):
+    """Ampchor: an open power ring with a solid bolt rising through its gap -
+    the charge in the app's name. The open ring keeps it apart from the
+    bolt-only marks (debrid_bolt, thunder_bolt) and coreelec_power's stem."""
+    return (f'<path d="M 352.4 134.4 A 168 168 0 1 1 159.6 134.4" {_s(c, 30)}/>'
+            f'<path d="M 290 100 L 194 284 L 252 284 L 226 412 L 324 240 L 266 240 '
+            f'L 298 100 Z" {_f(c)}/>')
+
+
+def eaglecast_star(c):
+    """EagleCast: a five-point star crossed by a wide chevron, inside a ring -
+    the wing laid over the star in the service's round badge, redrawn as an
+    outline. The ring and chevron keep it apart from the plain star marks:
+    without the ring it read as snrt_star at 0.85 alpha IoU."""
+    import math
+    pts = []
+    for k in range(10):
+        r = 140 if k % 2 == 0 else 58
+        a = math.radians(-90 + 36 * k)
+        pts.append(f"{256 + r * math.cos(a):.1f} {268 + r * math.sin(a):.1f}")
+    return (f'<circle cx="256" cy="256" r="200" {_s(c, 26)}/>'
+            f'<path d="M {" L ".join(pts)} Z" {_s(c, 26)}/>'
+            f'<path d="M 100 214 L 256 304 L 412 214" {_s(c, 30)}/>')
+
+
+_WM5 = {
+    "scorebox": ("SB", "under"),      # #347/#350: the 'SB' monogram over its rule
+    "la7": ("LA7", None),             # #365: the channel's 'LA7' lockup
+    "cinobo": ("CINO/BO", None),      # #357: the capitals logotype, on two lines to hold the type band
+    "xuper_tv": ("X", "play"),        # #361: no logo source found; the name's initial with play
+}
+GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM5.items()})
+GLYPHS.update({"euroleague_ball": euroleague_ball, "airplaytouch_cursor": airplaytouch_cursor,
+               "ampchor_power": ampchor_power, "eaglecast_star": eaglecast_star})

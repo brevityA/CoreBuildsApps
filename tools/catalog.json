@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 1012
+    "count": 1020
   },
   "icons": [
     {
@@ -532,15 +532,16 @@
       "style": "core_monoline"
     },
     {
-      "name": "Anexplorer Pro",
+      "name": "AnExplorer",
       "drawable": "anexplorer_pro",
       "color": "#0986C9",
       "glyph": "folder_tree",
       "components": [
-        "dev.dworks.apps.anexplorer.pro/dev.dworks.apps.anexplorer.DocumentsActivity"
+        "dev.dworks.apps.anexplorer.pro/dev.dworks.apps.anexplorer.DocumentsActivity",
+        "dev.dworks.apps.anexplorer/dev.dworks.apps.anexplorer.DocumentsActivity"
       ],
       "category": "FILES",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "mapping_source": "Projectivy Icon Pack 1.1.9; issue #348 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, Monet Launcher, pack 2.4.4, 2026-10-19): the free build installs as dev.dworks.apps.anexplorer and launches the same DocumentsActivity as Pro, so both share this icon",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for dev.dworks.apps.anexplorer.pro (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #0986C9, replacing an accent that did not match it (2026-09-28)",
       "color_reviewed": "2026-09-28",
       "style": "core_monoline"
@@ -4418,7 +4419,8 @@
       "components": [
         "com.hisense.odinbrowser/com.hisense.odinbrowser.MainActivity",
         "com.hisense.odinbrowser/com.hisense.odinbrowser.ui.MainActivity",
-        "com.hisense.odinbrowser/com.hisense.odinbrowser.browser.MainActivity"
+        "com.hisense.odinbrowser/com.hisense.odinbrowser.browser.MainActivity",
+        "com.hisense.odinbrowser/com.vt.hibrowser.activity.home.HomeActivity"
       ],
       "unverified": [
         "com.hisense.odinbrowser/com.hisense.odinbrowser.MainActivity",
@@ -4426,7 +4428,7 @@
         "com.hisense.odinbrowser/com.hisense.odinbrowser.browser.MainActivity"
       ],
       "category": "BROWSER",
-      "mapping_source": "Play listing com.hisense.odinbrowser; launcher activity guessed, unverified on device",
+      "mapping_source": "Play listing com.hisense.odinbrowser; launcher activity guessed, unverified on device; issue #354 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, Projectivy Launcher, pack 2.4.4, 2026-10-19): the app launches com.vt.hibrowser.activity.home.HomeActivity; the three Play-listing guesses stay unverified",
       "color_source": "brand reference — Hi Browser icon teal (sampled 2026-09-14)",
       "color_reviewed": "2026-09-14"
     },
@@ -7341,7 +7343,9 @@
         "com.nuvio.tv/.launcher.AppIconRoseGold",
         "com.nuvio.tv/.launcher.AppIconCopper",
         "com.nuvio.tv/.launcher.AppIconGraphite",
-        "com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault"
+        "com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault",
+        "com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconDefault",
+        "com.nuvio.tv.test/com.nuvio.tv.launcher.AppIconDefault"
       ],
       "category": "STREAM",
       "color_source": "brand reference — nuvio lockup gradient, violet end (sampled 2026-09-14)",
@@ -7350,7 +7354,7 @@
         "#2FCCE6",
         "#A238F0"
       ],
-      "mapping_source": "existing set per docs/research/community-input-icons-2026-09.md P0 (official com.nuvio.tv manifest, six launcher activities, read 2026-09-14); com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault added from issue #288 (device-reported on Smart TV Pro, Android 14, pack 2.3.0): the com.nuvio.app package variant ships the same AppIconDefault activity, which the P0 pass mapped only under com.nuvio.tv. Not confirmed on a second TV"
+      "mapping_source": "existing set per docs/research/community-input-icons-2026-09.md P0 (official com.nuvio.tv manifest, six launcher activities, read 2026-09-14); com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault added from issue #288 (device-reported on Smart TV Pro, Android 14, pack 2.3.0): the com.nuvio.app package variant ships the same AppIconDefault activity, which the P0 pass mapped only under com.nuvio.tv. Not confirmed on a second TV; issue #358 (device-reported via the pack's Missing icons scanner on onn. 4K Plus Streaming, Android 14, pack 2.4.4, 2026-10-19): 'Nuvio + IPTV' (github.com/homelessbrian/NuvioTV) is a fork of Nuvio TV whose launcher alias sits in com.nuvio.tv, so it shares this icon; issue #362 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, Monet Launcher, pack 2.4.4, 2026-10-20): 'Nuvio Arc' (github.com/ysosrs123/NuvioTV-Fork) installs as com.nuvio.tv.test and keeps Nuvio's AppIconDefault launcher alias, so it shares this icon"
     },
     {
       "name": "NV Player",
@@ -11320,9 +11324,11 @@
       "components": [
         "tv.trakt.trakt/.MainActivity",
         "tv.trakt.trakt/tv.trakt.trakt.app.TvActivity",
-        "tv.trakt.trakt/tv.trakt.trakt.ui.main.MainActivity"
+        "tv.trakt.trakt/tv.trakt.trakt.ui.main.MainActivity",
+        "tv.trakt.trakt/tv.trakt.trakt.app.TvSplashActivity"
       ],
       "category": "TRACK",
+      "mapping_source": "pre-provenance; issue #346 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, Monet Launcher, pack 2.4.4, 2026-10-19): current Trakt builds launch tv.trakt.trakt.app.TvSplashActivity, which none of the three mapped components matched, so Monet showed no icon",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null,
       "style": "core_monoline"
@@ -14277,6 +14283,118 @@
       "color_source": "sampled from the launcher icon in the scanner screenshot (a device screenshot, not a photo of the screen): the disc's maroon #880038 (2026-10-18)",
       "color_reviewed": "2026-10-18",
       "glyph_source": "original Core monoline mark: an infinity loop with a solid play triangle in its right loop - the app's always-on loop and its action; no vendor art traced (2026-10-18)"
+    },
+    {
+      "name": "ScoreBox",
+      "drawable": "scorebox",
+      "color": "#F2EAD3",
+      "glyph": "scorebox_wm",
+      "components": [
+        "net.darkforeststudios.scorebox/net.darkforeststudios.scorebox.MainActivity"
+      ],
+      "category": "PLAYER",
+      "mapping_source": "issue #347 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, Monet Launcher, pack 2.4.4, 2026-10-19) and issue #350 (same scanner, onn. 4K Plus Streaming, Android 14, pack 2.4.4, 2026-10-19): both TVs report net.darkforeststudios.scorebox/net.darkforeststudios.scorebox.MainActivity. Confirmed on two TVs",
+      "color_source": "sampled from the Google Play launcher icon (net.darkforeststudios.scorebox): the 'SB' monogram's cream #F2EAD3 (on #0E1116) (2026-10-21)",
+      "color_reviewed": "2026-10-21",
+      "glyph_source": "wordmark-derived mark from the Google Play launcher icon: its 'SB' monogram over a rule, set in the pack's stroke letters, not the vendor letterforms (2026-10-21)"
+    },
+    {
+      "name": "Ampchor",
+      "drawable": "ampchor",
+      "color": "#B584FF",
+      "glyph": "ampchor_power",
+      "components": [
+        "com.ampchor.mobile/com.ampchor.mobile.MainActivity"
+      ],
+      "category": "APP",
+      "mapping_source": "issue #353 (device-reported via the pack's Missing icons scanner on onn. 4K Streaming Box, Android 14, pack 2.4.4, 2026-10-19): com.ampchor.mobile/com.ampchor.mobile.MainActivity is the activity the launcher opened for Ampchor on that device. Not confirmed on a second TV",
+      "color_source": "sampled from the Google Play launcher icon (com.ampchor.mobile): the bolt's violet #B584FF (2026-10-21)",
+      "color_reviewed": "2026-10-21",
+      "glyph_source": "original Core monoline mark: an open power ring with a solid bolt rising through its gap - the charge in the name, after the listing icon's bolt in a ring; no vendor art traced (2026-10-21)"
+    },
+    {
+      "name": "EuroLeague TV",
+      "drawable": "euroleague_tv",
+      "color": "#FF4300",
+      "glyph": "euroleague_ball",
+      "components": [
+        "dce.euroleague/dce.euroleague.MainActivity"
+      ],
+      "category": "SPORT",
+      "mapping_source": "issue #355 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.4.4, 2026-10-19): dce.euroleague/dce.euroleague.MainActivity is the activity the launcher opened for EuroLeague TV on that device. Not confirmed on a second TV",
+      "color_source": "sampled from the Google Play launcher icon (dce.euroleague): the basketball's orange #FF4300 (2026-10-21)",
+      "color_reviewed": "2026-10-21",
+      "glyph_source": "original Core monoline mark: a basketball with its seams beside 'TV' in the pack's stroke letters - the pairing on the listing icon, redrawn, not traced (2026-10-21)"
+    },
+    {
+      "name": "AirPlay Touch",
+      "drawable": "airplay_touch",
+      "color": "#FFFFFF",
+      "glyph": "airplaytouch_cursor",
+      "components": [
+        "com.airplaytouch/com.airplaytouch.MainActivity"
+      ],
+      "category": "APP",
+      "mapping_source": "issue #356 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.4.4, 2026-10-19): com.airplaytouch/com.airplaytouch.MainActivity is the activity the launcher opened for AirPlay Touch on that device. Not confirmed on a second TV",
+      "color_source": "sampled from the Google Play launcher icon (com.airplaytouch): the mark's white #FFFFFF (on navy #0F142A) (2026-10-21)",
+      "color_reviewed": "2026-10-21",
+      "glyph_source": "original Core monoline mark: a screen whose lower-right corner gives way to a cursor arrow - casting a screen you steer by touch, after the listing icon; no vendor art traced (2026-10-21)"
+    },
+    {
+      "name": "Cinobo",
+      "drawable": "cinobo",
+      "color": "#FF7629",
+      "glyph": "cinobo_wm",
+      "components": [
+        "com.mseven.android/com.magine.android.mamo.splash.SplashActivity"
+      ],
+      "category": "VOD",
+      "mapping_source": "issue #357 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.4.4, 2026-10-19): Cinobo is built on the Magine platform (as Acontra Plus is) and launches com.magine.android.mamo.splash.SplashActivity under its own package com.mseven.android. Not confirmed on a second TV",
+      "color_source": "sampled from the Google Play launcher icon (com.mseven.android): the field's orange #FF7629 (2026-10-21)",
+      "color_reviewed": "2026-10-21",
+      "glyph_source": "wordmark-derived mark from the Google Play launcher icon: the 'CINOBO' capitals set in the pack's stroke letters, not the vendor letterforms (2026-10-21)"
+    },
+    {
+      "name": "La7",
+      "drawable": "la7",
+      "color": "#E5B32D",
+      "glyph": "la7_wm",
+      "components": [
+        "it.la7.it/it.la7.it.MainActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "issue #365 (device-reported via the pack's Missing icons scanner on Box R 4K Plus, Android 14, Projectivy Launcher, pack 2.4.4, 2026-10-21): it.la7.it/it.la7.it.MainActivity is the activity the launcher opened for La7 on that device. Not confirmed on a second TV",
+      "color_source": "sampled from the Google Play launcher icon (it.la7.it): the field's gold #E5B32D (2026-10-21)",
+      "color_reviewed": "2026-10-21",
+      "glyph_source": "wordmark-derived mark from the Google Play launcher icon: the 'LA7' lockup set in the pack's stroke letters, not the vendor letterforms (2026-10-21)"
+    },
+    {
+      "name": "Xuper TV",
+      "drawable": "xuper_tv",
+      "color": "#7C74FF",
+      "glyph": "xuper_tv_wm",
+      "components": [
+        "com.android.mgstxNF/com.interactive.brasiliptv.ui.activity.WelcomeActivity"
+      ],
+      "category": "APP",
+      "mapping_source": "issue #361 (device-reported via the pack's Missing icons scanner on Smart TV Pro, Android 12, pack 2.4.4, 2026-10-20): the app the launcher labels 'Xuper Tv NF' launches com.interactive.brasiliptv.ui.activity.WelcomeActivity under com.android.mgstxNF - the codebase Magis TV (com.android.mgstv) also uses. Not confirmed on a second TV",
+      "color_source": "core-builds palette (no published brand colour found): no first-party listing or site was found; the request links a Reddit thread, and the 'MagisPro- Xuper TV' mirror listing refused automated access (2026-10-21)",
+      "color_reviewed": null,
+      "glyph_source": "name-derived mark: the initial 'X' in the pack's stroke letters with its play cue; no logo source was found, so nothing is drawn from vendor art (2026-10-21)"
+    },
+    {
+      "name": "EagleCast",
+      "drawable": "eaglecast",
+      "color": "#C12033",
+      "glyph": "eaglecast_star",
+      "components": [
+        "ar.tvplayer.tv/com.andyhax.haxsplash.LaunchActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "issue #351 (device-reported via the pack's Missing icons scanner on onn. 4K Plus Streaming, Android 14, Monet Launcher, pack 2.4.4, 2026-10-19): EagleCast V2 is a rebranded TiviMate build - it keeps TiviMate's package ar.tvplayer.tv but launches its own splash, com.andyhax.haxsplash.LaunchActivity, so it gets its own icon and TiviMate's ar.tvplayer.tv.ui.MainActivity mapping is unchanged. Not confirmed on a second TV",
+      "color_source": "sampled from the logo on eaglecast.tv (cropped-new-icon-512.png): the chevron's red #C12033, over a navy #202F64 star (2026-10-21)",
+      "color_reviewed": "2026-10-21",
+      "glyph_source": "original Core monoline mark: a five-point star crossed by a wide chevron - the wing laid over the star on the service's logo, redrawn as an outline, not traced (2026-10-21)"
     }
   ],
   "artwork": {
