@@ -36,11 +36,14 @@ val generatedRes = layout.buildDirectory.dir("generated/glyph-art/res")
 
 // The art this package ships, copied rather than committed twice. Glyphs
 // are what the appfilter maps to; cb_back_*/cb_mask/cb_upon are the fallback
-// furniture the appfilter names for apps the catalog does not cover; the
-// launcher/TV branding is the icon pack's own.
+// furniture the appfilter names for apps the catalog does not cover. The
+// launcher icon and TV banner are NOT copied: this app has its own
+// (src/main/res, written by tools/build_glyphs_branding.py). With the pack's,
+// the TV row showed two banners both reading "Core Builds Icon Pack", and a
+// copied cb_banner here would now collide with the committed one.
 val copyGlyphArt = tasks.register<Sync>("copyGlyphArt") {
     from(rootProject.file("app/src/main/res/drawable-nodpi")) {
-        include("*.webp", "cb_banner.png")
+        include("*.webp")
         // The square set only; banners are the icon pack's own art.
         exclude("*_banner.webp")
         into("drawable-nodpi")
@@ -50,9 +53,6 @@ val copyGlyphArt = tasks.register<Sync>("copyGlyphArt") {
     from(rootProject.file("app/src/main/res/values")) {
         include("aliases.xml")
         into("values")
-    }
-    from(rootProject.file("app/src/main/res")) {
-        include("mipmap-*/**")
     }
     into(generatedRes)
 }

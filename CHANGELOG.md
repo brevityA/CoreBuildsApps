@@ -65,12 +65,27 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **The store answers follow the broker.** `tools/build_play_listing.py`
   reads one switch, whether the request broker's URL is baked in, which is
   also when Plus goes on sale. It moves the content-rating purchases answer,
-  Data safety (three optional types collected, none shared) and a CORE
+  Data safety (two optional types collected, none shared) and a CORE
   BUILDS PLUS paragraph in the copy, and `--check` fails if the switch moves
   without a regenerated listing. Today's tree is unchanged: no broker, no
   purchases, nothing collected. `docs/PLAY-CONSOLE.md` §8 covers the Plus
   product, license testers, the broker and the internal-test checks, and
   `docs/privacy.html` covers the token, *My requests* and payments.
+- **Core Builds Glyphs Pack has its own Play listing.** On Play, the Art
+  style switch opens the Glyphs Pack's listing, and there was nothing to put
+  on it. `tools/build_play_listing.py` now also writes `docs/play/glyphs/`:
+  - a 512 icon, a 1024x500 feature graphic and a 1280x720 TV banner;
+  - one 1920x1080 screenshot of its one screen, a new `glyphs-home` frame
+    in `tools/build_app_ui_mockups.py`;
+  - copy whose counts, `1012` icons and `1933` components, are read from
+    `glyphs/`'s own `drawable.xml` and `appfilter.xml`;
+  - fixed answers: no data collected, no purchases.
+
+  `--check` gates it like the pack's listing. Tests hold its component set
+  equal to the pack's, both Glyphs manifests free of permissions, and its art
+  to fresh renders of the companion's own. `docs/PLAY-CONSOLE.md` §9 walks
+  the second app: its package, its forms, and its own closed test with the
+  same testers on the same day.
 
 ### Changed
 
@@ -93,6 +108,15 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Fixed
 
+- **Core Builds Glyphs Pack wears its own art.** The companion copied the
+  icon pack's launcher icon and Leanback banner into its build, so on a TV
+  row the two apps showed the same banner, and a store banner drawn from the
+  companion's art would not have matched the TV. It now has its own violet
+  glyph icon and a "Glyphs Pack" banner (`tools/build_glyphs_branding.py`),
+  and `copyGlyphArt` copies only the icon drawables and `aliases.xml`. Its
+  home screen also named the wrong app. It said "Core Builds Glyphs", the
+  glyphs-only build of the icon pack, where launchers list "Core Builds
+  Glyphs Pack".
 - **The Play build's Suite screen names no way off Play.** It still listed
   "Downloader code 5270601" for apps this TV did not have and told users to
   grab the APK from the GitHub release — the last surviving invitation to

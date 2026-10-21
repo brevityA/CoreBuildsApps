@@ -106,9 +106,39 @@ class GeneratedResources(unittest.TestCase):
         # The glyphs are copied at build time, not committed twice; an include
         # that misses them would link but leave launchers resolving nothing.
         gradle = read(PACK_GRADLE)
-        for needed in ('"*.webp"', 'exclude("*_banner.webp")', '"aliases.xml"',
-                       '"cb_banner.png"', '"mipmap-*/**"'):
+        for needed in ('"*.webp"', 'exclude("*_banner.webp")', '"aliases.xml"'):
             self.assertIn(needed, gradle)
+
+    def test_companion_wears_its_own_branding(self):
+        # Copying the pack's mipmaps and cb_banner made the companion's TV-row
+        # banner read "Core Builds Icon Pack", and the Play store banner must be
+        # the on-device banner. The companion's own art is committed instead,
+        # and the copy must not bring the pack's back (a duplicate resource).
+        gradle = read(PACK_GRADLE)
+        self.assertNotIn('"cb_banner.png"', gradle)
+        self.assertNotIn('"mipmap-*/**"', gradle)
+        res = ROOT / "glyphs/src/main/res"
+        for rel in ("drawable-nodpi/cb_banner.png", "mipmap-xhdpi/ic_launcher.png",
+                    "mipmap-xxhdpi/ic_launcher_foreground.png",
+                    "mipmap-anydpi-v26/ic_launcher.xml"):
+            self.assertTrue((res / rel).exists(), rel)
+        self.assertNotEqual(
+            (res / "drawable-nodpi/cb_banner.png").read_bytes(),
+            (ROOT / "app/src/main/res/drawable-nodpi/cb_banner.png").read_bytes(),
+            "the companion's banner is the icon pack's again")
+        branding = read(ROOT / "tools/build_glyphs_branding.py")
+        self.assertIn('COMPANION_SUBTITLE = "Glyphs Pack"', branding)
+
+    def test_home_screen_names_the_label_a_launcher_lists(self):
+        # The icon-pack list shows app_name. "Core Builds Glyphs" alone is the
+        # glyphs flavor, a different app, so the home must not send users to it.
+        label = re.search(r'name="app_name">([^<]+)<',
+                          read(ROOT / "glyphs/src/main/res/values/strings.xml")).group(1)
+        home = read(ROOT / "glyphs/src/main/res/values/strings_home.xml")
+        title = re.search(r'name="glyphs_home_title">([^<]+)<', home).group(1)
+        hint = re.search(r'name="glyphs_home_hint">([^<]+)<', home).group(1)
+        self.assertEqual(title, label)
+        self.assertIn(f"choose {label} in the icon pack list", hint)
 
 
 class OneStylePerPack(unittest.TestCase):
