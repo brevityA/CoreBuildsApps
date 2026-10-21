@@ -1,6 +1,6 @@
 # Supported applications
 
-`1020` icons · `1241` mapped components · pack v2.4.4
+`1020` icons · `1241` mapped components · pack v2.5.0
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -998,7 +998,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Xiaomi TV+ | `mitvplus` | `#F86800` | `#F86800` | `com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.BannerLogoFree24`<br>`com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.SplashActivity` |
 | Xstream Play | `xstream_play` | `#C80000` | `#C80000` | `tv.airtel.xstream.tvapp/tv.airtel.xstream.login.LoginActivity` |
 | Xumo Play | `xumo_play` | `#7C74FF` | `#7C74FF` | `com.xumo.xumo/com.xumo.xumo.activity.SplashActivity` |
-| Xuper TV | `xuper_tv` | `#7C74FF` | `#7C74FF` | `com.android.mgstxNF/com.interactive.brasiliptv.ui.activity.WelcomeActivity` |
+| Xuper TV | `xuper_tv` | `#FF4D4D` | `#FF4D4D` | `com.android.mgstxNF/com.interactive.brasiliptv.ui.activity.WelcomeActivity` |
 | Yacine TV | `yacine_tv` | `#E02828` | `#E02828` | `ver3.ycntivi.off/dev.google.yacinetv.ui.splash.SplashActivity`<br>`ver3.ycntivi.off/dev.google.yacinetv.tvui.splash.SplashActivity` |
 | Yandex Browser | `yandex_browser` | `#FC3A2C` | `#FC3A2C` | `com.yandex.browser.tv/com.yandex.browser.tv.tvactivity.TvActivity` |
 | Yango Play | `yangoplay` | `#FC3F1D` | `#FC3F1D` | `com.yango.saft.tv/ru.kinopoisk.tv.presentation.splash.SplashActivity` |

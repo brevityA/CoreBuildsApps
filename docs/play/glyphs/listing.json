@@ -5,13 +5,13 @@
   ],
   "sideload_package": "tv.corebuilds.iconpack.glyphs",
   "counts": {
-    "icons": 1012,
-    "components": 1933
+    "icons": 1020,
+    "components": 1953
   },
   "copy": {
     "title": "Core Builds Glyphs Pack",
-    "short_description": "1012 square glyph icons for Android TV launchers. No ads, no account.",
-    "full_description": "The square half of Core Builds Icon Pack: 1012 icons drawn as flat, single-colour glyphs, for launchers that show square tiles.\n\nSAME APPS, SQUARE ART\nCore Builds Icon Pack draws 16:9 banners. This pack draws the same apps as square glyphs, mapped to the same 1933 launcher components, so switching between the two changes what an icon looks like, never which apps get one.\n\nHOW TO USE IT\nChoose Core Builds Glyphs Pack in your launcher's icon pack list (on Projectivy: Settings, then Icon pack), or flip Art style inside Core Builds Icon Pack, which brings you here if this pack is missing.\n\nWHAT IT IS\nA resource pack with one screen, which shows how many icons it carries and opens the icon pack. Applying the pack works on its own. Picking a single icon by hand goes through Core Builds Icon Pack's picker, so that needs the icon pack installed, and the catalogue, the wallpapers and the settings live there too.\n\nPRIVACY\nNo internet permission, no ads, no analytics, no account. This pack sends nothing at all."
+    "short_description": "1020 square glyph icons for Android TV launchers. No ads, no account.",
+    "full_description": "The square half of Core Builds Icon Pack: 1020 icons drawn as flat, single-colour glyphs, for launchers that show square tiles.\n\nSAME APPS, SQUARE ART\nCore Builds Icon Pack draws 16:9 banners. This pack draws the same apps as square glyphs, mapped to the same 1953 launcher components, so switching between the two changes what an icon looks like, never which apps get one.\n\nHOW TO USE IT\nChoose Core Builds Glyphs Pack in your launcher's icon pack list (on Projectivy: Settings, then Icon pack), or flip Art style inside Core Builds Icon Pack, which brings you here if this pack is missing.\n\nWHAT IT IS\nA resource pack with one screen, which shows how many icons it carries and opens the icon pack. Applying the pack works on its own. Picking a single icon by hand goes through Core Builds Icon Pack's picker, so that needs the icon pack installed, and the catalogue, the wallpapers and the settings live there too.\n\nPRIVACY\nNo internet permission, no ads, no analytics, no account. This pack sends nothing at all."
   },
   "assets": {
     "icon": {
@@ -69,11 +69,11 @@
   },
   "sources": {
     "generator": "fd5b695f87985af259f1272dbcaf91edeca55c0eb426f2ffbed05ab229ec3f59",
-    "branding": "c82ce8a508464283786c7265dfd1fa3f7e5101271f6bc3bf72cd37bc058ad317",
-    "drawable_xml": "36063dd22345d82132d6cad2d98940dba04abbc5a88094583b6244d2e6d3dd10",
-    "appfilter_xml": "effaf4822e393dd1ffb1ef9f2a2b38457197455c6ad052bb051bca7e32adbdee",
+    "branding": "688417d958ec3ee7cacbfb2569a6bf592893481a3ae3e25437f317d377750847",
+    "drawable_xml": "f1e882f71e9044bce928219ac670df499f7c8b113d433b1e545aa90a46442acc",
+    "appfilter_xml": "9bd601499bcfbe361bb4c8100ecfacd5f2ce0e88c53937200bd8141f9bcdc2b1",
     "frames": {
-      "app-ui-glyphs-home.png": "69cd133fa803cec83543c4ff74a3efea2aa0e65b94f878b4feff91e81da3a658"
+      "app-ui-glyphs-home.png": "37a9f4d61e2c14a66d3b183645c6b5f2643a52d8b787eab4203f0b4d90a6c0ea"
     }
   }
 }
