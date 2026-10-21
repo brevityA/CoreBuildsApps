@@ -203,6 +203,22 @@ class TheWalkthroughAgreesWithTheAssets(unittest.TestCase):
                        "PLAY_KEY_ALIAS", "PLAY_KEY_PASSWORD"):
             self.assertIn(secret, self.doc)
 
+    def test_it_answers_the_rating_questions_the_listing_answers(self):
+        # Console's questionnaire is category "All Other App Types" with an
+        # Online Content question; "No to everything" got that one wrong.
+        # Each answer is read from its own app's section, so swapping the
+        # two apps' answers fails instead of matching somewhere in the page.
+        sections = {s.split("\n", 1)[0]: " ".join(s.split())
+                    for s in re.split(r"(?m)^## ", self.doc)}
+        pack_section = next(v for k, v in sections.items() if k.startswith("2. App content"))
+        glyphs_section = next(v for k, v in sections.items()
+                              if k.startswith("9. Core Builds Glyphs Pack"))
+        self.assertIn(f"category **{SPEC['content_rating']['category']}**", pack_section)
+        pack = "Yes" if SPEC["content_rating"]["online_content"] else "No"
+        glyphs = "yes" if GLYPHS_SPEC["content_rating"]["online_content"] else "no"
+        self.assertIn(f"**Online Content: {pack}**", pack_section)
+        self.assertIn(f"**Online Content: {glyphs}**", glyphs_section)
+
     def test_it_walks_the_glyphs_pack_listing_too(self):
         # The second app is a second package name typed into a form that can
         # never be edited; both of its ids and its own asset folder are named.
@@ -323,6 +339,25 @@ class StoreTruth(unittest.TestCase):
         self.assertEqual(SPEC["data_safety"]["collects_user_data"],
                          listing.answers_cover_broker())
         self.assertFalse(SPEC["data_safety"]["shares_user_data"])
+
+    def test_online_content_is_declared_exactly_where_the_app_downloads(self):
+        # IARC's "content that isn't part of the initial app download": the
+        # pack fetches full-size walls and live loops after install; the
+        # Glyphs Pack cannot fetch anything at all.
+        walls = json.loads((ROOT / "app/src/main/assets/manifest/wallpapers.json"
+                            ).read_text(encoding="utf-8"))["wallpapers"]
+        loop = (ROOT / "app/src/main/java/tv/corebuilds/iconpack/LiveLoop.kt"
+                ).read_text(encoding="utf-8")
+        manifest = (ROOT / "app/src/main/AndroidManifest.xml").read_text(encoding="utf-8")
+        downloads = (all(w["url"].startswith("https://") for w in walls)
+                     and '"https://' in loop
+                     and "android.permission.INTERNET" in manifest)
+        self.assertEqual(SPEC["content_rating"]["online_content"], downloads)
+        self.assertTrue(downloads, "the pack no longer downloads anything: re-answer IARC")
+        for glyphs in (ROOT / "glyphs/src").glob("*/AndroidManifest.xml"):
+            self.assertNotIn("android.permission.INTERNET",
+                             glyphs.read_text(encoding="utf-8"))
+        self.assertFalse(GLYPHS_SPEC["content_rating"]["online_content"])
 
     def test_form_factors_are_tv_only_and_say_why(self):
         # No phone screenshots exist because no phone UI has been tested.

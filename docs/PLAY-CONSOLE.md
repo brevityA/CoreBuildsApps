@@ -61,7 +61,7 @@ though there is nothing to declare.
 | **Privacy policy** | `https://brevityA.github.io/CoreBuildsApps/privacy.html` (see §6) |
 | **App access** | No restrictions — the app needs no login, and reviewers need no credentials |
 | **Ads** | **No ads** |
-| **Content rating** | IARC questionnaire: category *Utility / Productivity*, then "No" to violence, sexuality, language, controlled substances, gambling, user-generated content, location sharing and ads. **Purchases**: copy `listing.json → content_rating.purchases` — "no" until Core Builds Plus is on sale (§8), "yes" from then on. Expect **Everyone / PEGI 3**. Answers come from `listing.json → content_rating` |
+| **Content rating** | IARC questionnaire: category **All Other App Types**. **Online Content: Yes**: the full-size wallpapers and the live loops download after install, from this repo (only thumbnails are bundled). To any follow-up asking whether that content has sex, violence, language, drugs or gambling, answer No. Then "No" to ratings-relevant content in the package, user content sharing, age-restricted products, location sharing, cash rewards / gift cards / NFTs, and ads. **Purchase digital goods**: copy `listing.json → content_rating.purchases` — "no" until Core Builds Plus is on sale (§8), "yes" from then on. Expect **Everyone / PEGI 3**. Answers come from `listing.json → content_rating` |
 | **Target audience** | 13+ / adults. Do **not** select an audience including children: it drags in the Families policy for no benefit to a wallpaper pack |
 | **Data safety** | Copy `listing.json → data_safety`. Without the request broker: collects no data, shares no data, no ads, encrypted in transit. With it (§8): collects two optional types listed under `collected`, shares none. It carries the rationale and the one user-triggered request payload |
 | **Government apps** | Not a government app |
@@ -270,7 +270,8 @@ tester clock. §1–§7 apply again; only the values below differ.
    that package under Android developer verification, as in §1.
 2. **App content.** The same privacy policy URL: `docs/privacy.html` already
    names both Glyphs package ids. No restrictions on access, no ads, 13+, no
-   advertising ID. Content rating: the same IARC answers as §2, and
+   advertising ID. Content rating: the same IARC answers as §2, except
+   **Online Content: no**, because the app has no internet access, and
    **purchases: no**, permanently. Plus is the icon pack's product, and this
    app sells nothing. Data safety: **collects no data, shares no data**. The
    app declares no permissions at all, `INTERNET` included, and links no

@@ -352,7 +352,14 @@ def data_safety(plus: bool | None = None) -> dict:
 
 
 # IARC content-rating questionnaire answers that matter for this app.
+# "online_content" is IARC's "content that isn't part of the initial app
+# download but can be accessed from the app": the full-size wallpapers
+# (wallpapers.json points them at raw.githubusercontent.com; only thumbs are
+# bundled) and the live loops (LiveLoop.kt, Motion/live/). All of it is this
+# repo's own art, so the follow-ups about rated content in it are "no".
 CONTENT_RATING = {
+    "category": "All Other App Types",
+    "online_content": True,
     "violence": False,
     "sexuality": False,
     "language": False,
@@ -365,7 +372,9 @@ CONTENT_RATING = {
     "expected_rating": "Everyone / PEGI 3",
     "note": (
         "A wallpaper and icon pack. Nothing here is user-generated, shared "
-        "or interactive with strangers. 'purchases' follows the broker: Core "
+        "or interactive with strangers. 'online_content' is the full-size "
+        "wallpapers and live loops, downloaded after install from this repo; "
+        "none of it is rated content. 'purchases' follows the broker: Core "
         "Builds Plus is on sale exactly when the broker is baked in, and the "
         "answer stays yes while a track still serves such a build "
         "(BROKER_SHIPPED)."
@@ -716,11 +725,13 @@ GLYPHS_DATA_SAFETY = {
 
 GLYPHS_CONTENT_RATING = {
     **CONTENT_RATING,
+    "online_content": False,
     "purchases": False,
     "note": (
         "A square icon pack. Nothing here is user-generated, shared or "
-        "interactive with strangers, and it sells nothing: Core Builds Plus "
-        "is the icon pack's, not this app's."
+        "interactive with strangers, it sells nothing (Core Builds Plus is "
+        "the icon pack's, not this app's), and with no INTERNET permission "
+        "everything it shows is in the install."
     ),
 }
 

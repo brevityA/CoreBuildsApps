@@ -108,6 +108,15 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Fixed
 
+- **The content-rating walkthrough answers Online Content.** Console's IARC
+  questionnaire (category *All Other App Types*, not *Utility /
+  Productivity*) asks whether the app reaches content that isn't part of
+  the install. `docs/PLAY-CONSOLE.md` §2 never mentioned it. Read as "No to
+  everything", it was wrong for the icon pack, which downloads full-size
+  wallpapers and live loops after install. `listing.json` now carries
+  `category` and `online_content`: Yes for the pack, No for the Glyphs Pack,
+  which has no internet access. A test ties each answer to the
+  `INTERNET` permission and the download URLs.
 - **Core Builds Glyphs Pack wears its own art.** The companion copied the
   icon pack's launcher icon and Leanback banner into its build, so on a TV
   row the two apps showed the same banner, and a store banner drawn from the
