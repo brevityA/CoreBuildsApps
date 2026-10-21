@@ -157,6 +157,21 @@ def broker_enabled() -> bool:
     return bool(found and found.group(1).strip())
 
 
+# One-way latch for the store answers. Play keeps one Data safety form and one
+# content rating per app, and they must cover every version still on a track,
+# staged rollouts included. So once a broker build has shipped, "collected" and
+# "purchases: yes" outlive the broker until no track serves such a build. Set
+# this True in the change that bakes the broker URL in (--check refuses a
+# broker-enabled tree without it), and set it back only once every track has
+# moved past the last broker build.
+BROKER_SHIPPED = False
+
+
+def answers_cover_broker() -> bool:
+    """Whether Data safety and the rating must describe a broker build."""
+    return broker_enabled() or BROKER_SHIPPED
+
+
 def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -290,15 +305,8 @@ BROKER_COLLECTED = [
         "shared": False,
         "purposes": ["App functionality"],
         "what": "the one app the user presses under Missing icons (name and "
-                "component), filed as a public GitHub issue",
-    },
-    {
-        "type": "App info and performance > Other app performance data",
-        "optional": True,
-        "shared": False,
-        "purposes": ["App functionality"],
-        "what": "the device note filed with it: TV model, Android version, "
-                "pack version and launcher",
+                "component) and the launcher in use, filed as a public GitHub "
+                "issue",
     },
     {
         "type": "Financial info > Purchase history",
@@ -313,7 +321,7 @@ BROKER_COLLECTED = [
 
 
 def data_safety(plus: bool | None = None) -> dict:
-    plus = broker_enabled() if plus is None else plus
+    plus = answers_cover_broker() if plus is None else plus
     if not plus:
         return DATA_SAFETY
     answers = json.loads(json.dumps(DATA_SAFETY))
@@ -331,6 +339,14 @@ def data_safety(plus: bool | None = None) -> dict:
     )
     answers["user_initiated_icon_request"]["fields"] = [
         "app_name", "component", "device", "plus_token"]
+    # The rest of the device note matches no type on Play's list: the list
+    # covers identifiers, and a TV model or an Android version identifies no
+    # user and no device, much like a browser's User-Agent. It is declared in
+    # the privacy policy instead of filed under a type it does not fit.
+    answers["not_a_listed_type"] = (
+        "TV model, Android version and pack version, from the device note; "
+        "stated in docs/privacy.html"
+    )
     return answers
 
 
@@ -348,14 +364,16 @@ CONTENT_RATING = {
     "expected_rating": "Everyone / PEGI 3",
     "note": (
         "A wallpaper and icon pack. Nothing here is user-generated, shared "
-        "or interactive with strangers. 'purchases' follows broker_enabled: "
-        "Core Builds Plus is on sale exactly when the broker is baked in."
+        "or interactive with strangers. 'purchases' follows the broker: Core "
+        "Builds Plus is on sale exactly when the broker is baked in, and the "
+        "answer stays yes while a track still serves such a build "
+        "(BROKER_SHIPPED)."
     ),
 }
 
 
 def content_rating(plus: bool | None = None) -> dict:
-    plus = broker_enabled() if plus is None else plus
+    plus = answers_cover_broker() if plus is None else plus
     return {**CONTENT_RATING, "purchases": plus}
 
 
@@ -531,6 +549,10 @@ def check() -> int:
         problems.append("data_safety does not match this build (broker_enabled moved?)")
     if spec.get("content_rating") != content_rating():
         problems.append("content_rating does not match this build (broker_enabled moved?)")
+    if broker_enabled() and not BROKER_SHIPPED:
+        problems.append("the broker URL is baked in but BROKER_SHIPPED is False: set it "
+                        "in this change, so the store answers keep covering broker "
+                        "builds while any track serves one")
 
     sources = spec.get("sources", {})
     fresh = {

@@ -116,10 +116,10 @@
     "purchases": false,
     "ads": false,
     "expected_rating": "Everyone / PEGI 3",
-    "note": "A wallpaper and icon pack. Nothing here is user-generated, shared or interactive with strangers. 'purchases' follows broker_enabled: Core Builds Plus is on sale exactly when the broker is baked in."
+    "note": "A wallpaper and icon pack. Nothing here is user-generated, shared or interactive with strangers. 'purchases' follows the broker: Core Builds Plus is on sale exactly when the broker is baked in, and the answer stays yes while a track still serves such a build (BROKER_SHIPPED)."
   },
   "sources": {
-    "generator": "c774e54d4c61377894dc7a03c0e735b94c8ba36d3960c1bf69572abe53c231a8",
+    "generator": "17b0517ba7d0657ffa5ca9933734dc8360d467a9bc7311ec11d7a50202774044",
     "branding": "77d63a0d0ef7c7fc21eaddf7ce54a6a7aed88d5e3a8ac733079ae869f1424f54",
     "icon_pack_xml": "524eaa6952a4da1c823bf600340b8d61f9b0e5486ef74cb00462451ab3fd647b",
     "wallpapers_json": "0bc4f85d2ff7d2e2c646088cd450957c5e7a58c0519be85923207356dafb3490",

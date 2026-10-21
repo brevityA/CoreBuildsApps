@@ -31,7 +31,7 @@
 
 <p class="kicker">Core Builds</p>
 <h1>Core Builds Icon Pack — Privacy Policy</h1>
-<p class="lede">The app collects nothing about you. This page is the complete account of
+<p class="lede">The app has no account and collects nothing in the background. This page is the complete account of
 what leaves your device, when, and where it goes.</p>
 
 <p><strong>Applies to:</strong> Core Builds Icon Pack, package
@@ -96,8 +96,8 @@ described below. Nothing is collected in the background.</p>
   <tr>
     <td>Google Play build, with Core Builds Plus: you open <em>My requests</em></td>
     <td>One request per icon request filed from this TV, asking for that
-        public issue's state by its number (at most 30 per visit; an issue read in
-        the last 10 minutes is not read again). Nothing about you or the TV is sent.</td>
+        public issue's state by its number (at most 30 reads in any hour; an issue
+        read in the last 10 minutes is not read again). Nothing about you or the TV is sent.</td>
     <td><code>api.github.com</code> (GitHub)</td>
   </tr>
   <tr>
@@ -120,7 +120,7 @@ described below. Nothing is collected in the background.</p>
   <p><strong>No third party receives anything else.</strong> There is no
   advertising network, no data broker, no analytics provider and no server of
   ours that stores your activity. The broker, when it is enabled, keeps your IP
-  address for up to an hour to rate-limit requests, never writes it to the
+  address for at most 62 minutes to rate-limit requests, never writes it to the
   issue, and keeps nothing else beyond the Plus hash described above. Its code
   is public: <code>tools/icon_request_broker/</code> in the repository.</p>
 </div>
@@ -140,8 +140,10 @@ storage. On the Google Play build the app also keeps the Core Builds Plus
 purchase token, if you own Plus, and for <em>My requests</em> the list of
 requests filed from this TV (up to 200: each app's name, component and issue
 number, all of which are already public in the issue). Live loop rotation runs
-on the TV and sends nothing. All of it is yours, and all of it is removed when
-you clear the app's data or uninstall it.</p>
+on the TV and sends nothing. Everything in the app's private storage is removed
+when you clear the app's data or uninstall the app. Exported wallpapers are
+ordinary files in your <code>Pictures</code> folder: they stay there until you
+delete them.</p>
 
 <h2>Permissions, and why each exists</h2>
 <ul>
@@ -179,13 +181,25 @@ content, no chat and no advertising, and it collects no personal information
 from anyone, including children.</p>
 
 <h2>Your control</h2>
-<p>Because nothing is collected, there is nothing to request, correct, export or
-delete. Clearing the app's data removes its settings, cache and request list.
-If you filed an icon request from your browser, that issue lives in a public
-repository and can be edited or deleted from your GitHub account. If the broker
-filed it, the issue carries no account or contact detail, so it cannot be
-looked up by person: <a href="https://github.com/brevityA/CoreBuildsApps/issues">open
-an issue</a> with its number to have it removed.</p>
+<p>On the TV, clearing the app's data removes its settings, cache, request list
+and Plus token. Off the TV, only three things can exist, and only after you
+press <em>Request icon</em>:</p>
+<ul>
+  <li><strong>The public issue.</strong> Filed from your browser, it is yours:
+      you can edit it from your GitHub account, but GitHub lets only the
+      repository's owner delete an issue. Filed by the broker, it carries no
+      account or contact detail, so it cannot be looked up by person. Either
+      way, <a href="https://github.com/brevityA/CoreBuildsApps/issues">open an
+      issue</a> with its number and it is deleted.</li>
+  <li><strong>Your IP address</strong>, held by the broker for at most 62
+      minutes for rate limiting. It expires by itself and is never written anywhere
+      else.</li>
+  <li><strong>A SHA-256 hash of a Plus purchase token</strong>, held by the
+      broker with Google's answer for at most six hours. It expires by
+      itself.</li>
+</ul>
+<p>Nothing else about you is kept, so there is nothing else to request, correct
+or export.</p>
 
 <h2>Changes to this policy</h2>
 <p>If a future version sends anything the table above does not list, this page

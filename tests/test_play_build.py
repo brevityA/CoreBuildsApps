@@ -325,7 +325,7 @@ class Plus(unittest.TestCase):
 
     def test_billing_ships_in_the_play_build_only(self):
         gradle = read(APP / "build.gradle.kts")
-        lines = [l.strip() for l in gradle.splitlines() if "billingclient" in l]
+        lines = [ln.strip() for ln in gradle.splitlines() if "billingclient" in ln]
         self.assertEqual(len(lines), 1, lines)
         self.assertTrue(lines[0].startswith('"playImplementation"('), lines[0])
         self.assertNotIn("billingclient", read(self.GITHUB))
@@ -425,7 +425,13 @@ class PlusExtras(unittest.TestCase):
         broker = read(ROOT / "tools/icon_request_broker/constants.mjs")
         self.assertIn('PRIORITY_LABEL = "priority"', broker)
         screen = read(KT / "RequestsActivity.kt")
-        self.assertIn("unchecked.drop(MAX_CHECKS)", screen)
+        # One hourly budget per process, not a per-visit cap: three visits
+        # with 30 open rows each used to send 90 reads past GitHub's 60.
+        self.assertIn("const val HOURLY_READS = 30", screen)
+        self.assertIn("const val HOUR_MS = 60 * 60_000L", screen)
+        self.assertIn("val granted = reserveReads(unchecked.size)", screen)
+        self.assertIn("unchecked.drop(granted)", screen)
+        self.assertNotIn("MAX_CHECKS", screen)
         self.assertIn("R.string.requests_state_later", screen)
         auditor = read(KT / "AuditorActivity.kt")
         self.assertIn("RequestLog.record(this, issue, item.label, item.component, item.mapped)", auditor)

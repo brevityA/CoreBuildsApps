@@ -470,7 +470,11 @@ def main() -> int:
     for num, slug, title, fn in WALLS:
         stem = f"corebuilds-{num}-{slug}"
         if args.only and num not in args.only:
-            rendered.append((num, title, Image.open(SERIES / f"{stem}.png").convert("RGB")))
+            # The contact sheet needs every wall; the skipped ones come from disk.
+            src = SERIES / f"{stem}.png"
+            if not src.exists():
+                raise SystemExit(f"{src.relative_to(ROOT)} is missing; run without --only first")
+            rendered.append((num, title, Image.open(src).convert("RGB")))
             continue
         im = fn()
         dc = dark_coverage(im)

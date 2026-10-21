@@ -273,20 +273,19 @@ If they must diverge, the companion goes first, never the pack. A pack that
 believes its companion is ahead is harmless; one that believes it is behind is
 not.
 
-### Blocked pending the Play Console account
+### What the first upload needs from the owner
 
-The Play work (the Play build type, `play.yml`, the premium purchase in its own
-PR) is complete and tested, but nothing can be uploaded until the owner has:
+The Play work (the Play build type, `play.yml`, Core Builds Plus) is in the
+tree and tested. Uploading needs, in `PLAY-CONSOLE.md` order:
 
 1. A Play Console developer account, identity verified.
-2. A **payments profile** — merchant/tax/bank details. Needed for the premium
-   in-app product; without it `premium_unlock` cannot be created or priced.
-3. A privacy policy URL (About links it; the string is still
-   `[USER TO SUPPLY]`).
-4. Upload key + the `PLAY_KEYSTORE_*` repository secrets for `play.yml`.
-
-Until (1) and (2) exist, the premium PR stays parked — the gate only lives in
-the Play build, so there is nothing to gate.
+2. The upload key and the `PLAY_KEYSTORE_*` repository secrets for `play.yml`
+   (§5).
+3. GitHub Pages serving `docs/` for the privacy policy URL (§6).
+4. For Plus only: a **payments profile** (merchant, tax and bank details), the
+   one-time product `core_builds_plus`, and the request broker baked in (§8).
+   Without the broker the Play build sells nothing, so the first uploads can
+   go ahead without it.
 
 ## Release checklist artifact contents
 

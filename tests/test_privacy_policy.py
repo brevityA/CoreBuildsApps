@@ -45,6 +45,12 @@ def read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def flat(html: str) -> str:
+    """The page's text with every run of whitespace as one space, so a phrase
+    still matches after the HTML is re-wrapped."""
+    return " ".join(html.split())
+
+
 def sources() -> dict[str, str]:
     return {
         p.name: read(p) for p in sorted(KT.glob("*.kt"))
@@ -113,7 +119,7 @@ class TheClaimsMatchTheCode(unittest.TestCase):
         # Plus owners' requests carry one more field, conditionally.
         self.assertIn('put("plus_token", plusToken)', sender)
         self.assertIn("purchase token", self.html)
-        self.assertIn("never\n        logged, filed or stored", self.html)
+        self.assertIn("never logged, filed or stored", flat(self.html))
         # The one boolean flag the POST can carry is described too.
         self.assertIn('put("mapped"', sender)
         self.assertIn("flag", self.html)
@@ -157,12 +163,30 @@ class TheClaimsMatchTheCode(unittest.TestCase):
         catalog = read(ROOT / "app/src/main/assets/manifest/wallpapers.json")
         self.assertIn("raw.githubusercontent.com", catalog)
 
+    def test_it_names_what_outlives_the_app_and_how_to_remove_it(self):
+        # Exports live in shared storage, and the broker keeps an IP for rate
+        # limiting and a token hash: none of that goes with an uninstall, so
+        # the page must not say "nothing is collected" or "all of it is removed".
+        text = flat(self.html)
+        self.assertNotIn("because nothing is collected", text.lower())
+        self.assertNotIn("all of it is removed", text.lower())
+        self.assertIn("they stay there until you delete them", text)
+        self.assertIn("only the repository's owner delete an issue", text)
+        worker = read(ROOT / "tools/icon_request_broker/worker.mjs") + read(
+            ROOT / "tools/icon_request_broker/constants.mjs")
+        self.assertIn("sha256", worker.lower())
+        # The rate-limit bucket's KV TTL is the "62 minutes" the page states.
+        self.assertIn("expirationTtl: 3700", worker)
+        self.assertIn("IP address</strong>, held by the broker for at most 62 minutes", text)
+        self.assertIn("SHA-256 hash of a Plus purchase token</strong>", text)
+
     def test_the_purchase_it_describes_is_the_one_sold_and_when(self):
         # The page describes Core Builds Plus and the condition it is sold
         # under, so it is true both before and after the broker is baked in.
         self.assertIn("Core Builds Plus", self.html)
-        self.assertIn("offered only in builds where\nthe request broker is enabled", self.html)
-        self.assertIn("Until then\nthe Play build offers no purchases", self.html)
+        text = flat(self.html)
+        self.assertIn("offered only in builds where the request broker is enabled", text)
+        self.assertIn("Until then the Play build offers no purchases", text)
         plus = read(KT / "Plus.kt")
         self.assertIn("audit_request_endpoint", plus)
         self.assertIn("The GitHub / Downloader build has no purchases", self.html)

@@ -215,7 +215,8 @@ class PlusCollectionTests(unittest.TestCase):
 
     def test_numbers_do_not_collide_with_the_main_collection(self):
         main = json.loads(_read(MANIFEST))["wallpapers"]
-        number = lambda w: int(w["name"].split()[0])
+        def number(w):
+            return int(w["name"].split()[0])
         self.assertFalse({number(w) for w in main} & {number(w) for w in self.walls})
         self.assertEqual(len({number(w) for w in self.walls}), len(self.walls))
 

@@ -162,8 +162,9 @@ object Prefs {
 
     /** Switching rotation on starts the interval now rather than at the last pick. */
     fun setLiveRotateHours(context: Context, hours: Int, now: Long = System.currentTimeMillis()) {
+        val wasOff = liveRotateHours(context) == 0
         val edit = prefs(context).edit().putInt(KEY_LIVE_ROTATE_HOURS, hours)
-        if (liveRotateHours(context) == 0 && hours > 0) edit.putLong(KEY_LIVE_LOOP_CHANGED_AT, now)
+        if (wasOff && hours > 0) edit.putLong(KEY_LIVE_LOOP_CHANGED_AT, now)
         edit.apply()
     }
 

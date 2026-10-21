@@ -209,7 +209,11 @@ it adds; until then the Play build sells nothing and the steps below wait.
    reports `"plus": true`.
 6. **Bake the endpoint in** (repo):
    `python tools/build_issue_prefills.py --endpoint=https://<broker URL>`,
-   then `python tools/build_play_listing.py`, and commit both. From that
+   set `BROKER_SHIPPED = True` in `tools/build_play_listing.py`, then run
+   `python tools/build_play_listing.py`, and commit all three. The latch keeps
+   Data safety and the purchases answer covering broker builds for as long as
+   any track still serves one, because Play keeps one form for every version
+   on every track; `--check` refuses a broker build without it. From that
    build on, Settings has a CORE BUILDS PLUS group and the listing, Data
    safety and content rating all say Plus.
 7. **Re-answer Console in the same release**: paste the new full

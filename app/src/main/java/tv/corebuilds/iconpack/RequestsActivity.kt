@@ -18,10 +18,13 @@ import java.util.concurrent.Executors
  *
  * The rows come from [RequestLog] at once; each row's state starts as the
  * TV's own answer (already in the installed pack) or "checking", and fills in
- * as [RequestStatus.fetch] answers. Only the newest [MAX_CHECKS] open-ended
- * rows are asked about per visit, and answers are kept for [FRESH_MS] across
- * visits in this process, so the screen stays well inside GitHub's 60 reads
- * an hour.
+ * as [RequestStatus.fetch] answers. Answers are kept for [FRESH_MS], and reads
+ * come out of one budget of [HOURLY_READS] per rolling hour for the whole
+ * process, not per visit: three visits in an hour with 30 open rows each would
+ * otherwise send 90 reads past GitHub's 60 unauthenticated reads an hour, and
+ * every read past that is a 403 shown as "GitHub did not answer". Rows past
+ * the budget say "later". The budget is per process, so a restart within the
+ * hour can spend it again; two still stay at GitHub's 60.
  *
  * Opened from Settings, and only through [Plus.unlocked]; it checks again
  * itself so a stale intent cannot open it without Plus.
@@ -71,9 +74,10 @@ class RequestsActivity : TvActivity() {
         rows.first().second.requestFocus()
 
         val unchecked = rows.filter { (entry, _) -> entry.issue !in states }
-        val toCheck = unchecked.take(MAX_CHECKS)
-        // Past the per-visit budget a row says so, rather than "checking" forever.
-        for ((_, row) in unchecked.drop(MAX_CHECKS)) {
+        val granted = reserveReads(unchecked.size)
+        val toCheck = unchecked.take(granted)
+        // Past the hourly budget a row says so, rather than "checking" forever.
+        for ((_, row) in unchecked.drop(granted)) {
             row.findViewById<TextView>(R.id.request_state).setText(R.string.requests_state_later)
         }
         if (toCheck.isEmpty()) return
@@ -121,9 +125,22 @@ class RequestsActivity : TvActivity() {
     }
 
     private companion object {
-        const val MAX_CHECKS = 30
+        /** Half GitHub's 60 unauthenticated reads an hour, per address. */
+        const val HOURLY_READS = 30
+        const val HOUR_MS = 60 * 60_000L
         const val FRESH_MS = 10 * 60_000L
         val IO = Executors.newSingleThreadExecutor()
+
+        /** When each read granted in the last hour was granted, oldest first. */
+        val granted = ArrayDeque<Long>()
+
+        /** Grants up to [wanted] reads from the rolling hourly budget. */
+        @Synchronized fun reserveReads(wanted: Int, now: Long = System.currentTimeMillis()): Int {
+            while (granted.isNotEmpty() && now - granted.first() >= HOUR_MS) granted.removeFirst()
+            val n = minOf(wanted, HOURLY_READS - granted.size).coerceAtLeast(0)
+            repeat(n) { granted.addLast(now) }
+            return n
+        }
 
         /** Answers from GitHub this process already has: issue -> (state, when). */
         val answers = HashMap<Int, Pair<RequestStatus.State, Long>>()
