@@ -14892,7 +14892,7 @@
     {
       "name": "Xuper TV",
       "drawable": "xuper_tv",
-      "color": "#7C74FF",
+      "color": "#FF4D4D",
       "glyph": "xuper_tv_wm",
       "components": [
         "com.android.mgstxNF/com.interactive.brasiliptv.ui.activity.WelcomeActivity"

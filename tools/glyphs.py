@@ -9410,23 +9410,25 @@ GLYPHS.update({"uyaniktv_loop": uyaniktv_loop})
 # Wordmarks redraw each logotype's cue in the pack's stroke letters; the drawn
 # marks take each app's subject in Core stroke geometry. No vendor art traced.
 def euroleague_ball(c):
-    """EuroLeague TV: a basketball beside 'TV' in the pack's stroke letters -
-    the pairing on the app's own launcher icon, redrawn. The seams sit inside
-    a smaller ball than nba_ball's, which carries no lettering."""
-    return (f'<circle cx="164" cy="256" r="108" {_s(c, 28)}/>'
-            f'<path d="M 164 148 L 164 364 M 56 256 L 272 256" {_s(c, 26)}/>'
-            f'<path d="M 96 172 Q 136 256 96 340 M 232 172 Q 192 256 232 340" {_s(c, 26)}/>'
-            + stroke_lockup("TV", c, cap_h=148, max_w=156, cx=384))
+    """EuroLeague TV: a basketball over 'TV' in the pack's stroke letters -
+    the pairing on the app's own launcher icon, redrawn and stacked. Side by
+    side it was a full-width band (0.84 x 0.47), the shape the uniformity
+    gate reserves for containers; stacked it stays inside the safe area.
+    The lettering keeps it apart from nba_ball's bare, larger ball."""
+    return (f'<circle cx="256" cy="176" r="100" {_s(c, 28)}/>'
+            f'<path d="M 256 76 L 256 276 M 156 176 L 356 176" {_s(c, 26)}/>'
+            f'<path d="M 192 96 Q 232 176 192 256 M 320 96 Q 280 176 320 256" {_s(c, 26)}/>'
+            + stroke_lockup("TV", c, cap_h=112, max_w=200, cy=376))
 
 
 def airplaytouch_cursor(c):
     """AirPlay Touch: a screen whose lower-right corner gives way to a cursor
     arrow - casting a screen you steer by touch. The open corner keeps it
     apart from airplay_screen (closed screen, cast triangle) and cursor_mark."""
-    return (f'<path d="M 268 352 L 116 352 Q 80 352 80 316 L 80 132 Q 80 96 116 96 '
-            f'L 396 96 Q 432 96 432 132 L 432 236" {_s(c, 32)}/>'
-            f'<path d="M 300 248 L 300 448 L 346 404 L 380 472 L 412 458 L 378 390 '
-            f'L 440 390 Z" {_s(c, 26)}/>')
+    return (f'<path d="M 260 328 L 112 328 Q 76 328 76 292 L 76 116 Q 76 80 112 80 '
+            f'L 400 80 Q 436 80 436 116 L 436 220" {_s(c, 32)}/>'
+            f'<path d="M 292 236 L 292 406 L 331 369 L 360 426 L 387 415 L 358 357 '
+            f'L 411 357 Z" {_s(c, 26)}/>')
 
 
 def ampchor_power(c):
@@ -9458,7 +9460,9 @@ _WM5 = {
     "scorebox": ("SB", "under"),      # #347/#350: the 'SB' monogram over its rule
     "la7": ("LA7", None),             # #365: the channel's 'LA7' lockup
     "cinobo": ("CINO/BO", None),      # #357: the capitals logotype, on two lines to hold the type band
-    "xuper_tv": ("X", "play"),        # #361: no logo source found; the name's initial with play
+    "xuper_tv": ("XTV", "frame"),     # #361: no logo source found; the name's initial and TV,
+                                      # framed: bare 'XTV' is X TV's mark (x_tv), and a rule
+                                      # below pulled the ink 46px off centre
 }
 GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM5.items()})
 GLYPHS.update({"euroleague_ball": euroleague_ball, "airplaytouch_cursor": airplaytouch_cursor,
