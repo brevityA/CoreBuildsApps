@@ -21,6 +21,8 @@ This writes the flavor's own launcher and banner into `app/src/glyphs/res/`:
   mipmap ic_launcher            legacy PNG, 160 and 240 px
   mipmap ic_launcher_foreground adaptive foreground, 216 and 324 px
   mipmap ic_launcher_background adaptive background, 216 and 324 px
+  mipmap ic_launcher_monochrome adaptive themed-icon layer (Android 13+), the
+                                mark in plain white, 216 and 324 px
   drawable cb_banner            320x180 Leanback banner, 640x360 PNG
 
 The mark is the pack's own 2x2 tile, but the four marks are different: a ring,
@@ -29,7 +31,7 @@ a square, a play triangle and a hexagon, all in Core monoline geometry (32 /
 (`#A366FF`, a palette slot in docs/BRAND-GUIDE.md), so the two apps differ at
 a glance on any row. The adaptive xml is not written here: the flavor reuses
 the `mipmap-anydpi-v26` wiring generated for the pack, which already names
-these three resources.
+these resources.
 
 The mark passes the same `core_monoline_errors` contract as every catalog
 icon before anything is written, and the legacy PNG gets the same raster
@@ -42,7 +44,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from build_branding import ADAPTIVE_XML, png, svg  # noqa: E402  (shared renderer)
+from build_branding import ADAPTIVE_XML, MONO_INK, png, svg  # noqa: E402  (shared renderer)
 from icon_style import core_monoline_errors  # noqa: E402
 from presence import apply_presence_file  # noqa: E402
 from typeface import measure as type_measure, wordmark_spans, FONTS  # noqa: E402
@@ -131,11 +133,15 @@ def write_launcher(res: Path, label: str, written: list[str]) -> None:
     fg = svg(512, 512, f'<g transform="translate({_off:.1f},{_off:.1f}) '
                        f'scale({_S:.4f})">{MARK}</g>')
     bg = svg(512, 512, f'<rect width="512" height="512" fill="{NIGHT}"/>')
+    mono = svg(512, 512, f'<g transform="translate({_off:.1f},{_off:.1f}) '
+                         f'scale({_S:.4f})">{glyph_mark(MONO_INK)}</g>')
     for folder, size in [("mipmap-xhdpi", 216), ("mipmap-xxhdpi", 324)]:
         png(fg, res / folder / "ic_launcher_foreground.png", size, size)
         written.append(f"{label}{folder}/ic_launcher_foreground.png ({size}px)")
         png(bg, res / folder / "ic_launcher_background.png", size, size)
         written.append(f"{label}{folder}/ic_launcher_background.png ({size}px)")
+        png(mono, res / folder / "ic_launcher_monochrome.png", size, size)
+        written.append(f"{label}{folder}/ic_launcher_monochrome.png ({size}px)")
 
 
 def main() -> None:
@@ -155,7 +161,7 @@ def main() -> None:
     for name in ("ic_launcher.xml", "ic_launcher_round.xml"):
         p = COMPANION_RES / "mipmap-anydpi-v26" / name
         p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(ADAPTIVE_XML)
+        p.write_text(ADAPTIVE_XML, encoding="utf-8")
         written.append(f"glyphs: mipmap-anydpi-v26/{name}")
     png(banner_svg(COMPANION_SUBTITLE),
         COMPANION_RES / "drawable-nodpi" / "cb_banner.png", 640, 360)
