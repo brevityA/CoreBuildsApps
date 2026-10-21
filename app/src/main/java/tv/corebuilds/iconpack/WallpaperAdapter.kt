@@ -54,11 +54,13 @@ class WallpaperAdapter(
             if (holder.image.tag == item.thumbAsset) holder.image.setImageBitmap(bmp)
         }
         holder.label.text = item.title
-        holder.badge.visibility = if (item.isLive) View.VISIBLE else View.GONE
-        holder.itemView.contentDescription = if (item.isLive) {
-            item.title + holder.itemView.context.getString(R.string.wp_live_spoken)
-        } else {
-            item.title
+        // One corner badge: LIVE for a loop, PLUS for a Core Builds Plus wall.
+        holder.badge.visibility = if (item.isLive || item.plus) View.VISIBLE else View.GONE
+        holder.badge.setText(if (item.plus) R.string.wp_plus_badge else R.string.wp_live_badge)
+        holder.itemView.contentDescription = when {
+            item.isLive -> item.title + holder.itemView.context.getString(R.string.wp_live_spoken)
+            item.plus -> item.title + holder.itemView.context.getString(R.string.wp_plus_spoken)
+            else -> item.title
         }
         holder.itemView.isFocusable = true
         holder.itemView.isFocusableInTouchMode = true

@@ -10,6 +10,7 @@ checked by the repo, so nothing on this page is guessed:
 | Data safety and content-rating answers | `docs/play/listing.json` → `data_safety`, `content_rating` |
 | Privacy policy | `docs/privacy.html`, served over GitHub Pages |
 | Package name | `tv.corebuilds.iconpack.play` (the Play build type) |
+| Core Builds Plus product ID | `core_builds_plus` (`PlusStore.PRODUCT_ID`, and the broker's `PLUS_PRODUCT_ID`) |
 
 `tests/test_play_listing.py` keeps the copy's numbers equal to what the build
 ships; `tests/test_privacy_policy.py` keeps the policy's claims equal to the
@@ -59,9 +60,9 @@ though there is nothing to declare.
 | **Privacy policy** | `https://brevityA.github.io/CoreBuildsApps/privacy.html` (see §6) |
 | **App access** | No restrictions — the app needs no login, and reviewers need no credentials |
 | **Ads** | **No ads** |
-| **Content rating** | IARC questionnaire: category *Utility / Productivity*, then "No" to violence, sexuality, language, controlled substances, gambling, user-generated content, location sharing, purchases and ads. Expect **Everyone / PEGI 3**. Answers come from `listing.json → content_rating` |
+| **Content rating** | IARC questionnaire: category *Utility / Productivity*, then "No" to violence, sexuality, language, controlled substances, gambling, user-generated content, location sharing and ads. **Purchases**: copy `listing.json → content_rating.purchases` — "no" until Core Builds Plus is on sale (§8), "yes" from then on. Expect **Everyone / PEGI 3**. Answers come from `listing.json → content_rating` |
 | **Target audience** | 13+ / adults. Do **not** select an audience including children: it drags in the Families policy for no benefit to a wallpaper pack |
-| **Data safety** | Collects no data, shares no data, no ads, encrypted in transit. `listing.json → data_safety` carries the rationale and the one user-triggered request payload |
+| **Data safety** | Copy `listing.json → data_safety`. Without the request broker: collects no data, shares no data, no ads, encrypted in transit. With it (§8): collects three optional types listed under `collected`, shares none. It carries the rationale and the one user-triggered request payload |
 | **Government apps** | Not a government app |
 | **Financial features** | No financial features |
 | **Health apps** | No health features |
@@ -74,10 +75,12 @@ Two of these deserve care rather than speed:
   penalty of removal, and `tests/test_play_listing.py` reads the payload field
   names straight out of `IconRequestSender.kt` so the form cannot drift from
   the code.
-- **Content rating says "no purchases"** because nothing is gated yet. When the
-  premium unlock (PR #360) ships, that answer changes to yes and the listing
-  copy has to say what the purchase buys. `test_play_listing.py` fails on prem
-  claims in the copy before that change lands, on purpose.
+- **Content rating says "no purchases"** while nothing is for sale. Core Builds
+  Plus goes on sale in the same build that bakes the request broker in (§8), and
+  `tools/build_play_listing.py` moves three things with that one switch: the
+  purchases answer, the Data safety answers, and a CORE BUILDS PLUS paragraph
+  in the full description. `--check` fails if the broker is baked in and the
+  listing was not regenerated, so the form cannot keep last release's answers.
 
 ## 3. Store listing
 
@@ -95,7 +98,7 @@ Play Console → **Grow → Store presence → Main store listing**.
   six committed files are 1920×1080, named by the frame they depict)
 
 Phone and tablet screenshots are deliberately empty: the app is listed for TV
-only, and there is no tested phone UI to photograph. See §5.
+only, and there is no tested phone UI to photograph. See §4.
 
 ## 4. Store settings
 
@@ -107,15 +110,30 @@ Play Console → **Store settings**.
 - **Website**: optional; `https://github.com/brevityA/CoreBuildsApps` works
 - **Form factors**: **TV only**, matching `listing.json → form_factors`.
   Listing for phones without phone screenshots is a review rejection, and the
-  app's layouts have not been tested on a phone.
+  app's layouts have not been tested on a phone. Console alone cannot make a
+  phone-compatible bundle TV-only: the Play manifests require
+  `android.software.leanback`, so Play never offers this build to a phone.
+  Add the form factor under *Test and release → Advanced settings → Form
+  factors → Android TV*; TV releases get an extra quality review.
 
 ## 5. Build the bundle
 
 The bundle is built by **Actions → "Build Google Play bundles"**
 (`.github/workflows/play.yml`). It runs from `main` only.
 
+The bundle is signed with its own **upload key**, never the sideload release
+key. Play App Signing re-signs what users install, so a lost or leaked upload
+key can be reset through Play support. Make one once:
+
+```bash
+keytool -genkeypair -v -keystore play-upload.jks -alias play-upload \
+  -keyalg RSA -keysize 4096 -validity 10000
+base64 -w0 play-upload.jks > play-upload.jks.b64
+```
+
 Before the first run, add four repository secrets (Settings → Secrets and
-variables → Actions):
+variables → Actions), then delete the `.b64` file and keep the `.jks` and its
+passwords in a password manager:
 
 | Secret | What it is |
 |---|---|
@@ -158,6 +176,58 @@ Pages there instead.
 
 Release notes are per track and per language (500 characters): keep them plain
 and factual — what changed, and anything a user must do.
+
+## 8. Core Builds Plus
+
+Plus is one managed product, bought once: priority icon requests, *My
+requests*, live loop rotation and Spectra (12 walls). Every icon, the main
+wallpaper collection and every screen ship to everyone. It is on sale only in
+a build with the request broker baked in, because priority requests are what
+it adds; until then the Play build sells nothing and the steps below wait.
+
+1. **Payments profile.** *Setup → Payments profile*: bank and tax details.
+   Products cannot be created without it. Google keeps about 15% of the first
+   $1M a year (in the US, EEA and UK a 10% service fee plus a 5% billing fee
+   since 2026-06-30), so a $2.99 sale leaves about $2.54 before tax. The rate
+   card in Console is the authority.
+2. **Upload a bundle first.** Console offers in-app products only once a
+   bundle carrying `com.android.vending.BILLING` is on a track (Billing 8.0.0
+   adds it to the Play build): internal testing is enough.
+3. **Create the product.** *Monetize with Play → Products → One-time
+   products → Create*. Product ID `core_builds_plus` — it must match the
+   code, and an ID can never be reused. Name `Core Builds Plus`. One purchase
+   option, **Buy**, $2.99 USD, local prices filled in by Play, no offers (the
+   app shows the default option's price). Activate.
+4. **License testing.** *Settings → License testing*: add the Google
+   accounts that test purchases. They pay with test cards, are never
+   charged, and can exercise the success, declined and pending paths.
+5. **Deploy the broker with the Plus check.** `tools/icon_request_broker/README.md`
+   covers both halves: the filing sink, then the service account that may
+   call the Play Developer API, stored as the Core-Builds secret
+   `ICONREQ_GOOGLE_SERVICE_ACCOUNT_JSON`. Core-Builds' *Deploy icon-request
+   broker* workflow then smokes it with `--require-plus`, and `/healthz`
+   reports `"plus": true`.
+6. **Bake the endpoint in** (repo):
+   `python tools/build_issue_prefills.py --endpoint=https://<broker URL>`,
+   set `BROKER_SHIPPED = True` in `tools/build_play_listing.py`, then run
+   `python tools/build_play_listing.py`, and commit all three. The latch keeps
+   Data safety and the purchases answer covering broker builds for as long as
+   any track still serves one, because Play keeps one form for every version
+   on every track; `--check` refuses a broker build without it. From that
+   build on, Settings has a CORE BUILDS PLUS group and the listing, Data
+   safety and content rating all say Plus.
+7. **Re-answer Console in the same release**: paste the new full
+   description, set Content rating → purchases to yes, and copy the
+   `collected` types into Data safety, from the regenerated `listing.json`.
+8. **Internal test before anyone pays.** On a TV, as a license tester: each
+   extra opens the Plus card before buying. Buy. Then a missing-icon press
+   files an issue labelled `priority`; *My requests* lists it; *Rotate live
+   loops* set to every hour moves the live wallpaper after an hour with two
+   or more loops downloaded; the Plus chip's Spectra walls open and download.
+
+None of this has run on a TV yet: no device has bought Plus. Step 8 is the
+first real proof of the purchase sheet, the acknowledge call and the broker's
+label.
 
 ## What this app will not do, and why that is deliberate
 

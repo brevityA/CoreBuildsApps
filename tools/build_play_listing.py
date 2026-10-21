@@ -124,6 +124,12 @@ def loop_count() -> int:
     return len(re.findall(r"\n            stillSeries = ", src))
 
 
+def plus_wall_count() -> int:
+    """Spectra, the Core Builds Plus collection, as bundled into the Play build."""
+    path = ROOT / "app/src/play/assets/manifest/plus-wallpapers.json"
+    return len(json.loads(path.read_text(encoding="utf-8"))["wallpapers"])
+
+
 def counts() -> dict:
     walls = catalog()
     return {
@@ -131,7 +137,39 @@ def counts() -> dict:
         "walls": len(walls),
         "series": len({w["series"] for w in walls}),
         "loops": loop_count(),
+        "plus_walls": plus_wall_count(),
     }
+
+
+def broker_enabled() -> bool:
+    """Whether this tree bakes in the icon-request broker's URL.
+
+    It is the one switch behind three store answers. With it set, a missing-
+    icon press POSTs to the broker, which files a public issue (Data safety:
+    collected); and Plus.shown goes true on Play, so Core Builds Plus is on
+    sale (content rating: purchases; copy: what it buys). Without it, the
+    press opens a prefilled GitHub form and the app itself sends nothing.
+    Reading it here means baking the URL in fails --check until the listing
+    and its answers are regenerated, instead of shipping last release's form.
+    """
+    xml = (RES / "values/issue_prefill.xml").read_text(encoding="utf-8")
+    found = re.search(r'<string name="audit_request_endpoint">([^<]*)</string>', xml)
+    return bool(found and found.group(1).strip())
+
+
+# One-way latch for the store answers. Play keeps one Data safety form and one
+# content rating per app, and they must cover every version still on a track,
+# staged rollouts included. So once a broker build has shipped, "collected" and
+# "purchases: yes" outlive the broker until no track serves such a build. Set
+# this True in the change that bakes the broker URL in (--check refuses a
+# broker-enabled tree without it), and set it back only once every track has
+# moved past the last broker build.
+BROKER_SHIPPED = False
+
+
+def answers_cover_broker() -> bool:
+    """Whether Data safety and the rating must describe a broker build."""
+    return broker_enabled() or BROKER_SHIPPED
 
 
 def digest(path: Path) -> str:
@@ -193,12 +231,46 @@ COPY = {
     ),
 }
 
+# Added to the full description only while Plus is on sale (broker_enabled),
+# just above PRIVACY. It says what the purchase buys and, in the same breath,
+# that nothing the free listing promises is behind it.
+PLUS_COPY = (
+    "CORE BUILDS PLUS\n"
+    "Optional, one purchase through Google Play, no subscription: your icon "
+    "requests are filed as priority, My requests shows how far each one has "
+    "got, the live wallpaper can rotate through your loops, and Spectra adds "
+    "{plus_walls} more wallpapers. Every icon, all {walls} stills, every loop "
+    "and every screen ship to everyone either way.\n"
+    "\n"
+)
+PLUS_PRIVACY = (
+    " With Plus, a request also carries the Google Play purchase token, which "
+    "is checked with Google and never stored."
+)
+
+
+def copy(n: dict | None = None, plus: bool | None = None) -> dict:
+    """The listing text for this tree: COPY, plus PLUS_COPY while it is sold."""
+    n = counts() if n is None else n
+    plus = broker_enabled() if plus is None else plus
+    text = dict(COPY)
+    if plus:
+        full = text["full_description"]
+        head, tail = full.split("PRIVACY\n", 1)
+        text["full_description"] = head + PLUS_COPY + "PRIVACY\n" + tail + PLUS_PRIVACY
+    return {k: v.format(**n) for k, v in text.items()}
+
 # The shapes the app can honestly be listed under. Phones need phone
 # screenshots (see the docstring) and a tested phone pass; neither exists.
 FORM_FACTORS = ["tv"]
 
 # Play's Data safety answers, with the evidence beside them. The test keeps the
 # payload list equal to what IconRequestSender.kt actually sends.
+#
+# These are the answers for a tree WITHOUT the broker (broker_enabled false):
+# a missing-icon press then opens a prefilled GitHub form that the user submits
+# from their own browser, so the app transmits nothing. data_safety() moves
+# them when the broker is baked in.
 DATA_SAFETY = {
     "collects_user_data": False,
     "shares_user_data": False,
@@ -221,6 +293,63 @@ DATA_SAFETY = {
     },
 }
 
+# With the broker baked in, the app itself transmits the request, and the broker
+# files it as a public issue: stored off the device, so not ephemeral, and Play's
+# form has no exemption from "collected" for a user-initiated send (that
+# exemption is for "shared"). Each type is optional: nothing is sent unless the
+# user presses an app, and the token only for a Plus owner.
+BROKER_COLLECTED = [
+    {
+        "type": "App activity > Installed apps",
+        "optional": True,
+        "shared": False,
+        "purposes": ["App functionality"],
+        "what": "the one app the user presses under Missing icons (name and "
+                "component) and the launcher in use, filed as a public GitHub "
+                "issue",
+    },
+    {
+        "type": "Financial info > Purchase history",
+        "optional": True,
+        "shared": False,
+        "purposes": ["App functionality"],
+        "what": "Plus owners only: the Google Play purchase token, checked with "
+                "Google and never stored; a SHA-256 of it is cached for at most "
+                "six hours",
+    },
+]
+
+
+def data_safety(plus: bool | None = None) -> dict:
+    plus = answers_cover_broker() if plus is None else plus
+    if not plus:
+        return DATA_SAFETY
+    answers = json.loads(json.dumps(DATA_SAFETY))
+    answers["collects_user_data"] = True
+    answers["collected"] = BROKER_COLLECTED
+    answers["deletion_request_url"] = "https://github.com/brevityA/CoreBuildsApps/issues"
+    answers["rationale"] = (
+        "No analytics, advertising or crash SDKs are linked; the app has no "
+        "account, no identifier and no background upload. A missing-icon press "
+        "posts the app name, the component and a device note to the request "
+        "broker, which files them as a public GitHub issue; a Plus owner's "
+        "press also carries the purchase token, which the broker checks with "
+        "Google and never stores. Nothing is shared with a third party, and "
+        "the policy states each field verbatim."
+    )
+    answers["user_initiated_icon_request"]["fields"] = [
+        "app_name", "component", "device", "plus_token"]
+    # The rest of the device note matches no type on Play's list: the list
+    # covers identifiers, and a TV model or an Android version identifies no
+    # user and no device, much like a browser's User-Agent. It is declared in
+    # the privacy policy instead of filed under a type it does not fit.
+    answers["not_a_listed_type"] = (
+        "TV model, Android version and pack version, from the device note; "
+        "stated in docs/privacy.html"
+    )
+    return answers
+
+
 # IARC content-rating questionnaire answers that matter for this app.
 CONTENT_RATING = {
     "violence": False,
@@ -235,11 +364,17 @@ CONTENT_RATING = {
     "expected_rating": "Everyone / PEGI 3",
     "note": (
         "A wallpaper and icon pack. Nothing here is user-generated, shared "
-        "or interactive with strangers. When the premium unlock ships in its "
-        "own change, 'purchases' becomes true and this answer has to move "
-        "with it."
+        "or interactive with strangers. 'purchases' follows the broker: Core "
+        "Builds Plus is on sale exactly when the broker is baked in, and the "
+        "answer stays yes while a track still serves such a build "
+        "(BROKER_SHIPPED)."
     ),
 }
+
+
+def content_rating(plus: bool | None = None) -> dict:
+    plus = answers_cover_broker() if plus is None else plus
+    return {**CONTENT_RATING, "purchases": plus}
 
 
 # ---------------------------------------------------------------------------
@@ -341,7 +476,7 @@ def render_screenshots() -> list[Path]:
 def render_all() -> dict:
     PLAY.mkdir(parents=True, exist_ok=True)
     n = counts()
-    copy = {k: v.format(**n) for k, v in COPY.items()}
+    text = copy(n)
 
     icon = render_icon()
     feature = render_feature_graphic(n)
@@ -353,7 +488,7 @@ def render_all() -> dict:
         "form_factors": FORM_FACTORS,
         "sideload_package": "tv.corebuilds.iconpack",
         "counts": n,
-        "copy": copy,
+        "copy": text,
         "assets": {
             "icon": {"file": icon.name, "width": ICON_PX, "height": ICON_PX,
                      "mode": "RGBA", "max_bytes": ICON_MAX_BYTES},
@@ -368,8 +503,8 @@ def render_all() -> dict:
                 for i, p in enumerate(shots)
             ],
         },
-        "data_safety": DATA_SAFETY,
-        "content_rating": CONTENT_RATING,
+        "data_safety": data_safety(),
+        "content_rating": content_rating(),
         "sources": {
             "generator": digest(Path(__file__)),
             "branding": digest(Path(branding.__file__)),
@@ -403,11 +538,21 @@ def check() -> int:
     n = counts()
     if spec.get("counts") != n:
         problems.append(f"counts moved: listing says {spec.get('counts')}, tree says {n}")
-    expected_copy = {k: v.format(**n) for k, v in COPY.items()}
+    expected_copy = copy(n)
     if spec.get("copy") != expected_copy:
         for key in expected_copy:
             if spec.get("copy", {}).get(key) != expected_copy[key]:
                 problems.append(f"copy.{key} is stale")
+    # The store answers follow the build too: baking the broker in without
+    # regenerating would leave Console holding "collects nothing, no purchases".
+    if spec.get("data_safety") != data_safety():
+        problems.append("data_safety does not match this build (broker_enabled moved?)")
+    if spec.get("content_rating") != content_rating():
+        problems.append("content_rating does not match this build (broker_enabled moved?)")
+    if broker_enabled() and not BROKER_SHIPPED:
+        problems.append("the broker URL is baked in but BROKER_SHIPPED is False: set it "
+                        "in this change, so the store answers keep covering broker "
+                        "builds while any track serves one")
 
     sources = spec.get("sources", {})
     fresh = {

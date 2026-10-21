@@ -7,9 +7,10 @@ plugins {
 android {
     namespace = "tv.corebuilds.iconpack"
     // compileSdk 36 with targetSdk 36: Play rejects a new app that targets
-    // anything below API 36 unless it is a TV-only listing. This pack lists
-    // for phones as well (LAUNCHER next to LEANBACK_LAUNCHER), so the phone
-    // floor is the one that binds. minSdk stays 21 for Fire TV.
+    // anything below API 36 unless it is TV-only. The Play listing is TV-only
+    // (src/play's manifest requires leanback), which would allow 34, but 36
+    // meets both floors and keeps a later phone listing free of a target
+    // change. minSdk stays 21 for Fire TV.
     compileSdk = 36
 
     defaultConfig {
@@ -204,6 +205,17 @@ android {
         resValues = true
     }
 
+    // Core Builds Plus, the Play build's one-time unlock: src/play/java holds
+    // PlusStore over Google Play Billing, and every other build type compiles
+    // the no-op twin in src/github/java, so the sideload APKs carry no Google
+    // library and nothing to buy. kotlin, not java: under AGP 9's built-in
+    // Kotlin a directory added to java.srcDir is not compiled as Kotlin.
+    sourceSets {
+        getByName("debug").kotlin.srcDir("src/github/java")
+        getByName("release").kotlin.srcDir("src/github/java")
+        getByName("candidate").kotlin.srcDir("src/github/java")
+    }
+
     androidResources {
         // Already-compressed formats; don't re-crunch.
         noCompress += listOf("png", "webp")
@@ -235,4 +247,8 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+    // Play only. 8.0.0 is the last release that declares minSdk 21: 8.1.0
+    // through 9.x declare 23, and Fire TV needs 21. Play accepts 8.x until
+    // 2027-08-31.
+    "playImplementation"("com.android.billingclient:billing:8.0.0")
 }

@@ -12,6 +12,7 @@ upload key and FileProvider authority, so neither can update the other.
 
 Run: `python3 tests/test_play_build.py`
 """
+import json
 import re
 import unittest
 import xml.etree.ElementTree as ET
@@ -51,6 +52,34 @@ class PlayBuild(unittest.TestCase):
         self.assertIn("android.permission.REQUEST_INSTALL_PACKAGES",
                       read(APP / "src/main/AndroidManifest.xml"))
 
+    def test_play_apps_are_tv_only(self):
+        # The listing is TV only (docs/play/listing.json form_factors, and
+        # PLAY-CONSOLE.md says to pick it): there are no phone screenshots and
+        # no phone UI has been tested. Console cannot make a phone-compatible
+        # bundle TV-only; only the manifest can. With leanback optional, Play
+        # would offer the app to phones and want phone screenshots.
+        for module in ("app", "glyphs"):
+            root = ET.parse(ROOT / module / "src/play/AndroidManifest.xml").getroot()
+            leanback = [f for f in root.iter("uses-feature")
+                        if f.get(f"{ANDROID}name") == "android.software.leanback"]
+            self.assertEqual(len(leanback), 1, module)
+            self.assertEqual(leanback[0].get(f"{ANDROID}required"), "true", module)
+            # The overlay may only silence lint's per-file view of src/main's
+            # TV entry and touchscreen flag, which must therefore be there.
+            main = ET.parse(ROOT / module / "src/main/AndroidManifest.xml").getroot()
+            self.assertTrue(any(f.get(f"{ANDROID}name") == "android.hardware.touchscreen" and
+                                f.get(f"{ANDROID}required") == "false"
+                                for f in main.iter("uses-feature")), module)
+            self.assertTrue(any(c.get(f"{ANDROID}name") == "android.intent.category.LEANBACK_LAUNCHER"
+                                for c in main.iter("category")), module)
+        listing = json.loads(read(ROOT / "docs/play/listing.json"))
+        self.assertEqual(listing["form_factors"], ["tv"])
+        # TV-only would allow 34; the build targets 36, which meets the phone
+        # floor too, so a later phone listing needs no target change.
+        gradle = read(APP / "build.gradle.kts")
+        self.assertEqual(int(re.search(r"targetSdk = (\d+)", gradle).group(1)), 36,
+                         "a new target API: re-read Play's target API rules, then this test")
+
     def test_play_build_never_checks_github_for_updates(self):
         main = read(KT / "MainActivity.kt")
         self.assertIn("if (!Distribution.PLAY && !updateChecked && Prefs.updateChecks(this))", main)
@@ -79,8 +108,43 @@ class PlayBuild(unittest.TestCase):
         play = read(APP / "src/play/res/values/strings.xml")
         names = set(re.findall(r'<string name="([^"]+)"', play))
         self.assertEqual(names, {"about_network_one", "about_network_two",
-                                 "about_update_label", "about_update_sub"})
+                                 "about_update_label", "about_update_sub",
+                                 "support_label", "support_kicker", "support_title",
+                                 "support_body", "support_mode", "support_footer"})
         self.assertIn("Google Play", play)
+        # The Plus token is part of what the Play build sends, so it is on the
+        # list: About's item 4, shown wherever Plus is.
+        tracker = re.search(r'<string name="about_network_tracker">([^<]*)</string>',
+                            read(APP / "src/main/res/values/strings.xml")).group(1)
+        self.assertRegex(tracker, r"^4\.")
+        self.assertIn("purchase token", tracker)
+        self.assertIn("My requests", tracker)
+        # Every override is an override: a Play-only name would be missing on GitHub builds.
+        main = set(re.findall(r'<string name="([^"]+)"', read(APP / "src/main/res/values/strings.xml")))
+        self.assertLessEqual(names, main)
+
+    def test_about_lists_plus_traffic_only_where_plus_is(self):
+        # Item 3 (the request) is always listed, as main has it; item 4 is the
+        # token and My requests' reads, which exist only where Plus is.
+        about = read(KT / "AboutActivity.kt")
+        self.assertIn("if (Plus.shown(this)) {\n            findViewById<View>(R.id.about_network_tracker)", about)
+        layout = read(APP / "src/main/res/layout/activity_about.xml")
+        line = layout.split('android:id="@+id/about_network_tracker"', 1)[1].split("/>", 1)[0]
+        self.assertIn('android:visibility="gone"', line)
+        self.assertLess(layout.index("@string/about_network_three"),
+                        layout.index("@string/about_network_tracker"))
+
+    def test_plus_door_is_its_own_row_not_a_support_door(self):
+        # The tip doors stay shut on Play (test above). Plus has one door of its
+        # own, in Settings' Plus group, which only exists where Plus is sold;
+        # on Play, SupportActivity is the Plus card and shows no tip code.
+        settings = read(KT / "SettingsActivity.kt")
+        group = settings.split("if (Plus.shown(this)) {", 1)[1].split("\n        }\n", 1)[0]
+        self.assertIn("row(R.id.set_plus_row) {\n                startActivity(Intent(this, SupportActivity::class.java))", group)
+        self.assertNotIn("set_plus_row", settings.split("if (Plus.shown(this)) {", 1)[0])
+        layout = read(APP / "src/main/res/layout/activity_settings.xml")
+        plus_group = layout.split('android:id="@+id/set_plus_group"', 1)[1]
+        self.assertIn('android:id="@+id/set_plus_row"', plus_group)
 
     def test_play_build_has_no_route_to_a_tip(self):
         # Play's Payments policy: an app on Play may not lead users to a
@@ -219,7 +283,10 @@ class SeparateApps(unittest.TestCase):
         # has a LEANBACK_LAUNCHER entry. Since 2.4.4 the companion's own home
         # screen (.GlyphsHomeActivity) is that entry in every build, so the
         # Play build adds none: a second would put two tiles on the TV row.
-        self.assertFalse((ROOT / "glyphs/src/play/AndroidManifest.xml").exists())
+        # (Its Play manifest only makes leanback required.)
+        play = ET.parse(ROOT / "glyphs/src/play/AndroidManifest.xml").getroot()
+        self.assertEqual(list(play.iter("activity")), [])
+        self.assertEqual(list(play.iter("activity-alias")), [])
         root = ET.parse(ROOT / "glyphs/src/main/AndroidManifest.xml").getroot()
         tv_entries = [a.get(f"{ANDROID}name") for a in root.iter("activity")
                       for f in a.findall("intent-filter")
@@ -240,6 +307,145 @@ class SeparateApps(unittest.TestCase):
         build = read(ROOT / ".github/workflows/build.yml")
         self.assertNotIn("bundlePlay", build)
         self.assertNotIn("PLAY_KEYSTORE", build)
+
+
+class Plus(unittest.TestCase):
+    """Core Builds Plus: Play Billing on the Play build, nothing on GitHub builds."""
+
+    GITHUB = APP / "src/github/java/tv/corebuilds/iconpack/PlusStore.kt"
+    PLAY = APP / "src/play/java/tv/corebuilds/iconpack/PlusStore.kt"
+
+    def test_each_build_has_one_plus_store(self):
+        self.assertIn("const val AVAILABLE = false", read(self.GITHUB))
+        self.assertIn("const val AVAILABLE = true", read(self.PLAY))
+        self.assertFalse((KT / "PlusStore.kt").exists(), "PlusStore is per build type, never in main")
+        gradle = read(APP / "build.gradle.kts")
+        for build_type in ("debug", "release", "candidate"):
+            self.assertIn(f'getByName("{build_type}").kotlin.srcDir("src/github/java")', gradle)
+
+    def test_billing_ships_in_the_play_build_only(self):
+        gradle = read(APP / "build.gradle.kts")
+        lines = [ln.strip() for ln in gradle.splitlines() if "billingclient" in ln]
+        self.assertEqual(len(lines), 1, lines)
+        self.assertTrue(lines[0].startswith('"playImplementation"('), lines[0])
+        self.assertNotIn("billingclient", read(self.GITHUB))
+        # Support on a GitHub build says opening it sends nothing; its store must not either.
+        for token in ("java.net", "HttpURLConnection", "openConnection", "Uri.parse"):
+            self.assertNotIn(token, read(self.GITHUB))
+
+    def test_plus_is_sold_only_with_a_broker_to_honour_it(self):
+        support = read(KT / "SupportActivity.kt")
+        blank = support.index("getString(R.string.audit_request_endpoint).isBlank()")
+        self.assertLess(blank, support.index("PlusStore.session("))
+        self.assertIn("render(null)", support)
+
+    def test_a_button_that_stops_being_a_control_hands_focus_to_back_first(self):
+        render = read(KT / "SupportActivity.kt").split("private fun render(", 1)[1]
+        handoff = render.index("findViewById<View>(R.id.support_back).requestFocus()")
+        self.assertLess(handoff, render.index("button.isFocusable = buyable"))
+
+    def test_the_token_rides_with_requests_and_nowhere_else(self):
+        sender = read(KT / "IconRequestSender.kt")
+        self.assertIn('if (plusToken != null) put("plus_token", plusToken)', sender)
+        self.assertIn("PlusStore.purchaseToken(this)", read(KT / "AuditorActivity.kt"))
+        users = sorted(p.name for p in KT.glob("*.kt") if "purchaseToken(" in read(p))
+        self.assertEqual(users, ["AuditorActivity.kt", "Plus.kt"])
+        # Plus.kt only asks whether there is one; it never passes it on.
+        plus = read(KT / "Plus.kt")
+        self.assertEqual(re.findall(r"purchaseToken\([^)]*\)[^\n]*", plus),
+                         ["purchaseToken(context) != null"])
+
+    def test_purchases_are_acknowledged_and_refunds_clear_the_token(self):
+        play = read(self.PLAY)
+        self.assertIn("acknowledgePurchase", play)
+        self.assertIn("storeToken(activity, null)", play)
+        self.assertIn('PRODUCT_ID = "core_builds_plus"', play)
+        self.assertIn("enableOneTimeProducts()", play)
+
+
+class PlusExtras(unittest.TestCase):
+    """What Plus unlocks beyond priority, and that none of it reaches a GitHub build."""
+
+    def test_extras_appear_only_where_plus_is_sold(self):
+        plus = read(KT / "Plus.kt")
+        shown = plus.split("fun shown(", 1)[1].split("\n\n", 1)[0]
+        self.assertIn("PlusStore.AVAILABLE", shown)
+        self.assertIn("audit_request_endpoint", shown)
+        owned = plus.split("fun owned(", 1)[1].split("\n\n", 1)[0]
+        self.assertIn("PlusStore.AVAILABLE &&", owned)
+        settings = read(APP / "src/main/res/layout/activity_settings.xml")
+        group = settings.split('android:id="@+id/set_plus_group"', 1)[1].split(">", 1)[0]
+        self.assertIn('android:visibility="gone"', group)
+        self.assertIn("if (Plus.shown(this))", read(KT / "SettingsActivity.kt"))
+        self.assertIn("if (Plus.shown(this))", read(KT / "AboutActivity.kt"))
+        self.assertIn("if (Plus.shown(this)) WallpaperCatalog.loadPlus(this)",
+                      read(KT / "WallpapersActivity.kt"))
+
+    def test_locked_controls_open_the_plus_card(self):
+        unlocked = read(KT / "Plus.kt").split("fun unlocked(", 1)[1].split("\n    }\n", 1)[0]
+        self.assertIn("SupportActivity::class.java", unlocked)
+        settings = read(KT / "SettingsActivity.kt")
+        self.assertEqual(settings.count("if (Plus.unlocked(this))"), 2)
+        browser = read(KT / "WallpapersActivity.kt")
+        self.assertIn("if (item.plus && !Plus.unlocked(this)) return@WallpaperAdapter", browser)
+        # The preview pages through its list: locked walls never go in it.
+        self.assertIn("adapter.currentItems().filter { !it.plus || owned }", browser)
+        self.assertIn("picked.filter { !it.plus || owned }", browser)
+        self.assertNotIn("startExport(adapter.selectedItems())", browser)
+        # And My requests refuses to open without Plus, whatever started it.
+        requests = read(KT / "RequestsActivity.kt")
+        self.assertLess(requests.index("if (!Plus.owned(this))"), requests.index("setContentView"))
+
+    def test_rotation_runs_in_the_wallpaper_engine_and_needs_plus(self):
+        engine = read(KT / "LiveWallpaperService.kt")
+        self.assertIn("if (shown) LoopRotation.advanceIfDue(applicationContext)", engine)
+        rotation = read(KT / "LoopRotation.kt")
+        due = rotation.split("fun advanceIfDue(", 1)[1]
+        self.assertLess(due.index("Plus.owned(context)"), due.index("Prefs.setLiveLoopId"))
+        # It only ever plays what is already on the TV; the engine never downloads.
+        self.assertIn("LiveLoopDownloader.playable(context, it) != null", rotation)
+        self.assertNotIn("fetch(", rotation)
+        # A hand-picked loop restarts the interval.
+        prefs = read(KT / "Prefs.kt")
+        setter = prefs.split("fun setLiveLoopId(", 1)[1].split("\n    }\n", 1)[0]
+        self.assertIn("KEY_LIVE_LOOP_CHANGED_AT", setter)
+        # Every interval the row cycles through has its own label.
+        self.assertIn("val HOURS = intArrayOf(0, 1, 6, 24)", rotation)
+        labels = read(KT / "SettingsActivity.kt").split("private fun showPlusRows()", 1)[1]
+        for hours, name in ((1, "settings_rotate_hour"), (6, "settings_rotate_6h"),
+                            (24, "settings_rotate_day")):
+            self.assertIn(f"{hours} -> R.string.{name}", labels)
+
+    def test_my_requests_records_only_on_play_and_reads_github_by_number(self):
+        log = read(KT / "RequestLog.kt")
+        self.assertIn("if (!PlusStore.AVAILABLE || issue <= 0) return", log)
+        status = read(KT / "RequestStatus.kt")
+        self.assertIn('"https://api.github.com/repos/brevityA/CoreBuildsApps/issues/"', status)
+        self.assertIn('PRIORITY_LABEL = "priority"', status)
+        broker = read(ROOT / "tools/icon_request_broker/constants.mjs")
+        self.assertIn('PRIORITY_LABEL = "priority"', broker)
+        screen = read(KT / "RequestsActivity.kt")
+        # One hourly budget per process, not a per-visit cap: three visits
+        # with 30 open rows each used to send 90 reads past GitHub's 60.
+        self.assertIn("const val HOURLY_READS = 30", screen)
+        self.assertIn("const val HOUR_MS = 60 * 60_000L", screen)
+        self.assertIn("val granted = reserveReads(unchecked.size)", screen)
+        self.assertIn("unchecked.drop(granted)", screen)
+        self.assertNotIn("MAX_CHECKS", screen)
+        self.assertIn("R.string.requests_state_later", screen)
+        auditor = read(KT / "AuditorActivity.kt")
+        self.assertIn("RequestLog.record(this, issue, item.label, item.component, item.mapped)", auditor)
+        # About and the policy list the reads.
+        self.assertIn('android:id="@+id/about_network_tracker"',
+                      read(APP / "src/main/res/layout/activity_about.xml"))
+        policy = read(ROOT / "docs/privacy.html")
+        self.assertIn("My requests", policy)
+        self.assertIn("api.github.com", policy)
+
+    def test_plus_walls_ship_in_the_play_build_only(self):
+        self.assertTrue((APP / "src/play/assets/manifest/plus-wallpapers.json").exists())
+        self.assertFalse((APP / "src/main/assets/manifest/plus-wallpapers.json").exists())
+        self.assertFalse(list((APP / "src/main/assets").rglob("*spectra*")))
 
 
 if __name__ == "__main__":

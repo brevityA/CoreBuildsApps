@@ -25,6 +25,10 @@ from xml.etree import ElementTree as ET
 ROOT = Path(__file__).resolve().parent.parent
 WALLPAPERS = ROOT / "Wallpapers"
 MANIFEST = WALLPAPERS / "manifest.json"
+# Core Builds Plus walls: their own manifest, bundled by the Google Play build only.
+PLUS_MANIFEST = WALLPAPERS / "plus-manifest.json"
+PLUS_BUNDLED_MANIFEST = ROOT / "app/src/play/assets/manifest/plus-wallpapers.json"
+PLUS_BUNDLED_THUMBS = ROOT / "app/src/play/assets/plus_thumbs"
 BUNDLED_MANIFEST = ROOT / "app/src/main/assets/manifest/wallpapers.json"
 SERIES6 = "series-6-circuit-core"
 SERIES8 = "series-8-amoled"
@@ -139,7 +143,8 @@ class ManifestTests(unittest.TestCase):
     def test_no_orphaned_series_on_disk(self):
         on_disk = {d.name for d in (ROOT / "Wallpapers").iterdir()
                    if d.is_dir() and d.name.startswith("series-")}
-        in_manifest = {w["series"] for w in self.walls}
+        plus = {w["series"] for w in json.loads(_read(PLUS_MANIFEST))["wallpapers"]}
+        in_manifest = {w["series"] for w in self.walls} | plus
         self.assertEqual(on_disk - in_manifest, UNMANIFESTED,
                          "series directories the manifest does not index")
         self.assertEqual(in_manifest - on_disk, set(),
@@ -193,6 +198,50 @@ class ThumbnailTests(unittest.TestCase):
                 stale.append(fname)
         self.assertFalse(stale, "bundled thumbs differ from Wallpapers/thumbs "
                                 f"(run tools/sync_wallpaper_manifest.py): {stale}")
+
+
+class PlusCollectionTests(unittest.TestCase):
+    """Series 15 (Spectra), the Core Builds Plus walls: indexed apart from the
+    main collection and bundled only into the Google Play build."""
+
+    def setUp(self):
+        self.manifest = json.loads(_read(PLUS_MANIFEST))
+        self.walls = self.manifest["wallpapers"]
+
+    def test_twelve_walls_counted(self):
+        self.assertEqual(self.manifest["count"], len(self.walls))
+        self.assertEqual(len(self.walls), 12)
+        self.assertEqual({w["series"] for w in self.walls}, {"series-15-spectra"})
+
+    def test_numbers_do_not_collide_with_the_main_collection(self):
+        main = json.loads(_read(MANIFEST))["wallpapers"]
+        def number(w):
+            return int(w["name"].split()[0])
+        self.assertFalse({number(w) for w in main} & {number(w) for w in self.walls})
+        self.assertEqual(len({number(w) for w in self.walls}), len(self.walls))
+
+    def test_files_exist_at_their_declared_resolution(self):
+        from PIL import Image
+        for w in self.walls:
+            path = WALLPAPERS / w["series"] / w["url"].rsplit("/", 1)[-1]
+            with Image.open(path) as im:
+                self.assertEqual("x".join(map(str, im.size)), w["resolution"], path.name)
+            self.assertTrue((THUMBS / w["thumb"].rsplit("/", 1)[-1]).exists(), w["name"])
+
+    def test_bundled_only_into_the_play_build(self):
+        self.assertEqual(json.loads(_read(PLUS_BUNDLED_MANIFEST)), self.manifest)
+        want = {w["thumb"].rsplit("/", 1)[-1] for w in self.walls}
+        self.assertEqual({p.name for p in PLUS_BUNDLED_THUMBS.glob("*.jpg")}, want)
+        for name in want:
+            self.assertEqual((PLUS_BUNDLED_THUMBS / name).read_bytes(), (THUMBS / name).read_bytes())
+            # Not in the main assets every build ships.
+            self.assertFalse((BUNDLED_THUMBS / name).exists(), name)
+        self.assertFalse((ROOT / "app/src/main/assets/manifest/plus-wallpapers.json").exists())
+
+    def test_the_series_has_its_generator(self):
+        gen = _read(ROOT / "tools/build_plus_wallpapers.py")
+        for w in self.walls:
+            self.assertIn(w["url"].rsplit("/", 1)[-1].removesuffix(".png").split("-", 2)[2], gen)
 
 
 def _cache_keys():

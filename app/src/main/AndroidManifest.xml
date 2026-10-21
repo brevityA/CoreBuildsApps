@@ -271,11 +271,19 @@
             android:exported="false"
             android:label="@string/about_label"
             android:theme="@style/Theme.CoreBuilds" />
-        <!-- Opened from About. Draws two QR codes locally; sends nothing. -->
+        <!-- Opened from About. Draws two QR codes locally and sends nothing;
+             the Google Play build shows Core Builds Plus over Play Billing. -->
         <activity
             android:name=".SupportActivity"
             android:exported="false"
             android:label="@string/support_label"
+            android:theme="@style/Theme.CoreBuilds" />
+        <!-- My requests, a Core Builds Plus extra (Google Play build only);
+             opened from Settings. Reads issue states from GitHub's API. -->
+        <activity
+            android:name=".RequestsActivity"
+            android:exported="false"
+            android:label="@string/requests_label"
             android:theme="@style/Theme.CoreBuilds" />
         <!-- The walk through a launcher that has no inbound apply (Monet).
              Opened from the sheet's CTA and from Settings; not exported. -->

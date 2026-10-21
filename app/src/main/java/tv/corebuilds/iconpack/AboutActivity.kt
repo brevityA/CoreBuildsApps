@@ -58,6 +58,12 @@ class AboutActivity : TvActivity() {
         findViewById<TextView>(R.id.about_wallpapers).text =
             WallpaperCatalog.load(this).size.toString()
 
+        // The list is the whole list only if it follows the build: Plus adds
+        // the purchase token to a request and My requests' GitHub reads.
+        if (Plus.shown(this)) {
+            findViewById<View>(R.id.about_network_tracker).visibility = View.VISIBLE
+        }
+
         findViewById<View>(R.id.about_source).setOnClickListener {
             open(getString(R.string.about_source_url))
         }

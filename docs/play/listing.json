@@ -8,7 +8,8 @@
     "icons": 1012,
     "walls": 132,
     "series": 11,
-    "loops": 48
+    "loops": 48,
+    "plus_walls": 12
   },
   "copy": {
     "title": "Core Builds Icon Pack",
@@ -115,10 +116,10 @@
     "purchases": false,
     "ads": false,
     "expected_rating": "Everyone / PEGI 3",
-    "note": "A wallpaper and icon pack. Nothing here is user-generated, shared or interactive with strangers. When the premium unlock ships in its own change, 'purchases' becomes true and this answer has to move with it."
+    "note": "A wallpaper and icon pack. Nothing here is user-generated, shared or interactive with strangers. 'purchases' follows the broker: Core Builds Plus is on sale exactly when the broker is baked in, and the answer stays yes while a track still serves such a build (BROKER_SHIPPED)."
   },
   "sources": {
-    "generator": "94328b016bd1670fcf55932c293928ca4a741e200cf35e4fa7886d6602803ba7",
+    "generator": "17b0517ba7d0657ffa5ca9933734dc8360d467a9bc7311ec11d7a50202774044",
     "branding": "77d63a0d0ef7c7fc21eaddf7ce54a6a7aed88d5e3a8ac733079ae869f1424f54",
     "icon_pack_xml": "524eaa6952a4da1c823bf600340b8d61f9b0e5486ef74cb00462451ab3fd647b",
     "wallpapers_json": "0bc4f85d2ff7d2e2c646088cd450957c5e7a58c0519be85923207356dafb3490",

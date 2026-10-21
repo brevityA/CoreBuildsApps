@@ -34,14 +34,50 @@ All notable changes to the Core Builds Icon Pack. Format follows
   them), and the Art style switch opens the Glyphs listing on Play instead
   of downloading it. A new hand-run workflow, `play.yml`, builds both App
   Bundles (`core-builds-play-bundles`). The GitHub builds and `build.yml`
-  are unchanged.
+  are unchanged. Both Play apps require Android TV, so Play never offers
+  them to a phone: the listing is TV-only and no phone UI has been tested.
+- **Core Builds Plus, on Google Play only.** A one-time purchase
+  (`core_builds_plus`, $2.99) through Play Billing, in place of the
+  Sponsors and Ko-fi codes Play's Payments policy rules out of a Play app.
+  It adds four things; every icon, the 132-wall collection and every screen
+  still ship to everyone:
+  - **Priority requests.** A Plus owner's one-press request carries the
+    Play purchase token; the broker checks it with Google, labels the issue
+    `priority`, and never logs, files or stores the token.
+  - **My requests** (Settings): every icon requested from this TV and how
+    far it has got (open, priority, drawn, in this pack), read from GitHub
+    by issue number.
+  - **Live loop rotation** (Settings): every hour, 6 hours or day, the live
+    wallpaper moves to the next downloaded loop as the home screen comes
+    back. No background work: the wallpaper engine does it.
+  - **Spectra**, series 15: 12 4K walls of light split into its colours
+    (`tools/build_plus_wallpapers.py`), under their own Plus chip.
+
+  Plus goes on sale only once the request broker is baked in, and is
+  re-read from Play at every app start, so refunds and purchases on another
+  TV settle by themselves. The GitHub builds carry no billing code, keep
+  their codes, and list none of the extras.
+- **About names what Plus sends.** Wherever Plus is on sale or owned,
+  "everything this app sends" gains item 4: the purchase token a Plus
+  owner's request carries, and *My requests*' reads from GitHub by issue
+  number. Plus's door is a CORE BUILDS PLUS row in Settings; the tip doors
+  stay shut on Play.
+- **The store answers follow the broker.** `tools/build_play_listing.py`
+  reads one switch, whether the request broker's URL is baked in, which is
+  also when Plus goes on sale. It moves the content-rating purchases answer,
+  Data safety (three optional types collected, none shared) and a CORE
+  BUILDS PLUS paragraph in the copy, and `--check` fails if the switch moves
+  without a regenerated listing. Today's tree is unchanged: no broker, no
+  purchases, nothing collected. `docs/PLAY-CONSOLE.md` §8 covers the Plus
+  product, license testers, the broker and the internal-test checks, and
+  `docs/privacy.html` covers the token, *My requests* and payments.
 
 ### Changed
 
 - **The icon pack builds against API 36 and targets it.** Play stopped
-  accepting new listings that target below Android 16 unless they are TV-only,
-  and this pack lists for phones as well as TV — so the phone floor was the
-  one that bound. Reaching it meant moving the build onto AGP 9.4.0 with
+  accepting new listings that target below Android 16 unless they are TV-only.
+  The Play listing is TV-only, which would allow 34, but 36 meets both floors
+  and leaves a later phone listing free of a target change. Reaching it meant moving the build onto AGP 9.4.0 with
   built-in Kotlin, the combination `coreeq/` already runs: on the Gradle 9.7.0
   wrapper every AGP 8.6 and later fails at plugin apply, which is why 8.5.2
   was the ceiling before. Kotlin 1.9.24 is gone from this root (the jvmTarget

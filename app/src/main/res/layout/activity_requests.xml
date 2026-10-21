@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  My requests, a Core Builds Plus extra (Google Play build). The What's new
+  grammar: header and summary pinned, the rows in a ScrollView the activity
+  fills from RequestLog, Back pinned below. Rows are focusable so the D-pad
+  can scroll a long list; pressing one does nothing more.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cb_night"
+    android:orientation="vertical"
+    android:padding="@dimen/cb_card_padding">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="monospace"
+        android:letterSpacing="0.16"
+        android:text="@string/requests_kicker"
+        android:textColor="@color/cb_signal_cyan"
+        android:textSize="@dimen/cb_text_kicker"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_xs"
+        android:text="@string/settings_requests_title"
+        android:textColor="@color/cb_ink"
+        android:textSize="@dimen/cb_text_title"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/requests_summary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_xs"
+        android:textColor="@color/cb_slate"
+        android:textSize="@dimen/cb_text_data" />
+
+    <TextView
+        android:id="@+id/requests_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_md"
+        android:text="@string/requests_empty"
+        android:textColor="@color/cb_ink"
+        android:textSize="@dimen/cb_text_body"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/cb_space_md">
+
+        <LinearLayout
+            android:id="@+id/requests_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/requests_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/cb_space_md"
+        android:background="@drawable/bg_card"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:padding="@dimen/cb_card_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/action_back"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_body"
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>

@@ -34,6 +34,8 @@ HOSTS_THE_CODE_CALLS = {
     "raw.githubusercontent.com",
     "github.com",
     "play.google.com",
+    # My requests (Play, Core Builds Plus) reads issue states by number.
+    "api.github.com",
     # Not fetched by the app: opened in a browser, and named for completeness.
     "policies.google.com",
 }
@@ -41,6 +43,12 @@ HOSTS_THE_CODE_CALLS = {
 
 def read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
+
+
+def flat(html: str) -> str:
+    """The page's text with every run of whitespace as one space, so a phrase
+    still matches after the HTML is re-wrapped."""
+    return " ".join(html.split())
 
 
 def sources() -> dict[str, str]:
@@ -108,6 +116,10 @@ class TheClaimsMatchTheCode(unittest.TestCase):
                          "IconRequestSender's payload moved; the policy must follow")
         for field in ("app name", "component name", "device note"):
             self.assertIn(field, self.html, f"policy does not name the {field!r} field")
+        # Plus owners' requests carry one more field, conditionally.
+        self.assertIn('put("plus_token", plusToken)', sender)
+        self.assertIn("purchase token", self.html)
+        self.assertIn("never logged, filed or stored", flat(self.html))
         # The one boolean flag the POST can carry is described too.
         self.assertIn('put("mapped"', sender)
         self.assertIn("flag", self.html)
@@ -151,11 +163,35 @@ class TheClaimsMatchTheCode(unittest.TestCase):
         catalog = read(ROOT / "app/src/main/assets/manifest/wallpapers.json")
         self.assertIn("raw.githubusercontent.com", catalog)
 
-    def test_it_does_not_promise_a_purchase_that_does_not_exist(self):
-        # The policy may describe how a future purchase would work, but it must
-        # not claim one exists: the Play listing currently answers "no
-        # purchases" to the content-rating questionnaire.
-        self.assertIn("currently offers no purchases", self.html)
+    def test_it_names_what_outlives_the_app_and_how_to_remove_it(self):
+        # Exports live in shared storage, and the broker keeps an IP for rate
+        # limiting and a token hash: none of that goes with an uninstall, so
+        # the page must not say "nothing is collected" or "all of it is removed".
+        text = flat(self.html)
+        self.assertNotIn("because nothing is collected", text.lower())
+        self.assertNotIn("all of it is removed", text.lower())
+        self.assertIn("they stay there until you delete them", text)
+        self.assertIn("only the repository's owner delete an issue", text)
+        worker = read(ROOT / "tools/icon_request_broker/worker.mjs") + read(
+            ROOT / "tools/icon_request_broker/constants.mjs")
+        self.assertIn("sha256", worker.lower())
+        # The rate-limit bucket's KV TTL is the "62 minutes" the page states.
+        self.assertIn("expirationTtl: 3700", worker)
+        self.assertIn("IP address</strong>, held by the broker for at most 62 minutes", text)
+        self.assertIn("SHA-256 hash of a Plus purchase token</strong>", text)
+
+    def test_the_purchase_it_describes_is_the_one_sold_and_when(self):
+        # The page describes Core Builds Plus and the condition it is sold
+        # under, so it is true both before and after the broker is baked in.
+        self.assertIn("Core Builds Plus", self.html)
+        text = flat(self.html)
+        self.assertIn("offered only in builds where the request broker is enabled", text)
+        self.assertIn("Until then the Play build offers no purchases", text)
+        plus = read(KT / "Plus.kt")
+        self.assertIn("audit_request_endpoint", plus)
+        self.assertIn("The GitHub / Downloader build has no purchases", self.html)
+        github = read(ROOT / "app/src/github/java/tv/corebuilds/iconpack/PlusStore.kt")
+        self.assertIn("const val AVAILABLE = false", github)
 
     def test_permissions_it_lists_are_the_ones_the_manifest_declares(self):
         manifest = read(ROOT / "app/src/main/AndroidManifest.xml")
@@ -167,6 +203,8 @@ class TheClaimsMatchTheCode(unittest.TestCase):
             "WRITE_EXTERNAL_STORAGE": "Write external storage",
             "REQUEST_INSTALL_PACKAGES": "Install unknown apps",
         }
+        # Billing's permission comes from the library, in the Play build only.
+        self.assertIn("Google Play billing", self.html)
         for permission in declared:
             self.assertIn(permission, explained,
                           f"{permission} is declared but the policy does not explain it")

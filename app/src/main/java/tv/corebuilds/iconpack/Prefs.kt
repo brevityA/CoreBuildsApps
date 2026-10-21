@@ -30,6 +30,8 @@ object Prefs {
     const val KEY_AMOLED = "amoled_chrome"
     const val KEY_PICK_BANNERS = "pick_banners"
     const val KEY_LIVE_LOOP = "live_loop"
+    const val KEY_LIVE_LOOP_CHANGED_AT = "live_loop_changed_at"
+    const val KEY_LIVE_ROTATE_HOURS = "live_rotate_hours"
     const val KEY_WHATS_NEW_SEEN = "whats_new_seen_version"
     const val KEY_WP_NEW_SEEN = "wallpapers_new_seen_since"
     const val KEY_COMPANION_PENDING_APPLY = "glyphs_pending_apply"
@@ -135,8 +137,35 @@ object Prefs {
         prefs(context).getString(KEY_LIVE_LOOP, LiveLoop.LOOPS[0].id)
             ?: LiveLoop.LOOPS[0].id
 
-    fun setLiveLoopId(context: Context, loopId: String) {
-        prefs(context).edit().putString(KEY_LIVE_LOOP, loopId).apply()
+    /**
+     * Every change of loop, by hand or by [LoopRotation], restarts the
+     * rotation interval, so a loop someone just picked stays for the whole of
+     * it.
+     */
+    fun setLiveLoopId(context: Context, loopId: String, now: Long = System.currentTimeMillis()) {
+        prefs(context).edit()
+            .putString(KEY_LIVE_LOOP, loopId)
+            .putLong(KEY_LIVE_LOOP_CHANGED_AT, now)
+            .apply()
+    }
+
+    fun liveLoopChangedAt(context: Context): Long =
+        prefs(context).getLong(KEY_LIVE_LOOP_CHANGED_AT, 0L)
+
+    fun setLiveLoopChangedAt(context: Context, at: Long) {
+        prefs(context).edit().putLong(KEY_LIVE_LOOP_CHANGED_AT, at).apply()
+    }
+
+    /** Hours between live loop rotations (Core Builds Plus); 0 is off. */
+    fun liveRotateHours(context: Context): Int =
+        prefs(context).getInt(KEY_LIVE_ROTATE_HOURS, 0)
+
+    /** Switching rotation on starts the interval now rather than at the last pick. */
+    fun setLiveRotateHours(context: Context, hours: Int, now: Long = System.currentTimeMillis()) {
+        val wasOff = liveRotateHours(context) == 0
+        val edit = prefs(context).edit().putInt(KEY_LIVE_ROTATE_HOURS, hours)
+        if (wasOff && hours > 0) edit.putLong(KEY_LIVE_LOOP_CHANGED_AT, now)
+        edit.apply()
     }
 
     fun set(context: Context, key: String, value: Boolean) {

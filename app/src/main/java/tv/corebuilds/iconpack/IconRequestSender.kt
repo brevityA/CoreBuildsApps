@@ -23,6 +23,9 @@ import org.json.JSONObject
  * The payload carries no identifiers: no IP-derived store on our side beyond
  * a rate-limit window, no device IDs — a model name, an Android version and a
  * pack version, the same values the QR flow already asked the phone to paste.
+ * The one addition is `plus_token`, sent only by a Google Play build that owns
+ * Core Builds Plus: the Play purchase token, which the broker checks with
+ * Google before it labels the issue priority and never stores or files.
  *
  * Contract with the caller: [send] always answers on the main thread, either
  * quickly (offline, invalid endpoint) or when the broker replies. A result of
@@ -44,10 +47,11 @@ object IconRequestSender {
         component: String,
         deviceNote: String,
         mapped: Boolean,
+        plusToken: String?,
         onResult: (Int) -> Unit,
     ) {
         IO.execute {
-            val issue = post(endpoint, appName, component, deviceNote, mapped)
+            val issue = post(endpoint, appName, component, deviceNote, mapped, plusToken)
             MAIN.post { onResult(issue) }
         }
     }
@@ -59,6 +63,7 @@ object IconRequestSender {
         component: String,
         deviceNote: String,
         mapped: Boolean,
+        plusToken: String?,
     ): Int {
         var conn: HttpURLConnection? = null
         return try {
@@ -75,6 +80,7 @@ object IconRequestSender {
                 .put("component", component)
                 .put("device", deviceNote)
                 .apply { if (mapped) put("mapped", true) }
+                .apply { if (plusToken != null) put("plus_token", plusToken) }
                 .toString()
             OutputStreamWriter(conn.outputStream, Charsets.UTF_8).use {
                 it.write(body)

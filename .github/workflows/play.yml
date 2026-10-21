@@ -42,6 +42,24 @@ jobs:
           python tests/test_play_build.py
           python tests/test_glyphs_pack.py
 
+      - name: Say whether Plus is on sale in this build
+        # Support sells Core Builds Plus only when a request broker is baked
+        # in (tools/build_issue_prefills.py --endpoint=URL); without one the
+        # card says there is nothing to buy yet. Not an error: a Play build
+        # without Plus is a valid build, but it should never be a surprise.
+        run: |
+          ENDPOINT=$(python - <<'PY'
+          import xml.etree.ElementTree as ET
+          root = ET.parse("app/src/main/res/values/issue_prefill.xml").getroot()
+          print("".join(s.text or "" for s in root.iter("string") if s.get("name") == "audit_request_endpoint").strip())
+          PY
+          )
+          if [ -z "$ENDPOINT" ]; then
+            echo "::warning::audit_request_endpoint is empty: Plus is not on sale in these bundles, and icon requests fall back to QR codes."
+          else
+            echo "Request broker baked in ($ENDPOINT): Plus is on sale."
+          fi
+
       - name: Set up JDK 17
         uses: actions/setup-java@v6
         with:

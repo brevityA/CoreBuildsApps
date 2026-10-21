@@ -3,12 +3,28 @@
      Play's Device and Network Abuse policy: an app distributed on Play may
      not install APKs from outside Play, so the Play build drops the install
      permission its updater and the Glyphs download need. The FileProvider
-     stays: wallpaper sharing uses it too. -->
+     stays: wallpaper sharing uses it too.
+
+     Leanback is required here, unlike the sideload build: Play offers an app
+     whose leanback is optional to phones too, and Console cannot take a
+     phone-compatible bundle off them. The listing is TV-only
+     (docs/play/listing.json form_factors), with no phone screenshots and no
+     tested phone UI, so the manifest makes it so.
+
+     Lint reads this overlay on its own and misses the TV launcher entry and
+     the optional touchscreen that src/main declares; the merged Play
+     manifest has both. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingLeanbackLauncher,ImpliedTouchscreenHardware">
 
     <uses-permission
         android:name="android.permission.REQUEST_INSTALL_PACKAGES"
         tools:node="remove" />
+
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="true"
+        tools:replace="android:required" />
 
 </manifest>

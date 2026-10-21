@@ -138,6 +138,26 @@ class SettingsActivity : TvActivity() {
             findViewById<View>(R.id.set_support_row).visibility = View.GONE
         }
 
+        // Core Builds Plus extras: Google Play only, and only once Plus is on
+        // sale or owned. A locked row opens the Plus card (Plus.unlocked).
+        if (Plus.shown(this)) {
+            findViewById<View>(R.id.set_plus_group).visibility = View.VISIBLE
+            // Plus is sold through Play Billing, so this is not the tip door
+            // above: on Play, SupportActivity renders the Plus card only.
+            row(R.id.set_plus_row) {
+                startActivity(Intent(this, SupportActivity::class.java))
+            }
+            row(R.id.set_rotate_row) {
+                if (Plus.unlocked(this)) {
+                    Prefs.setLiveRotateHours(this, LoopRotation.nextHours(Prefs.liveRotateHours(this)))
+                    showPlusRows()
+                }
+            }
+            row(R.id.set_requests_row) {
+                if (Plus.unlocked(this)) startActivity(Intent(this, RequestsActivity::class.java))
+            }
+        }
+
         findViewById<View>(R.id.set_cache_clear).setOnClickListener {
             clearCache()
             showCacheSize()
@@ -155,6 +175,27 @@ class SettingsActivity : TvActivity() {
         // reported by the installer's result, in onActivityResult.
         onCompanionOutcome(GlyphsCompanion.takePendingApply(this))
         bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
+        // Back from the Plus card, the rows may have just unlocked.
+        showPlusRows()
+    }
+
+    /** Each Plus row's value: its setting when owned, "Plus" while locked. */
+    private fun showPlusRows() {
+        if (!Plus.shown(this)) return
+        val owned = Plus.owned(this)
+        findViewById<TextView>(R.id.set_plus_value).setText(
+            if (owned) R.string.settings_plus_owned else R.string.settings_plus_buy)
+        findViewById<TextView>(R.id.set_rotate_value).text = when {
+            !owned -> getString(R.string.settings_plus_locked)
+            else -> getString(when (Prefs.liveRotateHours(this)) {
+                1 -> R.string.settings_rotate_hour
+                6 -> R.string.settings_rotate_6h
+                24 -> R.string.settings_rotate_day
+                else -> R.string.settings_rotate_off
+            })
+        }
+        findViewById<TextView>(R.id.set_requests_value).setText(
+            if (owned) R.string.settings_requests_open else R.string.settings_plus_locked)
     }
 
     @Deprecated("Deprecated in AndroidX; the installer result still arrives here")

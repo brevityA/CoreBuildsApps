@@ -1,0 +1,93 @@
+{
+  "collection": "Core Builds Plus Wallpapers",
+  "version": "1.0",
+  "author": "brevityA",
+  "note": "Core Builds Plus extra: only the Google Play build lists these walls (tools/sync_wallpaper_manifest.py bundles this file into app/src/play/assets). Same entry grammar as manifest.json.",
+  "count": 12,
+  "wallpapers": [
+    {
+      "name": "157 Fraunhofer",
+      "series": "series-15-spectra",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-15-spectra/corebuilds-157-fraunhofer.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-157-fraunhofer.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "158 Dispersion",
+      "series": "series-15-spectra",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-15-spectra/corebuilds-158-dispersion.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-158-dispersion.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "159 Hex Lens",
+      "series": "series-15-spectra",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-15-spectra/corebuilds-159-hex-lens.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-159-hex-lens.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "160 Soap Film",
+      "series": "series-15-spectra",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-15-spectra/corebuilds-160-soap-film.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-160-soap-film.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "161 Glory",
+      "series": "series-15-spectra",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-15-spectra/corebuilds-161-glory.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-161-glory.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "162 Contours",
+      "series": "series-15-spectra",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-15-spectra/corebuilds-162-contours.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-162-contours.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "163 Light Pillars",
+      "series": "series-15-spectra",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-15-spectra/corebuilds-163-light-pillars.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-163-light-pillars.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "164 Chromatic Ribbon",
+      "series": "series-15-spectra",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-15-spectra/corebuilds-164-chromatic-ribbon.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-164-chromatic-ribbon.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "165 Spectral Aurora",
+      "series": "series-15-spectra",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-15-spectra/corebuilds-165-spectral-aurora.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-165-spectral-aurora.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "166 Diffraction",
+      "series": "series-15-spectra",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-15-spectra/corebuilds-166-diffraction.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-166-diffraction.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "167 Spectrum Orbit",
+      "series": "series-15-spectra",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-15-spectra/corebuilds-167-spectrum-orbit.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-167-spectrum-orbit.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "168 Moonbow",
+      "series": "series-15-spectra",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-15-spectra/corebuilds-168-moonbow.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-168-moonbow.jpg",
+      "resolution": "3840x2160"
+    }
+  ]
+}

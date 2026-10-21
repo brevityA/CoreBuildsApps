@@ -24,17 +24,28 @@
  * against an exact grammar, free-form prose cannot reach GitHub or
  * Discord through this endpoint, and a repeat press dedupes (GitHub:
  * +1 comment; Discord: the same formatted card).
+ *
+ * Core Builds Plus: the Google Play build sends `plus_token`, a Play purchase
+ * token, when its owner bought Plus. With a service account configured
+ * (GOOGLE_SERVICE_ACCOUNT_JSON), the broker asks the Play Developer API
+ * whether that token is a purchase of PLUS_PRODUCT_ID that is neither
+ * cancelled nor refunded, and labels the issue PRIORITY_LABEL if so. The
+ * token is never logged, filed or stored: only a SHA-256 of it keys a short
+ * KV cache of the verdict. A failed check files the request without priority;
+ * it never blocks one.
  */
 
 // Shared literals live in constants.mjs — see that file for why a Workers
 // entry module must not export plain strings (workerd refuses to boot).
 import { REPO, ISSUE_LABEL, TITLE_PREFIX, MAPPING_LABEL, MAPPING_TITLE_PREFIX,
-         WORKER_VERSION } from "./constants.mjs";
+         PRIORITY_LABEL, PLAY_PACKAGE, PLUS_PRODUCT_ID, WORKER_VERSION } from "./constants.mjs";
 
 const COMPONENT_RE = /^[A-Za-z0-9_.]+\/[A-Za-z0-9_.$]+$/;
 const MAX_APP_NAME = 80;
 const MAX_DEVICE_NOTE = 120;
-const BODY_CAP = 2 * 1024;             // bytes; the audit payload is ~300
+// A Play purchase token is a few hundred URL-safe characters; the cap is slack.
+const PLUS_TOKEN_RE = /^[A-Za-z0-9._-]{16,1024}$/;
+const BODY_CAP = 2 * 1024;             // bytes; the audit payload is ~300, ~600 with a Plus token
 const RATE_PER_HOUR = 5;
 const ISOLATE_FLOOR_PER_HOUR = 25;
 
@@ -73,14 +84,16 @@ export function getClientIp(request) {
 // ---------------------------------------------------------------------------
 // payload grammar — the same three fields the issue-form prefill carries, plus
 // `mapped`: true when the pack already maps the app under another activity,
-// which makes it a mapping report rather than a request for new art
+// which makes it a mapping report rather than a request for new art, and
+// `plus_token`: the Play build's Core Builds Plus purchase token, if any
 
 export function validate(payload) {
   if (payload === null || typeof payload !== "object" || Array.isArray(payload)) {
     return { ok: false, status: 400, error: "expected a JSON object" };
   }
   const keys = Object.keys(payload);
-  const unknown = keys.filter((k) => !["app_name", "component", "device", "mapped"].includes(k));
+  const unknown = keys.filter((k) =>
+    !["app_name", "component", "device", "mapped", "plus_token"].includes(k));
   if (unknown.length) return { ok: false, status: 400, error: `unknown fields: ${unknown.join(", ")}` };
 
   const appName = payload.app_name;
@@ -102,7 +115,11 @@ export function validate(payload) {
   if (typeof mapped !== "boolean") {
     return { ok: false, status: 400, error: "mapped must be true or false" };
   }
-  return { ok: true, value: { appName: appName.trim(), component, device, mapped } };
+  const plusToken = payload.plus_token ?? null;
+  if (plusToken !== null && (typeof plusToken !== "string" || !PLUS_TOKEN_RE.test(plusToken))) {
+    return { ok: false, status: 400, error: "plus_token must be a Google Play purchase token" };
+  }
+  return { ok: true, value: { appName: appName.trim(), component, device, mapped, plusToken } };
 }
 
 // ---------------------------------------------------------------------------
@@ -155,7 +172,7 @@ export async function rateLimited(env, ip) {
 }
 
 // ---------------------------------------------------------------------------
-// GitHub App authentication: RS256 JWT -> installation token, cached in KV
+// RS256 JWTs: the GitHub App's, and the Google service account's below
 
 function b64url(buf) {
   const bytes = buf instanceof ArrayBuffer ? new Uint8Array(buf) : buf;
@@ -164,13 +181,11 @@ function b64url(buf) {
   return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
-export async function appJwt(env) {
-  const now = Math.floor(Date.now() / 1000);
+/** A JWT over [claims], signed with a PKCS#8 PEM key (literal "\n"s allowed, as secrets paste them). */
+async function rs256(pemKey, claims) {
   const header = b64url(new TextEncoder().encode(JSON.stringify({ alg: "RS256", typ: "JWT" })));
-  const payload = b64url(new TextEncoder().encode(JSON.stringify({
-    iat: now - 60, exp: now + 540, iss: env.GITHUB_APP_ID,
-  })));
-  const pem = env.GITHUB_APP_PRIVATE_KEY.replace(/\\n/g, "\n");
+  const payload = b64url(new TextEncoder().encode(JSON.stringify(claims)));
+  const pem = pemKey.replace(/\\n/g, "\n");
   const pkcs8 = Uint8Array.from(atob(pem
     .replace("-----BEGIN PRIVATE KEY-----", "")
     .replace("-----END PRIVATE KEY-----", "")
@@ -180,6 +195,14 @@ export async function appJwt(env) {
   const sig = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", key,
     new TextEncoder().encode(`${header}.${payload}`));
   return `${header}.${payload}.${b64url(sig)}`;
+}
+
+// GitHub App authentication: RS256 JWT -> installation token, cached in KV
+
+export async function appJwt(env) {
+  const now = Math.floor(Date.now() / 1000);
+  return rs256(env.GITHUB_APP_PRIVATE_KEY,
+               { iat: now - 60, exp: now + 540, iss: env.GITHUB_APP_ID });
 }
 
 export async function installationToken(env) {
@@ -195,6 +218,103 @@ export async function installationToken(env) {
   const { token } = await res.json();
   if (env.RATE_KV) await env.RATE_KV.put("gh:installation_token", token, { expirationTtl: 3000 });
   return token;
+}
+
+// ---------------------------------------------------------------------------
+// Core Builds Plus: is this a real, unrefunded purchase? Asked of Google with
+// a service account that Play Console granted "View financial data"
+
+const ANDROIDPUBLISHER_SCOPE = "https://www.googleapis.com/auth/androidpublisher";
+const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
+const PLUS_OWNED_TTL = 6 * 3600;       // a refund shows within six hours
+const PLUS_NOT_OWNED_TTL = 600;        // a pending purchase may clear soon
+
+/** The service account key Play Console's API access page downloads, or null. */
+export function serviceAccount(env) {
+  if (!env.GOOGLE_SERVICE_ACCOUNT_JSON) return null;
+  try {
+    const sa = JSON.parse(env.GOOGLE_SERVICE_ACCOUNT_JSON);
+    return sa.client_email && sa.private_key ? sa : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+export function plusConfigured(env) {
+  return serviceAccount(env) !== null;
+}
+
+export async function googleAccessToken(env) {
+  if (env.RATE_KV) {
+    const cached = await env.RATE_KV.get("google:access_token");
+    if (cached) return cached;
+  }
+  const sa = serviceAccount(env);
+  const now = Math.floor(Date.now() / 1000);
+  const assertion = await rs256(sa.private_key, {
+    iss: sa.client_email, scope: ANDROIDPUBLISHER_SCOPE,
+    aud: GOOGLE_TOKEN_URL, iat: now - 60, exp: now + 3540,
+  });
+  const res = await fetch(GOOGLE_TOKEN_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer", assertion,
+    }).toString(),
+  });
+  if (!res.ok) throw new Error(`google token request failed: ${res.status}`);
+  const { access_token: token, expires_in: expiresIn } = await res.json();
+  if (env.RATE_KV) {
+    await env.RATE_KV.put("google:access_token", token,
+      { expirationTtl: Math.max(60, (Number(expiresIn) || 3600) - 300) });
+  }
+  return token;
+}
+
+async function sha256Hex(text) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+/** What Google's answer means: owned only if purchased and not wholly refunded. */
+export function plusOwned(purchase) {
+  if (!purchase || purchase.purchaseState !== 0) return false;
+  if (purchase.productId && purchase.productId !== PLUS_PRODUCT_ID) return false;
+  return purchase.refundableQuantity === undefined || purchase.refundableQuantity > 0;
+}
+
+/**
+ * True only when Google confirms the token. Every failure is false: a request
+ * filed without priority is recoverable by hand, a blocked one is lost.
+ */
+export async function verifyPlus(env, token) {
+  if (!token || !plusConfigured(env)) return false;
+  const cacheKey = `plus:${await sha256Hex(token)}`;
+  if (env.RATE_KV) {
+    const cached = await env.RATE_KV.get(cacheKey);
+    if (cached !== null) return cached === "1";
+  }
+  try {
+    const access = await googleAccessToken(env);
+    const res = await fetch(
+      `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${PLAY_PACKAGE}` +
+      `/purchases/products/${PLUS_PRODUCT_ID}/tokens/${encodeURIComponent(token)}`,
+      { headers: { Authorization: `Bearer ${access}` } });
+    let owned;
+    if (res.ok) owned = plusOwned(await res.json());
+    else if (res.status === 400 || res.status === 404 || res.status === 410) owned = false;
+    else throw new Error(`play purchase check failed: ${res.status}`);
+    if (env.RATE_KV) {
+      await env.RATE_KV.put(cacheKey, owned ? "1" : "0",
+        { expirationTtl: owned ? PLUS_OWNED_TTL : PLUS_NOT_OWNED_TTL });
+    }
+    logEvent({ evt: "plus_checked", owned });
+    return owned;
+  } catch (err) {
+    // Not cached: the next request asks again.
+    logEvent({ evt: "plus_error", msg: String(err).slice(0, 120) });
+    return false;
+  }
 }
 
 function ghHeaders(auth) {
@@ -222,7 +342,13 @@ export function reportKind({ mapped }) {
  * Issue body: mirrors the field order of the form the report belongs to —
  * 2.icon_not_applying.yml for a mapped app, 1.new_icon_request.yml otherwise.
  */
-export function issueBody({ appName, component, device, mapped = false }) {
+export function issueBody({ appName, component, device, mapped = false, priority = false }) {
+  return reportBody({ appName, component, device, mapped }) + (priority
+    ? "\n\n_Core Builds Plus: the purchase was checked with Google Play, so this is a priority request._"
+    : "");
+}
+
+function reportBody({ appName, component, device, mapped }) {
   if (mapped) {
     return [
       "### App name", "", appName,
@@ -276,6 +402,9 @@ async function ensureLabel(token, { label, description }) {
   }
 }
 
+const PRIORITY_KIND = { label: PRIORITY_LABEL,
+  description: "Requested by a Core Builds Plus owner; done first" };
+
 async function fileOrComment(token, value) {
   const kind = reportKind(value);
   const dup = await findOpenDuplicate(token, value);
@@ -285,15 +414,25 @@ async function fileOrComment(token, value) {
       body: JSON.stringify({ body:
         `+1 from the in-app auditor's one-press request` +
         (value.device ? ` — ${value.device}` : "") +
-        ". A repeat counts as a vote, not a new issue." }),
+        ". A repeat counts as a vote, not a new issue." +
+        (value.priority ? " From a Core Builds Plus owner, so it is now priority." : "") }),
     });
+    if (value.priority) {
+      await ensureLabel(token, PRIORITY_KIND);
+      await fetch(`https://api.github.com/repos/${REPO}/issues/${dup}/labels`, {
+        method: "POST", headers: ghHeaders(`Bearer ${token}`),
+        body: JSON.stringify({ labels: [PRIORITY_LABEL] }),
+      });
+    }
     return { number: dup, duplicate: true };
   }
   await ensureLabel(token, kind);
+  if (value.priority) await ensureLabel(token, PRIORITY_KIND);
   const res = await fetch(`https://api.github.com/repos/${REPO}/issues`, {
     method: "POST", headers: ghHeaders(`Bearer ${token}`),
     body: JSON.stringify({ title: `${kind.prefix}${value.appName}`,
-      body: issueBody(value), labels: [kind.label] }),
+      body: issueBody(value),
+      labels: value.priority ? [kind.label, PRIORITY_LABEL] : [kind.label] }),
   });
   if (!res.ok) throw new Error(`issue create failed: ${res.status}`);
   const { number } = await res.json();
@@ -328,6 +467,9 @@ export function discordPayload(value) {
       fields: [
         { name: "Component name", value: "`" + value.component + "`" },
         { name: "Device", value: value.device || "_not supplied_" },
+        ...(value.priority
+          ? [{ name: "Priority", value: "Core Builds Plus, checked with Google Play" }]
+          : []),
       ],
       footer: { text: "One-press anonymous auditor request — convert to a GitHub issue" },
     }],
@@ -363,20 +505,27 @@ async function handleRequest(request, env) {
   if (!verdict.ok) return json({ ok: false, error: verdict.error }, verdict.status);
 
   const sink = sinkFor(env);
+  if (sink === "none") {
+    logEvent({ evt: "not_configured" });
+    return json({ ok: false, error: "broker not configured" }, 503);
+  }
+  // The token goes no further than this line: only the verdict travels on.
+  const { plusToken, ...fields } = verdict.value;
+  const value = { ...fields, priority: await verifyPlus(env, plusToken) };
   try {
     if (sink === "github-app" || sink === "github-token") {
       const token = sink === "github-app" ? await installationToken(env) : env.GITHUB_TOKEN;
-      const { number, duplicate } = await fileOrComment(token, verdict.value);
-      logEvent({ evt: duplicate ? "issue_plus_one" : "issue_created", issue: number });
-      return json({ ok: true, issue: number, duplicate }, duplicate ? 200 : 201);
+      const { number, duplicate } = await fileOrComment(token, value);
+      logEvent({ evt: duplicate ? "issue_plus_one" : "issue_created", issue: number,
+                 priority: value.priority });
+      return json({ ok: true, issue: number, duplicate, priority: value.priority },
+                  duplicate ? 200 : 201);
     }
     if (sink === "discord") {
-      await postDiscord(env, verdict.value);
-      logEvent({ evt: "discord_forwarded" });
-      return json({ ok: true, via: "discord" }, 201);
+      await postDiscord(env, value);
+      logEvent({ evt: "discord_forwarded", priority: value.priority });
+      return json({ ok: true, via: "discord", priority: value.priority }, 201);
     }
-    logEvent({ evt: "not_configured" });
-    return json({ ok: false, error: "broker not configured" }, 503);
   } catch (err) {
     logEvent({ evt: "sink_error", msg: String(err).slice(0, 120) });
     return json({ ok: false, error: String(err) }, 502);
@@ -408,7 +557,8 @@ function corsHeaders(request) {
 async function handleInner(request, env) {
   const url = new URL(request.url);
   if (url.pathname === "/healthz") {
-    return json({ ok: true, version: WORKER_VERSION, sink: sinkFor(env) }, 200);
+    return json({ ok: true, version: WORKER_VERSION, sink: sinkFor(env),
+                  plus: plusConfigured(env) }, 200);
   }
   if (url.pathname !== "/" && url.pathname !== "/v1/request") {
     return json({ ok: false, error: "no such route" }, 404);

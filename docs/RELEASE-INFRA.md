@@ -136,16 +136,20 @@ Runtime behavior:
 
 ## Google Play release runbook
 
+The icon pack's step-by-step, from developer account to Core Builds Plus,
+is [`PLAY-CONSOLE.md`](PLAY-CONSOLE.md). The list below is the suite-wide
+summary.
+
 1. Ensure the app's target API satisfies current Play requirements.
-   - The icon pack is at **compileSdk/targetSdk 36**, so it satisfies the
-     general rule and the TV one. It lists for phones as well as TV (the
-     manifest carries `LAUNCHER` beside `LEANBACK_LAUNCHER` and touchscreen is
-     `required="false"`), and the phone floor is the one that binds: an app
-     that Play offers to phones must target API 36 as of 2026-08-31.
-   - A **TV-only listing** (Console restricts form factors to TV) would be
-     allowed to sit at API 34, which is the loophole this repo did *not*
-     take — it would have cost every phone user. If a future module has no
-     phone ambition, that exception is legitimate.
+   - The icon pack is at **compileSdk/targetSdk 36**, which meets the phone
+     floor (36 for new apps and updates after 2026-08-31) as well as the
+     Android TV one (34).
+   - The Play build is **TV-only**, as `docs/play/listing.json`
+     (`form_factors: ["tv"]`) and `PLAY-CONSOLE.md` §4 say: its manifest
+     overlays require `android.software.leanback`, so Play never offers it to
+     a phone. With leanback optional the bundle would be phone-compatible,
+     Play would list it for phones, and there are no phone screenshots and no
+     tested phone UI. The sideload builds keep leanback optional.
    - Reaching 36 needed AGP 9.4.0 and built-in Kotlin (see
      `tools/gradle_envelope.json`): on the Gradle 9.7.0 wrapper every AGP 8.6+
      fails at plugin apply, so 8.5.2 could never compile API 36.
@@ -226,7 +230,7 @@ path, not the store copy.
 | `feature-graphic-1024x500.png` | 1024x500, no alpha | the mark, the wordmark and the live counts |
 | `tv-banner-1280x720.png` | 1280x720, no alpha | `build_branding.banner_svg()` — the *same drawing* as the on-device 320x180 Leanback banner, at store size |
 | `tv-1..6-*.png` | 1920x1080, no alpha | the committed `docs/app-ui-*.png` frames, caption band cropped off |
-| `listing.json` | — | title, short and full description, Data safety and content-rating answers, every count and source digest |
+| `listing.json` | — | title, short and full description, Data safety and content-rating answers, every count and source digest. The Plus paragraph, the purchases answer and Data safety's `collected` follow `broker_enabled()` (Core Builds Plus is on sale exactly when the broker URL is baked in) |
 
 The counts in the copy (icons, walls, series, loops) are substituted from
 `icon_pack.xml`, `wallpapers.json` and `LiveLoop.kt`. `tests/test_play_listing.py`
@@ -237,9 +241,11 @@ number on the store page; `--check` does the same for anyone editing by hand.
 screenshots because there is no tested phone UI — the layouts are TV-first, and
 rendering fake ones is exactly the drift this repo generates its way out of.
 Listing for phones needs real captures from a phone build and a decision about
-supporting phones at all. Note the irony: the pack is *built* to target API 36
-because it lists for phones; a TV-only listing could have stayed at 34. If the
-phone listing slips, the API 36 migration is still correct and worth keeping.
+supporting phones at all. The Play manifests make it stick: they require
+`android.software.leanback`, because Console cannot keep a phone-compatible
+bundle off phones. A TV-only app could have stayed at API 34; the API 36
+migration is still correct and worth keeping, because a phone listing later
+then needs no target change.
 
 **Privacy policy:** `docs/privacy.html`. Serve it over GitHub Pages
 (Settings → Pages → source `main` / `/docs`) and the URL to paste into Play
@@ -267,20 +273,19 @@ If they must diverge, the companion goes first, never the pack. A pack that
 believes its companion is ahead is harmless; one that believes it is behind is
 not.
 
-### Blocked pending the Play Console account
+### What the first upload needs from the owner
 
-The Play work (the Play build type, `play.yml`, the premium purchase in its own
-PR) is complete and tested, but nothing can be uploaded until the owner has:
+The Play work (the Play build type, `play.yml`, Core Builds Plus) is in the
+tree and tested. Uploading needs, in `PLAY-CONSOLE.md` order:
 
 1. A Play Console developer account, identity verified.
-2. A **payments profile** — merchant/tax/bank details. Needed for the premium
-   in-app product; without it `premium_unlock` cannot be created or priced.
-3. A privacy policy URL (About links it; the string is still
-   `[USER TO SUPPLY]`).
-4. Upload key + the `PLAY_KEYSTORE_*` repository secrets for `play.yml`.
-
-Until (1) and (2) exist, the premium PR stays parked — the gate only lives in
-the Play build, so there is nothing to gate.
+2. The upload key and the `PLAY_KEYSTORE_*` repository secrets for `play.yml`
+   (§5).
+3. GitHub Pages serving `docs/` for the privacy policy URL (§6).
+4. For Plus only: a **payments profile** (merchant, tax and bank details), the
+   one-time product `core_builds_plus`, and the request broker baked in (§8).
+   Without the broker the Play build sells nothing, so the first uploads can
+   go ahead without it.
 
 ## Release checklist artifact contents
 

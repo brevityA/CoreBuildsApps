@@ -173,6 +173,18 @@ class TheWalkthroughAgreesWithTheAssets(unittest.TestCase):
         if not SPEC["content_rating"]["purchases"]:
             self.assertIn("no purchases", self.doc)
 
+    def test_it_names_the_plus_product_the_code_sells(self):
+        # A product ID can never be reused or renamed in Console; the one typed
+        # there must be the one PlusStore queries and the broker checks.
+        store = (ROOT / "app/src/play/java/tv/corebuilds/iconpack/PlusStore.kt"
+                 ).read_text(encoding="utf-8")
+        product = re.search(r'PRODUCT_ID = "([a-z_]+)"', store).group(1)
+        broker = (ROOT / "tools/icon_request_broker/constants.mjs").read_text(encoding="utf-8")
+        self.assertIn(f'"{product}"', broker)
+        self.assertIn(f"`{product}`", self.doc)
+        self.assertIn("License testing", self.doc)
+        self.assertIn("ICONREQ_GOOGLE_SERVICE_ACCOUNT_JSON", self.doc)
+
     def test_it_names_the_privacy_url_and_the_pages_step(self):
         self.assertIn("brevityA.github.io/CoreBuildsApps/privacy.html", self.doc)
         self.assertIn("Settings → Pages", self.doc)
@@ -203,8 +215,7 @@ class CopyLimits(unittest.TestCase):
 
     def test_copy_matches_the_generator(self):
         # The committed listing is the generated listing, not a hand-edited one.
-        expected = {k: v.format(**listing.counts()) for k, v in listing.COPY.items()}
-        self.assertEqual(SPEC["copy"], expected,
+        self.assertEqual(SPEC["copy"], listing.copy(),
                          "docs/play/listing.json is stale: run tools/build_play_listing.py")
 
     def test_title_names_what_the_app_is(self):
@@ -261,10 +272,14 @@ class StoreTruth(unittest.TestCase):
         # form becomes a false statement on the store page.
         sender = (ROOT / "app/src/main/java/tv/corebuilds/iconpack/IconRequestSender.kt"
                   ).read_text(encoding="utf-8")
-        posted = set(re.findall(r'\.put\("([a-z_]+)"', sender))
-        declared = set(SPEC["data_safety"]["user_initiated_icon_request"]["fields"])
+        posted = set(re.findall(r'[.\s]put\("([a-z_]+)"', sender)) - {"mapped"}
+        # The sender only runs with the broker baked in, so its whole payload
+        # is the broker-on answer; the committed answer is this build's.
+        declared = set(listing.data_safety(plus=True)
+                       ["user_initiated_icon_request"]["fields"])
         self.assertEqual(posted, declared,
                          "the icon request payload moved; Data safety must follow")
+        self.assertEqual(SPEC["data_safety"], listing.data_safety())
 
     def test_data_safety_claims_no_collection_and_no_sdks(self):
         # The claim is only defensible while it is true: no analytics, ads or
@@ -275,7 +290,10 @@ class StoreTruth(unittest.TestCase):
                         "amplitude", "mixpanel", "segment"):
                 self.assertNotIn(sdk, text.lower(),
                                  f"{gradle.name} links {sdk}; Data safety says no data")
-        self.assertFalse(SPEC["data_safety"]["collects_user_data"])
+        # "Collects" follows the broker: without it the app transmits nothing.
+        self.assertEqual(SPEC["data_safety"]["collects_user_data"],
+                         listing.answers_cover_broker())
+        self.assertFalse(SPEC["data_safety"]["shares_user_data"])
 
     def test_form_factors_are_tv_only_and_say_why(self):
         # No phone screenshots exist because no phone UI has been tested.
@@ -288,14 +306,78 @@ class StoreTruth(unittest.TestCase):
         self.assertEqual(SPEC["package"], "tv.corebuilds.iconpack.play")
         self.assertNotEqual(SPEC["package"], SPEC["sideload_package"])
 
-    def test_premium_is_not_claimed_before_it_ships(self):
-        # The premium unlock is a separate, parked change. The listing must not
-        # advertise anything gated until that purchase exists on Play.
-        text = " ".join(SPEC["copy"].values()).lower()
-        for claim in ("premium", "unlock", "in-app purchase", "upgrade"):
-            self.assertNotIn(claim, text,
-                             f"listing mentions {claim!r} but nothing is gated yet")
-        self.assertFalse(SPEC["content_rating"]["purchases"])
+    def test_plus_is_claimed_exactly_while_it_is_on_sale(self):
+        # Plus.shown is true on Play exactly when the broker URL is baked in,
+        # and only then may the listing, the rating and Data safety say so.
+        sale = listing.broker_enabled()
+        plus = (ROOT / "app/src/main/java/tv/corebuilds/iconpack/Plus.kt"
+                ).read_text(encoding="utf-8")
+        self.assertIn("audit_request_endpoint", plus)
+        text = " ".join(SPEC["copy"].values())
+        self.assertEqual("CORE BUILDS PLUS" in SPEC["copy"]["full_description"], sale)
+        self.assertEqual(SPEC["content_rating"]["purchases"], listing.answers_cover_broker())
+        for claim in ("premium", "unlock", "upgrade"):
+            self.assertNotIn(claim, text.lower(), f"listing mentions {claim!r}")
+
+    def test_both_states_of_the_switch_are_honest(self):
+        # The committed tree is one state; render the other so a broker-on
+        # release cannot be the first time its answers are read.
+        n = listing.counts()
+        off, on = listing.copy(n, plus=False), listing.copy(n, plus=True)
+        self.assertNotIn("PLUS", off["full_description"])
+        self.assertIn("CORE BUILDS PLUS", on["full_description"])
+        self.assertIn(f"Spectra adds {n['plus_walls']} more wallpapers", on["full_description"])
+        self.assertIn(f"all {n['walls']} stills", on["full_description"])
+        self.assertLessEqual(len(on["full_description"]), listing.FULL_MAX)
+        self.assertEqual(off["short_description"], on["short_description"])
+        safety = listing.data_safety(plus=True)
+        self.assertTrue(safety["collects_user_data"])
+        self.assertFalse(safety["shares_user_data"])
+        self.assertTrue(all(c["optional"] and not c["shared"] for c in safety["collected"]))
+        types = {c["type"] for c in safety["collected"]}
+        self.assertEqual(types, {"App activity > Installed apps",
+                                 "Financial info > Purchase history"})
+        # The device note's model and Android version fit no listed type
+        # (they identify no one); they are named, not filed under the wrong one.
+        self.assertFalse(any("performance" in t.lower() for t in types))
+        self.assertIn("TV model", safety["not_a_listed_type"])
+        self.assertTrue(listing.content_rating(plus=True)["purchases"])
+        self.assertFalse(listing.content_rating(plus=False)["purchases"])
+        self.assertFalse(listing.data_safety(plus=False)["collects_user_data"])
+
+    def test_answers_keep_covering_broker_builds_after_the_broker_goes(self):
+        # One form covers every version on a track: once a broker build has
+        # shipped, dropping the broker must not flip the answers back.
+        original = listing.broker_enabled, listing.BROKER_SHIPPED
+        listing.broker_enabled = lambda: False
+        listing.BROKER_SHIPPED = True
+        try:
+            self.assertTrue(listing.data_safety()["collects_user_data"])
+            self.assertTrue(listing.content_rating()["purchases"])
+            self.assertNotIn("PLUS", listing.copy()["full_description"])
+        finally:
+            listing.broker_enabled, listing.BROKER_SHIPPED = original
+
+    def test_check_refuses_a_broker_build_without_the_latch(self):
+        import contextlib, io
+        original = listing.broker_enabled
+        listing.broker_enabled = lambda: True
+        out = io.StringIO()
+        try:
+            self.assertFalse(listing.BROKER_SHIPPED)
+            with contextlib.redirect_stdout(out):
+                self.assertEqual(listing.check(), 1)
+        finally:
+            listing.broker_enabled = original
+        self.assertIn("BROKER_SHIPPED is False", out.getvalue())
+
+    def test_check_catches_a_broker_baked_in_without_new_answers(self):
+        original = listing.broker_enabled
+        listing.broker_enabled = lambda: not original()
+        try:
+            self.assertEqual(listing.check(), 1)
+        finally:
+            listing.broker_enabled = original
 
 
 class RepeatedGeneration(unittest.TestCase):
