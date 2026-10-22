@@ -33,6 +33,7 @@
     <string name="chip_new_fmt">New (%1$d)</string>
     <string name="chip_live">Live</string>
     <string name="chip_plus">Plus</string>
+    <string name="chip_favourites_fmt">Favourites (%1$d)</string>
     <string name="chip_brandmarks">Brandmarks</string>
     <string name="icon_selected_fmt">%1$s · %2$s. Assign it from the launcher icon picker if it did not auto-apply.</string>
     <string name="picker_hint">Tap an icon to assign it to the app.</string>
@@ -197,6 +198,15 @@
     <string name="wp_live_spoken">, live wallpaper</string>
     <string name="wp_plus_badge">PLUS</string>
     <string name="wp_plus_spoken">, Core Builds Plus wallpaper</string>
+    <!-- Favourites: the preview's toggle and the grid tile's star. The
+         button's label carries the state; the spoken description says
+         what a press does. -->
+    <string name="wp_fav_add">☆ Favourite</string>
+    <string name="wp_fav_remove">★ Favourite</string>
+    <string name="wp_fav_add_desc">Add to favourites</string>
+    <string name="wp_fav_remove_desc">Remove from favourites</string>
+    <string name="wp_fav_badge">★</string>
+    <string name="wp_fav_spoken">, favourite</string>
     <string name="wp_plus_held_fmt">Plus walls left out (%1$d): they need Core Builds Plus.</string>
     <string name="wp_set_live">Set live wallpaper</string>
     <string name="wp_save_for_monet">Save for Monet</string>

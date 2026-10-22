@@ -5,7 +5,7 @@
   ],
   "sideload_package": "tv.corebuilds.iconpack",
   "counts": {
-    "icons": 1012,
+    "icons": 1020,
     "walls": 132,
     "series": 11,
     "loops": 48,
@@ -13,8 +13,8 @@
   },
   "copy": {
     "title": "Core Builds Icon Pack",
-    "short_description": "1012 icons and 132 wallpapers built for Android TV. No ads, no account.",
-    "full_description": "An icon and wallpaper pack made for the television, not a phone app stretched onto one.\n\nICONS\n1012 icons, mapped for the apps people actually run on a TV: streaming services, players, launchers, tools. Every app gets two shapes: a 16:9 banner, which this pack applies, and a square glyph, applied by the free Core Builds Glyphs Pack. The Art style switch moves between them, and the first time you pick square it takes you to the Glyphs Pack.\n\nWALLPAPERS\n132 stills across 11 series, from deep space to circuit boards, each with a matching thumbnail bundled in the app. The grid works offline; the full-size image downloads when you pick it, and saves to your own Pictures folder if you would rather set it yourself.\n\nLIVE LOOPS\n48 animated wallpapers, played by the system rather than a video app, so they keep moving while you browse.\n\nHONEST ABOUT YOUR TV\nThe auditor lists which of your installed apps the pack covers, shows the exact icon file it would draw for any app, and can request a missing icon in one press. There is no account and no sign-in. Nothing is analysed in the background.\n\nWORKS WITH\nLaunchers that accept icon packs, including Projectivy, FLauncher, AT4K, Leanback Launcher and Lawnchair variants. Where a launcher cannot be driven directly, the app says so and points you at the manual picker instead of pretending.\n\nPRIVACY\nNo advertising, no analytics, no tracking, no account. Wallpapers are fetched from a public address; an icon request sends the app name, the component and a device note, and only when you press it."
+    "short_description": "1020 icons and 132 wallpapers built for Android TV. No ads, no account.",
+    "full_description": "An icon and wallpaper pack made for the television, not a phone app stretched onto one.\n\nICONS\n1020 icons, mapped for the apps people actually run on a TV: streaming services, players, launchers, tools. Every app gets two shapes: a 16:9 banner, which this pack applies, and a square glyph, applied by the free Core Builds Glyphs Pack. The Art style switch moves between them, and the first time you pick square it takes you to the Glyphs Pack.\n\nWALLPAPERS\n132 stills across 11 series, from deep space to circuit boards, each with a matching thumbnail bundled in the app. The grid works offline; the full-size image downloads when you pick it, and saves to your own Pictures folder if you would rather set it yourself.\n\nLIVE LOOPS\n48 animated wallpapers, played by the system rather than a video app, so they keep moving while you browse.\n\nHONEST ABOUT YOUR TV\nThe auditor lists which of your installed apps the pack covers, shows the exact icon file it would draw for any app, and can request a missing icon in one press. There is no account and no sign-in. Nothing is analysed in the background.\n\nWORKS WITH\nLaunchers that accept icon packs, including Projectivy, FLauncher, AT4K, Leanback Launcher and Lawnchair variants. Where a launcher cannot be driven directly, the app says so and points you at the manual picker instead of pretending.\n\nPRIVACY\nNo advertising, no analytics, no tracking, no account. Wallpapers are fetched from a public address; an icon request sends the app name, the component and a device note, and only when you press it."
   },
   "assets": {
     "icon": {
@@ -122,13 +122,13 @@
   },
   "sources": {
     "generator": "fd5b695f87985af259f1272dbcaf91edeca55c0eb426f2ffbed05ab229ec3f59",
-    "branding": "77d63a0d0ef7c7fc21eaddf7ce54a6a7aed88d5e3a8ac733079ae869f1424f54",
-    "icon_pack_xml": "524eaa6952a4da1c823bf600340b8d61f9b0e5486ef74cb00462451ab3fd647b",
+    "branding": "4fa4d2dcbac033c4ca1a1651570529bd7cfe82baf0b837b10f491d58c69f22e6",
+    "icon_pack_xml": "da1b14f2de497702b8c911da7ef81177334704922b318a02632d12cbb37eb081",
     "wallpapers_json": "0bc4f85d2ff7d2e2c646088cd450957c5e7a58c0519be85923207356dafb3490",
     "live_loop_kt": "cd1799653c6278c75142804c137eefa3fc5ad8f893b28331d8f8ed5acc3c8720",
     "frames": {
       "app-ui-wallpapers.png": "77efc54344e91cb0f24a4d1073de3ce5951454e75429786c77d0a9c89d3b85f7",
-      "app-ui-catalogue.png": "3ea17dfa44dbecd815a41443c5d79cba48f3c74fa5a327e2ae2dcdb1742c8c24",
+      "app-ui-catalogue.png": "c2f3375a60b15fdbef8bc6e140af651de587ee130a277f8a5be496cf3ed3a09b",
       "app-ui-inspector.png": "d5378f5082edd66813901240608b0c94d6a2cb8fc1f6d7c24fc4dec0518699e8",
       "app-ui-auditor.png": "b0ed4c209362841cc5b2f75dacb3ab1b87f7651034f16ed024b90c70a287f964",
       "app-ui-launcher-compat.png": "df1ca2cfab3fcdf91cae315ef31b2ddb9e1a32e4b59b26fe7e6bd2a1ee65ab68",

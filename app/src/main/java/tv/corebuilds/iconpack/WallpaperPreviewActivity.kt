@@ -31,6 +31,9 @@ import java.io.File
  *    wallpaper and themes only from its own background library.
  *  - **Save** copies the original file to Pictures/CoreBuilds (for launcher
  *    wallpaper rotation).
+ *  - **Favourite** stars the wallpaper ([Prefs.wallpaperFavourites]) for the
+ *    browser's Favourites chip. It needs no download, so it works from the
+ *    first frame, offline included.
  * Five seed chips under the title preview the palette; they are not in the
  * D-pad chain.
  *
@@ -50,6 +53,8 @@ class WallpaperPreviewActivity : TvActivity() {
 
     private lateinit var setButton: TextView
     private lateinit var saveButton: TextView
+    private lateinit var favButton: TextView
+    private lateinit var backButton: TextView
     private lateinit var sub: TextView
     private lateinit var image: ImageView
     private lateinit var titleView: TextView
@@ -112,6 +117,7 @@ class WallpaperPreviewActivity : TvActivity() {
         titleView = findViewById(R.id.preview_title)
         setButton = findViewById(R.id.preview_set)
         saveButton = findViewById(R.id.preview_save)
+        favButton = findViewById(R.id.preview_fav)
         sub = findViewById(R.id.preview_sub)
         seedRow = findViewById(R.id.seed_row)
         seedChips = listOf(
@@ -139,12 +145,13 @@ class WallpaperPreviewActivity : TvActivity() {
             currentIndex = 0
         }
 
-        val back = findViewById<TextView>(R.id.preview_back)
-        back.setOnClickListener { finish() }
+        backButton = findViewById(R.id.preview_back)
+        backButton.setOnClickListener { finish() }
         setButton.setOnClickListener { onSetClicked() }
         saveButton.setOnClickListener { onSaveClicked() }
+        favButton.setOnClickListener { onFavouriteClicked() }
 
-        back.post { back.requestFocus() }
+        backButton.post { backButton.requestFocus() }
         showWallpaper()
     }
 
@@ -190,6 +197,8 @@ class WallpaperPreviewActivity : TvActivity() {
         // Save is a stills action (Pictures rotation folder); loops have no
         // use for it, so the button leaves the chain rather than disabling.
         saveButton.visibility = if (wp.isLive) View.GONE else View.VISIBLE
+        syncFocusChain()
+        bindFavourite(wp)
         seedRow.visibility = View.GONE
         findViewById<View>(R.id.preview_floor).visibility = View.GONE
 
@@ -417,6 +426,43 @@ class WallpaperPreviewActivity : TvActivity() {
             seedChips[i].background = d
         }
         seedRow.visibility = View.VISIBLE
+    }
+
+    /**
+     * Link the action row's left/right edges through the buttons on screen.
+     * The layout links Back > Save > Favourite > Set for a still; a loop has
+     * no Save, and a GONE view named as a focus edge is not skipped on every
+     * API level (before 8.0 the cursor stops dead on it), so the row is
+     * relinked here whenever Save comes or goes.
+     */
+    private fun syncFocusChain() {
+        val row = listOf(backButton, saveButton, favButton, setButton)
+            .filter { it.visibility == View.VISIBLE }
+        row.forEachIndexed { i, v ->
+            v.nextFocusLeftId = row.getOrNull(i - 1)?.id ?: View.NO_ID
+            v.nextFocusRightId = row.getOrNull(i + 1)?.id ?: View.NO_ID
+        }
+    }
+
+    // ---- Favourite -----------------------------------------------------------
+
+    private fun bindFavourite(wp: Wallpaper) {
+        val starred = wp.cacheName in Prefs.wallpaperFavourites(this)
+        favButton.setText(if (starred) R.string.wp_fav_remove else R.string.wp_fav_add)
+        favButton.contentDescription = getString(
+            if (starred) R.string.wp_fav_remove_desc else R.string.wp_fav_add_desc
+        )
+        // The star in the label and the ink both say it: cyan once starred.
+        favButton.setTextColor(ContextCompat.getColor(
+            this, if (starred) R.color.cb_signal_cyan else R.color.cb_slate
+        ))
+    }
+
+    private fun onFavouriteClicked() {
+        val wp = wallpapers.getOrNull(currentIndex) ?: return
+        val starred = wp.cacheName in Prefs.wallpaperFavourites(this)
+        Prefs.setWallpaperFavourite(this, wp.cacheName, !starred)
+        bindFavourite(wp)
     }
 
     // ---- Set -----------------------------------------------------------------

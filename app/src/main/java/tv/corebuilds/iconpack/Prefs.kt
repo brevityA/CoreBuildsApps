@@ -34,6 +34,7 @@ object Prefs {
     const val KEY_LIVE_ROTATE_HOURS = "live_rotate_hours"
     const val KEY_WHATS_NEW_SEEN = "whats_new_seen_version"
     const val KEY_WP_NEW_SEEN = "wallpapers_new_seen_since"
+    const val KEY_WP_FAVOURITES = "wallpaper_favourites"
     const val KEY_COMPANION_PENDING_APPLY = "glyphs_pending_apply"
 
     private fun prefs(context: Context): SharedPreferences =
@@ -124,6 +125,25 @@ object Prefs {
 
     fun setWallpapersNewSeen(context: Context, since: String) {
         prefs(context).edit().putString(KEY_WP_NEW_SEEN, since).apply()
+    }
+
+    /**
+     * Wallpapers starred with the preview's Favourite button, by
+     * [Wallpaper.cacheName]. That is the file name, which a re-render keeps
+     * (only `since`, and with it [Wallpaper.storeName], moves), so a favourite
+     * survives its wall being redrawn. Read by [WallpapersActivity] for the
+     * Favourites chip and the tiles' star. A name that leaves the catalogue
+     * stays stored but is not counted, so a wall that returns comes back
+     * starred.
+     */
+    fun wallpaperFavourites(context: Context): Set<String> =
+        // A copy: the set getStringSet returns must not be modified.
+        prefs(context).getStringSet(KEY_WP_FAVOURITES, null)?.toSet() ?: emptySet()
+
+    fun setWallpaperFavourite(context: Context, cacheName: String, favourite: Boolean) {
+        val next = wallpaperFavourites(context).toMutableSet()
+        if (favourite) next += cacheName else next -= cacheName
+        prefs(context).edit().putStringSet(KEY_WP_FAVOURITES, next).apply()
     }
 
     /**

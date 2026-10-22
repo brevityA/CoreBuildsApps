@@ -90,6 +90,7 @@
     <item drawable="binge_banner" />
     <item drawable="beachbody_banner" />
     <item drawable="britbox_banner" />
+    <item drawable="cinobo_banner" />
     <item drawable="crunchyroid_banner" />
     <item drawable="curiositystream_banner" />
     <item drawable="discovery_banner" />
@@ -124,6 +125,7 @@
     <item drawable="deltatv_nl_banner" />
     <item drawable="iptv3u_banner" />
     <item drawable="drama_live_banner" />
+    <item drawable="eaglecast_banner" />
     <item drawable="eternaltviptvbox_banner" />
     <item drawable="fivetviptvbox_banner" />
     <item drawable="screen_banner" />
@@ -138,6 +140,7 @@
     <item drawable="iptv_smarters_plus_banner" />
     <item drawable="kemo_iptv_banner" />
     <item drawable="streamingkemo_banner" />
+    <item drawable="la7_banner" />
     <item drawable="lazyiptvdeluxe_banner" />
     <item drawable="livetv_banner" />
     <item drawable="live_ultra_banner" />
@@ -185,6 +188,7 @@
     <item drawable="nova_video_player_banner" />
     <item drawable="ottplayer_banner" />
     <item drawable="player_banner" />
+    <item drawable="scorebox_banner" />
     <item drawable="tdtchannels_player_banner" />
     <item drawable="tg4_player_banner" />
     <item drawable="tubplayer_banner" />
@@ -252,6 +256,7 @@
     <item drawable="sportscaster_banner" />
     <item drawable="dazn_banner" />
     <item drawable="score_center_banner" />
+    <item drawable="euroleague_tv_banner" />
     <item drawable="euronews_banner" />
     <item drawable="production_banner" />
     <item drawable="foxsports_2_banner" />
@@ -500,6 +505,7 @@
     <item drawable="aircast_banner" />
     <item drawable="airpin_pro_banner" />
     <item drawable="receiver_banner" />
+    <item drawable="airplay_touch_banner" />
     <item drawable="airreceiverlite_banner" />
     <item drawable="airscreen_banner" />
     <item drawable="al_jazeera_banner" />
@@ -508,6 +514,7 @@
     <item drawable="amazing_classics_banner" />
     <item drawable="amcandroidtv_banner" />
     <item drawable="amnis_banner" />
+    <item drawable="ampchor_banner" />
     <item drawable="angel_banner" />
     <item drawable="anikentv_banner" />
     <item drawable="anilab_banner" />
@@ -1015,6 +1022,7 @@
     <item drawable="x_tv_banner" />
     <item drawable="xstream_play_banner" />
     <item drawable="xumo_play_banner" />
+    <item drawable="xuper_tv_banner" />
     <item drawable="yacine_tv_banner" />
     <item drawable="selfcare_banner" />
     <item drawable="yettel_tv_banner" />

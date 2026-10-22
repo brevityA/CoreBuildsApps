@@ -90,6 +90,7 @@
     <item drawable="binge" />
     <item drawable="beachbody" />
     <item drawable="britbox" />
+    <item drawable="cinobo" />
     <item drawable="crunchyroid" />
     <item drawable="curiositystream" />
     <item drawable="discovery" />
@@ -124,6 +125,7 @@
     <item drawable="deltatv_nl" />
     <item drawable="iptv3u" />
     <item drawable="drama_live" />
+    <item drawable="eaglecast" />
     <item drawable="eternaltviptvbox" />
     <item drawable="fivetviptvbox" />
     <item drawable="screen" />
@@ -138,6 +140,7 @@
     <item drawable="iptv_smarters_plus" />
     <item drawable="kemo_iptv" />
     <item drawable="streamingkemo" />
+    <item drawable="la7" />
     <item drawable="lazyiptvdeluxe" />
     <item drawable="livetv" />
     <item drawable="live_ultra" />
@@ -185,6 +188,7 @@
     <item drawable="nova_video_player" />
     <item drawable="ottplayer" />
     <item drawable="player" />
+    <item drawable="scorebox" />
     <item drawable="tdtchannels_player" />
     <item drawable="tg4_player" />
     <item drawable="tubplayer" />
@@ -252,6 +256,7 @@
     <item drawable="sportscaster" />
     <item drawable="dazn" />
     <item drawable="score_center" />
+    <item drawable="euroleague_tv" />
     <item drawable="euronews" />
     <item drawable="production" />
     <item drawable="foxsports_2" />
@@ -500,6 +505,7 @@
     <item drawable="aircast" />
     <item drawable="airpin_pro" />
     <item drawable="receiver" />
+    <item drawable="airplay_touch" />
     <item drawable="airreceiverlite" />
     <item drawable="airscreen" />
     <item drawable="al_jazeera" />
@@ -508,6 +514,7 @@
     <item drawable="amazing_classics" />
     <item drawable="amcandroidtv" />
     <item drawable="amnis" />
+    <item drawable="ampchor" />
     <item drawable="angel" />
     <item drawable="anikentv" />
     <item drawable="anilab" />
@@ -1015,6 +1022,7 @@
     <item drawable="x_tv" />
     <item drawable="xstream_play" />
     <item drawable="xumo_play" />
+    <item drawable="xuper_tv" />
     <item drawable="yacine_tv" />
     <item drawable="selfcare" />
     <item drawable="yettel_tv" />

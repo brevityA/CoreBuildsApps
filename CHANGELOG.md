@@ -6,8 +6,56 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- **The walkthrough covers the two refusals the first upload hit.** Both
+  came up on 2026-10-21, and `docs/PLAY-CONSOLE.md` now covers both:
+  - *Automatic protection*: Play's installer check needs `minSdk` 24, and the
+    bundles declare 21. §5 says to switch **Installer check** off before
+    the first upload.
+  - *Dedicated Android TV track*: a bundle that requires
+    `android.software.leanback` is refused on the shared closed track. §4
+    says to opt into the dedicated Android TV track first, which can't be
+    undone, and flags that Google doesn't say whether its testers count
+    toward the 12-tester gate.
+
+  §7 and §9 point at both. A test reads `minSdk` and the Play manifests'
+  leanback requirement, and keeps each fix in the walkthrough while its
+  cause holds.
+
+## [2.5.0] — 2026-10-21
+
+The first release since 2.4.4. It also carries what `main` gained since
+then. The Play apps, Core Builds Plus and the store listing change nothing
+in the GitHub/Downloader APK. The API 36 target, single-icon picking
+following Art style, and Core Builds Glyphs' own art do reach it.
+
 ### Added
 
+- **Wallpaper favourites.** The preview has a Favourite button between Save
+  and Set. Starred walls wear a ★ in the grid, and once one exists, a
+  Favourites (N) chip after All gathers them. A star is kept on the TV by
+  the wall's file name, so it survives the wall being re-rendered (only the
+  cache name moves). It needs no download and works offline from the first
+  frame. Un-starring the last favourite while it is showing takes the chip
+  away and returns the grid to All.
+- **Themed icons on Android 13 and later.** The pack, the glyphs flavor and
+  Core Builds Glyphs each carry a monochrome launcher layer: the same mark in
+  plain white, inside the same safe zone. A launcher that tints icons from
+  the wallpaper now tints ours too. Older Android ignores the layer.
+- **8 new icons.** ScoreBox (#347, #350), Ampchor (#353), EuroLeague TV
+  (#355), AirPlay Touch (#356), Cinobo (#357), Xuper TV (#361), EagleCast
+  (#351) and La7 (#365), each component reported by a TV.
+  - Colours are sampled from each app's Play listing icon. Two exceptions:
+    EagleCast takes #C12033 from the eaglecast.tv logo, and Xuper TV keeps a
+    palette colour (`color_reviewed` null) because its listing art could not
+    be fetched.
+  - Four new marks: a basketball over "TV", a screen giving way to a cursor,
+    a power ring and a star in a ring. Four wordmarks: SB, LA7, CINO/BO and
+    a framed XTV (a bare XTV is X TV's mark). EagleCast's star first scored
+    0.846 against SNRT Live's; the ring is what separates them.
+    `check_lookalikes` reports none new.
+  - 1012 → 1020 icons, 1228 → 1238 components.
 - **A Play Console walkthrough that cannot drift from the build.**
   `docs/PLAY-CONSOLE.md` gives each Console screen its answer in order — the
   forms, the store listing, the TV-only form-factor choice, the bundle secrets
@@ -77,7 +125,7 @@ All notable changes to the Core Builds Icon Pack. Format follows
   - a 512 icon, a 1024x500 feature graphic and a 1280x720 TV banner;
   - one 1920x1080 screenshot of its one screen, a new `glyphs-home` frame
     in `tools/build_app_ui_mockups.py`;
-  - copy whose counts, `1012` icons and `1933` components, are read from
+  - copy whose counts, `1020` icons and `1947` components, are read from
     `glyphs/`'s own `drawable.xml` and `appfilter.xml`;
   - fixed answers: no data collected, no purchases.
 
@@ -89,6 +137,21 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Changed
 
+- **`tools/catalog.json` names a source for every mapping.** 521 of 1020
+  icons had no `mapping_source`. Every new source is evidence that can be
+  checked:
+  - 432 icons: every component is verbatim in the decoded Projectivy 1.1.9
+    appfilter. Where 1.1.9 used another drawable name, that name is
+    recorded.
+  - 31 icons mix 1.1.9 components with later ones. The later ones are dated
+    by the first commit on `main` that carried them.
+  - 55 icons with no 1.1.9 component are dated the same way.
+  - Core Shift, Core Line and Core Doctor cite their own manifests.
+  - Ten older citations were wrong and are corrected. Five cited 1.1.9 for
+    components it never had (Launcher Manager, RTVE Play, 7plus, Vewd,
+    Vidio). Five more matched 1.1.9's components but not its drawable name.
+  - `validate.py` now fails an icon with no source, and
+    `test_mapping_hygiene.py` checks each kind of citation.
 - **The icon pack builds against API 36 and targets it.** Play stopped
   accepting new listings that target below Android 16 unless they are TV-only.
   The Play listing is TV-only, which would allow 34, but 36 meets both floors
@@ -108,20 +171,27 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Fixed
 
-- **The walkthrough covers the two refusals the first upload hit.** Both
-  came up on 2026-10-21, and `docs/PLAY-CONSOLE.md` now covers both:
-  - *Automatic protection*: Play's installer check needs `minSdk` 24, and the
-    bundles declare 21. §5 says to switch **Installer check** off before
-    the first upload.
-  - *Dedicated Android TV track*: a bundle that requires
-    `android.software.leanback` is refused on the shared closed track. §4
-    says to opt into the dedicated Android TV track first, which can't be
-    undone, and flags that Google doesn't say whether its testers count
-    toward the 12-tester gate.
-
-  §7 and §9 point at both. A test reads `minSdk` and the Play manifests'
-  leanback requirement, and keeps each fix in the walkthrough while its
-  cause holds.
+- **Five apps that showed the default icon now map.**
+  - Trakt's TV splash (#346).
+  - Hi Browser's home activity (#354).
+  - AnExplorer's free build, which launches the same activity as Pro (#348).
+    The icon is now named AnExplorer.
+  - Nuvio's Live TV launcher alias (#358) and its test build (#362).
+  - Hi Browser's three `MainActivity` components, guessed from its Play
+    listing in 1.8.18, are removed. #354's scan shows the app launches
+    `HomeActivity`, and no device ever showed the guesses.
+  - TVLok's two components are now flagged unverified. They were package
+    guesses (#155) that carried no flag, so the catalog counted them as
+    device-confirmed; #352 reports the icon doesn't apply. It needs the
+    component from a TV.
+  - Unverified mappings: 76 → 75.
+  - #352 (TvLok) stays open until it has a component.
+- **A loop's preview no longer strands the cursor on older TVs.** A loop has
+  no Save button, but the action row's focus chain still named it. On
+  Android 7.1 and older (Fire OS 5 and 6), D-pad right from Back could stop
+  there instead of reaching Set. The row is now relinked through the
+  buttons on screen whenever Save comes or goes. This comes from reading
+  the framework's focus code; it has not been reproduced on a device.
 - **The store description credits square glyphs to the Glyphs Pack.** Its
   ICONS paragraph said the pack "ships both shapes … so one install covers
   either". That holds for picking one icon at a time. It doesn't hold for

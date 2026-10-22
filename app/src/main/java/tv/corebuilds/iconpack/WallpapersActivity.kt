@@ -38,6 +38,11 @@ import androidx.recyclerview.widget.RecyclerView
  * an export leaves them out. They are not part of New, which stays the
  * main collection's release.
  *
+ * Favourites are starred in the preview ([Prefs.wallpaperFavourites]); once
+ * there is one, a Favourites chip follows All (and Plus), and starred tiles
+ * wear a star. Coming back from the preview re-reads the set, so a star
+ * given or taken there shows on return without moving the cursor.
+ *
  * TV-first D-pad flow: export/back → series chips → grid.
  */
 class WallpapersActivity : TvActivity() {
@@ -50,6 +55,7 @@ class WallpapersActivity : TvActivity() {
     private lateinit var exportSelected: TextView
 
     private var series: String? = null
+    private var favourites: Set<String> = emptySet()
 
     private val requestStorage =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -127,6 +133,11 @@ class WallpapersActivity : TvActivity() {
             if (picked.isNotEmpty()) beginExport(picked)
         }
 
+        // Opening the browser is seeing the release: the home rail stops
+        // advertising "N new" from here on.
+        WallpaperCatalog.newestSince(mainWalls())?.let { Prefs.setWallpapersNewSeen(this, it) }
+        favourites = Prefs.wallpaperFavourites(this)
+        adapter.setFavourites(favourites)
         bindChips()
         bindBackNavigation()
 
@@ -141,6 +152,27 @@ class WallpapersActivity : TvActivity() {
                 (firstChip ?: chips).requestFocus()
             }
         }
+    }
+
+    /**
+     * The preview is where stars change. Only a change does anything here:
+     * tiles re-star in place, the chip list is rebuilt for the new count, and
+     * the grid re-filters only while it is showing favourites.
+     */
+    override fun onResume() {
+        super.onResume()
+        val now = Prefs.wallpaperFavourites(this)
+        if (now == favourites) return
+        favourites = now
+        adapter.setFavourites(now)
+        // Un-starring the last favourite takes its chip away; the grid falls
+        // back to All rather than sitting on a filter nobody can pick. The
+        // RecyclerView keeps focus through the re-filter on its own (it
+        // moves to a neighbour when the focused tile left with its star).
+        val showingFavourites = series == FAV_KEY
+        if (showingFavourites && favouriteWalls().isEmpty()) series = null
+        bindChips()
+        if (showingFavourites) applyFilter()
     }
 
     private fun bindBackNavigation() {
@@ -194,9 +226,6 @@ class WallpapersActivity : TvActivity() {
     }
 
     private fun bindChips() {
-        // Opening the browser is seeing the release: the home rail stops
-        // advertising "N new" from here on.
-        WallpaperCatalog.newestSince(mainWalls())?.let { Prefs.setWallpapersNewSeen(this, it) }
         // The still series, in catalogue order. The loops' own key is not a
         // series folder; it gets the Live chip below, after New. The Plus
         // series has its own chip, straight after All.
@@ -206,6 +235,12 @@ class WallpapersActivity : TvActivity() {
         if (all.any { it.plus }) {
             labels += getString(R.string.chip_plus)
             keys += PLUS_KEY
+        }
+        // Only once something is starred: an empty chip is a dead stop.
+        val starred = favouriteWalls().size
+        if (starred > 0) {
+            labels += getString(R.string.chip_favourites_fmt, starred)
+            keys += FAV_KEY
         }
         // What this release added or re-rendered, first: with 132 walls in
         // series order, a new series sits under a hundred old ones and a user
@@ -236,7 +271,9 @@ class WallpapersActivity : TvActivity() {
             // user just pressed with a fresh ViewHolder and drops the D-pad
             // highlight on the press that moved it.
             itemAnimator = null
-            adapter = WallpaperChipAdapter(labels, keys, null) { key ->
+            // Rebuilt on return from the preview when the stars changed, so
+            // it starts on the filter already showing, not on All.
+            adapter = WallpaperChipAdapter(labels, keys, series) { key ->
                 series = key
                 applyFilter()
             }
@@ -248,6 +285,7 @@ class WallpapersActivity : TvActivity() {
             null -> all
             LIVE_KEY -> all.filter { it.isLive }
             PLUS_KEY -> all.filter { it.plus }
+            FAV_KEY -> favouriteWalls()
             NEW_KEY -> WallpaperCatalog.newWalls(mainWalls())
             else -> all.filter { it.series == series }
         }
@@ -256,6 +294,9 @@ class WallpapersActivity : TvActivity() {
             count.text = getString(R.string.wp_count_fmt, all.size)
         }
     }
+
+    /** Starred walls still in the catalogue, in catalogue order. */
+    private fun favouriteWalls(): List<Wallpaper> = all.filter { it.cacheName in favourites }
 
     /** Everything but the Plus walls: what New and the home rail count. */
     private fun mainWalls(): List<Wallpaper> = all.filter { !it.plus }
@@ -318,5 +359,7 @@ class WallpapersActivity : TvActivity() {
         private const val NEW_KEY = "__new__"
         /** Chip key for the Core Builds Plus walls; never a series folder name. */
         private const val PLUS_KEY = "__plus__"
+        /** Chip key for the starred walls; never a series folder name. */
+        private const val FAV_KEY = "__favourites__"
     }
 }

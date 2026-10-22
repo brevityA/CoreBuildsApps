@@ -175,12 +175,37 @@
             android:clickable="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:nextFocusRight="@id/preview_set"
+            android:nextFocusRight="@id/preview_fav"
             android:paddingStart="@dimen/cb_space_lg"
             android:paddingTop="@dimen/cb_space_sm"
             android:paddingEnd="@dimen/cb_space_lg"
             android:paddingBottom="@dimen/cb_space_sm"
             android:text="@string/wp_save"
+            android:textColor="@color/cb_slate"
+            android:textSize="@dimen/cb_text_body"
+            android:textStyle="bold" />
+
+        <!-- Favourite: a toggle, so it is a ghost like Save; its label carries
+             the state (hollow star off, filled on). WallpaperPreviewActivity
+             relinks the row's focus edges when Save leaves it for a loop. -->
+        <TextView
+            android:id="@+id/preview_fav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/cb_space_sm"
+            android:background="@drawable/bg_ghost"
+            android:minHeight="@dimen/cb_target_min"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:nextFocusLeft="@id/preview_save"
+            android:nextFocusRight="@id/preview_set"
+            android:paddingStart="@dimen/cb_space_lg"
+            android:paddingTop="@dimen/cb_space_sm"
+            android:paddingEnd="@dimen/cb_space_lg"
+            android:paddingBottom="@dimen/cb_space_sm"
+            android:text="@string/wp_fav_add"
             android:textColor="@color/cb_slate"
             android:textSize="@dimen/cb_text_body"
             android:textStyle="bold" />
@@ -195,7 +220,7 @@
             android:clickable="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:nextFocusLeft="@id/preview_save"
+            android:nextFocusLeft="@id/preview_fav"
             android:paddingStart="@dimen/cb_space_lg"
             android:paddingTop="@dimen/cb_space_sm"
             android:paddingEnd="@dimen/cb_space_lg"
