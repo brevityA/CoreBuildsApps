@@ -365,9 +365,12 @@ class EngineTests(unittest.TestCase):
         self.assertIn("unlockCanvasAndPost", self.src)
 
     def test_reads_the_choice_on_every_visibility_change(self):
-        # Re-picking a loop re-points wallpaper that is already active.
-        self.assertIn("Prefs.liveLoopId(applicationContext)", self.src)
-        self.assertIn("LiveLoop.byId(", self.src)
+        # Re-picking a loop re-points wallpaper that is already active. Since
+        # the night loop (Core Builds Plus) the choice is read through
+        # DayNight.loopId, which is the preview's pick outside night hours.
+        self.assertIn("LiveLoop.byId(DayNight.loopId(applicationContext))", self.src)
+        night = (ROOT / "app/src/main/java/tv/corebuilds/iconpack/DayNight.kt").read_text(encoding="utf-8")
+        self.assertIn("val day = Prefs.liveLoopId(context)", night.split("fun loopId(", 1)[1])
 
     def test_keeps_the_old_render_until_the_new_one_lands(self):
         # The engine plays the current render or, failing that, an older copy

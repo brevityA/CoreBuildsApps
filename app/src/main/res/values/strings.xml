@@ -264,8 +264,14 @@
     <string name="settings_night_sub">Plays instead of your live loop during night hours, then hands back. Offers the loops already on this TV.</string>
     <string name="settings_night_none">Download a loop in Wallpapers first. The night loop plays only what is already on this TV.</string>
     <string name="settings_hours_title">Night hours</string>
-    <string name="settings_hours_sub">When the night loop takes over, by this TV\'s clock.</string>
+    <string name="settings_hours_sub">When the night loop and the night walls take over, by this TV\'s clock.</string>
     <string name="settings_hours_fmt">%1$02d:00\u2013%2$02d:00</string>
+    <string name="settings_walls_title">Projectivy walls</string>
+    <string name="settings_walls_sub">What Projectivy rotates with this pack as its wallpaper source: all walls, your favourites or one series.</string>
+    <string name="settings_walls_night_title">Projectivy walls at night</string>
+    <string name="settings_walls_night_sub">What it rotates during night hours instead.</string>
+    <string name="settings_walls_all">All walls</string>
+    <string name="settings_walls_favourites">Favourites (%1$d)</string>
     <string name="settings_requests_title">My requests</string>
     <string name="settings_requests_sub">Every icon you requested from this TV, and how far each one has got.</string>
     <string name="settings_requests_open">Open</string>

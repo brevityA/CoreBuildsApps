@@ -385,8 +385,9 @@ class PlusExtras(unittest.TestCase):
         unlocked = read(KT / "Plus.kt").split("fun unlocked(", 1)[1].split("\n    }\n", 1)[0]
         self.assertIn("SupportActivity::class.java", unlocked)
         settings = read(KT / "SettingsActivity.kt")
-        # Rotation, night loop, night hours, My requests.
-        self.assertEqual(settings.count("if (Plus.unlocked(this))"), 4)
+        # Rotation, night loop, night hours, Projectivy walls by day and at
+        # night, My requests.
+        self.assertEqual(settings.count("if (Plus.unlocked(this))"), 6)
         browser = read(KT / "WallpapersActivity.kt")
         self.assertIn("if (item.plus && !Plus.unlocked(this)) return@WallpaperAdapter", browser)
         # The preview pages through its list: locked walls never go in it.

@@ -1,3 +1,4 @@
+import java.util.UUID
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -198,6 +199,9 @@ android {
 
     buildFeatures {
         buildConfig = true
+        // Projectivy's wallpaper-provider interface (src/main/aidl), the same
+        // files Core Motion builds against.
+        aidl = true
         // The candidate build type renames itself through resValue("string",
         // "app_name", ...). AGP 9 turns build-type resource values off by
         // default and fails configuration outright rather than ignoring the
@@ -240,6 +244,18 @@ kotlin {
 androidComponents {
     beforeVariants(selector().withBuildType("play").withFlavor("art" to "glyphs")) {
         it.enable = false
+    }
+    // The Projectivy wallpaper source's id (WallsProviderService). Projectivy
+    // tells sources apart by it, and the icon pack, its Play and test builds
+    // and Core Builds Glyphs can all sit on one TV, so each application id
+    // gets its own: a name-based UUID, the same on every build machine.
+    onVariants { variant ->
+        variant.manifestPlaceholders.put(
+            "wallsProviderUuid",
+            variant.applicationId.map {
+                UUID.nameUUIDFromBytes("$it/projectivy-walls".toByteArray()).toString()
+            },
+        )
     }
 }
 

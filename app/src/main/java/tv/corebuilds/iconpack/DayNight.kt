@@ -32,6 +32,10 @@ object DayNight {
         return if (from > to) hour >= from || hour < to else hour in from until to
     }
 
+    /** True when [now] falls inside this TV's night hours, by its own clock. */
+    fun isNightAt(context: Context, now: Long = System.currentTimeMillis()): Boolean =
+        isNight(hourOf(now), window(context))
+
     /** True when the schedule can change what plays: Plus owned and a night loop chosen. */
     fun active(context: Context): Boolean =
         Plus.owned(context) && Prefs.nightLoopId(context) != null
@@ -43,7 +47,7 @@ object DayNight {
      */
     fun loopId(context: Context, now: Long = System.currentTimeMillis()): String {
         val day = Prefs.liveLoopId(context)
-        if (!active(context) || !isNight(hourOf(now), window(context))) return day
+        if (!active(context) || !isNightAt(context, now)) return day
         val night = LiveLoop.LOOPS.firstOrNull { it.id == Prefs.nightLoopId(context) } ?: return day
         return if (LiveLoopDownloader.playable(context, night) != null) night.id else day
     }
