@@ -445,5 +445,84 @@ class AndroidWiringTests(unittest.TestCase):
         self.assertTrue(any((assets / "wallpapers_thumbs").glob("*.jpg")))
 
 
+class FavouritesTests(unittest.TestCase):
+    """2.5.0 wallpaper favourites: starred in the preview, gathered under a
+    Favourites chip in the browser, a star on the tile."""
+
+    def setUp(self):
+        self.prefs = _read(JAVA / "Prefs.kt")
+        self.preview = _read(JAVA / "WallpaperPreviewActivity.kt")
+        self.browser = _read(JAVA / "WallpapersActivity.kt")
+        self.adapter = _read(JAVA / "WallpaperAdapter.kt")
+
+    def test_a_favourite_is_keyed_by_the_name_a_re_render_keeps(self):
+        # storeName carries the manifest's `since` and moves on every
+        # re-render; a favourite stored under it would silently drop the
+        # next time its wall was redrawn. cacheName is the file name.
+        self.assertIn("Prefs.setWallpaperFavourite(this, wp.cacheName, !starred)", self.preview)
+        self.assertIn("wp.cacheName in Prefs.wallpaperFavourites(this)", self.preview)
+        self.assertIn("all.filter { it.cacheName in favourites }", self.browser)
+        self.assertIn("item.cacheName in favourites", self.adapter)
+        for source in (self.preview, self.browser, self.adapter):
+            self.assertNotRegex(source, r"storeName\s+in\s+(favourites|Prefs\.wallpaperFavourites)")
+
+    def test_the_stored_set_is_copied_before_it_is_changed(self):
+        # SharedPreferences hands back its own set; editing it in place is
+        # documented as unsafe and can lose the write.
+        self.assertIn("getStringSet(KEY_WP_FAVOURITES, null)?.toSet()", self.prefs)
+        self.assertIn("wallpaperFavourites(context).toMutableSet()", self.prefs)
+
+    def test_the_preview_row_links_back_save_favourite_set(self):
+        root = ET.parse(RES / "layout/activity_wallpaper_preview.xml").getroot()
+        ns = "{http://schemas.android.com/apk/res/android}"
+        ids = {el.get(ns + "id", "").split("/")[-1]: el for el in root.iter()}
+        row = [i for i, el in ids.items()
+               if i.startswith("preview_") and el.get(ns + "focusable") == "true"]
+        self.assertEqual(row, ["preview_back", "preview_save", "preview_fav", "preview_set"])
+
+        def edge(view, attr):
+            return (ids[view].get(ns + attr) or "").split("/")[-1]
+
+        self.assertEqual(edge("preview_save", "nextFocusRight"), "preview_fav")
+        self.assertEqual(edge("preview_fav", "nextFocusRight"), "preview_set")
+        self.assertEqual(edge("preview_fav", "nextFocusLeft"), "preview_save")
+        self.assertEqual(edge("preview_set", "nextFocusLeft"), "preview_fav")
+
+    def test_the_row_is_relinked_when_save_leaves_it(self):
+        # Save is GONE for a loop. Before API 26, FocusFinder returns a GONE
+        # nextFocus target instead of following past it, and the cursor
+        # stops; the row must be relinked through the visible buttons.
+        show = self.preview[self.preview.index("private fun showWallpaper()"):]
+        show = show[:show.index("\n    }\n")]
+        self.assertLess(show.index("saveButton.visibility ="), show.index("syncFocusChain()"))
+        self.assertIn(".filter { it.visibility == View.VISIBLE }", self.preview)
+
+    def test_the_chip_appears_only_with_a_favourite_to_show(self):
+        self.assertIn("if (starred > 0)", self.browser)
+        self.assertIn("FAV_KEY -> favouriteWalls()", self.browser)
+        # Un-starring the last one while it is showing falls back to All.
+        self.assertIn("if (showingFavourites && favouriteWalls().isEmpty()) series = null",
+                      self.browser)
+
+    def test_returning_from_the_preview_re_reads_the_stars(self):
+        resume = self.browser[self.browser.index("override fun onResume()"):]
+        resume = resume[:resume.index("\n    }\n")]
+        self.assertIn("Prefs.wallpaperFavourites(this)", resume)
+        self.assertIn("adapter.setFavourites(now)", resume)
+        self.assertIn("bindChips()", resume)
+        # The star is a partial bind, so the tile under the cursor stays put.
+        self.assertIn("notifyItemChanged(i, FAVOURITE_PAYLOAD)", self.adapter)
+
+    def test_strings_and_badge_exist(self):
+        strings = _read(RES / "values/strings.xml")
+        for key in ("chip_favourites_fmt", "wp_fav_add", "wp_fav_remove",
+                    "wp_fav_add_desc", "wp_fav_remove_desc", "wp_fav_badge",
+                    "wp_fav_spoken"):
+            self.assertRegex(strings, rf'<string name="{key}"', key)
+        tile = _read(RES / "layout/item_wallpaper.xml")
+        self.assertIn('android:id="@+id/wp_fav_badge"', tile)
+        self.assertIn('android:layout_gravity="top|end"', tile)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

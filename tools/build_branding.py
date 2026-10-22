@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Generates the pack's own branding assets from the pack-icon mark:
-  mipmap ic_launcher (legacy + adaptive background/foreground + adaptive xml)
+  mipmap ic_launcher (legacy + adaptive background/foreground/monochrome +
+                     adaptive xml)
   drawable cb_banner  (320x180 Leanback TV banner, required for ATV home rows)
 
 v1.8.17 redraws the launcher icon AS A PACK ICON. The old lit hexagon scene
@@ -75,8 +76,15 @@ ADAPTIVE_XML = '''<?xml version="1.0" encoding="utf-8"?>
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <background android:drawable="@mipmap/ic_launcher_background" />
     <foreground android:drawable="@mipmap/ic_launcher_foreground" />
+    <monochrome android:drawable="@mipmap/ic_launcher_monochrome" />
 </adaptive-icon>
 '''
+
+# Themed icons (Android 13+) read only the monochrome layer's alpha and tint
+# it from the wallpaper, so the layer is the mark alone in plain ink: any
+# colour or shading in it would theme to a blob. Every generator that writes
+# ADAPTIVE_XML writes this layer beside it, from its own mark.
+MONO_INK = "#FFFFFF"
 
 
 def svg(w, h, body, bg=None):
@@ -144,6 +152,9 @@ def main():
              f'<g transform="translate({_off:.1f},{_off:.1f}) '
              f'scale({_S:.4f})">{PACK_ICON}</g>')
     bg = svg(512, 512, launcher_background_body())
+    mono = svg(512, 512,
+               f'<g transform="translate({_off:.1f},{_off:.1f}) '
+               f'scale({_S:.4f})">{PACK_ICON.replace(ACCENT, MONO_INK)}</g>')
     for folder, size in [("mipmap-xhdpi", 216), ("mipmap-xxhdpi", 324)]:
         p = RES / folder / "ic_launcher_foreground.png"
         png(fg, p, size, size)
@@ -151,12 +162,15 @@ def main():
         p = RES / folder / "ic_launcher_background.png"
         png(bg, p, size, size)
         written.append(f"{folder}/ic_launcher_background.png ({size}px)")
+        p = RES / folder / "ic_launcher_monochrome.png"
+        png(mono, p, size, size)
+        written.append(f"{folder}/ic_launcher_monochrome.png ({size}px)")
 
     # Adaptive wiring: night card behind, pack icon in front. Written by the
     # generator so the layer drawables and the xml can never disagree.
     for name in ("ic_launcher.xml", "ic_launcher_round.xml"):
         p = RES / "mipmap-anydpi-v26" / name
-        p.write_text(ADAPTIVE_XML)
+        p.write_text(ADAPTIVE_XML, encoding="utf-8")
         written.append(f"mipmap-anydpi-v26/{name}")
 
     # Leanback banner 320x180 — night chrome, mark left, wordmark right.

@@ -22,7 +22,8 @@ import java.util.concurrent.Executors
  * No image-loading dependency.
  *
  * Supports a selection mode for bulk export: long-press toggles a tile, and
- * [selectionMode] shows the cyan ring on chosen items.
+ * [selectionMode] shows the cyan ring on chosen items. Favourites (by
+ * cacheName, [setFavourites]) wear a star in the corner opposite LIVE/PLUS.
  */
 class WallpaperAdapter(
     private var items: List<Wallpaper>,
@@ -30,6 +31,7 @@ class WallpaperAdapter(
 ) : RecyclerView.Adapter<WallpaperAdapter.VH>() {
 
     private val selected = HashSet<String>()  // cacheNames
+    private var favourites: Set<String> = emptySet()  // cacheNames
     var selectionMode = false
         private set
 
@@ -38,6 +40,7 @@ class WallpaperAdapter(
         val label: TextView = view.findViewById(R.id.wp_name)
         val ring: View = view.findViewById(R.id.wp_selected_ring)
         val badge: TextView = view.findViewById(R.id.wp_live_badge)
+        val star: TextView = view.findViewById(R.id.wp_fav_badge)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -57,11 +60,7 @@ class WallpaperAdapter(
         // One corner badge: LIVE for a loop, PLUS for a Core Builds Plus wall.
         holder.badge.visibility = if (item.isLive || item.plus) View.VISIBLE else View.GONE
         holder.badge.setText(if (item.plus) R.string.wp_plus_badge else R.string.wp_live_badge)
-        holder.itemView.contentDescription = when {
-            item.isLive -> item.title + holder.itemView.context.getString(R.string.wp_live_spoken)
-            item.plus -> item.title + holder.itemView.context.getString(R.string.wp_plus_spoken)
-            else -> item.title
-        }
+        bindFavourite(holder, item)
         holder.itemView.isFocusable = true
         holder.itemView.isFocusableInTouchMode = true
 
@@ -99,15 +98,33 @@ class WallpaperAdapter(
     }
 
     override fun onBindViewHolder(holder: VH, position: Int, payloads: MutableList<Any>) {
-        if (payloads.contains(SELECTION_PAYLOAD)) {
-            // Ring-only refresh: the tile ViewHolder stays attached, so the
-            // D-pad focus ring and the long-press selection frame can show at
-            // the same time. A full (payload-less) rebind detaches the
-            // focused view and the highlight disappears mid-press.
-            bindSelection(holder, position)
+        if (payloads.isNotEmpty() &&
+            payloads.all { it == SELECTION_PAYLOAD || it == FAVOURITE_PAYLOAD }
+        ) {
+            // Ring/star-only refresh: the tile ViewHolder stays attached, so
+            // the D-pad focus ring and the long-press selection frame can show
+            // at the same time, and the tile the user came back to from the
+            // preview keeps focus while its star changes. A full
+            // (payload-less) rebind detaches the focused view and the
+            // highlight disappears mid-press.
+            if (SELECTION_PAYLOAD in payloads) bindSelection(holder, position)
+            if (FAVOURITE_PAYLOAD in payloads) bindFavourite(holder, items[position])
             return
         }
         onBindViewHolder(holder, position)
+    }
+
+    private fun bindFavourite(holder: VH, item: Wallpaper) {
+        val starred = item.cacheName in favourites
+        holder.star.visibility = if (starred) View.VISIBLE else View.GONE
+        val context = holder.itemView.context
+        val kind = when {
+            item.isLive -> context.getString(R.string.wp_live_spoken)
+            item.plus -> context.getString(R.string.wp_plus_spoken)
+            else -> ""
+        }
+        val fav = if (starred) context.getString(R.string.wp_fav_spoken) else ""
+        holder.itemView.contentDescription = item.title + kind + fav
     }
 
     private fun bindSelection(holder: VH, position: Int) {
@@ -122,6 +139,17 @@ class WallpaperAdapter(
     override fun getItemCount() = items.size
 
     fun currentItems(): List<Wallpaper> = items
+
+    /** Re-star the tiles whose favourite state changed, in place. */
+    fun setFavourites(next: Set<String>) {
+        val before = favourites
+        favourites = next
+        items.forEachIndexed { i, item ->
+            if ((item.cacheName in before) != (item.cacheName in next)) {
+                notifyItemChanged(i, FAVOURITE_PAYLOAD)
+            }
+        }
+    }
 
     fun submit(next: List<Wallpaper>) {
         items = next
@@ -190,6 +218,8 @@ class WallpaperAdapter(
     companion object {
         // Partial-bind payload for selection-mode/ring changes.
         private const val SELECTION_PAYLOAD = "selection"
+        // Partial-bind payload for a star gained or lost.
+        private const val FAVOURITE_PAYLOAD = "favourite"
 
         private val io = Executors.newFixedThreadPool(2)
         private val main = Handler(Looper.getMainLooper())

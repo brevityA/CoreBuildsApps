@@ -255,8 +255,8 @@ label.
 
 ## 9. Core Builds Glyphs Pack: the second app
 
-The Glyphs Pack (`glyphs/`) is the square companion: the same 1933 launcher
-components, drawn as 1012 square glyphs. On Play, the icon pack's **Art
+The Glyphs Pack (`glyphs/`) is the square companion: the same 1947 launcher
+components, drawn as 1020 square glyphs. On Play, the icon pack's **Art
 style** switch opens this app's listing when the pack is missing
 (`GlyphsCompanion.ensure`), so it has to exist before anyone can pick Square.
 In Console it is a separate app, with its own package, listing, forms and
