@@ -108,7 +108,7 @@ following Art style, and Core Builds Glyphs' own art do reach it.
   - a 512 icon, a 1024x500 feature graphic and a 1280x720 TV banner;
   - one 1920x1080 screenshot of its one screen, a new `glyphs-home` frame
     in `tools/build_app_ui_mockups.py`;
-  - copy whose counts, `1012` icons and `1933` components, are read from
+  - copy whose counts, `1020` icons and `1947` components, are read from
     `glyphs/`'s own `drawable.xml` and `appfilter.xml`;
   - fixed answers: no data collected, no purchases.
 
