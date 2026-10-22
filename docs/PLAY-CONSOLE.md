@@ -135,8 +135,12 @@ Play Console → **Store settings**.
   listed); use it for §7. **Unverified:** Google's help doesn't say whether
   testers on the TV track count toward the 12-tester / 14-day production
   gate. Watch the Dashboard's *Production* checklist once testers opt in. If
-  its count stays at 0, the fallback is a phone-compatible Play bundle
-  (`required="false"`) on the shared closed track.
+  its count stays at 0, the fallback is a phone-compatible Play build on the
+  shared closed track, and `required="false"` alone does not make one. It
+  also needs the Phone form factor on the listing, phone screenshots of the
+  app actually running on a phone (§3 forbids rendering one), and first a
+  phone layout someone has tested, which the app does not have yet. Treat it
+  as a project, not a setting.
 
 ## 5. Build the bundle
 
