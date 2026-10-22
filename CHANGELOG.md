@@ -38,7 +38,7 @@ following Art style, and Core Builds Glyphs' own art do reach it.
     a framed XTV (a bare XTV is X TV's mark). EagleCast's star first scored
     0.846 against SNRT Live's; the ring is what separates them.
     `check_lookalikes` reports none new.
-  - 1012 → 1020 icons, 1228 → 1241 components.
+  - 1012 → 1020 icons, 1228 → 1238 components.
 - **A Play Console walkthrough that cannot drift from the build.**
   `docs/PLAY-CONSOLE.md` gives each Console screen its answer in order — the
   forms, the store listing, the TV-only form-factor choice, the bundle secrets
@@ -160,6 +160,10 @@ following Art style, and Core Builds Glyphs' own art do reach it.
   - AnExplorer's free build, which launches the same activity as Pro (#348).
     The icon is now named AnExplorer.
   - Nuvio's Live TV launcher alias (#358) and its test build (#362).
+  - Hi Browser's three `MainActivity` components, guessed from its Play
+    listing in 1.8.18, are removed. #354's scan shows the app launches
+    `HomeActivity`, and no device ever showed the guesses. Unverified
+    mappings: 76 → 73.
   - #352 (TvLok) stays open until it has a component.
 - **A loop's preview no longer strands the cursor on older TVs.** A loop has
   no Save button, but the action row's focus chain still named it. On

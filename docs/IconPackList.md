@@ -1,6 +1,6 @@
 # Supported applications
 
-`1020` icons · `1241` mapped components · pack v2.5.0
+`1020` icons · `1238` mapped components · pack v2.5.0
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -348,7 +348,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | HeatVod Ultra | `heatvod_ultra` | `#FF5A7E` | `#FF5A7E` | `com.google.heatvodultra/com.google.chuangke.page.SplashActivity` |
 | HEI Network | `heinetworktv` | `#DA3430` | `#DA3430` | `com.heinetwork.HEINetworkTV/com.heinetwork.HEINetworkTV.MainActivity` |
 | HGTV | `watcher` | `#00A8C0` | `#00A8C0` | `com.hgtv.watcher/com.discovery.tve.presentation.activities.SplashActivity` |
-| Hi Browser | `hi_browser` | `#00A8A8` | `#00A8A8` | `com.hisense.odinbrowser/com.hisense.odinbrowser.MainActivity`<br>`com.hisense.odinbrowser/com.hisense.odinbrowser.ui.MainActivity`<br>`com.hisense.odinbrowser/com.hisense.odinbrowser.browser.MainActivity`<br>`com.hisense.odinbrowser/com.vt.hibrowser.activity.home.HomeActivity` |
+| Hi Browser | `hi_browser` | `#00A8A8` | `#00A8A8` | `com.hisense.odinbrowser/com.vt.hibrowser.activity.home.HomeActivity` |
 | hide.me | `hideme` | `#2AA9E0` | `#2AA9E0` | `hideme.android.vpn/com.android.vpn.activities.LoginActivity` |
 | HIDIVE | `hidive` | `#00A8E8` | `#00A8E8` | `com.twentyfouri.androidtv.hidive/com.twentyfouri.androidtv.hidive.MainActivity` |
 | HISTORY | `androidtv_4` | `#DF9931` | `#DF9931` | `com.aetn.history.watch.androidtv/com.aetn.android.tveapps.app.MainActivity` |

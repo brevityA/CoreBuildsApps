@@ -4633,18 +4633,10 @@
       "color": "#00A8A8",
       "glyph": "hi_browser_ring",
       "components": [
-        "com.hisense.odinbrowser/com.hisense.odinbrowser.MainActivity",
-        "com.hisense.odinbrowser/com.hisense.odinbrowser.ui.MainActivity",
-        "com.hisense.odinbrowser/com.hisense.odinbrowser.browser.MainActivity",
         "com.hisense.odinbrowser/com.vt.hibrowser.activity.home.HomeActivity"
       ],
-      "unverified": [
-        "com.hisense.odinbrowser/com.hisense.odinbrowser.MainActivity",
-        "com.hisense.odinbrowser/com.hisense.odinbrowser.ui.MainActivity",
-        "com.hisense.odinbrowser/com.hisense.odinbrowser.browser.MainActivity"
-      ],
       "category": "BROWSER",
-      "mapping_source": "Play listing com.hisense.odinbrowser; launcher activity guessed, unverified on device; issue #354 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, Projectivy Launcher, pack 2.4.4, 2026-10-19): the app launches com.vt.hibrowser.activity.home.HomeActivity; the three Play-listing guesses stay unverified",
+      "mapping_source": "Play listing com.hisense.odinbrowser; issue #354 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, Projectivy Launcher, pack 2.4.4, 2026-10-19): the app launches com.vt.hibrowser.activity.home.HomeActivity. The three MainActivity components guessed from the Play listing in v1.8.18 were never seen on a device and are removed (2.5.0)",
       "color_source": "brand reference — Hi Browser icon teal (sampled 2026-09-14)",
       "color_reviewed": "2026-09-14"
     },

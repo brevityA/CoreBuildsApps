@@ -56,8 +56,12 @@ REFERENCE = ROOT / "tools" / "reference" / "projectivy-1.1.9-appfilter.xml"
 # per name form (`pkg/.Act` and `pkg/pkg.Act`), both flagged. The build emits
 # both forms from one entry, so the copies are folded; appfilter.xml is
 # byte-identical and no flag changed hands.
+# 76 -> 73 (2.5.0): Hi Browser's three MainActivity guesses came out. #354, a
+# scanner report from a SHIELD, showed the app launches
+# com.vt.hibrowser.activity.home.HomeActivity, which is now mapped; the guesses
+# were never seen on any device.
 # The ceiling may only move back down.
-UNVERIFIED_CEILING = 76
+UNVERIFIED_CEILING = 73
 
 
 def _canonical(component: str) -> str:

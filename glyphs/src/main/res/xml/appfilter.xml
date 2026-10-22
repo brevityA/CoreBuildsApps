@@ -997,12 +997,6 @@
     <!-- HGTV -->
     <item component="ComponentInfo{com.hgtv.watcher/com.discovery.tve.presentation.activities.SplashActivity}" drawable="watcher"/>
     <!-- Hi Browser -->
-    <item component="ComponentInfo{com.hisense.odinbrowser/com.hisense.odinbrowser.MainActivity}" drawable="hi_browser"/>
-    <item component="ComponentInfo{com.hisense.odinbrowser/.MainActivity}" drawable="hi_browser"/>
-    <item component="ComponentInfo{com.hisense.odinbrowser/com.hisense.odinbrowser.ui.MainActivity}" drawable="hi_browser"/>
-    <item component="ComponentInfo{com.hisense.odinbrowser/.ui.MainActivity}" drawable="hi_browser"/>
-    <item component="ComponentInfo{com.hisense.odinbrowser/com.hisense.odinbrowser.browser.MainActivity}" drawable="hi_browser"/>
-    <item component="ComponentInfo{com.hisense.odinbrowser/.browser.MainActivity}" drawable="hi_browser"/>
     <item component="ComponentInfo{com.hisense.odinbrowser/com.vt.hibrowser.activity.home.HomeActivity}" drawable="hi_browser"/>
     <!-- hide.me -->
     <item component="ComponentInfo{hideme.android.vpn/com.android.vpn.activities.LoginActivity}" drawable="hideme"/>

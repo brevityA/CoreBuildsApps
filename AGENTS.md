@@ -93,7 +93,7 @@ another brand's. When `check_lookalikes.py` names a new pair, give one of
 them the cue its brand actually has (the word, if its logo is a word),
 never an entry in `tools/lookalike_baseline.json`.
 
-Paste the validator receipt. Current receipt: `Validated 1020 icons · 1953 components`.
+Paste the validator receipt. Current receipt: `Validated 1020 icons · 1947 components`.
 
 **The pack identity takes precedence over literal vendor-logo reproduction.**
 Reviewed brand entries use `style: core_monoline`: 32px rounded primary strokes,
