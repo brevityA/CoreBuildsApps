@@ -241,9 +241,11 @@ PLUS_COPY = (
     "CORE BUILDS PLUS\n"
     "Optional, one purchase through Google Play, no subscription: your icon "
     "requests are filed as priority, My requests shows how far each one has "
-    "got, the live wallpaper can rotate through your loops, and Spectra adds "
-    "{plus_walls} more wallpapers. Every icon, all {walls} stills, every loop "
-    "and every screen ship to everyone either way.\n"
+    "got, the live wallpaper can rotate through your loops and play a second "
+    "one at night, you choose what Projectivy rotates from this pack "
+    "(favourites, one series, a night set), and Spectra adds {plus_walls} "
+    "more wallpapers. Every icon, all {walls} stills, every loop and every "
+    "screen ship to everyone either way.\n"
     "\n"
 )
 PLUS_PRIVACY = (

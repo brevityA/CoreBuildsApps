@@ -5,11 +5,14 @@ import android.content.Context
 import android.content.Intent
 
 /**
- * Core Builds Plus: the Google Play build's one-time unlock. It adds four
+ * Core Builds Plus: the Google Play build's one-time unlock. It adds six
  * things and holds nothing else back: priority on the icon requests the
- * auditor files, My requests (each request's progress), live loop rotation,
- * and the Plus wallpaper series. Every icon, banner and the main wallpaper
- * collection ship to everyone, and the GitHub builds have no Plus at all.
+ * auditor files, My requests (each request's progress), live loop rotation
+ * ([LoopRotation]), the night loop ([DayNight]), the choice of what
+ * Projectivy rotates by day and by night ([ProjectivyWalls]), and the Plus
+ * wallpaper series. Every icon, banner and the main wallpaper collection ship
+ * to everyone, in Projectivy's rotation too, and the GitHub builds have no
+ * Plus at all.
  *
  * PlusStore exists twice, one per distribution: src/play/java talks to Google
  * Play Billing, and src/github/java (debug, release, candidate) is a no-op
