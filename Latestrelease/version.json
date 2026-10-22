@@ -1,20 +1,20 @@
 {
-  "versionCode": 57,
-  "versionName": "2.4.4",
-  "iconCount": 1012,
-  "componentCount": 1228,
-  "releaseDate": "2026-10-18",
+  "versionCode": 58,
+  "versionName": "2.5.0",
+  "iconCount": 1020,
+  "componentCount": 1238,
+  "releaseDate": "2026-10-21",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "10 new icons",
-    "28 icons are redrawn, resized or re-centred",
-    "The component count counts each component once",
-    "New look-alike icons fail CI",
-    "Download on the update bar works with the remote",
-    "Setting a wallpaper no longer crashes when you move to the next one",
-    "Weyd and ByeByeDPI icons apply on current builds",
-    "Six more apps share an existing icon"
+    "Wallpaper favourites",
+    "Themed icons on Android 13 and later",
+    "8 new icons",
+    "A Play Console walkthrough that cannot drift from the build",
+    "The Play store listing is generated, and there is a privacy policy",
+    "Google Play apps, separate from the sideload ones",
+    "Core Builds Plus, on Google Play only",
+    "About names what Plus sends"
   ]
 }
