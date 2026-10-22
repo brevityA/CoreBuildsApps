@@ -251,7 +251,7 @@
     <string name="settings_group_suite">SUITE</string>
     <string name="settings_group_plus">CORE BUILDS PLUS</string>
     <string name="settings_plus_title">Core Builds Plus</string>
-    <string name="settings_plus_sub">One purchase: priority requests, My requests, loop rotation and the Spectra wallpapers.</string>
+    <string name="settings_plus_sub">One purchase: priority requests, My requests, loop rotation, a night loop, Projectivy walls and the Spectra wallpapers.</string>
     <string name="settings_plus_owned">Owned</string>
     <string name="settings_plus_buy">See it</string>
     <string name="settings_rotate_title">Rotate live loops</string>
@@ -260,6 +260,18 @@
     <string name="settings_rotate_hour">Every hour</string>
     <string name="settings_rotate_6h">Every 6 hours</string>
     <string name="settings_rotate_day">Every day</string>
+    <string name="settings_night_title">Night loop</string>
+    <string name="settings_night_sub">Plays instead of your live loop during night hours, then hands back. Offers the loops already on this TV.</string>
+    <string name="settings_night_none">Download a loop in Wallpapers first. The night loop plays only what is already on this TV.</string>
+    <string name="settings_hours_title">Night hours</string>
+    <string name="settings_hours_sub">When the night loop and the night walls take over, by this TV\'s clock.</string>
+    <string name="settings_hours_fmt">%1$02d:00\u2013%2$02d:00</string>
+    <string name="settings_walls_title">Projectivy walls</string>
+    <string name="settings_walls_sub">What Projectivy rotates with this pack as its wallpaper source: all walls, your favourites or one series.</string>
+    <string name="settings_walls_night_title">Projectivy walls at night</string>
+    <string name="settings_walls_night_sub">What it rotates during night hours instead.</string>
+    <string name="settings_walls_all">All walls</string>
+    <string name="settings_walls_favourites">Favourites (%1$d)</string>
     <string name="settings_requests_title">My requests</string>
     <string name="settings_requests_sub">Every icon you requested from this TV, and how far each one has got.</string>
     <string name="settings_requests_open">Open</string>
@@ -300,6 +312,8 @@
     <string name="faq_override_body">Projectivy keeps an icon you picked by hand until you pick again, so a per-app override survives every pack update. Re-assign the tile from the launcher\'s icon picker, or choose the pack default there, to hand the tile back to Core Builds.</string>
     <string name="faq_monet_title">Send to Monet: what it can and cannot take</string>
     <string name="faq_monet_body">Wallpapers go to Monet straight from Preview or Export (Send to Monet, Monet 1.0.72 or newer, Premium). The icon pack does not: Monet has no apply intent. It discovers packs through the standard discovery actions, and you choose Core Builds under Monet Settings → Apps → Icon pack.</string>
+    <string name="faq_projectivy_title">Projectivy can rotate these walls itself</string>
+    <string name="faq_projectivy_body">Projectivy 4.51 or newer lists this pack as a wallpaper source (wallpaper sources are a Projectivy Premium feature). Choose it in Projectivy\'s wallpaper settings and the main collection rotates on Projectivy\'s own interval; Projectivy downloads each one from the same public address this app uses. With Core Builds Plus (Google Play build), Settings → Projectivy walls picks favourites, one series or Spectra, with a second choice for night hours.</string>
     <string name="faq_unmapped_title">An installed app has no icon</string>
     <string name="faq_unmapped_body">Auto-assign needs the exact activity your box launches, and some apps ship different mobile and Leanback activities. Read the component off the device with the ADB scanning guide in the repo docs and send a mapping request; the next tranche picks it up.</string>
     <string name="chip_count_fmt">%1$s (%2$d)</string>
@@ -437,8 +451,8 @@
     <string name="plus_loading">Asking Google Play\u2026</string>
     <string name="plus_loading_button">Plus</string>
     <string name="plus_buy_fmt">Get Plus \u00b7 %1$s</string>
-    <string name="plus_for_sale">One purchase, no subscription: priority icon requests, My requests, live loop rotation and the 12 Spectra wallpapers.</string>
-    <string name="plus_owned">Plus is active on this Google account: priority requests, My requests (Settings), loop rotation (Settings) and Spectra (Wallpapers). Thank you.</string>
+    <string name="plus_for_sale">One purchase, no subscription: priority icon requests, My requests, live loop rotation, a night loop, your choice of what Projectivy rotates, and the 12 Spectra wallpapers.</string>
+    <string name="plus_owned">Plus is active on this Google account: priority requests, and in Settings My requests, loop rotation, the night loop and Projectivy walls; Spectra is in Wallpapers. Thank you.</string>
     <string name="plus_owned_button">Plus is active</string>
     <string name="plus_pending">Payment pending. Plus switches on when Google Play confirms it.</string>
     <string name="plus_pending_button">Pending</string>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Update check + in-app APK download. No analytics, no background service. -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -305,6 +306,55 @@
             android:exported="false"
             android:label="@string/wp_export_title"
             android:theme="@style/Theme.CoreBuilds" />
+
+        <!-- Projectivy's settings button for the wallpaper source below opens
+             Settings through this alias, which is the only exported door to
+             it: SettingsActivity itself stays unexported. -->
+        <activity-alias
+            android:name=".WallsProviderSettings"
+            android:exported="true"
+            android:label="@string/settings_label"
+            android:targetActivity=".SettingsActivity" />
+
+        <!-- The walls as a Projectivy wallpaper source (Projectivy 4.51+,
+             a Premium feature there). Projectivy finds it by the action,
+             binds it, and asks for the list on its own rotation timer. The
+             uuid is derived from the application id in app/build.gradle.kts,
+             so each build installed on one TV is its own source. -->
+        <service
+            android:name=".WallsProviderService"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="tv.projectivy.plugin.WALLPAPER_PROVIDER" />
+            </intent-filter>
+            <meta-data
+                android:name="apiVersion"
+                android:value="1" />
+            <meta-data
+                android:name="uuid"
+                android:value="${wallsProviderUuid}" />
+            <meta-data
+                android:name="name"
+                android:value="@string/app_name" />
+            <!-- The full class name: a relative one would be resolved against
+                 the package, and the Play and test builds' package
+                 (tv.corebuilds.iconpack.play, .test) is not the namespace. -->
+            <meta-data
+                android:name="settingsActivity"
+                android:value="tv.corebuilds.iconpack.WallsProviderSettings" />
+            <meta-data
+                android:name="itemsCacheDurationMillis"
+                android:value="@integer/walls_cache_duration_millis" />
+            <!-- TIME_ELAPSED only: the list changes with the hour and with
+                 Settings, never with what is focused or playing. -->
+            <meta-data
+                android:name="updateMode"
+                android:value="1" />
+        </service>
 
         <!-- System live wallpaper: plays the chosen LiveLoop on the home
              screen. Exported with the wallpaper bind permission so only the

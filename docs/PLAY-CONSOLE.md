@@ -204,8 +204,10 @@ and factual — what changed, and anything a user must do.
 ## 8. Core Builds Plus
 
 Plus is one managed product, bought once: priority icon requests, *My
-requests*, live loop rotation and Spectra (12 walls). Every icon, the main
-wallpaper collection and every screen ship to everyone. It is on sale only in
+requests*, live loop rotation, the night loop, the choice of what Projectivy
+rotates from the pack (by day and at night) and Spectra (12 walls). Every
+icon, the main wallpaper collection (in Projectivy's rotation too) and every
+screen ship to everyone. It is on sale only in
 a build with the request broker baked in, because priority requests are what
 it adds; until then the Play build sells nothing and the steps below wait.
 
@@ -247,7 +249,11 @@ it adds; until then the Play build sells nothing and the steps below wait.
    extra opens the Plus card before buying. Buy. Then a missing-icon press
    files an issue labelled `priority`; *My requests* lists it; *Rotate live
    loops* set to every hour moves the live wallpaper after an hour with two
-   or more loops downloaded; the Plus chip's Spectra walls open and download.
+   or more loops downloaded; a *Night loop* plays from the start of *Night
+   hours* with the home screen left on; with the pack as Projectivy's
+   wallpaper source, *Projectivy walls* set to Spectra rotates only Spectra
+   (`adb logcat -s CoreBuilds/Walls` shows each fetch and its count); the
+   Plus chip's Spectra walls open and download.
 
 None of this has run on a TV yet: no device has bought Plus. Step 8 is the
 first real proof of the purchase sheet, the acknowledge call and the broker's

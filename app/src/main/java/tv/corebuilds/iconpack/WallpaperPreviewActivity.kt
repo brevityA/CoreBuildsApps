@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import java.io.File
+import tv.projectivy.plugin.wallpaperprovider.api.WallpaperProviderContract
 
 /**
  * Full-screen preview of one wallpaper with D-pad left/right navigation.
@@ -463,6 +464,10 @@ class WallpaperPreviewActivity : TvActivity() {
         val starred = wp.cacheName in Prefs.wallpaperFavourites(this)
         Prefs.setWallpaperFavourite(this, wp.cacheName, !starred)
         bindFavourite(wp)
+        // Projectivy may be rotating the favourites (Core Builds Plus).
+        if (ProjectivyWalls.usesFavourites(this)) {
+            ProjectivyWalls.notifyProjectivy(this, WallpaperProviderContract.UpdateReason.DATA_CHANGED)
+        }
     }
 
     // ---- Set -----------------------------------------------------------------

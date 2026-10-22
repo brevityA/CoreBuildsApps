@@ -32,6 +32,10 @@ object Prefs {
     const val KEY_LIVE_LOOP = "live_loop"
     const val KEY_LIVE_LOOP_CHANGED_AT = "live_loop_changed_at"
     const val KEY_LIVE_ROTATE_HOURS = "live_rotate_hours"
+    const val KEY_NIGHT_LOOP = "night_loop"
+    const val KEY_NIGHT_WINDOW = "night_window"
+    const val KEY_WALLS_SOURCE = "projectivy_walls"
+    const val KEY_WALLS_NIGHT = "projectivy_walls_night"
     const val KEY_WHATS_NEW_SEEN = "whats_new_seen_version"
     const val KEY_WP_NEW_SEEN = "wallpapers_new_seen_since"
     const val KEY_WP_FAVOURITES = "wallpaper_favourites"
@@ -186,6 +190,51 @@ object Prefs {
         val edit = prefs(context).edit().putInt(KEY_LIVE_ROTATE_HOURS, hours)
         if (wasOff && hours > 0) edit.putLong(KEY_LIVE_LOOP_CHANGED_AT, now)
         edit.apply()
+    }
+
+    /**
+     * The loop [LiveWallpaperService] plays during night hours instead of
+     * [liveLoopId] (Core Builds Plus), or null when the schedule is off. Read
+     * through [DayNight.loopId]; written by Settings' night-loop row.
+     */
+    fun nightLoopId(context: Context): String? =
+        prefs(context).getString(KEY_NIGHT_LOOP, null)
+
+    fun setNightLoopId(context: Context, loopId: String?) {
+        prefs(context).edit().apply {
+            if (loopId == null) remove(KEY_NIGHT_LOOP) else putString(KEY_NIGHT_LOOP, loopId)
+        }.apply()
+    }
+
+    /** Index into [DayNight.WINDOWS]; out-of-range values read as the default. */
+    fun nightWindow(context: Context): Int =
+        prefs(context).getInt(KEY_NIGHT_WINDOW, 0).takeIf { it in DayNight.WINDOWS.indices } ?: 0
+
+    fun setNightWindow(context: Context, index: Int) {
+        prefs(context).edit().putInt(KEY_NIGHT_WINDOW, index).apply()
+    }
+
+    /**
+     * What Projectivy's rotation draws from when the pack is its wallpaper
+     * source: [ProjectivyWalls.ALL], [ProjectivyWalls.FAVOURITES] or a series
+     * id. Choosing is Core Builds Plus; without it [ProjectivyWalls.pick]
+     * serves the main collection whatever is stored here.
+     */
+    fun wallsSource(context: Context): String =
+        prefs(context).getString(KEY_WALLS_SOURCE, ProjectivyWalls.ALL) ?: ProjectivyWalls.ALL
+
+    fun setWallsSource(context: Context, source: String) {
+        prefs(context).edit().putString(KEY_WALLS_SOURCE, source).apply()
+    }
+
+    /** What Projectivy's rotation draws from during night hours (Plus), or null for no change. */
+    fun wallsNight(context: Context): String? =
+        prefs(context).getString(KEY_WALLS_NIGHT, null)
+
+    fun setWallsNight(context: Context, source: String?) {
+        prefs(context).edit().apply {
+            if (source == null) remove(KEY_WALLS_NIGHT) else putString(KEY_WALLS_NIGHT, source)
+        }.apply()
     }
 
     fun set(context: Context, key: String, value: Boolean) {
