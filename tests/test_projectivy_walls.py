@@ -169,6 +169,23 @@ class TierTests(unittest.TestCase):
         self.assertIn("if (ProjectivyWalls.usesFavourites(this))", fav)
 
 
+class CallerTests(unittest.TestCase):
+    def test_only_projectivy_may_write_the_settings(self):
+        # The service is exported with no permission (Projectivy binds it),
+        # so setPreferences checks its caller before anything is stored.
+        service = read(KT / "WallsProviderService.kt")
+        body = service.split("override fun setPreferences(", 1)[1].split("\n        }\n", 1)[0]
+        self.assertIn("getPackagesForUid(Binder.getCallingUid())", body)
+        guard = body.split("if (ProjectivyWalls.PROJECTIVY !in callers) {", 1)
+        self.assertEqual(len(guard), 2, "no caller guard")
+        refused, after = guard[1].split("\n            }\n", 1)
+        self.assertIn("return", refused)
+        self.assertIn("ProjectivyWalls.importPrefs(", after)
+        # Refused quietly: a thrown exception would land in the caller.
+        self.assertNotIn("throw ", body)
+        self.assertNotIn("check(", body)
+
+
 class OfflineTests(unittest.TestCase):
     def test_the_provider_never_downloads(self):
         for name in ("WallsProviderService.kt", "ProjectivyWalls.kt"):

@@ -33,7 +33,7 @@ object ProjectivyWalls {
     const val ALL = "all"
     const val FAVOURITES = "favourites"
 
-    private const val PROJECTIVY = "com.spocky.projengmenu"
+    const val PROJECTIVY = "com.spocky.projengmenu"
     private const val AUTHOR = "Core Builds"
     private const val TAG = "CoreBuilds/Walls"
 

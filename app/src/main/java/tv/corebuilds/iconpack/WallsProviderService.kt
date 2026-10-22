@@ -2,6 +2,7 @@ package tv.corebuilds.iconpack
 
 import android.app.Service
 import android.content.Intent
+import android.os.Binder
 import android.os.IBinder
 import android.util.Log
 import tv.projectivy.plugin.wallpaperprovider.api.Event
@@ -41,6 +42,17 @@ class WallsProviderService : Service() {
             ProjectivyWalls.exportPrefs(this@WallsProviderService)
 
         override fun setPreferences(params: String?) {
+            // The service is exported without a permission, as Projectivy's
+            // contract requires, so any app could reach it. Reading is
+            // harmless (public walls, two setting names); writing changes
+            // what a Plus owner's Projectivy rotates, so only Projectivy may.
+            // A refusal is logged, not thrown: an exception here would be
+            // rethrown in the caller's process.
+            val callers = packageManager.getPackagesForUid(Binder.getCallingUid()).orEmpty()
+            if (ProjectivyWalls.PROJECTIVY !in callers) {
+                Log.w(TAG, "setPreferences refused for ${callers.joinToString()}")
+                return
+            }
             ProjectivyWalls.importPrefs(this@WallsProviderService, params)
         }
     }
