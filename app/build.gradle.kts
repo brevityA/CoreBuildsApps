@@ -251,4 +251,7 @@ dependencies {
     // through 9.x declare 23, and Fire TV needs 21. Play accepts 8.x until
     // 2027-08-31.
     "playImplementation"("com.android.billingclient:billing:8.0.0")
+    // Plain JVM tests for logic with no Android behind it (DayNightTest). The
+    // same JUnit the other suite apps use; CI already runs the unit-test task.
+    testImplementation("junit:junit:4.13.2")
 }

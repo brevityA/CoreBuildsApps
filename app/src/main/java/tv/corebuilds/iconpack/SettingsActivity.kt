@@ -153,6 +153,23 @@ class SettingsActivity : TvActivity() {
                     showPlusRows()
                 }
             }
+            row(R.id.set_night_row) {
+                if (Plus.unlocked(this)) {
+                    // Only loops already on the TV: the engine never downloads.
+                    val onTv = LiveLoop.LOOPS
+                        .filter { LiveLoopDownloader.playable(this, it) != null }
+                        .map { it.id }
+                    if (onTv.isEmpty()) toast(getString(R.string.settings_night_none))
+                    else Prefs.setNightLoopId(this, DayNight.nextNightLoop(Prefs.nightLoopId(this), onTv))
+                    showPlusRows()
+                }
+            }
+            row(R.id.set_hours_row) {
+                if (Plus.unlocked(this)) {
+                    Prefs.setNightWindow(this, (Prefs.nightWindow(this) + 1) % DayNight.WINDOWS.size)
+                    showPlusRows()
+                }
+            }
             row(R.id.set_requests_row) {
                 if (Plus.unlocked(this)) startActivity(Intent(this, RequestsActivity::class.java))
             }
@@ -194,6 +211,15 @@ class SettingsActivity : TvActivity() {
                 else -> R.string.settings_rotate_off
             })
         }
+        findViewById<TextView>(R.id.set_night_value).text = when {
+            !owned -> getString(R.string.settings_plus_locked)
+            else -> Prefs.nightLoopId(this)?.let { LiveLoop.byId(it).title }
+                ?: getString(R.string.settings_rotate_off)
+        }
+        val (from, to) = DayNight.window(this)
+        findViewById<TextView>(R.id.set_hours_value).text =
+            if (owned) getString(R.string.settings_hours_fmt, from, to)
+            else getString(R.string.settings_plus_locked)
         findViewById<TextView>(R.id.set_requests_value).setText(
             if (owned) R.string.settings_requests_open else R.string.settings_plus_locked)
     }

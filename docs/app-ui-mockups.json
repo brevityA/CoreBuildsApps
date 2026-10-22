@@ -63,7 +63,7 @@
     "app/src/main/res/layout/activity_launcher_setup.xml": "73a3629c8aa9cbe346160906db3e4972a2d9092111d6297fd2ff9813230fdb79",
     "app/src/main/res/layout/activity_main.xml": "e616df886db41fa18c1437c5372009cc8fecbf8c99aa83e0f883956c8dac99c8",
     "app/src/main/res/layout/activity_requests.xml": "9df584f2307f9d39f149267935bfe0303e5b01f242e820a8a3c53478bc3024fb",
-    "app/src/main/res/layout/activity_settings.xml": "fa3e1cfb8b6619e999315ba6f5678bcb5415ce644f15c1a24dac5dae06a7d439",
+    "app/src/main/res/layout/activity_settings.xml": "67670a1443ef6eab733448fa136b842891a4388fff18ed3586ec6f995baac303",
     "app/src/main/res/layout/activity_suite.xml": "48d703fbff75550a6e2742a79f9119216c22829908dd68cc04421d134b4988a7",
     "app/src/main/res/layout/activity_support.xml": "bfc1b0ae21fa88c1fd675a2ea5be0ef73abb497dbe153dcd012d6e4969c33278",
     "app/src/main/res/layout/activity_wallpaper_preview.xml": "7743aa8ceaccc98bc72bfff391fb9a0579764c5312801580f8d8227f7ffea473",
@@ -83,7 +83,7 @@
     "app/src/main/res/values/dimens.xml": "8582188c4e3b3d64cd66edb96a97d6d7f90228c1133dcfd90dd832eae3318b1a",
     "app/src/main/res/values/icon_pack.xml": "da1b14f2de497702b8c911da7ef81177334704922b318a02632d12cbb37eb081",
     "app/src/main/res/values/issue_prefill.xml": "fd85418cdd4ccdc59f0f0793b32fc7d96e01f23f80f7f38a3e3d4d7699393ced",
-    "app/src/main/res/values/strings.xml": "729a0aa22b9f8b5d45fcea3480190406031beb67a958591d4a18cc25491266ec",
+    "app/src/main/res/values/strings.xml": "48ff93ac1a4436e0e38bcc553ab20dd7e6ff7bd667302e15907001e312494b81",
     "app/src/main/res/values/suite_hub.xml": "aff339700a9e6751b31ed189c2695e77ce18b80332f104f94e9235cdd05ef74a",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
     "glyphs/src/main/res/layout/glyphs_home.xml": "f937cab93c7cdd9a3e7c8707b05d3a4cb362bf07dce8d65bbc1745c0e1304f9c",
@@ -101,7 +101,7 @@
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "6b907460fa4c8b62496851a0820b83610243dfbd203b12f34a8710991ff59443",
+  "inputs_digest": "cb8c44561edb168af9d094b7ca28e3795255af4114d1501ad2fec81266ce07d1",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
