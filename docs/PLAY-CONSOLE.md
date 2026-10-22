@@ -197,7 +197,11 @@ The uploaded app bundle has a minimum SDK version of 21."* (seen 2026-10-21).
 Go to **Test and release → App integrity → Automatic protection**, turn
 **Installer check** off, Save, and reload to confirm it stayed off. Then
 remove the refused bundle from the release and upload it again. Do it in
-both apps.
+both apps. That app-level switch is what cleared the refusal on 2026-10-21.
+The release editor also offers **App bundle enhancements → Automatic
+protection → Turn off protection for this release**, but Play re-applies
+protection to the next upload, so on its own it would bring the refusal
+back with every release.
 
 This is a trade-off, not a free switch. With the check off, a copy of the
 **Play build** installed from outside Play runs without Play's install
