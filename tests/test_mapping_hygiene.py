@@ -60,8 +60,13 @@ REFERENCE = ROOT / "tools" / "reference" / "projectivy-1.1.9-appfilter.xml"
 # scanner report from a SHIELD, showed the app launches
 # com.vt.hibrowser.activity.home.HomeActivity, which is now mapped; the guesses
 # were never seen on any device.
+# 73 -> 75 (2.5.0, same release): TVLok's two components were package guesses
+# that carried no flag at all, which the catalog reads as device-confirmed.
+# Its colour note said so ("package candidates unconfirmed", #155), and #352
+# reports the icon does not apply. Flagging them is a correction, not a new
+# guess: the release still ends one below the 76 it started from.
 # The ceiling may only move back down.
-UNVERIFIED_CEILING = 73
+UNVERIFIED_CEILING = 75
 
 
 def _canonical(component: str) -> str:

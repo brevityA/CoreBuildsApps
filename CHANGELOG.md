@@ -162,8 +162,12 @@ following Art style, and Core Builds Glyphs' own art do reach it.
   - Nuvio's Live TV launcher alias (#358) and its test build (#362).
   - Hi Browser's three `MainActivity` components, guessed from its Play
     listing in 1.8.18, are removed. #354's scan shows the app launches
-    `HomeActivity`, and no device ever showed the guesses. Unverified
-    mappings: 76 → 73.
+    `HomeActivity`, and no device ever showed the guesses.
+  - TVLok's two components are now flagged unverified. They were package
+    guesses (#155) that carried no flag, so the catalog counted them as
+    device-confirmed; #352 reports the icon doesn't apply. It needs the
+    component from a TV.
+  - Unverified mappings: 76 → 75.
   - #352 (TvLok) stays open until it has a component.
 - **A loop's preview no longer strands the cursor on older TVs.** A loop has
   no Save button, but the action row's focus chain still named it. On
