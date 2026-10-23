@@ -55,11 +55,6 @@ jobs:
       # The player embeds camera samples, so it drifts the moment a move moves.
       - name: Check the Core Views HTML player is current
         run: python tools/build_views_player.py --check
-      # One URL for the Core Motion plugin and Aerial Views: motion plus any
-      # published views. Drift here means a user's wallpaper rotation silently
-      # stops showing the new set.
-      - name: Check the combined wallpaper feed
-        run: python tools/build_wallpaper_feed.py --check
       - name: Assert every shippable app has CI, metadata, and hardened updater contracts
         run: python tools/audit_contract.py
       - name: Check prefilled icon-request links against the issue forms

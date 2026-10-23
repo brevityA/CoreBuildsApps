@@ -207,42 +207,6 @@ $ python tools/render_views.py --only coreviews-08-uluru --basemap gibs \
 
 ---
 
-## Wallpaper, not just a screensaver
-
-A supporter asked for live wallpapers "like Aerial Views". The short answer is
-yes, and mostly it already works — because on Android TV the launcher, not the
-app, plays the wallpaper. There is no `WallpaperService` to write; there is a
-feed to publish.
-
-| Where it should show | What plays it | What Core Views needs to supply |
-|---|---|---|
-| Projectivy home, rotating | Core Motion plugin (`tv.corebuilds.motion`) | any Overflight-format feed — **already generated** |
-| Monet home | Aerial Views, bound as Monet's background source | Aerial Views community feed — **already generated** |
-| Screensaver (dream) | Aerial Views' `DreamService` | the same community feed |
-| Core Shift's own dream | Core Shift playlist | a Shift release; today it reads the motion set |
-| Monet / Projectivy "choose a file" | the launcher's own picker | an MP4 on disk, exported by hand |
-
-One URL covers the first three:
-
-```
-https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/wallpaper-feed.json
-```
-
-That is `tools/build_wallpaper_feed.py` — the motion loops plus whatever Core
-Views have been published, merged, de-duplicated and checked against the
-plugin's own host allowlist. Paste it once; new views appear when they ship.
-
-What Core Views does **not** do today, and why:
-
-- **Bundle clips in the APK.** Season 1 is remote by design (release lane, not
-  git). Bundling means the icon pack's `LiveWallpaperService` route, which is a
-  build change and a size decision, not a feed.
-- **Ship its own screensaver.** That is Core Shift's `DreamService`. Teaching
-  it to rotate a second feed is the natural next step, and it is an app change
-  that has to be tested on a device — not something to land blind.
-
----
-
 ## The asset contract
 
 | Property | Value |
