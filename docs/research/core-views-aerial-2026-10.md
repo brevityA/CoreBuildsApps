@@ -290,6 +290,45 @@ generator added with this document.
 
 ---
 
+### 5a. Getting Sentinel-2 tiles you are allowed to use
+
+The licence is settled (free, commercial included, attribution required). The
+delivery is the annoying part, and it is why the renderer ships a *gate* rather
+than a URL.
+
+There is no public, keyless, redistribution-friendly `{z}/{x}/{y}` endpoint for
+Sentinel-2. The three routes that actually work:
+
+| Route | What you do | Cost | Good for |
+|---|---|---|---|
+| **Bring your own tiler** | Download the L2A COGs for the area of interest, serve them locally with `titiler` or `pmtiles serve`, point the renderer at `http://127.0.0.1:8080/tiles/{z}/{x}/{y}.png` | free, some setup | a season; repeatable, offline, cacheable |
+| **Sentinel Hub / Copernicus Data Space** | Free account, OAuth token, their tile endpoint in `COREVIEWS_SENTINEL_TEMPLATE` | free tier, rate-limited | one-off views without a download |
+| **Planetary Computer STAC** | Query the STAC API for the scene, render with `titiler`, same as route 1 | free | when you want the *least cloudy* scene rather than "latest" |
+
+For Earth-from-orbit views only, **NASA GIBS** is public domain, keyless and
+serves daily true-colour composites — at roughly 300 m per pixel, which is
+right for a continent and hopeless for a 1 km aerial. The renderer knows that:
+it caps GIBS at z9 and warns when a move wants more.
+
+**The gate.** `render_views.py` carries a licence verdict per source and
+`--for-publish` refuses anything that fails it:
+
+```
+osm        judging only            (ODbL tiles are not a source for a shipped video)
+terrain    redistributable         (elevation only; reads as a relief map)
+gibs       redistributable         (public domain, continental only)
+sentinel   redistributable         (needs your template)
+local      redistributable         (your tiles, your provenance)
+custom     not publishable         (an allowlist you can see beats a promise)
+```
+
+`--for-publish` also fails a render whose view credits do not name the source
+the licence requires, and one whose move needs more zoom than the imagery has.
+Those are the three ways a beautiful preview becomes a problem later, and all
+three are now checked before a frame is captured rather than after a takedown.
+
+---
+
 ## 6. Format spec for a Core View
 
 This is the contract the pipeline enforces. It deliberately reuses the numbers
@@ -390,11 +429,13 @@ render.
 | `docs/research/core-views-aerial-2026-10.md` | this document |
 | `views/catalog.json` | season 1: 12 views with coordinates, lane, time of day, scene, camera move, captions and per-source credits |
 | `tools/views_geo.py` | camera moves, altitude→zoom, tile census — pure Python, no browser |
-| `tools/render_views.py` | **the renderer**: catalogue → keyframes → headless MapLibre → PNG frames → ffmpeg. `--dry-run` plans a whole season with no browser installed |
+| `tools/render_views.py` | **the renderer**: catalogue → keyframes → headless MapLibre → PNG frames → ffmpeg. `--dry-run` plans a whole season with no browser installed. Carries the imagery licence gate (`--for-publish`) |
 | `tools/views-studio/index.html` | zero-install art director: fly a move, see the captions land, export keyframes and a WebM preview |
 | `tools/build_views_feed.py` | validates the catalogue, projects it to the Aerial Views and Overflight feeds, `--check` for CI |
 | `tests/test_views_feed.py` | 24 assertions on the keys the Android client silently accepts |
-| `tests/test_views_geo.py` | 27 assertions on camera paths, tile coverage and encode plans |
+| `tests/test_views_geo.py` | 44 assertions on camera paths, tile coverage, encode plans, the licence gate and the shot cards |
+| `tools/views_storyboard.py` | generates a shot card per view — track, altitude, bearing, pitch, caption timing — from the same paths the renderer flies |
+| `views/examples/ready-view.json` | a worked example of a finished view and the two feed rows it produces |
 
 Two design decisions worth keeping:
 

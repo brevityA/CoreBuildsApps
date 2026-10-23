@@ -31,6 +31,7 @@ Usage:
     python tools/build_views_feed.py            # write both feeds
     python tools/build_views_feed.py --check    # verify committed feeds (CI)
     python tools/build_views_feed.py --plan     # print the season, write nothing
+    python tools/build_views_feed.py --examples # write views/examples/ready-view.json
 """
 
 from __future__ import annotations
@@ -45,6 +46,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "views" / "catalog.json"
 AERIAL_TARGET = ROOT / "views" / "aerial-entries.json"
 OVERFLIGHT_TARGET = ROOT / "views" / "overflight-feed.json"
+EXAMPLE_TARGET = ROOT / "views" / "examples" / "ready-view.json"
 
 AUTHOR = "Core Builds"
 SERIES = "Core Views"
@@ -307,6 +309,38 @@ def build(catalog: dict) -> tuple[str, str, list[dict]]:
     return aerial_text, overflight_text, views
 
 
+def example_document(catalog: dict, views: list[dict]) -> str:
+    """What one view looks like once rendered — the shape nobody can see today.
+
+    Season 1 is all `planned`, so both feeds are empty and the file shapes only
+    exist in prose. This writes a worked example from a real catalogue entry:
+    the entry as it would be with renditions filled, and the two feed rows the
+    builders derive from it. It is never published and never merged into the
+    feeds.
+    """
+    candidates = [v for v in views if v["lane"] == "render"] or views
+    source = sorted(candidates, key=lambda v: v["number"])[0]
+    ready = json.loads(json.dumps(source))
+    ready["status"] = "ready"
+    ready["thumbnail"] = f"{ready['id']}.jpg"
+    ready["renditions"] = {
+        "1080-SDR": f"{ready['id']}.mp4",
+        "4K-SDR": f"{ready['id']}-4k.mp4",
+        "1080-HDR": None,
+        "4K-HDR": None,
+    }
+    document = {
+        "note": ("Worked example, not published. This is what one view looks like "
+                 "once it has been rendered and flipped to ready, and what the "
+                 "builders emit for it. Generated - do not hand-edit; run "
+                 "python tools/build_views_feed.py --examples."),
+        "catalogEntry": ready,
+        "aerialViewsEntry": aerial_entry(ready, catalog["baseUrl"]),
+        "overflightEntry": overflight_entry(ready, catalog["baseUrl"]),
+    }
+    return json.dumps(document, indent=2, ensure_ascii=False) + "\n"
+
+
 def print_plan(views: list[dict]) -> None:
     ready = {v["id"] for v in ready_views(views)}
     print(f"{SERIES}: {len(views)} view(s), {len(ready)} ready")
@@ -322,6 +356,8 @@ def main(argv: list[str] | None = None) -> int:
                         help="fail if the committed feeds differ from the catalog")
     parser.add_argument("--plan", action="store_true",
                         help="print the season and write nothing")
+    parser.add_argument("--examples", action="store_true",
+                        help="write the worked example at views/examples/ready-view.json")
     args = parser.parse_args(argv)
 
     try:
@@ -335,19 +371,37 @@ def main(argv: list[str] | None = None) -> int:
         print_plan(views)
         return 0
 
+    example = example_document(catalog, views)
+    if args.examples:
+        EXAMPLE_TARGET.parent.mkdir(parents=True, exist_ok=True)
+        EXAMPLE_TARGET.write_text(example, encoding="utf-8")
+        print(f"wrote {label(EXAMPLE_TARGET)}")
+        return 0
+
     targets = [(AERIAL_TARGET, aerial_text), (OVERFLIGHT_TARGET, overflight_text)]
 
     if not ready_views(views):
         # Honest state: a season that has not been rendered publishes nothing.
         # A feed of dead URLs is worse than no feed.
         if args.check:
-            stale = [label(t) for t, _ in targets if t.exists()]
-            if stale:
-                print("error: no view is ready, but a feed is committed: "
-                      + ", ".join(stale)
-                      + " — remove it, or mark the rendered views ready", file=sys.stderr)
+            problems = []
+            committed = [label(t) for t, _ in targets if t.exists()]
+            if committed:
+                problems.append("no view is ready, but a feed is committed: "
+                                + ", ".join(committed)
+                                + " — remove it, or mark the rendered views ready")
+            current_example = (EXAMPLE_TARGET.read_text(encoding="utf-8")
+                               if EXAMPLE_TARGET.exists() else None)
+            if current_example != example:
+                problems.append(label(EXAMPLE_TARGET)
+                                + " is out of date — run "
+                                  "tools/build_views_feed.py --examples")
+            if problems:
+                for problem in problems:
+                    print(f"error: {problem}", file=sys.stderr)
                 return 1
-            print(f"ok: no view is ready, so no feed is published ({len(views)} planned)")
+            print(f"ok: no view is ready, so no feed is published "
+                  f"({len(views)} planned); worked example current")
             return 0
         print_plan(views)
         print("nothing to publish: mark a rendered view ready in views/catalog.json")
@@ -358,6 +412,10 @@ def main(argv: list[str] | None = None) -> int:
         for target, rendered in targets:
             if not target.exists() or target.read_text(encoding="utf-8") != rendered:
                 stale.append(label(target))
+        current_example = (EXAMPLE_TARGET.read_text(encoding="utf-8")
+                           if EXAMPLE_TARGET.exists() else None)
+        if current_example != example:
+            stale.append(label(EXAMPLE_TARGET))
         if stale:
             print("error: " + ", ".join(stale)
                   + " out of sync with views/catalog.json — run "

@@ -76,6 +76,11 @@ so an unrendered entry cannot become a dead URL in a user's screensaver. The
 consumer parses with `ignoreUnknownKeys = true`, which is why
 `tools/build_views_feed.py` validates rendition key names itself and
 `tests/test_views_feed.py` pins the app's `timeOfDay` / `scene` vocabularies.
+Imagery is a licence decision with a flag attached: `render_views.py` carries a
+`redistributable` verdict per basemap and `--for-publish` refuses a source that
+may not ship, a view whose credits omit the required attribution, and a move
+that wants more zoom than the imagery has. Do not add a basemap to that table
+without a licence you can point at.
 If Core Views ever ships an app, that is a new product with an ID from
 `tv.corebuilds.*` and it goes through this file's normal lifecycle — not a
 gradual accretion onto the content line.

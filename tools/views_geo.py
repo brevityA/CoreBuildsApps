@@ -191,7 +191,13 @@ def census_size_mb(census: dict[int, set], bytes_per_tile: int) -> float:
     return tiles * bytes_per_tile / 1_000_000
 
 
-def tile_url(template: str, zoom: int, x: int, y: int) -> str:
+def tile_url(template: str, zoom: int, x: int, y: int, date: str = "") -> str:
+    """Fill a raster template. Named placeholders, so z/y/x order works too.
+
+    NASA GIBS, for example, wants `.../{z}/{y}/{x}.jpg` and a `{date}`: neither
+    is expressible if the substitution assumes z/x/y order.
+    """
     return (template.replace("{z}", str(zoom))
                     .replace("{x}", str(x))
-                    .replace("{y}", str(y)))
+                    .replace("{y}", str(y))
+                    .replace("{date}", date))

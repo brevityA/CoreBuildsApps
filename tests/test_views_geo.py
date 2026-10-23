@@ -25,6 +25,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 import views_geo as geo  # noqa: E402
+import views_storyboard as storyboard  # noqa: E402
 import build_views_feed as feeds  # noqa: E402
 import render_views as renderer  # noqa: E402
 
@@ -50,7 +51,7 @@ VIEW = {
 
 def args(**overrides):
     base = dict(fps=None, width=1920, height=1080, crf=18, hdr=False, pitch=None,
-                basemap="osm", tile_template=None, from_path=None)
+                basemap="osm", tile_template=None, from_path=None, date=None)
     base.update(overrides)
     return argparse.Namespace(**base)
 
@@ -204,6 +205,134 @@ class Planning(unittest.TestCase):
     def test_terrain_only_basemap_has_no_raster_urls(self):
         plan = self.plan()
         self.assertEqual(renderer.tile_urls(plan, args(basemap="terrain")), [])
+
+
+class Imagery(unittest.TestCase):
+    """The licence gate. A clip made from tiles we may not redistribute must
+    not become a "ready" view because the preview looked good."""
+
+    def provider(self, **overrides):
+        return renderer.resolve_basemap(args(**overrides))
+
+    def test_default_imagery_is_judging_only_and_says_so(self):
+        provider = self.provider()
+        self.assertEqual(provider["name"], "osm")
+        self.assertFalse(provider["redistributable"])
+        self.assertIn("not a source for a shipped video", provider["note"])
+
+    def test_open_street_map_is_blocked_for_publishing(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = renderer.plan_view(VIEW, args(), Path(tmp))
+        blockers = renderer.publish_blockers(plan, VIEW, self.provider())
+        self.assertTrue(blockers)
+        self.assertIn("not licensed for redistribution", blockers[0])
+
+    def test_sentinel_needs_a_template_you_control(self):
+        with self.assertRaises(SystemExit):
+            self.provider(basemap="sentinel")
+        provider = self.provider(basemap="sentinel",
+                                 tile_template="https://tiles.example/s2/{z}/{x}/{y}.png")
+        self.assertTrue(provider["redistributable"])
+        self.assertEqual(provider["tiles"],
+                         ["https://tiles.example/s2/{z}/{x}/{y}.png"])
+
+    def test_sentinel_reads_the_environment_when_a_flag_is_absent(self):
+        import os
+        previous = os.environ.get("COREVIEWS_SENTINEL_TEMPLATE")
+        os.environ["COREVIEWS_SENTINEL_TEMPLATE"] = "https://env.example/{z}/{x}/{y}.png"
+        try:
+            provider = self.provider(basemap="sentinel")
+            self.assertEqual(provider["tiles"][0], "https://env.example/{z}/{x}/{y}.png")
+        finally:
+            if previous is None:
+                os.environ.pop("COREVIEWS_SENTINEL_TEMPLATE", None)
+            else:
+                os.environ["COREVIEWS_SENTINEL_TEMPLATE"] = previous
+
+    def test_gibs_is_public_domain_but_needs_a_date(self):
+        with self.assertRaises(SystemExit):
+            self.provider(basemap="gibs")
+        provider = self.provider(basemap="gibs", date="2026-09-01")
+        self.assertTrue(provider["redistributable"])
+        self.assertIn("{date}", provider["tiles"][0])
+        self.assertEqual(provider["max_zoom"], 9)
+
+    def test_a_source_too_coarse_for_the_move_is_a_blocker(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = renderer.plan_view(VIEW, args(basemap="gibs", date="2026-09-01"),
+                                      Path(tmp))
+        self.assertGreater(plan["zoomShortfall"], 0)
+        blockers = renderer.publish_blockers(
+            plan, VIEW, self.provider(basemap="gibs", date="2026-09-01"))
+        self.assertTrue(any("soft" in b for b in blockers))
+
+    def test_missing_credit_is_a_blocker(self):
+        credited = {**VIEW, "credits": [{"source": "© Mapterhorn terrain",
+                                         "license": "CC BY 4.0"}]}
+        provider = self.provider(basemap="sentinel",
+                                 tile_template="https://x/{z}/{x}/{y}.png")
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = renderer.plan_view(credited, args(), Path(tmp))
+        blockers = renderer.publish_blockers(plan, credited, provider)
+        self.assertTrue(any("Copernicus" in b for b in blockers))
+
+    def test_custom_templates_are_never_publishable(self):
+        provider = self.provider(basemap="custom",
+                                 tile_template="https://x/{z}/{x}/{y}.png")
+        self.assertFalse(provider["redistributable"])
+
+    def test_unknown_basemap_is_refused(self):
+        with self.assertRaises(SystemExit):
+            self.provider(basemap="google-earth")
+
+
+class Storyboards(unittest.TestCase):
+    """Shot cards: real, generated, and impossible to mistake for footage."""
+
+    def setUp(self):
+        self.views = feeds.validate(feeds.load_catalog())
+        self.view = next(v for v in self.views if v["id"] == "coreviews-05-lord-howe")
+
+    def test_cards_are_deterministic(self):
+        first = storyboard.build_for(self.view, args())
+        second = storyboard.build_for(self.view, args())
+        self.assertEqual(first, second)
+
+    def test_cards_are_well_formed_svg_within_the_frame(self):
+        import re
+        import xml.etree.ElementTree as ET
+        svg = storyboard.build_for(self.view, args())
+        ET.fromstring(svg)
+        nums = [float(n) for n in re.findall(
+            r'(?:x|y|x1|y1|x2|y2|cx|cy)="(-?[\d.]+)"', svg)]
+        self.assertTrue(nums)
+        self.assertGreaterEqual(min(nums), -1)
+        self.assertLessEqual(max(nums), storyboard.W + 1)
+
+    def test_card_carries_the_place_the_captions_and_the_move(self):
+        svg = storyboard.build_for(self.view, args())
+        self.assertIn("Lord Howe", svg)
+        self.assertIn("Lord Howe Island, New South Wales", svg)
+        self.assertIn("ORBIT", svg)
+        for caption in self.view["captions"]:
+            self.assertIn(caption["text"][:24], svg)
+
+    def test_card_says_it_is_not_a_frame(self):
+        svg = storyboard.build_for(self.view, args())
+        self.assertIn("not a frame", svg)
+
+    def test_committed_cards_are_current(self):
+        expected = storyboard.build_for(self.view, args())
+        committed = (storyboard.DEFAULT_OUT / f"{self.view['id']}.svg")
+        self.assertTrue(committed.exists(), "run tools/views_storyboard.py --all")
+        self.assertEqual(committed.read_text(encoding="utf-8"), expected,
+                         "a shot card drifted from the catalogue")
+
+    def test_index_lists_every_render_view(self):
+        index = storyboard.index_page(self.views)
+        for view in self.views:
+            if view["lane"] == "render":
+                self.assertIn(f"({view['id']}.svg)", index)
 
 
 class StudioExport(unittest.TestCase):

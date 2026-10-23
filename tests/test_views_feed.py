@@ -227,6 +227,37 @@ class Season(unittest.TestCase):
         self.assertEqual(feeds.OVERFLIGHT_TARGET.read_text(encoding="utf-8"), overflight)
 
 
+class WorkedExample(unittest.TestCase):
+    """Season 1 is all planned, so the file shapes exist only as an example."""
+
+    def setUp(self) -> None:
+        self.catalog = feeds.load_catalog()
+        self.views = feeds.validate(self.catalog)
+        self.doc = json.loads(feeds.example_document(self.catalog, self.views))
+
+    def test_example_shows_a_finished_view_end_to_end(self):
+        entry = self.doc["catalogEntry"]
+        self.assertEqual(entry["status"], "ready")
+        self.assertTrue(entry["renditions"]["1080-SDR"].startswith(entry["id"]))
+        aerial = self.doc["aerialViewsEntry"]
+        self.assertEqual(aerial["id"], entry["id"])
+        self.assertIn("url-1080-SDR", aerial)
+        self.assertIn("pointsOfInterest", aerial)
+        self.assertIn("url_1080p", self.doc["overflightEntry"])
+
+    def test_example_omits_renditions_it_does_not_have(self):
+        aerial = self.doc["aerialViewsEntry"]
+        self.assertNotIn("url-4K-HDR", aerial)
+        for value in aerial.values():
+            self.assertNotEqual(value, "")
+
+    def test_example_is_generated_not_hand_edited(self):
+        current = feeds.EXAMPLE_TARGET.read_text(encoding="utf-8")
+        self.assertEqual(current, feeds.example_document(self.catalog, self.views),
+                         "views/examples/ready-view.json drifted — run "
+                         "tools/build_views_feed.py --examples")
+
+
 class CheckMode(unittest.TestCase):
     def test_check_passes_when_nothing_is_ready_and_nothing_is_committed(self):
         with tempfile.TemporaryDirectory() as tmp:

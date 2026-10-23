@@ -48,6 +48,10 @@ jobs:
         run: python tests/test_views_geo.py
       - name: Confirm Core Views still plans without a browser installed
         run: python tools/render_views.py --only coreviews-05-lord-howe --dry-run
+      # The shot cards are generated from the same camera paths the renderer
+      # flies, so a catalogue edit that changes a move must redraw them.
+      - name: Check the Core Views shot cards match the catalogue
+        run: python tools/views_storyboard.py --all --check
       - name: Assert every shippable app has CI, metadata, and hardened updater contracts
         run: python tools/audit_contract.py
       - name: Check prefilled icon-request links against the issue forms
