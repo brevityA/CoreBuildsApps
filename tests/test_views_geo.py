@@ -27,6 +27,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 import views_geo as geo  # noqa: E402
 import views_storyboard as storyboard  # noqa: E402
 import build_views_player as player  # noqa: E402
+import build_views_mockup as mockup  # noqa: E402
 import build_views_feed as feeds  # noqa: E402
 import render_views as renderer  # noqa: E402
 
@@ -398,6 +399,67 @@ class Player(unittest.TestCase):
         lowered = self.html.lower()
         self.assertIn("no imagery", lowered)
         self.assertIn("no footage", lowered)
+
+
+class Mockup(unittest.TestCase):
+    """The TV app mockup: a design artifact that must not invent footage."""
+
+    def setUp(self):
+        self.views = feeds.validate(feeds.load_catalog())
+        self.html = mockup.build()
+        self.data = json.loads(_embedded(self.html))
+
+    def test_mockup_is_current(self):
+        self.assertTrue(mockup.TARGET.exists(), "run tools/build_views_mockup.py")
+        self.assertEqual(mockup.TARGET.read_text(encoding="utf-8"), self.html,
+                         "views-mockup.html drifted — run tools/build_views_mockup.py")
+
+    def test_mockup_needs_no_network(self):
+        for needle in ("http://", "https://", "<script src", "<link", "<img"):
+            self.assertNotIn(needle, self.html, f"mockup reaches out for {needle}")
+
+    def test_it_shows_every_view_in_the_catalogue(self):
+        titles = [row["title"] for row in self.data["views"]]
+        self.assertEqual(titles, [v["title"] for v in sorted(self.views,
+                                                             key=lambda v: v["number"])])
+
+    def test_only_renderable_views_get_a_camera_track(self):
+        for row in self.data["views"]:
+            if row["renderable"]:
+                self.assertGreater(len(row["track"]), 2, row["id"])
+            else:
+                self.assertEqual(row["track"], [],
+                                 f"{row['id']} has no camera, so it gets no track")
+
+    def test_tracks_stay_inside_the_tile(self):
+        for row in self.data["views"]:
+            for x, y in row["track"]:
+                self.assertTrue(0 <= x <= 1 and 0 <= y <= 1, row["id"])
+
+    def test_accents_come_from_the_brand_palette(self):
+        palette = set(mockup.ACCENTS.values())
+        for row in self.data["views"]:
+            self.assertIn(row["accent"], palette, row["id"])
+
+    def test_it_says_it_is_a_mockup_and_not_footage(self):
+        lowered = self.html.lower()
+        self.assertIn("layout mockup", lowered)
+        self.assertIn("not footage", lowered)
+
+    def test_every_caption_the_catalogue_has_reaches_the_mockup(self):
+        for view in self.views:
+            row = next(r for r in self.data["views"] if r["id"] == view["id"])
+            self.assertEqual([c[1] for c in row["captions"]],
+                             [c["text"] for c in view["captions"]])
+
+    def test_the_three_screens_exist(self):
+        for screen in ("browse", "preview", "home"):
+            self.assertIn(f'data-screen="{screen}"', self.html)
+
+
+def _embedded(html: str) -> str:
+    import re
+    return re.search(r"const DATA = (\{.*?\});\n", html, re.S).group(1)
 
 
 class StudioExport(unittest.TestCase):

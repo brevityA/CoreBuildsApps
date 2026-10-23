@@ -125,7 +125,25 @@ python tests/test_views_feed.py && python tests/test_views_geo.py
 
 ## Examples
 
-Four real artifacts, so the shapes are not a description.
+Five real artifacts, so the shapes are not a description.
+
+### The app as a TV mockup
+
+[`docs/views-mockup.html`](../docs/views-mockup.html) is what Core Views looks
+like as an Android TV app: a **browse** row of focused tiles, a **preview**
+screen with the caption track and the actions that set it, and a **home**
+screen showing the wallpaper under a launcher's content — which is the only
+place a live wallpaper actually lives on TV.
+
+`1` browse · `2` preview · `3` home, arrows to move focus, enter to select.
+It is a *layout* mockup drawing each view's shot card as tile art: no footage,
+and nothing invented about a place. It exists to answer "what would this look
+like in the app", not "what does Lord Howe look like".
+
+```bash
+python tools/build_views_mockup.py            # regenerate
+python tools/build_views_mockup.py --check    # CI
+```
 
 ### One HTML page that plays every move
 

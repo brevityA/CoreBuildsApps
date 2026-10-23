@@ -55,6 +55,8 @@ jobs:
       # The player embeds camera samples, so it drifts the moment a move moves.
       - name: Check the Core Views HTML player is current
         run: python tools/build_views_player.py --check
+      - name: Check the Core Views TV mockup is current
+        run: python tools/build_views_mockup.py --check
       - name: Assert every shippable app has CI, metadata, and hardened updater contracts
         run: python tools/audit_contract.py
       - name: Check prefilled icon-request links against the issue forms
