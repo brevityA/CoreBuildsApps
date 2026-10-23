@@ -135,6 +135,7 @@ TEMPLATE = r"""<!doctype html>
   html, body { height: 100%; margin: 0; background: #02040a; overflow: hidden; }
   body {
     display: grid; place-items: center; color: var(--ink);
+    padding: 16px 0 30px;
     font: 16px/1.45 "Outfit", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   }
 
@@ -165,7 +166,8 @@ TEMPLATE = r"""<!doctype html>
   .browse h1 { font-size: 40px; margin: 22px 0 2px; font-weight: 600;
     letter-spacing: -.015em; }
   .browse .sub { color: var(--muted); font-size: 15px; margin: 0 0 26px; }
-  .row { display: flex; gap: 22px; }
+  .row { display: flex; gap: 22px;
+    transition: transform .3s cubic-bezier(.2,.7,.3,1); }
   .tile { width: calc((100% - 88px) / 5); flex: none; border-radius: 12px;
     padding: 0; background: none; border: 0; color: inherit; font: inherit;
     text-align: left; cursor: pointer; position: relative; }
@@ -441,6 +443,13 @@ function paintBrowseFocus() {
   document.querySelectorAll('.tile').forEach((el) => {
     el.dataset.focus = (Number(el.dataset.index) === browseFocus) ? '1' : '0';
   });
+  // Keep the focused tile on screen: five tiles are visible, the rest slide in.
+  const row = $('row');
+  const perView = 5;
+  const first = Math.max(0, Math.min(browseFocus - 2,
+                                     Math.max(0, VIEWS.length - perView)));
+  const step = ((row.clientWidth || 1200) + 22) / perView;
+  row.style.transform = `translateX(${-first * step}px)`;
 }
 
 // ---- preview --------------------------------------------------------------
@@ -473,9 +482,9 @@ function openPreview() {
     { ico: '◐', label: 'Set as screensaver', sub: 'Plays when the TV is idle',
       toast: 'Screensaver set — Core Views plays after 10 minutes idle' },
     { ico: '⤓', label: 'Download for offline', sub: '184 MB · all renditions',
-      toast: 'Downloading 11 views to this device' },
+      toast: `Downloading ${VIEWS.filter((v) => v.renderable).length} views to this device` },
     { ico: 'ⓘ', label: 'Credits', sub: current.credits.join(' · '),
-      toast: 'Copernicus Sentinel · Mapterhorn terrain · © Core Builds' },
+      toast: current.credits.join(' · ') },
   ];
   const box = $('pActions');
   box.textContent = '';
@@ -574,6 +583,7 @@ function paintHome() {
 // ---- shell ----------------------------------------------------------------
 
 function go(next) {
+  if (next !== screen) clearInterval(captionTimer);
   screen = next;
   document.querySelectorAll('.screen').forEach((el) => {
     el.dataset.on = el.dataset.screen === next ? '1' : '0';
