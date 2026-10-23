@@ -52,6 +52,9 @@ jobs:
       # flies, so a catalogue edit that changes a move must redraw them.
       - name: Check the Core Views shot cards match the catalogue
         run: python tools/views_storyboard.py --all --check
+      # The player embeds camera samples, so it drifts the moment a move moves.
+      - name: Check the Core Views HTML player is current
+        run: python tools/build_views_player.py --check
       - name: Assert every shippable app has CI, metadata, and hardened updater contracts
         run: python tools/audit_contract.py
       - name: Check prefilled icon-request links against the issue forms

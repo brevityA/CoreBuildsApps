@@ -125,7 +125,23 @@ python tests/test_views_feed.py && python tests/test_views_geo.py
 
 ## Examples
 
-Three real artifacts, so the shapes are not a description.
+Four real artifacts, so the shapes are not a description.
+
+### One HTML page that plays every move
+
+[`docs/views-storyboards/player.html`](../docs/views-storyboards/player.html) is
+a single self-contained file — no build, no dependencies, no network — that
+plays each renderable view: the track from above with the camera on it,
+altitude / bearing / pitch over time, and the captions landing where they land.
+Space to play, arrows to change view, drag the timeline to scrub.
+
+```bash
+python tools/build_views_player.py            # regenerate
+python tools/build_views_player.py --check    # CI
+```
+
+It contains no imagery on purpose. It is a camera test, not a preview of the
+place, so it cannot misrepresent what the render will look like.
 
 ### A shot card per view
 

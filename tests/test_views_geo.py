@@ -26,6 +26,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 import views_geo as geo  # noqa: E402
 import views_storyboard as storyboard  # noqa: E402
+import build_views_player as player  # noqa: E402
 import build_views_feed as feeds  # noqa: E402
 import render_views as renderer  # noqa: E402
 
@@ -333,6 +334,70 @@ class Storyboards(unittest.TestCase):
         for view in self.views:
             if view["lane"] == "render":
                 self.assertIn(f"({view['id']}.svg)", index)
+
+
+class Player(unittest.TestCase):
+    """The single-file HTML player: current, self-contained, and honest."""
+
+    def setUp(self):
+        self.views = feeds.validate(feeds.load_catalog())
+        self.html = player.build()
+
+    def test_player_is_current(self):
+        self.assertTrue(player.TARGET.exists(), "run tools/build_views_player.py")
+        self.assertEqual(player.TARGET.read_text(encoding="utf-8"), self.html,
+                         "player.html drifted from the catalogue — run "
+                         "tools/build_views_player.py")
+
+    def test_player_fetches_nothing(self):
+        """It has to open from a USB stick on a plane, so: zero external refs."""
+        for needle in ("http://", "https://", "<script src", "<link", "<img",
+                       "fetch(", "@import"):
+            self.assertNotIn(needle, self.html, f"player reaches out for {needle}")
+
+    def test_player_embeds_every_renderable_view_and_no_others(self):
+        import json
+        import re
+        match = re.search(r"const DATA = (\{.*?\});\n", self.html, re.S)
+        self.assertIsNotNone(match, "the embedded data block vanished")
+        data = json.loads(match.group(1))
+        ids = [v["id"] for v in data["views"]]
+        renderable = [v["id"] for v in self.views if v["lane"] == "render"]
+        self.assertEqual(ids, sorted(renderable, key=lambda i: ids.index(i)))
+        self.assertEqual([s["title"] for s in data["skipped"]],
+                         [v["title"] for v in self.views if v["lane"] != "render"])
+
+    def test_samples_come_from_the_shared_camera_path(self):
+        """No second copy of the maths: sample one must equal the renderer's."""
+        import json
+        import re
+        data = json.loads(re.search(r"const DATA = (\{.*?\});\n", self.html,
+                                    re.S).group(1))
+        payload = next(v for v in data["views"] if v["id"] == "coreviews-05-lord-howe")
+        view = next(v for v in self.views if v["id"] == payload["id"])
+        frames = geo.camera_path(view, "orbit", view["durationSeconds"], 30,
+                                 900, 900, renderer.DEFAULT_PITCH["orbit"])
+        first = payload["samples"][0]
+        self.assertAlmostEqual(first[1], frames[0]["center"][0], places=4)
+        self.assertAlmostEqual(first[2], frames[0]["center"][1], places=4)
+        self.assertAlmostEqual(first[4], frames[0]["altitudeM"], places=1)
+
+    def test_bearings_are_unwrapped_so_an_orbit_does_not_jump(self):
+        import json
+        import re
+        data = json.loads(re.search(r"const DATA = (\{.*?\});\n", self.html,
+                                    re.S).group(1))
+        for view in data["views"]:
+            bearings = [s[5] for s in view["samples"]]
+            steps = [abs(b - a) for a, b in zip(bearings, bearings[1:])]
+            self.assertTrue(steps, view["id"])
+            self.assertLess(max(steps), 30,
+                            f"{view['id']} jumps {max(steps):.0f}° in one sample")
+
+    def test_player_says_it_is_not_footage(self):
+        lowered = self.html.lower()
+        self.assertIn("no imagery", lowered)
+        self.assertIn("no footage", lowered)
 
 
 class StudioExport(unittest.TestCase):
