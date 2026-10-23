@@ -33,6 +33,14 @@ jobs:
       # verification step since the feed landed, and no workflow ran it.
       - name: Check the Core Shift live-feed against its media
         run: python tools/validate_motion_feed.py
+      # Core Views. The consumer parses with ignoreUnknownKeys, so a misspelled
+      # rendition key or a time-of-day outside the app's enum fails here or not
+      # at all: on a TV, silently. `--check` is the whole point - a step that
+      # regenerated the feed could only ever pass.
+      - name: Check the Core Views catalogue and its published feeds
+        run: python tools/build_views_feed.py --check
+      - name: Test the Core Views feed contract against the app's keys
+        run: python tests/test_views_feed.py
       - name: Assert every shippable app has CI, metadata, and hardened updater contracts
         run: python tools/audit_contract.py
       - name: Check prefilled icon-request links against the issue forms

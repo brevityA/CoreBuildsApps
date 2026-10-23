@@ -66,6 +66,20 @@ filename and release workflow together. (1.9.4 shipped the opposite split, a
 Banners companion `tv.corebuilds.iconpack.banners`; it is retired - do not
 resurrect `banners/`.)
 
+`views/` is not a product and must not become one by accident. It is the
+Core Views catalogue — a content line for aerial loops that publishes two
+feeds (`views/aerial-entries.json` for Aerial Views, `views/overflight-feed.json`
+for Overflight) from one source, `views/catalog.json`. It has no Gradle root,
+no `suite.json` row, no release tag and no APK. Media goes on the `views`
+release lane, never into git; a view with `status: planned` publishes nothing,
+so an unrendered entry cannot become a dead URL in a user's screensaver. The
+consumer parses with `ignoreUnknownKeys = true`, which is why
+`tools/build_views_feed.py` validates rendition key names itself and
+`tests/test_views_feed.py` pins the app's `timeOfDay` / `scene` vocabularies.
+If Core Views ever ships an app, that is a new product with an ID from
+`tv.corebuilds.*` and it goes through this file's normal lifecycle — not a
+gradual accretion onto the content line.
+
 Do not merge Gradle roots. Do not split the GitHub repo. Do not rename package IDs. Do not repoint floating Downloader tags. New apps use `tv.corebuilds.<name>`; the current `dev.` IDs are history, not a style to copy.
 
 ## One rule
