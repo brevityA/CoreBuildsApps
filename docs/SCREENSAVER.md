@@ -58,6 +58,8 @@ playlist. Captions ride in `pointsOfInterest`; nothing is baked into the frame.
 
 A view that has not been rendered publishes nothing. Add it to the catalogue
 with `"status": "planned"` and it stays out of both feeds until it is ready.
+Season 1 needs no camera: `python tools/render_views.py --all --dry-run` shows
+the plan, `--all` renders it from open imagery and terrain.
 
 Format, licences and the authoring studio: [`views/README.md`](../views/README.md),
 [`docs/research/core-views-aerial-2026-10.md`](research/core-views-aerial-2026-10.md).

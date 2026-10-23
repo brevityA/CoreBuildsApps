@@ -6,18 +6,23 @@ already reaches: Aerial Views (screensaver and, through its Projectivy plugin,
 a launcher wallpaper), Projectivy's Overflight feed, Monet's Aerial Views
 bridge, and Core Shift's bundled fallback.
 
-The research behind the format — what is legal to film, render or reuse, and
-why — is [`docs/research/core-views-aerial-2026-10.md`](../docs/research/core-views-aerial-2026-10.md).
+**No camera is required.** Season 1 is eleven views rendered from open imagery
+and terrain, plus one from the NASA archive. You need a laptop, a browser
+engine and ffmpeg — not a drone, not a flight, not a permit.
+
+The research behind the format — what is legal to render or reuse, and why
+Google Earth Studio is not — is
+[`docs/research/core-views-aerial-2026-10.md`](../docs/research/core-views-aerial-2026-10.md).
 
 ## What is here
 
 | File | What it is |
 |---|---|
-| `catalog.json` | the source of truth: every view's place, time of day, scene, camera note, captions and credits |
+| `catalog.json` | the source of truth: every view's place, time of day, scene, camera move, captions and credits |
 | `aerial-entries.json` | generated — the Aerial Views "community" feed |
 | `overflight-feed.json` | generated — the Overflight / Projectivy feed |
 
-Never hand-edit the two feed files. They are projections of the catalogue:
+Never hand-edit the two feed files:
 
 ```bash
 python tools/build_views_feed.py           # write both feeds
@@ -31,9 +36,18 @@ not a placeholder.
 
 ## Make one
 
-### 1. Art-direct it
+### 1. Plan it — no installs
 
-Open `tools/views-studio/index.html` from a local server:
+```bash
+python tools/render_views.py --all --dry-run
+```
+
+That prints, per view, the camera move, frame count, the tiles the move touches
+(the download budget), and the exact ffmpeg command. It needs only Python: no
+Playwright, no GPU, no network. Use it to decide whether a move is worth
+rendering before you render it.
+
+### 2. Art-direct it
 
 ```bash
 python -m http.server 8000 --bind 0.0.0.0
@@ -41,39 +55,60 @@ python -m http.server 8000 --bind 0.0.0.0
 ```
 
 The studio flies a MapLibre camera over open terrain, shows the caption track
-against the timeline, and exports a camera path plus a browser-recorded WebM.
-It is a preview, not the master: the WebM is for judging the move, the camera
-path is what you render.
+against the timeline, and exports:
 
-### 2. Shoot it, or render it
+- **Export path** — the camera keyframes, plus a ready-to-paste `catalog.json`
+  entry. Feed that file to the renderer with `--from`.
+- **Record WebM** — a real-time preview for judging the move, not for shipping.
 
-Three lanes are in scope; the licence table in the research document decides
-which one a place is allowed to use.
+### 3. Render it
 
-**Shoot it (drone).** 4K or better, 24 or 30 fps, cinema profile, low
-contrast, no sharpening, ND filter for a 180° shutter. Fly the move twice —
-once to find it, once to keep. For a place you can only visit once, shoot 360
-and reproject: one flight, five camera moves.
+```bash
+pip install playwright imageio-ffmpeg
+python -m playwright install chromium
 
-**Render it (open geodata).** Imagery from a source that permits commercial
-redistribution (Copernicus Sentinel-2, Landsat, NAIP), terrain from
-Copernicus DEM or Mapterhorn, camera flown in MapLibre, frames piped to ffmpeg.
-Keep the credits the licence asks for in `catalog.json` as you go — they are
-required to publish.
+python tools/render_views.py --only coreviews-05-lord-howe
+python tools/render_views.py --all                      # the whole season
+python tools/render_views.py --from my-export.json      # a studio export
+python tools/render_views.py --only coreviews-08-uluru --hdr   # HEVC 10-bit
+```
 
-**Archive it (public domain).** NASA/ESA/NOAA material, graded and stabilised.
-Credit the mission.
+Output lands in `views/render/<id>/` (git-ignored): `frames/`, `plan.json`,
+`credits.txt` and `<id>.mp4`. A 30-second 1080p view is about 900-1000 frames;
+expect several minutes per view on a laptop, most of it waiting on tiles.
 
-**Do not use Google Earth Studio.** Its terms forbid exactly this: a new
-product based on Google Earth, redistributed to users, with a baked-in
-attribution watermark. The research document explains it in full.
+**Picking imagery.** The renderer's default base map is OpenStreetMap raster
+because it needs no key, and it is honest about being a map. That is for
+judging a move. For a clip you intend to ship, point `--basemap custom
+--tile-template` at imagery whose licence permits redistribution — Copernicus
+Sentinel-2 and Landsat are the two that are free for commercial use with
+attribution. **Esri World Imagery, Mapbox, EOX cloudless and Google are not.**
+The licence table is §5 of the research document; `catalog.json` credits are
+enforced by the feed builder because a season that cannot name its sources
+cannot ship.
 
-### 3. Deliver it
+### 4. Publish it
+
+```bash
+# upload the MP4 to the `views` release lane, then in views/catalog.json:
+#   "renditions": {"1080-SDR": "coreviews-05-lord-howe.mp4", ...}
+#   "status": "ready"
+python tools/build_views_feed.py
+python tools/build_views_feed.py --check
+python tests/test_views_feed.py && python tests/test_views_geo.py
+
+# Paste into Aerial Views → Settings → Custom feeds:
+#   https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/views/aerial-entries.json
+# Paste into Projectivy's Overflight plugin:
+#   https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/views/overflight-feed.json
+```
+
+## The asset contract
 
 | Property | Value |
 |---|---|
 | Duration | 20–40 s |
-| Frame rate | 30 fps (24 for cinematic drone moves) |
+| Frame rate | 30 fps |
 | 1080p | H.264 High, `yuv420p`, 12–16 Mbps, `+faststart` |
 | 4K (optional) | HEVC Main10, 35–50 Mbps |
 | HDR (optional) | HDR10; Dolby Vision is not worth the tooling here |
@@ -84,45 +119,10 @@ attribution watermark. The research document explains it in full.
 | Naming | `coreviews-NN-slug.mp4`, `-4k`, `-hdr` |
 | Thumbnail | 480×270 JPEG, 1 s in |
 
-A worked encode, 20 seconds, 1080p:
-
-```bash
-ffmpeg -framerate 30 -i frames/%05d.png \
-  -c:v libx264 -profile:v high -preset slow -crf 18 \
-  -maxrate 16M -bufsize 32M -pix_fmt yuv420p \
-  -movflags +faststart -an coreviews-01-harbour-dawn.mp4
-```
-
-4K HDR10, from a 10-bit source:
-
-```bash
-ffmpeg -framerate 30 -i frames/%05d.png \
-  -c:v libx265 -preset slow -crf 20 -tag:v hvc1 \
-  -x265-params "hdr-opt=1:repeat-headers=1:colorprim=bt2020:transfer=smpte2084:colormatrix=bt2020nc" \
-  -pix_fmt yuv420p10le -movflags +faststart -an coreviews-01-harbour-dawn-4k-hdr.mp4
-```
-
 **Size.** 20 s at 14 Mbps is about 35 MB; 20 s of 4K at 50 Mbps is about
 125 MB. A twelve-view 1080p season is roughly 0.4 GB. `Motion/` is already
-167 MB, so Core Views media does not go in git. It goes on the `views`
-release lane, one asset per rendition, and `baseUrl` in `catalog.json` points
-there.
-
-### 4. Publish it
-
-```bash
-# upload the renditions to the `views` release, then:
-# 1. set the filenames and "status": "ready" in views/catalog.json
-# 2. regenerate
-python tools/build_views_feed.py
-python tools/build_views_feed.py --check
-python tests/test_views_feed.py
-
-# Paste into Aerial Views → Settings → Custom feeds:
-#   https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/views/aerial-entries.json
-# Paste into Projectivy's Overflight plugin:
-#   https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/views/overflight-feed.json
-```
+167 MB, so Core Views media does not go in git: it goes on the `views` release
+lane, one asset per rendition, and `baseUrl` in `catalog.json` points there.
 
 ## Why the metadata matters as much as the picture
 
@@ -140,6 +140,11 @@ Two traps this repo has already set for itself:
 - Aerial Views parses the feed with `ignoreUnknownKeys = true`. A misspelled
   key is not an error, it is a missing rendition. The builder rejects unknown
   keys for exactly that reason.
+
+The renderer has the same failure mode in a different place: a camera move that
+drifts a degree off the catalogue, or a tile bounding box that is 10 % too
+tight, produces a clip with a grey band in it and no error anywhere. That is
+why `tools/views_geo.py` is pure and `tests/test_views_geo.py` pins it.
 
 ## Credits
 
@@ -161,3 +166,10 @@ only in the feed — Overflight and Aerial Views only show the
 
 Provenance lands in [`THIRD_PARTY_NOTICES.md`](../THIRD_PARTY_NOTICES.md) when
 a season ships.
+
+## If you ever get a camera
+
+Lane A is still the best lane, and the door is open: a drone view is a normal
+catalogue entry with `"lane": "drone"`, the same contract, and no pipeline
+change. The research document keeps the shooting spec (24/30 fps, 180° shutter,
+two takes, 360 reprojection for one-flight-many-moves) for exactly that day.

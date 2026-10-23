@@ -201,15 +201,19 @@ class Season(unittest.TestCase):
         self.assertEqual(sorted(v["number"] for v in self.views), list(range(1, 13)))
         self.assertEqual(len({v["id"] for v in self.views}), 12)
 
-    def test_every_lane_is_represented(self):
+    def test_season_one_needs_no_camera_hardware(self):
+        """Season 1 is producible from a laptop: open-data renders plus archive.
+        A drone view here would be a plan nobody can shoot."""
         lanes = {v["lane"] for v in self.views}
-        self.assertEqual(lanes, {"drone", "render", "archive"})
+        self.assertEqual(lanes, {"render", "archive"})
 
     def test_every_view_carries_a_caption_and_a_place(self):
         for view in self.views:
             self.assertTrue(view["captions"], f"{view['id']} has no captions")
             self.assertIn(view["region"], {"New South Wales", "Tasmania", "Victoria",
-                                           "Northern Territory", "Queensland", "Earth"})
+                                           "Northern Territory", "Queensland",
+                                           "South Australia", "Western Australia",
+                                           "Earth"})
 
     def test_published_feeds_agree_with_the_catalog(self):
         """If a season has been rendered, its feeds must be committed and current."""

@@ -30,6 +30,9 @@ named next to it. Where a claim is a judgement call it says so.
   pipeline*, not an app. Write the spec, render a first season, publish on the
   existing feeds. Add the app only when the catalogue is big enough that
   browsing it inside Aerial Views' settings list is the pain.
+- **Decided 2026-10-23: there is no drone.** Core Views is built from lanes B
+  (open-data render) and F (archive), which means the renderer is not a
+  nice-to-have — it is the product, and season 1 is a laptop job.
 
 ---
 
@@ -139,7 +142,7 @@ Scored on quality, legality, cost and whether it can be repeated for episode 20.
 
 | Lane | What it is | Quality | Legal | Cost | Automatable | Verdict |
 |---|---|---|---|---|---|---|
-| **A. Shoot it** | Drone (or 360 + reprojection) over a real place | Highest | Clear if flown legally; site permissions matter | Gear + time | No | Hero shots |
+| **A. Shoot it** | Drone (or 360 + reprojection) over a real place | Highest | Clear if flown legally; site permissions matter | Gear + time | No | **Out of scope — no hardware.** Keep the door open |
 | **B. Open-geodata render** | Sentinel-2 / Landsat / NAIP imagery draped on Copernicus/Mapterhorn terrain, camera flown in MapLibre, frames to ffmpeg | Good for landscape, poor for skylines | Free incl. commercial, with attribution | Compute only | **Yes** | The repeatable engine |
 | **C. Procedural** | Shaders (what Core Motion already does) | High, but not a place | None | Compute | Yes | Filler, not a view |
 | **D. Licence or partner** | Buy packs (Jetson Creative et al.) or commission | Highest | Per-licence | Money | No | Fast quality, no moat |
@@ -147,7 +150,15 @@ Scored on quality, legality, cost and whether it can be repeated for episode 20.
 | **F. Public-domain archive** | NASA/ESA/NOAA/USGS footage, ISS timelapses, aerial surveys | Varies, some excellent | Public domain / open | Free | Partly | Cheap Earth category |
 | **G. Generative video** | Text/image-to-video | Pretty, geographically fake | Output terms vary by vendor | Credits | Yes | Only if labelled "inspired" |
 
-### A. Shoot it
+### A. Shoot it — out of scope for now
+
+Not available: there is no drone. This section stays because it is the one lane
+that produces something nobody can copy, and the spec above (24/30 fps, 180°
+shutter, two takes) is what matters if a clip is ever bought, commissioned or
+borrowed. The 360-reprojection trick is still the cheapest route in if the
+situation changes.
+
+The rest of this document assumes lane A does not exist.
 
 One 20-second move needs a recce, a flight window, good light and a second
 take. This is the only lane that produces something no one else can copy.
@@ -314,8 +325,8 @@ key names and the test suite pins them, because the consumer cannot.
 
 | Shape | What ships | Effort | Reaches users via | Main risk |
 |---|---|---|---|---|
-| **1. Content line + feeds** | `views/` catalogue, generator, first season of MP4s, Aerial Views + Overflight feeds | 1–2 weekends + render time | Aerial Views, Projectivy, Monet, Core Shift | needs footage |
-| **2. Studio** | browser art-director that flies a camera, previews, exports camera path + WebM | 2–4 days | you | none to users |
+| **1. Content line + feeds** | `views/` catalogue, renderer, first season of MP4s, Aerial Views + Overflight feeds | one evening to render season 1, once Playwright is installed | Aerial Views, Projectivy, Monet, Core Shift | imagery licences, not hardware |
+| **2. Studio** | browser art-director that flies a camera, previews, exports camera path + WebM | built | you | none to users |
 | **3. Extend Core Shift** | second feed, Views tab, caption overlay, offline download | ~1 week | Core Shift's own users (8.8 k Downloader code) | more surface in an app that already has an updater, dream and downloader |
 | **4. New app** | `tv.corebuilds.views`: DreamService + Projectivy provider + browse-by-place UI + offline packs | 2–4 weeks + release lane, updater, Play/Amazon listing | new install | duplicates Aerial Views unless it adds place-browsing and offline packs |
 
@@ -331,44 +342,72 @@ for the suite — not because we want an icon in the launcher.
 
 ---
 
-## 8. First season (proposed)
+## 8. First season — revised for a camera-free build
 
-Twelve views chosen for legality and for what the lanes can actually deliver.
-`L` = landscape render (lane B), `D` = drone (lane A), `A` = archive (lane F).
+The first proposal leaned on drone work for its best shots. Without a drone
+those are gone, and the season is rebuilt around what lane B can actually
+deliver. `R` = open-data render (lane B), `A` = archive (lane F).
 
 | # | View | Where | Lane | Time | Scene | Move |
 |---|---|---|---|---|---|---|
-| 01 | Harbour Dawn | Sydney Harbour, NSW | D | sunrise | city | crane-up reveal over the bridge |
-| 02 | Three Sisters | Blue Mountains, NSW | L | sunrise | countryside | ridge-follow through mist |
-| 03 | Hawkesbury | Brooklyn, NSW | L | day | sea | low pass up the river |
-| 04 | Barrenjoey | Palm Beach, NSW | D | sunset | sea | orbit around the lighthouse |
-| 05 | Wattamolla | Royal National Park, NSW | D | day | waterfall | descend the cliff line |
-| 06 | Hyams Beach | Jervis Bay, NSW | L | day | beach | glide along the white sand |
-| 07 | Lord Howe | Lord Howe Island, NSW | L | day | sea | orbit the lagoon |
-| 08 | Wineglass Bay | Freycinet, TAS | L | sunrise | beach | reveal over the saddle |
-| 09 | Twelve Apostles | Port Campbell, VIC | L | sunset | sea | track the stacks at low sun |
-| 10 | Uluru | NT | L | sunset | countryside | slow orbit, colour shift |
-| 11 | Whitehaven | Whitsundays, QLD | L | day | beach | top-down descend to swirl |
-| 12 | Earth: Terminator | ISS archive | A | night | space | timelapse over the terminator |
+| 01 | Three Sisters | Blue Mountains, NSW | R | sunrise | countryside | ridge-follow through morning cloud |
+| 02 | Hawkesbury | Brooklyn, NSW | R | day | sea | glide up the river mouth |
+| 03 | Wattamolla | Royal National Park, NSW | R | day | waterfall | descend the cliff line |
+| 04 | Hyams Beach | Jervis Bay, NSW | R | day | beach | glide the white sand |
+| 05 | Lord Howe | Lord Howe Island, NSW | R | day | sea | orbit the lagoon and the twin peaks |
+| 06 | Wineglass Bay | Freycinet, TAS | R | sunrise | beach | reveal over the saddle |
+| 07 | Twelve Apostles | Port Campbell, VIC | R | sunset | sea | track the limestone stacks |
+| 08 | Uluru | NT | R | sunset | countryside | slow orbit at last light |
+| 09 | Whitehaven | Whitsundays, QLD | R | day | beach | top-down descend onto Hill Inlet |
+| 10 | Kati Thanda | Lake Eyre, SA | R | day | patterns | glide over the salt pan |
+| 11 | Ningaloo | Coral Bay, WA | R | day | sea | track the reef edge |
+| 12 | Terminator | ISS archive | A | night | space | archive timelapse |
 
-Every one has a real coordinate, a real time-of-day bucket and at least two
-captions — enough to exercise the whole feed contract on the first render.
+What changed and why:
 
----
+- **Sydney Harbour, Barrenjoey and the Opera House are out.** At Sentinel's
+  10 m, a city skyline is mush; a render of the harbour would have looked like
+  a mistake. Losing them is the honest cost of not having a camera, and they
+  are the first three views to shoot if that ever changes.
+- **The set moved to landforms and coasts**, which is exactly where 10 m
+  imagery and 30 m terrain are strongest: ridgelines, river mouths, reef
+  edges, salt pans, sea stacks.
+- **Kati Thanda and Ningaloo were added.** Both are places a drone would
+  struggle with anyway (permit country, remote, marine park), and both are
+  spectacular as imagery rather than as camera work.
+- **Australia-first stays.** It is no longer about travel: it is about
+  licensing. Sentinel and the DEMs are global, but knowing a place means you
+  can tell a bad render from a bad place.
 
-## 9. Build increment in this commit
+Every view has a real coordinate, a time bucket, a scene and at least two
+captions, which is enough to exercise the whole feed contract on the first
+render.
+
+## 9. What is built
 
 | File | What it does |
 |---|---|
-| `views/README.md` | the asset contract above, as instructions |
-| `views/catalog.json` | the twelve views above, with coordinates, lanes, credits and POI tracks |
-| `tools/build_views_feed.py` | validates the catalogue and projects it to the Aerial Views feed (`views/aerial-entries.json`) and the Overflight feed (`views/overflight-feed.json`); `--check` for CI |
-| `tools/views-studio/index.html` | zero-install art-director: MapLibre + open terrain, camera presets, caption track, export of a camera path and a browser-recorded WebM |
-| `tests/test_views_feed.py` | pins the feed keys the consumer silently accepts, the time-of-day vocabulary, credit enforcement and the 12-view catalogue |
+| `docs/research/core-views-aerial-2026-10.md` | this document |
+| `views/catalog.json` | season 1: 12 views with coordinates, lane, time of day, scene, camera move, captions and per-source credits |
+| `tools/views_geo.py` | camera moves, altitude→zoom, tile census — pure Python, no browser |
+| `tools/render_views.py` | **the renderer**: catalogue → keyframes → headless MapLibre → PNG frames → ffmpeg. `--dry-run` plans a whole season with no browser installed |
+| `tools/views-studio/index.html` | zero-install art director: fly a move, see the captions land, export keyframes and a WebM preview |
+| `tools/build_views_feed.py` | validates the catalogue, projects it to the Aerial Views and Overflight feeds, `--check` for CI |
+| `tests/test_views_feed.py` | 24 assertions on the keys the Android client silently accepts |
+| `tests/test_views_geo.py` | 27 assertions on camera paths, tile coverage and encode plans |
 
-The generator publishes only entries whose renditions exist. Until a season is
-rendered it prints the plan and writes nothing, which is the honest state: a
-feed with dead URLs is worse than no feed.
+Two design decisions worth keeping:
+
+1. **The camera maths lives in Python, once.** The browser harness is handed
+   finished keyframes and only displays them, so the studio preview and the
+   render cannot disagree, and a render is reproducible from the catalogue.
+2. **`--dry-run` is a first-class mode.** It prints the frame count, the tiles
+   the move touches and the exact encode command, with no Playwright, no GPU
+   and no network. It is the check CI runs, and it is what makes a render
+   reviewable before it costs an hour.
+
+Nothing publishes until a view is rendered and flipped to `ready`. A feed of
+dead URLs is worse than no feed.
 
 ---
 
@@ -384,17 +423,20 @@ feed with dead URLs is worse than no feed.
 | **Bandwidth** — raw.githubusercontent is not a CDN | Medium | release-asset lane, 1080p default, thumbnails for every view |
 | **Git bloat** | Medium | media in releases, never in git |
 | **Name collision** — "Core Views" vs "Aerial Views" in search and in support threads | Low | always "Core Views by Core Builds", never "Core Aerial"; the feed's `accessibilityLabel` carries the full attribution |
+| **A render that looks like a map** — using OSM raster as the base because it needs no key | High for a shipped clip | the default basemap is for judging a move only; shipping imagery must be imagery the licence allows, and the credits array makes that explicit |
+| **Over-zoomed imagery** — asking for z17 from a z14 source gives a soft, blocky frame | Medium | tile census caps at z15; pick altitude so the frame sits at the source's native zoom |
+| **The season looks like screenshots** — terrain renders are static unless the camera does the work | Medium | every move in `views_geo.MOVES` is a continuous camera path; captions carry the story; short loops |
 | **Attribution lost in playback** | Medium | Overflight and Aerial Views show `accessibilityLabel` on screen; where a licence requires visible credit, the credit goes in the frame, not just the feed |
 
 ---
 
 ## 11. Open questions for you
 
-1. **Lane mix.** Is the first season mostly your own footage (lane A), mostly
-   rendered open data (lane B), or archive (lane F)? The pipeline is the same;
-   the calendar is not.
-2. **Geography.** Australia-first, or global? Australia-first is better for
-   recce and permissions; global suits lane B, which has no travel cost.
+1. ~~Lane mix.~~ Answered 2026-10-23: no hardware, so lane B + archive. The
+   renderer is now the critical path, not the studio.
+2. **Geography.** Australia-first (as built), or global? Lane B has no travel
+   cost, so "global" is a licensing and naming question rather than a
+   logistics one. A global season 2 is the natural expansion.
 3. **App or format.** Content line first (my recommendation), or do you want
    the `tv.corebuilds.views` app scaffolded now?
 4. **Captions.** Place names only, or a one-line story per stop ("Fort Denison

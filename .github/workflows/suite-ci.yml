@@ -41,6 +41,13 @@ jobs:
         run: python tools/build_views_feed.py --check
       - name: Test the Core Views feed contract against the app's keys
         run: python tests/test_views_feed.py
+      # No browser, no GPU, no network: camera paths, tile census and the
+      # encode command are all pure functions, so the renderer's decisions are
+      # testable on a runner that cannot render a frame.
+      - name: Test the Core Views camera paths and render plans
+        run: python tests/test_views_geo.py
+      - name: Confirm Core Views still plans without a browser installed
+        run: python tools/render_views.py --only coreviews-05-lord-howe --dry-run
       - name: Assert every shippable app has CI, metadata, and hardened updater contracts
         run: python tools/audit_contract.py
       - name: Check prefilled icon-request links against the issue forms
