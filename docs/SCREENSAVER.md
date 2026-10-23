@@ -26,7 +26,8 @@ This is **not** a live wallpaper. TV has no `WallpaperService`. Projectivy still
 https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/overflight-feed.json
 ```
 
-19 entries: the 13 live loops plus the 6 series-5 loops (hex glow … zenith), de-duped, https + GitHub hosts only.
+54 entries: the 48 live loops plus the 6 series-5 loops (hex glow … zenith),
+de-duped, https + GitHub hosts only.
 
 Regenerate:
 
@@ -37,6 +38,32 @@ python tools/build_overflight_feed.py --check
 ```
 
 `live-feed.json` stays the validator source of truth for `Motion/live/`. Do not merge series-5 into it unless those files move under `Motion/live/`.
+
+## One wallpaper feed (Motion + Views)
+
+The Core Motion plugin and Aerial Views each read exactly one feed URL, so a
+second catalogue used to mean a second setting. `Motion/wallpaper-feed.json` is
+the union:
+
+```
+https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/wallpaper-feed.json
+```
+
+Paste it once into Projectivy → Core Motion → feed, or into Aerial Views →
+Custom feeds. Core Views entries appear in the rotation when a season is
+rendered and marked ready; nothing has to be reconfigured, and the plugin does
+not need an update. Until then the file is the motion set, which is a correct
+feed on its own.
+
+```bash
+python tools/build_wallpaper_feed.py           # regenerate
+python tools/build_wallpaper_feed.py --check   # CI
+```
+
+It validates what the consumers cannot: https only, the Core Motion plugin's
+host allowlist (`github.com`, `raw.githubusercontent.com`,
+`objects.githubusercontent.com`), a playable URL on every entry, and no
+duplicate of something already in the rotation.
 
 ## Core Views (aerial catalogues)
 

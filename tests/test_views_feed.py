@@ -27,6 +27,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 import build_views_feed as feeds  # noqa: E402
+import build_wallpaper_feed as wallpaper  # noqa: E402
 
 
 def minimal_view(**overrides) -> dict:
@@ -256,6 +257,107 @@ class WorkedExample(unittest.TestCase):
         self.assertEqual(current, feeds.example_document(self.catalog, self.views),
                          "views/examples/ready-view.json drifted — run "
                          "tools/build_views_feed.py --examples")
+
+
+class WallpaperFeed(unittest.TestCase):
+    """One URL for the Core Motion plugin and Aerial Views.
+
+    A supporter asked whether the app can rotate aerials as a live wallpaper
+    the way Aerial Views does. It can — the launchers read a feed, and both
+    consumers take exactly one. So the feed has to be a union, or the answer is
+    "yes, but change your settings for each".
+    """
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.dir = Path(self.tmp.name)
+        self._saved = (wallpaper.MOTION, wallpaper.VIEWS, wallpaper.TARGET)
+        self.addCleanup(self._restore)
+
+    def _restore(self):
+        wallpaper.MOTION, wallpaper.VIEWS, wallpaper.TARGET = self._saved
+
+    def entry(self, title, url, **extra):
+        row = {"location": "Core Motion · Motion", "title": title,
+               "author": "Core Builds", "url_1080p": url}
+        row.update(extra)
+        return row
+
+    def write(self, motion=None, views=None):
+        wallpaper.MOTION = self.dir / "motion.json"
+        wallpaper.VIEWS = self.dir / "views.json"
+        wallpaper.TARGET = self.dir / "out.json"
+        if motion is not None:
+            wallpaper.MOTION.write_text(json.dumps(motion), encoding="utf-8")
+        if views is not None:
+            wallpaper.VIEWS.write_text(json.dumps(views), encoding="utf-8")
+
+    def test_the_committed_feed_is_current(self):
+        self.assertEqual(wallpaper.main(["--check"]), 0,
+                         "Motion/wallpaper-feed.json drifted — run "
+                         "tools/build_wallpaper_feed.py")
+
+    def test_it_covers_every_motion_loop(self):
+        merged = json.loads(wallpaper.build()[0])
+        motion = json.loads(wallpaper.MOTION.read_text(encoding="utf-8"))
+        self.assertEqual(len(merged), len(motion))
+        self.assertEqual([r["url_1080p"] for r in merged],
+                         [r["url_1080p"] for r in motion])
+
+    def test_a_view_joins_the_rotation_without_changing_the_url(self):
+        motion_url = "https://raw.githubusercontent.com/x/motion.mp4"
+        view_url = "https://github.com/x/releases/download/views/view.mp4"
+        self.write(motion=[self.entry("Orbitals", motion_url)],
+                   views=[{"location": "Core Views · New South Wales",
+                           "title": "Lord Howe", "author": "Core Builds",
+                           "url_1080p": view_url,
+                           "url_img": "https://github.com/x/thumb.jpg"}])
+        rendered, motion_count, view_count = wallpaper.build()
+        rows = json.loads(rendered)
+        self.assertEqual((motion_count, view_count), (1, 1))
+        self.assertEqual([r["title"] for r in rows], ["Orbitals", "Lord Howe"])
+
+    def test_duplicates_are_dropped_not_doubled(self):
+        url = "https://raw.githubusercontent.com/x/motion.mp4"
+        self.write(motion=[self.entry("Orbitals", url)],
+                   views=[self.entry("Orbitals again", url)])
+        rows = json.loads(wallpaper.build()[0])
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["title"], "Orbitals")
+
+    def test_a_host_the_plugin_refuses_is_rejected(self):
+        self.write(motion=[self.entry("Bad", "https://example.com/x.mp4")])
+        with self.assertRaises(wallpaper.FeedError) as caught:
+            wallpaper.build()
+        self.assertIn("refuses", str(caught.exception))
+
+    def test_http_is_rejected(self):
+        self.write(motion=[self.entry("Insecure",
+                                      "http://raw.githubusercontent.com/x.mp4")])
+        with self.assertRaises(wallpaper.FeedError):
+            wallpaper.build()
+
+    def test_an_entry_with_no_playable_url_is_rejected(self):
+        self.write(motion=[{"location": "x", "title": "x", "author": "x"}])
+        with self.assertRaises(wallpaper.FeedError) as caught:
+            wallpaper.build()
+        self.assertIn("no url_1080p or url_4k", str(caught.exception))
+
+    def test_no_motion_feed_is_an_error_not_an_empty_file(self):
+        self.write(motion=None)
+        with self.assertRaises(wallpaper.FeedError):
+            wallpaper.build()
+
+    def test_check_mode_catches_a_stale_file(self):
+        self.write(motion=[self.entry("Orbitals",
+                                      "https://raw.githubusercontent.com/x.mp4")])
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(wallpaper.main(["--check"]), 1)   # not written yet
+            self.assertEqual(wallpaper.main([]), 0)
+            self.assertEqual(wallpaper.main(["--check"]), 0)
+            wallpaper.MOTION.write_text(json.dumps([]), encoding="utf-8")
+            self.assertEqual(wallpaper.main(["--check"]), 1)
 
 
 class CheckMode(unittest.TestCase):
