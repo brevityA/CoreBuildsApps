@@ -219,6 +219,24 @@ class TheWalkthroughAgreesWithTheAssets(unittest.TestCase):
         self.assertIn(f"**Online Content: {pack}**", pack_section)
         self.assertIn(f"**Online Content: {glyphs}**", glyphs_section)
 
+    def test_it_names_the_console_settings_these_bundles_trip(self):
+        # The first upload hit two refusals, each caused by a fact of the
+        # build. Read the facts; while they hold, the walkthrough carries the fix.
+        flat = " ".join(self.doc.split())
+        for gradle in ("app/build.gradle.kts", "glyphs/build.gradle.kts"):
+            text = (ROOT / gradle).read_text(encoding="utf-8")
+            min_sdk = int(re.search(r"minSdk = (\d+)", text).group(1))
+            if min_sdk < 24:
+                self.assertIn("Installer check", flat, gradle)
+                # The instruction, not just the name: "on" must fail here.
+                self.assertIn("turn **Installer check** off", flat, gradle)
+                self.assertIn(f"minimum SDK version of {min_sdk}", flat, gradle)
+        for manifest in ("app/src/play/AndroidManifest.xml",
+                         "glyphs/src/play/AndroidManifest.xml"):
+            text = (ROOT / manifest).read_text(encoding="utf-8")
+            if re.search(r'"android\.software\.leanback"\s+android:required="true"', text):
+                self.assertIn("Use a dedicated release track for Android TV", flat, manifest)
+
     def test_it_walks_the_glyphs_pack_listing_too(self):
         # The second app is a second package name typed into a form that can
         # never be edited; both of its ids and its own asset folder are named.

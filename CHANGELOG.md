@@ -6,6 +6,23 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- **The walkthrough covers the two refusals the first upload hit.** Both
+  came up on 2026-10-21, and `docs/PLAY-CONSOLE.md` now covers both:
+  - *Automatic protection*: Play's installer check needs `minSdk` 24, and the
+    bundles declare 21. §5 says to switch **Installer check** off before
+    the first upload.
+  - *Dedicated Android TV track*: a bundle that requires
+    `android.software.leanback` is refused on the shared closed track. §4
+    says to opt into the dedicated Android TV track first, which can't be
+    undone, and flags that Google doesn't say whether its testers count
+    toward the 12-tester gate.
+
+  §7 and §9 point at both. A test reads `minSdk` and the Play manifests'
+  leanback requirement, and keeps each fix in the walkthrough while its
+  cause holds.
+
 ## [2.5.0] — 2026-10-21
 
 The first release since 2.4.4. It also carries what `main` gained since
