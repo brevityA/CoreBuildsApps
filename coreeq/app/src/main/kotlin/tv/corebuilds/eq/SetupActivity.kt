@@ -85,7 +85,7 @@ class SetupActivity : TvActivity() {
             val outputSummary = output?.let {
                 val label = OutputRoute.label(it.kind)
                 val name = it.name.trim().takeIf { value -> value.isNotEmpty() && value != label }
-                "Current output: $label${name?.let { value -> ": $value" }.orEmpty()}"
+                "Android route indication: $label${name?.let { value -> ": $value" }.orEmpty()} (${OutputRoute.evidenceDescription(it.evidence)})"
             } ?: "Current output: not named"
             add(outputSummary)
             picked.profile?.let { profile ->

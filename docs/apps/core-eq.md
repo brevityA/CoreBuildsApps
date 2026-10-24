@@ -6,13 +6,13 @@ Core EQ combines TV-room measurement with a manual 10-band tone EQ. Each measure
 
 ## First install and setup
 
-On a fresh Android TV install, Core EQ opens a short welcome guide. It shows the output Android currently reports, explains the remote-microphone measurement, and warns that the first GREEN-quality measurement for an output type may be applied automatically. You can choose **Start room measurement**, open setup help, or skip the guide; upgrades are not interrupted.
+On a fresh Android TV install, Core EQ opens a short welcome guide. It shows Android's route indication with its evidence type (anticipated route or connected-output estimate), explains the remote-microphone measurement, and warns that the first GREEN capture-quality measurement for an output type may be applied automatically. Green indicates signal-to-noise only, not calibrated microphone response or acoustic accuracy. You can choose **Start room measurement**, open setup help, or skip the guide; upgrades are not interrupted.
 
 **ADB is optional.** Room measurement, correction and manually selected modes do not need ADB. ADB can enable best-effort automatic app-based mode switching and may grant the optional on-screen card on TVs that permit it. The **Setup check and ADB** screen has copyable commands, a link to Google's official [SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools), and remedies for common connection errors. Core EQ never runs ADB commands itself. If your TV refuses the protected `DUMP` permission, use manual mode selection; this is a firmware restriction, not a broken measurement setup. The floating card is optional; the Home status and text toast remain available when overlay access is unavailable.
 
 ## Measuring
 
-A measurement plays a 10-second sweep between two short timing beeps and records it through the remote's microphone; keep the room quiet for 14 seconds. Each sweep gets a 0–100 recording score from its signal to noise; what it found about the room is listed beside it, not scored. Bands the remote could not hear clearly are shown and left uncorrected, and bass dips are lifted by 2 dB at most, because one seat and an uncalibrated microphone cannot tell a room dip from a seat dip.
+A measurement plays a 10-second sweep between two short timing beeps and records it through the remote's microphone; keep the room quiet for 14 seconds. Choose the output, sound mode and volume you will use; keep processing unchanged, quiet the room and place the mic at the main seat. Measure materially different routes or modes separately. Each sweep gets a 0–100 capture-quality score from signal-to-noise only; it does not grade microphone calibration or acoustic accuracy. At the 16 kHz analysis rate, useful response analysis reaches about 7.8 kHz, not the sweep generator's nominal 20 kHz. What it found about the room is listed beside the score, not scored. Bands the remote could not hear clearly are shown and left uncorrected, and bass dips are lifted by 2 dB at most, because one seat and an uncalibrated microphone cannot tell a room dip from a seat dip.
 
 ## Backend fit and repeatability
 

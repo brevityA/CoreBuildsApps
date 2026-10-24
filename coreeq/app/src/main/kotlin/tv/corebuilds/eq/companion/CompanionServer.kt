@@ -524,6 +524,7 @@ internal class CompanionServer(
             .put("app_version", BuildConfig.VERSION_NAME)
             .put("output_kind", output?.kind ?: JSONObject.NULL)
             .put("output_name", output?.name ?: JSONObject.NULL)
+            .put("output_evidence", output?.let { OutputRoute.evidenceDescription(it.evidence) } ?: JSONObject.NULL)
             .put("correction_enabled", profileStore.correctionEnabled)
             .put("profile_id", profile?.id ?: JSONObject.NULL)
             .put("profile_name", profile?.name ?: JSONObject.NULL)
@@ -680,9 +681,9 @@ internal class CompanionServer(
                         updateStatus(message)
                     }
                 },
-                onRouted = { device ->
+                onRouted = { devices ->
                     if (measurement?.id == id && session.phase == sweepPhase) {
-                        val tagged = OutputRoute.tag(session.activeOutput, device?.type, device?.productName?.toString())
+                        val tagged = OutputRoute.tag(session.activeOutput, devices)
                         session.activeOutput = tagged
                         when (sweepPhase) {
                             MeasurementPhase.FIRST_SWEEP -> session.output = tagged

@@ -351,7 +351,8 @@ class EqService : Service() {
         } else {
             ""
         }
-        return " · on ${output.name}$passthrough"
+        val evidence = OutputRoute.evidenceDescription(output.evidence)
+        return " · on ${output.name} ($evidence)$passthrough"
     }
 
     private fun applyAll() {
@@ -369,11 +370,13 @@ class EqService : Service() {
             setAllEnabled(false)
             announcePaused(output)
             val routeName = output?.name ?: "the output Android could not identify"
-            report(
+            val pauseMessage = if (output?.kind == OutputRoute.AMBIGUOUS) {
+                "Android reports multiple possible audio outputs. Correction is paused because one profile cannot safely represent all of them. Select one output and measure it again."
+            } else {
                 "Nothing measured on $routeName yet, so correction is paused there. " +
-                    "Measure with it playing, or switch back to an output you measured.",
-                isError = false
-            )
+                    "Measure with it playing, or switch back to an output you measured."
+            }
+            report(pauseMessage, isError = false)
             return
         }
         val via = if (switched) " (this output's own profile)" else ""

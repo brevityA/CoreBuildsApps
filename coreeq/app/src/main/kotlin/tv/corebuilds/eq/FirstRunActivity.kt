@@ -16,7 +16,8 @@ class FirstRunActivity : TvActivity() {
         val outputLabel = output?.let {
             val label = OutputRoute.label(it.kind)
             val name = it.name.trim().takeIf { value -> value.isNotEmpty() && !value.equals(label, ignoreCase = true) }
-            if (name == null) label else "$label · $name"
+            val routeName = if (name == null) label else "$label · $name"
+            "$routeName (${OutputRoute.evidenceDescription(it.evidence)})"
         } ?: getString(R.string.first_run_output_unknown)
         findViewById<TextView>(R.id.first_run_output).text = getString(R.string.first_run_output, outputLabel)
 
