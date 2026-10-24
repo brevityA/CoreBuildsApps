@@ -1,28 +1,12 @@
 #!/usr/bin/env python3
-"""Build envelope gate.
+"""Build envelope gate for all suite Android roots.
 
-Dependabot sees version numbers and nothing else. It cannot see that five of the
-six modules in this suite compile against API 34, that the icon pack still
-ships `minSdk 21` for Android 5.x Fire TV hardware, or that `doctor/` wires the
-Compose compiler through a DSL that Kotlin 2.0 deleted. So it proposes AndroidX
-releases whose AAR metadata demands a newer platform, and every such PR dies in
-CI with a `CheckAarMetadata` failure that has to be read by a human to explain.
-
-This gate makes the envelope a checked fact instead of a memory:
-
-  1. no Gradle root declares a dependency above its committed ceiling
-  2. every Gradle root in the suite is actually watched by Dependabot
-  3. `.github/dependabot.yml` ignores minor+major for every ceiling coordinate,
-     in every directory that declares it
-  4. the Compose compiler wiring matches the Kotlin major in use
-  5. every workflow installs the Android platform its module compiles against
-
-Rule 3 is the one that matters most. The ignore rules for `core-ktx`,
-`recyclerview` and `appcompat` were added in 6434eabd for exactly this reason,
-were silently dropped in 9f5d266d when `dependabot.yml` was restructured into
-per-directory groups, and the four PRs that followed (#122 #125 #126 #132) all
-failed for the same three libraries. Nothing in CI noticed the rules had gone.
-Now something does.
+Every module is held to the suite-wide compileSdk/targetSdk 37 baseline, the
+AGP 9.4.0 / Gradle 9.7.0 toolchain, AGP built-in Kotlin, and its minSdk and
+per-dependency ceilings. Dependabot sees version numbers but not any of those
+constraints, so the gate checks both dependency ceilings and the generated
+ignore rules. It also verifies Kotlin sub-plugin/Compose wiring and that each
+CI/release workflow installs the platform named by its module's compileSdk.
 
 Run: `python tools/check_gradle_envelope.py`
 """
@@ -305,11 +289,17 @@ def check_roots(roots: list[GradleRoot], table: dict) -> None:
                 fail(f"{root.label}: AGP {root.agp} has no recognized built-in Kotlin configuration")
         elif root.kotlin is None:
             fail(f"{root.label}: no org.jetbrains.kotlin.android version")
-        # Every external Kotlin sub-plugin must move in lockstep with the Kotlin plugin.
-        if root.kotlin is not None:
+        # On AGP 9, Kotlin is bundled with AGP; external Kotlin compiler
+        # sub-plugins still have to match that exact built-in version.
+        builtin_kotlin = envelope.get("builtinKotlinVersionByAgp", {}).get(root.agp)
+        expected_kotlin = root.kotlin or builtin_kotlin
+        if expected_kotlin is not None:
             for pid, version in sorted(root.kotlin_plugins.items()):
-                if version != root.kotlin:
-                    fail(f"{root.label}: {pid} {version} must match Kotlin {root.kotlin}")
+                if version != expected_kotlin:
+                    source = f"built-in Kotlin {expected_kotlin}" if root.kotlin is None else f"Kotlin {expected_kotlin}"
+                    fail(f"{root.label}: {pid} {version} must match {source}")
+        elif root.kotlin_plugins and root.kotlin is None:
+            fail(f"{root.label}: Kotlin sub-plugins are present but the built-in Kotlin version is not recorded")
 
         if root.agp and parse_version(root.agp) >= parse_version("9.0.0"):
             gradle_floor = envelope["minGradleForAgp9"]
@@ -433,26 +423,21 @@ COMPOSE_COMPILER_TO_KOTLIN = {
 def check_compose(roots: list[GradleRoot], table: dict) -> None:
     """The Compose compiler must be wired the way the Kotlin major expects.
 
-    Two mutually exclusive wirings, and the wrong one for your Kotlin version is
-    a hard build failure rather than a warning:
-
-      Kotlin < 2.0  composeOptions.kotlinCompilerExtensionVersion, pinned to one
-                    exact Kotlin release
-      Kotlin >= 2.0 org.jetbrains.kotlin.plugin.compose applied, and the
-                    composeOptions DSL deleted
-
-    `doctor/` is the only module with Compose on, at 1.5.14 / Kotlin 1.9.24.
-    That pairing is the reason no Kotlin 2.x bump can be taken as a version
-    change alone, so the gate asserts it rather than leaving it as folklore.
+    Kotlin < 2.0 uses composeOptions.kotlinCompilerExtensionVersion tied to an
+    exact Kotlin release. Kotlin 2.0+ requires org.jetbrains.kotlin.plugin.compose
+    and deletion of the old composeOptions DSL. AGP 9's built-in Kotlin version
+    is resolved from the version recorded in the envelope just like an external
+    Kotlin plugin version.
     """
     compose = table["compose"]
     floor = parse_version(compose["kotlinMajorThatMovesTheCompiler"])
     plugin_id = compose["pluginId"]
     obsolete = compose["obsoleteDsl"]
     for root in roots:
-        if root.kotlin is None:
+        kotlin_version = root.kotlin or table["envelope"].get("builtinKotlinVersionByAgp", {}).get(root.agp)
+        if kotlin_version is None:
             continue
-        modern = parse_version(root.kotlin) >= floor
+        modern = parse_version(kotlin_version) >= floor
         root_applies_plugin = plugin_id in root.kotlin_plugins
         for module in root.modules:
             if not module.compose_enabled:
@@ -466,7 +451,7 @@ def check_compose(roots: list[GradleRoot], table: dict) -> None:
             if modern:
                 if not applies_plugin:
                     fail(
-                        f"{label} enables Compose on Kotlin {root.kotlin}, which needs "
+                        f"{label} enables Compose on Kotlin {kotlin_version}, which needs "
                         f"`{plugin_id}` applied in that module. From Kotlin 2.0 the Compose "
                         f"compiler is no longer part of the Kotlin plugin."
                         + ("" if root_applies_plugin else
@@ -475,13 +460,13 @@ def check_compose(roots: list[GradleRoot], table: dict) -> None:
                 if module.compose_extension:
                     fail(
                         f"{label} still sets {obsolete} = \"{module.compose_extension}\" on Kotlin "
-                        f"{root.kotlin}. That DSL belongs to the pre-2.0 Compose compiler and must "
+                        f"{kotlin_version}. That DSL belongs to the pre-2.0 Compose compiler and must "
                         f"be deleted once `{plugin_id}` is applied."
                     )
                 continue
             if not module.compose_extension:
                 fail(
-                    f"{label} enables Compose on Kotlin {root.kotlin} but sets no {obsolete}. "
+                    f"{label} enables Compose on Kotlin {kotlin_version} but sets no {obsolete}. "
                     f"Before Kotlin 2.0 the Compose compiler version has to be pinned, and it has "
                     f"to match the Kotlin version exactly."
                 )
@@ -540,17 +525,12 @@ def parse_matrix_entries(text: str) -> list[dict[str, str]]:
     return entries
 
 def check_ci_platforms(roots: list[GradleRoot]) -> None:
-    """Every workflow must install the platform its module compiles against.
+    """Every suite/release workflow must install its module's compile platform.
 
-    `suite-ci.yml` installed only android-34 while its matrix built Core Doctor
-    at compileSdk 35, and nothing noticed because two things papered over it:
-    ubuntu-latest preinstalls both platforms, so the step no-ops, and where an
-    image does not carry one, AGP silently auto-downloads it once the runner has
-    accepted the SDK licences. Neither is a property of this repository — both
-    belong to the runner, and a runner-image change would have turned a green
-    job red with nothing in the workflow to explain why. Declaring the platform
-    per matrix entry makes each job state its own requirement, and this check
-    holds that statement to the build file it points at.
+    API 37 is packaged as platforms;android-37.0 and AGP 9.4.0 uses
+    build-tools 36.0.0. The suite matrix records those IDs per module; this
+    check keeps them aligned with each build file and audits standalone release
+    workflows too, rather than relying on whatever a runner image preinstalls.
     """
     by_gradle: dict[str, Module] = {}
     for root in roots:
@@ -651,6 +631,22 @@ def check_per_root_workflows(roots: list[GradleRoot]) -> None:
                     f"only android-{sorted(installed)}"
                 )
 
+def check_suite_api(roots: list[GradleRoot]) -> None:
+    """The blanket suite migration holds every Android module at API 37."""
+    for root in roots:
+        for module in root.modules:
+            if module.compile_sdk != 37:
+                fail(
+                    f"{module.path.relative_to(ROOT)} compileSdk is {module.compile_sdk}; "
+                    "the suite-wide API target is 37"
+                )
+            if module.target_sdk != 37:
+                fail(
+                    f"{module.path.relative_to(ROOT)} targetSdk is {module.target_sdk}; "
+                    "the suite-wide API target is 37"
+                )
+
+
 def main() -> int:
     if not ENVELOPE.is_file():
         print(f"::error::missing {ENVELOPE.relative_to(ROOT)}")
@@ -662,6 +658,7 @@ def main() -> int:
         return 1
 
     check_roots(roots, table)
+    check_suite_api(roots)
     declaring = check_ceilings(roots, table)
     check_dependabot(roots, table, declaring)
     check_compose(roots, table)

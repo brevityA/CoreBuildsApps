@@ -15,7 +15,8 @@ name: Core Line device check
 # the app into a black screen for every viewer at once.
 #
 # So this boots the same TV image the icon pack's device-check uses
-# (`tv_1080p`, API 34, x86 — see that workflow for why that arch) and asserts
+# (`tv_1080p`, API 34, x86 — a lower-platform compatibility smoke test; see
+# that workflow for why that arch) and asserts
 # against a running system.
 #
 # What it still cannot reach, and what remains [USER TO SUPPLY]: a real VPN
@@ -58,6 +59,13 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Install Android platform 37
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.0" "build-tools;36.0.0" \\
+            || bash tools/install_android_platform.sh 37 36.0.0
 
       - uses: gradle/actions/setup-gradle@v6
 
@@ -240,11 +248,11 @@ jobs:
       - name: Boot emulator, install, and verify
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          # API 34 matches the app's targetSdk. Note the arch: the android-tv
-          # images are x86 (32-bit) or arm64-v8a at this level — there is no
-          # android-tv x86_64 until API 36, and naming one fails the job
-          # immediately with an image-not-found. Verified against
-          # `sdkmanager --list`.
+          # This is an API 34 lower-platform compatibility smoke test; the
+          # app targets API 37. The android-tv images are x86 (32-bit) or
+          # arm64-v8a at this level — there is no android-tv x86_64 until API
+          # 36, and naming one fails immediately with image-not-found.
+          # Verified against `sdkmanager --list`.
           api-level: 34
           target: android-tv
           arch: x86

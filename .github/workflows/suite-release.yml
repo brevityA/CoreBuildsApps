@@ -73,6 +73,10 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: android-actions/setup-android@v3
+      - name: Install Android platform 37
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.0" "build-tools;36.0.0" \\
+            || bash tools/install_android_platform.sh 37 36.0.0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -113,7 +117,7 @@ jobs:
         if: needs.select.outputs.publish == 'true'
         run: |
           APK=$(ls dist/*-release.apk)
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --print-certs "$APK"
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --print-certs "$APK"
       - name: Generate updater metadata with SHA-256
         if: contains('iconpack coreline coreshift', needs.select.outputs.app)
         run: |

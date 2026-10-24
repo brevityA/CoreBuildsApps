@@ -299,10 +299,10 @@ coreeq/
               PhoneCaptureEngine.kt       # foreground AudioRecord PCM capture + provenance
 ```
 
-Core EQ uses its own Gradle root and is the suite's API 37 exception: AGP
-9.4.0, Gradle 9.7.0 and AGP built-in Kotlin. The other suite roots remain on
-AGP 8.5.2 / Kotlin 1.9.24; `tools/gradle_envelope.json` keeps those ceilings
-root-specific. Core EQ dependencies remain `core-ktx` 1.13.1, `appcompat` 1.7.0
+Core EQ uses its own Gradle root and shares the suite-wide API 37 toolchain: AGP
+9.4.0, Gradle 9.7.0 and AGP built-in Kotlin. All suite roots now use this toolchain;
+`tools/gradle_envelope.json` records the version envelope and keeps independent
+dependency ceilings. Core EQ dependencies remain `core-ktx` 1.13.1, `appcompat` 1.7.0
 and `recyclerview` 1.3.2. No Compose — the icon pack's `Theme.CoreBuilds` note
 applies here too.
 
