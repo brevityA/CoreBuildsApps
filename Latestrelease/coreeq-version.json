@@ -1,19 +1,19 @@
 {
-  "versionCode": 13,
-  "versionName": "1.5.2",
-  "releaseDate": "2026-10-13",
+  "versionCode": 14,
+  "versionName": "1.6.0",
+  "releaseDate": "2026-10-24",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "cd45b677fe36217c26a1b4a2c983d656fb41b3b936cc5fada7bddde44c1d91bd",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.5.2",
+  "apkSha256": "9d9ab048d010f76620bd15d542796787ea1348250dba206911a73a1a2af8eb26",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.6.0",
   "minSdk": 30,
   "highlights": [
-    "Backend-aware fit diagnostics.",
-    "Same-position repeatability check.",
-    "Repeatability provenance in profile JSON.",
-    "Playback status chip.",
-    "Android phone companion.",
-    "Poweramp EQ preset import.",
-    "Normal-package beta release.",
-    "Phone companion security limits."
+    "No hardware qualification.",
+    "Auto-apply changes audio.",
+    "Imported targets are limited to +6 / \u221212 dB",
+    "Phone pairing and discovery are untested on real networks and devices.",
+    "The imported target curve is held process-wide.",
+    "Preset soundbar tones are starting points",
+    "The Home badge says when correction is on.",
+    "The on-screen card's display time is yours to set."
   ]
 }
