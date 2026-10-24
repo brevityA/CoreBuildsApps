@@ -143,7 +143,7 @@ class OutputRouteTest {
     @Test
     fun aSingleUnrecognizedReportedTrackDoesNotFallBackToAConnectedGuess() {
         val estimate = OutputRoute.Output(HDMI_ARC, "Soundbar")
-        val tagged = OutputRoute.tag(estimate, AudioDeviceInfo.TYPE_REMOTE_SUBMIX, null)
+        val tagged = OutputRoute.tag(estimate, AudioDeviceInfo.TYPE_REMOTE_SUBMIX, null, model = "Test")
         assertEquals(OutputRoute.UNKNOWN, tagged?.kind)
         assertEquals(OutputRoute.Evidence.TRACK_REPORTED, tagged?.evidence)
     }
