@@ -145,6 +145,24 @@ class MainActivity : TvActivity() {
         }
 
         findViewById<Button>(R.id.btn_remeasure).requestFocus()
+        maybeShowFirstRunGuide()
+    }
+
+    /** Existing installs are not interrupted by an upgrade; only a fresh TV install gets the guide. */
+    private fun maybeShowFirstRunGuide() {
+        val preferences = getSharedPreferences(FirstRunActivity.PREFS, MODE_PRIVATE)
+        val packageInfo = packageManager.getPackageInfo(packageName, 0)
+        val shouldShow = FirstRunPolicy.shouldOffer(
+            isLeanback = packageManager.hasSystemFeature(PackageManager.FEATURE_LEANBACK),
+            alreadyCompleted = preferences.getBoolean(FirstRunActivity.KEY_COMPLETED, false),
+            firstInstallTime = packageInfo.firstInstallTime,
+            lastUpdateTime = packageInfo.lastUpdateTime
+        )
+        if (shouldShow) startActivity(Intent(this, FirstRunActivity::class.java))
+        else if (!preferences.getBoolean(FirstRunActivity.KEY_COMPLETED, false)) {
+            // Mark an upgraded install as seen without showing onboarding.
+            preferences.edit().putBoolean(FirstRunActivity.KEY_COMPLETED, true).apply()
+        }
     }
 
     /**

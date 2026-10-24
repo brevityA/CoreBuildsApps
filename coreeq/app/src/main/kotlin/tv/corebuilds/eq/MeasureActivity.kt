@@ -385,7 +385,7 @@ class MeasureActivity : TvActivity() {
                         resources.getQuantityString(R.plurals.measure_room_gated, room.phaseGatedBands, room.phaseGatedBands),
                         room.transitionHz.roundToInt()
                     )
-                )
+                ).append("\n").append(getString(R.string.quality_accuracy_caveat))
                 textQuality.text = line
                 textQuality.setTextColor(ContextCompat.getColor(this, R.color.cb_slate))
                 textQuality.visibility = View.VISIBLE
@@ -573,8 +573,8 @@ class MeasureActivity : TvActivity() {
                 btnStart.postDelayed({
                     if (measuring && measurementGeneration == generation) stimulusPlayer.playSweep(
                         onError = { msg -> runOnUiThread { fail(msg, kind) } },
-                        onRouted = { device ->
-                            val tagged = OutputRoute.tag(ranked, device?.type, device?.productName?.toString())
+                        onRouted = { devices ->
+                            val tagged = OutputRoute.tag(ranked, devices)
                             runOnUiThread {
                                 if (measuring && measurementGeneration == generation) activeOutput = tagged
                             }
@@ -925,7 +925,17 @@ class MeasureActivity : TvActivity() {
             rt, r.floorHz, top / 1000, nulls, if (nulls == 1) "" else "s",
             gated, if (gated == 1) "" else "s", noisy, if (noisy == 1) "" else "s", r.snrDb, clock
         )
-        textStatus.text = listOfNotNull(resultSummary, captureInfo?.summary()).joinToString("\n")
+        val output = measuredOutput
+        val outputSummary = when {
+            output?.kind == OutputRoute.AMBIGUOUS -> getString(R.string.measure_output_ambiguous)
+            output != null -> getString(
+                R.string.measure_output_evidence,
+                output.name,
+                OutputRoute.evidenceDescription(output.evidence)
+            )
+            else -> getString(R.string.measure_output_unreported)
+        }
+        textStatus.text = listOfNotNull(resultSummary, outputSummary, captureInfo?.summary()).joinToString("\n")
         renderQuality()
         updateRefineButtons()
     }

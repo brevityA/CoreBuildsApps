@@ -8,6 +8,10 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+### Added
+
+- **First-install welcome and guided setup.** A new TV install gets a one-time, remote-friendly guide to choose the output, measure the room and review the first correction. Upgrades are not interrupted. It explains that a first GREEN result may turn correction on automatically, that ADB is optional for core measurement/manual modes, and that TV firmware may refuse optional permissions. Setup now links directly to Google's official Platform-Tools and explains common `adb` not found, unauthorized, offline, port and DUMP-denied cases. No command is run by Core EQ; the user copies and reviews each command.
+
 ## [1.6.0] — 2026-10-24
 
 **Known limits (beta).** Read these before relying on Core EQ.
