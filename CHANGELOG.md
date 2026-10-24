@@ -6,6 +6,20 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.5.1] — 2026-10-24
+
+### Added
+
+### Changed
+
+### Fixed
+
+- **Projectivity launcher discovery in release builds.** Keep the launcher-facing
+  `appfilter.xml`, icon picker `drawable.xml` and legacy `iconpack.xml` resources
+  out of resource shrinking; they are resolved by launchers by name, not by app
+  code. The generated keep rules now preserve them for Projectivity and other
+  compatible launchers.
+
 ## [2.5.0] — 2026-10-21
 
 The first release since 2.4.4. It also carries what `main` gained since
