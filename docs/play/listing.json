@@ -125,9 +125,9 @@
     "branding": "4fa4d2dcbac033c4ca1a1651570529bd7cfe82baf0b837b10f491d58c69f22e6",
     "icon_pack_xml": "da1b14f2de497702b8c911da7ef81177334704922b318a02632d12cbb37eb081",
     "wallpapers_json": "0bc4f85d2ff7d2e2c646088cd450957c5e7a58c0519be85923207356dafb3490",
-    "live_loop_kt": "cd1799653c6278c75142804c137eefa3fc5ad8f893b28331d8f8ed5acc3c8720",
+    "live_loop_kt": "00e56ef0764c460c81526d97b4b4a57085caf1e489a905c57d0d553ba4248b51",
     "frames": {
-      "app-ui-wallpapers.png": "77efc54344e91cb0f24a4d1073de3ce5951454e75429786c77d0a9c89d3b85f7",
+      "app-ui-wallpapers.png": "40bf9468ada495126be9ea14ffa1e154cbc7b69592f354f69ddd061b67f5af23",
       "app-ui-catalogue.png": "c2f3375a60b15fdbef8bc6e140af651de587ee130a277f8a5be496cf3ed3a09b",
       "app-ui-inspector.png": "d5378f5082edd66813901240608b0c94d6a2cb8fc1f6d7c24fc4dec0518699e8",
       "app-ui-auditor.png": "b0ed4c209362841cc5b2f75dacb3ab1b87f7651034f16ed024b90c70a287f964",
