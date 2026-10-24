@@ -196,6 +196,12 @@ object Formats {
         // actual recorder and analysis rates live separately in `capture`.
         root.put("sample_rate", DspConstants.FS)
         root.put("target", profile.target)
+        // An imported target travels with the profile; a built-in one is named by its key.
+        if (profile.targetPoints.isNotEmpty()) {
+            val points = JSONArray()
+            for ((hz, db) in profile.targetPoints) points.put(JSONObject().put("hz", hz).put("db", db))
+            root.put("target_points", points)
+        }
 
         val rangeArr = JSONArray()
         rangeArr.put(DspConstants.F_MIN)

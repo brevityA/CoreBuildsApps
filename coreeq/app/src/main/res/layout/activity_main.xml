@@ -196,7 +196,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/indicator_standby"
-                        android:textColor="@color/cb_slate"
+                        android:textColor="@color/cb_signal_cyan"
                         android:textSize="@dimen/cb_text_kicker"
                         android:fontFamily="monospace"
                         android:textStyle="bold" />

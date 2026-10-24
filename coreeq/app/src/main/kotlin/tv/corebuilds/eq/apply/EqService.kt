@@ -103,7 +103,7 @@ class EqService : Service() {
     private var activeLayers = ToneLayers.NONE
     /** Decides when the "profile applied" toast shows: on a change, not on every reapply. */
     private val appliedNotice = AppliedNotice()
-    private val appliedCard by lazy { AppliedCard(this) }
+    private val appliedCard by lazy { AppliedCard(this) { store.cardSeconds * 1_000L } }
     /** What the card says about the correction applied right now, for Profiles' test card; null while nothing is applied. */
     private var currentCard: AppliedCard.Content? = null
     private var currentCardFallback: String? = null
