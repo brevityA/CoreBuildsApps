@@ -65,7 +65,7 @@
     <string name="manual_eq_save_hint">Preset name</string>
     <string name="manual_eq_import_file">Import EQ preset or correction file…</string>
     <string name="manual_eq_import_busy">Reading the correction file…</string>
-    <string name="manual_eq_import_no_picker">This TV has no file picker. Enable the Files app, then try again.</string>
+    <string name="manual_eq_import_no_picker">This TV has no file picker or file manager. Install a file manager, then try again.</string>
     <string name="manual_eq_import_unreadable">That file could not be read.</string>
     <string name="manual_eq_import_too_large">The file is larger than 64 KB. Choose a smaller Poweramp JSON preset or correction text file.</string>
     <string name="manual_eq_import_failed">Not imported: %1$s</string>
@@ -116,10 +116,28 @@
     <string name="measure_repeat_changed">Measurement choices changed; the repeat comparison was cleared. Repeat again under the new target and room settings.</string>
     <string name="measure_repeat_unknown_output">Android did not report enough input/output route detail for both sweeps; treat this comparison as provisional.</string>
     <string name="measure_start_new">New sweep</string>
+    <string name="measure_refine_kicker">BEFORE YOU SAVE</string>
+    <string name="measure_refine_title">More seats, then a check</string>
+    <string name="measure_refine_sub">Add a seat: move the remote to another place a head goes and sweep again. Up to three seats are averaged, so a peak only one chair hears is cut less and the room\'s own are cut in full. Check: the sweep plays again through this correction and shows how close it lands to the target. Neither one saves.</string>
+    <string name="measure_add_seat_button">Add a seat (%1$d of %2$d)</string>
+    <string name="measure_check_button">Check correction</string>
+    <string name="measure_seats_summary">%1$d-seat energy average · bass lift still capped at %2$.0f dB below the transition, as for one seat</string>
+    <string name="measure_seats_left_out">Seat %1$d left out: from 300 Hz to 3 kHz it sat %2$.1f dB RMS from the other seats, where seats in one room normally agree within 1–2 dB (remote covered, turned away or behind something?). New sweep starts the seats again.</string>
+    <string name="measure_check_summary">Check · correction on · one position · %1$d bands · %2$.1f dB RMS from the target (room alone %3$.1f dB, predicted %4$.1f dB) · largest %5$+.1f dB at %6$s. Bands the correction leaves alone are not counted. Descriptive, not a pass/fail.</string>
+    <string name="measure_check_unscored">Check captured but not scored: too few trusted bands the two sweeps share. The correction is unchanged.</string>
+    <string name="measure_check_provisional">%1$s Treat this check as provisional.</string>
     <string name="measure_saved">Saved and made active: %1$s</string>
+    <string name="measure_auto_apply_failed">The first measurement could not be applied automatically. Save it from the result, or measure again.</string>
+    <string name="measure_auto_applied">Applied automatically for this output: %1$s. Later measurements are only shown until you save them.</string>
     <string name="measure_profile_name">Room · %1$s</string>
     <string name="measure_room_button">Room size: %1$s</string>
     <string name="measure_target_button">Target: %1$s</string>
+    <string name="measure_target_custom">Target: Imported file</string>
+    <string name="measure_target_custom_title">Imported file</string>
+    <string name="measure_target_import_button">Import target file (GraphicEQ, REW, CSV)</string>
+    <string name="measure_target_import_failed">Target not imported: %1$s</string>
+    <string name="measure_target_unreadable">the file could not be read</string>
+    <string name="measure_target_picker_missing">this TV has no file picker or file manager; install one, then try again</string>
 
     <!-- Correction switch -->
     <string name="correction_on">Correction: On</string>
@@ -130,7 +148,7 @@
 
     <!-- Correction indicator badge (Home screen, under the switch) -->
     <string name="indicator_live">PLAYING · COVERAGE UNKNOWN</string>
-    <string name="indicator_standby">STANDBY</string>
+    <string name="indicator_standby">ON · WAITING FOR PLAYBACK</string>
     <string name="indicator_not_applied">NOT APPLIED</string>
 
     <!-- Profiles screen -->
@@ -272,7 +290,8 @@
     <string name="card_description">%1$s. %2$s. %3$s.</string>
     <string name="profiles_announce_on">Notice when a profile is applied: On</string>
     <string name="profiles_announce_off">Notice when a profile is applied: Off</string>
-    <string name="profiles_card_allowed">Shown as a card at the top right for 4 seconds, over whatever is playing: profile, mode, output and extras.</string>
+    <string name="profiles_card_allowed">Shown as a card at the top right for %1$d seconds, over whatever is playing: profile, mode, output and extras.</string>
+    <string name="profiles_card_seconds">Card on screen: %1$d s (tap for 1 to 10)</string>
     <string name="profiles_card_needs_permission">Shown as a short text toast for now. Allow “Display over other apps” for the card with the profile, mode, output and extras.</string>
     <string name="profiles_card_off">Off: nothing is shown when a profile is applied.</string>
     <string name="profiles_playback_hud_on">Playback chip: On</string>
@@ -300,8 +319,9 @@
     <string name="companion_tv_subtitle">Local-only link for controlling profiles and taking a phone-microphone measurement. The listener runs only while this screen is open.</string>
     <string name="companion_finding_address">TV address: finding a local IPv4 address…</string>
     <string name="companion_tv_address">TV address: %1$s</string>
-    <string name="companion_tv_port">Temporary port: %1$d</string>
-    <string name="companion_tv_pair_instructions">On the Android phone, open Core EQ. Enter this TV address, temporary port and the one-time code. Keep both devices on the same trusted Wi-Fi network. Pairing replaces any previous phone.</string>
+    <string name="companion_tv_port">Port: %1$d</string>
+    <string name="companion_tv_pair_instructions">On the Android phone, open Core EQ and choose Scan TV QR, then point the camera at the code below. Or enter this TV address, port and the one-time code. Keep both devices on the same trusted Wi-Fi network. Pairing replaces any previous phone.</string>
+    <string name="companion_tv_qr_accessibility">QR code for pairing this TV with the Core EQ phone app. Shown only while pairing is open.</string>
     <string name="companion_pairing_closed">Pairing code is not active</string>
     <string name="companion_pairing_stopped">Pairing is stopped.</string>
     <string name="companion_pairing_expired">Pairing code expired. Start pairing again on the TV.</string>
@@ -380,20 +400,36 @@
     <string name="phone_pair_heading">Pair with your TV</string>
     <string name="phone_tv_ip_hint">TV private IPv4 address · for example 192.168.1.20</string>
     <string name="phone_tv_ip_accessibility">TV private IPv4 address shown on the Core EQ companion screen</string>
-    <string name="phone_tv_port_hint">Temporary port shown on the TV</string>
-    <string name="phone_tv_port_accessibility">Temporary TCP port shown on the Core EQ TV screen</string>
+    <string name="phone_tv_port_hint">Port shown on the TV</string>
+    <string name="phone_tv_port_accessibility">TCP port shown on the Core EQ TV screen</string>
     <string name="phone_pair_code_hint">One-time pairing code · enter all 32 hex characters</string>
     <string name="phone_pair_code_accessibility">One-time pairing code shown on the TV</string>
     <string name="phone_pair_button">Pair this phone</string>
     <string name="phone_connect_button">Connect / refresh</string>
+    <string name="phone_find_tv_button">Find TV on this Wi-Fi</string>
+    <string name="phone_scan_qr_button">Scan TV QR</string>
+    <string name="phone_trying_next_address">That address did not answer. Trying %1$s.</string>
+    <string name="phone_rediscovering">The saved TV address did not answer. Looking for the TV on this network.</string>
+    <string name="phone_rediscover_ok">Found the TV at its new address and reconnected.</string>
+    <string name="phone_rediscover_none">The TV was not found at a new address. Open the phone link on the TV, check the Wi-Fi, or pair again.</string>
+    <string name="phone_scan_ok">QR read. Pairing with the TV now.</string>
+    <string name="phone_scan_not_tv">That is not a Core EQ pairing code. Point the camera at the QR on the TV pairing screen.</string>
+    <string name="phone_scan_downloading">Downloading the QR scanner from Google Play services. This happens once.</string>
+    <string name="phone_scan_unavailable">Google Play services could not provide the QR scanner on this phone. Enter the TV address and code instead.</string>
+    <string name="phone_find_tv_searching">Looking for a Core EQ TV on this network. Open the phone link on the TV first.</string>
+    <string name="phone_find_tv_woke">Found %1$s at %2$s. Asked the TV to show its pairing code: scan the code on its screen, or type it here.</string>
+    <string name="phone_find_tv_found">Found %1$s at %2$s. Enter the pairing code shown on the TV.</string>
+    <string name="phone_find_tv_found_kept">Found %1$s at %2$s. Kept the address you entered.</string>
+    <string name="phone_find_tv_none">No Core EQ TV found. Open the phone link on the TV, check you are on the same Wi-Fi, or enter the address below.</string>
     <string name="phone_not_paired">No TV paired</string>
     <string name="phone_saved_not_connected">TV saved · not connected</string>
     <string name="phone_invalid_tv_ip">Enter the TV private IPv4 address shown on its Core EQ companion screen. Host names and public addresses are not accepted.</string>
-    <string name="phone_invalid_tv_port">Enter the TV temporary port, from 1 to 65535.</string>
+    <string name="phone_invalid_tv_port">Enter the TV port, from 1 to 65535.</string>
     <string name="phone_invalid_pair_code">Enter the complete one-time code shown on the TV.</string>
     <string name="phone_pairing">Pairing with the TV…</string>
     <string name="phone_pair_success">Phone paired. The code can no longer be reused.</string>
     <string name="phone_pair_failed">Pairing failed: %1$s</string>
+    <string name="phone_paired_not_loaded">Phone paired, but the TV did not answer afterwards: %1$s. Press Connect / refresh to try again.</string>
     <string name="phone_pair_first">Pair this phone on the TV first, then connect.</string>
     <string name="phone_connecting">Connecting to Core EQ on the local network…</string>
     <string name="phone_connect_failed">Could not connect: %1$s</string>

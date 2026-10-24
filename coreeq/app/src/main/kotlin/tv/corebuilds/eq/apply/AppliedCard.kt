@@ -41,7 +41,7 @@ import tv.corebuilds.eq.TvActivity
  * The card's sizes come from the same 960dp box as the app's screens
  * ([TvActivity.normalizeDpBox]), so it looks the same on a 1080p and a 4K set.
  */
-class AppliedCard(context: Context) {
+class AppliedCard(context: Context, private val showMs: () -> Long = { DEFAULT_SHOW_MS }) {
 
     /** What the card says. [active] picks the colour; [railText] can name a live evidence state. */
     data class Content(
@@ -66,7 +66,7 @@ class AppliedCard(context: Context) {
     fun allowed(): Boolean = Settings.canDrawOverlays(ui)
 
     /**
-     * Show [content] for [SHOW_MS], replacing whatever the card said if it is
+     * Show [content] for [showMs] milliseconds, replacing whatever the card said if it is
      * already up (the timer restarts). False when the overlay is not allowed
      * or Android refused the window, so the caller can fall back.
      */
@@ -107,7 +107,7 @@ class AppliedCard(context: Context) {
         }
         this.persistent = persistent
         handler.removeCallbacks(fadeOut)
-        if (!persistent) handler.postDelayed(fadeOut, SHOW_MS)
+        if (!persistent) handler.postDelayed(fadeOut, showMs())
         return true
     }
 
@@ -189,8 +189,8 @@ class AppliedCard(context: Context) {
     private fun dp(value: Int): Float = value * ui.resources.displayMetrics.density
 
     private companion object {
-        /** Long enough to read three short lines from the sofa, short enough not to sit on the film. */
-        const val SHOW_MS = 4_000L
+        /** Long enough to read three short lines from the sofa, short enough not to sit on the film. Profiles lets the user choose 1 to 10 s. */
+        const val DEFAULT_SHOW_MS = 4_000L
         const val FADE_IN_MS = 180L
         const val FADE_OUT_MS = 260L
         const val SLIDE_DP = 8

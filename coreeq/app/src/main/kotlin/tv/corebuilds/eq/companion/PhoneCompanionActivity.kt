@@ -17,7 +17,16 @@ import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.common.moduleinstall.InstallStatusListener
+import com.google.android.gms.common.moduleinstall.ModuleInstall
+import com.google.android.gms.common.moduleinstall.ModuleInstallClient
+import com.google.android.gms.common.moduleinstall.ModuleInstallRequest
+import com.google.android.gms.common.moduleinstall.ModuleInstallStatusUpdate
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanner
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import org.json.JSONObject
 import tv.corebuilds.eq.R
 import java.net.Inet4Address
@@ -63,6 +72,12 @@ class PhoneCompanionActivity : AppCompatActivity() {
     private lateinit var roomButton: Button
     private lateinit var repeatCheck: CheckBox
     private lateinit var measureProgress: ProgressBar
+    private lateinit var findTvButton: Button
+    private lateinit var scanQrButton: Button
+    private lateinit var discoveryLine: TextView
+    private var tvSearch: TvDiscovery.Search? = null
+    /** Other TV addresses from the QR, tried only when a connection to the first one fails. */
+    private var fallbackHosts: List<String> = emptyList()
 
     private var dashboard: Dashboard? = null
     private var targetIndex = 0
@@ -113,16 +128,33 @@ class PhoneCompanionActivity : AppCompatActivity() {
             remotePanel.visibility = View.GONE
             connectionLine.setText(R.string.phone_not_paired)
             setRemoteEnabled(false)
+            // Nothing is saved yet, so look for the TV straight away.
+            withLocalNetwork { startTvSearch() }
         }
         refreshMeasurementChoices()
     }
 
     private fun buildContent(): ScrollView {
-        val scroll = ScrollView(this)
+        // targetSdk 37 draws edge-to-edge, so the scroll view keeps its background under the
+        // status and navigation bars and pads its content clear of them. The bottom inset is
+        // the keyboard when it is taller than the navigation bar, so the focused field and the
+        // pair button stay on screen while typing.
+        val scroll = ScrollView(this).apply {
+            isFillViewport = true
+            clipToPadding = false
+            setBackgroundColor(color(R.color.cb_night))
+            ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
+                val bars = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+                )
+                val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+                view.setPadding(bars.left, bars.top, bars.right, maxOf(bars.bottom, ime.bottom))
+                insets
+            }
+        }
         val column = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(20), dp(18), dp(20), dp(24))
-            setBackgroundColor(color(R.color.cb_night))
         }
         scroll.addView(column)
         column.addView(label(getString(R.string.phone_companion_title), 25f, true, R.color.cb_ink))
@@ -131,6 +163,16 @@ class PhoneCompanionActivity : AppCompatActivity() {
 
         val pairHeading = label(getString(R.string.phone_pair_heading), 19f, true, R.color.cb_ink)
         column.addView(pairHeading, matchWrap(top = 16))
+        findTvButton = actionButton(getString(R.string.phone_find_tv_button), primary = false).apply {
+            setOnClickListener { withLocalNetwork { startTvSearch() } }
+        }
+        column.addView(findTvButton, matchWrap(top = 6))
+        scanQrButton = actionButton(getString(R.string.phone_scan_qr_button), primary = true).apply {
+            setOnClickListener { scanTvQr() }
+        }
+        column.addView(scanQrButton, matchWrap(top = 6))
+        discoveryLine = label("", 14f, false, R.color.cb_slate)
+        column.addView(discoveryLine, matchWrap(top = 4))
         hostField = editField(getString(R.string.phone_tv_ip_hint), InputType.TYPE_CLASS_PHONE).apply {
             contentDescription = getString(R.string.phone_tv_ip_accessibility)
         }
@@ -192,6 +234,10 @@ class PhoneCompanionActivity : AppCompatActivity() {
             "gaming" to R.string.phone_mode_gaming
         ).forEach { (mode, titleRes) ->
             val button = actionButton(getString(titleRes), primary = false).apply {
+                // Three equal columns on a narrow phone: let long labels wrap instead of clipping.
+                minimumWidth = 0
+                maxLines = 2
+                setPadding(dp(6), dp(8), dp(6), dp(8))
                 setOnClickListener { runControl(JSONObject().put("op", "set_mode").put("mode", mode)) }
             }
             modeRow.addView(button, weightedWrap())
@@ -277,30 +323,63 @@ class PhoneCompanionActivity : AppCompatActivity() {
             codeField.requestFocus()
             return
         }
+        // The user is pairing with these fields now; a search still running must not
+        // replace the address underneath them.
+        stopTvSearch()
         setOperationBusy(true)
         setStatus(getString(R.string.phone_pairing), error = false)
         thread(name = "CoreEqPhonePair") {
-            try {
+            val saved = try {
                 val token = CompanionCrypto.randomKey()
                 val clientName = "${Build.MANUFACTURER} ${Build.MODEL}".trim().take(60).ifBlank { "Android phone" }
                 val response = CompanionClient(host, port, pairingKey).pair(pairingKey, token, clientName)
                 requireOk(response)
-                val saved = PhoneCredentials(host, port, token)
-                credentialStore.save(saved)
-                val newDashboard = loadDashboard(saved)
+                PhoneCredentials(host, port, token).also { credentialStore.save(it) }
+            } catch (e: Exception) {
+                val unreachable = e is java.net.ConnectException ||
+                    e is java.net.SocketTimeoutException ||
+                    e is java.net.NoRouteToHostException
                 runOnUiThread {
                     setOperationBusy(false)
-                    codeField.text?.clear()
-                    remotePanel.visibility = View.VISIBLE
-                    setStatus(getString(R.string.phone_pair_success), error = false)
-                    showDashboard(newDashboard)
-                    setRemoteEnabled(true)
+                    val next = fallbackHosts.firstOrNull()
+                    if (unreachable && next != null) {
+                        // The first address did not answer; try the next one from the QR.
+                        fallbackHosts = fallbackHosts.drop(1)
+                        hostField.setText(next)
+                        setStatus(getString(R.string.phone_trying_next_address, next), error = false)
+                        pairWithTv()
+                    } else {
+                        fallbackHosts = emptyList()
+                        setStatus(getString(R.string.phone_pair_failed, readableError(e)), error = true)
+                    }
                 }
+                return@thread
+            }
+            // Paired: the TV has spent the one-time key and the token is saved. A failure from
+            // here on is a connection problem to report, never a reason to pair again with the
+            // QR's next address, which would only fail on the spent key.
+            val newDashboard = try {
+                loadDashboard(saved)
             } catch (e: Exception) {
                 runOnUiThread {
                     setOperationBusy(false)
-                    setStatus(getString(R.string.phone_pair_failed, readableError(e)), error = true)
+                    fallbackHosts = emptyList()
+                    codeField.text?.clear()
+                    remotePanel.visibility = View.VISIBLE
+                    connectionLine.setText(R.string.phone_saved_not_connected)
+                    setRemoteEnabled(true)
+                    setStatus(getString(R.string.phone_paired_not_loaded, readableError(e)), error = true)
                 }
+                return@thread
+            }
+            runOnUiThread {
+                setOperationBusy(false)
+                fallbackHosts = emptyList()
+                codeField.text?.clear()
+                remotePanel.visibility = View.VISIBLE
+                setStatus(getString(R.string.phone_pair_success), error = false)
+                showDashboard(newDashboard)
+                setRemoteEnabled(true)
             }
         }
     }
@@ -335,6 +414,101 @@ class PhoneCompanionActivity : AppCompatActivity() {
                     connectionLine.setText(R.string.phone_saved_not_connected)
                     setRemoteEnabled(true)
                     setStatus(getString(R.string.phone_connect_failed, readableError(e)), error = true)
+                    rediscoverSavedTv(credentials)
+                }
+            }
+        }
+    }
+
+    /**
+     * The saved address may have changed (DHCP, a new router). Search the LAN for Core EQ
+     * TVs at a different address and try each with the saved token, one at a time, until
+     * one accepts it or the search ends. The token is the identity check: a TV that was
+     * not paired with this phone refuses it, so a second Core EQ TV answering first only
+     * costs one attempt. The new address is saved only after a successful connection.
+     * All of this state lives on the main thread.
+     */
+    private fun rediscoverSavedTv(saved: PhoneCredentials) {
+        if (operationInProgress || measurementInProgress || repeatFallbackSessionId != null) return
+        tvSearch?.cancel()
+        setStatus(getString(R.string.phone_rediscovering), error = false)
+        val candidates = ArrayDeque<TvDiscovery.FoundTv>()
+        val seen = hashSetOf("${saved.host}:${saved.port}")
+        var trying = false
+        var tried = false
+        var searching = true
+        var connected = false
+        lateinit var search: TvDiscovery.Search
+        fun tryNext() {
+            if (trying || connected) return
+            val next = candidates.removeFirstOrNull()
+            if (next == null) {
+                // Nothing left to try. A failed attempt already left its own message.
+                if (!searching && !tried) setStatus(getString(R.string.phone_rediscover_none), error = true)
+                return
+            }
+            trying = true
+            tried = true
+            retryWithFoundTv(saved, next.host, next.port) { ok ->
+                trying = false
+                if (ok) {
+                    connected = true
+                    search.cancel()
+                } else {
+                    tryNext()
+                }
+            }
+        }
+        search = TvDiscovery.Search(
+            context = this,
+            timeoutMs = FIND_TV_TIMEOUT_MS,
+            firstOnly = false,
+            onFound = { found ->
+                if (seen.add("${found.host}:${found.port}")) {
+                    candidates.addLast(found)
+                    tryNext()
+                }
+            },
+            onDone = { _ ->
+                searching = false
+                if (tvSearch === search) tvSearch = null
+                // onStop/onDestroy cancel the search; leaving the screen is not a cue to
+                // start another connection attempt.
+                if (!isFinishing && !isDestroyed) tryNext()
+            }
+        )
+        tvSearch = search
+        search.start()
+    }
+
+    /** One reconnect attempt; [onResult] runs on the main thread with whether it connected. */
+    private fun retryWithFoundTv(
+        saved: PhoneCredentials,
+        host: String,
+        port: Int,
+        onResult: (Boolean) -> Unit
+    ) {
+        setOperationBusy(true)
+        setStatus(getString(R.string.phone_connecting), error = false)
+        thread(name = "CoreEqPhoneRediscover") {
+            try {
+                val creds = PhoneCredentials(host, port, saved.token)
+                val newDashboard = loadDashboard(creds)
+                credentialStore.save(creds)
+                runOnUiThread {
+                    setOperationBusy(false)
+                    hostField.setText(host)
+                    portField.setText(port.toString())
+                    showDashboard(newDashboard)
+                    setRemoteEnabled(true)
+                    setStatus(getString(R.string.phone_rediscover_ok), error = false)
+                    onResult(true)
+                }
+            } catch (e: Exception) {
+                runOnUiThread {
+                    setOperationBusy(false)
+                    setStatus(getString(R.string.phone_connect_failed, readableError(e)), error = true)
+                    onResult(false)
                 }
             }
         }
@@ -423,7 +597,14 @@ class PhoneCompanionActivity : AppCompatActivity() {
         refreshMeasurementChoices()
     }
 
-    private fun runControl(request: JSONObject) {
+    /**
+     * Every remote action goes through the local-network check, as Find, Pair and Connect do.
+     * Without it, a phone on Android 17 whose permission was denied timed out after 5 s with
+     * "connect timed out" instead of saying what was wrong.
+     */
+    private fun runControl(request: JSONObject) = withLocalNetwork { runControlNow(request) }
+
+    private fun runControlNow(request: JSONObject) {
         if (operationInProgress || measurementInProgress || repeatFallbackSessionId != null) return
         val credentials = credentialStore.load() ?: return
         setOperationBusy(true)
@@ -449,7 +630,9 @@ class PhoneCompanionActivity : AppCompatActivity() {
         }
     }
 
-    private fun requestMicrophoneThenMeasure() {
+    private fun requestMicrophoneThenMeasure() = withLocalNetwork { requestMicrophoneThenMeasureNow() }
+
+    private fun requestMicrophoneThenMeasureNow() {
         if (measurementInProgress || operationInProgress || repeatFallbackSessionId != null) return
         val engine = PhoneCaptureEngine(this)
         if (!engine.hasPermission()) {
@@ -795,12 +978,159 @@ class PhoneCompanionActivity : AppCompatActivity() {
 
     override fun onStop() {
         if (measurementInProgress && !isChangingConfigurations) cancelCapture(sendRemote = true)
+        tvSearch?.cancel()
         super.onStop()
     }
 
     override fun onDestroy() {
         if (measurementInProgress) cancelCapture(sendRemote = true)
+        tvSearch?.cancel()
+        tvSearch = null
         super.onDestroy()
+    }
+
+    /**
+     * Reads the QR on the TV's pairing screen. The QR carries the same one-time
+     * key as the typed code, so scanning fills in the form and runs the same
+     * encrypted pairing. Nothing is sent until the phone has the TV's key.
+     */
+    private fun scanTvQr() {
+        if (operationInProgress || measurementInProgress || repeatFallbackSessionId != null) return
+        scanQrButton.isEnabled = false
+        val scanner = GmsBarcodeScanning.getClient(this)
+        val installer = ModuleInstall.getClient(this)
+        // The scanner is a Play services module that is not in the APK. On a phone that has
+        // never used it, startScan() fails while the module downloads, which read as "not
+        // available on this phone". Ask first, and download it with the user told why.
+        installer.areModulesAvailable(scanner)
+            .addOnSuccessListener { availability ->
+                if (availability.areModulesAvailable()) {
+                    startTvQrScan(scanner)
+                } else {
+                    setStatus(getString(R.string.phone_scan_downloading), error = false)
+                    installScannerThenScan(installer, scanner)
+                }
+            }
+            .addOnFailureListener { scanUnavailable() }
+    }
+
+    private fun installScannerThenScan(installer: ModuleInstallClient, scanner: GmsBarcodeScanner) {
+        val listener = object : InstallStatusListener {
+            override fun onInstallStatusUpdated(update: ModuleInstallStatusUpdate) {
+                when (update.installState) {
+                    ModuleInstallStatusUpdate.InstallState.STATE_COMPLETED -> {
+                        installer.unregisterListener(this)
+                        if (!isFinishing && !isDestroyed) startTvQrScan(scanner)
+                    }
+                    ModuleInstallStatusUpdate.InstallState.STATE_FAILED,
+                    ModuleInstallStatusUpdate.InstallState.STATE_CANCELED -> {
+                        installer.unregisterListener(this)
+                        if (!isFinishing && !isDestroyed) scanUnavailable()
+                    }
+                    else -> Unit // pending or downloading: the status line already says so
+                }
+            }
+        }
+        val request = ModuleInstallRequest.newBuilder()
+            .addApi(scanner)
+            .setListener(listener)
+            .build()
+        installer.installModules(request)
+            .addOnSuccessListener { response ->
+                if (response.areModulesAlreadyInstalled()) {
+                    installer.unregisterListener(listener)
+                    startTvQrScan(scanner)
+                }
+            }
+            .addOnFailureListener {
+                installer.unregisterListener(listener)
+                scanUnavailable()
+            }
+    }
+
+    private fun startTvQrScan(scanner: GmsBarcodeScanner) {
+        scanner.startScan()
+            .addOnSuccessListener { barcode ->
+                scanQrButton.isEnabled = true
+                handleTvQr(barcode.rawValue)
+            }
+            .addOnCanceledListener { scanQrButton.isEnabled = true }
+            .addOnFailureListener { scanUnavailable() }
+    }
+
+    private fun scanUnavailable() {
+        scanQrButton.isEnabled = true
+        setStatus(getString(R.string.phone_scan_unavailable), error = true)
+    }
+
+    private fun handleTvQr(raw: String?) {
+        val payload = TvPairingQr.parse(raw)
+        if (payload == null) {
+            setStatus(getString(R.string.phone_scan_not_tv), error = true)
+            return
+        }
+        fallbackHosts = payload.hosts.drop(1)
+        hostField.setText(payload.hosts.first())
+        portField.setText(payload.port.toString())
+        codeField.setText(payload.key)
+        setStatus(getString(R.string.phone_scan_ok), error = false)
+        withLocalNetwork { pairWithTv() }
+    }
+
+    /**
+     * Looks for a Core EQ TV on this LAN and fills in its address and port. It
+     * never pairs or sends anything: the one-time code on the TV still gates
+     * pairing, and a wrong or stale address simply fails the handshake.
+     */
+    private fun startTvSearch() {
+        if (operationInProgress || measurementInProgress) return
+        tvSearch?.cancel()
+        findTvButton.isEnabled = false
+        discoveryLine.text = getString(R.string.phone_find_tv_searching)
+        // The search starts by itself when nothing is paired, so the user may type an
+        // address (or scan the QR) while it runs. What they entered wins: a found TV only
+        // fills fields that are still as they were when the search started.
+        val hostAtStart = hostField.text?.toString().orEmpty()
+        val portAtStart = portField.text?.toString().orEmpty()
+        lateinit var search: TvDiscovery.Search
+        search = TvDiscovery.Search(
+            context = this,
+            timeoutMs = FIND_TV_TIMEOUT_MS,
+            onFound = { found ->
+                val edited = hostField.text?.toString().orEmpty() != hostAtStart ||
+                    portField.text?.toString().orEmpty() != portAtStart
+                if (edited) {
+                    discoveryLine.text = getString(R.string.phone_find_tv_found_kept, found.name, found.host)
+                } else {
+                    hostField.setText(found.host)
+                    portField.setText(found.port.toString())
+                    discoveryLine.text = getString(R.string.phone_find_tv_woke, found.name, found.host)
+                    codeField.requestFocus()
+                    // Ask the TV to show its pairing code. A failed wake is harmless: the user
+                    // can still type the code, or use Scan TV QR, from the TV's own screen.
+                    thread(name = "CoreEqWake") {
+                        runCatching { CompanionClient(found.host, found.port, ByteArray(0)).wake() }
+                    }
+                }
+            },
+            onDone = { foundAny ->
+                // Runs synchronously when a previous search is cancelled, before the new one
+                // is stored. stopTvSearch() lets go of it first, which reads as "stopped".
+                val stopped = tvSearch !== search
+                if (tvSearch === search) tvSearch = null
+                findTvButton.isEnabled = true
+                if (!foundAny) discoveryLine.text = if (stopped) "" else getString(R.string.phone_find_tv_none)
+            }
+        )
+        tvSearch = search
+        search.start()
+    }
+
+    /** Ends any running search on purpose (pairing has started), without a "not found". */
+    private fun stopTvSearch() {
+        val search = tvSearch ?: return
+        tvSearch = null
+        search.cancel()
     }
 
     private fun refreshMeasureButtonLabel() {
@@ -995,6 +1325,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
     companion object {
         private const val REQ_LOCAL_NETWORK = 731
         private const val REQ_MICROPHONE = 732
+        private const val FIND_TV_TIMEOUT_MS = 8_000L
         private const val PROGRESS_MAX = 1000
         private const val PREFS = "core_eq_phone_measurement"
         private const val KEY_TARGET = "target_index"

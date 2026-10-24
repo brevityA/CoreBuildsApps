@@ -26,8 +26,14 @@ class StimulusPlayer {
      * @param onRouted the device the sweep is actually playing through, once
      *   Android has routed it (null when it never says) — the ground truth for
      *   which chain this measurement is of.
+     * @param sessionId an audio session that already carries an effect (the correction,
+     *   for a check sweep); null gives the track a fresh session of its own.
      */
-    fun playSweep(onError: (String) -> Unit, onRouted: (AudioDeviceInfo?) -> Unit = {}) {
+    fun playSweep(
+        onError: (String) -> Unit,
+        onRouted: (AudioDeviceInfo?) -> Unit = {},
+        sessionId: Int? = null
+    ) {
         stop()
         playing = true
         thread(name = "CoreEqStimulus") {
@@ -35,7 +41,7 @@ class StimulusPlayer {
                 ShortArray(s.size) { (s[it] * Short.MAX_VALUE).toInt().toShort() }
             }
             val track = try {
-                AudioTrack.Builder()
+                val builder = AudioTrack.Builder()
                     .setAudioAttributes(
                         AudioAttributes.Builder()
                             .setUsage(AudioAttributes.USAGE_MEDIA)
@@ -51,7 +57,8 @@ class StimulusPlayer {
                     )
                     .setBufferSizeInBytes(pcm.size * 2)
                     .setTransferMode(AudioTrack.MODE_STATIC)
-                    .build()
+                if (sessionId != null) builder.setSessionId(sessionId)
+                builder.build()
             } catch (e: Exception) {
                 Log.e(TAG, "AudioTrack creation failed", e)
                 playing = false

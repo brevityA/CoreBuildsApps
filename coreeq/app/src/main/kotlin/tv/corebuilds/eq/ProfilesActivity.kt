@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.dsp.DspConstants
 import tv.corebuilds.eq.dsp.ManualEq
-import tv.corebuilds.eq.dsp.Targets
 import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.export.Profile
@@ -41,6 +40,7 @@ class ProfilesActivity : TvActivity() {
     private lateinit var btnDelete: Button
     private lateinit var btnAnnounce: Button
     private lateinit var textAnnounceCard: TextView
+    private lateinit var btnCardSeconds: Button
     private lateinit var btnPlaybackHud: Button
     private lateinit var textPlaybackHud: TextView
     private lateinit var btnAllowOverlay: Button
@@ -80,6 +80,7 @@ class ProfilesActivity : TvActivity() {
         btnDelete = findViewById(R.id.btn_delete_profile)
         btnAnnounce = findViewById(R.id.btn_announce_applied)
         textAnnounceCard = findViewById(R.id.text_announce_card)
+        btnCardSeconds = findViewById(R.id.btn_card_seconds)
         btnPlaybackHud = findViewById(R.id.btn_playback_hud)
         textPlaybackHud = findViewById(R.id.text_playback_hud)
         btnAllowOverlay = findViewById(R.id.btn_allow_overlay)
@@ -93,6 +94,12 @@ class ProfilesActivity : TvActivity() {
         btnDelete.setOnClickListener { deleteCurrentProfile() }
         btnAnnounce.setOnClickListener {
             profileStore.announceApplied = !profileStore.announceApplied
+            refreshOverlaySettings()
+        }
+        btnCardSeconds.setOnClickListener {
+            // 1 to 10 s, then back to 1: one press per second, no keyboard needed.
+            val next = profileStore.cardSeconds % ProfileStore.CARD_SECONDS_RANGE.last + 1
+            profileStore.cardSeconds = next
             refreshOverlaySettings()
         }
         btnPlaybackHud.setOnClickListener {
@@ -112,13 +119,14 @@ class ProfilesActivity : TvActivity() {
         btnAnnounce.showSwitch(announce, R.string.profiles_announce_on, R.string.profiles_announce_off)
         btnPlaybackHud.showSwitch(playbackHud, R.string.profiles_playback_hud_on, R.string.profiles_playback_hud_off)
         val allowed = OverlayPermission.allowed(this)
-        textAnnounceCard.setText(
-            when {
-                !announce -> R.string.profiles_card_off
-                allowed -> R.string.profiles_card_allowed
-                else -> R.string.profiles_card_needs_permission
-            }
-        )
+        val seconds = profileStore.cardSeconds
+        btnCardSeconds.text = getString(R.string.profiles_card_seconds, seconds)
+        btnCardSeconds.visibility = if (announce) View.VISIBLE else View.GONE
+        textAnnounceCard.text = when {
+            !announce -> getString(R.string.profiles_card_off)
+            allowed -> getString(R.string.profiles_card_allowed, seconds)
+            else -> getString(R.string.profiles_card_needs_permission)
+        }
         textPlaybackHud.setText(
             when {
                 !playbackHud -> R.string.profiles_playback_hud_off_note
@@ -243,16 +251,19 @@ class ProfilesActivity : TvActivity() {
                 val hz = effective.curve[index].hz
                 effective.correctionAt(hz) + ManualEq.responseDb(effective.manualFilters, hz)
             }
-            val target = Targets.targetCurve(profile.target, freqs)
+            // The profile's own target: an imported one is read from the profile, never from
+            // whatever curve is imported now. Null (imported, curve not saved) draws no target.
+            val target = profile.targetDb(freqs)
 
-            val series = listOf(
+            val series = listOfNotNull(
                 Series("TOTAL EQ", ContextCompat.getColor(this, R.color.cb_signal_cyan), corr),
-                Series("TARGET", ContextCompat.getColor(this, R.color.cb_dusk_violet), target)
+                target?.let { Series("TARGET", ContextCompat.getColor(this, R.color.cb_dusk_violet), it) }
             )
             graphProfile.setData(
                 freqs = freqs,
                 series = series,
-                title = "${profile.name.uppercase(Locale.US)} · ${mode.title.uppercase(Locale.US)} — EQ vs TARGET",
+                title = "${profile.name.uppercase(Locale.US)} · ${mode.title.uppercase(Locale.US)} — " +
+                    if (target != null) "EQ vs TARGET" else "EQ",
                 yRange = 15.0,
                 tHz = profile.transitionHz
             )

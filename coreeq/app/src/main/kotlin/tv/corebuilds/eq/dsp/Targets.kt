@@ -67,6 +67,7 @@ object Targets {
         val out = DoubleArray(freqs.size)
         val normalizedKind = kind.lowercase().trim()
         if (normalizedKind == "flat") return out
+        if (normalizedKind == CustomTarget.KEY) return CustomTarget.targetDb(freqs)
 
         val bassGain = when (normalizedKind) {
             "room", "harman" -> 3.5

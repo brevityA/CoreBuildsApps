@@ -133,4 +133,57 @@ class HardwarePresetsTest {
             assertFalse("${all[i].name} = ${all[j].name}", ManualEq.sameFilters(all[i].filters, all[j].filters))
         }
     }
+
+    private fun model(id: String) = HardwarePresets.MODELS.single { it.id == id }
+
+    @Test
+    fun theNewSamsungSonyLgAndJblModelsAreFoundUnderTheNamesTheyReport() {
+        val cases = mapOf(
+            "samsung-hw-q800h" to listOf("Samsung HW-Q800H", "HW-Q800F", "Q800H", "samsung_q800f"),
+            "sony-bravia-theatre-bar-6" to listOf("Sony Bravia Theatre Bar 6", "BRAVIA Theater Bar 6", "theatre-bar-6"),
+            "lg-s80tr" to listOf("LG S80TR", "S80TR", "lg_s80tr"),
+            "jbl-bar-1000-mk2" to listOf("JBL Bar 1000 MK2", "JBL BAR 1000", "BAR1000")
+        )
+        for ((id, names) in cases) {
+            for (name in names) {
+                assertEquals("name: $name", model(id), HardwarePresets.matchAny(listOf(name)))
+            }
+        }
+    }
+
+    @Test
+    fun nearMissModelNumbersAreNotTheNewModels() {
+        val misses = listOf("Samsung Q80", "HW-Q800HX", "HW-Q8000H", "S80TRX", "LG S8OTR", "JBL Bar 10000", "JBL Bar 1300", "Sony Theatre Bar 60")
+        for (name in misses) {
+            assertNull("name: $name", HardwarePresets.matchAny(listOf(name)))
+        }
+    }
+
+    @Test
+    fun eachNewModelHasThreeDistinctPresetsWithinTheManualEqRules() {
+        for (id in listOf("samsung-hw-q800h", "sony-bravia-theatre-bar-6", "lg-s80tr", "jbl-bar-1000-mk2")) {
+            val presets = model(id).presets
+            assertEquals(id, 3, presets.size)
+            assertTrue(presets.all { it.name.length <= 32 })
+        }
+    }
+
+    @Test
+    fun theSonyAndJblPresetsCutTheBassAt63Hz() {
+        // The two reviews that describe bass drowning the mids both ask for a cut at 63 Hz.
+        for (id in listOf("sony-bravia-theatre-bar-6", "jbl-bar-1000-mk2")) {
+            for (preset in model(id).presets) {
+                assertTrue("${preset.id} should cut 63 Hz", ManualEq.gainAtBand(preset.filters, 1) <= 0.0)
+            }
+        }
+    }
+
+    @Test
+    fun theLgBassLiftAppearsOnlyInTheFilmAndMusicPresets() {
+        // HomeTheaterReview: the LG bass rolls off below about 70 Hz, so only the film and music
+        // presets lift it. The dialogue preset must not add bass.
+        val lg = model("lg-s80tr")
+        assertTrue(ManualEq.gainAtBand(lg.presets.single { it.id == "lg-s80tr-movie" }.filters, 1) > 0.0)
+        assertTrue(ManualEq.gainAtBand(lg.presets.single { it.id == "lg-s80tr-dialogue" }.filters, 1) == 0.0)
+    }
 }
