@@ -81,6 +81,11 @@
         </activity>
 
         <activity
+            android:name=".FirstRunActivity"
+            android:exported="false"
+            android:label="@string/first_run_title" />
+
+        <activity
             android:name=".MeasureActivity"
             android:exported="false"
             android:label="@string/measure_title" />

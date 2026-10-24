@@ -22,6 +22,8 @@ object SetupGuide {
     /** Classic ADB-over-TCP default only; use the port displayed by the TV if different. */
     const val CLASSIC_ADB_PORT = 5555
 
+    const val PLATFORM_TOOLS_URL = "https://developer.android.com/tools/releases/platform-tools"
+
     val connectTemplate: String = "adb connect <TV-IP>:$CLASSIC_ADB_PORT"
     val wirelessPairTemplate: String = "adb pair <TV-IP>:<PAIRING-PORT>"
     val wirelessConnectTemplate: String = "adb connect <TV-IP>:<CONNECT-PORT>"
@@ -66,6 +68,15 @@ object SetupGuide {
     ): List<Step> = buildList {
         add(
             Step(
+                id = "adb-basics",
+                title = "ADB for beginners · optional",
+                state = State.INFO,
+                detail = "ADB is not needed for room measurement or manual modes. On a Windows, Mac or Linux computer, download Google Platform-Tools, unzip it, then open PowerShell or Terminal in that folder. If adb is not on PATH, use .\\adb.exe in Windows PowerShell or ./adb on Mac/Linux. Keep the computer and TV on the same trusted home network. The commands below are copied one at a time; approve the TV prompt yourself. Never share pairing codes or leave debugging on on a shared network.",
+                command = null
+            )
+        )
+        add(
+            Step(
                 id = "connect",
                 title = "Classic Network debugging",
                 state = State.INFO,
@@ -98,6 +109,15 @@ object SetupGuide {
                 state = State.INFO,
                 detail = "Run after connecting. The TV should appear as a device, not unauthorized or offline. If several TVs are connected, use the serial shown here with adb -s for later commands.",
                 command = deviceListCommand
+            )
+        )
+        add(
+            Step(
+                id = "adb-troubleshooting",
+                title = "If ADB does not connect",
+                state = State.INFO,
+                detail = "‘adb’ not found: unzip Platform-Tools and open the terminal in its folder. ‘unauthorized’: approve the computer on the TV screen, then run adb devices -l again. ‘offline’ or connection refused: check both devices are on the same home network, turn debugging off and on, and use the exact IP and port shown by the TV. Wireless debugging has different pair and connect ports; do not guess 5555. Guest Wi-Fi or client isolation can block ADB. If the TV says DUMP is denied, that firmware does not allow the optional feature; use manual mode selection. Room measurement still works without ADB.",
+                command = null
             )
         )
         add(

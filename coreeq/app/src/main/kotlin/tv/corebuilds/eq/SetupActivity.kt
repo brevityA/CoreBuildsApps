@@ -1,7 +1,10 @@
 package tv.corebuilds.eq
 
+import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Intent
+import android.net.Uri
 import android.media.AudioManager
 import android.media.Spatializer
 import android.os.Build
@@ -157,6 +160,15 @@ class SetupActivity : TvActivity() {
         step.command?.let { command ->
             actions.addView(button(getString(R.string.setup_copy_command)) {
                 copy(command, getString(R.string.setup_command_copied))
+            })
+        }
+        if (step.id == "adb-basics") {
+            actions.addView(button(getString(R.string.setup_open_platform_tools)) {
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(SetupGuide.PLATFORM_TOOLS_URL)))
+                } catch (_: ActivityNotFoundException) {
+                    status.text = getString(R.string.setup_no_browser)
+                }
             })
         }
         if (step.id == "overlay" && step.state == SetupGuide.State.NEEDED) {

@@ -34,6 +34,19 @@ class SetupGuideTest {
     }
 
     @Test
+    fun beginnerHelpExplainsOptionalAdbAndLinksOnlyToGooglePlatformTools() {
+        val steps = SetupGuide.steps(false, false, null, null, null)
+        val basics = step(steps, "adb-basics")
+        val troubleshooting = step(steps, "adb-troubleshooting")
+        assertEquals(State.INFO, basics.state)
+        assertTrue(basics.detail.contains("not needed for room measurement"))
+        assertTrue(SetupGuide.PLATFORM_TOOLS_URL.startsWith("https://developer.android.com/"))
+        assertTrue(troubleshooting.detail.contains("unauthorized"))
+        assertTrue(troubleshooting.detail.contains("different pair and connect ports"))
+        assertTrue(troubleshooting.detail.contains("manual mode selection"))
+    }
+
+    @Test
     fun theClassicConnectLineKeepsAPlaceholderAndNamesItsPortLimit() {
         val steps = SetupGuide.steps(true, true, null, null, null)
         val connect = step(steps, "connect")
