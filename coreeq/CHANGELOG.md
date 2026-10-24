@@ -8,6 +8,8 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+## [1.6.0] — 2026-10-24
+
 **Known limits (beta).** Read these before relying on Core EQ.
 
 - **No hardware qualification.** Correction has been checked on the emulator and in CI only. Audio paths, acoustic response and microphone calibration have not been checked on a TV or phone.
