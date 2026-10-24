@@ -105,7 +105,7 @@ Both variants built in-sandbox with JDK 21 + Android SDK 34 (AGP 8.5.2 / Kotlin 
 APK manifest verification (aapt2):
 ```
 package: dev.corebuilds.line  versionCode 5  versionName 1.2.0
-sdkVersion 24   targetSdkVersion 34
+sdkVersion 24   targetSdkVersion 37
 permissions: INTERNET, ACCESS_NETWORK_STATE, WAKE_LOCK, REQUEST_INSTALL_PACKAGES
 label: "Core Line"
 ```

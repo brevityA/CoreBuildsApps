@@ -74,10 +74,9 @@ class PlayBuild(unittest.TestCase):
                                 for c in main.iter("category")), module)
         listing = json.loads(read(ROOT / "docs/play/listing.json"))
         self.assertEqual(listing["form_factors"], ["tv"])
-        # TV-only would allow 34; the build targets 36, which meets the phone
-        # floor too, so a later phone listing needs no target change.
+        # The suite-wide baseline is API 37, above both TV and phone Play floors.
         gradle = read(APP / "build.gradle.kts")
-        self.assertEqual(int(re.search(r"targetSdk = (\d+)", gradle).group(1)), 36,
+        self.assertEqual(int(re.search(r"targetSdk = (\d+)", gradle).group(1)), 37,
                          "a new target API: re-read Play's target API rules, then this test")
 
     def test_play_build_never_checks_github_for_updates(self):

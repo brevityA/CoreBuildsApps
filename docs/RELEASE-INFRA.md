@@ -141,18 +141,17 @@ is [`PLAY-CONSOLE.md`](PLAY-CONSOLE.md). The list below is the suite-wide
 summary.
 
 1. Ensure the app's target API satisfies current Play requirements.
-   - The icon pack is at **compileSdk/targetSdk 36**, which meets the phone
-     floor (36 for new apps and updates after 2026-08-31) as well as the
-     Android TV one (34).
+   - The suite apps, including the icon pack, now compile and target **API 37**;
+     this exceeds both the phone/general Play floor and the Android TV floor.
    - The Play build is **TV-only**, as `docs/play/listing.json`
      (`form_factors: ["tv"]`) and `PLAY-CONSOLE.md` §4 say: its manifest
      overlays require `android.software.leanback`, so Play never offers it to
      a phone. With leanback optional the bundle would be phone-compatible,
      Play would list it for phones, and there are no phone screenshots and no
      tested phone UI. The sideload builds keep leanback optional.
-   - Reaching 36 needed AGP 9.4.0 and built-in Kotlin (see
+   - The suite-wide API 37 migration uses AGP 9.4.0 and built-in Kotlin (see
      `tools/gradle_envelope.json`): on the Gradle 9.7.0 wrapper every AGP 8.6+
-     fails at plugin apply, so 8.5.2 could never compile API 36.
+     fails at plugin apply, so AGP 8.x could not compile API 37 on the Gradle 9.7.0 wrapper.
 2. Use the AAB from `suite-release.yml`.
 3. Enroll/use Play App Signing; keep upload key in GitHub secrets only.
 4. Fill Play Console app content:
@@ -243,9 +242,8 @@ rendering fake ones is exactly the drift this repo generates its way out of.
 Listing for phones needs real captures from a phone build and a decision about
 supporting phones at all. The Play manifests make it stick: they require
 `android.software.leanback`, because Console cannot keep a phone-compatible
-bundle off phones. A TV-only app could have stayed at API 34; the API 36
-migration is still correct and worth keeping, because a phone listing later
-then needs no target change.
+bundle off phones. The API 37 baseline is intentionally applied to the complete suite, not just
+apps with a Play listing or a phone target-API obligation.
 
 **Privacy policy:** `docs/privacy.html`. Serve it over GitHub Pages
 (Settings → Pages → source `main` / `/docs`) and the URL to paste into Play

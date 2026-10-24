@@ -27,7 +27,7 @@ Two defects, both now fixed:
 
 1. **Missing `com.spocky.projengmenu.icons.ACTION_PICK_ICON`** — Projectivy's
    own discovery/picker action. This is why the pack was invisible.
-2. **Missing `<queries>`** — with `targetSdk 34`, Android 11+ package-visibility
+2. **Missing `<queries>`** — with `targetSdk 37`, Android 11+ package-visibility
    filtering made every launcher lookup return "not installed", so the in-app
    apply button could never have worked either. Silent, because nothing throws.
 

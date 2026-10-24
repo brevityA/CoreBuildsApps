@@ -193,32 +193,28 @@ class GradleParsing(unittest.TestCase):
         self.assertEqual([m.name for m in self.roots[""].modules],
                          ["app", "glyphs"])
 
-    def test_reads_compile_and_min_sdk(self):
-        app = self.roots[""].modules[0]
-        self.assertEqual(app.compile_sdk, 36)
-        self.assertEqual(app.min_sdk, 21)
-        self.assertEqual(app.target_sdk, 36)
-        doctor = self.roots["doctor"].modules[0]
-        self.assertEqual(doctor.compile_sdk, 35)
-        coreeq = self.roots["coreeq"].modules[0]
-        self.assertEqual(coreeq.compile_sdk, 37)
-        self.assertEqual(coreeq.min_sdk, 30)
-        self.assertEqual(coreeq.target_sdk, 37)
+    def test_every_module_compiles_and_targets_api_37(self):
+        for root in self.roots.values():
+            for module in root.modules:
+                self.assertEqual(module.compile_sdk, 37, module.path)
+                self.assertEqual(module.target_sdk, 37, module.path)
+        self.assertEqual(self.roots[""].modules[0].min_sdk, 21)
+        self.assertEqual(self.roots["coreeq"].modules[0].min_sdk, 30)
 
     def test_reads_the_toolchain_versions(self):
         for rel, root in self.roots.items():
-            if rel in ("coreeq", ""):
-                self.assertEqual(root.agp, "9.4.0", f"{rel} AGP")
-                self.assertIsNone(root.kotlin, f"{rel} should use AGP built-in Kotlin")
-                self.assertTrue(root.builtin_kotlin)
-            else:
-                self.assertEqual(root.agp, "8.5.2", f"{rel} AGP")
-                self.assertEqual(root.kotlin, "1.9.24", f"{rel} Kotlin")
-        # the wrapper is a Dependabot-managed version, and a test that pins it
-        # fails every wrapper bump for reasons that have nothing to do with the
-        # gate (PR #160 went red on exactly this).
-        for rel in ("ticker/android", "shift"):
-            self.assertEqual(self.roots[rel].wrapper, wrapper_on_disk(ROOT / rel), rel)
+            self.assertEqual(root.agp, "9.4.0", f"{rel} AGP")
+            self.assertIsNone(root.kotlin, f"{rel} should use AGP built-in Kotlin")
+            self.assertTrue(root.builtin_kotlin)
+            self.assertEqual(root.wrapper, "9.7.0", f"{rel} wrapper")
+        self.assertEqual(
+            self.roots["doctor"].kotlin_plugins["org.jetbrains.kotlin.plugin.serialization"],
+            "2.2.10",
+        )
+        self.assertEqual(
+            self.roots["doctor"].kotlin_plugins["org.jetbrains.kotlin.plugin.compose"],
+            "2.2.10",
+        )
 
     def test_dependencies_include_the_bom_and_test_configs(self):
         deps = self.roots["doctor"].modules[0].deps
@@ -235,7 +231,8 @@ class GradleParsing(unittest.TestCase):
     def test_compose_wiring_is_visible(self):
         doctor = self.roots["doctor"].modules[0]
         self.assertTrue(doctor.compose_enabled)
-        self.assertEqual(doctor.compose_extension, "1.5.14")
+        self.assertIsNone(doctor.compose_extension)
+        self.assertIn("org.jetbrains.kotlin.plugin.compose", self.roots["doctor"].kotlin_plugins)
         self.assertFalse(self.roots[""].modules[0].compose_enabled)
 
 
@@ -350,7 +347,7 @@ class EnvelopeTable(unittest.TestCase):
             # Patch included: every ceiling equals the version declared today,
             # and the gate rejects anything above a ceiling whichever digit
             # moved — so ignoring only minor+major leaves a live red-PR lane
-            # (Kotlin 1.9.24 -> 1.9.25 is a patch).
+            # (Kotlin sub-plugin 2.2.10 -> 2.2.11 is a patch).
             self.assertEqual(
                 set(ceiling["blockedUpdateTypes"]),
                 {
@@ -379,30 +376,24 @@ class EnvelopeTable(unittest.TestCase):
                     f"{root.label}: {coord} {version} is above its own ceiling {maximum}",
                 )
 
-    def test_agp9_is_limited_to_the_two_migrated_roots(self):
-        # AGP 9 is not a blanket upgrade: it is the answer to compileSdk 36 on
-        # the icon pack root and API 37 on Core EQ. The other four roots have
-        # no such requirement and stay on the proven AGP 8.5.2 envelope, so the
-        # ceiling names them explicitly rather than letting a future bump ride
-        # along on this one.
+    def test_agp9_toolchain_covers_every_root(self):
         agp = next(c for c in self.table["ceilings"] if c["coordinate"] == "com.android.application")
         self.assertEqual(agp["max"], "9.4.0")
         self.assertEqual(self.table["envelope"]["minGradleForAgp9"], "9.6.0")
-        for rel in ("coreeq", ""):
-            migrated = next(root for root in self.roots if root.rel == rel)
+        self.assertEqual(self.table["envelope"]["builtinKotlinVersionByAgp"]["9.4.0"], "2.2.10")
+        for root in self.roots:
+            self.assertEqual(root.agp, "9.4.0", root.label)
             self.assertGreaterEqual(
-                gate.parse_version(migrated.wrapper),
+                gate.parse_version(root.wrapper),
                 gate.parse_version("9.6.0"),
-                f"{rel} is on AGP 9 but its wrapper is below the 9.6.0 floor",
+                f"{root.label} is on AGP 9 but its wrapper is below the 9.6.0 floor",
             )
-        for rel in ("ticker/android", "shift", "motion-plugin", "doctor"):
-            unmigrated = next(root for root in self.roots if root.rel == rel)
-            self.assertEqual(unmigrated.agp, "8.5.2", f"{rel} moved without a migration")
 
-    def test_migration_path_is_recorded(self):
+    def test_completed_migration_and_maintenance_boundaries_are_recorded(self):
         steps = self.table["migration"]["steps"]
         self.assertGreaterEqual(len(steps), 4)
-        self.assertTrue(steps[0].lower().startswith("decide"))
+        self.assertIn("target API 37", steps[0])
+        self.assertIn("AGP 9.4.0", steps[1])
 
 
 # ---------------------------------------------------------------------------
@@ -491,10 +482,10 @@ class Mutants(unittest.TestCase):
         with ScratchRepo() as repo:
             repo.edit(
                 ".github/workflows/suite-ci.yml",
-                "gradle: doctor/app/build.gradle.kts\n            compileSdk: 35",
-                "gradle: doctor/app/build.gradle.kts\n            compileSdk: 34",
+                "gradle: doctor/app/build.gradle.kts\n            compileSdk: 37",
+                "gradle: doctor/app/build.gradle.kts\n            compileSdk: 36",
             )
-            repo.assert_blocked("compiles against 35", "matrix compileSdk disagrees with the build file")
+            repo.assert_blocked("declares compileSdk 36 but", "matrix compileSdk disagrees with the build file")
 
     def test_hard_coding_the_platform_install_again_is_caught(self):
         # The regression this replaced: one platform installed for all seven
@@ -519,81 +510,48 @@ class Mutants(unittest.TestCase):
             )
             repo.assert_blocked("not a minor version of its compileSdk", "platformId drifts from compileSdk")
 
-    DOCTOR_ROOT_PLUGINS_OLD = (
-        '    id("org.jetbrains.kotlin.android") version "1.9.24" apply false\n'
-        '    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.24" apply false\n'
-    )
-    DOCTOR_ROOT_PLUGINS_K2 = (
-        '    id("org.jetbrains.kotlin.android") version "2.4.20" apply false\n'
-        '    id("org.jetbrains.kotlin.plugin.serialization") version "2.4.20" apply false\n'
-    )
-
-    # Not a prefix test: "org.jetbrains.kotlinx:..." also starts with
-    # "org.jetbrains.kotlin", and silently lifting the kotlinx ceilings too would
-    # let this mutant pass for the wrong reason.
-    KOTLIN_PLUGIN_CEILINGS = (
-        "org.jetbrains.kotlin.android",
-        "org.jetbrains.kotlin.plugin.serialization",
-        "org.jetbrains.kotlin.plugin.parcelize",
-    )
-
-    def _lift_kotlin_ceilings(self, repo: "ScratchRepo") -> None:
-        """Pretend the migration was decided on, so only the wiring is under test."""
-        table = repo.envelope()
-        lifted = 0
-        for ceiling in table["ceilings"]:
-            if ceiling["coordinate"] in self.KOTLIN_PLUGIN_CEILINGS:
-                ceiling["max"] = "2.4.20"
-                lifted += 1
-        self.assertEqual(lifted, len(self.KOTLIN_PLUGIN_CEILINGS), "ceiling table has drifted")
-        repo.write_envelope(table)
-
-    def test_kotlin_2_with_the_old_compose_dsl_is_caught(self):
-        # PR #126's shape: Kotlin 2.4.20 while doctor/ still pins the
-        # pre-2.0 Compose compiler through composeOptions.
-        with ScratchRepo() as repo:
-            repo.edit("doctor/build.gradle.kts", self.DOCTOR_ROOT_PLUGINS_OLD, self.DOCTOR_ROOT_PLUGINS_K2)
-            self._lift_kotlin_ceilings(repo)
-            code, problems = repo.run()
-            self.assertEqual(code, 1, "Kotlin 2.x with composeOptions still set must fail")
-            self.assertIn("org.jetbrains.kotlin.plugin.compose", problems)
-            self.assertIn("kotlinCompilerExtensionVersion", problems)
-
-    def test_kotlin_2_with_the_plugin_applied_is_allowed(self):
-        # The same migration, done properly: plugin declared in the root, applied
-        # in the module, composeOptions deleted. The gate must not be a permanent
-        # veto — it has to go green once the wiring is right, or it will be
-        # deleted the first time it gets in someone's way.
+    def test_agp9_rejects_external_kotlin_android(self):
         with ScratchRepo() as repo:
             repo.edit(
                 "doctor/build.gradle.kts",
-                self.DOCTOR_ROOT_PLUGINS_OLD,
-                self.DOCTOR_ROOT_PLUGINS_K2
-                + '    id("org.jetbrains.kotlin.plugin.compose") version "2.4.20" apply false\n',
+                '    id("com.android.application") version "9.4.0" apply false\n',
+                '    id("com.android.application") version "9.4.0" apply false\n'
+                '    id("org.jetbrains.kotlin.android") version "2.2.10" apply false\n',
             )
+            repo.assert_blocked("has built-in Kotlin; remove the external", "duplicate Kotlin plugin")
+
+    def test_kotlin_2_with_the_old_compose_dsl_is_caught(self):
+        with ScratchRepo() as repo:
             repo.edit(
                 "doctor/app/build.gradle.kts",
-                'id("org.jetbrains.kotlin.plugin.serialization")\n',
-                'id("org.jetbrains.kotlin.plugin.serialization")\n'
+                "    compileOptions {\n",
+                '    composeOptions { kotlinCompilerExtensionVersion = "1.5.14" }\n\n'
+                "    compileOptions {\n",
+            )
+            repo.assert_blocked("still sets kotlinCompilerExtensionVersion", "obsolete Compose DSL")
+
+    def test_compose_without_its_compiler_plugin_is_caught(self):
+        with ScratchRepo() as repo:
+            repo.edit(
+                "doctor/app/build.gradle.kts",
                 '    id("org.jetbrains.kotlin.plugin.compose")\n',
-            )
-            repo.edit(
-                "doctor/app/build.gradle.kts",
-                '    composeOptions {\n        kotlinCompilerExtensionVersion = "1.5.14"\n    }\n\n',
                 "",
             )
-            self._lift_kotlin_ceilings(repo)
-            code, problems = repo.run()
-            self.assertEqual(code, 0, f"a correctly migrated Kotlin 2.x should pass:\n{problems}")
+            repo.assert_blocked("needs `org.jetbrains.kotlin.plugin.compose` applied", "missing Compose plugin")
 
-    def test_a_kotlin_sub_plugin_out_of_lockstep_is_caught(self):
+    def test_a_kotlin_sub_plugin_out_of_lockstep_with_builtin_is_caught(self):
         with ScratchRepo() as repo:
             repo.edit(
                 "motion-plugin/build.gradle.kts",
-                'id("org.jetbrains.kotlin.plugin.parcelize") version "1.9.24"',
-                'id("org.jetbrains.kotlin.plugin.parcelize") version "1.9.25"',
+                'id("org.jetbrains.kotlin.plugin.parcelize") version "2.2.10"',
+                'id("org.jetbrains.kotlin.plugin.parcelize") version "2.2.11"',
             )
-            repo.assert_blocked("must match Kotlin", "parcelize out of lockstep")
+            table = repo.envelope()
+            ceiling = next(c for c in table["ceilings"] if c["coordinate"] == "org.jetbrains.kotlin.plugin.parcelize")
+            ceiling["max"] = "2.2.11"
+            repo.write_envelope(table)
+            repo.assert_blocked("must match built-in Kotlin 2.2.10", "Parcelize out of lockstep")
+
 
     def test_agp_10_is_caught_everywhere(self):
         with ScratchRepo() as repo:
@@ -605,14 +563,10 @@ class Mutants(unittest.TestCase):
             repo.edit("build.gradle.kts", 'version "9.4.0"', 'version "10.0.0"')
             repo.assert_blocked("next breaking major", "AGP 10")
 
-    def test_an_agp_8x_bump_on_the_9_7_0_wrapper_is_caught(self):
-        # The 2026-09-19 batch (#144 #145 #146 #147 #148 #149) proposed exactly
-        # this and every root that kept the 9.7.0 wrapper failed at plugin
-        # apply. It is a ceiling, not a warning: Dependabot must stop being
-        # offered the combination at all.
+    def test_agp_beyond_the_tested_ceiling_is_caught(self):
         with ScratchRepo() as repo:
-            repo.edit("shift/build.gradle.kts", 'version "8.5.2"', 'version "8.13.2"')
-            repo.assert_blocked("above its ceiling 8.5.2", "AGP 8.13.2 on the 9.7.0 wrapper")
+            repo.edit("shift/build.gradle.kts", 'version "9.4.0"', 'version "9.5.0"')
+            repo.assert_blocked("above its ceiling 9.4.0", "AGP 9.5.0 beyond tested ceiling")
 
     def test_a_wrapper_below_the_agp_floor_is_caught(self):
         with ScratchRepo() as repo:
@@ -622,7 +576,7 @@ class Mutants(unittest.TestCase):
                 f"gradle-{wrapper_on_disk(repo.root / 'ticker/android')}-bin.zip",
                 "gradle-8.2-bin.zip",
             )
-            repo.assert_blocked("below 8.7", "Gradle under the AGP 8.x floor")
+            repo.assert_blocked("below 9.6.0", "Gradle under the AGP 9.x floor")
 
     def test_a_dead_ceiling_is_caught(self):
         with ScratchRepo() as repo:
@@ -642,13 +596,13 @@ class Mutants(unittest.TestCase):
 
     def test_a_release_workflow_with_the_wrong_platform_is_caught(self):
         with ScratchRepo() as repo:
-            # core-doctor-apk.yml installs the platform in both of its jobs, so
-            # both have to be downgraded — the gate unions the platforms a
-            # workflow installs, and one job left at 35 would mask the other.
+            # Core Doctor installs the API 37 platform in both jobs. Downgrade
+            # both direct SDK-manager requests and fallbacks so one remaining
+            # correct job cannot mask the regression.
             repo.edit(
                 ".github/workflows/core-doctor-apk.yml",
-                '"platforms;android-35" "build-tools;35.0.0"',
-                '"platforms;android-34" "build-tools;34.0.0"',
+                '"platforms;android-37.0" "build-tools;36.0.0"',
+                '"platforms;android-36" "build-tools;36.0.0"',
                 everywhere=True,
             )
             repo.assert_blocked("installs only", "doctor workflow platform mismatch")

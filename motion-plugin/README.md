@@ -73,7 +73,7 @@ Projectivy binds to this contract; altering it breaks discovery.
 ## Package / build
 
 `tv.corebuilds.motion`, standalone Gradle root (same toolchain as `shift/`:
-AGP 8.5.2 / Kotlin 1.9.24 / compileSdk 34 / minSdk 26).
+AGP 9.4.0 / built-in Kotlin 2.2.10 / compileSdk 37 / targetSdk 37 / minSdk 26).
 
 ## Feed format (Overflight-compatible)
 

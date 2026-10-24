@@ -62,6 +62,8 @@ jobs:
       # 37.1/37.2, and the CinnamonBun preview codename on the canary channel.
       # See tools/install_android_platform.sh; Gradle still owns the real
       # failure if no platform id resolves.
+      - uses: android-actions/setup-android@v3
+
       - name: Install Android platform 37
         run: |
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.0" "build-tools;36.0.0" || bash tools/install_android_platform.sh 37 36.0.0
@@ -158,6 +160,8 @@ jobs:
 
       # Same literal-id-first install as the test job, with the minor-version
       # and CinnamonBun preview fallbacks in tools/install_android_platform.sh.
+      - uses: android-actions/setup-android@v3
+
       - name: Install Android platform 37
         run: |
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.0" "build-tools;36.0.0" || bash tools/install_android_platform.sh 37 36.0.0

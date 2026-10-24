@@ -25,19 +25,19 @@ A free, local-only Android phone app that runs 6 diagnostic checks against the u
 - Share reports are redacted by construction: ReportCard.render() emits verdicts and summaries only. Keys and URLs are structurally excluded.
 - `allowBackup=false` in manifest.
 - No persistence (no SharedPreferences, no Room, no files).
-- Permissions: INTERNET, ACCESS_NETWORK_STATE. Nothing else.
+- Permissions: INTERNET, ACCESS_NETWORK_STATE; ACCESS_LOCAL_NETWORK is requested on API 37+ only when a user supplies a custom add-on URL to check.
 
 ## Stack
 
 | Layer | Choice |
 |-------|--------|
-| Language | Kotlin 1.9.24 |
+| Language | AGP built-in Kotlin 2.2.10 |
 | UI | Jetpack Compose (BOM 2024.06.00) |
 | HTTP | OkHttp 4.12.0 |
 | JSON | kotlinx-serialization-json 1.6.3 |
-| Build | AGP 8.5.2, Gradle 9.7.0 |
+| Build | AGP 9.4.0, Gradle 9.7.0, compileSdk/targetSdk 37 |
 | Min API | 26 (Android 8.0) |
-| Target/Compile | 35 |
+| Target/Compile | 37 |
 
 ## v2 parking lot
 

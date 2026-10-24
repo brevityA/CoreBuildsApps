@@ -166,6 +166,13 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      - uses: android-actions/setup-android@v3
+
+      - name: Install Android platform 37
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.0" "build-tools;36.0.0" \
+            || bash tools/install_android_platform.sh 37 36.0.0
+
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
 
@@ -216,7 +223,7 @@ jobs:
                 ;;
             esac
           done
-          # Build-tools 36 now that the modules compile at 36; the fallback
+          # Build-tools 36 now that the modules compile at 37; the fallback
           # keeps this check working if a runner image carries a different
           # patch level (the binary, not the number, is what matters here).
           SIGNER="$ANDROID_HOME/build-tools/36.0.0/apksigner"
