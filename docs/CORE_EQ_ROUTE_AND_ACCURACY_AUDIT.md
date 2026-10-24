@@ -2,7 +2,7 @@
 
 **Audit basis:** source at PR #375 head `0d27653` plus Android API/AOSP and JBL public documentation reviewed 24 October 2026. This is a code/API audit, not a device qualification. CI and emulator results do not establish acoustic performance on a TV, phone, remote microphone, soundbar, or receiver.
 
-**Implementation follow-up:** this audit's software-addressable safeguards have now been implemented in the working tree: ambiguous multi-output routes fail closed; pre-33 competing external endpoints are not priority-ranked; sweep route reports accumulate across playback so route changes become ambiguous; route evidence is labeled; the UI explains capture-score and frequency-range limits; and synthetic-score documentation no longer implies field accuracy. These changes have not yet passed a local Gradle run (Java is unavailable in this workspace). Physical validation remains outstanding and cannot be completed from this environment.
+**Implementation follow-up:** this audit's software-addressable safeguards have now been implemented in the working tree: ambiguous multi-output routes fail closed; pre-33 competing external endpoints are not priority-ranked; sweep route reports accumulate across playback so route changes become ambiguous; route evidence is labeled; the UI explains capture-score and frequency-range limits; and synthetic-score documentation no longer implies field accuracy. A local Gradle run was unavailable because Java is absent in this workspace; PR #375 CI has since passed the unit-test/lint job, candidate APK assembly, and Android API 30/37 install checks for the implementation. These are software/emulator checks only. Physical validation remains outstanding and cannot be completed from this environment.
 
 ## Executive summary
 
