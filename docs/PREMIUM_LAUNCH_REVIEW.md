@@ -1,6 +1,8 @@
 # Premium features — launch review for the icon pack
 
 Reviewed 2026-10-23 against `main` @ `e3d5a35` (2.5.0, versionCode 58).
+`main` has since released **2.5.1 (versionCode 59)** on 2026-10-24, which
+moves Premium's own release number up one — see §"When you can publish".
 
 | PR | What it is | State | Merge |
 |---|---|---|---|
@@ -169,8 +171,9 @@ Sources: [Play testing requirements](https://support.google.com/googleplay/andro
 
 Consequences for Premium:
 
-- **Premium needs its own release: 2.6.0 / versionCode 59.** #360 bumps neither,
-  and 58 is already uploaded.
+- **Premium needs its own release: 2.6.0 / versionCode 60.** #360 bumps neither.
+  58 shipped and 59 is taken by 2.5.1 (released 2026-10-24), so re-check the
+  version on `main` immediately before bumping — not from this document.
 - If you want Premium *tested* by the 12 testers, it has to be on the closed track
   **before 4 Nov** — which means rebased, on Billing 8.0.0, this week.
 - **#368's open question is a schedule risk, not a doc nit:** whether testers on a
@@ -191,7 +194,7 @@ Consequences for Premium:
    one.
 4. **Fix defects 1 and 2** (pending purchase, Set bypass) — these are revenue,
    not polish.
-5. **Bump to 2.6.0 / 59**, add `[Unreleased]` → `2.6.0` changelog, regenerate
+5. **Bump to 2.6.0 / 60**, add `[Unreleased]` → `2.6.0` changelog, regenerate
    mockups (`build_app_ui_mockups.py`) and the Play listing if Plus copy changes.
 6. **Add `:app:compileBannersPlayKotlin` to CI.** A green `build.yml` has never
    compiled the Play variant; that is why 1a is invisible.
