@@ -54,6 +54,7 @@ object SetupGuide {
      * - [measured]: whether this output has a profile, or null to omit that row.
      * - [passthroughRisk]: HDMI may bypass Android's mixer; it is not proof of bitstream playback.
      * - [spatialDetail]: read-only Android spatializer status, or null to omit the row.
+     * - [mediaSessionAccessGranted]: whether optional Android Notification access is enabled.
      */
     fun steps(
         dumpGranted: Boolean,
@@ -64,7 +65,8 @@ object SetupGuide {
         detection: DeviceIdentity.Detection? = null,
         measured: Boolean? = null,
         passthroughRisk: Boolean = false,
-        spatialDetail: String? = null
+        spatialDetail: String? = null,
+        mediaSessionAccessGranted: Boolean = false
     ): List<Step> = buildList {
         add(
             Step(
@@ -122,14 +124,33 @@ object SetupGuide {
         )
         add(
             if (dumpGranted) {
-                Step("dump", "Read the playing app (DUMP)", State.DONE, "Granted. Core EQ can try to identify the playing app; Android may still limit what the system reveals.", null)
+                Step("dump", "DUMP discovery · per-session effects (optional)", State.DONE, "Granted. Core EQ can discover some effect sessions and app identities; Android and TV firmware may still limit what is visible.", null)
             } else {
                 Step(
                     "dump",
-                    "Read the playing app (DUMP)",
-                    State.NEEDED,
-                    "Not granted. DUMP is a protected permission and Android documents it as unavailable to third-party apps; some TVs refuse this command. Optional app switching works only if the TV accepts it.",
+                    "Per-session effects and extra app discovery · DUMP (optional)",
+                    State.INFO,
+                    "Not granted. DUMP is protected and Android documents it as unavailable to third-party apps; some TVs refuse the command. Without it, app-mode rules can still use optional Notification access for published media sessions, but Core EQ cannot attach per-session effects.",
                     dumpCommand
+                )
+            }
+        )
+        add(
+            if (mediaSessionAccessGranted) {
+                Step(
+                    "media-sessions",
+                    "App detection · Android media sessions",
+                    State.DONE,
+                    "Enabled. Core EQ can use active session app names and playing/buffering state for app-mode rules. It does not read notification text, identify the output route, or gain access to that app's audio effect session.",
+                    null
+                )
+            } else {
+                Step(
+                    "media-sessions",
+                    "App detection · Android media sessions (optional)",
+                    State.INFO,
+                    "Off. In Content modes, choose Enable media-session access if this TV offers it. Android exposes active session app names and playback state only; this is separate from audio correction and remains best-effort. Manual modes work without it.",
+                    null
                 )
             }
         )

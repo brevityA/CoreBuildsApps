@@ -16,6 +16,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import tv.corebuilds.eq.apply.DumpsysDiscovery
+import tv.corebuilds.eq.apply.MediaSessionDiscovery
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.apply.SetupGuide
 import tv.corebuilds.eq.apply.SpatialStatus
@@ -102,7 +103,8 @@ class SetupActivity : TvActivity() {
             detection = detection,
             measured = measured,
             passthroughRisk = OutputRoute.mayPassThrough(this, output?.kind),
-            spatialDetail = spatialDetail()
+            spatialDetail = spatialDetail(),
+            mediaSessionAccessGranted = MediaSessionDiscovery.hasAccess(this)
         )
         rows.removeAllViews()
         for (step in lastSteps) rows.addView(rowFor(step))

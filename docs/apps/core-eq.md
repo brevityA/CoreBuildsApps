@@ -2,13 +2,24 @@
 
 **Measure the room you sit in, with the remote you already hold.** Back to the [suite page](../../README.md).
 
-Core EQ combines TV-room measurement with a manual 10-band tone EQ. Each measured base belongs to its output; Movie / TV, Everyday and Gaming add independent tone overlays. Choose a mode with the remote or optionally assign app rules for best-effort automatic switching (unmapped, unidentified or conflicting players use Everyday; a temporary or sticky manual override is configurable). Profiles and the current mode can be exported for Poweramp Equalizer or TV sound settings.
+Core EQ combines TV-room measurement with a manual 10-band tone EQ. Each measured base belongs to its output; Movie / TV, Everyday and Gaming add independent tone overlays. Choose a mode with the remote or optionally assign app rules for best-effort automatic switching. Player identity can come from optional DUMP discovery or a new, user-granted Android media-session source; neither proves the route or EQ coverage. Unknown/conflicting players use Everyday. Manual choices can temporarily override the current player set or stay sticky. Profiles and the current mode can be exported for Poweramp Equalizer or TV sound settings.
+
+### Data and override flow
+
+- **Room base:** the sweep/capture or imported REW response is tagged to the output evidence available during that measurement. It is stored per output/profile; a route change does not silently reuse another output's curve.
+- **Current route:** Android supplies an anticipated media route (API 33+) or a connected-device estimate; the sweep's own `AudioTrack` route is stronger evidence for that measurement only. Multiple/unrecognized routes remain ambiguous/unknown rather than selecting a convenient profile.
+- **Player identity:** DUMP may identify session IDs and packages for per-session effects and app rules. If DUMP is unavailable, optional Notification access can provide packages and playing/buffering state for apps that publish MediaSessions. Core EQ does not read notification text, and MediaSession data does not identify the route or authorize effects on that app's session.
+- **Mode arbitration:** a manual override takes precedence; otherwise automatic app rules apply. Unmapped apps, unidentified playback or conflicting rules choose Everyday. Temporary overrides are tied to a complete detected player-set snapshot; sticky overrides remain until changed. Incomplete scans cannot expire a temporary override.
+- **Tone composition:** the selected output's room base remains the foundation. The chosen Movie / TV, Everyday or Gaming overlay adds its mode tone; per-profile manual EQ and optional extra effects are separate layers, not new room measurements.
+- **Hardware hints:** Android's reported output product name can suggest a soundbar preset, but it does not reveal JBL One settings, its own calibration or source processing. Those are external device controls and should remain fixed across a measurement/playback comparison.
+
+A detailed source, permission and precedence map is in [Playback identity and mode overrides](../research/core-eq-playback-identity-and-mode-overrides-2026-10-25.md).
 
 ## First install and setup
 
 On a fresh Android TV install, Core EQ opens a short welcome guide. It shows Android's route indication with its evidence type (anticipated route or connected-output estimate), explains the remote-microphone measurement, and warns that the first GREEN capture-quality measurement for an output type may be applied automatically. Green indicates signal-to-noise only, not calibrated microphone response or acoustic accuracy. You can choose **Start room measurement**, open setup help, or skip the guide; upgrades are not interrupted.
 
-**ADB is optional.** Room measurement, correction and manually selected modes do not need ADB. ADB can enable best-effort automatic app-based mode switching and may grant the optional on-screen card on TVs that permit it. The **Setup check and ADB** screen has copyable commands, a link to Google's official [SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools), and remedies for common connection errors. Core EQ never runs ADB commands itself. If your TV refuses the protected `DUMP` permission, use manual mode selection; this is a firmware restriction, not a broken measurement setup. The floating card is optional; the Home status and text toast remain available when overlay access is unavailable.
+**ADB is optional.** Room measurement, correction and manually selected modes do not need ADB. The Content modes screen offers an optional **Enable media-session access** path in Android settings; it lets Core EQ use active session app package names and playing/buffering state, but does not read notification content or establish audio route/effect coverage. Some players do not publish a usable media session. Optional DUMP discovery may reveal more players and is also required for per-session effect attachment; Android documents DUMP as unavailable to third-party apps, so some TVs refuse it. The **Setup check and ADB** screen has copyable commands, a link to Google's official [SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools), and remedies for common connection errors. Core EQ never runs ADB commands itself. If neither identity source is available, use manual mode selection. The floating card is optional; the Home status and text toast remain available when overlay access is unavailable.
 
 ## Measuring
 
@@ -28,7 +39,7 @@ Optional Extra effects, all off by default: dialogue boost, low-volume bass that
 
 ## Compatibility
 
-**Android 11 (API 30) and later; built against Android 17 (API 37).** Android does not guarantee a global equaliser, reveal every player's identity, or prove another app's actual output route, so Core EQ reports its apply path instead of promising every app will be affected. HDMI bitstream (passthrough) skips all on-device EQ. Optional DUMP discovery may require an ADB grant that stock/release builds can refuse. Permissions: RECORD_AUDIO, MODIFY_AUDIO_SETTINGS; optional "Display over other apps" (SYSTEM_ALERT_WINDOW) for the on-screen card, which falls back to a text toast without it and is refused on Fire TV.
+**Android 11 (API 30) and later; built against Android 17 (API 37).** Android does not guarantee a global equaliser, reveal every player's identity, or prove another app's actual output route, so Core EQ reports its apply path instead of promising every app will be affected. HDMI bitstream (passthrough) skips all on-device EQ. Optional DUMP discovery may require an ADB grant that stock/release builds can refuse; Android Notification access is a separate, user-granted option for media-session-based app rules. Permissions: RECORD_AUDIO, MODIFY_AUDIO_SETTINGS; optional Notification access for media-session identity; optional "Display over other apps" (SYSTEM_ALERT_WINDOW) for the on-screen card, which falls back to a text toast without it and is refused on Fire TV.
 
 ## Install
 

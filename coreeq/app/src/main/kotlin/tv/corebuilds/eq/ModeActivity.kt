@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ResolveInfo
 import android.os.Bundle
+import android.provider.Settings
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.apply.DumpsysDiscovery
 import tv.corebuilds.eq.apply.EqService
+import tv.corebuilds.eq.apply.MediaSessionDiscovery
 import tv.corebuilds.eq.mode.ContentMode
 import tv.corebuilds.eq.mode.ContentModeStore
 import tv.corebuilds.eq.ui.showSwitch
@@ -28,6 +30,7 @@ class ModeActivity : TvActivity() {
     private lateinit var btnGaming: Button
     private lateinit var btnAuto: Button
     private lateinit var btnOverridePolicy: Button
+    private lateinit var btnMediaSessionAccess: Button
     private var statusReceiverRegistered = false
 
     private val statusReceiver = object : BroadcastReceiver() {
@@ -50,6 +53,7 @@ class ModeActivity : TvActivity() {
         btnGaming = findViewById(R.id.btn_mode_gaming)
         btnAuto = findViewById(R.id.btn_auto_mode)
         btnOverridePolicy = findViewById(R.id.btn_mode_override_policy)
+        btnMediaSessionAccess = findViewById(R.id.btn_mode_media_access)
 
         btnMovie.setOnClickListener { selectMode(ContentMode.MOVIE_TV) }
         btnEveryday.setOnClickListener { selectMode(ContentMode.EVERYDAY) }
@@ -63,6 +67,7 @@ class ModeActivity : TvActivity() {
             modeStore.setStickyManualOverride(!modeStore.stickyManualOverride())
             render()
         }
+        btnMediaSessionAccess.setOnClickListener { openMediaSessionSettings() }
         findViewById<Button>(R.id.btn_mode_manage_apps).setOnClickListener { showAppPicker() }
         findViewById<Button>(R.id.btn_mode_done).setOnClickListener { finish() }
         render()
@@ -84,6 +89,7 @@ class ModeActivity : TvActivity() {
             )
             statusReceiverRegistered = true
         }
+        EqService.send(this, EqService.ACTION_REFRESH_DISCOVERY)
         render()
     }
 
@@ -116,8 +122,12 @@ class ModeActivity : TvActivity() {
         btnOverridePolicy.setText(
             if (modeStore.stickyManualOverride()) R.string.mode_override_sticky else R.string.mode_override_temporary
         )
+        btnMediaSessionAccess.setText(
+            if (MediaSessionDiscovery.hasAccess(this)) R.string.mode_media_access_on else R.string.mode_media_access_off
+        )
         textRules.text = buildString {
             append(getString(R.string.mode_app_rules_hint))
+            append("\n\n").append(getString(R.string.mode_media_access_hint))
             val rules = modeStore.appRules()
             if (rules.isNotEmpty()) {
                 append("\n\n").append(getString(R.string.mode_rules_app_rules)).append("\n")
@@ -141,11 +151,19 @@ class ModeActivity : TvActivity() {
                 }
                 append("\n")
             }
-            if (!DumpsysDiscovery.hasGrant(this@ModeActivity)) {
+            if (!DumpsysDiscovery.hasGrant(this@ModeActivity) && !MediaSessionDiscovery.hasAccess(this@ModeActivity)) {
                 if (!endsWith("\n")) append("\n")
-                append("\n").append(getString(R.string.mode_rules_no_dump))
+                append("\n").append(getString(R.string.mode_rules_no_identity))
             }
         }.trim()
+    }
+
+    private fun openMediaSessionSettings() {
+        try {
+            startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
+        } catch (_: Exception) {
+            Toast.makeText(this, R.string.mode_media_access_unavailable, Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun showAppPicker() {

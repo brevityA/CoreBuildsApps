@@ -53,7 +53,10 @@ object HardwarePresets {
         name = "JBL Bar 800",
         kind = Kind.SOUNDBAR,
         nameMatch = Regex("""(?<![a-z0-9])(?:jbl[\s_-]*)?bar[\s_-]*800(?![0-9])""", RegexOption.IGNORE_CASE),
-        nameExclude = null,
+        // JBL sells a distinct Bar 800MK2. Its name also contains "Bar 800",
+        // so exclude the explicit revision rather than assigning the original's
+        // subjective tone overlays to the newer 7.1 product.
+        nameExclude = Regex("""mk?[\s_-]*2(?![0-9])""", RegexOption.IGNORE_CASE),
         presets = listOf(
             ManualEqPreset(
                 id = "jbl-bar-800-movie",
@@ -62,7 +65,7 @@ object HardwarePresets {
                     bell(250.0, -1.0),   // the bar's bass sits under the mids on a small room
                     bell(2_000.0, 1.0),  // dialogue presence
                     bell(4_000.0, 1.5),  // articulation for speech and effects
-                    bell(8_000.0, 1.0)   // air for the Atmos height channels
+                    bell(8_000.0, 1.0)   // a global treble lift, not height-channel-specific
                 )
             ),
             ManualEqPreset(
@@ -108,8 +111,11 @@ object HardwarePresets {
     )
 
     /**
-     * JBL Bar 2.0 All-in-One, original (2 x 40 W, 70 Hz to 20 kHz, no EQ and no
-     * bass settings on the bar itself, so Core EQ is the only tone control).
+     * JBL Bar 2.0 All-in-One, original (2 x 40 W, 70 Hz to 20 kHz).
+     * JBL documents Smart Mode (EQ settings plus JBL Surround Sound) and
+     * Standard Mode (preset EQ), but no user-adjustable parametric EQ or
+     * dedicated room-calibration process. The JBL mode remains separate from
+     * Core EQ; it is not accurate to say the bar has "no EQ".
      *
      * Research for these presets (October 2026) found no measured frequency
      * response, only the claimed 70 Hz to 20 kHz range and reviews. Reviews
@@ -117,14 +123,16 @@ object HardwarePresets {
      * no centre channel, bright highs with energy, vocals sometimes harsh, bass
      * short on the lowest demanding material, virtual surround on its TV mode.
      * The 125 Hz lifts reach into 40 to 70 Hz through their skirts (up to about
-     * 0.8 dB). The bar has no output there, so that part is headroom, not sound.
+     * 0.8 dB). The published 70 Hz lower response limit is not a hard cutoff;
+     * do not claim that this skirt is inaudible.
      *
      * The soundstage presets are tonal only. An EQ cannot widen a stereo image,
      * so they shape how the front stage sounds; the bar's own TV or virtual
      * surround mode is set on the bar and Core EQ does not change it.
      *
-     * The MK2 (2022, JBLBAR20AIOM2BLKAM) is a different product and is not
-     * matched, so its owners get no automatic preset.
+     * The MK2 (AU SKU JBLBAR20AIOM2BLKAS) is a different revision. Explicit
+     * MK2 labels and the bare Bluetooth name shared by both revisions are
+     * excluded; only an explicit non-MK2 All-in-One name is eligible.
      */
     private val JBL_BAR_2_0 = Model(
         id = "jbl-bar-2-0-all-in-one",
@@ -132,13 +140,19 @@ object HardwarePresets {
         name = "JBL Bar 2.0",
         kind = Kind.SOUNDBAR,
         nameMatch = Regex("""(?<![a-z0-9])(?:jbl[\s_-]*)?bar[\s_-]*2[\s_.-]*0(?![0-9])""", RegexOption.IGNORE_CASE),
-        nameExclude = Regex("""mk?[\s_-]*2(?![0-9])""", RegexOption.IGNORE_CASE),  // MK2, and the SKU's "AIOM2"
+        // Exclude explicit MK2 names and the bare Bluetooth name shared by
+        // both revisions ("JBL BAR 2.0"). That name cannot identify the version.
+        // An explicit original All-in-One name without MK2 remains eligible.
+        nameExclude = Regex(
+            """mk?[\s_-]*2(?![0-9])|^\s*(?:jbl[\s_-]*)?bar[\s_.-]*2[\s_.-]*0\s*$""",
+            RegexOption.IGNORE_CASE
+        ),
         presets = listOf(
             ManualEqPreset(
                 id = "jbl-bar-2-0-movie",
                 name = "JBL Bar 2.0 · Movie",
                 filters = listOf(
-                    bell(125.0, 1.5),    // the bass port adds depth the bar lacks at 70 Hz
+                    bell(125.0, 1.5),    // subjective low-bass lift, not measured correction below 70 Hz
                     bell(2_000.0, 1.0),
                     bell(4_000.0, 1.0)
                 )
@@ -156,7 +170,7 @@ object HardwarePresets {
                 id = "jbl-bar-2-0-music",
                 name = "JBL Bar 2.0 · Music",
                 filters = listOf(
-                    bell(125.0, 1.5),    // reviews: the bass is short on demanding music
+                    bell(125.0, 1.5),    // review-derived preference, not a measured response correction
                     bell(4_000.0, -1.0), // reviews: vocals sometimes harsh
                     bell(8_000.0, 0.5)
                 )

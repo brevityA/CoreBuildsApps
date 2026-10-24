@@ -28,7 +28,7 @@ class SetupGuideTest {
     @Test
     fun missingPermissionsGiveTheExactCommandForThisPackage() {
         val steps = SetupGuide.steps(false, false, null, null, null)
-        assertEquals(State.NEEDED, step(steps, "dump").state)
+        assertEquals(State.INFO, step(steps, "dump").state)
         assertEquals("adb shell pm grant tv.corebuilds.eq android.permission.DUMP", step(steps, "dump").command)
         assertEquals("adb shell appops set tv.corebuilds.eq SYSTEM_ALERT_WINDOW allow", step(steps, "overlay").command)
     }
@@ -151,6 +151,22 @@ class SetupGuideTest {
         val row = step(steps, "spatial")
         assertEquals(State.INFO, row.state)
         assertNull(row.command)
+    }
+
+    @Test
+    fun mediaSessionIdentityIsPresentedAsOptionalAndExplicitlyLimited() {
+        val off = step(SetupGuide.steps(false, false, null, null, null), "media-sessions")
+        assertEquals(State.INFO, off.state)
+        assertNull(off.command)
+        assertTrue(off.detail.contains("Manual modes work without it"))
+
+        val on = step(
+            SetupGuide.steps(false, false, null, null, null, mediaSessionAccessGranted = true),
+            "media-sessions"
+        )
+        assertEquals(State.DONE, on.state)
+        assertTrue(on.detail.contains("does not read notification text"))
+        assertTrue(on.detail.contains("audio effect session"))
     }
 
     @Test
