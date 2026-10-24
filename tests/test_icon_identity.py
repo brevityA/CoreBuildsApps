@@ -963,10 +963,23 @@ class ShrinkKeepRules(unittest.TestCase):
     def test_every_catalog_drawable_and_banner_is_pinned(self):
         root = ET.parse(self.RES / "raw/keep.xml").getroot()
         pinned = {v.removeprefix("@drawable/")
-                  for v in root.get(f"{self.TOOLS}keep").split(",")}
+                  for v in root.get(f"{self.TOOLS}keep").split(",")
+                  if v.startswith("@drawable/")}
         icons = json.loads((ROOT / "tools/catalog.json").read_text(encoding="utf-8"))["icons"]
         wanted = {i["drawable"] for i in icons} | {f"{i['drawable']}_banner" for i in icons}
         self.assertEqual(sorted(wanted - pinned), [])
+
+    def test_launcher_xml_resources_are_pinned_for_release_shrinking(self):
+        root = ET.parse(self.RES / "raw/keep.xml").getroot()
+        pinned = set(root.get(f"{self.TOOLS}keep").split(","))
+        # Launchers resolve these by resource name from another package; the
+        # app itself only reads the copies under assets/, so code-based resource
+        # shrinking has no reference to keep them alive.
+        self.assertTrue(
+            {"@xml/appfilter", "@xml/drawable", "@xml/iconpack"} <= pinned,
+            "release shrinking can strip launcher-facing XML and make the pack "
+            "disappear from Projectivy or its icon picker",
+        )
 
 if __name__ == "__main__":
     unittest.main()
