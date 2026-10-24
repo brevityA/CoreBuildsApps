@@ -81,6 +81,17 @@ Imagery is a licence decision with a flag attached: `render_views.py` carries a
 may not ship, a view whose credits omit the required attribution, and a move
 that wants more zoom than the imagery has. Do not add a basemap to that table
 without a licence you can point at.
+Half the season already plays, through the icon pack rather than through an
+app of its own: `LiveWallpaperService` plays twelve loops generated from the
+same catalogue — drawn contour art on each view's **real** camera track, not
+renders of the place, because no rendition exists yet. Those loops are
+`tools/build_coreviews_loops.py` over `tools/coreviews_roster.py`, their
+Kotlin list is `tools/build_coreviews_kt.py` into `CoreViewsLoop.kt`, and
+`LiveLoop.LOOPS` is that list appended to the Motion line's (Motion first, so
+the shipped default does not move). `docs/CORE_VIEWS_WALLPAPERS.md` is the
+map; `tests/test_coreviews_wallpapers.py` holds the catalogue, the roster, the
+committed MP4s and the Kotlin list together, and fails if a rendition is
+claimed before one is rendered.
 If Core Views ever ships an app, that is a new product with an ID from
 `tv.corebuilds.*` and it goes through this file's normal lifecycle — not a
 gradual accretion onto the content line.
@@ -89,7 +100,7 @@ Do not merge Gradle roots. Do not split the GitHub repo. Do not rename package I
 
 ## One rule
 
-`tools/catalog.json` is the only source of truth for the icon pack. Never hand-edit generated icon XML, icon/banner art, `aliases.xml`, `keep.xml`, `docs/IconPackList.md`, `docs/preview.*`, or generated wallpaper output under `Wallpapers/series-8-amoled/**`, `Wallpapers/series-9-deep-space/**` and `Wallpapers/series-10-cinema/**`.
+`tools/catalog.json` is the only source of truth for the icon pack. Never hand-edit generated icon XML, icon/banner art, `aliases.xml`, `keep.xml`, `docs/IconPackList.md`, `docs/preview.*`, or generated wallpaper output under `Wallpapers/series-8-amoled/**`, `Wallpapers/series-9-deep-space/**` and `Wallpapers/series-10-cinema/**`. `views/catalog.json` is the source of truth for the Core Views loops: never hand-edit `CoreViewsLoop.kt`, the MP4s in `Motion/live/coreviews-*`, their posters or `app/src/main/assets/coreviews_thumbs/**` — regenerate them.
 
 Classic pack changes run the four generators and the validator:
 

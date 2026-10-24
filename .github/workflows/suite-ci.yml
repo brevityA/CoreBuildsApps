@@ -57,6 +57,16 @@ jobs:
         run: python tools/build_views_player.py --check
       - name: Check the Core Views TV mockup is current
         run: python tools/build_views_mockup.py --check
+      # The season is also a set of live wallpapers the icon pack plays, and
+      # its Kotlin list carries each MP4's hash: a re-render without a
+      # regeneration is a stale cache key on every TV that already has the
+      # old clip.
+      - name: Check the Core Views wallpaper list is current
+        run: python tools/build_coreviews_kt.py --check
+      # Draws one still and stops: it proves the wallpaper generator still
+      # runs on a runner with no ffmpeg, without touching the committed MP4s.
+      - name: Confirm the Core Views wallpaper art still renders
+        run: python tools/build_coreviews_loops.py --only 1 --palette --out "$RUNNER_TEMP/coreviews-palette"
       - name: Assert every shippable app has CI, metadata, and hardened updater contracts
         run: python tools/audit_contract.py
       - name: Check prefilled icon-request links against the issue forms
@@ -293,6 +303,7 @@ jobs:
           python tests/test_wallpapers.py
           python tests/test_wallpaper_export.py
           python tests/test_live_wallpaper.py
+          python tests/test_coreviews_wallpapers.py
           python tests/test_play_listing.py
           python tests/test_privacy_policy.py
           python tests/test_core_shift_content.py
