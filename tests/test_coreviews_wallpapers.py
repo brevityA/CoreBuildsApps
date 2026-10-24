@@ -211,12 +211,61 @@ class HonestyTests(unittest.TestCase):
         self.assertIn("planned", text)
 
 
+class ExamplePageTests(unittest.TestCase):
+    """One file that plays the season, with no network and no video codec."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.path = ROOT / "docs" / "core-views-wallpapers-preview.html"
+        cls.html = cls.path.read_text(encoding="utf-8")
+
+    def test_the_page_exists_and_is_current(self):
+        self.assertTrue(self.path.is_file())
+        done = subprocess.run(
+            [sys.executable, str(ROOT / "tools" / "build_coreviews_wallpapers_html.py"),
+             "--check"],
+            capture_output=True, text=True)
+        self.assertEqual(done.returncode, 0, (done.stdout + done.stderr).strip())
+
+    def test_it_fetches_nothing(self):
+        # A design artifact that needs the network is a design artifact that
+        # is blank on a train. The canvases are embedded, the motion is drawn.
+        for needle in ("http://", "https://", "<link", "<script src", "<video"):
+            self.assertNotIn(needle, self.html, f"the page reaches out for {needle}")
+
+    def test_every_view_is_embedded(self):
+        self.assertEqual(self.html.count("data:image/jpeg;base64,"),
+                         len(roster.CLIPS))
+
+    def test_the_script_parses_as_a_document_of_its_own(self):
+        script = re.search(r"<script>([\s\S]*?)</script>", self.html).group(1)
+        self.assertIn("const DATA = {", script)
+        self.assertNotIn("/*__DATA__*/", script)
+        data = json.loads(re.search(r"const DATA = (\{.*?\});\n", script, re.S).group(1))
+        self.assertEqual([v["id"] for v in data["views"]], [c.id for c in roster.CLIPS])
+
+    def test_it_says_what_the_art_is(self):
+        lowered = self.html.lower()
+        self.assertIn("contour art drawn from the view's plan", lowered)
+        self.assertIn("not footage of the place", lowered)
+
+    def test_the_archive_view_has_no_track_in_the_page_either(self):
+        script = re.search(r"<script>([\s\S]*?)</script>", self.html).group(1)
+        data = json.loads(re.search(r"const DATA = (\{.*?\});\n", script, re.S).group(1))
+        for view in data["views"]:
+            if view["move"] == "archive-timelapse":
+                self.assertEqual(view["track"], [], view["id"])
+            else:
+                self.assertGreater(len(view["track"]), 2, view["id"])
+
+
 class GateTests(unittest.TestCase):
     """The gate is wired into CI, like every other generator's."""
 
     def test_the_kt_gate_runs_in_ci(self):
         ci = (ROOT / ".github" / "workflows" / "suite-ci.yml").read_text(encoding="utf-8")
         self.assertIn("python tools/build_coreviews_kt.py --check", ci)
+        self.assertIn("python tools/build_coreviews_wallpapers_html.py --check", ci)
         self.assertIn("python tests/test_coreviews_wallpapers.py", ci)
 
 

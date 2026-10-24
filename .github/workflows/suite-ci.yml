@@ -63,6 +63,8 @@ jobs:
       # old clip.
       - name: Check the Core Views wallpaper list is current
         run: python tools/build_coreviews_kt.py --check
+      - name: Check the Core Views wallpaper example page is current
+        run: python tools/build_coreviews_wallpapers_html.py --check
       # Draws one still and stops: it proves the wallpaper generator still
       # runs on a runner with no ffmpeg, without touching the committed MP4s.
       - name: Confirm the Core Views wallpaper art still renders
