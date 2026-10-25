@@ -128,6 +128,12 @@ class ModeActivity : TvActivity() {
         textRules.text = buildString {
             append(getString(R.string.mode_app_rules_hint))
             append("\n\n").append(getString(R.string.mode_media_access_hint))
+            append("\n\nPlayback identity diagnostics (not proof of audible/effected audio):\n")
+            append("DUMP discovery: ").append(if (DumpsysDiscovery.hasGrant(this@ModeActivity)) "available" else "not granted").append("\n")
+            append("MediaSession access: ").append(if (MediaSessionDiscovery.hasAccess(this@ModeActivity)) "available" else "not granted").append("\n")
+            append("Persisted player snapshot: ").append(if (modeStore.lastActiveSnapshotComplete()) "complete" else "incomplete or unavailable").append("\n")
+            append("Freshness: not reported by Android; package/state hints can be stale or omit players.\n")
+            append("Identity sources report app/package state only; they do not establish audibility, physical route, or effect coverage.\n")
             val rules = modeStore.appRules()
             if (rules.isNotEmpty()) {
                 append("\n\n").append(getString(R.string.mode_rules_app_rules)).append("\n")

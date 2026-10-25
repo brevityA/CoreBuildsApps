@@ -164,14 +164,17 @@
     <string name="export_title">Export</string>
     <string name="export_chip_parametric">Parametric .txt</string>
     <string name="export_chip_graphiceq">GraphicEQ</string>
-    <string name="export_chip_json">Profile .json</string>
+    <string name="export_chip_json">Core EQ backup</string>
+    <string name="export_chip_poweramp_json">Poweramp .json</string>
     <string name="export_preamp_desc">The export ships its own headroom note. Copy the preamp with the filters or the boost clips.</string>
     <string name="profile_preamp_parametric">Parametric preamp  %1$.2f dB  ·  %2$s · For %3$s</string>
     <string name="profile_preamp_graphic">GraphicEQ preamp  %1$.2f dB  ·  %2$s · For %3$s</string>
     <string name="profile_preamp_graphic_no_line">GraphicEQ base-only export has no preamp line · %1$s · For %2$s</string>
-    <string name="profile_preamp_json">Profile JSON preamp  %1$.2f dB  ·  %2$s · For %3$s</string>
+    <string name="profile_preamp_json">Core EQ backup · %2$s · For %3$s</string>
+    <string name="profile_preamp_poweramp_json">Poweramp JSON · best-effort unversioned type mapping · %2$s · For %3$s</string>
     <string name="profile_preamp_no_filters">Parametric export has no filters or preamp line · %1$s · For %2$s</string>
     <string name="action_export">Export</string>
+    <string name="action_import_profile">Import backup</string>
     <string name="action_delete">Delete</string>
 
     <!-- Capability screen -->
