@@ -388,6 +388,9 @@ class MainActivity : Activity() {
         return true
     }
 
+    // Framework fallback for pre-33 devices; API 33+ is handled by the
+    // registered OnBackInvokedCallback in onCreate.
+    @SuppressLint("GestureBackNavigation")
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         handleBack()

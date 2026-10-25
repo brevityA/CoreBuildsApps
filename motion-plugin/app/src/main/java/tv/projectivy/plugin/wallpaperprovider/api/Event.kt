@@ -50,8 +50,26 @@ sealed class Event(open val eventType: Int) : Parcelable {
         }
     }
 
-    @Parcelize
-    object TimeElapsed: Event(TIME_ELAPSED)
+    // Parcelize does not generate Parcelable members for singleton objects.
+    // Keep this event a singleton and preserve the event-type wire format used
+    // by the other sealed subclasses.
+    object TimeElapsed: Event(TIME_ELAPSED) {
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeInt(eventType)
+        }
+
+        override fun describeContents() = 0
+
+        @JvmField
+        val CREATOR: Parcelable.Creator<TimeElapsed> = object : Parcelable.Creator<TimeElapsed> {
+            override fun createFromParcel(parcel: Parcel): TimeElapsed {
+                parcel.readInt()
+                return TimeElapsed
+            }
+
+            override fun newArray(size: Int) = arrayOfNulls<TimeElapsed>(size)
+        }
+    }
     @Parcelize
     data class NowPlayingChanged(override val eventType: Int = NOW_PLAYING_CHANGED, val isPlaying: Boolean = true, val title: String?=null, val artist: String?=null, val album: String?=null, val iconUri: String?=null): Event(NOW_PLAYING_CHANGED)
     @Parcelize
