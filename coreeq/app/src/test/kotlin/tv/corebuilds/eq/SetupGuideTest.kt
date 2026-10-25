@@ -90,7 +90,8 @@ class SetupGuideTest {
     fun theReportListsEveryRowAndEveryCommandToCopy() {
         val report = SetupGuide.report(SetupGuide.steps(false, true, null, null, null))
         assertTrue(report.startsWith("Core EQ setup check\n"))
-        assertTrue(report.contains("[needed] Read the playing app (DUMP)"))
+        assertTrue(report.contains("[info] Per-session effects and extra app discovery · DUMP (optional)"))
+        assertTrue(report.contains("[info] App detection · Android media sessions (optional)"))
         assertTrue(report.contains("    adb shell pm grant tv.corebuilds.eq android.permission.DUMP"))
         assertTrue(report.contains("[done] Show the on-screen card"))
         assertTrue(report.contains("pairing code"))
