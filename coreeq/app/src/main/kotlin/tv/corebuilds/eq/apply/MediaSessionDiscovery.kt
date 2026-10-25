@@ -1,6 +1,6 @@
 package tv.corebuilds.eq.apply
 
-import android.app.NotificationListenerService
+import android.service.notification.NotificationListenerService
 import android.app.NotificationManager
 import android.content.ComponentName
 import android.content.Context
