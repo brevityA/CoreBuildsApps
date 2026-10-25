@@ -312,6 +312,7 @@ jobs:
           python tests/test_live_wallpaper.py
           python tests/test_coreviews_wallpapers.py
           python tests/test_ci_job_deps.py
+          python tests/test_gradle_unit_test_variants.py
           python tests/test_play_listing.py
           python tests/test_privacy_policy.py
           python tests/test_core_shift_content.py
