@@ -33,18 +33,25 @@ a glance on any row. The adaptive xml is not written here: the flavor reuses
 the `mipmap-anydpi-v26` wiring generated for the pack, which already names
 these resources.
 
+The catalog now maps the glyph apps to this identity too, rather than to the
+main pack's cyan mark. Geometry lives in tools/glyphs.py; this script reads
+its glyph and accent from tools/catalog.json so applying a pack preserves
+the identity instead of overriding it with another app's icon.
+
 The mark passes the same `core_monoline_errors` contract as every catalog
 icon before anything is written, and the legacy PNG gets the same raster
 presence pass as the pack's own launcher.
 
 Run: python tools/build_glyphs_branding.py
 """
+import json
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from build_branding import ADAPTIVE_XML, MONO_INK, png, svg  # noqa: E402  (shared renderer)
+from glyphs import GLYPHS  # noqa: E402
 from icon_style import core_monoline_errors  # noqa: E402
 from presence import apply_presence_file  # noqa: E402
 from typeface import measure as type_measure, wordmark_spans, FONTS  # noqa: E402
@@ -54,29 +61,14 @@ ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "app" / "src" / "glyphs" / "res"
 COMPANION_RES = ROOT / "glyphs" / "src" / "main" / "res"
 
-ACCENT = "#A366FF"   # Violet — a palette slot; not the pack's Signal Cyan
-NIGHT = "#0D1117"    # Brand Guide Night card
-
-_STROKE = 'fill="none" stroke="{c}" stroke-width="26.2" stroke-linecap="round" stroke-linejoin="round"'
-
-
-def glyph_mark(c: str) -> str:
-    s = _STROKE.format(c=c)
-    return (
-        # outer rounded tile, the pack's frame grammar
-        f'<rect x="72" y="72" width="368" height="368" rx="92" fill="none" '
-        f'stroke="{c}" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>'
-        # top-left: ring
-        f'<circle cx="190" cy="190" r="40" {s}/>'
-        # top-right: square
-        f'<rect x="282" y="150" width="80" height="80" rx="16" {s}/>'
-        # bottom-left: play triangle
-        f'<path d="M 172 300 L 208 322 L 172 344 Z" {s}/>'
-        # bottom-right: hexagon
-        f'<path d="M 322 282 L 354 300 L 354 344 L 322 362 L 290 344 L 290 300 Z" {s}/>'
-    )
-
-
+# The catalog owns the identity on both sides of applying a pack. The two
+# glyph apps share one brand there (and keep their own banner labels); their
+# launcher must use that same geometry and accent, not a second drawing.
+IDENTITY = next(i for i in json.loads((ROOT / "tools/catalog.json").read_text(
+    encoding="utf-8"))["icons"] if i["drawable"] == "corebuilds_glyphs")
+ACCENT = IDENTITY["color"]   # Violet, not the pack's Signal Cyan
+NIGHT = "#0D1117"           # Brand Guide Night card
+glyph_mark = GLYPHS[IDENTITY["glyph"]]
 MARK = glyph_mark(ACCENT)
 
 # Subtitles under "Core Builds" on each app's banner: the app_name each one

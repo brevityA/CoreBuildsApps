@@ -1,6 +1,6 @@
 # Supported applications
 
-`1020` icons · `1238` mapped components · pack v2.5.1
+`1022` icons · `1241` mapped components · pack v2.5.2
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -152,7 +152,9 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | CNN | `cnn` | `#CC0000` | `#CC0000` | `com.cnn.mobile.android.tv/com.cnn.ctv.MainActivity` |
 | Coji TV Browser | `coji_tv_browser` | `#F04DE0` | `#F04DE0` | `mvl.studio.tvlite/mvl.studio.tvlite.android_tv.presentation.ui.TabletLauncherActivity`<br>`mvl.studio.tvlite/mvl.studio.tvlite.android_tv.presentation.ui.HomeLauncherActivity` |
 | Comedy Box | `comedybox` | `#B6F23A` | `#B6F23A` | `com.comedybox.app/com.android.comedybox.ui.TvSplashActivity` |
-| Core Builds | `corebuilds` | `#00D4FF` | `#00D4FF` | `tv.corebuilds.iconpack/.MainActivity`<br>`tv.corebuilds.iconpack.glyphs/.GlyphsHomeActivity` |
+| Core Builds | `corebuilds` | `#00D4FF` | `#00D4FF` | `tv.corebuilds.iconpack/.MainActivity`<br>`tv.corebuilds.iconpack.play/tv.corebuilds.iconpack.MainActivity` |
+| Core Builds Glyphs | `corebuilds_glyphs` | `#A366FF` | `#A366FF` | `tv.corebuilds.glyphs/tv.corebuilds.iconpack.MainActivity` |
+| Core Builds Glyphs Pack | `corebuilds_glyphs_pack` | `#A366FF` | `#A366FF` | `tv.corebuilds.iconpack.glyphs/.GlyphsHomeActivity`<br>`tv.corebuilds.iconpack.glyphs.play/tv.corebuilds.iconpack.glyphs.GlyphsHomeActivity` |
 | Core Doctor | `coredoctor` | `#00D4FF` | `#00D4FF` | `dev.corebuilds.doctor/.MainActivity` |
 | Core EQ | `coreeq` | `#00D4FF` | `#00D4FF` | `tv.corebuilds.eq/.MainActivity` |
 | Core Line | `coreline` | `#00D4FF` | `#00D4FF` | `dev.corebuilds.line/.MainActivity` |

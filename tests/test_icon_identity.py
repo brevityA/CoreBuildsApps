@@ -46,6 +46,31 @@ class IdentityTests(unittest.TestCase):
     def test_catalog_accepts_every_icon(self):
         self.assertEqual(validate(ICONS, CATALOG["artwork"]), [])
 
+    def test_glyphs_apps_keep_their_native_mark_when_the_pack_is_applied(self):
+        import build_glyphs_branding as branding
+
+        main = BY_ID["corebuilds"]
+        for drawable in ("corebuilds_glyphs", "corebuilds_glyphs_pack"):
+            icon = BY_ID[drawable]
+            with self.subTest(drawable=drawable):
+                self.assertEqual(icon["brand"], "corebuilds_glyphs")
+                self.assertEqual(icon["style"], CORE_MONOLINE)
+                self.assertEqual(icon["color"], "#A366FF")
+                self.assertEqual(icon["color"], branding.ACCENT)
+                self.assertIs(GLYPHS[icon["glyph"]], branding.glyph_mark)
+                self.assertNotEqual(icon["glyph"], main["glyph"])
+                self.assertNotEqual(icon["color"], main["color"])
+                # Check the resolved art too: a bad alias could undo a correct
+                # catalog and appfilter, for squares as well as banners.
+                for suffix in ("", "_banner"):
+                    with Image.open(art_path(NODPI, drawable + suffix, ALIASES)) as glyphs, \
+                         Image.open(art_path(NODPI, main["drawable"] + suffix, ALIASES)) as pack:
+                        self.assertNotEqual(glyphs.convert("RGBA").tobytes(),
+                                            pack.convert("RGBA").tobytes())
+                        self.assertNotEqual(glyphs.convert("RGBA").getchannel("A").tobytes(),
+                                            pack.convert("RGBA").getchannel("A").tobytes(),
+                                            "the glyphs apps must differ by shape, not only colour")
+
     def test_same_brand_must_not_drift_in_colour_or_glyph(self):
         for field, wrong in (("color", "#FF0000"), ("glyph", "tile_N")):
             rows = copy.deepcopy([BY_ID["ninenow"], BY_ID["ninenow_2"]])

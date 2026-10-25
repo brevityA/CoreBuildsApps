@@ -23,9 +23,9 @@ worst way - it looks like a broken build of whatever was being released, so the
 obvious next move is to distrust the source instead of the toolchain.
 
 Only roots on AGP 9 are affected: AGP 8 creates every `test<Variant>UnitTest`.
-This root (app + glyphs) is on AGP 9; shift/, doctor/, motion-plugin/ and
-ticker/android/ are still on 8.5.2, so the test asks for the opt-out only where
-the toolchain needs it.
+The API 37 migration put every suite root on AGP 9, so any root whose
+workflows request non-debug unit tests now needs the opt-out. Core EQ's
+workflow only requests debug unit tests and needs no opt-out.
 
 So this test reads the workflows, finds every `test<Variants>UnitTest` task they
 ask Gradle for, and requires the opt-out in the gradle.properties of the root
@@ -108,11 +108,11 @@ def mentions(text: str, root: str) -> bool:
 
 
 class UnitTestVariantsExist(unittest.TestCase):
-    def test_the_agp_split_is_what_the_comment_says(self) -> None:
-        """The gate only asks the AGP 9 roots, so which ones those are has to
-        be a fact the test checks rather than a claim in a comment."""
+    def test_all_roots_use_agp_nine_after_the_api37_migration(self) -> None:
+        """The opt-out gate must cover the whole suite, not just the two
+        roots that migrated first. roots() is independently checked below."""
         on_nine = {r for r in roots() if (agp_major(r) or 0) >= 9}
-        self.assertEqual({".", "coreeq"}, on_nine)
+        self.assertEqual(set(roots()), on_nine)
 
     def test_roots_are_discovered(self) -> None:
         found = roots()

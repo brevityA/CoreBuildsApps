@@ -145,6 +145,8 @@
     <item drawable="coji_tv_browser" />
     <item drawable="comedybox" />
     <item drawable="corebuilds" />
+    <item drawable="corebuilds_glyphs" />
+    <item drawable="corebuilds_glyphs_pack" />
     <item drawable="coredoctor" />
     <item drawable="coreeq" />
     <item drawable="coreline" />

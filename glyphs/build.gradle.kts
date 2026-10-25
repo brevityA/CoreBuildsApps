@@ -15,8 +15,8 @@ plugins {
 // Deliberately thin:
 //   * No Kotlin, no library dependencies. One Java activity exists only
 //     because launchers discover packs through activity intent filters.
-//   * No art in git. The glyphs and fallback furniture are copied from
-//     :app's generated drawable-nodpi at build time (see copyGlyphArt), so
+//   * No duplicated catalog art in git. Glyphs and fallback furniture come
+//     from :app's generated drawable-nodpi at build time (see copyGlyphArt), so
 //     there is exactly one committed copy of each art file and the two
 //     packages cannot drift apart.
 //   * No version of its own. versionCode/versionName are read from

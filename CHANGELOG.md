@@ -6,6 +6,26 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- **Glyphs apps keep their own icon when the pack is applied.** The catalog
+  mapped Core Builds Glyphs Pack to the main pack's cyan icon, overriding the
+  companion's violet launcher art. It now uses the existing violet glyph mark
+  for both square icons and banners, with its own name. The standalone Core
+  Builds Glyphs app and the Play package IDs are mapped too, using their actual
+  activity namespaces. Launcher branding and catalog art share one glyph
+  definition; the main pack's artwork is unchanged.
+- **`tests/test_glyphs_pack.py` and `tests/test_icon_identity.py` guard self-icons.**
+  Checks cover all three packs' generated mappings, full and shorthand
+  components, distinct banner labels, native launcher layers and resolved
+  square/banner art, so neither an appfilter nor an alias can restore the
+  confusing main-pack icon.
+- **`tests/test_gradle_unit_test_variants.py` follows the suite's AGP 9 migration.**
+  The pre-existing content-CI failure still assumed four roots used AGP 8.
+  Doctor, Motion, Shift and Line now explicitly retain release-variant unit
+  test tasks, as the suite release workflow requires, and the gate covers all
+  migrated roots rather than only the first two.
+
 ## [2.5.1] — 2026-10-24
 
 ### Added

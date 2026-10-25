@@ -3,6 +3,8 @@
 <resources>
     <category title="Banners · Core Builds" />
     <item drawable="corebuilds_banner" />
+    <item drawable="corebuilds_glyphs_banner" />
+    <item drawable="corebuilds_glyphs_pack_banner" />
     <item drawable="coredoctor_banner" />
     <item drawable="coreeq_banner" />
     <item drawable="coreline_banner" />
