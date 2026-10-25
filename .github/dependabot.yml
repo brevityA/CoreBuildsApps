@@ -145,6 +145,9 @@ updates:
       # org.jetbrains.kotlin.plugin.parcelize <= 2.2.10
       - dependency-name: "org.jetbrains.kotlin.plugin.parcelize"
         update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
+      # org.jetbrains.kotlin:kotlin-parcelize-runtime <= 2.2.10 — declared by app
+      - dependency-name: "org.jetbrains.kotlin:kotlin-parcelize-runtime"
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
     groups:
       core-motion:
         patterns: ["*"]

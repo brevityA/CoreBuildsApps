@@ -1,7 +1,7 @@
 package dev.corebuilds.shift
 
 import android.os.Bundle
-import android.view.KeyEvent
+import androidx.activity.OnBackPressedCallback
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +27,11 @@ class ProceduralPreviewActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finish()
+            }
+        })
         setContentView(R.layout.activity_procedural_preview)
 
         val scene = intent.getIntExtra(EXTRA_SCENE, 0)
@@ -74,14 +79,6 @@ class ProceduralPreviewActivity : AppCompatActivity() {
         length10.text = if (seconds == 10f) "10s ✓" else getString(R.string.length_10)
         length20.text = if (seconds == 20f) getString(R.string.length_20_selected) else getString(R.string.length_20)
         length30.text = if (seconds == 30f) "30s ✓" else getString(R.string.length_30)
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish()
-            return true
-        }
-        return super.onKeyDown(keyCode, event)
     }
 
     companion object {

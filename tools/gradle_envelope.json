@@ -244,6 +244,20 @@
       ]
     },
     {
+      "coordinate": "org.jetbrains.kotlin:kotlin-parcelize-runtime",
+      "max": "2.2.10",
+      "blockedUpdateTypes": [
+        "version-update:semver-patch",
+        "version-update:semver-minor",
+        "version-update:semver-major"
+      ],
+      "reason": "The parcelize annotations must stay in lockstep with the parcelize compiler plugin and AGP built-in Kotlin 2.2.10.",
+      "evidence": [
+        "https://developer.android.com/build/migrate-to-built-in-kotlin",
+        "https://kotlinlang.org/docs/gradle-configure-project.html"
+      ]
+    },
+    {
       "coordinate": "org.jetbrains.kotlin.plugin.compose",
       "max": "2.2.10",
       "blockedUpdateTypes": [
