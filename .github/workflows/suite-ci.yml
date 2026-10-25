@@ -33,6 +33,36 @@ jobs:
       # verification step since the feed landed, and no workflow ran it.
       - name: Check the Core Shift live-feed against its media
         run: python tools/validate_motion_feed.py
+      # Core Views. The consumer parses with ignoreUnknownKeys, so a misspelled
+      # rendition key or a time-of-day outside the app's enum fails here or not
+      # at all: on a TV, silently. `--check` is the whole point - a step that
+      # regenerated the feed could only ever pass.
+      - name: Check the Core Views catalogue and its published feeds
+        run: python tools/build_views_feed.py --check
+      - name: Test the Core Views feed contract against the app's keys
+        run: python tests/test_views_feed.py
+      # No browser, no GPU, no network: camera paths, tile census and the
+      # encode command are all pure functions, so the renderer's decisions are
+      # testable on a runner that cannot render a frame.
+      - name: Test the Core Views camera paths and render plans
+        run: python tests/test_views_geo.py
+      - name: Confirm Core Views still plans without a browser installed
+        run: python tools/render_views.py --only coreviews-05-lord-howe --dry-run
+      # The shot cards are generated from the same camera paths the renderer
+      # flies, so a catalogue edit that changes a move must redraw them.
+      - name: Check the Core Views shot cards match the catalogue
+        run: python tools/views_storyboard.py --all --check
+      # The player embeds camera samples, so it drifts the moment a move moves.
+      - name: Check the Core Views HTML player is current
+        run: python tools/build_views_player.py --check
+      - name: Check the Core Views TV mockup is current
+        run: python tools/build_views_mockup.py --check
+      # The season is also a set of live wallpapers the icon pack plays, and
+      # its Kotlin list carries each MP4's hash: a re-render without a
+      # regeneration is a stale cache key on every TV that already has the
+      # old clip.
+      - name: Check the Core Views wallpaper list is current
+        run: python tools/build_coreviews_kt.py --check
       - name: Assert every shippable app has CI, metadata, and hardened updater contracts
         run: python tools/audit_contract.py
       - name: Check prefilled icon-request links against the issue forms
@@ -229,6 +259,17 @@ jobs:
         run: cd ticker/stadium-sync && npm test
       - name: Install Python content deps
         run: pip install --quiet -r tools/requirements.txt
+      # The two Core Views wallpaper steps that need Pillow and numpy. They used
+      # to sit in the contracts job, which installs nothing: it was written as
+      # the stdlib-only gate, and a step that imports PIL there fails on the
+      # import, one step before the one that would have failed on the render.
+      # tests/test_ci_job_deps.py now holds every step in that job to it.
+      - name: Check the Core Views wallpaper example page is current
+        run: python tools/build_coreviews_wallpapers_html.py --check
+      # Draws one still and stops: it proves the wallpaper generator still
+      # runs on a runner with no ffmpeg, without touching the committed MP4s.
+      - name: Confirm the Core Views wallpaper art still renders
+        run: python tools/build_coreviews_loops.py --only 1 --palette --out "$RUNNER_TEMP/coreviews-palette"
       # Both import tools/glyphs.py, which needs fontTools from the deps above.
       - name: Check the Classic glyph fit matches the catalog and metrics
         run: python tools/fit_classic_glyphs.py --check
@@ -269,6 +310,9 @@ jobs:
           python tests/test_wallpapers.py
           python tests/test_wallpaper_export.py
           python tests/test_live_wallpaper.py
+          python tests/test_coreviews_wallpapers.py
+          python tests/test_ci_job_deps.py
+          python tests/test_gradle_unit_test_variants.py
           python tests/test_play_listing.py
           python tests/test_privacy_policy.py
           python tests/test_core_shift_content.py
