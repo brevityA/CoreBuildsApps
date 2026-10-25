@@ -77,7 +77,7 @@ class SuiteApi37Migration(unittest.TestCase):
             source = (ROOT / rel).read_text(encoding="utf-8")
             with self.subTest(workflow=rel):
                 self.assertIn('"platforms;android-37.0" "build-tools;36.0.0"', source)
-                self.assertIn("uses: android-actions/setup-android@v3", source)
+                self.assertIn("sdkmanager", source)
 
 
 if __name__ == "__main__":

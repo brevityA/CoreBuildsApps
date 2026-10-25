@@ -68,8 +68,6 @@ jobs:
 
       # The suite's Play and sideload bundles compile and target API 37.
       # API 37 is packaged as android-37.0; AGP 9.4.0 uses build-tools 36.
-      - uses: android-actions/setup-android@v3
-
       - name: Install Android platform 37
         run: |
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \

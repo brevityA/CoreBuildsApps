@@ -148,8 +148,6 @@ jobs:
       # Stating the platform per entry makes the job declare its own requirement;
       # tools/check_gradle_envelope.py asserts that declaration matches the
       # compileSdk in the build file it points at.
-      - uses: android-actions/setup-android@v3
-
       - name: Install Android platform ${{ matrix.compileSdk }}
         run: |
           # API 37's platform package is 37.0; AGP 9.4.0's build-tools floor
