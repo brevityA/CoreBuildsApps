@@ -14,6 +14,7 @@ Run: python tests/test_glyphs_pack.py
 """
 from __future__ import annotations
 
+import json
 import re
 import subprocess
 import sys
@@ -139,6 +140,81 @@ class GeneratedResources(unittest.TestCase):
         hint = re.search(r'name="glyphs_home_hint">([^<]+)<', home).group(1)
         self.assertEqual(title, label)
         self.assertIn(f"choose {label} in the icon pack list", hint)
+
+
+class SelfIconIdentity(unittest.TestCase):
+    """Applying our own pack must not turn a glyphs app into the main pack.
+
+    Separate launcher mipmaps are not enough: the catalog's appfilter wins
+    after a pack is applied. The flavor and Play IDs also retain their Java
+    namespace, not their applicationId, in the launch activity's name.
+    """
+    COMPONENTS = {
+        "tv.corebuilds.iconpack/tv.corebuilds.iconpack.MainActivity": "corebuilds",
+        "tv.corebuilds.iconpack.play/tv.corebuilds.iconpack.MainActivity": "corebuilds",
+        "tv.corebuilds.glyphs/tv.corebuilds.iconpack.MainActivity": "corebuilds_glyphs",
+        "tv.corebuilds.iconpack.glyphs/tv.corebuilds.iconpack.glyphs.GlyphsHomeActivity":
+            "corebuilds_glyphs_pack",
+        "tv.corebuilds.iconpack.glyphs.play/tv.corebuilds.iconpack.glyphs.GlyphsHomeActivity":
+            "corebuilds_glyphs_pack",
+    }
+
+    def test_catalog_keeps_the_glyphs_apps_separate_from_the_main_pack(self):
+        catalog = json.loads(read(ROOT / "tools/catalog.json"))
+        actual = {}
+        for icon in catalog["icons"]:
+            for component in icon["components"]:
+                pkg, activity = component.split("/", 1)
+                if activity.startswith("."):
+                    activity = pkg + activity
+                actual[f"{pkg}/{activity}"] = icon["drawable"]
+        for component, drawable in self.COMPONENTS.items():
+            with self.subTest(component=component):
+                self.assertEqual(actual.get(component), drawable)
+
+    def test_every_appfilter_maps_the_right_self_icon_in_both_name_forms(self):
+        for tree, suffix in ((ROOT / "app/src/main", "_banner"),
+                             (ROOT / "app/src/glyphs", ""),
+                             (ROOT / "glyphs/src/main", "")):
+            for folder in ("res/xml", "assets"):
+                path = tree / folder / "appfilter.xml"
+                actual = {i.get("component"): i.get("drawable")
+                          for i in ET.parse(path).getroot().findall("item")}
+                for component, drawable in self.COMPONENTS.items():
+                    pkg, activity = component.split("/", 1)
+                    forms = [component]
+                    if activity.startswith(pkg + "."):
+                        forms.append(f"{pkg}/{activity[len(pkg):]}")
+                    for form in forms:
+                        with self.subTest(path=path.relative_to(ROOT), component=form):
+                            self.assertEqual(actual.get(f"ComponentInfo{{{form}}}"),
+                                             drawable + suffix)
+
+    def test_glyphs_catalog_labels_match_the_installed_apps(self):
+        icons = {i["drawable"]: i for i in json.loads(
+            read(ROOT / "tools/catalog.json"))["icons"]}
+        flavor_label = re.search(r'resValue\("string", "app_name", "([^"]+)"\)',
+                                 read(APP_GRADLE)).group(1)
+        companion_label = re.search(r'name="app_name">([^<]+)<',
+                                   read(ROOT / "glyphs/src/main/res/values/strings.xml")).group(1)
+        for drawable, label in (("corebuilds_glyphs", flavor_label),
+                                ("corebuilds_glyphs_pack", companion_label)):
+            with self.subTest(drawable=drawable):
+                self.assertEqual(icons.get(drawable, {}).get("name"), label)
+                # A shorter banner name must not hide which of the two apps it is.
+                self.assertEqual(icons.get(drawable, {}).get("banner_name", label), label)
+
+    def test_native_glyph_icons_stay_distinct_when_no_pack_is_applied(self):
+        main = ROOT / "app/src/main/res"
+        for res in (ROOT / "app/src/glyphs/res", ROOT / "glyphs/src/main/res"):
+            resources = ["drawable-nodpi/cb_banner.png"]
+            for density in ("mipmap-xhdpi", "mipmap-xxhdpi"):
+                resources.extend(f"{density}/{name}.png" for name in (
+                    "ic_launcher", "ic_launcher_foreground", "ic_launcher_monochrome"))
+            for resource in resources:
+                with self.subTest(res=res.relative_to(ROOT), resource=resource):
+                    self.assertNotEqual((res / resource).read_bytes(),
+                                        (main / resource).read_bytes())
 
 
 class OneStylePerPack(unittest.TestCase):

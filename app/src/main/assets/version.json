@@ -1,13 +1,13 @@
 {
-  "versionCode": 59,
-  "versionName": "2.5.1",
-  "iconCount": 1020,
-  "componentCount": 1238,
-  "releaseDate": "2026-10-24",
+  "versionCode": 60,
+  "versionName": "2.5.2",
+  "iconCount": 1022,
+  "componentCount": 1241,
+  "releaseDate": "2026-10-25",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Projectivity launcher discovery in release builds"
+    "Glyphs apps keep their own icon when the pack is applied"
   ]
 }

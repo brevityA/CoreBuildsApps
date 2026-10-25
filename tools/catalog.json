@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "2.5.1",
+    "version": "2.5.2",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 1020
+    "count": 1022
   },
   "icons": [
     {
@@ -1928,12 +1928,45 @@
       "glyph": "core_mark",
       "components": [
         "tv.corebuilds.iconpack/.MainActivity",
-        "tv.corebuilds.iconpack.glyphs/.GlyphsHomeActivity"
+        "tv.corebuilds.iconpack.play/tv.corebuilds.iconpack.MainActivity"
       ],
       "category": "CORE",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null,
-      "mapping_source": "pre-provenance; issue #339 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.4.2, 2026-10-17): the Core Builds Glyphs companion (tv.corebuilds.iconpack.glyphs, built from glyphs/ in this repo) launches .GlyphsHomeActivity and ships the same Core Builds launcher art and banner, so it shares this icon"
+      "mapping_source": "app/src/main/AndroidManifest.xml and app/build.gradle.kts: .MainActivity is the LAUNCHER / LEANBACK_LAUNCHER activity in the tv.corebuilds.iconpack namespace; the Play applicationId adds .play without moving the activity. The glyphs companion mapping from issue #339 belongs to Core Builds Glyphs Pack, not this icon."
+    },
+    {
+      "name": "Core Builds Glyphs",
+      "drawable": "corebuilds_glyphs",
+      "color": "#A366FF",
+      "glyph": "core_glyphs_mark",
+      "brand": "corebuilds_glyphs",
+      "category": "CORE",
+      "style": "core_monoline",
+      "color_source": "Core Builds Glyphs' own launcher branding (tools/build_glyphs_branding.py): Violet #A366FF from docs/BRAND-GUIDE.md, not the main pack's Signal Cyan",
+      "color_reviewed": "2026-10-25",
+      "glyph_source": "The existing glyphs launcher mark, shared with tools/build_glyphs_branding.py: a rounded tile with a ring, square, play triangle and hexagon, in Core monoline geometry (2026-10-25)",
+      "components": [
+        "tv.corebuilds.glyphs/tv.corebuilds.iconpack.MainActivity"
+      ],
+      "mapping_source": "app/build.gradle.kts glyphs flavor and app/src/main/AndroidManifest.xml: applicationId tv.corebuilds.glyphs retains the tv.corebuilds.iconpack.MainActivity launcher activity; it does not have a tv.corebuilds.glyphs.MainActivity"
+    },
+    {
+      "name": "Core Builds Glyphs Pack",
+      "drawable": "corebuilds_glyphs_pack",
+      "color": "#A366FF",
+      "glyph": "core_glyphs_mark",
+      "brand": "corebuilds_glyphs",
+      "category": "CORE",
+      "style": "core_monoline",
+      "color_source": "Core Builds Glyphs' own launcher branding (tools/build_glyphs_branding.py): Violet #A366FF from docs/BRAND-GUIDE.md, not the main pack's Signal Cyan",
+      "color_reviewed": "2026-10-25",
+      "glyph_source": "The existing glyphs launcher mark, shared with tools/build_glyphs_branding.py: a rounded tile with a ring, square, play triangle and hexagon, in Core monoline geometry (2026-10-25)",
+      "components": [
+        "tv.corebuilds.iconpack.glyphs/.GlyphsHomeActivity",
+        "tv.corebuilds.iconpack.glyphs.play/tv.corebuilds.iconpack.glyphs.GlyphsHomeActivity"
+      ],
+      "mapping_source": "glyphs/src/main/AndroidManifest.xml and glyphs/build.gradle.kts: .GlyphsHomeActivity is the LAUNCHER / LEANBACK_LAUNCHER activity, also device-reported in issue #339 (SHIELD Android TV, Android 11, pack 2.4.2, 2026-10-17). The Play applicationId adds .play without moving the activity; .GlyphsActivity only carries discovery and icon-pick filters."
     },
     {
       "name": "Core Doctor",

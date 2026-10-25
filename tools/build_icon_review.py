@@ -4,9 +4,13 @@
 Run after the icon generators. Reads catalog + generated Classic PNGs only.
 The unmodified Core Builds, Emby, TiviMate and Syncler neighbours are intentional:
 a logo can be recognisable and still be wrong for this pack's visual identity.
+
+Use --glyphs for docs/glyphs-identity-preview.png: the two glyph apps beside
+unchanged main-pack art and neighbours, including actual-size TV banners.
 """
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -26,6 +30,10 @@ ALIASES = read_aliases(ROOT / "app/src/main/res/values")
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    parser.add_argument("--glyphs", action="store_true",
+                        help="review the glyphs apps' self-icons beside the unchanged pack")
+    args = parser.parse_args()
     data = json.loads((ROOT / "tools/catalog.json").read_text())
     icons = sorted(data["icons"], key=lambda i: i["name"].lower())
     by_id = {i["drawable"]: i for i in icons}
@@ -33,7 +41,7 @@ def main() -> int:
     row = ["corebuilds", "emby", "nobuffr", tivimate, "syncler", "netflix"]
     revised = ["spotify", "kodi", "jellyfin", "stremio", "plex", "crunchyroid",
                "twitch", "nordvpn", "mubi", "protonvpn", "deezer", "iplayer"]
-    width, height = 1280, 1510
+    width, height = 1280, 1020 if args.glyphs else 1510
     canvas = Image.new("RGB", (width, height), CARD)
     draw = ImageDraw.Draw(canvas)
 
@@ -58,6 +66,30 @@ def main() -> int:
             tile(x, y, 184, 188, key == "nobuffr")
             image(art_path(RES, key, ALIASES), x+30, y+16, (124, 124))
             text(x+14, y+146, icon["name"], 18)
+
+    if args.glyphs:
+        text(48, 30, "CORE BUILDS / GLYPHS IDENTITY FIX", 14, "#A366FF", True)
+        text(48, 65, "Glyphs, not the main pack.", 46)
+        text(48, 130, "The existing violet mark, now preserved when the icon pack is applied.", 23, "#9AAABD")
+        text(48, 174, "Square glyphs at 64 px  /  TV banners at their shipped 320 x 180 px", 15, "#9AAABD", True)
+        draw.line((48, 212, 1232, 212), fill="#27303D", width=1)
+        for n, key in enumerate(("corebuilds", "corebuilds_glyphs", "corebuilds_glyphs_pack")):
+            x, y = 48 + n * 400, 242
+            tile(x, y, 384, 400)
+            image(art_path(RES, key, ALIASES), x+160, y+24, (64, 64))
+            text(x+22, y+108, by_id[key]["name"], 23)
+            image(art_path(RES, f"{key}_banner", ALIASES), x+32, y+149, (320, 180))
+            note = "Unchanged main-pack art" if n == 0 else "Violet mark / own banner label"
+            text(x+22, y+359, note, 15, "#9AAABD")
+        text(48, 682, "Alongside unchanged icons", 28)
+        square_row(["corebuilds", "emby", tivimate, "syncler", "netflix", "coreeq"], 731)
+        text(48, 955, "Catalog mappings fixed for the standalone Glyphs app and the Glyphs Pack companion, including Play.",
+             17, "#9AAABD")
+        out = ROOT / "docs/glyphs-identity-preview.png"
+        out.parent.mkdir(parents=True, exist_ok=True)
+        canvas.save(out, optimize=True)
+        print(f"Wrote {out.relative_to(ROOT)} ({width}x{height}) — self-icons and actual-size banners")
+        return 0
 
     text(48, 30, "CORE BUILDS / CLASSIC IDENTITY", 14, "#56C8F0", True)
     text(48, 65, "Core Builds first.", 48)
