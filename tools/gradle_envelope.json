@@ -20,14 +20,14 @@
       "All six Gradle roots use AGP 9.4.0 / Gradle 9.7.0 / API 37.",
       "Built-in Kotlin is used everywhere except motion-plugin, whose frozen",
       "upstream Parcelable model needs compiler generation from KGP 2.4.10.",
-      "That root opts out of built-in Kotlin explicitly; its Kotlin plugins match KGP 2.4.10."
+      "That root uses the documented Kotlin and legacy-DSL opt-outs; its plugins match KGP 2.4.10."
     ],
     "minGradleForAgp9": "9.6.0",
     "builtinKotlinVersionByAgp": {
       "9.4.0": "2.2.10"
     },
     "externalKotlinRoots": {
-      "motion-plugin": "The frozen upstream Projectivy parcelables require the Kotlin Parcelize compiler plugin; use AGP 9.4.0-compatible KGP 2.4.10 with built-in Kotlin explicitly disabled."
+      "motion-plugin": "The frozen upstream Projectivy parcelables require the Kotlin Parcelize compiler plugin; use KGP 2.4.10 with android.builtInKotlin=false and android.newDsl=false for AGP compatibility."
     }
   },
   "compose": {

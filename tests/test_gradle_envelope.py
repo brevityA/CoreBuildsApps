@@ -210,6 +210,7 @@ class GradleParsing(unittest.TestCase):
                 self.assertEqual(root.kotlin, "2.4.10")
                 self.assertFalse(root.builtin_kotlin)
                 self.assertRegex(root.properties, r"(?m)^android\.builtInKotlin=false$")
+                self.assertRegex(root.properties, r"(?m)^android\.newDsl=false$")
             else:
                 self.assertIsNone(root.kotlin, f"{rel} should use AGP built-in Kotlin")
                 self.assertTrue(root.builtin_kotlin)
@@ -534,6 +535,15 @@ class Mutants(unittest.TestCase):
                 "android.builtInKotlin=true",
             )
             repo.assert_blocked("external Kotlin is permitted only when gradle.properties", "Motion Kotlin opt-out")
+
+    def test_motion_external_kotlin_requires_the_legacy_android_dsl(self):
+        with ScratchRepo() as repo:
+            repo.edit(
+                "motion-plugin/gradle.properties",
+                "android.newDsl=false",
+                "android.newDsl=true",
+            )
+            repo.assert_blocked("requires android.newDsl=false", "Motion legacy DSL opt-out")
 
     def test_kotlin_2_with_the_old_compose_dsl_is_caught(self):
         with ScratchRepo() as repo:

@@ -297,6 +297,11 @@ def check_roots(roots: list[GradleRoot], table: dict) -> None:
                         f"{root.label}: external Kotlin is permitted only when gradle.properties "
                         "sets android.builtInKotlin=false"
                     )
+                elif not re.search(r"(?m)^\s*android\.newDsl\s*=\s*false\s*$", root.properties):
+                    fail(
+                        f"{root.label}: this external Kotlin exception also requires "
+                        "android.newDsl=false for AGP compatibility"
+                    )
                 elif not any(
                     "org.jetbrains.kotlin.android" in _applied_plugin_ids(module.source)
                     for module in root.modules
