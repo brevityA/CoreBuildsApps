@@ -148,6 +148,31 @@ object HardwarePresets {
             RegexOption.IGNORE_CASE
         ),
         presets = listOf(
+            /**
+             * The everyday curve argued for in
+             * docs/research/core-eq-bar-2-0-everyday-curve-and-correction-review-2026-10-25.md.
+             *
+             * It is a **starting point from the spec sheet and reviews**, not a
+             * measured correction: no measured response of this bar exists. What
+             * it is built on is the one hard number JBL publishes, 70 Hz at
+             * -6 dB, so nothing below 70 Hz is asked for. The 125 Hz bell lifts
+             * the body band the bar has, 250 Hz keeps that lift from reading as
+             * cupped, 2 and 4 kHz add consonant presence for TV dialogue, and
+             * 6.3/8 kHz take back the "crisp, sometimes harsh" top end the
+             * reviews describe. Peak boost +1.7 dB, peak cut -2.0 dB.
+             */
+            ManualEqPreset(
+                id = "jbl-bar-2-0-everyday",
+                name = "JBL Bar 2.0 · Everyday",
+                filters = listOf(
+                    bell(125.0, 2.0),
+                    bell(250.0, -1.0),
+                    bell(2_000.0, 1.0),
+                    bell(4_000.0, 1.0),
+                    bell(6_300.0, -1.0),
+                    bell(8_000.0, -1.5)
+                )
+            ),
             ManualEqPreset(
                 id = "jbl-bar-2-0-movie",
                 name = "JBL Bar 2.0 · Movie",
@@ -185,12 +210,15 @@ object HardwarePresets {
                 )
             ),
             ManualEqPreset(
+                // Renamed from "Open stage" in 1.7.0: an equaliser cannot widen a
+                // stereo image, and a name that says it can is a promise the DSP
+                // cannot keep. The filters are unchanged; only the claim is.
                 id = "jbl-bar-2-0-open-stage",
-                name = "JBL Bar 2.0 · Open stage",
+                name = "JBL Bar 2.0 · Air",
                 filters = listOf(
-                    bell(250.0, -1.0),   // less centre-mid crowding, so the stage opens up
+                    bell(250.0, -1.0),   // less centre-mid crowding, which reads as a cleaner front
                     bell(4_000.0, 1.0),
-                    bell(8_000.0, 1.5)   // air around the front image
+                    bell(8_000.0, 1.5)   // treble lift; a tone change, not a wider image
                 )
             ),
             ManualEqPreset(

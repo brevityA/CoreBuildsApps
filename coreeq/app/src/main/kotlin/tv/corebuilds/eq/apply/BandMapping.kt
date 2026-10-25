@@ -157,6 +157,53 @@ object BandMapping {
         layers: ToneLayers = ToneLayers.NONE
     ): DoubleArray = fitToBackend(profile, centresHz, layers).targetDb
 
+    /**
+     * The same band centres, flat, at the level a loudness-matched A/B needs.
+     *
+     * Switching room correction off by deleting the effect changes the level as
+     * well as the shape, and the louder setting nearly always "wins". This
+     * returns a flat response at the correction's own mean gain, so the two
+     * settings differ in shape only. The value is never positive: it is the mean
+     * of a curve whose peak has already been shifted to 0 dB, so a bypass cannot
+     * clip whatever the profile contains.
+     */
+    fun bypassDb(
+        profile: Profile,
+        centresHz: List<Double>,
+        layers: ToneLayers = ToneLayers.NONE
+    ): Double {
+        require(centresHz.isNotEmpty()) { "Backend band centres must be non-empty" }
+        val requested = requestedGainsDb(profile, centresHz, layers)
+        require(requested.all { it.isFinite() }) { "Requested centre gains must be finite" }
+        val mean = requested.sum() / requested.size
+        return minOf(0.0, mean)
+    }
+
+    /**
+     * A [BackendBandFit] for the bypassed side of an A/B comparison: every band
+     * at [bypassDb], no headroom shift, and no manual or room shape. The
+     * report's residual is 0 by construction, because nothing is being fitted.
+     */
+    fun fitBypassed(
+        profile: Profile,
+        centresHz: List<Double>,
+        layers: ToneLayers = ToneLayers.NONE
+    ): BackendBandFit {
+        require(centresHz.isNotEmpty() && centresHz.all { it.isFinite() && it > 0.0 }) {
+            "Backend band centres must be non-empty, finite and positive"
+        }
+        val level = bypassDb(profile, centresHz, layers)
+        val flat = DoubleArray(centresHz.size) { level }
+        return BackendBandFit(
+            centresHz = centresHz.toList(),
+            requestedDb = flat,
+            headroomDb = 0.0,
+            targetDb = flat,
+            configuredDb = flat,
+            rangeLimitedBands = 0
+        )
+    }
+
     /** The dB gains as millibel band levels, clamped to the device's reported range. */
     fun millibels(gainsDb: DoubleArray, rangeMb: IntRange): ShortArray =
         ShortArray(gainsDb.size) {

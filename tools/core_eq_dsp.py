@@ -449,6 +449,35 @@ def schroeder_hz(volume_m3: float, rt60_s: float) -> float:
     return 2000.0 * math.sqrt(rt60_s / float(volume_m3))
 
 
+#: Correction ceilings a user may choose, widest last. F_MAX is the trusted
+#: default; every other value narrows the corrected band. Mirrored by
+#: ``CorrectionLimits.CEILING_CHOICES_HZ`` in the app.
+CORRECTION_CEILING_CHOICES_HZ = (500.0, 1000.0, 2000.0, 4000.0, F_MAX)
+
+
+def ceiling_hz(requested: float | None = None) -> float:
+    """A user-chosen correction ceiling, made safe.
+
+    Narrowing is the only direction the safety contract allows: a request above
+    :data:`F_MAX` would claim accuracy the TV remote's microphone does not
+    have, and a non-finite request falls back to the default. Mirrors
+    ``CorrectionLimits.ceilingHz``.
+    """
+    if requested is None or not math.isfinite(requested):
+        return F_MAX
+    return float(min(max(requested, F_MIN), F_MAX))
+
+
+def effective_ceiling_hz(measured_max_hz: float, requested: float | None = None) -> float:
+    """The narrower of the measured bandwidth edge and the user's ceiling.
+
+    ``measured_max_hz`` is where the sweep stopped being trustworthy; it can
+    only narrow the result, never widen it.
+    """
+    measured = F_MAX if not math.isfinite(measured_max_hz) or measured_max_hz <= 0 else measured_max_hz
+    return min(ceiling_hz(measured), ceiling_hz(requested))
+
+
 def transition_hz(volume_m3: float | None = None, rt60_s: float | None = None) -> float:
     """The frequency above which the corrector only shapes.
 

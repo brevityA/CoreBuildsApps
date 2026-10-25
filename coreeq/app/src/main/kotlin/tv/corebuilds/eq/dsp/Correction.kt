@@ -29,6 +29,11 @@ object Correction {
     }
 
     fun smoothOctave(freqs: DoubleArray, valuesDb: DoubleArray, octaves: Double): DoubleArray {
+        require(freqs.size == valuesDb.size) {
+            "Values (${valuesDb.size}) do not match frequencies (${freqs.size})"
+        }
+        require(freqs.all { it.isFinite() && it > 0.0 }) { "Frequencies must be finite and positive" }
+        require(octaves > 0.0 && octaves.isFinite()) { "Smoothing width must be positive, got $octaves" }
         val n = freqs.size
         val out = DoubleArray(n)
         if (n == 0) return out
@@ -64,6 +69,10 @@ object Correction {
         valuesDb: DoubleArray,
         transitionHz: Double = DspConstants.DEFAULT_TRANSITION_HZ
     ): DoubleArray {
+        require(freqs.size == valuesDb.size) {
+            "Values (${valuesDb.size}) do not match frequencies (${freqs.size})"
+        }
+        require(freqs.all { it.isFinite() && it > 0.0 }) { "Frequencies must be finite and positive" }
         val n = freqs.size
         val out = DoubleArray(n)
         if (n == 0) return out
@@ -183,6 +192,12 @@ object Correction {
         curve: DoubleArray,
         maxDbPerOct: Double = DspConstants.MAX_SLOPE_DB_PER_OCT
     ): DoubleArray {
+        require(freqs.size == curve.size) {
+            "Curve (${curve.size}) does not match frequencies (${freqs.size})"
+        }
+        require(maxDbPerOct > 0.0 && maxDbPerOct.isFinite()) {
+            "Slope limit must be positive, got $maxDbPerOct"
+        }
         val n = curve.size
         if (n <= 1) return curve.clone()
         val logF = DoubleArray(n) { log2(max(freqs[it], 1e-9)) }
@@ -255,6 +270,16 @@ object Correction {
         minPhaseOk: BooleanArray? = null,
         maxBoostBelowTransition: Double = maxBoost
     ): DoubleArray {
+        require(freqs.size == measuredDb.size) {
+            "Measured curve has ${measuredDb.size} points for ${freqs.size} frequencies"
+        }
+        require(freqs.size == targetDb.size) {
+            "Target curve has ${targetDb.size} points for ${freqs.size} frequencies"
+        }
+        require(freqs.all { it.isFinite() && it > 0.0 }) { "Frequencies must be finite and positive" }
+        require(measuredDb.all { it.isFinite() }) { "Measured levels must be finite" }
+        require(targetDb.all { it.isFinite() }) { "Target levels must be finite" }
+        require(fMax > fMin) { "The corrected band must not be empty ($fMin-$fMax Hz)" }
         val n = freqs.size
         val smoothed = smoothVariable(freqs, measuredDb, transitionHz)
         val raw = DoubleArray(n) { -(smoothed[it] - targetDb[it]) }

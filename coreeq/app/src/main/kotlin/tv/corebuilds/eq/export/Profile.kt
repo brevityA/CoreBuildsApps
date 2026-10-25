@@ -141,6 +141,13 @@ data class Profile(
     val schroederHz: Double? = null,
     val transitionHz: Double = 300.0,
     val rolloffHz: Double = 40.0,
+    /**
+     * Top of the band that was actually corrected, when it was narrower than
+     * [DspConstants.F_MAX]: the user's ceiling, or the measurement's own edge.
+     * Null on profiles saved before this was recorded, where the full band is
+     * still the best available reading of `correction_range_hz`.
+     */
+    val correctionCeilingHz: Double? = null,
     val snrDb: Double? = null,
     /**
      * MeasurementQuality score at save time; null for imports and older profiles.

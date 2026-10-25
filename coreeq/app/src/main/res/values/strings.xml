@@ -138,6 +138,8 @@
     <string name="measure_room_button">Room size: %1$s</string>
     <string name="measure_target_button">Target: %1$s</string>
     <string name="measure_target_custom">Target: Imported file</string>
+    <string name="measure_ceiling_button">Correct up to %1$d Hz</string>
+    <string name="measure_ceiling_full">Correct up to %1$d Hz (full band)</string>
     <string name="measure_target_custom_title">Imported file</string>
     <string name="measure_target_import_button">Import target file (GraphicEQ, REW, CSV)</string>
     <string name="measure_target_import_failed">Target not imported: %1$s</string>

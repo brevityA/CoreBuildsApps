@@ -605,4 +605,45 @@ class SweepAnalysisTest {
 
     @Suppress("unused")
     private fun rms(x: DoubleArray) = sqrt(x.sumOf { it * it } / x.size)
+
+    @Test
+    fun aNarrowerCeilingStopsTheCorrectionEarly() {
+        val room = bassAtTarget(reverbRoom(0.4))
+        val full = SweepAnalysis.analyze(capture(room = room), capFs, "flat", 54.0)
+        val narrow = SweepAnalysis.analyze(capture(room = room), capFs, "flat", 54.0, ceilingHz = 500.0)
+        assertEquals(500.0, narrow.fMaxHz, 1e-9)
+        assertEquals("a ceiling must not change where the measurement stopped",
+            full.centresHz.size, narrow.centresHz.size)
+        for (i in narrow.centresHz.indices) {
+            if (narrow.centresHz[i] > 500.0) {
+                assertEquals("${narrow.centresHz[i]} Hz is above the ceiling", 0.0, narrow.correctionDb[i], 0.0)
+            }
+        }
+        // Below the ceiling the two must agree: narrowing is not a different correction.
+        for (i in narrow.centresHz.indices) {
+            if (narrow.centresHz[i] <= 200.0) {
+                assertEquals(full.correctionDb[i], narrow.correctionDb[i], 1e-9)
+            }
+        }
+    }
+
+    @Test
+    fun aCeilingWiderThanTheMicrophoneIsClampedNotTrusted() {
+        val room = bassAtTarget(reverbRoom(0.4))
+        val result = SweepAnalysis.analyze(capture(room = room), capFs, "flat", 54.0, ceilingHz = 20000.0)
+        assertTrue("clamped ceiling ${result.fMaxHz}", result.fMaxHz <= DspConstants.F_MAX)
+    }
+
+    @Test
+    fun anUnusableRequestIsRefusedBeforeAnyDspRuns() {
+        org.junit.Assert.assertThrows(IllegalArgumentException::class.java) {
+            SweepAnalysis.analyze(DoubleArray(0), capFs, "flat", 54.0)
+        }
+        org.junit.Assert.assertThrows(IllegalArgumentException::class.java) {
+            SweepAnalysis.analyze(DoubleArray(1000), 0, "flat", 54.0)
+        }
+        org.junit.Assert.assertThrows(IllegalArgumentException::class.java) {
+            SweepAnalysis.analyze(DoubleArray(1000), capFs, "flat", 54.0, nFilters = 0)
+        }
+    }
 }

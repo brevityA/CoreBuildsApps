@@ -29,10 +29,12 @@ Dolby bitstream.
 missing control); a loudness-matched A/B bypass (the cheapest trust feature); and a
 per-band "why this was left alone" list (the data already exists in `PostCorrectionCheck`).
 
-**Two things worth fixing first.** `UseCaseTargets.boxShape()` has a hard 1.0 → 0.0 step
-where the other two implementations of the same curve interpolate over half an octave —
-and none of `UseCaseTargets`' ten curves is actually applied at runtime, although the
-Content-type screen says they are.
+**Two things worth fixing first — both closed in 1.7.0.** `UseCaseTargets.boxShape()` had
+a hard 1.0 → 0.0 step where the other two implementations of the same curve interpolate
+over half an octave, and none of `UseCaseTargets`' ten curves was applied at runtime,
+although the Content-type screen said they were. The file is deleted and the screen now
+describes what it does. This document is the analysis as written before those changes;
+the notes below record what shipped.
 
 **Your everyday curve**, for a Bar 2.0 All-in-One at Q = 1.0:
 `125 Hz +2.0 · 250 Hz −1.0 · 2 kHz +1.0 · 4 kHz +1.0 · 6.3 kHz −1.0 · 8 kHz −1.5`, all
@@ -171,6 +173,7 @@ Ranked by value per unit of risk. None of this is a hardware claim.
 ### 2.1 Findings (defects or misleading surfaces)
 
 **F1 — `UseCaseTargets.boxShape()` has a hard discontinuity. This is a real bug.**
+*Fixed in 1.7.0 by deleting `UseCaseTargets` — see the note at the end of F1 and F2.*
 
 `UseCaseTargets.boxShape()` returns `1.0` inside `[lo, hi]` and `0.0` outside
 `[lo/√2, hi·√2]`, with a smooth step only in the outer 0.7-octave shelf. The plateau edge
@@ -190,8 +193,15 @@ computed target at 2 kHz / 4 kHz. Fix: delete `boxShape` and `bellShape` from
 parity test `tests/test_core_eq_parity.py` cannot see this because the Python reference
 uses the correct `_box_db`.
 
-Impact today is nil — see F2 — which is exactly why it should be fixed now, before
-anything is wired to it.
+Impact today was nil — see F2 — which is exactly why it was worth fixing before anything
+was wired to it.
+
+> **Fixed in 1.7.0.** Both `boxShape` and `bellShape` were removed with the rest of the
+> file rather than mended: the curve had no runtime consumer, so there was no behaviour to
+> preserve, and a second box implementation is a trap for whoever wires the next curve.
+> `Targets.boxDb` — the bell the app actually uses, with its 0.130 maximum 1/24-octave step
+> — is now the only box shape in the app, and `dsp/TargetsTest.kt` pins that smoothness so
+> the cliff cannot come back through a refactor.
 
 **F2 — The ten curated content-type curves are dead code, and the UI says otherwise.**
 
@@ -208,7 +218,18 @@ five bass-boost strengths. Two honest options: wire the curves (fix F1 first, th
 "target from content type" path), or relabel the screen as "Bass and loudness by content"
 and delete `UseCaseTargets`. Shipping it as-is is the worst of the three.
 
+> **Fixed in 1.7.0 by the second option.** `UseCaseTargets.kt` and `UseCaseTargetsTest.kt`
+> are deleted (−604 lines and 14 tests of a curve nothing applied). `ContentType` and
+> `ContentTypeRegistry` stay, because they are live through `ExtraPlan.of()`; their
+> per-type description strings now give the numbers that are actually applied — a
+> BassBoost of 0–600 mB and a LoudnessEnhancer gain of 0–400 mB — instead of describing a
+> tonal shape. `ContentTypeActivity`'s KDoc no longer claims per-type target curves. The
+> curves were not wired up: an unevaluated target curve per content type is a claim nobody
+> has measured, and the app is better off with one honest target path than ten speculative
+> ones.
+
 **F3 — No user-set correction ceiling.**
+*Fixed in 1.7.0 — see the note at the end of this finding.*
 
 The October competitor research ranked this as item 2 and it is still absent: a TV
 performs no measurement above ~2 kHz and no correction above 8 kHz, and many rooms sound
@@ -217,13 +238,33 @@ the measured bandwidth edge, so a *narrow-only* user limit is a small change: cl
 `fMax` to `min(fMax, userCeiling)` and leave everything else alone. It should never be
 allowed to widen.
 
+> **Shipped in 1.7.0, exactly as specified.** `CorrectionLimits` owns the choices
+> (500 Hz / 1 kHz / 2 kHz / 4 kHz / 8 kHz), `ceilingHz()` clamps a request, and
+> `effectiveCeilingHz(measuredMaxHz, requested)` takes the **narrower** of the measured
+> edge and the choice, so the control can only narrow. Measure has a **Correct up to N Hz**
+> button; the choice reaches the sweep path, the seat average (through each seat's own
+> `fMaxHz`), the REW import path and the saved profile. A ceiling that would leave nothing
+> to correct is refused with a readable reason instead of failing inside the curve maths.
+> The same clamp is implemented in `tools/core_eq_dsp.py` (`ceiling_hz`,
+> `effective_ceiling_hz`) and held to the Kotlin by parity tests, so the reference cannot
+> drift from the app. Not tested on a TV.
+
 **F4 — No loudness-matched A/B.**
+*Addressed in 1.7.0 at the DSP level — see the note at the end of this finding.*
 
 There is no bypass to compare "correction on" against "correction off". Users are asked
 to trust a green residual figure instead of their ears, and the correction recentres to
 0 dB mean so a naive toggle also changes perceived loudness. A bypass that applies the
 same −(max positive gain) preamp on both sides would let someone hear the difference
 fairly. This is the single cheapest trust feature available.
+
+> **Shipped in 1.7.0: the DSP half only.** `BandMapping.bypassDb()` returns the correction's
+> own mean band gain, floored at 0 dB, and `fitBypassed()` returns a flat response at that
+> level with no headroom of its own. Because the correction is zero-mean by construction,
+> the bypass and the correction then play at the same average level and the comparison is
+> about shape. What is **not** done: there is no on-screen A/B switch yet. Wiring one means
+> deciding when a bypass may run while the service holds the effect, which is a UI and
+> session-ownership question rather than a DSP one.
 
 **F5 — The accuracy ceiling is the microphone, and the app can only say so.**
 
@@ -237,13 +278,13 @@ not a higher default.
 
 ### 2.2 Feature proposals
 
-**P1 — Per-band "why" list.** `PostCorrectionCheck` already knows which bands were
+**P1 — Per-band "why" list.** *Shipped in 1.7.0 as `CorrectionReport`.* `PostCorrectionCheck` already knows which bands were
 excused (null, non-minimum-phase, low band SNR, below floor, above bandwidth edge). A
 scrollable list — "63 Hz · null · not boosted", "315 Hz · −4.2 dB cut", "5 kHz · above the
 remote's bandwidth edge" — turns an opaque curve into an explainable one and costs almost
 nothing in DSP terms.
 
-**P2 — Room advice from the RT60 you already compute.** `rt60ByOctave` is calculated and
+**P2 — Room advice from the RT60 you already compute.** *Shipped in 1.7.0 as `CorrectionReport.roomAdvice`.* `rt60ByOctave` is calculated and
 used for the transition frequency, then largely thrown away. If 125 Hz decays 3× slower
 than 1 kHz, that is a bass-trapping finding no EQ can fix, and the app is uniquely
 positioned to say it. Frame it as advice, not as something the next sweep will cure.
@@ -258,7 +299,7 @@ profiles automatically on output change without ever auto-applying a *measured* 
 an output it was not measured on. Keep the "advisory only" rule the research already
 states.
 
-**P5 — Content-type curves, once F1 and F2 are settled.** If they are wired, they belong
+**P5 — Content-type curves, once F1 and F2 are settled.** *Settled in 1.7.0 by deletion; this proposal is closed.* If they are wired, they belong
 as target-curve choices on the Measure screen, not as a separate screen with its own
 preference store. Ten curves with no measurement provenance and a real discontinuity are
 worse than five honest targets.
@@ -394,24 +435,25 @@ at the same time.
   wide.
 - **No boosting above 10 kHz.** The remote cannot see it, the correction does not go
   there, and on this bar the top end is already the reviewer complaint.
-- **No "open stage" claims.** The existing `JBL Bar 2.0 · Open stage` preset is a tone
-  shape; an EQ cannot widen the front image. Its name promises something the DSP cannot
-  do, and should be renamed (e.g. "Air") or its description corrected.
+- **No "open stage" claims.** The former `JBL Bar 2.0 · Open stage` preset was a tone
+  shape; an EQ cannot widen the front image. It is now `JBL Bar 2.0 · Air` in 1.7.0, with
+  the same filters and a comment explaining that the lift is a tone change, not a wider
+  image.
 
 ---
 
 ## Part 4 — Suggested order of work
 
-| # | Item | Size | Why now |
-|---|---|---|---|
-| 1 | Fix `UseCaseTargets.boxShape` discontinuity (reuse `Targets.boxDb`) | XS | Real defect, zero blast radius |
-| 2 | Decide F2: wire the content-type curves or relabel the screen and delete the dead file | S | 604 lines of untested-by-runtime code plus a misleading screen |
-| 3 | Add verified curve tests: sample the fitted response, not the filter list | S | The current tests would pass with the F1 cliff in place |
-| 4 | Narrow-only user correction ceiling | S | Highest-value missing correction control |
-| 5 | Loudness-matched A/B toggle | S | Cheapest trust feature |
-| 6 | Per-band "why" list from the data `PostCorrectionCheck` already has | M | Turns the curve into an explanation |
-| 7 | RT60-by-octave advice card | M | Uses data already computed |
-| 8 | Calibrated USB mic + calibration-file import | L | The actual accuracy ceiling |
+| # | Item | Size | Why now | Status |
+|---|---|---|---|---|
+| 1 | Fix `UseCaseTargets.boxShape` discontinuity (reuse `Targets.boxDb`) | XS | Real defect, zero blast radius | **Shipped 1.7.0** by deleting the file |
+| 2 | Decide F2: wire the content-type curves or relabel the screen and delete the dead file | S | 604 lines of untested-by-runtime code plus a misleading screen | **Shipped 1.7.0** — deleted, screen relabelled |
+| 3 | Add verified curve tests: sample the fitted response, not the filter list | S | The current tests would pass with the F1 cliff in place | **Shipped 1.7.0** — `TargetsTest`, `CorrectionCurveTest`, `PeakingFitTest`, `HardwarePresetCurvesTest` |
+| 4 | Narrow-only user correction ceiling | S | Highest-value missing correction control | **Shipped 1.7.0** |
+| 5 | Loudness-matched A/B toggle | S | Cheapest trust feature | **DSP half shipped 1.7.0**; no on-screen toggle yet |
+| 6 | Per-band "why" list from the data `PostCorrectionCheck` already has | M | Turns the curve into an explanation | **Shipped 1.7.0** — `CorrectionReport` |
+| 7 | RT60-by-octave advice card | M | Uses data already computed | **Shipped 1.7.0** as advice lines, not a card |
+| 8 | Calibrated USB mic + calibration-file import | L | The actual accuracy ceiling | Open — and now the ceiling control gives it something to raise |
 
 ## Part 5 — Verification status
 
@@ -422,13 +464,54 @@ at the same time.
 - Numeric claims (curve values, skirt behaviour, headroom, the `boxShape` step) were
   computed with `tools/core_eq_dsp.py` in the same repo, i.e. the `Peaking.peakingMagnitudeDb`
   / `_box_db` model the Kotlin is held to by `tests/test_core_eq_parity.py`.
-- **No Gradle build and no unit tests were run** (no JDK in this environment), and **no
-  TV, remote, soundbar or microphone was used**. F1 is a numeric defect visible in source
-  and reproduced in a port of that source; it is not a report of an audible symptom,
-  because nothing currently consumes the affected curves.
+- **No Gradle build and no unit tests were run when this document was written** (no JDK
+  in this environment), and **no TV, remote, soundbar or microphone was used**. F1 was a
+  numeric defect visible in source and reproduced in a port of that source; it was not a
+  report of an audible symptom, because nothing consumed the affected curves.
+- **Update, 1.7.0:** the defect and the changes above were subsequently built and tested.
+  The measurement chain's unit tests ran green in the repository's Android-free harness —
+  340 tests across 38 classes — and the Python reference passed
+  `tests/test_core_eq_parity.py` (6 tests, 34 subtests) including the new ceiling parity
+  cases. That is still **not** a hardware result: no TV, phone or soundbar was used, and
+  the Android activity code (the new ceiling button, the report lines) could not be
+  compiled in this environment at all, because it needs the Android SDK. Treat the UI
+  wiring as reviewed-by-hand, not verified.
 - Soundbar claims are manufacturer specifications and published reviewer impressions, all
   cited below. **No measured response of a Bar 2.0 exists here**, and the everyday curve is
   a reasoned starting point, not a correction of a measured error.
+
+## Part 6 — What 1.7.0 actually changed
+
+Every item below is in the working tree, compiled by the Android-free harness and covered
+by a test named here. Nothing was checked on hardware.
+
+| Change | Where | Test |
+|---|---|---|
+| `UseCaseTargets` (604 lines, 10 curves) deleted | `dsp/UseCaseTargets.kt`, its test | — (removal) |
+| Content-type text tells the truth: BassBoost 0–600 mB, LoudnessEnhancer 0–400 mB | `mode/ContentType.kt`, `ContentTypeActivity.kt` | `mode/ContentTypeRegistryTest` |
+| Narrow-only correction ceiling, 500 Hz–8 kHz | `CorrectionLimits.kt`, `dsp/SweepAnalysis.kt`, `dsp/RewImport.kt`, `MeasureActivity` | `CorrectionLimitsTest`, `CorrectionCeilingTest`, `SweepAnalysisTest` |
+| Same clamp in the Python reference | `tools/core_eq_dsp.py` | `tests/test_core_eq_parity.py` |
+| Ceiling saved with the profile and named in the export header | `export/Profile.kt`, `Formats.kt`, `ProfileStore.kt` | `CorrectionCeilingTest`, `ProfileJsonTest` |
+| Per-band reasons and room advice | `dsp/CorrectionReport.kt`, `MeasureActivity.showResult` | `CorrectionReportTest`, `CorrectionCeilingTest` |
+| Loudness-matched bypass (DSP only) | `apply/BandMapping.kt` | `BandMappingBypassTest` |
+| JBL Bar 2.0 · Everyday preset, first in the list | `dsp/HardwarePresets.kt` | `HardwarePresetCurvesTest`, `HardwarePresetsTest` |
+| "Open stage" renamed "Air" | `dsp/HardwarePresets.kt` | `HardwarePresetCurvesTest` |
+| `PIVOT_HZ` named constant | `dsp/Targets.kt` | `TargetsTest` |
+| Input validation at every DSP entry point | `dsp/Correction.kt`, `dsp/SweepAnalysis.kt`, `dsp/RewImport.kt` | `CorrectionCurveTest`, `SweepAnalysisTest`, `CorrectionCeilingTest` |
+| Target-curve shape and box smoothness pinned | — | `TargetsTest` |
+| Peaking fit: budget, determinism, preamp | — | `PeakingFitTest` |
+
+The everyday curve as shipped, in `jbl-bar-2-0-everyday` (Q = 1.0, peak boost +1.7 dB,
+peak cut −2.0 dB, nothing below 70 Hz):
+
+| 125 Hz | 250 Hz | 500 Hz | 1 kHz | 2 kHz | 4 kHz | 6.3 kHz | 8 kHz |
+|---|---|---|---|---|---|---|---|
+| +2.0 | −1.0 | 0 | 0 | +1.0 | +1.0 | −1.0 | −1.5 |
+
+It is a starting point from a spec sheet and two published reviews. `HardwarePresetCurvesTest`
+holds it to the properties argued for in Part 3 — no request below the bar's published
+limit, small enough to stack on a measured correction — but no measurement of a Bar 2.0 was
+made, here or anywhere this document relied on.
 
 ## Sources
 
