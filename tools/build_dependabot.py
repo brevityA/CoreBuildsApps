@@ -85,9 +85,9 @@ HEADER = """\
 #
 # Every Gradle root is on AGP 9.4.0 / Gradle 9.7.0 and compileSdk/targetSdk
 # 37. Kotlin 2.2.10 is built in everywhere except motion-plugin, which opts out
-# for its frozen Projectivy Parcelize model and uses aligned KGP. Kotlin plugins
-# are ceiling-pinned to 2.2.10. The per-coordinate rules below remain independent
-# dependency update boundaries.
+# for its frozen Projectivy Parcelize model and uses KGP 2.4.10. Kotlin plugins
+# are ceiling-pinned to their root's tested version. The per-coordinate rules
+# below remain independent dependency update boundaries.
 version: 2
 updates:
 """

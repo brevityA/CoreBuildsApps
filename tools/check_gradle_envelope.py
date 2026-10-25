@@ -2,7 +2,7 @@
 """Build envelope gate for all suite Android roots.
 
 Every module is held to the suite-wide compileSdk/targetSdk 37 baseline, the
-AGP 9.4.0 / Gradle 9.7.0 toolchain, Kotlin 2.2.10, and its minSdk and
+AGP 9.4.0 / Gradle 9.7.0 toolchain, Kotlin version per root (2.2.10 built-in; Motion KGP 2.4.10), and its minSdk and
 per-dependency ceilings. Roots use AGP built-in Kotlin except Motion, whose
 vendored Parcelize model currently requires the aligned external Kotlin plugin.
 Dependabot sees version numbers but not those constraints, so the gate checks

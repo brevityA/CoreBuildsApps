@@ -207,7 +207,7 @@ class GradleParsing(unittest.TestCase):
             self.assertEqual(root.agp, "9.4.0", f"{rel} AGP")
             self.assertEqual(root.wrapper, "9.7.0", f"{rel} wrapper")
             if rel == "motion-plugin":
-                self.assertEqual(root.kotlin, "2.2.10")
+                self.assertEqual(root.kotlin, "2.4.10")
                 self.assertFalse(root.builtin_kotlin)
                 self.assertRegex(root.properties, r"(?m)^android\.builtInKotlin=false$")
             else:
@@ -558,14 +558,14 @@ class Mutants(unittest.TestCase):
         with ScratchRepo() as repo:
             repo.edit(
                 "motion-plugin/build.gradle.kts",
-                'id("org.jetbrains.kotlin.plugin.parcelize") version "2.2.10"',
-                'id("org.jetbrains.kotlin.plugin.parcelize") version "2.2.11"',
+                'id("org.jetbrains.kotlin.plugin.parcelize") version "2.4.10"',
+                'id("org.jetbrains.kotlin.plugin.parcelize") version "2.4.11"',
             )
             table = repo.envelope()
             ceiling = next(c for c in table["ceilings"] if c["coordinate"] == "org.jetbrains.kotlin.plugin.parcelize")
-            ceiling["max"] = "2.2.11"
+            ceiling["maxByDirectory"]["/motion-plugin"] = "2.4.11"
             repo.write_envelope(table)
-            repo.assert_blocked("must match Kotlin 2.2.10", "Parcelize out of lockstep")
+            repo.assert_blocked("must match Kotlin 2.4.10", "Parcelize out of lockstep")
 
 
     def test_agp_10_is_caught_everywhere(self):
