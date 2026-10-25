@@ -23,7 +23,7 @@ class HardwarePresetsTest {
 
     @Test
     fun aLongerModelNumberOrAnotherProductIsNotTheBar800() {
-        for (name in listOf("JBL Bar 8000", "BAR 8001", "Samsung HW-Q990D", "Living Room TV", "", "  ")) {
+        for (name in listOf("JBL Bar 8000", "BAR 8001", "JBL BAR 800MK2", "JBL Bar 800 MK2", "Samsung HW-Q990D", "Living Room TV", "", "  ")) {
             assertNull("name: '$name'", HardwarePresets.matchAny(listOf(name)))
         }
         assertNull(HardwarePresets.matchAny(listOf(null)))
@@ -86,10 +86,13 @@ class HardwarePresetsTest {
     private val bar20 = HardwarePresets.MODELS.single { it.id == "jbl-bar-2-0-all-in-one" }
 
     @Test
-    fun theOriginalBar20IsFoundButItsMk2IsNot() {
-        for (name in listOf("JBL BAR 2.0 ALL-IN-ONE", "JBL Bar 2.0", "BAR2.0", "jbl_bar-2-0")) {
+    fun theBar20ModelOnlyMatchesExplicitRevisionNames() {
+        for (name in listOf("JBL BAR 2.0 ALL-IN-ONE", "BAR2.0 ALL-IN-ONE", "jbl_bar-2-0 ALL-IN-ONE")) {
             assertEquals("name: $name", bar20, HardwarePresets.matchAny(listOf(name)))
         }
+        // JBL documents the MK2 Bluetooth pairing name as the same bare model name,
+        // so the generic label must not imply the original revision.
+        assertNull(HardwarePresets.matchAny(listOf("JBL BAR 2.0")))
         assertNull(HardwarePresets.matchAny(listOf("JBL BAR 2.0 ALL-IN-ONE MK2")))
         assertNull(HardwarePresets.matchAny(listOf("JBLBAR20AIOM2BLKAM")))
         assertNull(HardwarePresets.matchAny(listOf("JBL BAR 2.0 AIO M2")))

@@ -224,6 +224,19 @@
                     android:paddingStart="@dimen/cb_space_md"
                     android:paddingEnd="@dimen/cb_space_md"
                     android:focusable="true" />
+
+                <Button
+                    android:id="@+id/chip_poweramp_json"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:layout_marginStart="@dimen/cb_space_xs"
+                    android:background="@drawable/bg_chip_toggle"
+                    android:text="@string/export_chip_poweramp_json"
+                    android:textColor="@color/chip_text"
+                    android:textSize="@dimen/cb_text_data"
+                    android:paddingStart="@dimen/cb_space_md"
+                    android:paddingEnd="@dimen/cb_space_md"
+                    android:focusable="true" />
             </LinearLayout>
 
             <TextView
@@ -264,6 +277,17 @@
                     android:textStyle="bold"
                     android:focusable="true"
                     android:layout_marginEnd="@dimen/cb_space_sm" />
+
+                <Button
+                    android:id="@+id/btn_import_profile"
+                    android:layout_width="140dp"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:layout_marginEnd="@dimen/cb_space_sm"
+                    android:background="@drawable/bg_ghost"
+                    android:text="@string/action_import_profile"
+                    android:textColor="@color/cb_signal_cyan"
+                    android:textSize="@dimen/cb_text_label"
+                    android:focusable="true" />
 
                 <Button
                     android:id="@+id/btn_delete_profile"

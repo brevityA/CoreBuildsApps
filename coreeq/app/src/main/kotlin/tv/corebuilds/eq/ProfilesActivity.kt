@@ -1,12 +1,14 @@
 package tv.corebuilds.eq
 
 import android.os.Bundle
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +19,7 @@ import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
+import tv.corebuilds.eq.export.ProfileExchange
 import tv.corebuilds.eq.mode.ContentMode
 import tv.corebuilds.eq.mode.ContentModeStore
 import tv.corebuilds.eq.ui.CurveGraphView
@@ -36,6 +39,7 @@ class ProfilesActivity : TvActivity() {
     private lateinit var btnChipParametric: Button
     private lateinit var btnChipGraphicEq: Button
     private lateinit var btnChipJson: Button
+    private lateinit var btnChipPoweramp: Button
     private lateinit var btnExport: Button
     private lateinit var btnDelete: Button
     private lateinit var btnAnnounce: Button
@@ -51,7 +55,7 @@ class ProfilesActivity : TvActivity() {
     private var selectedExportFormat = ExportFormat.PARAMETRIC
 
     private enum class ExportFormat {
-        PARAMETRIC, GRAPHIC_EQ, JSON
+        PARAMETRIC, GRAPHIC_EQ, JSON, POWERAMP_JSON
     }
 
     override fun onResume() {
@@ -76,6 +80,7 @@ class ProfilesActivity : TvActivity() {
         btnChipParametric = findViewById(R.id.chip_parametric)
         btnChipGraphicEq = findViewById(R.id.chip_graphiceq)
         btnChipJson = findViewById(R.id.chip_json)
+        btnChipPoweramp = findViewById(R.id.chip_poweramp_json)
         btnExport = findViewById(R.id.btn_export_profile)
         btnDelete = findViewById(R.id.btn_delete_profile)
         btnAnnounce = findViewById(R.id.btn_announce_applied)
@@ -91,6 +96,11 @@ class ProfilesActivity : TvActivity() {
         loadProfiles()
 
         btnExport.setOnClickListener { exportCurrentProfile() }
+        findViewById<Button>(R.id.btn_import_profile).setOnClickListener {
+            if (!tv.corebuilds.eq.ui.FilePicker.open(this, REQ_IMPORT_PROFILE)) {
+                Toast.makeText(this, "No file picker is available.", Toast.LENGTH_LONG).show()
+            }
+        }
         btnDelete.setOnClickListener { deleteCurrentProfile() }
         btnAnnounce.setOnClickListener {
             profileStore.announceApplied = !profileStore.announceApplied
@@ -110,6 +120,42 @@ class ProfilesActivity : TvActivity() {
         btnAllowOverlay.setOnClickListener { openOverlaySettings() }
         findViewById<Button>(R.id.btn_test_card).setOnClickListener { showTestCard() }
         refreshOverlaySettings()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != REQ_IMPORT_PROFILE || resultCode != RESULT_OK) return
+        val uri = data?.data ?: return
+        try {
+            val stream = contentResolver.openInputStream(uri) ?: error("Cannot open this file.")
+            val bytes = stream.use { input ->
+                val out = java.io.ByteArrayOutputStream()
+                val buffer = ByteArray(8192)
+                while (true) {
+                    val count = input.read(buffer)
+                    if (count < 0) break
+                    out.write(buffer, 0, count)
+                    require(out.size() <= ProfileExchange.MAX_CHARS * 4) { "Profile file is too large." }
+                }
+                out.toByteArray()
+            }
+            val imported = ProfileExchange.parse(String(bytes, Charsets.UTF_8))
+            val profile = imported.profile
+            AlertDialog.Builder(this)
+                .setTitle("Import Core EQ profile?")
+                .setMessage("${profile.name}\n${profile.filters.size} room filters · ${profile.manualFilters.size} manual filters · ${imported.overlays.size} mode overlays\n\nThis imports settings and measurement provenance. It does not validate that the profile matches this device or output.")
+                .setPositiveButton("Import") { _, _ ->
+                    profileStore.saveProfile(profile, setAsActive = true)
+                    imported.overlays.forEach { (mode, filters) -> modeStore.saveModeFilters(profile.id, mode, filters) }
+                    EqService.send(this, EqService.ACTION_REAPPLY)
+                    Toast.makeText(this, "Imported ${profile.name}", Toast.LENGTH_LONG).show()
+                    loadProfiles()
+                }
+                .setNegativeButton(android.R.string.cancel, null)
+                .show()
+        } catch (e: Exception) {
+            Toast.makeText(this, e.message ?: "Could not import profile.", Toast.LENGTH_LONG).show()
+        }
     }
 
     /** Describe both independent overlay features and share Android's overlay permission. */
@@ -176,6 +222,11 @@ class ProfilesActivity : TvActivity() {
             updateChipStates()
             selectedProfile?.let { refreshPreampDisplay(it) }
         }
+        btnChipPoweramp.setOnClickListener {
+            selectedExportFormat = ExportFormat.POWERAMP_JSON
+            updateChipStates()
+            selectedProfile?.let { refreshPreampDisplay(it) }
+        }
         updateChipStates()
     }
 
@@ -183,6 +234,7 @@ class ProfilesActivity : TvActivity() {
         btnChipParametric.isActivated = (selectedExportFormat == ExportFormat.PARAMETRIC)
         btnChipGraphicEq.isActivated = (selectedExportFormat == ExportFormat.GRAPHIC_EQ)
         btnChipJson.isActivated = (selectedExportFormat == ExportFormat.JSON)
+        btnChipPoweramp.isActivated = (selectedExportFormat == ExportFormat.POWERAMP_JSON)
     }
 
     private fun loadProfiles() {
@@ -308,6 +360,7 @@ class ProfilesActivity : TvActivity() {
                     getString(R.string.profile_preamp_graphic, preamp, mode.title, output)
                 }
             }
+            ExportFormat.POWERAMP_JSON -> getString(R.string.profile_preamp_poweramp_json, Formats.recommendedPreampDb(effective), mode.title, output)
             ExportFormat.JSON -> getString(
                 R.string.profile_preamp_json,
                 Formats.recommendedPreampDb(effective), mode.title, output
@@ -334,6 +387,11 @@ class ProfilesActivity : TvActivity() {
                 filename = "${stem}_graphiceq.txt"
                 content = Formats.exportGraphicEq(effective)
                 label = "GraphicEQ Curve · ${mode.title}"
+            }
+            ExportFormat.POWERAMP_JSON -> {
+                filename = "${stem}_poweramp.json"
+                content = Formats.exportPowerampJson(effective)
+                label = "Poweramp Equalizer preset JSON"
             }
             ExportFormat.JSON -> {
                 filename = "${stem}_profile.json"
@@ -411,4 +469,6 @@ class ProfilesActivity : TvActivity() {
         val textBadge: TextView = view.findViewById(R.id.item_profile_badge)
         val textSub: TextView = view.findViewById(R.id.item_profile_sub)
     }
+
+    companion object { private const val REQ_IMPORT_PROFILE = 4201 }
 }
