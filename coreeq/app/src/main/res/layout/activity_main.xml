@@ -231,6 +231,27 @@
             android:focusable="true"
             android:layout_marginStart="@dimen/cb_space_md" />
 
+        <!--
+            A/B switch (1.7.0). Hidden while correction is off, where it would
+            mean nothing, and while no profile exists. The bypass it controls
+            keeps the correction's average level, so the comparison is shape
+            only, not "which is louder".
+        -->
+        <Button
+            android:id="@+id/btn_ab_bypass"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/cb_target_min"
+            android:background="@drawable/bg_ghost"
+            android:textColor="@color/ghost_text"
+            android:textSize="@dimen/cb_text_data"
+            android:textAllCaps="false"
+            android:paddingStart="@dimen/cb_space_sm"
+            android:paddingEnd="@dimen/cb_space_sm"
+            android:focusable="true"
+            android:layout_marginStart="@dimen/cb_space_md"
+            android:visibility="gone"
+            android:text="@string/ab_hear_bypass" />
+
         <Button
             android:id="@+id/btn_nav_modes"
             android:layout_width="wrap_content"

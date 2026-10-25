@@ -149,6 +149,12 @@
     <!-- Correction switch -->
     <string name="correction_on">Correction: On</string>
     <string name="correction_off">Correction: Off</string>
+    <!-- A/B switch: same average level, two shapes. -->
+    <string name="ab_hear_bypass">Hear it without correction</string>
+    <string name="ab_hear_corrected">Back to corrected</string>
+    <string name="ab_bypass_note">Bypassed: same level, no correction shape. Press again to compare.</string>
+    <string name="status_bypass_on">BYPASS · the correction is off but the level is matched, so what you hear is the shape and nothing else.</string>
+    <string name="status_bypass_off">Correction back on. The shape you measured is applied again.</string>
     <!-- Home's status line while the switch is off: what Off means, not Off again -->
     <string name="status_correction_off">Nothing is applied: audio plays exactly as it would without Core EQ.</string>
     <string name="status_correction_starting">Starting audio correction…</string>

@@ -25,9 +25,10 @@ microphone can honestly see. In short: **it is mostly a bass-peak remover with a
 tonal tilt above it** — not a system that can add sub-bass, fix imaging, or process a
 Dolby bitstream.
 
-**Three things worth building.** A narrow-only user correction ceiling (the highest-value
-missing control); a loudness-matched A/B bypass (the cheapest trust feature); and a
-per-band "why this was left alone" list (the data already exists in `PostCorrectionCheck`).
+**Three things worth building — all three shipped in 1.7.0.** A narrow-only user correction
+ceiling (the highest-value missing control); a loudness-matched A/B switch (the cheapest
+trust feature); and a per-band "why this was left alone" list (the data already existed in
+`PostCorrectionCheck`).
 
 **Two things worth fixing first — both closed in 1.7.0.** `UseCaseTargets.boxShape()` had
 a hard 1.0 → 0.0 step where the other two implementations of the same curve interpolate
@@ -250,7 +251,7 @@ allowed to widen.
 > drift from the app. Not tested on a TV.
 
 **F4 — No loudness-matched A/B.**
-*Addressed in 1.7.0 at the DSP level — see the note at the end of this finding.*
+*Addressed in 1.7.0, switch included — see the note at the end of this finding.*
 
 There is no bypass to compare "correction on" against "correction off". Users are asked
 to trust a green residual figure instead of their ears, and the correction recentres to
@@ -258,13 +259,21 @@ to trust a green residual figure instead of their ears, and the correction recen
 same −(max positive gain) preamp on both sides would let someone hear the difference
 fairly. This is the single cheapest trust feature available.
 
-> **Shipped in 1.7.0: the DSP half only.** `BandMapping.bypassDb()` returns the correction's
-> own mean band gain, floored at 0 dB, and `fitBypassed()` returns a flat response at that
-> level with no headroom of its own. Because the correction is zero-mean by construction,
-> the bypass and the correction then play at the same average level and the comparison is
-> about shape. What is **not** done: there is no on-screen A/B switch yet. Wiring one means
-> deciding when a bypass may run while the service holds the effect, which is a UI and
-> session-ownership question rather than a DSP one.
+> **Shipped in 1.7.0: the switch, not just the maths.** Home has one A/B button whenever
+> correction is on; its label names the state you are *not* in (`Hear it without correction`
+> / `Back to corrected`). It writes a stored preference that the service reads for every
+> session it corrects, so the choice belongs to the service rather than to whichever
+> activity happens to be on screen. `BandMapping.AbSide` picks the side inside the single
+> fit path both sides already shared, and the held effect is re-configured in place — it is
+> not released and recreated, so switching does not drop audio. `fitBypassed()` returns a
+> flat response at the correction's **applied** mean: the mean of the requested gains after
+> the headroom shift, floored at 0 dB and clamped to the backend's own gain range. The first
+> implementation averaged the requested gains *before* that shift and so played the bypass
+> one preamp louder than the correction — the exact bias the feature exists to remove — and
+> its own level-match test caught it. **What is still not done:** nobody has listened to it.
+> `BandMapping` and the switch's rules in `CorrectionSwitch` are covered by the harness;
+> `EqService`, `DynamicsProcessingEngine` and `MainActivity` need the Android SDK, were not
+> compiled by this suite, and no TV, phone or soundbar was used.
 
 **F5 — The accuracy ceiling is the microphone, and the app can only say so.**
 
@@ -450,7 +459,7 @@ at the same time.
 | 2 | Decide F2: wire the content-type curves or relabel the screen and delete the dead file | S | 604 lines of untested-by-runtime code plus a misleading screen | **Shipped 1.7.0** — deleted, screen relabelled |
 | 3 | Add verified curve tests: sample the fitted response, not the filter list | S | The current tests would pass with the F1 cliff in place | **Shipped 1.7.0** — `TargetsTest`, `CorrectionCurveTest`, `PeakingFitTest`, `HardwarePresetCurvesTest` |
 | 4 | Narrow-only user correction ceiling | S | Highest-value missing correction control | **Shipped 1.7.0** |
-| 5 | Loudness-matched A/B toggle | S | Cheapest trust feature | **DSP half shipped 1.7.0**; no on-screen toggle yet |
+| 5 | Loudness-matched A/B toggle | S | Cheapest trust feature | **Shipped 1.7.0** — Home switch + level-matched bypass; service/UI code not compiled here |
 | 6 | Per-band "why" list from the data `PostCorrectionCheck` already has | M | Turns the curve into an explanation | **Shipped 1.7.0** — `CorrectionReport` |
 | 7 | RT60-by-octave advice card | M | Uses data already computed | **Shipped 1.7.0** as advice lines, not a card |
 | 8 | Calibrated USB mic + calibration-file import | L | The actual accuracy ceiling | Open — and now the ceiling control gives it something to raise |
@@ -470,7 +479,7 @@ at the same time.
   report of an audible symptom, because nothing consumed the affected curves.
 - **Update, 1.7.0:** the defect and the changes above were subsequently built and tested.
   The measurement chain's unit tests ran green in the repository's Android-free harness —
-  340 tests across 38 classes — and the Python reference passed
+  478 tests across 54 classes — and the Python reference passed
   `tests/test_core_eq_parity.py` (6 tests, 34 subtests) including the new ceiling parity
   cases. That is still **not** a hardware result: no TV, phone or soundbar was used, and
   the Android activity code (the new ceiling button, the report lines) could not be
@@ -493,7 +502,7 @@ by a test named here. Nothing was checked on hardware.
 | Same clamp in the Python reference | `tools/core_eq_dsp.py` | `tests/test_core_eq_parity.py` |
 | Ceiling saved with the profile and named in the export header | `export/Profile.kt`, `Formats.kt`, `ProfileStore.kt` | `CorrectionCeilingTest`, `ProfileJsonTest` |
 | Per-band reasons and room advice | `dsp/CorrectionReport.kt`, `MeasureActivity.showResult` | `CorrectionReportTest`, `CorrectionCeilingTest` |
-| Loudness-matched bypass (DSP only) | `apply/BandMapping.kt` | `BandMappingBypassTest` |
+| Loudness-matched A/B switch (preference → service → one fit path) | `apply/BandMapping.kt`, `apply/EqService.kt`, `apply/DynamicsProcessingEngine.kt`, `export/ProfileStore.kt`, `export/CorrectionSwitch.kt`, `MainActivity.kt`, `activity_main.xml` | `BandMappingBypassTest` (DSP + switch rules); service/UI uncompiled here |
 | JBL Bar 2.0 · Everyday preset, first in the list | `dsp/HardwarePresets.kt` | `HardwarePresetCurvesTest`, `HardwarePresetsTest` |
 | "Open stage" renamed "Air" | `dsp/HardwarePresets.kt` | `HardwarePresetCurvesTest` |
 | `PIVOT_HZ` named constant | `dsp/Targets.kt` | `TargetsTest` |

@@ -225,7 +225,35 @@ class ProfileStore(context: Context) {
 
     var correctionEnabled: Boolean
         get() = prefs.getBoolean(KEY_ENABLED, false)
-        set(value) { prefs.edit().putBoolean(KEY_ENABLED, value).apply() }
+        set(value) {
+            prefs.edit()
+                .putBoolean(KEY_ENABLED, value)
+                // Switching correction off clears the A/B switch too; see
+                // CorrectionSwitch for why, and for the test of it.
+                .putBoolean(
+                    KEY_BYPASS,
+                    CorrectionSwitch.storeAfterCorrectionChange(value, prefs.getBoolean(KEY_BYPASS, false))
+                )
+                .apply()
+        }
+
+    /**
+     * The A/B switch: play the correction's level at a flat response instead
+     * of its measured shape.
+     *
+     * Stored rather than held in memory so the Home switch and the effect the
+     * service configures cannot disagree after either is recreated. It is
+     * never left on silently: Home shows it, clearing correction also clears
+     * it, and [set] takes it back off when correction itself is off, where the
+     * flag would mean nothing.
+     */
+    var bypassEnabled: Boolean
+        get() = CorrectionSwitch.active(correctionEnabled, prefs.getBoolean(KEY_BYPASS, false))
+        set(value) {
+            prefs.edit()
+                .putBoolean(KEY_BYPASS, CorrectionSwitch.storeRequest(correctionEnabled, value))
+                .apply()
+        }
 
     /** Show a brief notice when a different profile or mode is applied (1.3.0). On by default. */
     var announceApplied: Boolean
@@ -322,6 +350,7 @@ class ProfileStore(context: Context) {
         private const val KEY_ACTIVE_ID = "active_profile_id"
         private const val KEY_ENABLED = "correction_enabled"
         private const val KEY_ANNOUNCE_APPLIED = "announce_applied_v130"
+        private const val KEY_BYPASS = "correction_bypassed"
         private const val KEY_CARD_SECONDS = "card_seconds_v1_6"
         const val DEFAULT_CARD_SECONDS = 4
         val CARD_SECONDS_RANGE = 1..10

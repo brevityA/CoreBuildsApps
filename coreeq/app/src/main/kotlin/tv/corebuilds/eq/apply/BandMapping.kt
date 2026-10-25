@@ -76,6 +76,19 @@ data class BackendFitReport(
 object BandMapping {
 
     /**
+     * Which side of an A/B comparison a fit is for.
+     *
+     * [CORRECTION] is the measured curve. [BYPASS] is the same correction
+     * switched off *in shape* only: every band sits at the mean of the response
+     * the correction actually applies (never above 0 dB), so the two sides play
+     * at the same average level and the difference a listener hears is the
+     * shape, not loudness.
+     * Without that, "correction on" is usually just the louder setting and
+     * wins every sighted comparison.
+     */
+    enum class AbSide { CORRECTION, BYPASS }
+
+    /**
      * Requested response sampled at the actual engine centres: measured room
      * correction plus the user's independent manual EQ layer.
      */
@@ -112,7 +125,8 @@ object BandMapping {
         centresHz: List<Double>,
         layers: ToneLayers = ToneLayers.NONE,
         minGainDb: Double? = null,
-        maxGainDb: Double? = null
+        maxGainDb: Double? = null,
+        side: AbSide = AbSide.CORRECTION
     ): BackendBandFit {
         require(centresHz.isNotEmpty() && centresHz.all { it.isFinite() && it > 0.0 }) {
             "Backend band centres must be non-empty, finite and positive"
@@ -128,7 +142,15 @@ object BandMapping {
                 "Backend gain range is invalid"
             }
         }
-        val requested = requestedGainsDb(profile, centresHz, layers)
+        val requested = if (side == AbSide.BYPASS) {
+            // Flat at the mean of the applied correction. That mean is never
+            // positive, so the headroom taken below is 0 and the bypass cannot
+            // clip; it is already inside the range the corrected side occupies.
+            val level = bypassDb(profile, centresHz, layers)
+            DoubleArray(centresHz.size) { level }
+        } else {
+            requestedGainsDb(profile, centresHz, layers)
+        }
         require(requested.all { it.isFinite() }) { "Requested centre gains must be finite" }
         val headroom = max(0.0, requested.maxOrNull() ?: 0.0)
         val target = DoubleArray(requested.size) { requested[it] - headroom }
@@ -154,18 +176,25 @@ object BandMapping {
     fun gainsDb(
         profile: Profile,
         centresHz: List<Double>,
-        layers: ToneLayers = ToneLayers.NONE
-    ): DoubleArray = fitToBackend(profile, centresHz, layers).targetDb
+        layers: ToneLayers = ToneLayers.NONE,
+        side: AbSide = AbSide.CORRECTION
+    ): DoubleArray = fitToBackend(profile, centresHz, layers, side = side).targetDb
 
     /**
      * The same band centres, flat, at the level a loudness-matched A/B needs.
      *
      * Switching room correction off by deleting the effect changes the level as
      * well as the shape, and the louder setting nearly always "wins". This
-     * returns a flat response at the correction's own mean gain, so the two
-     * settings differ in shape only. The value is never positive: it is the mean
-     * of a curve whose peak has already been shifted to 0 dB, so a bypass cannot
-     * clip whatever the profile contains.
+     * returns a flat response at the mean of the response *actually applied* —
+     * that is, after the headroom shift each band already carries — so the two
+     * settings differ in shape and in nothing else.
+     *
+     * Getting this wrong is subtle and was: averaging the curve *before* the
+     * headroom shift leaves the bypass exactly one preamp louder than the
+     * correction, which is the bias the whole comparison exists to remove.
+     *
+     * The value is never positive, so a bypass cannot clip whatever the profile
+     * contains.
      */
     fun bypassDb(
         profile: Profile,
@@ -175,8 +204,11 @@ object BandMapping {
         require(centresHz.isNotEmpty()) { "Backend band centres must be non-empty" }
         val requested = requestedGainsDb(profile, centresHz, layers)
         require(requested.all { it.isFinite() }) { "Requested centre gains must be finite" }
-        val mean = requested.sum() / requested.size
-        return minOf(0.0, mean)
+        // The peak is shifted to 0 dB on the corrected side, so the bypass must
+        // be shifted by the same amount to sit at the same average level.
+        val headroom = max(0.0, requested.maxOrNull() ?: 0.0)
+        val appliedMean = requested.sum() / requested.size - headroom
+        return minOf(0.0, appliedMean)
     }
 
     /**
@@ -187,22 +219,10 @@ object BandMapping {
     fun fitBypassed(
         profile: Profile,
         centresHz: List<Double>,
-        layers: ToneLayers = ToneLayers.NONE
-    ): BackendBandFit {
-        require(centresHz.isNotEmpty() && centresHz.all { it.isFinite() && it > 0.0 }) {
-            "Backend band centres must be non-empty, finite and positive"
-        }
-        val level = bypassDb(profile, centresHz, layers)
-        val flat = DoubleArray(centresHz.size) { level }
-        return BackendBandFit(
-            centresHz = centresHz.toList(),
-            requestedDb = flat,
-            headroomDb = 0.0,
-            targetDb = flat,
-            configuredDb = flat,
-            rangeLimitedBands = 0
-        )
-    }
+        layers: ToneLayers = ToneLayers.NONE,
+        minGainDb: Double? = null,
+        maxGainDb: Double? = null
+    ): BackendBandFit = fitToBackend(profile, centresHz, layers, minGainDb, maxGainDb, AbSide.BYPASS)
 
     /** The dB gains as millibel band levels, clamped to the device's reported range. */
     fun millibels(gainsDb: DoubleArray, rangeMb: IntRange): ShortArray =
