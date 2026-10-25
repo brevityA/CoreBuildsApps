@@ -20,6 +20,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
   components, distinct banner labels, native launcher layers and resolved
   square/banner art, so neither an appfilter nor an alias can restore the
   confusing main-pack icon.
+- **`tests/test_gradle_unit_test_variants.py` follows the suite's AGP 9 migration.**
+  The pre-existing content-CI failure still assumed four roots used AGP 8.
+  Doctor, Motion, Shift and Line now explicitly retain release-variant unit
+  test tasks, as the suite release workflow requires, and the gate covers all
+  migrated roots rather than only the first two.
 
 ## [2.5.1] — 2026-10-24
 
