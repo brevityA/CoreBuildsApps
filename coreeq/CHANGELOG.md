@@ -6,12 +6,15 @@ Core EQ (`tv.corebuilds.eq`) keeps its own changelog. The repository-root
 must never land there. Releases are `coreeq-v<version>` tags (see
 `PUBLISHING.md`).
 
-## [Unreleased]
+## [1.6.1] — 2026-10-25
 
 ### Added
 
 - **Optional MediaSession-based app identity for mode rules.** Content modes can use Android's user-granted Notification access to read active media-session package names and `PLAYING`/`BUFFERING` state when DUMP is unavailable. Core EQ never reads notification text or metadata and never uses this source to create an audio effect or infer the output route. Unknown/conflicting playback still falls back to Everyday. The Mode screen and Setup check explain the consent and limits; manual modes remain available without either identity source. While correction runs, Android's active-session and per-controller playback-state callbacks trigger debounced refreshes; the callbacks do not inspect metadata or control playback.
 - **First-install welcome and guided setup.** A new TV install gets a one-time, remote-friendly guide to choose the output, measure the room and review the first correction. Upgrades are not interrupted. It explains that a first GREEN result may turn correction on automatically, that ADB is optional for core measurement/manual modes, and that TV firmware may refuse optional permissions. Setup now links directly to Google's official Platform-Tools and explains common `adb` not found, unauthorized, offline, port and DUMP-denied cases. No command is run by Core EQ; the user copies and reviews each command.
+- **Playback identity diagnostics.** The Content modes screen distinguishes DUMP and MediaSession access, shows whether the persisted player snapshot was complete, and displays the mode decision context. It states that Android does not report snapshot freshness and that package/state identity does not establish audibility, physical output route, or effect coverage.
+- **Portable Core EQ profile exchange.** Profiles export and import the versioned `corebuilds.core-eq/1` JSON format, including mode overlays and measurement provenance. Import is reviewed before saving and gets a new local profile ID; imported measurement metadata does not claim qualification on a different device/output.
+- **Poweramp preset JSON export.** Profiles can be exported as a Poweramp-style preset JSON file, in addition to the existing AutoEQ/Equalizer APO text and Poweramp JSON import paths. The UI labels the unversioned filter-code mapping as best-effort; AutoEQ/Equalizer APO text remains the safer cross-version interchange path. Poweramp Equalizer installation on Android TV is not required.
 
 ## [1.6.0] — 2026-10-24
 
