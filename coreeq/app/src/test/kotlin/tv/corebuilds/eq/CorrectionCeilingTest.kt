@@ -68,19 +68,26 @@ class CorrectionCeilingTest {
     }
 
     @Test
-    fun aCeilingCostsNothingBelowItself() {
+    fun theCeilingKeepsTheBassShapeAndOnlyShiftsItsLevel() {
         val full = analyze(null)
         val capped = analyze(2000.0)
-        for (i in capped.centresHz.indices) {
-            if (capped.centresHz[i] <= 300.0) {
-                // Not identical: the one-octave edge taper above the ceiling
-                // reaches slightly into the band below it. The difference must
-                // stay far below audibility, which is what this bounds.
-                assertEquals(
-                    "the bass correction changed at ${capped.centresHz[i]} Hz",
-                    full.correctionDb[i], capped.correctionDb[i], 0.1
-                )
-            }
+        // The curve is recentred to zero mean over the corrected band, so a
+        // narrower band means a different mean and therefore a constant shift.
+        // The shape below the ceiling — what the correction does to the room —
+        // must survive that shift exactly.
+        // Outside both edge tapers: the taper multiplies, so a constant offset
+        // is not preserved through it.
+        val low = capped.centresHz.indices.filter {
+            capped.centresHz[it] >= capped.floorHz * 2.1 && capped.centresHz[it] <= 1000.0
+        }
+        assertTrue("no bands to compare", low.size >= 3)
+        val offset = capped.correctionDb[low.first()] - full.correctionDb[low.first()]
+        assertTrue("recentring moved the band by $offset dB", abs(offset) < 1.0)
+        for (i in low) {
+            assertEquals(
+                "shape changed at ${capped.centresHz[i]} Hz",
+                full.correctionDb[i] + offset, capped.correctionDb[i], 1e-9
+            )
         }
     }
 

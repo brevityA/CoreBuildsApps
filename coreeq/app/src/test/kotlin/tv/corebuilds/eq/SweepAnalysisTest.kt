@@ -619,12 +619,14 @@ class SweepAnalysisTest {
                 assertEquals("${narrow.centresHz[i]} Hz is above the ceiling", 0.0, narrow.correctionDb[i], 0.0)
             }
         }
-        // Below the ceiling the two must agree: narrowing is not a different correction.
-        for (i in narrow.centresHz.indices) {
-            if (narrow.centresHz[i] <= 200.0) {
-                assertEquals(full.correctionDb[i], narrow.correctionDb[i], 1e-9)
-            }
-        }
+        // Deliberately no "the bass is byte-identical" assertion here. The
+        // sweep path recentres the curve to zero mean over the corrected band
+        // and then clamps each band to its boost/cut limit, so a narrower
+        // ceiling gives a different mean, a constant shift, and different
+        // clipping at the limits. The shape-preserving property is pinned one
+        // layer down, in CorrectionCeilingTest, on the import path where the
+        // arithmetic is visible; this test pins what is unique to the sweep:
+        // where the band ends, and that nothing past it is corrected.
     }
 
     @Test
