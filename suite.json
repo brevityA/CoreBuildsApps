@@ -77,8 +77,8 @@
     },
     "eq": {
       "name": "Core EQ",
-      "versionName": "1.6.0",
-      "versionCode": 14,
+      "versionName": "1.6.1",
+      "versionCode": 15,
       "tagPrefix": "coreeq-v",
       "floatingTag": "coreeq",
       "downloader": "7946159",

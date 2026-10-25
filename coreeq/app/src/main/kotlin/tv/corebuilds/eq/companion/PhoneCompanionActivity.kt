@@ -537,10 +537,12 @@ class PhoneCompanionActivity : AppCompatActivity() {
         val outputName = status.optString("output_name", "").takeIf { it.isNotBlank() && it != "null" }
             ?: status.optString("output_kind", "").takeIf { it.isNotBlank() && it != "null" }
             ?: getString(R.string.phone_output_unreported)
+        val outputEvidence = status.optString("output_evidence", "").takeIf { it.isNotBlank() && it != "null" }
+        val outputSummary = if (outputEvidence == null) outputName else "$outputName ($outputEvidence)"
         return Dashboard(
             deviceName = status.optString("device_name", "Android TV").take(100),
             version = status.optString("app_version", "?").take(30),
-            output = outputName,
+            output = outputSummary,
             mode = status.optString("mode", "everyday").take(30),
             correctionEnabled = status.optBoolean("correction_enabled", false),
             profileName = status.optString("profile_name", "").takeIf { it.isNotBlank() && it != "null" }

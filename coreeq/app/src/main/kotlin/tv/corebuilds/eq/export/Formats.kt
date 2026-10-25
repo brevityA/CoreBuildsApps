@@ -134,6 +134,32 @@ object Formats {
     private fun conservativePreampDb(peakDb: Double): Double =
         floor((-maxOf(0.0, peakDb) + PREAMP_ROUNDING_EPSILON_DB) * 100.0) / 100.0
 
+    /** Poweramp-style one-preset JSON array for file-based import. Poweramp has
+     * no published versioned numeric filter schema; type 3 and channels 0 are
+     * best-effort compatibility values, not a vendor-guaranteed contract.
+     * AutoEQ/Equalizer APO text remains the safer cross-version path.
+     */
+    fun exportPowerampJson(profile: Profile): String {
+        val filters = (profile.filters + ManualEq.sanitize(profile.manualFilters))
+            .filter { it.fc.isFinite() && it.gain.isFinite() && it.q.isFinite() }
+        val bands = JSONArray()
+        filters.forEachIndexed { index, filter ->
+            bands.put(JSONObject()
+                .put("type", 3)
+                .put("channels", 0)
+                .put("frequency", filter.fc.toInt().coerceAtLeast(1))
+                .put("q", filter.q)
+                .put("gain", filter.gain)
+                .put("color", (index * 0x3579B1) and 0xFFFFFF))
+        }
+        val preset = JSONObject()
+            .put("name", profile.name.take(120))
+            .put("preamp", recommendedPreampDb(profile))
+            .put("parametric", true)
+            .put("bands", bands)
+        return JSONArray().put(preset).toString(2) + "\n"
+    }
+
     fun exportProfileJson(profile: Profile): String = exportProfileJson(profile, emptyMap(), selectedMode = null)
 
     /** Include all saved mode overlays when exporting a user-facing profile backup. */
@@ -146,7 +172,7 @@ object Formats {
             profile.copy(manualFilters = ManualEq.sanitize(profile.manualFilters + modeOverlays[mode].orEmpty()))
         } ?: profile
         val root = JSONObject()
-        root.put("format", "corebuilds.core-eq/1")
+        root.put("format", ProfileExchange.FORMAT)
         root.put("id", profile.id)
         root.put("name", profile.name)
         root.put("timestamp_ms", profile.timestampMs)
