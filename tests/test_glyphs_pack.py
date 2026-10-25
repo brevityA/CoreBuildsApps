@@ -279,7 +279,7 @@ class Manifest(unittest.TestCase):
         # lint reads declaring it as a promise of a LEANBACK_LAUNCHER activity
         # - which the test above holds. required=false: a sideloaded install
         # does not filter on features, and the pack is useful on a phone
-        # launcher too. exported is not optional on targetSdk 34.
+        # launcher too. exported is not optional on targetSdk 37.
         root = ET.parse(PACK_MANIFEST).getroot()
         home = next(a for a in root.iter("activity")
                     if a.get(f"{ANDROID}name") == ".GlyphsHomeActivity")

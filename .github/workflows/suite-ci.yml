@@ -93,7 +93,8 @@ jobs:
             dir: .
             tasks: :app:lintBannersDebug :app:testBannersDebugUnitTest :app:assembleBannersDebug
             gradle: app/build.gradle.kts
-            compileSdk: 36
+            compileSdk: 37
+            platformId: 37.0
             buildTools: 36
             workflow: .github/workflows/build.yml
             artifact: app/build/outputs/apk/banners/debug/*.apk
@@ -101,7 +102,8 @@ jobs:
             dir: .
             tasks: :app:lintGlyphsDebug :app:testGlyphsDebugUnitTest :app:assembleGlyphsDebug
             gradle: app/build.gradle.kts
-            compileSdk: 36
+            compileSdk: 37
+            platformId: 37.0
             buildTools: 36
             workflow: .github/workflows/build.yml
             artifact: app/build/outputs/apk/glyphs/debug/*.apk
@@ -109,7 +111,8 @@ jobs:
             dir: .
             tasks: :glyphs:lintDebug :glyphs:testDebugUnitTest :glyphs:assembleDebug
             gradle: glyphs/build.gradle.kts
-            compileSdk: 36
+            compileSdk: 37
+            platformId: 37.0
             buildTools: 36
             workflow: .github/workflows/build.yml
             artifact: glyphs/build/outputs/apk/debug/*.apk
@@ -117,36 +120,40 @@ jobs:
             dir: ticker/android
             tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
             gradle: ticker/android/app/build.gradle.kts
-            compileSdk: 34
+            compileSdk: 37
+            platformId: 37.0
+            buildTools: 36
             workflow: .github/workflows/core-line-apk.yml
             artifact: ticker/android/app/build/outputs/apk/debug/*.apk
           - name: Core Shift
             dir: shift
             tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
             gradle: shift/app/build.gradle.kts
-            compileSdk: 34
+            compileSdk: 37
+            platformId: 37.0
+            buildTools: 36
             workflow: .github/workflows/core-shift-apk.yml
             artifact: shift/app/build/outputs/apk/debug/*.apk
           - name: Core Doctor
             dir: doctor
             tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
             gradle: doctor/app/build.gradle.kts
-            compileSdk: 35
+            compileSdk: 37
+            platformId: 37.0
+            buildTools: 36
             workflow: .github/workflows/core-doctor-apk.yml
             artifact: doctor/app/build/outputs/apk/debug/*.apk
           - name: Core Motion plugin
             dir: motion-plugin
             tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
             gradle: motion-plugin/app/build.gradle.kts
-            compileSdk: 34
+            compileSdk: 37
+            platformId: 37.0
+            buildTools: 36
             workflow: .github/workflows/core-motion-apk.yml
             artifact: motion-plugin/app/build/outputs/apk/debug/*.apk
-          # Core EQ is its own Gradle root on AGP 9.4.0 / compileSdk 37. Its
-          # build-tools floor is the toolchain's, not the platform's: AGP
-          # 9.4.0's floor is 36.0.0 and this entry names it explicitly rather
-          # than inheriting whatever the runner image happens to carry. API 37
-          # carries a minor version, declared as platformId below; compileSdk
-          # stays the plain 37.
+          # API 37 is the suite-wide compile/target baseline. The platform
+          # package is 37.0; AGP 9.4.0's build-tools floor is 36.0.0.
           - name: Core EQ
             dir: coreeq
             tasks: :app:lintDebug :app:testDebugUnitTest :app:assembleDebug
@@ -165,27 +172,22 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      # Parameterised off the matrix on purpose. This used to install android-34
-      # for every entry including Core Doctor, which compiles against 35. That
-      # was harmless only by luck — ubuntu-latest happens to preinstall both, so
-      # the step no-ops in ~6s either way and doctor compiled against the image's
-      # copy of 35. Had the image not carried it, AGP would have silently
-      # auto-downloaded it mid-build (it does, once the runner has accepted the
-      # SDK licences), and a runner-image change would have turned a passing job
-      # into a slow or failing one with nothing in this file to explain why.
+      # Parameterised off the matrix on purpose. Every suite module compiles
+      # against API 37; the platform package is 37.0 and AGP 9.4.0's build-tools
+      # floor is 36.0.0. Both are explicit per matrix entry.
       # Stating the platform per entry makes the job declare its own requirement;
       # tools/check_gradle_envelope.py asserts that declaration matches the
       # compileSdk in the build file it points at.
       - name: Install Android platform ${{ matrix.compileSdk }}
         run: |
-          # buildTools defaults to the platform version (what every entry used
-          # before the field existed); Core EQ pins 36, the AGP 9.4.0 floor,
-          # so the job states its toolchain instead of inheriting the image's.
+          # API 37's platform package is 37.0; AGP 9.4.0's build-tools floor
+          # is 36.0.0, so the matrix states the toolchain instead of inheriting
+          # the runner image's packages.
           # The parameterised line is the job's own statement of its platform
           # requirement; platformId is the package id when it is not simply
-          # the compileSdk (the 37 entry carries a minor version that way).
-          # The fallback covers an SDK level that only exists as a preview
-          # codename on the canary channel; if no id resolves, Gradle resolves
+          # the compileSdk (API 37 is packaged as 37.0).
+          # The fallback covers an SDK level whose numeric id is a minor version
+          # or preview codename on the canary channel; if no id resolves, Gradle resolves
           # the platform itself and names the hash string it cannot find. See
           # tools/install_android_platform.sh.
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
@@ -326,6 +328,7 @@ jobs:
           python tests/test_brandmark_badge.py
           python tests/test_themed_icons.py
           python tests/test_gradle_envelope.py
+          python tests/test_android_api37_migration.py
           python tests/test_core_eq_release_contract.py
           python tests/test_navigation_graph.py
           python tests/test_tv_scale.py
