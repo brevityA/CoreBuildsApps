@@ -247,5 +247,5 @@ dependencies {
     // Play only. 8.0.0 is the last release that declares minSdk 21: 8.1.0
     // through 9.x declare 23, and Fire TV needs 21. Play accepts 8.x until
     // 2027-08-31.
-    "playImplementation"("com.android.billingclient:billing:8.0.0")
+    "playImplementation"("com.android.billingclient:billing:9.1.0")
 }
