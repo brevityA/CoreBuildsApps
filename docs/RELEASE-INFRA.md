@@ -149,7 +149,7 @@ summary.
      a phone. With leanback optional the bundle would be phone-compatible,
      Play would list it for phones, and there are no phone screenshots and no
      tested phone UI. The sideload builds keep leanback optional.
-   - The suite-wide API 37 migration uses AGP 9.4.0 and built-in Kotlin (see
+   - The suite-wide API 37 migration uses AGP 9.4.0 and Kotlin 2.2.10 (built-in except Motion, which opts out for its frozen Parcelize model; see
      `tools/gradle_envelope.json`): on the Gradle 9.7.0 wrapper every AGP 8.6+
      fails at plugin apply, so AGP 8.x could not compile API 37 on the Gradle 9.7.0 wrapper.
 2. Use the AAB from `suite-release.yml`.

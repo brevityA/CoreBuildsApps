@@ -73,7 +73,7 @@ Projectivy binds to this contract; altering it breaks discovery.
 ## Package / build
 
 `tv.corebuilds.motion`, standalone Gradle root (same toolchain as `shift/`:
-AGP 9.4.0 / built-in Kotlin 2.2.10 / compileSdk 37 / targetSdk 37 / minSdk 26).
+AGP 9.4.0 / Gradle 9.7.0 / Kotlin 2.2.10 / compileSdk 37 / targetSdk 37 / minSdk 26. This root opts out of AGP's built-in Kotlin so the frozen upstream Projectivy Parcelable model can use the Kotlin Parcelize compiler plugin.
 
 ## Feed format (Overflight-compatible)
 

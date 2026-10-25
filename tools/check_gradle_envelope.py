@@ -2,11 +2,13 @@
 """Build envelope gate for all suite Android roots.
 
 Every module is held to the suite-wide compileSdk/targetSdk 37 baseline, the
-AGP 9.4.0 / Gradle 9.7.0 toolchain, AGP built-in Kotlin, and its minSdk and
-per-dependency ceilings. Dependabot sees version numbers but not any of those
-constraints, so the gate checks both dependency ceilings and the generated
-ignore rules. It also verifies Kotlin sub-plugin/Compose wiring and that each
-CI/release workflow installs the platform named by its module's compileSdk.
+AGP 9.4.0 / Gradle 9.7.0 toolchain, Kotlin 2.2.10, and its minSdk and
+per-dependency ceilings. Roots use AGP built-in Kotlin except Motion, whose
+vendored Parcelize model currently requires the aligned external Kotlin plugin.
+Dependabot sees version numbers but not those constraints, so the gate checks
+both dependency ceilings and generated ignore rules. It also verifies Kotlin
+sub-plugin/Compose wiring and that CI/release workflows install each module's
+compileSdk platform.
 
 Run: `python tools/check_gradle_envelope.py`
 """
@@ -99,6 +101,8 @@ class GradleRoot:
         self.settings = read(self.dir / "settings.gradle.kts")
         self.build_file = self.dir / "build.gradle.kts"
         self.plugins = read(self.build_file)
+        properties_path = self.dir / "gradle.properties"
+        self.properties = properties_path.read_text(encoding="utf-8") if properties_path.is_file() else ""
         self.agp = _plugin_version(self.plugins, "com.android.application")
         self.kotlin = _plugin_version(self.plugins, "org.jetbrains.kotlin.android")
         self.builtin_kotlin = bool(
@@ -279,18 +283,33 @@ def check_roots(roots: list[GradleRoot], table: dict) -> None:
                 f"That is a migration, not a bump — see tools/gradle_envelope.json."
             )
 
+        external_kotlin_roots = envelope.get("externalKotlinRoots", {})
+        external_kotlin_exception = external_kotlin_roots.get(root.rel)
         if root.agp and parse_version(root.agp) >= parse_version("9.0.0"):
             if root.kotlin is not None:
-                fail(
-                    f"{root.label}: AGP {root.agp} has built-in Kotlin; remove the external "
-                    "org.jetbrains.kotlin.android plugin to avoid applying Kotlin twice"
-                )
+                if not external_kotlin_exception:
+                    fail(
+                        f"{root.label}: AGP {root.agp} has built-in Kotlin; remove the external "
+                        "org.jetbrains.kotlin.android plugin to avoid applying Kotlin twice"
+                    )
+                elif not re.search(r"(?m)^\s*android\.builtInKotlin\s*=\s*false\s*$", root.properties):
+                    fail(
+                        f"{root.label}: external Kotlin is permitted only when gradle.properties "
+                        "sets android.builtInKotlin=false"
+                    )
+                elif not any(
+                    "org.jetbrains.kotlin.android" in _applied_plugin_ids(module.source)
+                    for module in root.modules
+                ):
+                    fail(f"{root.label}: the approved external Kotlin root does not apply Kotlin Android")
+            elif external_kotlin_exception:
+                fail(f"{root.label}: an external Kotlin exception is recorded but no Kotlin plugin is declared")
             elif not root.builtin_kotlin:
                 fail(f"{root.label}: AGP {root.agp} has no recognized built-in Kotlin configuration")
         elif root.kotlin is None:
             fail(f"{root.label}: no org.jetbrains.kotlin.android version")
-        # On AGP 9, Kotlin is bundled with AGP; external Kotlin compiler
-        # sub-plugins still have to match that exact built-in version.
+        # AGP 9 provides Kotlin 2.2.10. Most roots use the built-in compiler;
+        # the documented Motion exception uses the same version via KGP.
         builtin_kotlin = envelope.get("builtinKotlinVersionByAgp", {}).get(root.agp)
         expected_kotlin = root.kotlin or builtin_kotlin
         if expected_kotlin is not None:

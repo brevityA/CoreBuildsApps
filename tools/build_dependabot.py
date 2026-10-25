@@ -83,10 +83,11 @@ HEADER = """\
 # steps are at the end of gradle_envelope.json), watch CI go green, then lift
 # the ceiling and regenerate this file.
 #
-# Every Gradle root is now on AGP 9.4.0 / Gradle 9.7.0 with AGP built-in
-# Kotlin 2.2.10 and compileSdk/targetSdk 37. Kotlin compiler sub-plugins are
-# separately ceiling-pinned to the built-in version. The per-coordinate rules
-# below remain independent dependency update boundaries.
+# Every Gradle root is on AGP 9.4.0 / Gradle 9.7.0 and compileSdk/targetSdk
+# 37. Kotlin 2.2.10 is built in everywhere except motion-plugin, which opts out
+# for its frozen Projectivy Parcelize model and uses aligned KGP. Kotlin plugins
+# are ceiling-pinned to 2.2.10. The per-coordinate rules below remain independent
+# dependency update boundaries.
 version: 2
 updates:
 """

@@ -5,8 +5,8 @@
     "",
     "AGP 9.4.0 is the suite toolchain floor for API 37 and provides built-in",
     "Kotlin 2.2.10. Each former AGP 8.5.2 root moved to Gradle 9.7.0;",
-    "Kotlin Android plugin usage was removed, and Kotlin sub-plugins track the",
-    "built-in compiler. Core Doctor also uses the Compose compiler plugin DSL.",
+    "all roots use built-in Kotlin except Motion, which uses aligned KGP 2.2.10",
+    "for Parcelize generation on its frozen upstream model. Doctor uses Compose DSL.",
     "",
     "Dependency ceilings remain independent safety rails: API 37 removes the",
     "old platform block, but it does not imply that untested library upgrades",
@@ -17,14 +17,17 @@
     "agpMaxExclusive": "10",
     "minGradleForAgp8": "8.7",
     "_comment": [
-      "All six Gradle roots now use AGP 9.4.0 / Gradle 9.7.0 / API 37.",
-      "AGP 9 provides built-in Kotlin 2.2.10; the external Kotlin Android plugin",
-      "is removed. Any remaining Kotlin sub-plugin (Compose, serialization, or",
-      "Parcelize) must exactly match that built-in Kotlin version."
+      "All six Gradle roots use AGP 9.4.0 / Gradle 9.7.0 / API 37.",
+      "Built-in Kotlin is used everywhere except motion-plugin, whose frozen",
+      "upstream Parcelable model needs compiler generation from aligned KGP 2.2.10.",
+      "That root opts out of built-in Kotlin explicitly; all Kotlin plugins match 2.2.10."
     ],
     "minGradleForAgp9": "9.6.0",
     "builtinKotlinVersionByAgp": {
       "9.4.0": "2.2.10"
+    },
+    "externalKotlinRoots": {
+      "motion-plugin": "The frozen upstream Projectivy parcelables require the Kotlin Parcelize compiler plugin; use KGP 2.2.10 with AGP built-in Kotlin explicitly disabled."
     }
   },
   "compose": {
@@ -65,7 +68,7 @@
         "/coreeq": "Suite-wide API 37 toolchain: AGP 9.4.0 / Gradle 9.7.0 / built-in Kotlin.",
         "/ticker/android": "Suite-wide API 37 toolchain: AGP 9.4.0 / Gradle 9.7.0 / built-in Kotlin.",
         "/shift": "Suite-wide API 37 toolchain: AGP 9.4.0 / Gradle 9.7.0 / built-in Kotlin.",
-        "/motion-plugin": "Suite-wide API 37 toolchain: AGP 9.4.0 / Gradle 9.7.0 / built-in Kotlin.",
+        "/motion-plugin": "Suite-wide API 37 toolchain: AGP 9.4.0 / Gradle 9.7.0 / KGP 2.2.10; built-in Kotlin is opted out for frozen Parcelize compatibility.",
         "/doctor": "Suite-wide API 37 toolchain: AGP 9.4.0 / Gradle 9.7.0 / built-in Kotlin."
       }
     },
@@ -230,6 +233,20 @@
       ]
     },
     {
+      "coordinate": "org.jetbrains.kotlin.android",
+      "max": "2.2.10",
+      "blockedUpdateTypes": [
+        "version-update:semver-patch",
+        "version-update:semver-minor",
+        "version-update:semver-major"
+      ],
+      "reason": "The Motion root opts out of AGP built-in Kotlin only because its frozen Parcelize model needs KGP; keep the external Kotlin compiler aligned with AGP 9.4.0's built-in Kotlin 2.2.10.",
+      "evidence": [
+        "https://developer.android.com/build/migrate-to-built-in-kotlin",
+        "https://developer.android.com/kotlin/parcelize"
+      ]
+    },
+    {
       "coordinate": "org.jetbrains.kotlin.plugin.parcelize",
       "max": "2.2.10",
       "blockedUpdateTypes": [
@@ -238,20 +255,6 @@
         "version-update:semver-major"
       ],
       "reason": "AGP 9.4.0 provides built-in Kotlin 2.2.10; this Kotlin sub-plugin must match that version exactly to avoid loading a second Kotlin compiler/plugin version.",
-      "evidence": [
-        "https://developer.android.com/build/migrate-to-built-in-kotlin",
-        "https://kotlinlang.org/docs/gradle-configure-project.html"
-      ]
-    },
-    {
-      "coordinate": "org.jetbrains.kotlin:kotlin-parcelize-runtime",
-      "max": "2.2.10",
-      "blockedUpdateTypes": [
-        "version-update:semver-patch",
-        "version-update:semver-minor",
-        "version-update:semver-major"
-      ],
-      "reason": "The parcelize annotations must stay in lockstep with the parcelize compiler plugin and AGP built-in Kotlin 2.2.10.",
       "evidence": [
         "https://developer.android.com/build/migrate-to-built-in-kotlin",
         "https://kotlinlang.org/docs/gradle-configure-project.html"
@@ -279,7 +282,7 @@
     ],
     "steps": [
       "All suite Android modules (Icon Pack, Glyphs, Core Line, Core Shift, Core Motion, Core Doctor, Core EQ) compile and target API 37; sideload-only apps are included.",
-      "All Gradle roots use AGP 9.4.0 / Gradle 9.7.0. AGP built-in Kotlin is 2.2.10; external kotlin-android is removed, and remaining Kotlin sub-plugins are version-matched.",
+      "All Gradle roots use AGP 9.4.0 / Gradle 9.7.0. Built-in Kotlin 2.2.10 is used except in motion-plugin, which disables it explicitly and uses aligned KGP 2.2.10 for Parcelize generation; all sub-plugins are version-matched.",
       "Core Doctor uses org.jetbrains.kotlin.plugin.compose and no longer configures kotlinCompilerExtensionVersion.",
       "CI installs API 37 platform package 37.0 and AGP 9.4.0 build-tools 36.0.0 for suite and release APK builds.",
       "Keep AndroidX, Compose, network, serialization-runtime and coroutine dependency ceilings until each newer dependency line has its own tested migration."

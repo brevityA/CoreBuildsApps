@@ -5,7 +5,7 @@ Date: 2026-09-06. Agent knowledge cutoff: 2024-06; current Play/Android requirem
 > **API 37 migration update (2026-10-24):** The SDK values and toolchain in the
 > inventory below are a historical 2026-09-06 snapshot. All suite Android
 > modules now compile and target API 37, including the sideload-only apps.
-> Every Gradle root is on AGP 9.4.0 / Gradle 9.7.0 with AGP built-in Kotlin;
+> Every Gradle root is on AGP 9.4.0 / Gradle 9.7.0. All use AGP built-in Kotlin except Motion, which uses aligned KGP 2.2.10 for its frozen upstream Parcelize model;
 > Core Doctor also uses the Kotlin 2.x Compose compiler plugin. Core Line's
 > phone-pairing server declares and requests Android 17's local-network runtime
 > permission before opening its LAN listener; Core Doctor requests that

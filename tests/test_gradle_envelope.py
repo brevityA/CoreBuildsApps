@@ -32,6 +32,7 @@ import check_gradle_envelope as gate  # noqa: E402
 COPY_GLOBS = [
     "**/settings.gradle.kts",
     "**/build.gradle.kts",
+    "**/gradle.properties",
     "**/gradle/wrapper/gradle-wrapper.properties",
     ".github/dependabot.yml",
     ".github/workflows/*.yml",
@@ -204,9 +205,14 @@ class GradleParsing(unittest.TestCase):
     def test_reads_the_toolchain_versions(self):
         for rel, root in self.roots.items():
             self.assertEqual(root.agp, "9.4.0", f"{rel} AGP")
-            self.assertIsNone(root.kotlin, f"{rel} should use AGP built-in Kotlin")
-            self.assertTrue(root.builtin_kotlin)
             self.assertEqual(root.wrapper, "9.7.0", f"{rel} wrapper")
+            if rel == "motion-plugin":
+                self.assertEqual(root.kotlin, "2.2.10")
+                self.assertFalse(root.builtin_kotlin)
+                self.assertRegex(root.properties, r"(?m)^android\.builtInKotlin=false$")
+            else:
+                self.assertIsNone(root.kotlin, f"{rel} should use AGP built-in Kotlin")
+                self.assertTrue(root.builtin_kotlin)
         self.assertEqual(
             self.roots["doctor"].kotlin_plugins["org.jetbrains.kotlin.plugin.serialization"],
             "2.2.10",
@@ -520,6 +526,15 @@ class Mutants(unittest.TestCase):
             )
             repo.assert_blocked("has built-in Kotlin; remove the external", "duplicate Kotlin plugin")
 
+    def test_motion_external_kotlin_requires_the_explicit_builtin_opt_out(self):
+        with ScratchRepo() as repo:
+            repo.edit(
+                "motion-plugin/gradle.properties",
+                "android.builtInKotlin=false",
+                "android.builtInKotlin=true",
+            )
+            repo.assert_blocked("external Kotlin is permitted only when gradle.properties", "Motion Kotlin opt-out")
+
     def test_kotlin_2_with_the_old_compose_dsl_is_caught(self):
         with ScratchRepo() as repo:
             repo.edit(
@@ -550,7 +565,7 @@ class Mutants(unittest.TestCase):
             ceiling = next(c for c in table["ceilings"] if c["coordinate"] == "org.jetbrains.kotlin.plugin.parcelize")
             ceiling["max"] = "2.2.11"
             repo.write_envelope(table)
-            repo.assert_blocked("must match built-in Kotlin 2.2.10", "Parcelize out of lockstep")
+            repo.assert_blocked("must match Kotlin 2.2.10", "Parcelize out of lockstep")
 
 
     def test_agp_10_is_caught_everywhere(self):
