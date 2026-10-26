@@ -141,9 +141,13 @@ and rights, never a live glyph registry. Actual geometry belongs in
 `brand` groups must share glyph and accent. The pack applies its shared
 `tools/icon_style.py` contrast fallback without rewriting the source accent.
 See `THIRD_PARTY_NOTICES.md` and `docs/research/icon-fidelity-and-demand-2026-09.md`. Brand language for this suite: `docs/BRAND-GUIDE.md`.
-For the visual receipt, run `python tools/build_icon_review.py` after the pack
-has built. It must show the new icons beside established, unchanged
-neighbours and actual-size banners, not only an isolated vendor-logo gallery.
+For the current request-batch visual receipt, run
+`python tools/build_icon_review.py --requests` after the pack has built.
+It shows SPORT FM TV and TVLok beside established, unchanged neighbours,
+with actual-size banners, in `docs/request-icons-preview.png`. The default
+command preserves the earlier NoBuffr review; `--glyphs` preserves the glyphs
+self-identity review. A new batch must show its new icons in context, not only
+an isolated vendor-logo gallery.
 
 `Wallpapers/manifest.json` belongs to the icon pack and currently has 132 entries.
 

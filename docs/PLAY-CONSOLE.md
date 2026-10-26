@@ -283,7 +283,7 @@ tester clock. §1–§7 apply again; only the values below differ.
    library. `listing.json` leaves encryption and deletion `null` because
    nothing is sent.
 3. **Store listing.** Paste `copy.short_description` (80-character limit;
-   currently 69) and `copy.full_description` (4000 limit; currently 1015).
+   currently 69) and `copy.full_description` (4000 limit; currently 1028).
    - **App icon**: `docs/play/glyphs/icon-512.png`
    - **Feature graphic**: `docs/play/glyphs/feature-graphic-1024x500.png`
    - **TV banner**: `docs/play/glyphs/tv-banner-1280x720.png`

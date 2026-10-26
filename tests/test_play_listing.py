@@ -540,6 +540,14 @@ class GlyphsPackListing(unittest.TestCase):
                        "download now", "premium", "unlock"):
             self.assertNotIn(banned, text, f"metadata policy: {banned!r}")
 
+    def test_copy_does_not_claim_every_glyph_is_single_colour(self):
+        catalog = json.loads((ROOT / "tools/catalog.json").read_text())
+        self.assertTrue(any(i.get("secondary") or i.get("gradient")
+                            for i in catalog["icons"]), "the catalog carries multicolour marks")
+        text = GLYPHS_SPEC["copy"]["full_description"].lower()
+        self.assertIn("colour accents", text)
+        self.assertNotRegex(text, r"\b(?:single[- ]colou?r|monochrome) glyphs\b")
+
     def test_title_is_the_label_launchers_list(self):
         # Someone told "choose Core Builds Glyphs Pack" must find that string
         # both on the store page and in the launcher's icon pack list.
