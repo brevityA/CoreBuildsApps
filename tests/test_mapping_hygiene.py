@@ -14,7 +14,9 @@ These tests ratchet the outcome:
 2. no `unverified` entry may be corroborated verbatim by the reference pack
    (the clearing is complete — a future catalog edit that re-adds a
    corroborated component as `unverified` fails here);
-3. the total count has a ceiling that may only move down.
+3. the total count has a ceiling that may only move down;
+4. newly reported launch components and their older counterparts keep their
+   existing icon identities in every generated appfilter.
 
 Run: python -m unittest discover -s tests
 """
@@ -235,6 +237,76 @@ class ProvenanceTests(unittest.TestCase):
             self.assertIn(category, declared.get(activity, set()), icon["drawable"])
             self.assertIn(f"{package}/{activity}", icon["components"], icon["drawable"])
         self.assertGreaterEqual(seen, 4)  # Core EQ, Shift, Line, Doctor
+
+
+class OctoberLauncherReports(unittest.TestCase):
+    """Device reports #377-#383: new launch aliases, not new app identities.
+
+    Three activities live outside the installed package's namespace. Keep
+    those literal names (including Poweramp's activity-alias), and keep the
+    older launch components for devices that still use them.
+    """
+    REPORTS = (
+        (377, "f_droid", "org.fdroid.fdroid/org.fdroid.MainActivity",
+         ("org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity",)),
+        (378, "voltra_tv", "com.amhkor.voltratv/com.voltra.voltratv.tv.SplashActivity",
+         ("com.amhkor.voltratv/com.amhkor.voltratv.tv.SplashActivity",)),
+        (379, "poweramp_eq", "com.maxmpz.equalizer/com.maxmpz.audioplayer.standard_adaptive",
+         ("com.maxmpz.equalizer/.StartupActivity",)),
+        (380, "abciview", "au.net.abc.iview/au.net.abc.iview.ui.router.TvLauncherActivity",
+         ("au.net.abc.iview/.MainActivity", "au.net.abc.iview.tv/.MainActivity",
+          "au.net.abc.iview/au.net.abc.iview.ui.MainActivity")),
+        (383, "moonfin", "org.moonfin.androidtv/org.moonfin.androidtv.MainActivity",
+         ("org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity",)),
+    )
+
+    @classmethod
+    def setUpClass(cls):
+        cls.icons = json.loads(CATALOG.read_text(encoding="utf-8"))["icons"]
+
+    def test_reported_components_resolve_to_the_existing_icons(self):
+        mapped = {}
+        for icon in self.icons:
+            for component in icon["components"]:
+                key = _canonical(f"ComponentInfo{{{component}}}")
+                mapped.setdefault(key, []).append(icon["drawable"])
+        for issue, drawable, reported, legacy in self.REPORTS:
+            for component in (reported, *legacy):
+                with self.subTest(issue=issue, component=component):
+                    key = _canonical(f"ComponentInfo{{{component}}}")
+                    self.assertEqual(mapped.get(key), [drawable])
+
+    def test_new_mappings_cite_the_device_report_not_the_old_reference(self):
+        by_id = {i["drawable"]: i for i in self.icons}
+        for issue, drawable, reported, _legacy in self.REPORTS:
+            with self.subTest(issue=issue):
+                icon = by_id[drawable]
+                self.assertIn(f"issue #{issue}", icon["mapping_source"])
+                self.assertIn(reported, icon["mapping_source"])
+                unverified = {_canonical(f"ComponentInfo{{{c}}}")
+                              for c in icon.get("unverified", [])}
+                self.assertNotIn(_canonical(f"ComponentInfo{{{reported}}}"), unverified)
+
+    def test_all_three_packs_emit_new_and_legacy_mappings(self):
+        for tree, suffix in (("app/src/main", "_banner"),
+                             ("app/src/glyphs", ""),
+                             ("glyphs/src/main", "")):
+            for folder in ("res/xml", "assets"):
+                path = ROOT / tree / folder / "appfilter.xml"
+                mapped = {i.get("component"): i.get("drawable")
+                          for i in ET.parse(path).getroot().findall("item")}
+                for issue, drawable, reported, legacy in self.REPORTS:
+                    for component in (reported, *legacy):
+                        full = _canonical(f"ComponentInfo{{{component}}}")
+                        pkg, activity = full.split("/", 1)
+                        forms = [full]
+                        if activity.startswith(pkg + "."):
+                            forms.append(f"{pkg}/{activity[len(pkg):]}")
+                        for form in forms:
+                            with self.subTest(path=path.relative_to(ROOT),
+                                              issue=issue, component=form):
+                                self.assertEqual(mapped.get(f"ComponentInfo{{{form}}}"),
+                                                 drawable + suffix)
 
 
 if __name__ == "__main__":

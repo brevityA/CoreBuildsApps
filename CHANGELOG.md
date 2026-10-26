@@ -8,6 +8,19 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Fixed
 
+- **Five existing icons now apply to newly reported launch components.**
+  F-Droid (#377), Voltra TV (#378), Poweramp Equalizer (#379), ABC iview
+  (#380) and Moonfin (#383) already had artwork, but their reports named
+  components the pack did not map. Add those exact device-reported names,
+  including Poweramp's `standard_adaptive` alias and the activity namespaces
+  that differ from the installed package. All older mappings and artwork
+  stay unchanged. The fixes reach banners, the standalone glyphs app and the
+  Glyphs Pack companion together.
+- **`tests/test_mapping_hygiene.py` guards the five launcher reports.**
+  Pins both the new and legacy components to their existing icons in the
+  catalog and all six generated appfilters (`res/xml` and `assets` for each
+  pack), and requires provenance from the device report rather than claiming
+  the new names came from the older reference pack.
 - **Glyphs apps keep their own icon when the pack is applied.** The catalog
   mapped Core Builds Glyphs Pack to the main pack's cyan icon, overriding the
   companion's violet launcher art. It now uses the existing violet glyph mark

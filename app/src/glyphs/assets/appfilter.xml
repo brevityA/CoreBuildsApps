@@ -40,6 +40,8 @@
     <item component="ComponentInfo{au.net.abc.iview.tv/.MainActivity}" drawable="abciview"/>
     <item component="ComponentInfo{au.net.abc.iview/au.net.abc.iview.ui.MainActivity}" drawable="abciview"/>
     <item component="ComponentInfo{au.net.abc.iview/.ui.MainActivity}" drawable="abciview"/>
+    <item component="ComponentInfo{au.net.abc.iview/au.net.abc.iview.ui.router.TvLauncherActivity}" drawable="abciview"/>
+    <item component="ComponentInfo{au.net.abc.iview/.ui.router.TvLauncherActivity}" drawable="abciview"/>
     <!-- ABC News -->
     <item component="ComponentInfo{com.abc.abcnews/com.disney.datg.android.androidtv.splash.AbcNewsSplashScreenActivity}" drawable="abcnews"/>
     <!-- Ace Stream -->
@@ -721,6 +723,7 @@
     <!-- F-Droid -->
     <item component="ComponentInfo{org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity}" drawable="f_droid"/>
     <item component="ComponentInfo{org.fdroid.fdroid/.views.main.MainActivity}" drawable="f_droid"/>
+    <item component="ComponentInfo{org.fdroid.fdroid/org.fdroid.MainActivity}" drawable="f_droid"/>
     <!-- F1 TV -->
     <item component="ComponentInfo{com.formulaone.production/com.avs.f1.ui.splash.SplashActivity}" drawable="production"/>
     <!-- Falcon Cast -->
@@ -1404,6 +1407,8 @@
     <item component="ComponentInfo{org.monplayer.mpapp/.MainActivity}" drawable="monplayer"/>
     <!-- Moonfin -->
     <item component="ComponentInfo{org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity}" drawable="moonfin"/>
+    <item component="ComponentInfo{org.moonfin.androidtv/org.moonfin.androidtv.MainActivity}" drawable="moonfin"/>
+    <item component="ComponentInfo{org.moonfin.androidtv/.MainActivity}" drawable="moonfin"/>
     <!-- Moonlight -->
     <item component="ComponentInfo{com.limelight/com.limelight.PcView}" drawable="moonlight"/>
     <item component="ComponentInfo{com.limelight/.PcView}" drawable="moonlight"/>
@@ -1820,6 +1825,7 @@
     <!-- Poweramp Equalizer -->
     <item component="ComponentInfo{com.maxmpz.equalizer/com.maxmpz.equalizer.StartupActivity}" drawable="poweramp_eq"/>
     <item component="ComponentInfo{com.maxmpz.equalizer/.StartupActivity}" drawable="poweramp_eq"/>
+    <item component="ComponentInfo{com.maxmpz.equalizer/com.maxmpz.audioplayer.standard_adaptive}" drawable="poweramp_eq"/>
     <!-- PPSSPP -->
     <item component="ComponentInfo{org.ppsspp.ppsspp/org.ppsspp.ppsspp.PpssppActivity}" drawable="ppsspp"/>
     <item component="ComponentInfo{org.ppsspp.ppsspp/.PpssppActivity}" drawable="ppsspp"/>
@@ -2768,6 +2774,7 @@
     <!-- Voltra TV -->
     <item component="ComponentInfo{com.amhkor.voltratv/com.amhkor.voltratv.tv.SplashActivity}" drawable="voltra_tv"/>
     <item component="ComponentInfo{com.amhkor.voltratv/.tv.SplashActivity}" drawable="voltra_tv"/>
+    <item component="ComponentInfo{com.amhkor.voltratv/com.voltra.voltratv.tv.SplashActivity}" drawable="voltra_tv"/>
     <!-- Volume Booster -->
     <item component="ComponentInfo{com.goodev.volume.booster/com.goodev.volume.booster.SpeakerBoost}" drawable="booster"/>
     <item component="ComponentInfo{com.goodev.volume.booster/.SpeakerBoost}" drawable="booster"/>

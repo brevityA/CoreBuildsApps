@@ -2,7 +2,7 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "2.5.2",
+    "version": "2.5.3",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
@@ -126,10 +126,11 @@
       "components": [
         "au.net.abc.iview/.MainActivity",
         "au.net.abc.iview.tv/.MainActivity",
-        "au.net.abc.iview/au.net.abc.iview.ui.MainActivity"
+        "au.net.abc.iview/au.net.abc.iview.ui.MainActivity",
+        "au.net.abc.iview/au.net.abc.iview.ui.router.TvLauncherActivity"
       ],
       "category": "VOD",
-      "mapping_source": "Projectivy Icon Pack 1.1.9 (au.net.abc.iview/au.net.abc.iview.ui.MainActivity); au.net.abc.iview/.MainActivity pre-provenance, first committed in 9f588fdae (2026-08-17, v1.0.0); au.net.abc.iview.tv/.MainActivity pre-provenance, first committed in 9f588fdae (2026-08-17, v1.0.0)",
+      "mapping_source": "Projectivy Icon Pack 1.1.9 (au.net.abc.iview/au.net.abc.iview.ui.MainActivity); au.net.abc.iview/.MainActivity pre-provenance, first committed in 9f588fdae (2026-08-17, v1.0.0); au.net.abc.iview.tv/.MainActivity pre-provenance, first committed in 9f588fdae (2026-08-17, v1.0.0); issue #380 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, pack 2.5.1, Projectivy): au.net.abc.iview/au.net.abc.iview.ui.router.TvLauncherActivity is the reported launcher component; older mappings retained",
       "color_source": "sampled (current mark, teal) — logos.fandom.com/wiki/ABC_iview",
       "color_reviewed": "2026-09-08",
       "color_note": null,
@@ -3295,10 +3296,11 @@
       "color": "#1976D2",
       "glyph": "fdroid_robot",
       "components": [
-        "org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity"
+        "org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity",
+        "org.fdroid.fdroid/org.fdroid.MainActivity"
       ],
       "category": "APP",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "mapping_source": "Projectivy Icon Pack 1.1.9 (org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity); issue #377 (device-reported via the pack's Missing icons scanner on Z30 PRO, Android 11, pack 2.5.1, Projectivy): org.fdroid.fdroid/org.fdroid.MainActivity is the reported launcher component; older mappings retained",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null,
       "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for org.fdroid.fdroid (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)",
@@ -6715,10 +6717,11 @@
       "color": "#B453E6",
       "glyph": "moonfin_wave",
       "components": [
-        "org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity"
+        "org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity",
+        "org.moonfin.androidtv/org.moonfin.androidtv.MainActivity"
       ],
       "category": "APP",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "mapping_source": "Projectivy Icon Pack 1.1.9 (org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity); issue #383 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.5.1, Projectivy): org.moonfin.androidtv/org.moonfin.androidtv.MainActivity is the reported launcher component; older mappings retained",
       "color_source": "sampled from the official launcher icon (Google Play listing for org.moonfin.androidtv): gradient start #B453E6 (2026-09-26)",
       "color_reviewed": "2026-09-26",
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for org.moonfin.androidtv); Core monoline geometry, not a trace (2026-09-26)",
@@ -8694,10 +8697,11 @@
       "color": "#FF6D00",
       "glyph": "equalizer",
       "components": [
-        "com.maxmpz.equalizer/.StartupActivity"
+        "com.maxmpz.equalizer/.StartupActivity",
+        "com.maxmpz.equalizer/com.maxmpz.audioplayer.standard_adaptive"
       ],
       "category": "MUSIC",
-      "mapping_source": "pre-provenance; first committed in ecaa0d231 (2026-08-18, v1.3.0)",
+      "mapping_source": "pre-provenance; first committed in ecaa0d231 (2026-08-18, v1.3.0); issue #379 (device-reported via the pack's Missing icons scanner on onn 4K Pro Streaming Device, Android 14, pack 2.5.1, Monet): com.maxmpz.equalizer/com.maxmpz.audioplayer.standard_adaptive is the reported launcher component; older mappings retained",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
     },
@@ -14218,10 +14222,11 @@
       "color": "#00E676",
       "glyph": "voltra_v",
       "components": [
-        "com.amhkor.voltratv/com.amhkor.voltratv.tv.SplashActivity"
+        "com.amhkor.voltratv/com.amhkor.voltratv.tv.SplashActivity",
+        "com.amhkor.voltratv/com.voltra.voltratv.tv.SplashActivity"
       ],
       "category": "STREAM",
-      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
+      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV); issue #378 (device-reported via the pack's Missing icons scanner on Z30 PRO, Android 11, pack 2.5.1; scan says Projectivy, launcher field says Monet): com.amhkor.voltratv/com.voltra.voltratv.tv.SplashActivity is the reported launcher component; older mappings retained",
       "color_source": "owner TV audit 2026-09-21: Voltra green V cue from stock icon",
       "color_reviewed": "2026-09-21",
       "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (Projectivy on a TCL Google TV, 2026-09-27): the V with a lightning-bolt arm; Core monoline geometry, not a trace (2026-09-27)"

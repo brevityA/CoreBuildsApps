@@ -1,6 +1,6 @@
 # Supported applications
 
-`1022` icons · `1241` mapped components · pack v2.5.2
+`1022` icons · `1246` mapped components · pack v2.5.3
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -16,7 +16,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | 9Xtream | `xtreamplayeranddownloader` | `#F80008` | `#F80008` | `com.divergentftb.xtreamplayeranddownloader/com.divergentftb.xtreamplayeranddownloader.start.SpActivity` |
 | A 8k Player Vip | `a_8k_player_vip` | `#E2BA6E` | `#E2BA6E` | `com.shadeed.S4kvip/com.shadeed.ibopro.MainActivity` |
 | A&E | `androidtv_3` | `#C95CFF` | `#C95CFF` | `com.aetn.aetv.watch.androidtv/com.aetn.android.tveapps.app.MainActivity` |
-| ABC iview | `abciview` | `#20B8B8` | `#20B8B8` | `au.net.abc.iview/.MainActivity`<br>`au.net.abc.iview.tv/.MainActivity`<br>`au.net.abc.iview/au.net.abc.iview.ui.MainActivity` |
+| ABC iview | `abciview` | `#20B8B8` | `#20B8B8` | `au.net.abc.iview/.MainActivity`<br>`au.net.abc.iview.tv/.MainActivity`<br>`au.net.abc.iview/au.net.abc.iview.ui.MainActivity`<br>`au.net.abc.iview/au.net.abc.iview.ui.router.TvLauncherActivity` |
 | ABC News | `abcnews` | `#000000` | `#E6EDF3` | `com.abc.abcnews/com.disney.datg.android.androidtv.splash.AbcNewsSplashScreenActivity` |
 | Ace Stream | `ace_stream` | `#FFE14D` | `#FFE14D` | `org.acestream.node/org.acestream.engine.ui.MainWebViewActivity` |
 | Acontra Plus | `acontraplus` | `#4FACFE` | `#4FACFE` | `com.acontraplus.android/com.magine.android.mamo.ui.splash.SplashActivity` |
@@ -252,7 +252,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | EuroLeague TV | `euroleague_tv` | `#FF4300` | `#FF4300` | `dce.euroleague/dce.euroleague.MainActivity` |
 | euronews | `euronews` | `#3098E0` | `#3098E0` | `com.alteox.euronews/com.alteox.euronews.MainActivity` |
 | ExpressVPN | `expressvpn` | `#DA3940` | `#DA3940` | `com.expressvpn.vpn/com.expressvpn.vpn.splash.ClassicAlias` |
-| F-Droid | `f_droid` | `#1976D2` | `#1976D2` | `org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity` |
+| F-Droid | `f_droid` | `#1976D2` | `#1976D2` | `org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity`<br>`org.fdroid.fdroid/org.fdroid.MainActivity` |
 | F1 TV | `production` | `#E10600` | `#E10600` | `com.formulaone.production/com.avs.f1.ui.splash.SplashActivity` |
 | Falcon Cast | `falconcast` | `#0090F8` | `#0090F8` | `com.falconcast.live/com.falconcast.live.SplashActivity`<br>`com.falconcast.live/com.falconcast.live.tv.TvSplashActivity` |
 | Fandango at Home | `fandango_at_home` | `#419BED` | `#419BED` | `air.com.vudu.air.DownloaderTablet/air.com.vudu.air.DownloaderTablet.SplashActivity` |
@@ -486,7 +486,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Monet | `monet` | `#B388FF` | `#B388FF` | `com.klevico.monet/com.klevico.monet.HomeActivity` |
 | Monitor Dot | `omnisoft` | `#F84060` | `#F84060` | `com.omnisoft.vpndot/com.omnisoft.vpndot.main` |
 | Monplayer | `monplayer` | `#4FACFE` | `#4FACFE` | `org.monplayer.mpapp/org.monplayer.mpapp.MainActivity` |
-| Moonfin | `moonfin` | `#B453E6` | `#B453E6` | `org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity` |
+| Moonfin | `moonfin` | `#B453E6` | `#B453E6` | `org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity`<br>`org.moonfin.androidtv/org.moonfin.androidtv.MainActivity` |
 | Moonlight | `moonlight` | `#76B900` | `#76B900` | `com.limelight/.PcView` |
 | Morphe | `morphe` | `#7355F8` | `#7355F8` | `app.morphe.manager/app.morphe.manager.MainActivity_Dark_2` |
 | MotoGP | `officialmotogp` | `#34EB7A` | `#34EB7A` | `com.dorna.officialmotogp/com.dorna.motogpapp.ui.view.tv.splash.SplashTVActivity` |
@@ -632,7 +632,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Podcast Addict | `podcastaddict` | `#F4842D` | `#F4842D` | `com.bambuna.podcastaddict/com.bambuna.podcastaddict.activity.PodcastListActivity` |
 | Polsat Box Go | `polsat_box_go` | `#F8C800` | `#F8C800` | `pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.mobile.launch.LaunchActivity`<br>`pl.cyfrowypolsat.cpgo/pl.cyfrowypolsat.cpframework.presentation.tv.launch.TvLaunchActivity` |
 | Porter | `porter` | `#48E088` | `#48E088` | `eu.darken.porter/eu.darken.porter.manager.MainActivity` |
-| Poweramp Equalizer | `poweramp_eq` | `#FF6D00` | `#FF6D00` | `com.maxmpz.equalizer/.StartupActivity` |
+| Poweramp Equalizer | `poweramp_eq` | `#FF6D00` | `#FF6D00` | `com.maxmpz.equalizer/.StartupActivity`<br>`com.maxmpz.equalizer/com.maxmpz.audioplayer.standard_adaptive` |
 | PPSSPP | `ppsspp` | `#9BCFDD` | `#9BCFDD` | `org.ppsspp.ppsspp/org.ppsspp.ppsspp.PpssppActivity` |
 | Premier Sports | `premier_sports` | `#FFFF00` | `#FFFF00` | `premierplayer.premiersports.com.premierplayer/com.premiersports.premiersportstv.ui.login.DeviceLinkActivity` |
 | Premiere FC | `premierefc` | `#2D8F3C` | `#2D8F3C` | `br.tv.horizonte.android.premierefc/br.tv.horizonte.android.premierefc.splash_tv.SplashTvActivity` |
@@ -953,7 +953,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | VMX | `vmx` | `#F5881F` | `#F5881F` | `com.viva.vivamax/com.viva.vivamax.activity.SplashActivity` |
 | Vodafone TV | `vodafone_tv` | `#C51311` | `#C51311` | `com.vodafone.vtv.atv.pt/com.witsoftware.vodafonetv.view.splash.SplashActivity` |
 | Void | `hritwik` | `#9838D3` | `#9838D3` | `com.hritwik.avoid/com.hritwik.avoid.MainActivity` |
-| Voltra TV | `voltra_tv` | `#00E676` | `#00E676` | `com.amhkor.voltratv/com.amhkor.voltratv.tv.SplashActivity` |
+| Voltra TV | `voltra_tv` | `#00E676` | `#00E676` | `com.amhkor.voltratv/com.amhkor.voltratv.tv.SplashActivity`<br>`com.amhkor.voltratv/com.voltra.voltratv.tv.SplashActivity` |
 | Volume Booster | `booster` | `#CF5E5A` | `#CF5E5A` | `com.goodev.volume.booster/com.goodev.volume.booster.SpeakerBoost` |
 | Voyo SK | `voyo_sk` | `#30E0E8` | `#30E0E8` | `net.cme.voyo.sk.tvapp/net.cme.voyo.sk.tvapp.MainActivity` |
 | VPN Unlimited | `vpn_unlimited` | `#0799DF` | `#0799DF` | `com.simplexsolutionsinc.vpn_unlimited/com.simplexsolutionsinc.vpn_unlimited.ui.screens.splash.SplashScreenActivity` |
