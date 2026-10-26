@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 1022
+    "count": 1023
   },
   "icons": [
     {
@@ -14277,21 +14277,27 @@
     {
       "name": "TVLok",
       "drawable": "tvlok",
-      "color": "#00F5D4",
+      "color": "#17A5DF",
       "components": [
-        "com.tvlok.app/com.tvlok.app.MainActivity",
-        "com.tvlok.tv/com.tvlok.tv.MainActivity"
-      ],
-      "unverified": [
-        "com.tvlok.app/com.tvlok.app.MainActivity",
-        "com.tvlok.tv/com.tvlok.tv.MainActivity"
+        "com.tvlok.app/com.tvlok.app.ui.MainActivity",
+        "com.tvlok.app/com.tvlok.app.ui.TvLauncherActivity"
       ],
       "category": "STREAM",
-      "mapping_source": "pre-provenance; first committed in 37eef3613 (2026-09-23, v1.9.2). Both components are package guesses never seen on a device: #155 asked the requester for one and got no answer, and #352 (Monet, 2026-10-19) reports the pack's TVLok icon is not the right one on that TV; flagged unverified in 2.5.0",
-      "color_source": "tvlok.com brand (cyan/magenta play mark); snapped to shared teal slot #00F5D4; package candidates unconfirmed — issue #155 asked requester, 2026-09",
-      "color_reviewed": null,
-      "glyph": "broadcast_T",
-      "mark": "TL"
+      "mapping_source": "official TVLok 1.0.192 / code 1129 APK, linked by https://tvlok.com/download and statically inspected on 2026-10-26; tools/reference/tvlok/receipt.json pins APK SHA-256 a627b2a4f6a3e09cf17549f2407de3d04b226b44aab6b3375e53e7760ab47b63. Its LAUNCHER activity is com.tvlok.app.ui.MainActivity and its LEANBACK_LAUNCHER activity-alias is com.tvlok.app.ui.TvLauncherActivity. Replaces the two unverified package/activity guesses from #155 and #352; not installed or device-tested",
+      "color_source": "sampled representative cyan #17A5DF from the front tile in the official APK's launcher resource res/Jt.png; tools/reference/tvlok/visual-references.json records the exact sample on its hash-pinned downsized preview. The vendor gradient is simplified to two flat brand accents, not copied (2026-10-26)",
+      "color_reviewed": "2026-10-26",
+      "glyph": "tvlok_play_tiles",
+      "brand": "tvlok",
+      "style": "core_monoline",
+      "glyph_source": "original Core rounded-monoline interpretation of the official APK's offset, tilted violet rear tile and cyan play tile, replacing the generic TL broadcast shell; tools/reference/tvlok/receipt.json and preview/Jt.png retain the source evidence. No vendor pixels or paths used as shipped geometry (2026-10-26)",
+      "name_source": "application label TVLok from the official 1.0.192 APK (tools/reference/tvlok/receipt.json, 2026-10-26)",
+      "secondary": {
+        "color": "#8E46AE",
+        "parts": [
+          0
+        ],
+        "source": "sampled representative violet #8E46AE from the exposed rear tile in the official APK's res/Jt.png; sample coordinates and the downsized resource hash are recorded in tools/reference/tvlok/visual-references.json (2026-10-26)"
+      }
     },
     {
       "name": "MaxPlayer",
@@ -14950,6 +14956,30 @@
       "color_source": "sampled from the logo on eaglecast.tv (cropped-new-icon-512.png): the chevron's red #C12033, over a navy #202F64 star (2026-10-21)",
       "color_reviewed": "2026-10-21",
       "glyph_source": "original Core monoline mark: a five-point star crossed by a wide chevron - the wing laid over the star on the service's logo, redrawn as an outline, not traced (2026-10-21)"
+    },
+    {
+      "name": "SPORT FM TV",
+      "drawable": "sport_fm_tv",
+      "brand": "sport_fm_tv",
+      "color": "#CE1039",
+      "glyph": "sportfm_crest",
+      "style": "core_monoline",
+      "components": [
+        "gr.sportfmtv.app/com.yinzcam.connectedtv.MainActivity"
+      ],
+      "category": "SPORT",
+      "mapping_source": "issue #382 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.5.1, Projectivy, 2026-10-25): gr.sportfmtv.app/com.yinzcam.connectedtv.MainActivity is the reported launcher component. The installed package differs from its YinzCam activity namespace; no same-package activity is invented",
+      "color_source": "sampled from the red TV tag in the Google Play launcher-icon thumbnail mirrored by AppBrain for gr.sportfmtv.app: #CE1039; corroborated by the official sportfmtv.gr crest. Pixel sample and hashed references in tools/reference/sportfm-tv/visual-references.json (2026-10-26)",
+      "color_reviewed": "2026-10-26",
+      "glyph_source": "original Core rounded-monoline interpretation of the official crest, FM lettering and TV tag; compact Greek vendor lettering is not traced. References: https://www.sportfmtv.gr/ and https://play.google.com/store/apps/details?id=gr.sportfmtv.app; hashed visual references in tools/reference/sportfm-tv/ (2026-10-26)",
+      "name_source": "request #382 spells SPORT FM TV; the matching gr.sportfmtv.app Google Play listing spells SPORTFM TV (2026-10-26)",
+      "secondary": {
+        "color": "#FFFFFF",
+        "parts": [
+          1
+        ],
+        "source": "white lettering inside the red crest on the official sportfmtv.gr mark and gr.sportfmtv.app listing icon; our FM is redrawn in the common stroke letters and white renders as Core light ink (2026-10-26)"
+      }
     }
   ],
   "artwork": {

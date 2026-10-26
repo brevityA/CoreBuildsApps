@@ -71,6 +71,71 @@ class IdentityTests(unittest.TestCase):
                                             pack.convert("RGBA").getchannel("A").tobytes(),
                                             "the glyphs apps must differ by shape, not only colour")
 
+    def test_october_requests_use_reviewed_marks_not_generic_letter_shells(self):
+        expected = {
+            "sport_fm_tv": ("sportfm_crest", "#CE1039", "#FFFFFF", [1]),
+            "tvlok": ("tvlok_play_tiles", "#17A5DF", "#8E46AE", [0]),
+        }
+        for drawable, (glyph, accent, second, parts) in expected.items():
+            with self.subTest(drawable=drawable):
+                self.assertTrue(drawable in BY_ID, f"missing requested icon: {drawable}")
+                icon = BY_ID[drawable]
+                self.assertEqual(icon["glyph"], glyph)
+                self.assertEqual(icon["style"], CORE_MONOLINE)
+                self.assertEqual(icon["color"], accent)
+                self.assertEqual(icon["color_reviewed"], "2026-10-26")
+                self.assertEqual(icon["secondary"]["color"], second)
+                self.assertEqual(icon["secondary"]["parts"], parts)
+                self.assertFalse(secondary_errors(icon))
+                self.assertNotIn("mark", icon)
+                self.assertNotIn("gradient", icon)
+                self.assertIn("tools/reference/", icon["glyph_source"])
+
+    def test_request_references_are_hash_pinned_and_not_runtime_art(self):
+        for directory in ("sportfm-tv", "tvlok"):
+            root = ROOT / "tools/reference" / directory
+            evidence = json.loads((root / "visual-references.json").read_text())
+            self.assertTrue(evidence["usage"].startswith("reference-only"))
+            for reference in evidence["references"]:
+                with self.subTest(directory=directory, path=reference["path"]):
+                    path = root / reference["path"]
+                    self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(),
+                                     reference["sha256"])
+                    if "size" in reference:
+                        with Image.open(path) as image:
+                            self.assertEqual(list(image.size), reference["size"])
+                    if "source_resource" in reference:
+                        receipt = json.loads((root / "receipt.json").read_text())
+                        original = next(r for r in receipt["resources"]
+                                        if r["path"] == reference["source_resource"])
+                        self.assertEqual(original["export_sha256"], reference["source_sha256"])
+            self.assertFalse(list(root.glob("*.apk")), "vendor APKs must not be committed")
+
+    def test_requested_accents_reproduce_the_recorded_pixel_samples(self):
+        from collections import Counter
+        from statistics import median
+
+        root = ROOT / "tools/reference/sportfm-tv"
+        sample = json.loads((root / "visual-references.json").read_text())["color_sample"]
+        with Image.open(root / sample["path"]) as image:
+            pixels = image.convert("RGB").crop(tuple(sample["box"])).getdata()
+            rgb = Counter(p for p in pixels if p[0] > 180 and p[1] < 64 and p[2] < 96).most_common(1)[0][0]
+        colour = "#{:02X}{:02X}{:02X}".format(*rgb)
+        self.assertEqual(colour, sample["color"])
+        self.assertEqual(BY_ID["sport_fm_tv"]["color"], colour)
+
+        root = ROOT / "tools/reference/tvlok"
+        for sample in json.loads((root / "visual-references.json").read_text())["color_samples"]:
+            with self.subTest(part=sample["part"]):
+                with Image.open(root / sample["path"]) as image:
+                    pixels = image.convert("RGB").crop(tuple(sample["box"])).getdata()
+                    rgb = tuple(round(median(values)) for values in zip(*pixels))
+                colour = "#{:02X}{:02X}{:02X}".format(*rgb)
+                self.assertEqual(colour, sample["color"])
+                actual = (BY_ID["tvlok"]["color"] if sample["part"] == "front"
+                          else BY_ID["tvlok"]["secondary"]["color"])
+                self.assertEqual(actual, colour)
+
     def test_same_brand_must_not_drift_in_colour_or_glyph(self):
         for field, wrong in (("color", "#FF0000"), ("glyph", "tile_N")):
             rows = copy.deepcopy([BY_ID["ninenow"], BY_ID["ninenow_2"]])

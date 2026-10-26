@@ -1,13 +1,15 @@
 {
   "versionCode": 61,
   "versionName": "2.5.3",
-  "iconCount": 1022,
-  "componentCount": 1246,
+  "iconCount": 1023,
+  "componentCount": 1247,
   "releaseDate": "2026-10-26",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
+    "SPORT FM TV",
+    "TVLok now has its real icon and launcher mappings",
     "Five existing icons now apply to newly reported launch components",
     "Glyphs apps keep their own icon when the pack is applied"
   ]

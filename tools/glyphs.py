@@ -9483,3 +9483,35 @@ _WM5 = {
 GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM5.items()})
 GLYPHS.update({"euroleague_ball": euroleague_ball, "airplaytouch_cursor": airplaytouch_cursor,
                "ampchor_power": ampchor_power, "eaglecast_star": eaglecast_star})
+
+
+# Issue batch 2026-10-26 (2.5.3): a new sports service and a corrected player.
+# These are original Core constructions, not vectorisations of the source art.
+def sportfm_crest(c):
+    """SPORT FM TV: the red crest, its FM lettering and TV tag.
+
+    The vendor's tightly packed Greek lettering does not survive in our
+    32px linework at tile size. Keep the distinctive crest / FM / TV cues,
+    draw the letters in the pack's face, and let the common banner carry the
+    full name. Primitive 1 is the light-ink FM (catalog secondary).
+    """
+    return (f'<path d="M 104 56 L 408 56 L 408 198 Q 408 244 366 266 '
+            f'L 256 310 L 146 266 Q 104 244 104 198 Z" {_s(c, 32)}/>'
+            + stroke_lockup("FM", c, cap_h=128, max_w=208, cy=162)
+            + stroke_lockup("TV", c, cap_h=104, max_w=184, cy=400))
+
+
+def tvlok_play_tiles(c):
+    """TVLok: the offset, tilted rear tile behind a rounded play tile.
+
+    Only the visible rear edge is drawn: a transparent monoline foreground
+    must not reveal a made-up diagonal through its play symbol. Primitive 0
+    takes the rear tile's violet; the front and play keep the shared cyan.
+    """
+    return (f'<path d="M 144 164 L 330 104 Q 374 92 386 136 '
+            f'L 414 246 Q 426 290 396 298" {_s(c, 32)}/>'
+            f'<rect x="76" y="180" width="328" height="236" rx="64" {_s(c, 32)}/>'
+            f'<path d="M 210 244 L 292 298 L 210 352 Z" {_s(c, 26)}/>')
+
+
+GLYPHS.update({"sportfm_crest": sportfm_crest, "tvlok_play_tiles": tvlok_play_tiles})

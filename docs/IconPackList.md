@@ -1,6 +1,6 @@
 # Supported applications
 
-`1022` icons · `1246` mapped components · pack v2.5.3
+`1023` icons · `1247` mapped components · pack v2.5.3
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -758,6 +758,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Source | `source_input` | `#34EB7A` | `#34EB7A` | `com.spocky.projengmenu/.activities.input.SourceActivity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceActivity` |
 | Sparkle TV | `sparkletv` | `#A78BFA` | `#A78BFA` | `se.hedekonsult.sparkle/se.hedekonsult.sparkle.MainActivity` |
 | Speedtest TV | `speedtesttv` | `#E40001` | `#E40001` | `com.rma.speedtesttv/com.rma.speedtesttv.ui.SplashActivity` |
+| SPORT FM TV | `sport_fm_tv` | `#CE1039` | `#CE1039` | `gr.sportfmtv.app/com.yinzcam.connectedtv.MainActivity` |
 | Sport TV | `sport_tv` | `#FDEA00` | `#FDEA00` | `pt.sporttv.app.androidtv/pt.sporttv.app.ui.SplashScreenTVActivity` |
 | Sports Everywhere | `sportseverywhere` | `#F84048` | `#F84048` | `com.Arena4Viewer.Sportseverywhere/com.Arena4Viewer.Sportseverywhere.MainActivitysplachscren`<br>`com.bone.android.a4v.oficial/com.bone.android.a4v.oficial.AVActivity` |
 | Sportsfire | `sportsfire` | `#51A2B4` | `#51A2B4` | `com.leed.sportsfire/com.leed.sportsfire.ui.HomeActivity` |
@@ -896,7 +897,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | TVA+ | `tvaplus` | `#FFB020` | `#FFB020` | `com.numeriq.tvaplus/ade.tv.main.ui.splash.SplashActivity` |
 | Tvi Player | `tvi_player` | `#00D4FF` | `#00D4FF` | `pt.iol.tviplayer.androidtv/pt.iol.tviplayer.androidtv.MainActivity` |
 | TVING | `tving` | `#FF153C` | `#FF153C` | `net.cj.cjhv.gs.tving/net.cj.cjhv.gs.tving.view.scaleup.ScaleupIntroActivity` |
-| TVLok | `tvlok` | `#00F5D4` | `#00F5D4` | `com.tvlok.app/com.tvlok.app.MainActivity`<br>`com.tvlok.tv/com.tvlok.tv.MainActivity` |
+| TVLok | `tvlok` | `#17A5DF` | `#17A5DF` | `com.tvlok.app/com.tvlok.app.ui.MainActivity`<br>`com.tvlok.app/com.tvlok.app.ui.TvLauncherActivity` |
 | TVNZ+ | `tvnzplus` | `#00F0F8` | `#00F0F8` | `nz.co.tvnz.ondemand.tv/nz.co.tvnz.ondemand.SplashScreenTVActivity` |
 | TVO Kids | `tvo_kids` | `#F08018` | `#F08018` | `com.tvokids.tvokids/tv.accedo.one.app.bootstrap.BootstrapActivity` |
 | TVO Today | `tvo_today` | `#E7131A` | `#E7131A` | `org.tvo.tvoott/tv.accedo.one.app.bootstrap.BootstrapActivity` |

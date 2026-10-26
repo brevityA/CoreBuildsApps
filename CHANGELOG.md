@@ -6,8 +6,30 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **SPORT FM TV.** A dedicated red crest with FM/TV stroke lettering, in both
+  square and banner form, maps the exact SHIELD scanner component from #382:
+  `gr.sportfmtv.app/com.yinzcam.connectedtv.MainActivity`. The artwork is an
+  original Core monoline interpretation of the verified brand cues, with
+  sampled colour and reference provenance; no vendor image is bundled.
+
 ### Fixed
 
+- **TVLok now has its real icon and launcher mappings.** The generic TL
+  broadcast shell is replaced by the app's overlapping violet/cyan play-tile
+  cue in Core monoline. Static inspection of the official 1.0.192 APK proves
+  both `com.tvlok.app.ui.MainActivity` and the distinct TV alias
+  `com.tvlok.app.ui.TvLauncherActivity` under `com.tvlok.app`. The two old
+  guesses from #155/#352 are removed; unverified mappings fall from 75 to 73.
+  APK/resource hashes and small, explicitly downsized artwork references are
+  retained, not the APK itself. Physical-device confirmation remains pending.
+- **`tests/test_mapping_hygiene.py` and `tests/test_icon_identity.py` cover the new requests.**
+  Regressions pin SPORT FM TV's YinzCam namespace, TVLok's actual alias and
+  its static APK evidence, reference hashes, sampled accents and two-tone
+  declarations. Both requests retain the normal square/banner rendering
+  pipeline; `tools/build_icon_review.py --requests` shows them at tile size
+  and in actual-size banners beside unchanged neighbours.
 - **Five existing icons now apply to newly reported launch components.**
   F-Droid (#377), Voltra TV (#378), Poweramp Equalizer (#379), ABC iview
   (#380) and Moonfin (#383) already had artwork, but their reports named

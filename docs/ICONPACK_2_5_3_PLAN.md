@@ -1,32 +1,69 @@
-# Icon Pack 2.5.3 — issue triage and first patch
+# Icon Pack 2.5.3 — completed request batch
 
-Reviewed **26 October 2026 (Australia/Sydney)** against `main` at
-`da6812d49b9fd41bb41a072772b13223b2bff68c` and all **10 open issues**.
-This is work in progress, not a published release.
+Reviewed **26 October 2026 (Australia/Sydney)**. All **7 actionable user
+reports** from the 10-open-issue triage are implemented in this branch;
+the other 3 issues are standing QA trackers. This is not a published release.
 
-## Release baseline
+**Build version: 2.5.3 / versionCode 61** for both Play and sideload variants.
+**1023 icons · 1247 catalog components · 1958 emitted mappings.**
 
-- Source at the start of this branch: **2.5.2 / versionCode 60**, including
-  the glyphs-app identity fix merged in [PR #384](https://github.com/brevityA/CoreBuildsApps/pull/384).
-- The [2.5.2 Play build](https://github.com/brevityA/CoreBuildsApps/actions/runs/40260587118)
-  completed successfully, including Play upload-key decoding, bundle signature
-  verification and upload of `core-builds-play-bundles`. This does **not** prove
-  an upload or rollout in Play Console.
-- Published sideload release and `Latestrelease/version.json`: **2.5.1 / 59**.
-  No `v2.5.2` release was listed at review time. The glyphs fix remains in
-  `[Unreleased]`; do not invent a published 2.5.2 changelog entry.
-- Next patch is staged as **2.5.3 / 61**, shared by the Play and sideload
-  variants. The public update feed stays unchanged until release publication.
+## SPORT FM TV — new icon
 
-## First batch: five mapping fixes
+[#382](https://github.com/brevityA/CoreBuildsApps/issues/382) supplied the exact
+SHIELD scanner component:
 
-All five reports include a component from the in-app scanner. Each app already
-has artwork, but the reported launch component was absent from the catalog.
-The branch adds the exact reported names, retains every older mapping and
-keeps all artwork unchanged. These are device-reported mappings, not a claim
-that the apps were installed and tested in this workspace.
+`gr.sportfmtv.app/com.yinzcam.connectedtv.MainActivity`
 
-| Issue | App | Newly covered launch component |
+The package and activity namespace differ. No speculative
+`gr.sportfmtv.app/.MainActivity` is added.
+
+- Original Core monoline crest, FM lettering and TV tag; normal SPORT banner.
+- Red sampled from the listing icon; light lettering declared as a secondary
+  paint. The common contrast policy remains unchanged.
+- The Greek vendor wordmark is not traced or pasted into the pack.
+- Source pages, image hashes and sampling method are recorded in
+  [`tools/reference/sportfm-tv/`](../tools/reference/sportfm-tv/).
+
+## TVLok — corrected artwork and verified mappings
+
+[#352](https://github.com/brevityA/CoreBuildsApps/issues/352) still has no valid
+reporter-supplied component, but that no longer blocks implementation: the
+vendor's official APK was statically inspected instead.
+
+The official download page linked **1.0.192 / code 1129**. Its SHA-256 was
+checked against the download filename before inspection. The APK declares:
+
+| Entry | Component |
+|---|---|
+| MAIN + LAUNCHER activity | `com.tvlok.app/com.tvlok.app.ui.MainActivity` |
+| MAIN + LEANBACK_LAUNCHER activity-alias | `com.tvlok.app/com.tvlok.app.ui.TvLauncherActivity` |
+
+The TV alias targets the main activity, but the alias itself must be mapped.
+Both exact names are now present in all packs. The old `com.tvlok.tv` package
+and `com.tvlok.app.MainActivity` guesses are removed, bringing unverified
+mappings down from **75 to 73**.
+
+The generic TL broadcast shell is replaced with an original monoline drawing
+of the app's tilted violet tile behind a cyan play tile. Two sampled flat
+accents replace the vendor gradients; the normal banner supplies the name.
+
+[`tools/reference/tvlok/`](../tools/reference/tvlok/) retains the static
+manifest/resource receipt and small, hash-pinned reference thumbnails.
+Original resource hashes and downsized-image hashes are separate. No APK,
+vendor pixels or vendor paths are shipped as pack artwork.
+
+The [read-only inspection job](https://github.com/brevityA/CoreBuildsApps/actions/runs/40303327290)
+never installed or executed the APK. Its temporary branch-only workflow is
+removed from the final patch. No normal build fetches TVLok. This is static
+APK evidence, **not physical-device confirmation** or proof of the exact
+version installed by the reporter.
+
+## Five existing-icon mapping fixes retained
+
+Each reported component was missing; existing artwork and older mappings are
+preserved for all five apps.
+
+| Issue | App | Newly covered component |
 |---|---|---|
 | [#377](https://github.com/brevityA/CoreBuildsApps/issues/377) | F-Droid | `org.fdroid.fdroid/org.fdroid.MainActivity` |
 | [#378](https://github.com/brevityA/CoreBuildsApps/issues/378) | Voltra TV | `com.amhkor.voltratv/com.voltra.voltratv.tv.SplashActivity` |
@@ -34,90 +71,68 @@ that the apps were installed and tested in this workspace.
 | [#380](https://github.com/brevityA/CoreBuildsApps/issues/380) | ABC iview | `au.net.abc.iview/au.net.abc.iview.ui.router.TvLauncherActivity` |
 | [#383](https://github.com/brevityA/CoreBuildsApps/issues/383) | Moonfin | `org.moonfin.androidtv/org.moonfin.androidtv.MainActivity` |
 
-Implementation details:
+F-Droid, Voltra and Poweramp use different Java namespaces from their package
+IDs; those names are kept literal. Voltra's scan text says Projectivy while
+its launcher field says Monet. This is recorded in provenance without
+changing the reported component.
 
-- F-Droid, Voltra and Poweramp use activity namespaces different from their
-  installed package IDs. Do not rewrite them to `package/.MainActivity`.
-- Voltra's scan text says Projectivy while its launcher field says Monet.
-  That inconsistency does not change the literal component to map, and the
-  mapping applies in either compatible launcher. It is recorded in provenance.
-- Catalog provenance cites each issue separately from the older reference or
-  device audit. New components are not falsely attributed to Projectivy 1.1.9.
-- Regeneration updates all three packs and both `res/xml` and `assets`
-  appfilters. Banners map to the existing banner; the two glyph packs map to
-  the existing square artwork.
-- `tests/test_mapping_hygiene.py` pins the new and legacy mappings, their
-  provenance, and all six generated appfilters. The new catalog regression
-  failed for all five reports before the fix.
-- Counts: **1022 icons**, **1246 catalog components**, **1957 emitted
-  component mappings** (full and shorthand forms where applicable).
+All seven requests use the same catalog-to-banner / standalone-glyphs /
+Glyphs Pack generation path, including both `res/xml` and `assets` copies.
 
-Leave these issues open until the changes are reviewed and shipped; ask for
-on-device confirmation after users install the new build and reapply the pack.
+## Verification
 
-## Requests not marked ready
+- Validator: **Validated 1023 icons · 1958 components · 33803 checks run;
+  33803 passed**.
+- Mapping hygiene: **15 tests**; icon identity: **75 tests**; glyph-pack
+  contracts: **40 tests**; themed icons: **4 tests** — passed locally.
+- Icon centring, uniformity, wordmark, stroke-spacing, palette and look-alike
+  checks pass: **70 accepted pairs, no new collisions**, no baseline waiver.
+- Play listing/build policy, changelog, updater-manifest, CI coverage and CI
+  dependency tests pass.
+- Suite truth, release contracts, issue-prefill, Gradle envelope, Dependabot,
+  resources, appfilter integrity, glyph metrics/fit and UI/store-listing
+  freshness gates pass.
+- The new mapping regressions failed before the catalog changes. Reference
+  hashes, pixel-derived accents, the TV alias and all six appfilters are
+  pinned by offline tests.
+- Visual review: [`request-icons-preview.png`](request-icons-preview.png),
+  generated with `python tools/build_icon_review.py --requests`. It shows
+  both requests at 128/64px, actual 320×180 banners and unchanged neighbours.
+- Existing unrelated icon artwork and native launcher branding are unchanged.
+  Only SPORT FM TV is added and TVLok is redrawn. The temporary inspection
+  workflow is absent from the final tree.
 
-| Issue | Status | What is needed |
-|---|---|---|
-| [#382](https://github.com/brevityA/CoreBuildsApps/issues/382) — SPORT FM TV | New-icon request; component supplied, artwork pending | `gr.sportfmtv.app/com.yinzcam.connectedtv.MainActivity` is reported from a SHIELD. Obtain a verifiable stock-icon reference from the linked Play listing or a clear screenshot, then draw and review its Core monoline mark, square and banner. Do not guess artwork or substitute an unrelated sports icon. |
-| [#352](https://github.com/brevityA/CoreBuildsApps/issues/352) — TVLok | Still `needs-info`; no new reporter reply | The component field contains `Using monet launcher`, not `package/activity`. Need the scanner's exact component and a screenshot of the correct icon. Keep the two existing package guesses flagged unverified until there is evidence. |
+Android compilation, APK packaging and emulator checks run in the PR's CI;
+this authoring workspace has no Java or Android SDK. The vendor APK inspection
+is not an Android build of this icon pack. Physical-device auto-assignment
+still needs confirmation after installation.
 
-SPORT FM TV can join this release once its artwork is verified. The five
-mapping fixes do not depend on that research or on TVLok's reply.
+## Release boundaries
 
-## Standing issues
+The branch started at `main` commit
+`da6812d49b9fd41bb41a072772b13223b2bff68c`, with **2.5.2 / 60** and the glyphs
+identity fix from [#384](https://github.com/brevityA/CoreBuildsApps/pull/384).
+The [2.5.2 Play bundle build](https://github.com/brevityA/CoreBuildsApps/actions/runs/40260587118)
+succeeded, but those AABs do **not** contain this request batch. Play build
+success is not evidence of an upload or rollout in Play Console.
 
-- [#71 — version truth](https://github.com/brevityA/CoreBuildsApps/issues/71):
-  keep Gradle, suite, catalog, bundled metadata, README and agent-guide versions
-  synchronized. The published feed intentionally lags an unshipped build.
-- [#72 — unverified components](https://github.com/brevityA/CoreBuildsApps/issues/72):
-  ongoing evidence collection, not a reason to invent launcher activities.
-  This patch does not clear or add any unverified flags.
-- [#73 — Downloader QA](https://github.com/brevityA/CoreBuildsApps/issues/73):
-  after a real release/floating-tag move, verify the stable APKs' sizes,
-  package IDs, version codes, signatures and existing Downloader codes.
-  This branch does not move tags or claim that external QA happened.
+At triage, the sideload feed still advertised **2.5.1 / 59** and no `v2.5.2`
+release was listed. The prior glyphs fix therefore remains under
+`[Unreleased]`, alongside these changes. This work does not publish or modify
+`Latestrelease/version.json`, release assets, tags or Downloader pointers.
 
-## Keep outside this compatibility patch
+No paid-tier changes or major dependency upgrades are included. Premium/Plus
+PRs #360/#370, their review #371 and Play Billing upgrade #381 remain separate.
 
-- [#370 — Plus / Projectivy wallpapers](https://github.com/brevityA/CoreBuildsApps/pull/370):
-  separate feature work with TV/provider verification still needed.
-- [#360 — Premium](https://github.com/brevityA/CoreBuildsApps/pull/360) and
-  [#371 — launch review](https://github.com/brevityA/CoreBuildsApps/pull/371):
-  settle the paid-tier decision and reconcile it with existing Plus before
-  including it in a later feature release. No paid-tier changes here.
-- [#381 — Play Billing 9.1.0](https://github.com/brevityA/CoreBuildsApps/pull/381):
-  major dependency update needs its own Play compilation, minimum-SDK and
-  purchase-flow review. It is not needed for any of the five mapping fixes.
-- The open Core Shift, Core Line dependency, Play-console documentation and
-  morph-experiment PRs are not part of these icon-pack issue fixes. In
-  particular, the morph experiments are marked test-only.
+## Remaining release work
 
-## Verification completed on this branch
-
-- `python tools/validate.py`: **Validated 1022 icons · 1957 components ·
-  33768 checks run; 33768 passed**.
-- Mapping hygiene: **12 tests**; glyph-pack contracts: **40 tests**; icon
-  identity: **72 tests**; themed icons: **4 tests** — all passed.
-- Play listing/build, changelog, updater-manifest and CI-coverage tests passed.
-- Suite truth, release/update contracts, issue-prefill, Gradle envelope,
-  Dependabot, UI resources, appfilter integrity, glyph metrics/fit, palette,
-  look-alikes, UI mockups, Play listing freshness and TV layout checks passed.
-- Diff verification confirms **no catalog SVG, square/banner drawable,
-  launcher-layer or published-feed changes**. The changed preview images
-  reflect the new version, counts and release highlights, not new icon art.
-- **Not run:** a new Android APK/AAB build or device test. Java, `adb` and the
-  Android SDK are absent from this workspace. No 2.5.3 PR has been merged, no
-  release has been published, and no issue has been closed by this work.
-
-## Before release
-
-1. Finish the scope decision for SPORT FM TV; do not count it as delivered yet.
-2. Run the catalog generators, validator, mapping/identity/glyph-pack tests,
-   release truth gates and generated UI/store-listing checks.
-3. Review and merge this branch after CI passes; nothing is auto-merged here.
-4. Build the **2.5.3** Play AABs and sideload APKs from that reviewed source.
-   The existing 2.5.2 AABs do not contain these five new mappings.
-5. Publish the sideload release before updating its public manifest, perform
-   Downloader QA, and request device confirmation for the five fixes. Play
-   Console upload/rollout is a separate owner action.
+1. Review the changes and PR CI results; merge only when approved.
+2. Build the **2.5.3 Play AABs** from the reviewed main revision. Each bundle
+   goes to its existing Play package; do not reuse the 2.5.2 artifacts.
+3. Publish the sideload release before its public update manifest is advanced.
+4. Perform [#73 Downloader QA](https://github.com/brevityA/CoreBuildsApps/issues/73)
+   and request on-device confirmation for the seven user reports. Keep them
+   open until the fixes are shipped; none is closed by this work.
+5. Continue the standing [#71 version-truth](https://github.com/brevityA/CoreBuildsApps/issues/71)
+   and [#72 unverified-components](https://github.com/brevityA/CoreBuildsApps/issues/72)
+   trackers. Removing two disproven guesses does not complete all mapping QA.

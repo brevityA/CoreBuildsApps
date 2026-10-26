@@ -2203,6 +2203,8 @@
     <!-- Speedtest TV -->
     <item component="ComponentInfo{com.rma.speedtesttv/com.rma.speedtesttv.ui.SplashActivity}" drawable="speedtesttv"/>
     <item component="ComponentInfo{com.rma.speedtesttv/.ui.SplashActivity}" drawable="speedtesttv"/>
+    <!-- SPORT FM TV -->
+    <item component="ComponentInfo{gr.sportfmtv.app/com.yinzcam.connectedtv.MainActivity}" drawable="sport_fm_tv"/>
     <!-- Sport TV -->
     <item component="ComponentInfo{pt.sporttv.app.androidtv/pt.sporttv.app.ui.SplashScreenTVActivity}" drawable="sport_tv"/>
     <!-- Sports Everywhere -->
@@ -2604,10 +2606,10 @@
     <item component="ComponentInfo{net.cj.cjhv.gs.tving/net.cj.cjhv.gs.tving.view.scaleup.ScaleupIntroActivity}" drawable="tving"/>
     <item component="ComponentInfo{net.cj.cjhv.gs.tving/.view.scaleup.ScaleupIntroActivity}" drawable="tving"/>
     <!-- TVLok -->
-    <item component="ComponentInfo{com.tvlok.app/com.tvlok.app.MainActivity}" drawable="tvlok"/>
-    <item component="ComponentInfo{com.tvlok.app/.MainActivity}" drawable="tvlok"/>
-    <item component="ComponentInfo{com.tvlok.tv/com.tvlok.tv.MainActivity}" drawable="tvlok"/>
-    <item component="ComponentInfo{com.tvlok.tv/.MainActivity}" drawable="tvlok"/>
+    <item component="ComponentInfo{com.tvlok.app/com.tvlok.app.ui.MainActivity}" drawable="tvlok"/>
+    <item component="ComponentInfo{com.tvlok.app/.ui.MainActivity}" drawable="tvlok"/>
+    <item component="ComponentInfo{com.tvlok.app/com.tvlok.app.ui.TvLauncherActivity}" drawable="tvlok"/>
+    <item component="ComponentInfo{com.tvlok.app/.ui.TvLauncherActivity}" drawable="tvlok"/>
     <!-- TVNZ+ -->
     <item component="ComponentInfo{nz.co.tvnz.ondemand.tv/nz.co.tvnz.ondemand.SplashScreenTVActivity}" drawable="tvnzplus"/>
     <!-- TVO Kids -->
