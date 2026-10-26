@@ -120,7 +120,11 @@ coreeq/app/src/test/kotlin/tv/corebuilds/eq/dsp/
 ├── EqualLoudnessTest.kt            ✅ 10 tests
 ├── MeasurementQualityTest.kt       ✅ 13 tests
 ├── NightModeTest.kt                ✅ 5 tests
-└── UseCaseTargetsTest.kt           ✅ 14 tests
+├── TargetsTest.kt                  ✅ Target-curve shape and box bell
+├── CorrectionCurveTest.kt          ✅ Correction curve, nulls, roll-off
+├── CorrectionReportTest.kt         ✅ Per-band reasons and room advice
+├── PeakingFitTest.kt               ✅ Filter fit budget, determinism, preamp
+└── (UseCaseTargetsTest.kt)         ✗ removed with UseCaseTargets in 1.7.0
 
 coreeq/app/src/test/kotlin/tv/corebuilds/eq/mode/
 └── ContentTypeRegistryTest.kt      ✅ 18 tests

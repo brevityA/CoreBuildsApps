@@ -1,16 +1,19 @@
 {
-  "versionCode": 15,
-  "versionName": "1.6.1",
-  "releaseDate": "2026-10-25",
+  "versionCode": 16,
+  "versionName": "1.7.0",
+  "releaseDate": "2026-10-26",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "e4d54b2d39b7438be57a314ef3525d86a8ea25c32f7daa3c193f374a14776c8a",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.6.1",
+  "apkSha256": "a8ee70b413dcf44800db4f6e3c95d4fa8f7acdbb02620bfc90a6008ae649d9cc",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.7.0",
   "minSdk": 30,
   "highlights": [
-    "Optional MediaSession-based app identity for mode rules.",
-    "First-install welcome and guided setup.",
-    "Playback identity diagnostics.",
-    "Portable Core EQ profile exchange.",
-    "Poweramp preset JSON export."
+    "You can now set how far up the correction reaches.",
+    "The result card says why each band was left alone.",
+    "The \"corrects X\u2013Y kHz\" line was wrong whenever a ceiling applied.",
+    "The parametric export always names its correction band, and now names the right one.",
+    "A/B switch on Home, and it does not cheat.",
+    "JBL Bar 2.0 \u00b7 Everyday preset.",
+    "\"JBL Bar 2.0 \u00b7 Open stage\" is now \"\u00b7 Air\".",
+    "Honest in-app text."
   ]
 }

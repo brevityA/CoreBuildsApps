@@ -110,7 +110,11 @@ class HardwarePresetsTest {
         // A 125 Hz bell's skirt reaches into 40 to 70 Hz, so no positive 125 Hz lift can
         // be exactly zero there. The measured worst case is about 0.8 dB; this guards
         // against a regression beyond that.
-        assertEquals(7, bar20.presets.size)
+        //
+        // Deliberately no assertion on how many presets the bar has: that number was a
+        // tripwire that fired when the Everyday preset was added, and it says nothing
+        // about the property under test. Every preset present is checked instead.
+        assertTrue("the bar must ship presets at all", bar20.presets.isNotEmpty())
         for (preset in bar20.presets) {
             var worst = -99.0
             var hz = 40.0
@@ -127,6 +131,8 @@ class HardwarePresetsTest {
         val ids = bar20.presets.map { it.id }
         assertTrue(ids.containsAll(listOf("jbl-bar-2-0-movie", "jbl-bar-2-0-dialogue", "jbl-bar-2-0-music", "jbl-bar-2-0-late-night")))
         assertTrue(ids.containsAll(listOf("jbl-bar-2-0-open-stage", "jbl-bar-2-0-centred-vocal", "jbl-bar-2-0-bass-forward")))
+        // The everyday curve is the one a name match lands on, so it must be present.
+        assertTrue(ids.contains("jbl-bar-2-0-everyday"))
     }
 
     @Test

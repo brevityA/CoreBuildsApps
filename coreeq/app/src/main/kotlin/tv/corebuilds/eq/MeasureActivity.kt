@@ -22,6 +22,7 @@ import tv.corebuilds.eq.apply.DynamicsProcessingEngine
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.dsp.Correction
+import tv.corebuilds.eq.dsp.CorrectionReport
 import tv.corebuilds.eq.dsp.CustomTarget
 import tv.corebuilds.eq.dsp.DspConstants
 import tv.corebuilds.eq.dsp.ImportResult
@@ -86,6 +87,8 @@ class MeasureActivity : TvActivity() {
         val kind: SweepKind,
         val target: String,
         val volumeM3: Double?,
+        /** Top of the corrected band, as chosen when the sweep started. */
+        val ceilingHz: Double,
         val targetIndex: Int,
         val roomIndex: Int,
         /** SEAT: the seats so far, first seat first. */
@@ -110,12 +113,14 @@ class MeasureActivity : TvActivity() {
     private lateinit var btnImport: Button
     private lateinit var btnRoom: Button
     private lateinit var btnTarget: Button
+    private lateinit var btnCeiling: Button
     private lateinit var cardRefine: View
     private lateinit var btnAddSeat: Button
     private lateinit var btnCheck: Button
 
     private var roomIndex = 1
     private var targetIndex = 0
+    private var ceilingIndex = CorrectionLimits.CeilingChoice.DEFAULT.index
     private var useCustomTarget = false
     private lateinit var btnTargetImport: Button
     private var result: SweepResult? = null
@@ -176,6 +181,7 @@ class MeasureActivity : TvActivity() {
         btnImport = findViewById(R.id.btn_measure_import)
         btnRoom = findViewById(R.id.btn_room_size)
         btnTarget = findViewById(R.id.btn_target)
+        btnCeiling = findViewById(R.id.btn_ceiling)
         btnTargetImport = findViewById(R.id.btn_target_import)
         cardRefine = findViewById(R.id.card_refine)
         btnAddSeat = findViewById(R.id.btn_measure_add_seat)
@@ -184,6 +190,9 @@ class MeasureActivity : TvActivity() {
         val prefs = getSharedPreferences(PREFS, MODE_PRIVATE)
         roomIndex = prefs.getInt(KEY_ROOM, 1).coerceIn(ROOMS.indices)
         targetIndex = prefs.getInt(KEY_TARGET, 0).coerceIn(TARGETS.indices)
+        // A stored index from a build with a different list is clamped by
+        // CeilingChoice rather than trusted.
+        ceilingIndex = prefs.getInt(KEY_CEILING, CorrectionLimits.CeilingChoice.DEFAULT.index)
         restoreCustomTarget(prefs)
 
         btnRoom.setOnClickListener {
@@ -204,6 +213,12 @@ class MeasureActivity : TvActivity() {
             refreshChoices()
         }
         btnTargetImport.setOnClickListener { pickTargetFile() }
+        btnCeiling.setOnClickListener {
+            ceilingIndex = CorrectionLimits.CeilingChoice(ceilingIndex).next().index
+            prefs.edit().putInt(KEY_CEILING, ceilingIndex).apply()
+            renderCeiling()
+            refreshChoices()
+        }
         btnStart.setOnClickListener { startMeasurement() }
         btnRepeat.setOnClickListener { startRepeatMeasurement() }
         btnAddSeat.setOnClickListener { startMeasurement(SweepKind.SEAT) }
@@ -217,6 +232,21 @@ class MeasureActivity : TvActivity() {
         btnRoom.requestFocus()
     }
 
+    /**
+     * The ceiling the next analysis will use. [CorrectionLimits.ceilingHz]
+     * clamps it, so a corrupt pref cannot widen the band.
+     */
+    private fun chosenCeilingHz(): Double = CorrectionLimits.CeilingChoice(ceilingIndex).hz
+
+    private fun renderCeiling() {
+        val choice = CorrectionLimits.CeilingChoice(ceilingIndex)
+        btnCeiling.text = if (choice.isFullBand) {
+            getString(R.string.measure_ceiling_full, choice.hz.toInt())
+        } else {
+            getString(R.string.measure_ceiling_button, choice.hz.toInt())
+        }
+    }
+
     private fun refreshChoices() {
         btnRoom.text = getString(R.string.measure_room_button, ROOMS[roomIndex].label)
         btnTarget.text = if (useCustomTarget) {
@@ -224,6 +254,7 @@ class MeasureActivity : TvActivity() {
         } else {
             getString(R.string.measure_target_button, TARGETS[targetIndex].label)
         }
+        renderCeiling()
         val capture = lastCapture
         val imported = importInput
         if (imported != null && importResult != null && !measuring && !importing) {
@@ -237,6 +268,7 @@ class MeasureActivity : TvActivity() {
             val generation = ++sweepReanalysisGeneration
             val target = activeTargetKey()
             val volume = ROOMS[roomIndex].volumeM3
+            val ceiling = chosenCeilingHz()
             val selectedTargetIndex = targetIndex
             val selectedRoomIndex = roomIndex
             val seatCaptures = seats
@@ -249,7 +281,7 @@ class MeasureActivity : TvActivity() {
                     if (seatCaptures.size >= 2) {
                         val again = seatCaptures.map {
                             it.copy(
-                                result = SweepAnalysis.analyze(it.samples, it.rate, target, volume),
+                                result = SweepAnalysis.analyze(it.samples, it.rate, target, volume, ceilingHz = ceiling),
                                 targetIndex = selectedTargetIndex,
                                 roomIndex = selectedRoomIndex
                             )
@@ -257,7 +289,10 @@ class MeasureActivity : TvActivity() {
                         val averaged = SeatAverage.average(again.map { it.result }, target, volume)
                         Triple(averaged.result, again, averaged)
                     } else {
-                        Triple(SweepAnalysis.analyze(capture, lastRate, target, volume), emptyList(), null)
+                        Triple(
+                            SweepAnalysis.analyze(capture, lastRate, target, volume, ceilingHz = ceiling),
+                            emptyList(), null
+                        )
                     }
                 } catch (e: Exception) {
                     Log.w(TAG, "Re-analysis failed", e)
@@ -541,6 +576,7 @@ class MeasureActivity : TvActivity() {
             kind = kind,
             target = activeTargetKey(),
             volumeM3 = ROOMS[selectedRoomIndex].volumeM3,
+            ceilingHz = chosenCeilingHz(),
             targetIndex = selectedTargetIndex,
             roomIndex = selectedRoomIndex,
             seatsBefore = seatsBefore,
@@ -550,6 +586,7 @@ class MeasureActivity : TvActivity() {
         btnRepeat.isEnabled = false
         btnRoom.isEnabled = false
         btnTarget.isEnabled = false
+        btnCeiling.isEnabled = false
         btnSave.setText(R.string.measure_save)
         btnSave.visibility = View.GONE
         btnImport.isEnabled = false
@@ -656,7 +693,9 @@ class MeasureActivity : TvActivity() {
                 ))
             } else {
                 try {
-                    Result.success(SweepAnalysis.analyze(samples, rate, plan.target, plan.volumeM3))
+                    Result.success(
+                        SweepAnalysis.analyze(samples, rate, plan.target, plan.volumeM3, ceilingHz = plan.ceilingHz)
+                    )
                 } catch (e: MeasurementException) {
                     Result.failure(e)
                 } catch (e: Exception) {
@@ -916,7 +955,10 @@ class MeasureActivity : TvActivity() {
         val noisy = r.centresHz.indices.count {
             r.centresHz[it] >= r.floorHz && r.bandSnrDb.getOrElse(it) { Double.MAX_VALUE } < SweepAnalysis.BAND_MIN_SNR_DB
         }
-        val top = r.centresHz.lastOrNull() ?: DspConstants.F_MAX
+        // The graph's last band is where the *measurement* stopped; the
+        // correction may have stopped earlier at the user's ceiling. Reporting
+        // the band edge as the corrected range was the old, wrong claim.
+        val top = r.fMaxHz.coerceAtMost(r.centresHz.lastOrNull() ?: DspConstants.F_MAX)
         val clock = r.driftPpm?.takeIf { kotlin.math.abs(it) > SweepAnalysis.MIN_DRIFT_PPM }
             ?.let { String.format(Locale.US, " · clock drift %+.0f ppm corrected", it) } ?: ""
         val resultSummary = String.format(
@@ -935,7 +977,13 @@ class MeasureActivity : TvActivity() {
             )
             else -> getString(R.string.measure_output_unreported)
         }
-        textStatus.text = listOfNotNull(resultSummary, outputSummary, captureInfo?.summary()).joinToString("\n")
+        // Why bands were left alone, and what the room does that EQ cannot fix.
+        val reportLines = CorrectionReport.summaryLines(r, limit = 2)
+        val adviceLines = CorrectionReport.roomAdvice(r)
+        textStatus.text = (
+            listOfNotNull(resultSummary, outputSummary, captureInfo?.summary()) +
+                reportLines + adviceLines
+            ).joinToString("\n")
         renderQuality()
         updateRefineButtons()
     }
@@ -1085,7 +1133,7 @@ class MeasureActivity : TvActivity() {
         textStatus.text = getString(R.string.measure_importing)
         val worker = thread(name = "CoreEqRewReanalysis", start = false) {
             val analyzed = try {
-                RewImport.analyze(source.frequenciesHz, source.magnitudesDb, target, volume)
+                RewImport.analyze(source.frequenciesHz, source.magnitudesDb, target, volume, ceilingHz = chosenCeilingHz())
             } catch (e: Exception) {
                 Log.w(TAG, "REW re-analysis failed", e)
                 null
@@ -1173,13 +1221,15 @@ class MeasureActivity : TvActivity() {
         val analysisStatus = String.format(
             Locale.US,
             "REW %d pts · %.0f Hz–%.0f kHz · %d null%s untouched · %.0f Hz fallback; room size unused; min-phase unverified",
-            imp.pointsRead, imp.floorHz, DspConstants.F_MAX / 1000,
+            imp.pointsRead, imp.floorHz, imp.fMaxHz / 1000,
             nulls, if (nulls == 1) "" else "s", imp.transitionHz
         )
         val outputStatus = importedOutputEstimate?.let {
             getString(R.string.measure_import_output_estimate, it.name)
         } ?: getString(R.string.measure_import_output_unknown)
-        textStatus.text = analysisStatus + outputStatus
+        textStatus.text = listOf(analysisStatus, outputStatus)
+            .plus(CorrectionReport.summaryLines(imp, limit = 2))
+            .joinToString("\n")
         renderQuality()
         updateRefineButtons()
         btnSave.visibility = View.VISIBLE
@@ -1249,6 +1299,7 @@ class MeasureActivity : TvActivity() {
         btnRepeat.isEnabled = result != null && importResult == null
         btnRoom.isEnabled = true
         btnTarget.isEnabled = true
+        btnCeiling.isEnabled = true
         btnImport.isEnabled = true
         updateRefineButtons()
         EqService.send(this, EqService.ACTION_RESUME)
@@ -1325,6 +1376,7 @@ class MeasureActivity : TvActivity() {
             schroederHz = r.schroederHz,
             transitionHz = r.transitionHz,
             rolloffHz = r.floorHz,
+            correctionCeilingHz = r.fMaxHz,
             snrDb = r.snrDb,
             qualityScore = MeasurementQuality.score(r),
             nullsUntouchedHz = r.centresHz.indices.filter { r.nullMask[it] }.map { r.centresHz[it] },
@@ -1388,6 +1440,7 @@ class MeasureActivity : TvActivity() {
             schroederHz = null,
             transitionHz = imp.transitionHz,
             rolloffHz = imp.floorHz,
+            correctionCeilingHz = imp.fMaxHz,
             snrDb = null,
             nullsUntouchedHz = imp.centresHz.indices.filter { imp.nullMask[it] }.map { imp.centresHz[it] },
             preampDb = imp.preampDb,
@@ -1481,6 +1534,7 @@ class MeasureActivity : TvActivity() {
         private const val KEY_USE_CUSTOM = "use_custom_target"
         private const val KEY_AUTO_APPLIED = "auto_applied_outputs"
         private const val KEY_CUSTOM_TARGET = "custom_target_text"
+        private const val KEY_CEILING = "ceiling_index"
         /** Silence recorded before the sweep, so the noise estimate and latency have room. */
         private const val LEAD_SECONDS = 0.5
         private const val CLIP_DBFS = -0.5

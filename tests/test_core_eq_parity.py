@@ -81,5 +81,36 @@ class CorrectionLimitParity(unittest.TestCase):
                 self.assertEqual(float(m.group(1)), float(getattr(dsp, py_name)))
 
 
+
+    def test_kotlin_ceiling_choices_match_the_reference(self):
+        src = KOTLIN_LIMITS.read_text(encoding="utf-8")
+        m = re.search(r"CEILING_CHOICES_HZ = doubleArrayOf\(([^)]*)\)", src)
+        self.assertIsNotNone(m, "CEILING_CHOICES_HZ missing from CorrectionLimits.kt")
+        values = []
+        for raw in m.group(1).split(","):
+            raw = raw.strip()
+            if not raw:
+                continue
+            if raw == "MAX_HZ":
+                values.append(dsp.F_MAX)
+            else:
+                values.append(float(raw))
+        self.assertEqual(values, list(dsp.CORRECTION_CEILING_CHOICES_HZ))
+
+    def test_ceiling_never_widens_and_never_leaves_the_trusted_band(self):
+        for requested in (-1.0, 0.0, 20.0, 40.0, 500.0, 8000.0, 20000.0, float("nan"),
+                          float("inf"), float("-inf"), None):
+            with self.subTest(requested=requested):
+                value = dsp.ceiling_hz(requested)
+                self.assertGreaterEqual(value, dsp.F_MIN)
+                self.assertLessEqual(value, dsp.F_MAX)
+
+    def test_effective_ceiling_takes_the_narrower_of_measurement_and_choice(self):
+        self.assertEqual(dsp.effective_ceiling_hz(5600.0, None), 5600.0)
+        self.assertEqual(dsp.effective_ceiling_hz(5600.0, 1000.0), 1000.0)
+        self.assertEqual(dsp.effective_ceiling_hz(1000.0, 4000.0), 1000.0)
+        self.assertEqual(dsp.effective_ceiling_hz(float("nan"), 500.0), 500.0)
+        self.assertEqual(dsp.effective_ceiling_hz(0.0, None), dsp.F_MAX)
+
 if __name__ == "__main__":
     unittest.main()

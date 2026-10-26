@@ -94,7 +94,14 @@ class EqService : Service() {
         val bands: List<PlatformBand>,
         val fitReport: BackendFitReport,
         /** Opt-in BassBoost/LoudnessEnhancer on the same session; created and released with [effect]. */
-        val extras: ExtraEffects? = null
+        val extras: ExtraEffects? = null,
+        /**
+         * Which side of the A/B these band gains are. Kept next to the effect
+         * rather than inferred from the preference, because the preference is
+         * written by the caller before the service is told, and the two can
+         * disagree in the window between.
+         */
+        val side: BandMapping.AbSide = BandMapping.AbSide.CORRECTION
     )
 
     /** An effect held on one session, and where that session came from. */
@@ -337,6 +344,40 @@ class EqService : Service() {
                     Toast.makeText(this, getString(R.string.card_test_waiting), Toast.LENGTH_LONG).show()
                 }
             }
+            ACTION_SET_BYPASS -> {
+                // A caller that only sends the action, without the extra, must
+                // not flip the correction off: fall back to the state the
+                // preference already holds, which is what the UI writes.
+                val bypass = if (intent.hasExtra(EXTRA_BYPASS)) {
+                    intent.getBooleanExtra(EXTRA_BYPASS, false)
+                } else {
+                    store.bypassEnabled
+                }
+                val target = if (bypass) BandMapping.AbSide.BYPASS else BandMapping.AbSide.CORRECTION
+                // An effect can be stale even when the preference already
+                // matches — Home writes the preference itself before waking
+                // the service — so judge by what is actually held.
+                val stale = sessionEqs.values.any { it.applied.side != target }
+                if (store.bypassEnabled == bypass && !stale) {
+                    // Nothing to do: re-configuring would be one more effect
+                    // write on a TV that may be mid-sentence.
+                    return START_STICKY
+                }
+                store.bypassEnabled = bypass
+                // The effect keeps running; only its band gains change, so the
+                // listener hears the switch without a gap in audio.
+                applyAll()
+                // Only claim the switch took effect where something is actually
+                // being applied. On an output with no profile of its own the
+                // pause message from applyAll() is the true one, and replacing
+                // it with "BYPASS" would say correction is off for the wrong reason.
+                if (!suspended && !outputPaused) {
+                    report(
+                        if (bypass) getString(R.string.status_bypass_on) else getString(R.string.status_bypass_off),
+                        isError = false
+                    )
+                }
+            }
             ACTION_REFRESH_PLAYBACK_HUD -> publish()
             ACTION_REFRESH_DISCOVERY -> {
                 mediaSessionMonitor.setEnabled(MediaSessionDiscovery.hasAccess(this))
@@ -519,19 +560,31 @@ class EqService : Service() {
     private fun createBestEffect(session: Int, profile: Profile): AppliedEffect =
         createCorrection(session, profile).let { it.copy(extras = attachExtras(session)) }
 
+    /**
+     * Which side of the A/B the service is currently playing.
+     *
+     * Read from the stored preference rather than held in a field so the
+     * switch on Home and the effect the service configures cannot disagree
+     * after the activity is recreated or the service restarts. It only changes
+     * the *shape*: [BandMapping.AbSide.BYPASS] keeps the same average level.
+     */
+    private fun side(): BandMapping.AbSide =
+        if (store.bypassEnabled) BandMapping.AbSide.BYPASS else BandMapping.AbSide.CORRECTION
+
     /** Prefer DP on API 28+, and fall back to Equalizer on any construction/configuration refusal. */
     private fun createCorrection(session: Int, profile: Profile): AppliedEffect {
         var dpFailure: String? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             try {
-                val dp = DynamicsProcessingEngine.create(session, profile, limiter(), activeLayers)
+                val dp = DynamicsProcessingEngine.create(session, profile, limiter(), activeLayers, side())
                 return AppliedEffect(
                     effect = dp.effect,
                     engine = ENGINE_DYNAMICS_PROCESSING,
                     bands = dp.bandCentresHz.zip(dp.bandGainsDb).map { (hz, db) ->
                         PlatformBand(hz, (db * 100.0).roundToInt())
                     },
-                    fitReport = dp.fitReport
+                    fitReport = dp.fitReport,
+                    side = dp.side
                 )
             } catch (e: Exception) {
                 dpFailure = e.message ?: e.javaClass.simpleName
@@ -583,14 +636,15 @@ class EqService : Service() {
     @RequiresApi(Build.VERSION_CODES.P)
     private fun configureDynamicsProcessing(effect: AudioEffect, profile: Profile): AppliedEffect {
         require(effect is DynamicsProcessing) { "Unknown audio effect ${effect.javaClass.simpleName}" }
-        val dp = DynamicsProcessingEngine.configure(effect, profile, limiter(), activeLayers)
+        val dp = DynamicsProcessingEngine.configure(effect, profile, limiter(), activeLayers, side())
         return AppliedEffect(
             effect = effect,
             engine = ENGINE_DYNAMICS_PROCESSING,
             bands = dp.bandCentresHz.zip(dp.bandGainsDb).map { (hz, db) ->
                 PlatformBand(hz, (db * 100.0).roundToInt())
             },
-            fitReport = dp.fitReport
+            fitReport = dp.fitReport,
+            side = dp.side
         )
     }
 
@@ -602,12 +656,14 @@ class EqService : Service() {
         check(range != null && range.size >= 2) { "Equalizer reports no gain range" }
         val centres = List(n) { eq.getCenterFreq(it.toShort()) / 1000.0 }
         val rangeMb = range[0].toInt()..range[1].toInt()
+        val currentSide = side()
         val fit = BandMapping.fitToBackend(
             profile,
             centres,
             activeLayers,
             minGainDb = rangeMb.first / 100.0,
-            maxGainDb = rangeMb.last / 100.0
+            maxGainDb = rangeMb.last / 100.0,
+            side = currentSide
         )
         val mbs = BandMapping.millibels(fit.targetDb, rangeMb)
         for (i in 0 until n) eq.setBandLevel(i.toShort(), mbs[i])
@@ -622,7 +678,8 @@ class EqService : Service() {
             effect = eq,
             engine = ENGINE_PLATFORM_EQUALIZER,
             bands = actual,
-            fitReport = fit.report(readBackDb)
+            fitReport = fit.report(readBackDb),
+            side = currentSide
         )
     }
 
@@ -1234,6 +1291,14 @@ class EqService : Service() {
         const val ACTION_SHOW_CARD = "tv.corebuilds.eq.action.SHOW_CARD"
         /** Refresh the optional overlay after its setting or Android's overlay permission changes. */
         const val ACTION_REFRESH_PLAYBACK_HUD = "tv.corebuilds.eq.action.REFRESH_PLAYBACK_HUD"
+
+        /**
+         * Switch the A/B side. [EXTRA_BYPASS] true plays the correction's level
+         * at a flat response, false plays the measured shape again. The effect
+         * is reconfigured in place, so no audio gap is introduced.
+         */
+        const val ACTION_SET_BYPASS = "tv.corebuilds.eq.action.SET_BYPASS"
+        const val EXTRA_BYPASS = "tv.corebuilds.eq.extra.BYPASS"
         /** Re-query app identity after Notification-access or active-session changes. */
         const val ACTION_REFRESH_DISCOVERY = "tv.corebuilds.eq.action.REFRESH_DISCOVERY"
         /** AudioManager.VOLUME_CHANGED_ACTION: sent by the system on most builds, but hidden API. */
@@ -1275,6 +1340,26 @@ class EqService : Service() {
         fun disable(context: Context) {
             ProfileStore(context).correctionEnabled = false
             if (running) send(context, ACTION_STOP)
+        }
+
+        /**
+         * Play the A/B side [bypass]: flat at the correction's own average level,
+         * or the measured shape again. Writes the preference first, so the
+         * switch on Home reads back as what the service is doing even if the
+         * service is not running or refuses the intent.
+         */
+        fun setBypass(context: Context, bypass: Boolean) {
+            ProfileStore(context).bypassEnabled = bypass
+            if (!running) return
+            try {
+                context.startService(
+                    Intent(context, EqService::class.java)
+                        .setAction(ACTION_SET_BYPASS)
+                        .putExtra(EXTRA_BYPASS, bypass)
+                )
+            } catch (e: IllegalStateException) {
+                Log.w(TAG, "Could not deliver $ACTION_SET_BYPASS", e)
+            }
         }
 
         /** Deliver [action] to a running service; a no-op when correction is off. */
