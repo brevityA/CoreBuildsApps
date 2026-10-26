@@ -69,17 +69,23 @@ jobs:
                       break
               if len(raw) > 32000:
                   raise ValueError('Reference thumbnail exceeds the annotation limit')
-              payload = json.dumps({
-                  'path': 'preview/' + path.name,
+              refpath = 'preview/' + path.name
+              notice(f'TVLok reference metadata {index}', json.dumps({
+                  'path': refpath,
                   'source_resource': entry['path'],
                   'source_sha256': entry['export_sha256'],
                   'source_size': list(original.size),
                   'size': list(sample.size),
                   'transformation': 'RGBA PNG; fit within %d pixels with LANCZOS, no upscaling' % limit,
                   'sha256': hashlib.sha256(raw).hexdigest(),
-                  'base64': base64.b64encode(raw).decode('ascii'),
-              })
-              notice(f'TVLok icon resource {index}', payload)
+              }))
+              # Check annotation messages truncate at 4096 characters.
+              encoded = base64.b64encode(raw).decode('ascii')
+              chunks = [encoded[n:n+3000] for n in range(0, len(encoded), 3000)]
+              for part, chunk in enumerate(chunks):
+                  notice(f'TVLok reference chunk {index}-{part}', json.dumps({
+                      'path': refpath, 'part': part, 'total': len(chunks), 'base64': chunk,
+                  }))
           PY
       - name: Keep the static inspection receipt (not the APK)
         uses: actions/upload-artifact@v7
