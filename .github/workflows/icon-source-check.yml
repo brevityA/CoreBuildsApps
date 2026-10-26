@@ -20,8 +20,8 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
-      - name: Install optional static inspection dependency
-        run: pip install --quiet androguard==4.1.4
+      - name: Install optional static inspection dependencies
+        run: pip install --quiet androguard==4.1.4 Pillow==10.4.0
       - name: Fetch the version linked by the official download page
         env:
           APK_URL: https://downloads.tvlok.com/releases/android/tvlok-1.0.192-1129-A627B2A4F6A3E09CF17549F2407DE3D04B226B44AAB6B3375E53E7760AB47B63.apk
@@ -37,8 +37,11 @@ jobs:
         run: |
           python - <<'PY'
           import base64
+          import hashlib
+          import io
           import json
           from pathlib import Path
+          from PIL import Image
 
           def notice(title, text):
               # APK strings are data, not workflow commands. Escape all command
@@ -52,12 +55,30 @@ jobs:
           data = json.loads(receipt)
           for index, entry in enumerate(data['resources']):
               path = root / entry['path']
-              # Only small referenced icon resources are exposed; no code,
-              # APK, unrelated resources or arbitrary filesystem paths.
-              raw = path.read_bytes()
+              # Compact visual references only. Keep the original APK/resource
+              # hashes in the receipt, and label these downsized derivatives
+              # explicitly rather than presenting them as original bytes.
+              original = Image.open(path).convert('RGBA')
+              for limit in (192, 128):
+                  sample = original.copy()
+                  sample.thumbnail((limit, limit), Image.Resampling.LANCZOS)
+                  buf = io.BytesIO()
+                  sample.save(buf, format='PNG', optimize=True)
+                  raw = buf.getvalue()
+                  if len(raw) <= 32000:
+                      break
               if len(raw) > 32000:
-                  continue
-              payload = json.dumps({'path': entry['path'], 'base64': base64.b64encode(raw).decode('ascii')})
+                  raise ValueError('Reference thumbnail exceeds the annotation limit')
+              payload = json.dumps({
+                  'path': 'preview/' + path.name,
+                  'source_resource': entry['path'],
+                  'source_sha256': entry['export_sha256'],
+                  'source_size': list(original.size),
+                  'size': list(sample.size),
+                  'transformation': 'RGBA PNG; fit within %d pixels with LANCZOS, no upscaling' % limit,
+                  'sha256': hashlib.sha256(raw).hexdigest(),
+                  'base64': base64.b64encode(raw).decode('ascii'),
+              })
               notice(f'TVLok icon resource {index}', payload)
           PY
       - name: Keep the static inspection receipt (not the APK)
