@@ -1,6 +1,7 @@
 package tv.corebuilds.eq.mode
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -147,5 +148,54 @@ class ContentTypeRegistryTest {
         assertTrue(summary.contains("Movies"))
         assertTrue(summary.contains("Anime"))
         assertTrue(summary.contains("Total"))
+    }
+
+    /**
+     * The screen text is the only place a user sees what a content type does.
+     * Before 1.7.0 it described target curves that were never applied, so the
+     * description could say anything at all. These two tests tie every
+     * published number to the table the effect actually reads.
+     */
+    private fun bassPercent(description: String): Int? =
+        if (description.contains("No bass boost")) 0
+        else Regex("""Bass boost (\d+)%""").find(description)?.groupValues?.get(1)?.toInt()
+
+    private fun loudnessDb(description: String): Double? =
+        if (description.contains("no loudness gain")) 0.0
+        else Regex("""loudness \+(\d+(?:\.\d+)?) dB""").find(description)
+            ?.groupValues?.get(1)?.toDouble()
+
+    @Test
+    fun `every description states the bass strength that is applied`() {
+        for (type in ContentType.entries) {
+            val applied = tv.corebuilds.eq.apply.ExtraPlan.BASS_BOOST_STRENGTH.getValue(type) / 10
+            assertEquals(
+                "${type.title} description and BASS_BOOST_STRENGTH disagree",
+                applied.toDouble(),
+                bassPercent(type.description)?.toDouble()
+            )
+        }
+    }
+
+    @Test
+    fun `every description states the loudness gain that is applied`() {
+        for (type in ContentType.entries) {
+            val applied = tv.corebuilds.eq.apply.ExtraPlan.LOUDNESS_GAIN_MB.getValue(type) / 100.0
+            assertEquals("${type.title} loudness", applied, loudnessDb(type.description))
+        }
+    }
+
+    @Test
+    fun `no description claims a tonal or spatial effect`() {
+        // The words the old text used to promise things an equaliser cannot do.
+        val forbidden = listOf("optimisation", "optimization", "clarity", "presence", "stage", "spatial", "image")
+        for (type in ContentType.entries) {
+            for (word in forbidden) {
+                assertFalse(
+                    "${type.title} still says '$word'",
+                    type.description.contains(word, ignoreCase = true)
+                )
+            }
+        }
     }
 }

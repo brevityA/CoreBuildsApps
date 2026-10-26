@@ -1,5 +1,7 @@
 package tv.corebuilds.eq.dsp
 
+import tv.corebuilds.eq.CorrectionLimits
+
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
@@ -168,8 +170,21 @@ object SweepAnalysis {
         target: String,
         volumeM3: Double?,
         seconds: Double = Sweep.SECONDS,
-        nFilters: Int = DspConstants.PEAKING_FILTERS
+        nFilters: Int = DspConstants.PEAKING_FILTERS,
+        /**
+         * The user's chosen correction ceiling, or null for the trusted
+         * default. It can only narrow the band: [CorrectionLimits.ceilingHz]
+         * caps it at 8 kHz, and the measured bandwidth edge caps it further.
+         */
+        ceilingHz: Double? = null
     ): SweepResult {
+        // Reject an unusable request before any DSP: an empty or non-finite
+        // capture, a broken sample rate or a blank target would otherwise
+        // surface as a zero-length array or a NaN deep in the curve maths.
+        require(fs > 0) { "Sample rate must be positive, got $fs" }
+        require(recording.isNotEmpty()) { "The capture is empty" }
+        require(seconds > 0.0 && seconds.isFinite()) { "Sweep length must be positive, got $seconds" }
+        require(nFilters > 0) { "At least one peaking filter is required, got $nFilters" }
         val minSamples = ((seconds + 0.5) * fs).toInt()
         if (recording.size < minSamples) {
             throw MeasurementException(
@@ -223,8 +238,14 @@ object SweepAnalysis {
         val keep = if (edge != null) max(1, edge - 1) else allCentres.size
         val centres = allCentres.copyOf(keep)
         val bandSnr = allSnr.copyOf(keep)
-        val fMax = if (keep < allCentres.size) min(DspConstants.F_MAX, centres.last() * 2.0.pow(1.0 / 6.0))
-        else DspConstants.F_MAX
+        val measuredMax = if (keep < allCentres.size) {
+            min(DspConstants.F_MAX, centres.last() * 2.0.pow(1.0 / 6.0))
+        } else {
+            DspConstants.F_MAX
+        }
+        // The measured edge and the user's ceiling can both only narrow the
+        // corrected band. `ceiling` is what the rest of this function uses.
+        val fMax = CorrectionLimits.effectiveCeilingHz(measuredMax, ceilingHz)
 
         val targetDb = Targets.targetCurve(target, centres)
         val measured = alignTo(centres, allDb.copyOf(keep), targetDb)
@@ -232,6 +253,16 @@ object SweepAnalysis {
         val nulls = Correction.detectNulls(centres, measured)
         val rolloff = Correction.detectLowRolloff(centres, measured)
         val floorHz = max(DspConstants.F_MIN, rolloff)
+        // A speaker that only works above the ceiling leaves nothing to
+        // correct. Refuse with the reason rather than throwing a bare
+        // "corrected band is empty" from the curve maths.
+        if (fMax <= floorHz) {
+            throw MeasurementException(
+                "The correction ceiling (${"%.0f".format(fMax)} Hz) is at or below where this " +
+                    "speaker starts working (${"%.0f".format(floorHz)} Hz), so there is nothing to correct. " +
+                    "Raise the ceiling or measure again."
+            )
+        }
         val (gdFreqs, excess) = excessGroupDelayMs(ir, peak, fs)
         // Below the transition only, as in the reference: that is where the
         // corrector inverts; above it the field is diffuse and the correction

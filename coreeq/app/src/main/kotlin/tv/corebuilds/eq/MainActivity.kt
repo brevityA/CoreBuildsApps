@@ -47,6 +47,7 @@ class MainActivity : TvActivity() {
     private lateinit var textProfileSub: TextView
     private lateinit var textStatus: TextView
     private lateinit var btnToggle: Button
+    private lateinit var btnAbBypass: Button
     private lateinit var graphHome: CurveGraphView
     private lateinit var bandsHome: BandSlidersView
     private lateinit var btnModes: Button
@@ -106,6 +107,8 @@ class MainActivity : TvActivity() {
             startActivity(Intent(this, MeasureActivity::class.java))
         }
         btnToggle.setOnClickListener { toggleCorrection() }
+        btnAbBypass = findViewById(R.id.btn_ab_bypass)
+        btnAbBypass.setOnClickListener { toggleBypass() }
         findViewById<Button>(R.id.btn_nav_manual_eq).setOnClickListener {
             startActivity(Intent(this, ManualEqActivity::class.java))
         }
@@ -316,6 +319,21 @@ class MainActivity : TvActivity() {
         refreshStatus()
     }
 
+    /**
+     * The A/B switch. It changes the *shape* only: the bypass plays the same
+     * correction at its own average level, so a listener is comparing what the
+     * room correction does, not which setting is louder.
+     *
+     * The preference is written first and the button re-reads it, so the label
+     * always describes the state the service will apply.
+     */
+    private fun toggleBypass() {
+        val next = !profileStore.bypassEnabled
+        EqService.setBypass(this, next)
+        refreshStatus()
+        if (next) textStatus.text = getString(R.string.ab_bypass_note)
+    }
+
     private fun refreshModeButton() {
         val decision = modeStore.currentDecision()
         btnModes.text = getString(R.string.home_mode_button, decision.mode.title)
@@ -324,6 +342,10 @@ class MainActivity : TvActivity() {
     private fun refreshStatus() {
         val on = profileStore.correctionEnabled
         btnToggle.showSwitch(on, R.string.correction_on, R.string.correction_off)
+        // The A/B switch only means something while a correction is playing.
+        val bypass = profileStore.bypassEnabled
+        btnAbBypass.visibility = if (on) View.VISIBLE else View.GONE
+        btnAbBypass.text = getString(if (bypass) R.string.ab_hear_corrected else R.string.ab_hear_bypass)
         val status = profileStore.status()
         // The switch above already says Off; this line says what Off means
         // rather than repeating it. Errors always show, whatever the switch.

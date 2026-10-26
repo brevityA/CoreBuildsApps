@@ -62,12 +62,15 @@ internal object TvDiscovery {
         private val lock = Any()
         private var listener: NsdManager.RegistrationListener? = null
 
-        fun start(port: Int) {
+        fun start(listenPort: Int) {
             val manager = nsd ?: return
+            // `listenPort`, not `port`: inside apply{} the receiver's own `port`
+            // shadows the parameter, which is how the call came to be written
+            // as setPort(port) in the first place.
             val info = NsdServiceInfo().apply {
                 serviceName = displayName(Build.MODEL)
                 serviceType = SERVICE_TYPE
-                setPort(port)
+                port = listenPort
             }
             val registration = object : NsdManager.RegistrationListener {
                 override fun onServiceRegistered(serviceInfo: NsdServiceInfo) {

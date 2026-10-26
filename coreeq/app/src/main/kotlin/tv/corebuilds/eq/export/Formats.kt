@@ -33,16 +33,25 @@ object Formats {
     fun exportParametricTxt(profile: Profile): String {
         val filters = profile.filters + ManualEq.sanitize(profile.manualFilters)
         val provenanceNotes = profile.measurementNotes + profile.captureInfo?.exportNotes().orEmpty()
+        val bandLine = String.format(
+            Locale.US,
+            "# Core EQ: correction band %.0f-%.0f Hz\n",
+            maxOf(DspConstants.F_MIN, profile.rolloffHz),
+            profile.correctionCeilingHz ?: DspConstants.F_MAX
+        )
         if (filters.isEmpty()) {
+            // Still name the band: a file with no filters is exactly when the
+            // reader needs to know how far the correction was supposed to reach.
             return buildString {
                 append("# Core EQ: no filters\n")
+                append(bandLine)
                 for (note in provenanceNotes) append("# Core EQ measurement note: ${safeComment(note)}\n")
             }
         }
         val pDb = exportPreampDb(profile, filters)
         val sb = StringBuilder()
         sb.append(String.format(Locale.US, "Preamp: %.2f dB\n", pDb))
-        sb.append(String.format(Locale.US, "# Core EQ: correction band %.0f-%.0f Hz\n", maxOf(DspConstants.F_MIN, profile.rolloffHz), DspConstants.F_MAX))
+        sb.append(bandLine)
         sb.append("# Core EQ: set Bands Overlap to Cascade in Poweramp Equalizer,\n")
         sb.append("# Core EQ: or the filters will not sum the way this file assumes.\n")
         if (profile.manualFilters.isNotEmpty()) {
@@ -230,8 +239,8 @@ object Formats {
         }
 
         val rangeArr = JSONArray()
-        rangeArr.put(DspConstants.F_MIN)
-        rangeArr.put(DspConstants.F_MAX)
+        rangeArr.put(maxOf(DspConstants.F_MIN, profile.rolloffHz))
+        rangeArr.put(profile.correctionCeilingHz ?: DspConstants.F_MAX)
         root.put("correction_range_hz", rangeArr)
 
         root.put("transition_hz", profile.transitionHz)
