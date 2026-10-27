@@ -1,17 +1,17 @@
 {
-  "versionCode": 17,
-  "versionName": "1.7.1",
+  "versionCode": 18,
+  "versionName": "1.8.0",
   "releaseDate": "2026-10-27",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "f01c71f9eb170af6bd088c8941ba4d9a2b42074b947b2f7e74b106f9f74ad393",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.7.1",
+  "apkSha256": "80a825f6f598930563f434cf6fcd5149beae90e105eed9ca5778b993a715b039",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.8.0",
   "minSdk": 30,
   "highlights": [
-    "A cancellation is no longer boosted behind a report that says it wasn't.",
-    "Bands are trusted by degrees instead of all-or-nothing.",
-    "A second seat buys more bass correction, and a third buys none.",
-    "The phone companion can be driven with a D-pad again.",
-    "A per-band audit for the refusals.",
+    "The check sweep now changes the correction, if you let it.",
+    "Seven rules decide how far one check is believed.",
+    "The \"before \u2192 after\" figure starts from what the check heard, not from the old measurement.",
+    "A refinement is not offered across a changed chain.",
+    "`Correction.budgetEnvelope`.",
     "Tests."
   ]
 }
