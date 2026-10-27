@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <g transform="translate(-3.5,0.0)">
+  <g transform="translate(221.83,152.00) scale(0.81250)"><defs><mask id="wuDisc-vidio" maskUnits="userSpaceOnUse" x="0" y="0" width="512" height="512"><rect width="512" height="512" fill="#000000"/><circle cx="256" cy="256" r="211" fill="#FFFFFF"/><g transform="translate(256 256) scale(0.8989) translate(-256 -256)"><g transform="translate(256 256) scale(1.4925) translate(-256 -256)"><path d="M 184.6 156.0 L 256.0 356.0 L 327.4 156.0" fill="none" stroke="#000000" stroke-width="29.82" stroke-linecap="round" stroke-linejoin="round"/></g></g></mask></defs><rect width="512" height="512" fill="#FFFFFF" mask="url(#wuDisc-vidio)"/></g>
+  <path d="M 681.3 290.8 L 693.5 256.8 L 705.7 290.8 M 685.7 279.2 L 701.3 279.2 M 726.1 290.8 L 726.1 256.8 L 735.7 256.8 C 745.2 256.8 745.2 275.1 735.7 275.1 L 726.1 275.1 M 763.2 290.8 L 763.2 256.8 L 772.8 256.8 C 782.3 256.8 782.3 275.1 772.8 275.1 L 763.2 275.1" fill="none" stroke="#FB0E4D" stroke-width="9.0" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 681.3 330.2 L 716.3 430.3 L 751.3 330.2 M 793.4 366.3 L 793.4 430.3 M 885.5 330.2 L 885.5 430.3 M 885.5 395.3 C 885.5 375.3 875.5 360.2 860.4 360.2 C 845.4 360.2 835.4 375.3 835.4 395.3 C 835.4 415.3 845.4 430.3 860.4 430.3 C 875.5 430.3 885.5 415.3 885.5 395.3 M 927.5 366.3 L 927.5 430.3 M 995.6 359.2 C 1011.6 359.2 1021.6 374.7 1021.6 395.3 C 1021.6 415.9 1011.6 431.4 995.6 431.4 C 979.6 431.4 969.6 415.9 969.6 395.3 C 969.6 374.7 979.6 359.2 995.6 359.2 Z" fill="none" stroke="#E6EDF3" stroke-width="15.0" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="793.4" cy="340.2" r="9.3" fill="#E6EDF3" stroke="none"/>
+  <circle cx="927.5" cy="340.2" r="9.3" fill="#E6EDF3" stroke="none"/>
+</g>
+</svg>

@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 import unittest
 from pathlib import Path
 
@@ -54,8 +55,8 @@ def catalog_drawables() -> list[str]:
     return sorted(i["drawable"] for i in icons)
 
 
-def alias_map() -> dict[str, str]:
-    path = WU / "values" / "aliases.xml"
+def alias_map(path: Path | None = None) -> dict[str, str]:
+    path = path or (WU / "values" / "aliases.xml")
     if not path.is_file():
         return {}
     return dict(re.findall(r'<drawable name="([^"]+)">@drawable/([^<]+)</drawable>',
@@ -173,6 +174,83 @@ class WuPreview(unittest.TestCase):
         # the README embed — GitHub renders a 19k-pixel sheet as a sliver
         hero = WU / "preview-hero.png"
         self.assertTrue(hero.is_file() and hero.stat().st_size > 30_000)
+
+
+class WuBanners(unittest.TestCase):
+    """16:9 banners in the Wu lockup: coin + light wordmark + accent kicker."""
+
+    def test_every_icon_has_a_banner_master_and_nothing_else_does(self) -> None:
+        want = set(catalog_drawables())
+        have = {p.stem for p in (WU / "banners").glob("*.svg")}
+        self.assertEqual(want - have, set(), "icons with no banner master")
+        self.assertEqual(have - want, set(), "banner masters with no icon")
+
+    def test_banner_masters_are_the_wu_lockup_in_brand_paint(self) -> None:
+        """Coin (mask knockout), Classic's ink wordmark, and at most the one
+        declared accent for the kicker — the whole 'Wu style but true to
+        brand' contract, per icon."""
+        sys.path.insert(0, str(ROOT / "tools"))
+        from icon_style import display_accent
+        icons = {i["drawable"]: i
+                 for i in json.loads(read(ROOT / "tools" / "catalog.json"))["icons"]}
+        for path in sorted((WU / "banners").glob("*.svg")):
+            src = read(path)
+            icon = icons[path.stem]
+            with self.subTest(drawable=path.stem):
+                self.assertIn('width="1280" height="720"', src)
+                self.assertIn('mask id="wuDisc-', src, "coin missing")
+                self.assertIn("#E6EDF3", src, "wordmark must set in pack ink")
+                allowed = {"#FFFFFF", "#000000", "#E6EDF3"}
+                if icon.get("category"):
+                    accent = display_accent(
+                        icon["color"],
+                        monochrome=icon.get("color_note") == "monochrome")
+                    allowed.add(accent.upper())
+                stray = [h for h in HEX_RE.findall(src)
+                         if h.upper() not in allowed]
+                self.assertEqual(
+                    stray, [],
+                    f"{path.stem}: paint outside white/ink/the brand accent "
+                    f"({stray[:3]})")
+
+    def test_banner_mapping_matches_the_shipped_pack(self) -> None:
+        """Same components, same _banner suffix as the pack a launcher
+        already applies — item for item."""
+        def items(path: Path):
+            return ITEM_RE.findall(read(path))
+        shipped = items(ROOT / "app" / "src" / "main" / "res" / "xml" / "appfilter.xml")
+        wu = items(WU / "appfilter-banners.xml")
+        self.assertTrue(shipped, "shipped banner appfilter is empty")
+        self.assertEqual(wu, shipped,
+                         "Wu banner mapping drifted from the shipped pack")
+        self.assertNotIn("<iconback", read(WU / "appfilter-banners.xml"))
+
+    def test_banner_browser_matches_the_square_browser(self) -> None:
+        squares = DRAWABLE_RE.findall(read(WU / "drawable.xml"))
+        banners = DRAWABLE_RE.findall(read(WU / "drawable-banners.xml"))
+        self.assertEqual(banners, [f"{s}_banner" for s in squares])
+        self.assertNotIn('title="Wu · ', read(WU / "drawable-banners.xml"))
+        self.assertRegex(read(WU / "drawable-banners.xml"),
+                         r'title="Wu Banners · ')
+
+    def test_every_banner_resolves_to_art(self) -> None:
+        aliases = alias_map(WU / "values" / "banner_aliases.xml")
+        missing = []
+        for name in catalog_drawables():
+            if (WEBP_DIR / f"{name}_banner.webp").is_file():
+                continue
+            target = aliases.get(f"{name}_banner")
+            if not target or not (WEBP_DIR / f"{target}.webp").is_file():
+                missing.append(name)
+        self.assertEqual(missing, [],
+                         "banners with neither WebP nor a resolving alias")
+        for alias, canon in aliases.items():
+            self.assertFalse((WEBP_DIR / f"{alias}.webp").exists(),
+                             f"{alias}: aliased but the duplicate is back")
+
+    def test_banner_preview_exists(self) -> None:
+        png = WU / "preview-banners.png"
+        self.assertTrue(png.is_file() and png.stat().st_size > 20_000)
 
 
 if __name__ == "__main__":

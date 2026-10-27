@@ -5,10 +5,15 @@ the [Core Builds Icon Pack](../README.md), built after the WuPlay mark: pure
 white ink, no accent hues, a circular container and the recognisable cue cut
 out of it as negative space — the way WuPlay's dark play wedge sits inside its
 white lobe. Same catalog, same glyphs, same component mappings; only the style
-language changes.
+language changes. Ships both arts: square coins **and 16:9 banners** in the
+same lockup WuPlay uses — mark left, wordmark right — with each app's brand
+colour kept as the one thread on the card.
 
 <div align="center"><img src="preview-hero.png" alt="Wu Pack — first page" width="760">
 <br><sub>First page — the full 1022-icon sheet: <a href="preview.png">preview.png</a></sub></div>
+
+<div align="center"><img src="preview-banners.png" alt="Wu Pack banners" width="760">
+<br><sub>16:9 banners on Projectivy-style cards</sub></div>
 
 ## Style rules
 
@@ -28,6 +33,24 @@ wide wordmarks fill the disc, square constructions sit inset like engraving.
 Both were tuned at tile size — the contact sheet's size ladder (96/64/48/32)
 is the proof.
 
+## Banners (16:9)
+
+Banners reuse Classic's composition grammar — same 320×180 canvas (1280×720
+master), same measured ink budget, same name fit solver and two-line break,
+same centring audit — with the Wu lockup:
+
+| Rule | Value |
+|---|---|
+| Mark | The Wu coin, scaled on the same 416-grid box as Classic's glyph cap |
+| Wordmark | The pack's stroke letters at **0.15×cap weight, 0.42 cap tracking** (Classic: 0.19 / 0.30) — the lighter, open WuPlay wordmark — in Brand Guide ink `#E6EDF3` |
+| Brand thread | The category kicker (VOD, STREAM, …) keeps each app's **brand accent** — the one colour on the card, and what Monet reads off it |
+| Names | Each app's own name (plus `banner_name` / `banner_glyph` / glyph-only overrides) — banners separate what monochrome squares cannot: 13 IPTV players share one coin, never one name |
+| Keyline | None — banners ship without the presence pass, exactly like Classic's |
+
+Mappings: `appfilter-banners.xml` is derived from this pack's square
+appfilter with the same `_banner` suffix rule as `build_banners_pack.py`,
+and holds the same 1950 entries as the shipped pack's banner appfilter.
+
 ## What is reused, what is not touched
 
 - **Source of truth:** `tools/catalog.json` — 1022 icons, exactly what
@@ -39,26 +62,32 @@ is the proof.
   dropped — those drawables live in the Classic app; the `scale` line stays.
 - **Classic pack: untouched.** Its validators forbid fills, containers and
   non-accent ink, and the suite keeps one shipped icon pack. This folder is
-  generated art and mappings — square only, no banners, no APK, no
-  `suite.json` row. If it ever graduates to a companion package, it would
-  follow the `glyphs/` companion pattern and needs that decision first.
+  generated art and mappings — no APK, no `suite.json` row. If it ever
+  graduates to a companion package, it would follow the `glyphs/`
+  companion pattern and needs that decision first.
 - **Known lookalikes:** once hue is dropped, 40 shape groups (112 icons —
   the 13 IPTV players on one glyph, the file managers on `folder`, …) share
   art. Accents separated them in Classic; here the browser tile repeats.
-  The mapping is unaffected, and the build prints the groups every run.
+  The mapping is unaffected, the banners tell them apart by name, and the
+  build prints the groups every run.
 
 ## Layout
 
 ```
 wu-pack/
-├── svg/                 1022 masters (mask knockout, 512)
-├── webp/                1022 → 949 tiles + values/aliases.xml (byte-identical renders ship once)
-├── values/aliases.xml   duplicate renders → canonical art
-├── appfilter.xml        component → disc (copied from the glyph companion)
-├── drawable.xml         icon browser grid, Wu categories
-├── preview.png         contact sheet on pure black (all 1022, header + ladder)
-├── preview-hero.png    first page, for README embeds
-├── preview.svg         the vector sheet preview.png is rendered from
+├── svg/                 1022 square masters (mask knockout, 512)
+├── banners/             1022 banner masters (Wu lockup, 1280×720)
+├── webp/                squares + <d>_banner tiles; dup renders ship once
+├── values/aliases.xml   square dup renders → canonical art
+├── values/banner_aliases.xml
+├── appfilter.xml         component → disc (copied from the glyph companion)
+├── appfilter-banners.xml component → <d>_banner (same 1950 entries as shipped)
+├── drawable.xml          icon browser grid, Wu categories
+├── drawable-banners.xml  banner browser grid, Wu Banners sections
+├── preview.png          contact sheet on pure black (all 1022, header + ladder)
+├── preview-hero.png     first page, for README embeds
+├── preview-banners.png  banner card mockups
+├── preview.svg / preview-banners.svg
 └── README.md
 ```
 
@@ -67,13 +96,15 @@ wu-pack/
 ```bash
 python3 -m venv .venv                    # gitignored, the repo convention
 .venv/bin/pip install -r tools/requirements.txt
-.venv/bin/python tools/build_wu_pack.py            # full: SVG + WebP + XML + sheet
+.venv/bin/python tools/build_wu_pack.py            # squares: SVG + WebP + XML + sheet
+.venv/bin/python tools/build_wu_banners.py         # banners (after build_wu_pack.py)
 .venv/bin/python tools/build_wu_pack.py --svg-only # masters + XML + sheet, no raster
 ```
 
-The generator runs the Classic catalog validation first (same gate
-`tools/build_icons.py` uses), then prints receipts for everything it wrote.
+Both generators run the Classic catalog validation first (same gate
+`tools/build_icons.py` uses), then print receipts for everything they wrote.
 Gate: `python3 tests/test_wu_pack.py` (stdlib only — style constants,
-monochrome masters, mapping parity, art resolution, sheet coverage).
+monochrome masters, mapping parity with both shipped appfilters, art
+resolution, sheet coverage).
 
 Never hand-edit this folder — regenerate.

@@ -13,8 +13,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
   space, no accent hues, bolder constant weight. It is generated from the
   same catalog by `tools/build_wu_pack.py` — 1022 SVG masters, lossless
   WebP tiles with the Classic night keyline, the shipped glyph companion's
-  component mappings and a full contact sheet under `wu-pack/`. The Classic
-  pack's art, validators and shipped app are untouched; `tests/test_wu_pack.py`
+  component mappings and a full contact sheet under `wu-pack/`. Banners
+  follow in the WuPlay lockup via `tools/build_wu_banners.py` — coin,
+  light tracked wordmark, category kicker in each brand's accent, the same
+  1950 entries as the shipped banner appfilter. The Classic pack's art,
+  validators and shipped app are untouched; `tests/test_wu_pack.py`
   pins the style constants, monochrome masters and mapping parity.
 
 ### Fixed
