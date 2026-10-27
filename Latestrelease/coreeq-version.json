@@ -1,19 +1,17 @@
 {
-  "versionCode": 16,
-  "versionName": "1.7.0",
-  "releaseDate": "2026-10-26",
+  "versionCode": 17,
+  "versionName": "1.7.1",
+  "releaseDate": "2026-10-27",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "a8ee70b413dcf44800db4f6e3c95d4fa8f7acdbb02620bfc90a6008ae649d9cc",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.7.0",
+  "apkSha256": "f01c71f9eb170af6bd088c8941ba4d9a2b42074b947b2f7e74b106f9f74ad393",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.7.1",
   "minSdk": 30,
   "highlights": [
-    "You can now set how far up the correction reaches.",
-    "The result card says why each band was left alone.",
-    "The \"corrects X\u2013Y kHz\" line was wrong whenever a ceiling applied.",
-    "The parametric export always names its correction band, and now names the right one.",
-    "A/B switch on Home, and it does not cheat.",
-    "JBL Bar 2.0 \u00b7 Everyday preset.",
-    "\"JBL Bar 2.0 \u00b7 Open stage\" is now \"\u00b7 Air\".",
-    "Honest in-app text."
+    "A cancellation is no longer boosted behind a report that says it wasn't.",
+    "Bands are trusted by degrees instead of all-or-nothing.",
+    "A second seat buys more bass correction, and a third buys none.",
+    "The phone companion can be driven with a D-pad again.",
+    "A per-band audit for the refusals.",
+    "Tests."
   ]
 }
