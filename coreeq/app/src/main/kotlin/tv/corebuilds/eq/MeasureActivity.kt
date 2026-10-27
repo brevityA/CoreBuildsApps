@@ -375,7 +375,7 @@ class MeasureActivity : TvActivity() {
         if (averaged != null && seats.size >= 2) {
             lines += String.format(
                 Locale.US, getString(R.string.measure_seats_summary),
-                seats.size - (if (averaged.leftOut != null) 1 else 0), SweepAnalysis.SINGLE_SEAT_BOOST_DB
+                averaged.seatsUsed, averaged.boostBudgetDb
             )
             val out = averaged.leftOut
             val offDb = averaged.leftOutDb
@@ -1392,10 +1392,9 @@ class MeasureActivity : TvActivity() {
                     savedRepeatability.note?.let { add(it) }
                 }
                 if (averaged != null) {
-                    val used = seats.size - (if (averaged.leftOut != null) 1 else 0)
                     add(String.format(Locale.US,
-                        "Energy average of %d seats (%d measured): each band is the mean power across seats, then corrected as one seat would be, with the bass lift still capped at %.0f dB below the transition. A band is corrected only where every seat measured it cleanly. The microphone, output and capture details are the first seat's.",
-                        used, seats.size, SweepAnalysis.SINGLE_SEAT_BOOST_DB))
+                        "Energy average of %d seats (%d measured): each band is the mean power across seats, then corrected with the limits unchanged apart from the bass budget, which rises to %.0f dB below the transition because more than one seat agreed on the dip. A band is corrected only where every seat measured it cleanly, and only as far as the weakest seat is trusted. The microphone, output and capture details are the first seat's.",
+                        averaged.seatsUsed, seats.size, averaged.boostBudgetDb))
                     val out = averaged.leftOut
                     val offDb = averaged.leftOutDb
                     if (out != null && offDb != null) {

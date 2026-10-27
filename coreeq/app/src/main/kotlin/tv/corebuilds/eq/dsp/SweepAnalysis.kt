@@ -58,7 +58,15 @@ data class SweepResult(
      * whose decay put its transition lower cannot switch on a band its own test failed.
      * Empty on results built without it, where [minPhaseOk] stands in.
      */
-    val phaseGate: BooleanArray = BooleanArray(0)
+    val phaseGate: BooleanArray = BooleanArray(0),
+    /**
+     * How far each band's correction is trusted, 0..1, from its own signal over
+     * noise ([Correction.bandConfidence]). The correction has already been
+     * scaled by it; kept so the report can say "partly trusted" instead of
+     * calling a marginal band either clean or unusable. Empty when the source
+     * carried no per-band SNR (a REW import).
+     */
+    val confidence: DoubleArray = DoubleArray(0)
 )
 
 /**
@@ -271,6 +279,10 @@ object SweepAnalysis {
         checkTimeline(centres, gate, transition)
         val minPhaseOk = BooleanArray(centres.size) { gate[it] || centres[it] >= transition }
         val correctable = BooleanArray(centres.size) { minPhaseOk[it] && bandSnr[it] >= BAND_MIN_SNR_DB }
+        // Trust is graded, not a cliff: a band on the gate keeps nothing, a
+        // marginal one keeps part of its correction. The gates still decide
+        // *whether* a band may be touched; the weight decides how much.
+        val confidence = Correction.bandConfidence(bandSnr)
         val correction = Correction.calculateCorrectionCurve(
             centres, measured, targetDb,
             fMin = floorHz,
@@ -278,7 +290,8 @@ object SweepAnalysis {
             transitionHz = transition,
             nullMask = nulls,
             minPhaseOk = correctable,
-            maxBoostBelowTransition = SINGLE_SEAT_BOOST_DB
+            maxBoostBelowTransition = Correction.boostBudgetDb(1),
+            confidence = confidence
         )
         val filters = Peaking.fitPeakingFilters(centres, correction, nFilters)
 
@@ -302,7 +315,8 @@ object SweepAnalysis {
             rt60ByOctave = octaves,
             driftPpm = drift,
             fMaxHz = fMax,
-            phaseGate = gate
+            phaseGate = gate,
+            confidence = confidence
         )
     }
 

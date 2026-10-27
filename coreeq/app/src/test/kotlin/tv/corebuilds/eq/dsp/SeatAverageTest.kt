@@ -119,15 +119,98 @@ class SeatAverageTest {
         assertTrue(combined.minPhaseOk[idx(400.0)])
     }
 
+    /**
+     * A dip broad enough to be a room dip rather than a cancellation, so the
+     * corrector is actually allowed to lift it. The previous fixture (a narrow
+     * -9 dB notch) was detected as a null and produced no boost at all, so the
+     * old version of this test asserted 0 <= 2 dB and could never fail.
+     */
+    private val broadDip = mapOf(
+        80.0 to -6.0, 100.0 to -7.0, 125.0 to -7.0, 160.0 to -6.0, 200.0 to -4.0
+    )
+
+    private fun maxBoostBelowTransition(r: SweepResult): Double =
+        centres.indices.filter { centres[it] < r.transitionHz }
+            .maxOfOrNull { r.correctionDb[it] } ?: 0.0
+
     @Test
-    fun `bass is never lifted past the single-seat limit`() {
-        val dip = mapOf(50.0 to -9.0, 63.0 to -9.0)
-        val combined = SeatAverage.combine(listOf(seat(dip), seat(dip), seat(dip)), "flat", null)
-        for (k in centres.indices) {
-            if (centres[k] < combined.transitionHz) {
-                assertTrue("boost at ${centres[k]} Hz", combined.correctionDb[k] <= SweepAnalysis.SINGLE_SEAT_BOOST_DB + 1e-9)
+    fun `one seat is held to the single-seat bass boost`() {
+        val only = seat(broadDip)
+        assertEquals(0, only.nullMask.count { it })
+        val boost = maxBoostBelowTransition(only)
+        assertTrue("the fixture must ask for some bass, was $boost dB", boost > 0.5)
+        assertTrue(
+            "one seat lifted $boost dB past ${SweepAnalysis.SINGLE_SEAT_BOOST_DB} dB",
+            boost <= SweepAnalysis.SINGLE_SEAT_BOOST_DB + 1e-9
+        )
+    }
+
+    @Test
+    fun `a second seat buys a deeper bass correction, and a third buys no more`() {
+        val one = seat(broadDip)
+        val two = SeatAverage.combine(listOf(seat(broadDip), seat(broadDip)), "flat", null)
+        val three = SeatAverage.combine(List(3) { seat(broadDip) }, "flat", null)
+
+        val oneBoost = maxBoostBelowTransition(one)
+        val twoBoost = maxBoostBelowTransition(two)
+        // The evidence a second seat adds is the whole point of the higher cap.
+        assertTrue(
+            "two seats lifted $twoBoost dB, no more than one seat's $oneBoost dB",
+            twoBoost > oneBoost + 0.2
+        )
+        assertTrue(
+            "two seats lifted $twoBoost dB past the multi-seat budget",
+            twoBoost <= DspConstants.MULTI_SEAT_BOOST_DB + 1e-9
+        )
+        // A third seat is more evidence of the same fact, not a licence to lift more.
+        assertEquals(
+            "a third seat must not raise the boost again",
+            twoBoost, maxBoostBelowTransition(three), 1e-9
+        )
+    }
+
+    @Test
+    fun `every averaged band stays inside the budget that was granted`() {
+        for (n in 2..3) {
+            val combined = SeatAverage.combine(List(n) { seat(broadDip) }, "flat", null)
+            val budget = Correction.boostBudgetDb(n)
+            for (k in centres.indices) {
+                if (centres[k] < combined.transitionHz) {
+                    assertTrue(
+                        "boost at ${centres[k]} Hz was ${combined.correctionDb[k]} dB, over $budget dB",
+                        combined.correctionDb[k] <= budget + 1e-9
+                    )
+                }
             }
         }
+    }
+
+    @Test
+    fun `the average reports the seats and the budget it actually used`() {
+        val averaged = SeatAverage.average(List(3) { seat(broadDip) }, "flat", null)
+        assertEquals(3, averaged.seatsUsed)
+        assertEquals(DspConstants.MULTI_SEAT_BOOST_DB, averaged.boostBudgetDb, 0.0)
+        // One seat kept out still leaves two, which is still a multi-seat budget.
+        val single = SeatAverage.average(listOf(seat(broadDip)), "flat", null)
+        assertEquals(1, single.seatsUsed)
+        assertEquals(SweepAnalysis.SINGLE_SEAT_BOOST_DB, single.boostBudgetDb, 0.0)
+    }
+
+    @Test
+    fun `confidence follows the weakest seat`() {
+        // Confidence is 0..1, built from SNR the way the analysis builds it.
+        val quiet = Correction.bandConfidence(DoubleArray(centres.size) { 30.0 })
+        val noisySnr = DoubleArray(centres.size) { 30.0 }.also { it[idx(100.0)] = 12.0 }
+        val a = seat(broadDip).copy(confidence = quiet)
+        val b = seat(broadDip).copy(confidence = Correction.bandConfidence(noisySnr))
+        val combined = SeatAverage.combine(listOf(a, b), "flat", null)
+        // 12 dB SNR is a fifth of the way up the ramp; the clean seat must not
+        // drag it back to full trust.
+        assertTrue(
+            "combined confidence ${combined.confidence[idx(100.0)]} ignored the noisy seat",
+            combined.confidence[idx(100.0)] < 0.5
+        )
+        assertEquals("a clean band keeps full trust", 1.0, combined.confidence[idx(1000.0)], 1e-9)
     }
 
     @Test

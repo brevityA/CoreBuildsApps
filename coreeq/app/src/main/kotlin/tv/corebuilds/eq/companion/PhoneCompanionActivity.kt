@@ -116,6 +116,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
         targetIndex = prefs.getInt(KEY_TARGET, 0).coerceIn(targets.indices)
         roomIndex = prefs.getInt(KEY_ROOM, 0).coerceIn(rooms.indices)
         setContentView(buildContent())
+        focusFirstControl()
 
         credentialStore.load()?.let { saved ->
             hostField.setText(saved.host)
@@ -142,6 +143,9 @@ class PhoneCompanionActivity : AppCompatActivity() {
         val scroll = ScrollView(this).apply {
             isFillViewport = true
             clipToPadding = false
+            // Children are the focus stops; the scroll container only follows them.
+            descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
+            isFocusable = false
             setBackgroundColor(color(R.color.cb_night))
             ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
                 val bars = insets.getInsets(
@@ -1178,7 +1182,11 @@ class PhoneCompanionActivity : AppCompatActivity() {
     }
 
     private fun setRemoteEnabled(enabled: Boolean) {
+        val wasHidden = remotePanel.visibility != View.VISIBLE
         remotePanel.visibility = if (enabled) View.VISIBLE else View.GONE
+        // Revealing the panel is the moment the cursor has new places to go; a
+        // D-pad that was left on a hidden control would otherwise stay stuck.
+        if (enabled && wasHidden) focusFirstControl()
         setOperationBusy(operationInProgress)
         if (!enabled) {
             pairButton.isEnabled = !operationInProgress
@@ -1300,6 +1308,17 @@ class PhoneCompanionActivity : AppCompatActivity() {
         setBackgroundResource(R.drawable.bg_card)
     }
 
+    /**
+     * A button on this screen.
+     *
+     * Every control here is built in code rather than inflated from a layout,
+     * so nothing gives it the focusability an XML `<Button>` has by default.
+     * That is why this screen is reachable from a D-pad remote (MainActivity
+     * sends any non-leanback device straight here) and yet had no focus target:
+     * the cursor had nowhere to land and nothing to move between. Focusable,
+     * clickable and not focusable-in-touch-mode is what the XML screens get for
+     * free, and the bg_cta / bg_ghost selectors already carry a focused ring.
+     */
     private fun actionButton(textValue: String, primary: Boolean): Button = Button(this).apply {
         text = textValue
         isAllCaps = false
@@ -1308,6 +1327,27 @@ class PhoneCompanionActivity : AppCompatActivity() {
         setBackgroundResource(if (primary) R.drawable.bg_cta else R.drawable.bg_ghost)
         minimumHeight = dp(48)
         setPadding(dp(12), dp(8), dp(12), dp(8))
+        isFocusable = true
+        isFocusableInTouchMode = true
+        isClickable = true
+    }
+
+    /**
+     * Put the cursor somewhere the moment the screen appears.
+     *
+     * A D-pad (or a TV remote, or a keyboard) only navigates from a focused
+     * view; with nothing focused the first press is swallowed while Android
+     * looks for a target. Called after the content is built and again when the
+     * remote panel appears, so the paired screen also starts on a real control.
+     */
+    private fun focusFirstControl() {
+        if (::scanQrButton.isInitialized && scanQrButton.visibility == View.VISIBLE && scanQrButton.isEnabled) {
+            scanQrButton.requestFocus()
+        } else if (::findTvButton.isInitialized && findTvButton.isEnabled) {
+            findTvButton.requestFocus()
+        } else if (::correctionButton.isInitialized && correctionButton.visibility == View.VISIBLE) {
+            correctionButton.requestFocus()
+        }
     }
 
     private fun matchWrap(top: Int = 0): LinearLayout.LayoutParams =

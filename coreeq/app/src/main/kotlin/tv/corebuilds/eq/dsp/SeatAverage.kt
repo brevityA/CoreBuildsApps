@@ -82,8 +82,18 @@ object SeatAverage {
         return if (worstDb > OUTLIER_RMS_DB) worst else null
     }
 
-    /** [result] is the correction; [leftOut] the seat it does not include, and how far off that seat was. */
-    data class Averaged(val result: SweepResult, val leftOut: Int?, val leftOutDb: Double?)
+    /**
+     * [result] is the correction; [leftOut] the seat it does not include, and
+     * how far off that seat was. [seatsUsed] is how many seats actually shaped
+     * it, and [boostBudgetDb] the bass boost that bought them.
+     */
+    data class Averaged(
+        val result: SweepResult,
+        val leftOut: Int?,
+        val leftOutDb: Double?,
+        val seatsUsed: Int = 1,
+        val boostBudgetDb: Double = SweepAnalysis.SINGLE_SEAT_BOOST_DB
+    )
 
     /** [combine], after leaving out the one seat [outlier] picks, if any. */
     fun average(
@@ -100,7 +110,9 @@ object SeatAverage {
         return Averaged(
             result = combine(kept, target, volumeM3, nFilters),
             leftOut = out,
-            leftOutDb = out?.let { midbandDeviationDb(centres, curves)[it] }
+            leftOutDb = out?.let { midbandDeviationDb(centres, curves)[it] },
+            seatsUsed = kept.size,
+            boostBudgetDb = Correction.boostBudgetDb(kept.size)
         )
     }
 
@@ -144,6 +156,18 @@ object SeatAverage {
         val minPhaseOk = BooleanArray(n) { k -> gate[k] || centres[k] >= transition }
         val bandSnr = DoubleArray(n) { k -> seats.minOf { it.bandSnrDb.getOrElse(k) { Double.MAX_VALUE } } }
         val correctable = BooleanArray(n) { minPhaseOk[it] && bandSnr[it] >= SweepAnalysis.BAND_MIN_SNR_DB }
+        // The weakest seat sets each band's trust: two clean seats cannot make
+        // one noisy seat's band trustworthy, which is the same rule the gates
+        // already follow.
+        val confidence = DoubleArray(n) { k ->
+            seats.minOf { seat ->
+                seat.confidence.getOrElse(k) { if (correctable[k]) 1.0 else 0.0 }
+            }
+        }
+        // Averaging is evidence, so the bass may be lifted further than one
+        // seat's cap allows — but only because more than one seat agreed, and
+        // never past MULTI_SEAT_BOOST_DB.
+        val boostBudget = Correction.boostBudgetDb(seats.size)
         val fMax = seats.minOf { it.fMaxHz }
         val correction = Correction.calculateCorrectionCurve(
             centres, measured, targetDb,
@@ -152,7 +176,8 @@ object SeatAverage {
             transitionHz = transition,
             nullMask = nulls,
             minPhaseOk = correctable,
-            maxBoostBelowTransition = SweepAnalysis.SINGLE_SEAT_BOOST_DB
+            maxBoostBelowTransition = boostBudget,
+            confidence = confidence
         )
         val filters = Peaking.fitPeakingFilters(centres, correction, nFilters)
         val octaves = SweepAnalysis.RT60_OCTAVES_HZ.associateWith { hz ->
@@ -180,7 +205,8 @@ object SeatAverage {
             rt60ByOctave = octaves,
             driftPpm = seats[0].driftPpm,
             fMaxHz = fMax,
-            phaseGate = gate
+            phaseGate = gate,
+            confidence = confidence
         )
     }
 }
