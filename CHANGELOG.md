@@ -6,6 +6,17 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Core Builds Wu Pack.** A monochrome style variant of the pack after the
+  WuPlay mark: one white disc per icon with the glyph cut out as negative
+  space, no accent hues, bolder constant weight. It is generated from the
+  same catalog by `tools/build_wu_pack.py` — 1022 SVG masters, lossless
+  WebP tiles with the Classic night keyline, the shipped glyph companion's
+  component mappings and a full contact sheet under `wu-pack/`. The Classic
+  pack's art, validators and shipped app are untouched; `tests/test_wu_pack.py`
+  pins the style constants, monochrome masters and mapping parity.
+
 ### Fixed
 
 - **Glyphs apps keep their own icon when the pack is applied.** The catalog
