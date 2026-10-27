@@ -6,6 +6,20 @@ Core EQ (`tv.corebuilds.eq`) keeps its own changelog. The repository-root
 must never land there. Releases are `coreeq-v<version>` tags (see
 `PUBLISHING.md`).
 
+## [1.7.1] — 2026-10-27
+
+**Nothing below was checked on a TV, a phone or a soundbar.** The correction
+arithmetic is covered by the off-device unit suite and by the Python reference
+in `tools/core_eq_dsp.py`; the phone-companion screen needs the Android SDK, was
+not compiled here, and has not been run. No acoustic measurement was taken.
+
+- **A cancellation is no longer boosted behind a report that says it wasn't.** The corrector refused nulls and minimum-phase-gated bands on the raw curve, and then two later steps moved every band: the slope limiter, and — decisively — the re-centring pass, which adds one constant to all of them. In a room that is hot against the target the correction mean is negative, so re-centring lifts the whole curve, and a null that had been zeroed came back at **+2.2 dB** and a gated band at **+3.0 dB** — in the same result that told you `63 Hz · deep null · not boosted`. Both refusals are now re-asserted on the finished curve, after every step that can move it, in the app and in the reference. Found while making the corrector smarter; the new tests fail on the old code with exactly those numbers. Not measured in a room.
+- **Bands are trusted by degrees instead of all-or-nothing.** A band 0.1 dB over the 10 dB signal-to-noise gate used to be corrected in full and a band 0.1 dB under it left at zero, so two sweeps of the same room could disagree by the whole correction. Trust now ramps from nothing at the gate to full at 20 dB over it, and the correction is scaled by it: a marginal band asks for less rather than being switched on or off. The gates still decide *whether* a band may be touched.
+- **A second seat buys more bass correction, and a third buys none.** Below the transition the bass lift was capped at +2 dB for one seat, because one seat cannot tell the room's dip from that chair's. When two or more seats were averaged that evidence exists, so the cap rises to **+3 dB** — still far below the +6 dB ceiling, because the microphone stays uncalibrated either way. The result card and the saved profile now state the budget that was actually used.
+- **The phone companion can be driven with a D-pad again.** Every control on that screen is built in code, and a `Button` constructed in code is *not* focusable the way one inflated from a layout is — so the screen had no focus targets at all and nothing ever requested initial focus. On a phone that is invisible; on a remote the cursor has nowhere to land and the first press is swallowed. It matters beyond phones: Home sends **any** device without `FEATURE_LEANBACK` straight to this screen, so a TV box or projector running a phone-style Android build lands there with a remote in hand. The button builder now sets focusable/clickable, the screen places the cursor when it opens, moving it into the remote panel when that appears, and the scroll container hands focus to its children instead of holding it. **The screen was not compiled or run here** — the properties are pinned by `tests/test_core_eq_companion_focus.py`, which fails on the previous source.
+- **A per-band audit for the refusals.** `CorrectionReport.gateViolations` reports any band whose gate and whose applied gain disagree. The wording still describes the gate, as before; this is the check that says whether the curve kept its promise.
+- **Tests.** Eight new Kotlin cases on the curve (the two leaks above, the general "every refusal survives the finished curve" case, the confidence ramp, its NaN/unreadable handling, half-trust halving a gain, and the seat budget) and eight in the Python reference, plus the companion-focus contract above. Two new constants pairs are held to the reference by `tests/test_core_eq_parity.py`.
+
 ## [1.7.0] — 2026-10-25
 
 **Nothing below was checked on a TV, a phone or a soundbar.** Every figure and

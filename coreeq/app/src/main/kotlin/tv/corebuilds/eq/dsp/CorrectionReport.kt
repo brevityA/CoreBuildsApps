@@ -119,6 +119,13 @@ object CorrectionReport {
             val snr = if (i < bandSnrDb.size) bandSnrDb[i] else Double.NaN
             val nulled = i < nullMask.size && nullMask[i]
             val phaseOk = i >= minPhaseOk.size || minPhaseOk[i]
+            // The reason describes the gate, not the gain: "why was this band
+            // left alone" is answered by what the measurement failed, and a
+            // null that is legitimately *cut* still reads as a null rather than
+            // as an ordinary correction. The curve and the gate are kept in
+            // agreement by the corrector itself (1.7.1), and [gateViolations]
+            // is the audit that says so — a reason that disagrees with its gain
+            // is a bug in the curve, not in this sentence.
             val kind = when {
                 hz > fMaxHz -> Kind.ABOVE_CEILING
                 hz < floorHz -> Kind.BELOW_FLOOR
@@ -133,6 +140,25 @@ object CorrectionReport {
         }
         return reasons
     }
+
+    /**
+     * Bands where a refusal and the gain actually applied disagree: a null that
+     * carries a boost, or a minimum-phase-gated band that carries anything.
+     *
+     * This is the check that would have caught the 1.7.0 defect, where
+     * re-centring lifted zeroed bands back to +2 dB while the result card said
+     * "not boosted". [classify] now reports such a band by its sign, so a
+     * non-empty result here means the curve itself broke its contract rather
+     * than the wording.
+     */
+    fun gateViolations(result: SweepResult): List<BandReason> =
+        classify(result).filter { reason ->
+            val i = result.centresHz.indexOfFirst { it == reason.hz }
+            if (i < 0) return@filter false
+            val nulled = i < result.nullMask.size && result.nullMask[i]
+            val phaseOk = i >= result.minPhaseOk.size || result.minPhaseOk[i]
+            (nulled && reason.correctionDb > 0.25) || (!phaseOk && abs(reason.correctionDb) > 0.25)
+        }
 
     /** Bands a REW import deliberately left alone, in frequency order. */
     fun skipped(imp: ImportResult): List<BandReason> = classify(imp).filter { !it.kind.appliesGain() }

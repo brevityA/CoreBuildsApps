@@ -23,6 +23,24 @@ object DspConstants {
     const val ROLLOFF_DROP_DB = 6.0
     const val MIN_PHASE_TOLERANCE_MS = 5.0
 
+    /**
+     * The most a correction may lift below the transition once several seats
+     * agreed (1.7.1). Averaging removed the part of a dip that belonged to one
+     * chair, so what survives is more likely to be the room. Still well under
+     * [MAX_BOOST_DB]: the microphone is uncalibrated either way.
+     */
+    const val MULTI_SEAT_BOOST_DB = 3.0
+
+    /**
+     * Per-band trust from signal over noise. At or under
+     * [CONFIDENCE_LO_SNR_DB] a band is worth nothing; from
+     * [CONFIDENCE_FULL_SNR_DB] up, everything; linear between. The floor keeps
+     * a barely-trusted band from producing a sub-0.1 dB filter.
+     */
+    const val CONFIDENCE_LO_SNR_DB = 10.0
+    const val CONFIDENCE_FULL_SNR_DB = 20.0
+    const val CONFIDENCE_MIN = 0.05
+
     const val SMOOTH_FINE_OCTAVES = 1.0 / 6.0
     const val SMOOTH_COARSE_OCTAVES = 1.0
 

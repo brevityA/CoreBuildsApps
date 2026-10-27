@@ -187,6 +187,21 @@ MAX_NULL_SKIP = 2
 # roll-off, so bass dips get at most this much; peaks are still cut in full.
 SINGLE_SEAT_BOOST_DB = 2.0
 
+# The most a correction may lift below the transition once several seats agree
+# (1.7.1). Averaging seats removes the part of a dip that belongs to one chair,
+# so what survives is more likely to be the room. Still well under MAX_BOOST_DB:
+# the microphone is uncalibrated either way.
+MULTI_SEAT_BOOST_DB = 3.0
+
+# Per-band confidence from signal over noise: at or under the gate a band is
+# not trusted at all, and from CONFIDENCE_FULL_SNR_DB up it is trusted fully.
+# Between the two the correction is scaled rather than switched, so a band at
+# 12 dB stops jumping between "fully corrected" and "untouched" on a capture
+# that only just cleared the gate.
+CONFIDENCE_LO_SNR_DB = 10.0
+CONFIDENCE_FULL_SNR_DB = 20.0
+CONFIDENCE_MIN = 0.05
+
 # Decay range a T20 needs (ISO 3382-2:2008): under it `rt60_from_ir` refuses
 # rather than reading short.
 MIN_DECAY_RANGE_DB = 35.0
@@ -676,6 +691,36 @@ def _presence_db(f: np.ndarray, gain_db: float) -> np.ndarray:
 # The correction
 # ---------------------------------------------------------------------------
 
+def band_confidence(snr_db) -> np.ndarray:
+    """How far to trust each band, 0..1, from its signal over noise.
+
+    A band on the gate is worth nothing and a band well clear of the noise is
+    worth everything; between the two the scale is linear. Multiplying the
+    correction by this keeps a marginal band corrected *less* instead of
+    treating one tenth of a dB as a pass and the next as a failure.
+    """
+    snr = np.asarray(snr_db, dtype=float)
+    span = CONFIDENCE_FULL_SNR_DB - CONFIDENCE_LO_SNR_DB
+    frac = (snr - CONFIDENCE_LO_SNR_DB) / span
+    conf = np.clip(np.nan_to_num(frac, nan=0.0), 0.0, 1.0)
+    return np.where(conf <= 0.0, 0.0, np.maximum(conf, CONFIDENCE_MIN))
+
+
+def confidence_from_snr(snr_db, min_snr_db: float = None) -> np.ndarray:
+    """[band_confidence] with the gate itself as the floor (accepts either spelling)."""
+    return band_confidence(snr_db)
+
+
+def boost_budget_db(seats: int) -> float:
+    """The bass boost a correction may ask for, given how many seats agreed.
+
+    One seat cannot tell the room's dip from that chair's, so it gets
+    SINGLE_SEAT_BOOST_DB. Two or more seats agreed on the curve that was
+    averaged, which is evidence, so the cap rises to MULTI_SEAT_BOOST_DB.
+    """
+    return MULTI_SEAT_BOOST_DB if int(seats) >= 2 else SINGLE_SEAT_BOOST_DB
+
+
 def _limit_slope(freqs: np.ndarray, curve: np.ndarray, max_db_per_oct: float) -> np.ndarray:
     """Clamp a curve's steepness in both directions, keeping the lower result.
 
@@ -715,6 +760,7 @@ def correction_curve(
     null_mask: np.ndarray | None = None,
     min_phase_ok: np.ndarray | None = None,
     max_boost_below_transition: float | None = None,
+    confidence: np.ndarray | None = None,
 ) -> np.ndarray:
     """The correction to apply: what to add to the measured response to reach target.
 
@@ -769,10 +815,13 @@ def correction_curve(
 
     if null_mask is None:
         null_mask = detect_nulls(f, measured_db)
-    raw = np.where(null_mask & (raw > 0.0), 0.0, raw)
-
+    null_mask = np.asarray(null_mask, dtype=bool)
     if min_phase_ok is not None:
-        raw = np.where(min_phase_ok, raw, 0.0)
+        phase_blocked = ~np.asarray(min_phase_ok, dtype=bool)
+    else:
+        phase_blocked = np.zeros(f.shape, dtype=bool)
+    raw = np.where(null_mask & (raw > 0.0), 0.0, raw)
+    raw = np.where(phase_blocked, 0.0, raw)
 
     if cut_only:
         raw = np.minimum(raw, 0.0)
@@ -807,6 +856,23 @@ def correction_curve(
             limited = limited - limited[recentre].mean()
 
     limited = np.clip(limited, floor, ceiling)
+
+    # Step 8b (1.7.1): scale by how far each band is trusted. Applied after the
+    # budget so a band that is only half trusted asks for half of what it was
+    # allowed, never more.
+    if confidence is not None:
+        conf = np.clip(np.asarray(confidence, dtype=float), 0.0, 1.0)
+        if conf.shape == limited.shape:
+            limited = limited * conf
+
+    # Steps 7 and 8 both move every band by a constant, and that constant is
+    # exactly what broke the two refusals above: re-centring could lift a null
+    # that had been zeroed back to +2 dB, and a minimum-phase-gated band off
+    # zero, so the app boosted a cancellation in the same report that told the
+    # user it was "not boosted". The refusals are therefore re-asserted on the
+    # final curve, after every step that can move it.
+    limited = np.where(null_mask & (limited > 0.0), 0.0, limited)
+    limited = np.where(phase_blocked, 0.0, limited)
 
     band = (f >= f_min) & (f <= f_max)
     return _taper_edges(f, np.where(band, limited, 0.0), f_min, f_max)

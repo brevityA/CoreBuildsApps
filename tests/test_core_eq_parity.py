@@ -52,6 +52,12 @@ DSP_PAIRS = {
     "NFFT": "NFFT",
     "ESS_SECONDS": "ESS_SECONDS",
     "MIN_PHASE_TOLERANCE_MS": "MIN_PHASE_TOLERANCE_MS",
+    # 1.7.1: graded trust and the seat-count boost budget. These change what the
+    # corrector asks for, so the reference and the app must agree on them.
+    "MULTI_SEAT_BOOST_DB": "MULTI_SEAT_BOOST_DB",
+    "CONFIDENCE_LO_SNR_DB": "CONFIDENCE_LO_SNR_DB",
+    "CONFIDENCE_FULL_SNR_DB": "CONFIDENCE_FULL_SNR_DB",
+    "CONFIDENCE_MIN": "CONFIDENCE_MIN",
 }
 
 

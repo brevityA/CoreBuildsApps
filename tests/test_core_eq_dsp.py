@@ -326,6 +326,82 @@ class TestCorrection:
         corr = dsp.correction_curve(third_octave, measured, target)
         assert corr[null_at] <= 1e-6
 
+    def test_a_null_is_not_boosted_even_when_recentring_would_lift_every_band(self, third_octave):
+        """The 1.7.1 gate leak, in the reference.
+
+        Every refusal was applied before _limit_slope and the re-centring pass,
+        and re-centring adds one constant to every band. A room that is hot
+        against target everywhere makes that constant positive, which lifted a
+        zeroed null back to +2 dB and a gated band off zero. The refusal has to
+        survive the steps that move the curve.
+        """
+        for null_hz in (250.0, 500.0, 1000.0):
+            measured = np.full_like(third_octave, 8.0)
+            at = int(np.argmin(np.abs(third_octave - null_hz)))
+            measured[at] = -20.0
+            nulls = dsp.detect_nulls(third_octave, measured)
+            assert bool(nulls[at]), f"{null_hz} Hz must be detected as a null"
+            corr = dsp.correction_curve(
+                third_octave, measured, np.zeros_like(third_octave),
+                null_mask=nulls,
+            )
+            assert corr[at] <= 1e-9, f"null at {third_octave[at]} Hz boosted to {corr[at]:+.2f} dB"
+
+    def test_recentring_cannot_revive_a_gated_band(self, third_octave):
+        measured = np.full_like(third_octave, 8.0)
+        at = int(np.argmin(np.abs(third_octave - 200.0)))
+        gate = np.ones_like(third_octave, dtype=bool)
+        gate[at] = False
+        corr = dsp.correction_curve(
+            third_octave, measured, np.zeros_like(third_octave),
+            transition_hz_=1e6, min_phase_ok=gate,
+        )
+        assert corr[at] == 0.0, f"gated band moved to {corr[at]:+.3f} dB"
+
+    def test_every_refusal_survives_the_finished_curve(self, third_octave):
+        measured = np.full_like(third_octave, 6.0)
+        null_at = int(np.argmin(np.abs(third_octave - 315.0)))
+        measured[null_at] = -22.0
+        gated_at = int(np.argmin(np.abs(third_octave - 2000.0)))
+        gate = np.ones_like(third_octave, dtype=bool)
+        gate[gated_at] = False
+        nulls = dsp.detect_nulls(third_octave, measured)
+        corr = dsp.correction_curve(third_octave, measured, np.zeros_like(third_octave),
+                                    null_mask=nulls, min_phase_ok=gate)
+        if bool(nulls[null_at]):
+            assert corr[null_at] <= 1e-9
+        assert corr[gated_at] == 0.0
+
+    def test_band_confidence_ramps_instead_of_stepping(self):
+        assert float(dsp.band_confidence([4.0])[0]) == 0.0
+        assert float(dsp.band_confidence([10.0])[0]) == 0.0
+        assert abs(float(dsp.band_confidence([15.0])[0]) - 0.5) < 1e-9
+        assert float(dsp.band_confidence([20.0])[0]) == 1.0
+        assert float(dsp.band_confidence([45.0])[0]) == 1.0
+        ramp = dsp.band_confidence([11.0, 14.0, 18.0])
+        assert bool(np.all(np.diff(ramp) >= 0.0)), "confidence must not fall as SNR rises"
+
+    def test_an_unreadable_band_is_never_trusted(self):
+        assert float(dsp.band_confidence([np.nan])[0]) == 0.0
+        assert float(dsp.band_confidence([-np.inf])[0]) == 0.0
+
+    def test_half_trusted_bands_get_half_the_correction(self, third_octave):
+        measured = np.zeros_like(third_octave)
+        at = int(np.argmin(np.abs(third_octave - 500.0)))
+        measured[at] = 6.0
+        full = dsp.correction_curve(third_octave, measured, np.zeros_like(third_octave), transition_hz_=1e6)
+        half = dsp.correction_curve(third_octave, measured, np.zeros_like(third_octave),
+                                    transition_hz_=1e6,
+                                    confidence=np.full_like(third_octave, 0.5))
+        assert full[at] < -1.0, f"fixture should ask for a cut, got {full[at]:+.2f}"
+        assert abs(half[at] - full[at] / 2.0) < 0.05
+
+    def test_the_bass_budget_rises_with_a_second_seat_and_stops(self):
+        assert dsp.boost_budget_db(1) == dsp.SINGLE_SEAT_BOOST_DB
+        assert dsp.boost_budget_db(2) == dsp.MULTI_SEAT_BOOST_DB
+        assert dsp.boost_budget_db(3) == dsp.MULTI_SEAT_BOOST_DB
+        assert dsp.SINGLE_SEAT_BOOST_DB < dsp.MULTI_SEAT_BOOST_DB < dsp.MAX_BOOST_DB
+
     def test_min_phase_gate_is_honoured(self, third_octave):
         """Where the gate says no, the correction is zero."""
         measured = np.zeros_like(third_octave)
