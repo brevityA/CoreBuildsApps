@@ -99,9 +99,10 @@ def check_readme_stamp(suite: dict) -> None:
 
 def check_stale_claims() -> None:
     files = ["README.md", "AGENTS.md", "docs/IconPackList.md", "tools/catalog.json"]
-    # Core EQ 1.7.1 is the current release, so it is no longer a stale claim to
-    # hunt for; it is replaced by nothing because catalog.json carries "v1.7.0"
-    # legitimately (icon-pack mapping provenance), which a naive add would trip.
+    # Core EQ's own version is never on this list: the list is for claims that have
+    # gone stale, and the release being prepared is by definition current (1.7.1 and
+    # 1.8.0 both had to be removed on their way in). catalog.json carries "v1.7.0"
+    # legitimately as icon-pack mapping provenance, which a naive add would trip.
     stale = ["pack v1.8.1", "`921 icons`", "921 transparent icons", "40 icons", "78 components", "Four Android apps", "four apps"]
     for file in files:
         text = read(file)

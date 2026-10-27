@@ -6,6 +6,22 @@ Core EQ (`tv.corebuilds.eq`) keeps its own changelog. The repository-root
 must never land there. Releases are `coreeq-v<version>` tags (see
 `PUBLISHING.md`).
 
+## [1.8.0] — 2026-10-28
+
+**Nothing below was checked on a TV, a phone or a soundbar.** The refinement
+arithmetic is covered off-device by `CorrectionRefinementTest` in the
+repository's Android-free Kotlin harness and by the Python reference in
+`tools/core_eq_dsp.py`; `MeasureActivity` needs the Android SDK, was not
+compiled here, and the new button has not been run. No acoustic measurement was
+taken for this release.
+
+- **The check sweep now changes the correction, if you let it.** *Check correction* has always reported three numbers and stopped: the room alone, the residual the correction should leave, and what the check actually heard. The difference between the last two is the useful part — band by band it says which way the correction was wrong — and a new **Use the check to refine** button offers to apply it. It is never applied on its own: the button appears only after a scored check, the correction on screen changes only when you press it, and Save keeps whatever is on screen. Check again afterwards to see whether the refinement helped; Save without pressing it and the check is evidence and nothing more, as before.
+- **Seven rules decide how far one check is believed.** The step is taken only on bands both sweeps can speak for (the same mask the figures on screen use); its weighted mean is removed first, so a check taken at another volume refines *shape* and not level; it is scaled by the weaker of the two sweeps' per-band confidence; a band can relax toward 0 dB but never change the direction the first measurement justified, and a band left at 0 dB is not touched; a lift needs a deficit the check itself heard at least 0.5 dB deep and must not sit on a cancellation the check found; the correction's own budget still applies — through the same `budgetEnvelope` the curve is clamped by, so the seat bass cap cannot be exceeded by the back door; and one band moves at most **3 dB**, slope-limited, with steps under 0.1 dB dropped rather than spending a filter on them. `docs/research/core-eq-closed-loop-refinement-2026-10-28.md` records why each exists.
+- **The "before → after" figure starts from what the check heard, not from the old measurement.** Once the two disagree the older curve no longer describes the room, so the refinement is predicted from the check's own residual plus the step. The result card says how many bands moved, by how much, what the residual is expected to become, and how many bands the rules refused to move — so "the check disagreed and nothing was done about it" is visible rather than silent.
+- **A refinement is not offered across a changed chain.** If the check's microphone, output, target or room setting differed from the measurement's, the check is still scored and still says so, but no refinement is offered: it would move the correction on evidence that does not describe the same measurement. The same line explains it.
+- **`Correction.budgetEnvelope`.** The per-band floor and ceiling the curve is held to is now one function, used by both the corrector and the refinement. Two copies of that arithmetic would be two chances to disagree about how much bass a correction may lift.
+- **Tests.** Fourteen new Kotlin cases and twelve in the Python reference, plus three new constants pairs held to the reference by `tests/test_core_eq_parity.py`. The rules are pinned by tests that fail without them: removing the level re-centring, the sign rule, the deficit guard or the shared-band mask each breaks a named case. The two implementations are held to one room — the same fixture prints −2.0080 dB at 100 Hz in both.
+
 ## [1.7.1] — 2026-10-27
 
 **Nothing below was checked on a TV, a phone or a soundbar.** The correction

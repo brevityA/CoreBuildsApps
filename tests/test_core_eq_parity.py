@@ -28,6 +28,13 @@ SOURCE_PAIRS = {
     ("SweepAnalysis.kt", "MIN_BAND_HZ"): "MIN_BAND_HZ",
     ("SweepAnalysis.kt", "RT60_MAX_TAIL_S"): "RT60_MAX_TAIL_S",
     ("Correction.kt", "MAX_NULL_SKIP"): "MAX_NULL_SKIP",
+    # 1.8.0: the closed loop. A band the check did not hear is not refined, and the
+    # comparison the refinement reads its evidence from needs the same band floor
+    # and the same alignment window as the figures on screen.
+    ("SweepAnalysis.kt", "BAND_MIN_SNR_DB"): "BAND_MIN_SNR_DB",
+    ("PostCorrectionCheck.kt", "MIN_BANDS"): "CHECK_MIN_BANDS",
+    ("PostCorrectionCheck.kt", "ALIGN_LO_HZ"): "CHECK_ALIGN_LO_HZ",
+    ("PostCorrectionCheck.kt", "ALIGN_HI_HZ"): "CHECK_ALIGN_HI_HZ",
 }
 PAIRS = {
     "MIN_HZ": "F_MIN",
@@ -58,6 +65,11 @@ DSP_PAIRS = {
     "CONFIDENCE_LO_SNR_DB": "CONFIDENCE_LO_SNR_DB",
     "CONFIDENCE_FULL_SNR_DB": "CONFIDENCE_FULL_SNR_DB",
     "CONFIDENCE_MIN": "CONFIDENCE_MIN",
+    # 1.8.0: how far one check sweep may move a band, and what it takes for a
+    # lift to be applied at all.
+    "REFINE_MAX_STEP_DB": "REFINE_MAX_STEP_DB",
+    "REFINE_MIN_DEFICIT_DB": "REFINE_MIN_DEFICIT_DB",
+    "REFINE_MIN_APPLIED_DB": "REFINE_MIN_APPLIED_DB",
 }
 
 

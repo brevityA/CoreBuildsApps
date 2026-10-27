@@ -147,6 +147,13 @@ pink noise (20 s, deterministic) — cross-check and live RTA
         level-aligned over 300 Hz–3 kHz, residual vs target: room alone / predicted / heard
         bands the correction leaves alone (nulls, gated, noisy, outside floor–edge) not counted
         descriptive only, no pass/fail; the figures go into the profile's notes on Save
+  → optional closed loop (CorrectionRefinement, 1.8.0)
+        the difference between the predicted and the heard residual, band by band, is the step
+        re-centred so it refines shape and not level; weighted by the weaker sweep's confidence
+        a band moves at most ±3 dB and never changes the direction the first measurement justified
+        a lift needs a deficit the check itself heard and must not sit on a cancellation
+        the correction's own budget (and the seat bass cap) still applies
+        the result replaces the correction only when the user accepts it, and Save keeps it
   → export: parametric .txt (Preamp + band limit + "Bands Overlap = Cascade")
             / GraphicEQ: / profile .json (transition, nulls, room, capability)
 ```
