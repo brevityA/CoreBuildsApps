@@ -224,6 +224,48 @@ object Correction {
     fun boostBudgetDb(seats: Int): Double =
         if (seats >= 2) DspConstants.MULTI_SEAT_BOOST_DB else SweepAnalysis.SINGLE_SEAT_BOOST_DB
 
+    /** What a correction may ask for at each frequency: `floorDb` below, `ceilingDb` above. */
+    data class BudgetEnvelope(val floorDb: DoubleArray, val ceilingDb: DoubleArray)
+
+    /**
+     * The per-band budget [calculateCorrectionCurve] holds itself to: full
+     * correction below the transition, shaping only above it, ramped across the
+     * octave between so the two regimes join without a step.
+     *
+     * Exposed because [CorrectionRefinement] must obey *exactly* the same
+     * envelope when it moves a band from a check sweep. Two copies of this
+     * arithmetic would be two chances to disagree about how much bass a
+     * correction may lift.
+     */
+    fun budgetEnvelope(
+        freqs: DoubleArray,
+        transitionHz: Double = DspConstants.DEFAULT_TRANSITION_HZ,
+        maxBoost: Double = DspConstants.MAX_BOOST_DB,
+        maxCut: Double = DspConstants.MAX_CUT_DB,
+        maxBoostBelowTransition: Double = maxBoost,
+        cutOnly: Boolean = false
+    ): BudgetEnvelope {
+        val n = freqs.size
+        val loT = max(transitionHz, 1.0)
+        val hiT = loT * 2.0
+        val ceiling = DoubleArray(n)
+        val floor = DoubleArray(n)
+        // Below the transition a single-seat, uncalibrated sweep may lift
+        // only [maxBoostBelowTransition]: see SweepAnalysis.SINGLE_SEAT_BOOST_DB.
+        val lowBoost = min(maxBoost, maxBoostBelowTransition)
+        for (i in 0 until n) {
+            val f = freqs[i]
+            val mix = when {
+                f <= loT -> 0.0
+                f >= hiT -> 1.0
+                else -> 0.5 * (1.0 - cos(Math.PI * log2(f / loT)))
+            }
+            ceiling[i] = if (cutOnly) 0.0 else lowBoost + (DspConstants.MAX_SHAPING_DB - lowBoost) * mix
+            floor[i] = -maxCut + (maxCut - DspConstants.MAX_SHAPING_DB) * mix
+        }
+        return BudgetEnvelope(floor, ceiling)
+    }
+
     fun limitSlope(
         freqs: DoubleArray,
         curve: DoubleArray,
@@ -345,21 +387,11 @@ object Correction {
 
         val loT = max(transitionHz, 1.0)
         val hiT = loT * 2.0
-        val ceiling = DoubleArray(n)
-        val floor = DoubleArray(n)
-
+        // The same envelope CorrectionRefinement obeys when a check sweep moves a band.
+        val envelope = budgetEnvelope(freqs, transitionHz, maxBoost, maxCut, maxBoostBelowTransition, cutOnly)
+        val ceiling = envelope.ceilingDb
+        val floor = envelope.floorDb
         for (i in 0 until n) {
-            val f = freqs[i]
-            val mix = when {
-                f <= loT -> 0.0
-                f >= hiT -> 1.0
-                else -> 0.5 * (1.0 - cos(Math.PI * log2(f / loT)))
-            }
-            // Below the transition a single-seat, uncalibrated sweep may lift
-            // only [maxBoostBelowTransition]: see SweepAnalysis.SINGLE_SEAT_BOOST_DB.
-            val lowBoost = min(maxBoost, maxBoostBelowTransition)
-            ceiling[i] = if (cutOnly) 0.0 else lowBoost + (DspConstants.MAX_SHAPING_DB - lowBoost) * mix
-            floor[i] = -maxCut + (maxCut - DspConstants.MAX_SHAPING_DB) * mix
             raw[i] = raw[i].coerceIn(floor[i], ceiling[i])
         }
 

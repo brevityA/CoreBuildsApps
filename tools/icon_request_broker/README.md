@@ -196,9 +196,9 @@ this one repo. When the App trio is also set, the App wins. When the
 token expires, requests fail with a 502 and the auditor falls back to the
 QR; replace the secret and redeploy.
 
-### Core Builds Plus: priority requests (`GOOGLE_SERVICE_ACCOUNT_JSON`)
+### Core Premium: priority requests (`GOOGLE_SERVICE_ACCOUNT_JSON`)
 
-The Google Play build sells Core Builds Plus, a one-time product
+The Google Play build sells Core Premium (Plus in code), a one-time product
 (`core_builds_plus`), and sends its purchase token as `plus_token` with
 each one-press request. With a service account configured, the broker
 asks the Google Play Developer API
@@ -229,6 +229,34 @@ request without priority; none blocks it.
 Google does not honour a new service account's Play Console permission
 at once (allow a day); until it does, the check fails with a 401 and
 requests file without priority.
+
+#### Request all (`POST /v1/batch`)
+
+Plus owners also get one press for every missing app on the TV. The body
+is one device note, one `plus_token` and up to `BATCH_MAX` (10) apps, each
+in the single request's grammar:
+
+```json
+{ "device": "Scanned on …", "plus_token": "…",
+  "apps": [ { "app_name": "…", "component": "pkg/.Act", "mapped": false } ] }
+```
+
+- **Plus only.** A token Google does not confirm is refused with 403
+  before GitHub is touched. Unlike a single press, a batch never files
+  without priority.
+- **Limits.** `BATCH_PER_DAY` (3) presses a day per purchase, counted
+  under a SHA-256 of the token in KV, plus the usual per-IP limit, which
+  counts a batch as one request.
+- **Filing.** Each app is filed or +1ed exactly as a single priority
+  request would be. Each label is ensured once per batch, which keeps a
+  full batch inside the Workers subrequest cap.
+- **Answer.** `{ "ok": true, "priority": true, "results": [ { "component",
+  "issue", "duplicate" } | { "component", "error" } ] }`. One failed issue
+  does not undo the others.
+- **GitHub sinks only.** A Discord-only broker answers 501.
+
+`BATCH_MAX` and `BATCH_PER_DAY` live in `constants.mjs`, and
+`tests/test_batch_requests.py` holds the app to them.
 
 The rate-limit `namespace_id`s (3201 production, 3202 staging) are
 account-wide, and this worker shares its account with the cors-proxy,

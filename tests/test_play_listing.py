@@ -326,7 +326,9 @@ class StoreTruth(unittest.TestCase):
         # form becomes a false statement on the store page.
         sender = (ROOT / "app/src/main/java/tv/corebuilds/iconpack/IconRequestSender.kt"
                   ).read_text(encoding="utf-8")
-        posted = set(re.findall(r'[.\s]put\("([a-z_]+)"', sender)) - {"mapped"}
+        # "apps" is Request all's list of per-app entries: the same fields,
+        # several apps (tests/test_batch_requests.py holds it to that).
+        posted = set(re.findall(r'[.\s]put\("([a-z_]+)"', sender)) - {"mapped", "apps"}
         # The sender only runs with the broker baked in, so its whole payload
         # is the broker-on answer; the committed answer is this build's.
         declared = set(listing.data_safety(plus=True)
@@ -386,19 +388,26 @@ class StoreTruth(unittest.TestCase):
         plus = (ROOT / "app/src/main/java/tv/corebuilds/iconpack/Plus.kt"
                 ).read_text(encoding="utf-8")
         self.assertIn("audit_request_endpoint", plus)
-        text = " ".join(SPEC["copy"].values())
-        self.assertEqual("CORE BUILDS PLUS" in SPEC["copy"]["full_description"], sale)
+        self.assertEqual("CORE PREMIUM" in SPEC["copy"]["full_description"], sale)
         self.assertEqual(SPEC["content_rating"]["purchases"], listing.answers_cover_broker())
+        # The free listing never talks about paying; once Core Premium is on
+        # sale, its own paragraph names it, and still promises no "unlock".
+        n = listing.counts()
+        free = " ".join(listing.copy(n, plus=False).values()).lower()
+        sold = " ".join(listing.copy(n, plus=True).values()).lower()
         for claim in ("premium", "unlock", "upgrade"):
-            self.assertNotIn(claim, text.lower(), f"listing mentions {claim!r}")
+            self.assertNotIn(claim, free, f"free listing mentions {claim!r}")
+        for claim in ("unlock", "upgrade"):
+            self.assertNotIn(claim, sold, f"listing on sale mentions {claim!r}")
 
     def test_both_states_of_the_switch_are_honest(self):
         # The committed tree is one state; render the other so a broker-on
         # release cannot be the first time its answers are read.
         n = listing.counts()
         off, on = listing.copy(n, plus=False), listing.copy(n, plus=True)
-        self.assertNotIn("PLUS", off["full_description"])
-        self.assertIn("CORE BUILDS PLUS", on["full_description"])
+        self.assertNotIn("PREMIUM", off["full_description"])
+        self.assertIn("CORE PREMIUM", on["full_description"])
+        self.assertIn("free for 24 hours", on["full_description"])
         self.assertIn(f"Spectra adds {n['plus_walls']} more wallpapers", on["full_description"])
         self.assertIn(f"all {n['walls']} stills", on["full_description"])
         self.assertLessEqual(len(on["full_description"]), listing.FULL_MAX)

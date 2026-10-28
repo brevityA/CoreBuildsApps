@@ -41,6 +41,27 @@ object DspConstants {
     const val CONFIDENCE_FULL_SNR_DB = 20.0
     const val CONFIDENCE_MIN = 0.05
 
+    /**
+     * The most a check sweep may move one band (1.8.0). A check is one more
+     * capture at one position, so its difference from the prediction is
+     * evidence, not truth: a band is refined by at most this much, whatever
+     * the residual says. The base correction's own budget
+     * ([MAX_BOOST_DB], [MAX_CUT_DB], [MAX_SHAPING_DB] and the seat bass cap)
+     * still applies on top.
+     */
+    const val REFINE_MAX_STEP_DB = 3.0
+
+    /**
+     * A refined band may only be *lifted* where the check itself heard a
+     * deficit at least this deep. Without it a check taken slightly quieter
+     * than the prediction (a volume nudge, a mic moved a centimetre) would
+     * ask for gain everywhere, including into dips nothing should fill.
+     */
+    const val REFINE_MIN_DEFICIT_DB = 0.5
+
+    /** A step smaller than this is not worth a filter: it is left at zero. */
+    const val REFINE_MIN_APPLIED_DB = 0.1
+
     const val SMOOTH_FINE_OCTAVES = 1.0 / 6.0
     const val SMOOTH_COARSE_OCTAVES = 1.0
 

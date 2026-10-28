@@ -78,10 +78,12 @@ FOCUS_CAPABLE_TAGS = {"RecyclerView", "EditText", "ScrollView", "NestedScrollVie
 
 
 def manifest_activities(manifest: Path) -> set[str]:
-    text = manifest.read_text(encoding="utf-8")
-    return {m.rsplit(".", 1)[-1]
-            for m in re.findall(r'android:name="\.?([\w.]+)"', text)
-            if m.rsplit(".", 1)[-1].endswith("Activity")}
+    # <activity> elements only: any android:name ending in "Activity" also
+    # matched meta-data keys, such as Projectivy's settingsActivity.
+    root = ET.parse(manifest).getroot()
+    return {a.get(ANDROID + "name", "").rsplit(".", 1)[-1]
+            for a in root.iter("activity")
+            if a.get(ANDROID + "name", "").endswith("Activity")}
 
 
 def clickable_ids(path: Path) -> set[str]:

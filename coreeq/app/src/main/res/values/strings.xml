@@ -126,11 +126,16 @@
     <string name="measure_refine_sub">Add a seat: move the remote to another place a head goes and sweep again. Up to three seats are averaged, so a peak only one chair hears is cut less and the room\'s own are cut in full. Check: the sweep plays again through this correction and shows how close it lands to the target. Neither one saves.</string>
     <string name="measure_add_seat_button">Add a seat (%1$d of %2$d)</string>
     <string name="measure_check_button">Check correction</string>
-    <string name="measure_seats_summary">%1$d-seat energy average · bass lift still capped at %2$.0f dB below the transition, as for one seat</string>
+    <string name="measure_seats_summary">%1$d-seat energy average · bass lift capped at %2$.0f dB below the transition, up from the single-seat cap</string>
     <string name="measure_seats_left_out">Seat %1$d left out: from 300 Hz to 3 kHz it sat %2$.1f dB RMS from the other seats, where seats in one room normally agree within 1–2 dB (remote covered, turned away or behind something?). New sweep starts the seats again.</string>
     <string name="measure_check_summary">Check · correction on · one position · %1$d bands · %2$.1f dB RMS from the target (room alone %3$.1f dB, predicted %4$.1f dB) · largest %5$+.1f dB at %6$s. Bands the correction leaves alone are not counted. Descriptive, not a pass/fail.</string>
     <string name="measure_check_unscored">Check captured but not scored: too few trusted bands the two sweeps share. The correction is unchanged.</string>
     <string name="measure_check_provisional">%1$s Treat this check as provisional.</string>
+    <string name="measure_refine_button">Use the check to refine</string>
+    <string name="measure_refine_summary">Refined from the check · %1$d band%2$s moved, up to %3$.1f dB · residual %4$.1f → %5$.1f dB RMS (predicted) · %6$d band%7$s where the rules refused the move. Not measured again: this is what the check heard, applied to the correction.</string>
+    <string name="measure_refine_nothing">The check agrees with the correction closely enough that nothing was changed. The correction and what Save keeps are unchanged.</string>
+    <string name="measure_refine_unavailable">Check captured but not refined: %1$s The correction is unchanged.</string>
+    <string name="measure_refine_applied">Correction refined. Check again to hear whether the refinement helped, or Save to keep it.</string>
     <string name="measure_saved">Saved and made active: %1$s</string>
     <string name="measure_auto_apply_failed">The first measurement could not be applied automatically. Save it from the result, or measure again.</string>
     <string name="measure_auto_applied">Applied automatically for this output: %1$s. Later measurements are only shown until you save them.</string>

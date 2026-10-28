@@ -19,7 +19,7 @@ import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchasesParams
 
 /**
- * Core Builds Plus over Google Play Billing (play build type only).
+ * Core Premium (Plus in code) over Google Play Billing (play build type only).
  *
  * One managed product, [PRODUCT_ID], bought once and never consumed. Owning it
  * stores the purchase token on this TV; the auditor sends that token with an
@@ -34,7 +34,12 @@ import com.android.billingclient.api.QueryPurchasesParams
 object PlusStore {
     const val AVAILABLE = true
 
-    /** The one-time product in Play Console (Monetize > Products > In-app products). */
+    /**
+     * The one-time product in Play Console (Monetize > Products > In-app
+     * products). Buyers never see the id, only the product's name, which is
+     * Core Premium; the id keeps the code name because Play never lets an id
+     * be renamed or reused.
+     */
     const val PRODUCT_ID = "core_builds_plus"
 
     private const val PREFS = "plus"
@@ -176,7 +181,7 @@ object PlusStore {
                 val price = product?.oneTimePurchaseOfferDetails?.formattedPrice
                 details = product
                 if (price == null) {
-                    emit(PlusState.Unavailable("Plus is not on sale in this country"))
+                    emit(PlusState.Unavailable("Core Premium is not on sale in this country"))
                 } else {
                     emit(PlusState.ForSale(price))
                 }
