@@ -19,7 +19,7 @@
     <string name="support_label">Plus</string>
     <string name="support_kicker">PLUS</string>
     <string name="support_title">Core Builds Plus</string>
-    <string name="support_body">Plus is a one-time purchase through Google Play. It adds four things: your icon requests are filed as priority and drawn first; My requests shows how far each one has got; the live wallpaper can rotate through your loops; and Spectra, 12 wallpapers, is yours.</string>
-    <string name="support_mode">Optional. Every icon, the main wallpaper collection and every screen ship to everyone; Plus adds the four things above.</string>
+    <string name="support_body">Plus is a one-time purchase through Google Play. It adds six things: your icon requests are filed as priority and drawn first; My requests shows how far each one has got; the live wallpaper can rotate through your loops; it can play a second loop during night hours; with this pack as Projectivy\'s wallpaper source, you choose what Projectivy rotates (favourites, one series or Spectra) by day and by night; and Spectra, 12 wallpapers, is yours.</string>
+    <string name="support_mode">Optional. Every icon, the main wallpaper collection (in Projectivy\'s rotation too) and every screen ship to everyone; Plus adds the six things above.</string>
     <string name="support_footer">Price and payment come from Google Play. Core Builds never sees your card or your Google account.</string>
 </resources>

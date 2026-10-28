@@ -121,7 +121,7 @@
     "note": "A wallpaper and icon pack. Nothing here is user-generated, shared or interactive with strangers. 'online_content' is the full-size wallpapers and live loops, downloaded after install from this repo; none of it is rated content. 'purchases' follows the broker: Core Builds Plus is on sale exactly when the broker is baked in, and the answer stays yes while a track still serves such a build (BROKER_SHIPPED)."
   },
   "sources": {
-    "generator": "fd5b695f87985af259f1272dbcaf91edeca55c0eb426f2ffbed05ab229ec3f59",
+    "generator": "d18b33cb203e9b1c7c6f7527a29b3f06b1cccaadbabb72d0cf6bba9b0bf19912",
     "branding": "4fa4d2dcbac033c4ca1a1651570529bd7cfe82baf0b837b10f491d58c69f22e6",
     "icon_pack_xml": "c6efd5efda38df7c364bf607f673f75dfbf450d24eb06e628485e0772e3519d4",
     "wallpapers_json": "0bc4f85d2ff7d2e2c646088cd450957c5e7a58c0519be85923207356dafb3490",

@@ -6,8 +6,54 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **The walls as a Projectivy wallpaper source.** Projectivy 4.51 or newer
+  lists the pack under its wallpaper settings (wallpaper sources are a
+  Projectivy Premium feature). Chosen there, the main collection, 132 walls,
+  rotates on Projectivy's own interval, in every build. Projectivy downloads
+  each wall from the manifest's public address, as the app's browser does;
+  the app sends nothing. The GitHub, Play, test and Glyphs builds each
+  register their own source, so one TV can hold several without a clash.
+  Settings → Troubleshooting and FAQ has a card on it. Not yet seen inside
+  Projectivy: no build of this has run on a TV.
+- **Night loop, a Core Builds Plus extra.** During night hours (20–07,
+  21–07, 22–06 or 19–07, by the TV's clock) the live wallpaper plays a second
+  loop, then hands back to the one picked in the preview. A home screen left
+  on changes over at the hour. Only loops already on the TV are offered, and
+  nothing downloads. Settings → Night loop and Night hours.
+- **Projectivy walls, a Core Builds Plus extra.** Two Settings rows choose
+  what Projectivy rotates from the pack, by day and during night hours: all
+  walls (with Spectra), favourites, or one of 12 series. A choice that
+  matches no wall falls back to the day choice, then to everything, so the
+  rotation is never empty. A change reaches Projectivy at once; night hours
+  begin within the hour Projectivy keeps its list.
+
+### Changed
+
+- **Plus lists six extras.** Priority requests, My requests, loop rotation,
+  the night loop, Projectivy walls and Spectra. Every icon, the main
+  collection (in Projectivy's rotation too) and every screen still ship to
+  everyone. The Plus card, the Settings row, the Play listing,
+  `docs/PLAY-CONSOLE.md` §8 and `docs/privacy.html` (effective 22 October
+  2026) say so.
+- **`tests/test_projectivy_walls.py` holds the Projectivy contract.** 14
+  tests: the AIDL and contract constants are Core Motion's byte for byte,
+  the hand-written parcel keeps Core Motion's field order, the manifest
+  carries what Projectivy reads, each build gets its own id, and the free
+  and Plus tiers split where they should. It runs in `build.yml` and
+  `suite-ci.yml`. The app module's first JUnit tests, `DayNightTest` (5)
+  and `ProjectivyWallsTest` (7), run in CI's existing unit-test task.
+
 ### Fixed
 
+- **`tests/test_navigation_graph.py` reads screens, not meta-data keys.** It
+  matched every `android:name` ending in "Activity", so Projectivy's
+  `settingsActivity` key read as a screen with no way in. It now reads
+  `<activity>` elements only.
+- **`tests/test_ui_wiring.py` accepts a zero-padded positional integer.**
+  `%1$02d`, the night hours' "20:00", is valid `String.format` grammar that
+  the gate rejected.
 - **Glyphs apps keep their own icon when the pack is applied.** The catalog
   mapped Core Builds Glyphs Pack to the main pack's cyan icon, overriding the
   companion's violet launcher art. It now uses the existing violet glyph mark

@@ -384,7 +384,9 @@ class PlusExtras(unittest.TestCase):
         unlocked = read(KT / "Plus.kt").split("fun unlocked(", 1)[1].split("\n    }\n", 1)[0]
         self.assertIn("SupportActivity::class.java", unlocked)
         settings = read(KT / "SettingsActivity.kt")
-        self.assertEqual(settings.count("if (Plus.unlocked(this))"), 2)
+        # Rotation, night loop, night hours, Projectivy walls by day and at
+        # night, My requests.
+        self.assertEqual(settings.count("if (Plus.unlocked(this))"), 6)
         browser = read(KT / "WallpapersActivity.kt")
         self.assertIn("if (item.plus && !Plus.unlocked(this)) return@WallpaperAdapter", browser)
         # The preview pages through its list: locked walls never go in it.
@@ -414,6 +416,25 @@ class PlusExtras(unittest.TestCase):
         for hours, name in ((1, "settings_rotate_hour"), (6, "settings_rotate_6h"),
                             (24, "settings_rotate_day")):
             self.assertIn(f"{hours} -> R.string.{name}", labels)
+
+    def test_night_loop_is_read_by_the_engine_needs_plus_and_never_downloads(self):
+        engine = read(KT / "LiveWallpaperService.kt")
+        self.assertIn("loop = LiveLoop.byId(DayNight.loopId(applicationContext))", engine)
+        # A home screen left on still changes over: the engine re-reads at the
+        # boundary while visible, and never leaves the callback behind.
+        self.assertIn("handler.postDelayed(switchCheck, wait + SWITCH_SLACK_MS)", engine)
+        self.assertEqual(engine.count("handler.removeCallbacks(switchCheck)"), 3)
+        night = read(KT / "DayNight.kt")
+        active = night.split("fun active(", 1)[1].split("\n\n", 1)[0]
+        self.assertIn("Plus.owned(context)", active)
+        # An unplayable night loop falls back to the day choice, never a still.
+        self.assertIn("LiveLoopDownloader.playable(context, night) != null) night.id else day", night)
+        self.assertNotIn("fetch(", night)
+        # Settings offers only loops already on the TV.
+        settings = read(KT / "SettingsActivity.kt")
+        row = settings.split("row(R.id.set_night_row)", 1)[1].split("row(R.id.set_hours_row)", 1)[0]
+        self.assertIn("LiveLoopDownloader.playable(this, it) != null", row)
+        self.assertIn("R.string.settings_night_none", row)
 
     def test_my_requests_records_only_on_play_and_reads_github_by_number(self):
         log = read(KT / "RequestLog.kt")

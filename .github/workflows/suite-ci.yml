@@ -327,6 +327,7 @@ jobs:
           python tests/test_ui_wiring.py
           python tests/test_brandmark_badge.py
           python tests/test_themed_icons.py
+          python tests/test_projectivy_walls.py
           python tests/test_gradle_envelope.py
           python tests/test_android_api37_migration.py
           python tests/test_core_eq_release_contract.py

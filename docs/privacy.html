@@ -42,7 +42,7 @@ and <code>tv.corebuilds.iconpack.glyphs.play</code>, which have no network code
 and send nothing) and Core Builds Glyphs (<code>tv.corebuilds.glyphs</code>, the
 icon pack drawn in glyph art, covered wherever this page says "the app").</p>
 
-<p><strong>Effective:</strong> 21 October 2026.</p>
+<p><strong>Effective:</strong> 22 October 2026.</p>
 
 <h2>There is no account, and no profile</h2>
 <p>The app has no sign-in, no user identifier and no analytics, advertising or
@@ -101,6 +101,13 @@ described below. Nothing is collected in the background.</p>
     <td><code>api.github.com</code> (GitHub)</td>
   </tr>
   <tr>
+    <td>Projectivy uses the pack as its wallpaper source, if you choose it there</td>
+    <td>Nothing is sent by the app. Projectivy asks the app for the list of
+        walls over Android's own interface, on the TV, and then downloads each
+        wall itself from the same public address the app uses.</td>
+    <td><code>raw.githubusercontent.com</code> (GitHub), requested by Projectivy</td>
+  </tr>
+  <tr>
     <td>You switch the Art style to square glyphs on the Play build</td>
     <td>Nothing is sent by the app: it opens the Glyphs companion's listing,
         which your browser or the Play Store app loads from Google.</td>
@@ -139,8 +146,8 @@ can rotate them. Downloaded wallpapers and loops are cached in the app's private
 storage. On the Google Play build the app also keeps the Core Builds Plus
 purchase token, if you own Plus, and for <em>My requests</em> the list of
 requests filed from this TV (up to 200: each app's name, component and issue
-number, all of which are already public in the issue). Live loop rotation runs
-on the TV and sends nothing. Everything in the app's private storage is removed
+number, all of which are already public in the issue). Live loop rotation, the
+night loop and the Projectivy walls settings run on the TV and send nothing. Everything in the app's private storage is removed
 when you clear the app's data or uninstall the app. Exported wallpapers are
 ordinary files in your <code>Pictures</code> folder: they stay there until you
 delete them.</p>
@@ -165,7 +172,8 @@ delete them.</p>
 <p>The GitHub / Downloader build has no purchases. The Google Play build can
 offer one: <strong>Core Builds Plus</strong>, an optional one-time purchase
 (no subscription) that adds priority icon requests, <em>My requests</em>, live
-loop rotation and the Spectra wallpapers. It is offered only in builds where
+loop rotation, the night loop, the choice of what Projectivy rotates from the
+pack, and the Spectra wallpapers. It is offered only in builds where
 the request broker is enabled, because priority requests need it. Until then
 the Play build offers no purchases.</p>
 <p>Payment is processed by Google Play under Google's own privacy policy. No
