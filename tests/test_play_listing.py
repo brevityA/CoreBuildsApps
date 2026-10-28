@@ -231,10 +231,15 @@ class TheWalkthroughAgreesWithTheAssets(unittest.TestCase):
                 # The instruction, not just the name: "on" must fail here.
                 self.assertIn("turn **Installer check** off", flat, gradle)
                 self.assertIn(f"minimum SDK version of {min_sdk}", flat, gradle)
+        android = "{http://schemas.android.com/apk/res/android}"
         for manifest in ("app/src/play/AndroidManifest.xml",
                          "glyphs/src/play/AndroidManifest.xml"):
-            text = (ROOT / manifest).read_text(encoding="utf-8")
-            if re.search(r'"android\.software\.leanback"\s+android:required="true"', text):
+            leanback = [
+                f for f in ET.parse(ROOT / manifest).getroot().iter("uses-feature")
+                if f.get(f"{android}name") == "android.software.leanback"
+            ]
+            # An absent android:required means required, as Android reads it.
+            if any(f.get(f"{android}required", "true") == "true" for f in leanback):
                 self.assertIn("Use a dedicated release track for Android TV", flat, manifest)
 
     def test_it_walks_the_glyphs_pack_listing_too(self):

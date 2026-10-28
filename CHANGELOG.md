@@ -8,8 +8,9 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Fixed
 
-- **The walkthrough covers the two refusals the first upload hit.** Both
-  came up on 2026-10-21, and `docs/PLAY-CONSOLE.md` now covers both:
+- **`tests/test_play_listing.py` keeps both Console upload fixes.** The
+  first upload hit two refusals on 2026-10-21, and `docs/PLAY-CONSOLE.md`
+  now covers both:
   - *Automatic protection*: Play's installer check needs `minSdk` 24, and the
     bundles declare 21. §5 says to switch **Installer check** off before
     the first upload.
