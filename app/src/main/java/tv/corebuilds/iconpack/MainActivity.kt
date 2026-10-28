@@ -1007,7 +1007,7 @@ class MainActivity : TvActivity() {
                 getString(
                     R.string.empty_body_query_fmt,
                     categoryLabel(category),
-                    all.count(::inCategory)
+                    appsInCategory()
                 )
             }
 
@@ -1017,7 +1017,7 @@ class MainActivity : TvActivity() {
         clearSearch.visibility = if (q.isEmpty()) View.GONE else View.VISIBLE
         clearFilter.visibility = if (category == ALL) View.GONE else View.VISIBLE
         clearFilter.text =
-            getString(R.string.empty_clear_filter, all.count(::inCategory))
+            getString(R.string.empty_clear_filter, appsInCategory())
     }
 
     /**
@@ -1035,6 +1035,10 @@ class MainActivity : TvActivity() {
         BESPOKE -> item.bespoke
         else -> item.category == category
     }
+
+    /** Apps in the current category: an alternate's tile is not another app. */
+    private fun appsInCategory(): Int =
+        all.filter(::inCategory).mapTo(HashSet()) { it.app }.size
 
     private fun categoryLabel(key: String): String = when (key) {
         BESPOKE -> getString(R.string.chip_brandmarks)

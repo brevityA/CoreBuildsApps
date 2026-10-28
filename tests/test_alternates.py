@@ -216,6 +216,9 @@ class CountsAreApps(unittest.TestCase):
         self.assertIn("iconCount = all.count { !it.alternate }", src)
         # A search hitting only "WuPlay (alternative)" still matched one app.
         self.assertIn("filtered.mapTo(HashSet()) { it.app }.size", src)
+        # The empty state counts apps in the category the same way.
+        self.assertIn("all.filter(::inCategory).mapTo(HashSet()) { it.app }.size", src)
+        self.assertNotIn("all.count(::inCategory)", src)
         adapter = read(APP / "java/tv/corebuilds/iconpack/IconAdapter.kt")
         self.assertIn('val app: String get() = drawable.replace(ALTERNATE, "")', adapter)
         for fmt in ("R.string.pack_stats_fmt, all.size",
