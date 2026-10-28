@@ -429,7 +429,7 @@ class TestPatternView @JvmOverloads constructor(
         val gammas = DisplayMath.GAMMAS
         val patchSize = dp(96f)
         val gap = dp(24f)
-        val rowCentre = doubleArrayOf(h * 0.40, h * 0.70)
+        val rowCentre = floatArrayOf(h * 0.40f, h * 0.70f)
 
         for (row in 0..1) {
             val bt1886 = row == 1
