@@ -11,8 +11,12 @@ import android.os.Handler
 import android.net.Uri
 import android.os.Looper
 import android.text.InputType
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -27,6 +31,8 @@ import tv.corebuilds.eq.dsp.HardwarePresets
 import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.dsp.ManualEqPreset
 import tv.corebuilds.eq.dsp.PeakingFilter
+import tv.corebuilds.eq.dsp.TvSoundEq
+import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.mode.ContentMode
@@ -94,6 +100,7 @@ class ManualEqActivity : TvActivity() {
         findViewById<Button>(R.id.btn_choose_eq_preset).setOnClickListener { showPresetPicker() }
         findViewById<Button>(R.id.btn_save_eq_preset).setOnClickListener { promptSavePreset() }
         findViewById<Button>(R.id.btn_import_eq_file).setOnClickListener { pickCorrectionFile() }
+        findViewById<Button>(R.id.btn_manual_eq_tv_values).setOnClickListener { showTvValues() }
         findViewById<Button>(R.id.btn_reset_eq).setOnClickListener {
             applyPreset(ManualEq.BUILT_IN_PRESETS.first())
             textStatus.text = getString(R.string.manual_eq_reset_done)
@@ -303,11 +310,70 @@ class ManualEqActivity : TvActivity() {
             ?: getString(R.string.manual_eq_presets_title)
         AlertDialog.Builder(this)
             .setTitle(title)
-            .setSingleChoiceItems(presets.map { it.name }.toTypedArray(), selected) { dialog, which ->
+            .setSingleChoiceItems(presetRows(presets), selected) { dialog, which ->
                 applyPreset(presets[which])
                 dialog.dismiss()
             }
             .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    /**
+     * One row per preset: the name in the list's own style and, underneath it, what the preset
+     * actually does — a name like "Warm" is a mood, not a description, and a person choosing
+     * blind on a TV ten feet away needs the second line.
+     */
+    private fun presetRows(presets: List<ManualEqPreset>): ArrayAdapter<String> =
+        object : ArrayAdapter<String>(
+            this,
+            android.R.layout.simple_list_item_2,
+            android.R.id.text1,
+            presets.map { it.name }
+        ) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val row = super.getView(position, convertView, parent)
+                val second = row.findViewById<TextView>(android.R.id.text2)
+                val description = presets[position].description
+                second.text = description
+                second.visibility = if (description.isBlank()) View.GONE else View.VISIBLE
+                return row
+            }
+        }
+
+    /**
+     * The same curve as numbers a person can type into the TV's own sound menu.
+     *
+     * Core EQ cannot write a television's picture or sound settings without root, so the
+     * honest hand-off is text: the values, which band the menu will not take, and which band
+     * Core EQ has no opinion about at all. [TvSoundEq] does the maths; this only shows it.
+     */
+    private fun showTvValues() {
+        val filters = currentManualFilters()
+        val preset = ManualEq.matchingPreset(filters, profileStore.manualEqPresets())
+        val settings = TvSoundEq.GRIDS.map { TvSoundEq.setting(filters, it) }
+        if (settings.none { it.movesSomething }) {
+            Toast.makeText(this, R.string.manual_eq_tv_values_empty, Toast.LENGTH_LONG).show()
+            return
+        }
+        val title = preset?.name ?: getString(R.string.manual_eq_tv_values_title)
+        val report = TvSoundEq.report(title, settings)
+        val body = TextView(this).apply {
+            text = report
+            typeface = android.graphics.Typeface.MONOSPACE
+            setTextIsSelectable(true)
+            val pad = (16 * resources.displayMetrics.density).toInt()
+            setPadding(pad, pad, pad, pad)
+        }
+        val scroller = ScrollView(this).apply { addView(body) }
+        AlertDialog.Builder(this)
+            .setTitle(R.string.manual_eq_tv_values_title)
+            .setView(scroller)
+            .setPositiveButton(R.string.manual_eq_tv_values_export) { _, _ ->
+                val name = "tv_sound_values_${(preset?.id ?: "custom")}.txt"
+                val result = Formats.exportToDevice(this, report, name)
+                Toast.makeText(this, result.message, Toast.LENGTH_LONG).show()
+            }
+            .setNegativeButton(R.string.manual_eq_tv_values_close, null)
             .show()
     }
 
