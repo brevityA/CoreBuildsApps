@@ -240,7 +240,9 @@ class TestPatternView @JvmOverloads constructor(
         )
 
         // A large true-black field under the ladder: the eye needs somewhere to rest before
-        // judging whether the darkest bar is black or merely dark.
+        // judging whether the darkest bar is black or merely dark. fillPaint still holds bar
+        // 15's grey at this point, so the field sets its own colour rather than inheriting it.
+        fillPaint.color = Color.BLACK
         canvas.drawRect(0f, barTop + barHeight + dp(32f), w.toFloat(), h.toFloat(), fillPaint)
     }
 
@@ -427,7 +429,7 @@ class TestPatternView @JvmOverloads constructor(
         val gammas = DisplayMath.GAMMAS
         val patchSize = dp(96f)
         val gap = dp(24f)
-        val rowCentre = doubleArrayOf(h * 0.40f, h * 0.70f)
+        val rowCentre = doubleArrayOf(h * 0.40, h * 0.70)
 
         for (row in 0..1) {
             val bt1886 = row == 1
