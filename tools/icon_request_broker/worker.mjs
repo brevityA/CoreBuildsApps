@@ -38,7 +38,8 @@
 // Shared literals live in constants.mjs — see that file for why a Workers
 // entry module must not export plain strings (workerd refuses to boot).
 import { REPO, ISSUE_LABEL, TITLE_PREFIX, MAPPING_LABEL, MAPPING_TITLE_PREFIX,
-         PRIORITY_LABEL, PLAY_PACKAGE, PLUS_PRODUCT_ID, WORKER_VERSION } from "./constants.mjs";
+         PRIORITY_LABEL, PLAY_PACKAGE, PLUS_PRODUCT_ID, WORKER_VERSION,
+         BATCH_MAX, BATCH_PER_DAY } from "./constants.mjs";
 
 const COMPONENT_RE = /^[A-Za-z0-9_.]+\/[A-Za-z0-9_.$]+$/;
 const MAX_APP_NAME = 80;
@@ -46,6 +47,8 @@ const MAX_DEVICE_NOTE = 120;
 // A Play purchase token is a few hundred URL-safe characters; the cap is slack.
 const PLUS_TOKEN_RE = /^[A-Za-z0-9._-]{16,1024}$/;
 const BODY_CAP = 2 * 1024;             // bytes; the audit payload is ~300, ~600 with a Plus token
+// A batch is up to BATCH_MAX app entries (~150 bytes each) plus the token.
+const BATCH_BODY_CAP = 8 * 1024;
 const RATE_PER_HOUR = 5;
 const ISOLATE_FLOOR_PER_HOUR = 25;
 
@@ -122,6 +125,47 @@ export function validate(payload) {
   return { ok: true, value: { appName: appName.trim(), component, device, mapped, plusToken } };
 }
 
+/**
+ * The "Request all" payload: one device note and one Plus token for up to
+ * BATCH_MAX apps, each in the single request's grammar. The token is required:
+ * a batch is a Core Builds Plus extra, and handleBatch refuses one Google does
+ * not confirm.
+ */
+export function validateBatch(payload) {
+  if (payload === null || typeof payload !== "object" || Array.isArray(payload)) {
+    return { ok: false, status: 400, error: "expected a JSON object" };
+  }
+  const unknown = Object.keys(payload).filter((k) => !["apps", "device", "plus_token"].includes(k));
+  if (unknown.length) return { ok: false, status: 400, error: `unknown fields: ${unknown.join(", ")}` };
+  if (typeof payload.plus_token !== "string") {
+    return { ok: false, status: 400, error: "plus_token is required: Request all is a Core Builds Plus extra" };
+  }
+  const apps = payload.apps;
+  if (!Array.isArray(apps) || apps.length === 0 || apps.length > BATCH_MAX) {
+    return { ok: false, status: 400, error: `apps must list 1 to ${BATCH_MAX} apps` };
+  }
+  const value = { device: "", plusToken: null, apps: [] };
+  const seen = new Set();
+  for (const [i, app] of apps.entries()) {
+    if (app === null || typeof app !== "object" || Array.isArray(app)) {
+      return { ok: false, status: 400, error: `apps[${i}] must be an object` };
+    }
+    const extra = Object.keys(app).filter((k) => !["app_name", "component", "mapped"].includes(k));
+    if (extra.length) return { ok: false, status: 400, error: `apps[${i}]: unknown fields: ${extra.join(", ")}` };
+    const one = validate({ ...app, device: payload.device, plus_token: payload.plus_token });
+    if (!one.ok) return { ...one, error: `apps[${i}]: ${one.error}` };
+    if (seen.has(one.value.component)) {
+      return { ok: false, status: 400, error: `apps[${i}]: ${one.value.component} is listed twice` };
+    }
+    seen.add(one.value.component);
+    value.device = one.value.device;
+    value.plusToken = one.value.plusToken;
+    value.apps.push({ appName: one.value.appName, component: one.value.component,
+                      mapped: one.value.mapped });
+  }
+  return { ok: true, value };
+}
+
 // ---------------------------------------------------------------------------
 // layered rate limiting, strongest available wins (see the reference worker):
 //   1. Workers Rate Limiting binding (per-colo, shared across isolates)
@@ -169,6 +213,25 @@ export async function rateLimited(env, ip) {
     return false;
   }
   return isolateLimited(ip);
+}
+
+/** One purchase's "Request all" presses today; the day is UTC. */
+export function batchKey(tokenHash, at = Date.now()) {
+  return `batch:${tokenHash}:${Math.floor(at / 86_400_000)}`;
+}
+
+/**
+ * True while this purchase has a Request all left today, and counts it. With
+ * no KV there is no day to count across isolates, so only the per-IP limit
+ * stands in front of a batch.
+ */
+export async function batchAllowed(env, tokenHash, at = Date.now()) {
+  if (!env.RATE_KV) return true;
+  const key = batchKey(tokenHash, at);
+  const count = Number(await env.RATE_KV.get(key)) || 0;
+  if (count >= BATCH_PER_DAY) return false;
+  await env.RATE_KV.put(key, String(count + 1), { expirationTtl: 86_400 + 600 });
+  return true;
 }
 
 // ---------------------------------------------------------------------------
@@ -405,7 +468,14 @@ async function ensureLabel(token, { label, description }) {
 const PRIORITY_KIND = { label: PRIORITY_LABEL,
   description: "Requested by a Core Builds Plus owner; done first" };
 
-async function fileOrComment(token, value) {
+async function fileOrComment(token, value, ready = null) {
+  // A batch ensures each label once, not once per app: Workers cap the
+  // subrequests a single request may make.
+  const ensure = async (k) => {
+    if (ready?.has(k.label)) return;
+    await ensureLabel(token, k);
+    ready?.add(k.label);
+  };
   const kind = reportKind(value);
   const dup = await findOpenDuplicate(token, value);
   if (dup) {
@@ -418,7 +488,7 @@ async function fileOrComment(token, value) {
         (value.priority ? " From a Core Builds Plus owner, so it is now priority." : "") }),
     });
     if (value.priority) {
-      await ensureLabel(token, PRIORITY_KIND);
+      await ensure(PRIORITY_KIND);
       await fetch(`https://api.github.com/repos/${REPO}/issues/${dup}/labels`, {
         method: "POST", headers: ghHeaders(`Bearer ${token}`),
         body: JSON.stringify({ labels: [PRIORITY_LABEL] }),
@@ -426,8 +496,8 @@ async function fileOrComment(token, value) {
     }
     return { number: dup, duplicate: true };
   }
-  await ensureLabel(token, kind);
-  if (value.priority) await ensureLabel(token, PRIORITY_KIND);
+  await ensure(kind);
+  if (value.priority) await ensure(PRIORITY_KIND);
   const res = await fetch(`https://api.github.com/repos/${REPO}/issues`, {
     method: "POST", headers: ghHeaders(`Bearer ${token}`),
     body: JSON.stringify({ title: `${kind.prefix}${value.appName}`,
@@ -532,6 +602,59 @@ async function handleRequest(request, env) {
   }
 }
 
+/**
+ * Core Builds Plus "Request all": up to BATCH_MAX apps from one TV in one
+ * press, each filed (or +1ed) as a priority issue exactly as a single press
+ * would file it. Refused unless Google confirms the purchase, and limited to
+ * BATCH_PER_DAY presses a day per purchase on top of the per-IP limit. Each
+ * app answers on its own: one failed issue does not undo the others.
+ */
+async function handleBatch(request, env) {
+  if (await rateLimited(env, getClientIp(request))) {
+    logEvent({ evt: "rate_limited", route: "batch" });
+    return json({ ok: false, error: "rate limited" }, 429);
+  }
+  let raw;
+  try { raw = await readCapped(request, BATCH_BODY_CAP); }
+  catch (err) { return json({ ok: false, error: err.message }, err.status || 400); }
+  let payload;
+  try { payload = JSON.parse(raw); }
+  catch (_) { return json({ ok: false, error: "body is not JSON" }, 400); }
+  const verdict = validateBatch(payload);
+  if (!verdict.ok) return json({ ok: false, error: verdict.error }, verdict.status);
+
+  const sink = sinkFor(env);
+  if (sink === "none") return json({ ok: false, error: "broker not configured" }, 503);
+  if (sink === "discord") {
+    return json({ ok: false, error: "Request all needs the GitHub sink" }, 501);
+  }
+  const { plusToken, device, apps } = verdict.value;
+  if (!(await verifyPlus(env, plusToken))) {
+    logEvent({ evt: "batch_refused" });
+    return json({ ok: false,
+                  error: "Request all is a Core Builds Plus extra; Google Play did not confirm this purchase" },
+                403);
+  }
+  if (!(await batchAllowed(env, await sha256Hex(plusToken)))) {
+    logEvent({ evt: "batch_daily_cap" });
+    return json({ ok: false, error: `Request all is limited to ${BATCH_PER_DAY} presses a day` }, 429);
+  }
+  const token = sink === "github-app" ? await installationToken(env) : env.GITHUB_TOKEN;
+  const ready = new Set();
+  const results = [];
+  for (const app of apps) {
+    try {
+      const { number, duplicate } = await fileOrComment(token, { ...app, device, priority: true }, ready);
+      results.push({ component: app.component, issue: number, duplicate });
+    } catch (err) {
+      results.push({ component: app.component, error: String(err).slice(0, 120) });
+    }
+  }
+  logEvent({ evt: "batch_filed", apps: apps.length,
+             filed: results.filter((r) => r.issue).length });
+  return json({ ok: true, priority: true, results }, 201);
+}
+
 function json(body, status) {
   return new Response(JSON.stringify(body), {
     status, headers: { "Content-Type": "application/json" },
@@ -560,7 +683,8 @@ async function handleInner(request, env) {
     return json({ ok: true, version: WORKER_VERSION, sink: sinkFor(env),
                   plus: plusConfigured(env) }, 200);
   }
-  if (url.pathname !== "/" && url.pathname !== "/v1/request") {
+  const batch = url.pathname === "/v1/batch";
+  if (!batch && url.pathname !== "/" && url.pathname !== "/v1/request") {
     return json({ ok: false, error: "no such route" }, 404);
   }
   if (request.method === "OPTIONS") {
@@ -569,7 +693,7 @@ async function handleInner(request, env) {
   if (request.method !== "POST") {
     return json({ ok: false, error: "POST JSON only" }, 405);
   }
-  return handleRequest(request, env);
+  return batch ? handleBatch(request, env) : handleRequest(request, env);
 }
 
 export async function handle(request, env) {
