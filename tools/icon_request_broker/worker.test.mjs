@@ -5,9 +5,11 @@ import { webcrypto } from "node:crypto";
 import {
   validate, issueBody, discordPayload, rateLimitKey, rateLimited, appJwt,
   readCapped, handle, reportKind, sinkFor, plusOwned, verifyPlus, plusConfigured,
+  validateBatch, batchKey, batchAllowed,
 } from "./worker.mjs";
 import { TITLE_PREFIX, ISSUE_LABEL, MAPPING_LABEL, MAPPING_TITLE_PREFIX,
-         PRIORITY_LABEL, PLAY_PACKAGE, PLUS_PRODUCT_ID, WORKER_VERSION } from "./constants.mjs";
+         PRIORITY_LABEL, PLAY_PACKAGE, PLUS_PRODUCT_ID, WORKER_VERSION,
+         BATCH_MAX, BATCH_PER_DAY } from "./constants.mjs";
 
 // ------------------------------------------------------------------ grammar
 
@@ -530,7 +532,7 @@ test("a Plus request files with the priority label, and the token reaches no one
   const [, created] = stub.sent.find(([u, b]) => u.endsWith("/issues") && b);
   const issue = JSON.parse(created);
   assert.deepEqual(issue.labels, [ISSUE_LABEL, PRIORITY_LABEL]);
-  assert.ok(issue.body.includes("Core Builds Plus"));
+  assert.ok(issue.body.includes("Core Premium"));
   for (const [url, body] of stub.sent) {
     if (url.includes("androidpublisher.googleapis.com")) continue;
     assert.ok(!url.includes(PLUS_TOKEN) && !body.includes(PLUS_TOKEN), `token sent to ${url}`);
@@ -573,6 +575,129 @@ test("healthz says whether Plus is checked, never with what", async () => {
   assert.equal(JSON.parse(text).plus, true);
   assert.ok(!text.includes("PRIVATE KEY") && !text.includes("iam.gserviceaccount.com"));
   assert.equal((await (await handle(new Request("https://x/healthz"), {})).json()).plus, false);
+});
+
+// ----------------------------------------------------- Request all (batch)
+
+const APP2 = { app_name: "Second App", component: "com.example.second/.Main" };
+const BATCH = { device: OK.device, plus_token: PLUS_TOKEN,
+                apps: [{ app_name: OK.app_name, component: OK.component }, APP2] };
+
+function batchReq(payload, ip = "6.6.6.1") {
+  return new Request("https://broker.test/v1/batch", {
+    method: "POST", headers: { "CF-Connecting-IP": ip },
+    body: JSON.stringify(payload),
+  });
+}
+
+test("validateBatch accepts up to BATCH_MAX apps under one device note and token", () => {
+  const v = validateBatch(BATCH);
+  assert.equal(v.ok, true);
+  assert.equal(v.value.plusToken, PLUS_TOKEN);
+  assert.equal(v.value.device, OK.device);
+  assert.deepEqual(v.value.apps.map((a) => a.component), [OK.component, APP2.component]);
+  assert.equal(v.value.apps[1].mapped, false);
+  const full = Array.from({ length: BATCH_MAX }, (_, i) =>
+    ({ app_name: `App ${i}`, component: `com.example.a${i}/.Main` }));
+  assert.equal(validateBatch({ ...BATCH, apps: full }).ok, true);
+});
+
+test("validateBatch refuses a batch without Plus, too long, empty, repeated or malformed", () => {
+  const { plus_token, ...noToken } = BATCH;
+  const tooMany = Array.from({ length: BATCH_MAX + 1 }, (_, i) =>
+    ({ app_name: `App ${i}`, component: `com.example.a${i}/.Main` }));
+  for (const [why, bad] of [
+    ["no token", noToken],
+    ["too many", { ...BATCH, apps: tooMany }],
+    ["empty", { ...BATCH, apps: [] }],
+    ["not a list", { ...BATCH, apps: "x" }],
+    ["twice", { ...BATCH, apps: [APP2, APP2] }],
+    ["bad component", { ...BATCH, apps: [{ app_name: "x", component: "nope" }] }],
+    ["extra app field", { ...BATCH, apps: [{ ...APP2, device: "x" }] }],
+    ["extra field", { ...BATCH, priority: true }],
+    ["bad token", { ...BATCH, plus_token: "short" }],
+  ]) {
+    assert.equal(validateBatch(bad).ok, false, why);
+  }
+});
+
+test("Request all files every app as priority, once per label, and the token reaches only Google", async () => {
+  const stub = playStub();
+  const env = { ...ENV, RATE_KV: primed(), GOOGLE_SERVICE_ACCOUNT_JSON: SA };
+  let body;
+  await withFetch(stub.f, async () => {
+    const res = await handle(batchReq(BATCH), env);
+    assert.equal(res.status, 201);
+    body = await res.json();
+  });
+  assert.equal(body.priority, true);
+  assert.deepEqual(body.results.map((r) => r.component), [OK.component, APP2.component]);
+  assert.ok(body.results.every((r) => r.issue === 777 && r.duplicate === false));
+  const created = stub.sent.filter(([u, b]) => u.endsWith("/issues") && b).map(([, b]) => JSON.parse(b));
+  assert.equal(created.length, 2);
+  for (const issue of created) assert.deepEqual(issue.labels, [ISSUE_LABEL, PRIORITY_LABEL]);
+  const labelChecks = stub.calls.filter(([u, m]) => u.includes("/labels/") && m === "GET");
+  assert.equal(labelChecks.length, 2, "each label is ensured once per batch, not once per app");
+  for (const [url, b] of stub.sent) {
+    if (url.includes("androidpublisher.googleapis.com")) continue;
+    assert.ok(!url.includes(PLUS_TOKEN) && !b.includes(PLUS_TOKEN), `token sent to ${url}`);
+  }
+});
+
+test("Request all without a confirmed purchase is refused before GitHub is touched", async () => {
+  const stub = playStub({ purchase: { purchaseState: 0, refundableQuantity: 0 } });
+  const env = { ...ENV, RATE_KV: primed(), GOOGLE_SERVICE_ACCOUNT_JSON: SA };
+  await withFetch(stub.f, async () => {
+    assert.equal((await handle(batchReq(BATCH, "6.6.6.2"), env)).status, 403);
+  });
+  assert.equal(stub.calls.filter(([u]) => u.includes("api.github.com")).length, 0);
+});
+
+test("Request all is limited to BATCH_PER_DAY presses a day per purchase", async () => {
+  const kv = mapKv({ "gh:installation_token": "tok" });
+  const env = { ...ENV, RATE_KV: kv, GOOGLE_SERVICE_ACCOUNT_JSON: SA, RATE_LIMIT_PER_HOUR: 99 };
+  const stub = playStub();
+  const statuses = [];
+  await withFetch(stub.f, async () => {
+    for (let i = 0; i <= BATCH_PER_DAY; i++) {
+      statuses.push((await handle(batchReq(BATCH, "6.6.6.3"), env)).status);
+    }
+  });
+  assert.deepEqual(statuses, [...Array(BATCH_PER_DAY).fill(201), 429]);
+  assert.ok([...kv.store.keys()].some((k) => /^batch:[0-9a-f]{64}:\d+$/.test(k)),
+            "the daily count is kept under a hash of the token");
+  assert.ok(![...kv.store.keys()].some((k) => k.includes(PLUS_TOKEN)));
+});
+
+test("the daily batch key rotates with the UTC day; with no KV only the IP limit applies", async () => {
+  const day = 86_400_000;
+  assert.notEqual(batchKey("h", 5 * day + 1), batchKey("h", 6 * day + 1));
+  assert.equal(batchKey("h", 5 * day + 1), batchKey("h", 6 * day - 1));
+  assert.equal(await batchAllowed({}, "h"), true);
+});
+
+test("one failed issue does not undo the rest of the batch", async () => {
+  const stub = playStub();
+  let creates = 0;
+  const f = async (url, init = {}) => {
+    if (String(url).endsWith("/issues") && init.method === "POST" && ++creates === 1) {
+      return new Response("{}", { status: 502 });
+    }
+    return stub.f(url, init);
+  };
+  const env = { ...ENV, RATE_KV: primed(), GOOGLE_SERVICE_ACCOUNT_JSON: SA };
+  let body;
+  await withFetch(f, async () => { body = await (await handle(batchReq(BATCH, "6.6.6.4"), env)).json(); });
+  assert.ok(body.results[0].error.includes("502"));
+  assert.equal(body.results[1].issue, 777);
+});
+
+test("Request all needs the GitHub sink, and its body cap is the batch's", async () => {
+  const discord = { ICON_REQUEST_DISCORD_WEBHOOK_URL: "https://discord.test/hook", RATE_KV: mapKv() };
+  assert.equal((await handle(batchReq(BATCH, "6.6.6.5"), discord)).status, 501);
+  const big = new Request("https://x/v1/batch", { method: "POST", body: "x".repeat(9000) });
+  assert.equal((await handle(big, ENV)).status, 413);
+  assert.equal((await handle(new Request("https://x/v1/batch"), ENV)).status, 405);
 });
 
 test("entry-module exports are all functions or ExportedHandlers (workerd rule)", async () => {

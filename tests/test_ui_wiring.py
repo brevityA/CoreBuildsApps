@@ -396,9 +396,10 @@ def collect() -> list[str]:
 
 # java.util.Formatter's grammar, which String.format applies to every
 # resource read with getString(id, args): a positional conversion
-# (%1$s, %2$d, %3$f) or the %% escape for one literal percent. Anything
-# else after a % is a parse, never text.
-FORMAT_GRAMMAR = re.compile(r"%(?:%|\d+\$[sdf])")
+# (%1$s, %2$d, %3$f), a zero-padded positional integer (%1$02d, the night
+# hours' "20:00"), or the %% escape for one literal percent. Anything else
+# after a % is a parse, never text.
+FORMAT_GRAMMAR = re.compile(r"%(?:%|\d+\$(?:[sf]|(?:0\d+)?d))")
 
 # The auditor's built deep link, structurally: the issue form's title prefix
 # URL-encoded exactly once (%5B...%5D for its brackets), a space, the label

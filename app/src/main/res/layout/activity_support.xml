@@ -6,10 +6,11 @@
   Nothing in the codes takes focus: a QR code is something a phone reads,
   not a control a remote presses, so Back is the screen's one stop there.
 
-  The Google Play build shows the Plus card instead of the codes (Play's
-  Payments policy keeps a Play app's tips inside Play Billing). Its button
-  is the one other stop, and only while Plus is on sale: SupportActivity
-  moves the cursor to Back before the button stops being focusable.
+  The Google Play build shows the Core Premium card (Plus in code) instead
+  of the codes (Play's Payments policy keeps a Play app's tips inside Play
+  Billing). Its buy button is a stop only while Premium is on sale, and its
+  trial button only until the trial is used: SupportActivity moves the
+  cursor to Back before either stops being focusable.
 -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -206,8 +207,9 @@
         </LinearLayout>
         </LinearLayout>
 
-        <!-- RIGHT (Google Play build): Core Builds Plus. The status line
-             says where the purchase stands; the button exists to buy. -->
+        <!-- RIGHT (Google Play build): Core Premium (Plus in code). The status
+             line says where the purchase and the trial stand; the first
+             button buys, the second starts the one 24-hour trial. -->
         <LinearLayout
             android:id="@+id/support_plus"
             android:layout_width="@dimen/cb_support_plus_width"
@@ -253,6 +255,25 @@
                 android:textColor="@color/cb_cta_ink"
                 android:textSize="@dimen/cb_text_body"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/support_plus_trial"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_sm"
+                android:minHeight="@dimen/cb_target_min"
+                android:gravity="center"
+                android:background="@drawable/bg_ghost"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="@dimen/cb_space_lg"
+                android:paddingEnd="@dimen/cb_space_lg"
+                android:paddingTop="@dimen/cb_space_sm"
+                android:paddingBottom="@dimen/cb_space_sm"
+                android:text="@string/plus_trial_button"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_body"
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
 

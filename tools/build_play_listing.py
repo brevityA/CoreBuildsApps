@@ -234,21 +234,24 @@ COPY = {
     ),
 }
 
-# Added to the full description only while Plus is on sale (broker_enabled),
-# just above PRIVACY. It says what the purchase buys and, in the same breath,
-# that nothing the free listing promises is behind it.
+# Added to the full description only while Core Premium (Plus in code) is on
+# sale (broker_enabled), just above PRIVACY. It says what the purchase buys
+# and, in the same breath, that nothing the free listing promises is behind it.
 PLUS_COPY = (
-    "CORE BUILDS PLUS\n"
+    "CORE PREMIUM\n"
     "Optional, one purchase through Google Play, no subscription: your icon "
-    "requests are filed as priority, My requests shows how far each one has "
-    "got, the live wallpaper can rotate through your loops, and Spectra adds "
-    "{plus_walls} more wallpapers. Every icon, all {walls} stills, every loop "
-    "and every screen ship to everyone either way.\n"
+    "requests are filed as priority, one app or every missing app at once, "
+    "My requests shows how far each one has got, the live wallpaper can rotate through your loops and play a second "
+    "one at night, you choose what Projectivy rotates from this pack "
+    "(favourites, one series, a night set), and Spectra adds {plus_walls} "
+    "more wallpapers. Try it free for 24 hours first, once per TV. Every "
+    "icon, all {walls} stills, every loop and every screen ship to everyone "
+    "either way.\n"
     "\n"
 )
 PLUS_PRIVACY = (
-    " With Plus, a request also carries the Google Play purchase token, which "
-    "is checked with Google and never stored."
+    " With Core Premium, a request also carries the Google Play purchase "
+    "token, which is checked with Google and never stored."
 )
 
 
@@ -307,16 +310,17 @@ BROKER_COLLECTED = [
         "optional": True,
         "shared": False,
         "purposes": ["App functionality"],
-        "what": "the one app the user presses under Missing icons (name and "
+        "what": "the app the user presses under Missing icons (name and "
                 "component) and the launcher in use, filed as a public GitHub "
-                "issue",
+                "issue; with Core Premium, Request all sends the same for up to 10 "
+                "unrequested missing apps in one press",
     },
     {
         "type": "Financial info > Purchase history",
         "optional": True,
         "shared": False,
         "purposes": ["App functionality"],
-        "what": "Plus owners only: the Google Play purchase token, checked with "
+        "what": "Core Premium owners only: the Google Play purchase token, checked with "
                 "Google and never stored; a SHA-256 of it is cached for at most "
                 "six hours",
     },
@@ -335,7 +339,7 @@ def data_safety(plus: bool | None = None) -> dict:
         "No analytics, advertising or crash SDKs are linked; the app has no "
         "account, no identifier and no background upload. A missing-icon press "
         "posts the app name, the component and a device note to the request "
-        "broker, which files them as a public GitHub issue; a Plus owner's "
+        "broker, which files them as a public GitHub issue; a Core Premium owner's "
         "press also carries the purchase token, which the broker checks with "
         "Google and never stores. Nothing is shared with a third party, and "
         "the policy states each field verbatim."
@@ -377,7 +381,7 @@ CONTENT_RATING = {
         "or interactive with strangers. 'online_content' is the full-size "
         "wallpapers and live loops, downloaded after install from this repo; "
         "none of it is rated content. 'purchases' follows the broker: Core "
-        "Builds Plus is on sale exactly when the broker is baked in, and the "
+        "Premium is on sale exactly when the broker is baked in, and the "
         "answer stays yes while a track still serves such a build "
         "(BROKER_SHIPPED)."
     ),
@@ -731,7 +735,7 @@ GLYPHS_CONTENT_RATING = {
     "purchases": False,
     "note": (
         "A square icon pack. Nothing here is user-generated, shared or "
-        "interactive with strangers, it sells nothing (Core Builds Plus is "
+        "interactive with strangers, it sells nothing (Core Premium is "
         "the icon pack's, not this app's), and with no INTERNET permission "
         "everything it shows is in the install."
     ),

@@ -360,8 +360,11 @@ class Plus(unittest.TestCase):
 
     def test_a_button_that_stops_being_a_control_hands_focus_to_back_first(self):
         render = read(KT / "SupportActivity.kt").split("private fun render(", 1)[1]
-        handoff = render.index("findViewById<View>(R.id.support_back).requestFocus()")
+        handoff = render.index("if (!buyable && button.hasFocus()) back.requestFocus()")
         self.assertLess(handoff, render.index("button.isFocusable = buyable"))
+        # The trial button too: Back takes the cursor before it is hidden.
+        trial = render.index("if (!offer && tryIt.hasFocus()) back.requestFocus()")
+        self.assertLess(trial, render.index("tryIt.visibility ="))
 
     def test_the_token_rides_with_requests_and_nowhere_else(self):
         sender = read(KT / "IconRequestSender.kt")
@@ -404,23 +407,29 @@ class PlusExtras(unittest.TestCase):
         unlocked = read(KT / "Plus.kt").split("fun unlocked(", 1)[1].split("\n    }\n", 1)[0]
         self.assertIn("SupportActivity::class.java", unlocked)
         settings = read(KT / "SettingsActivity.kt")
-        self.assertEqual(settings.count("if (Plus.unlocked(this))"), 2)
+        # Rotation, night loop, night hours, Projectivy walls by day and at
+        # night, My requests.
+        self.assertEqual(settings.count("if (Plus.unlocked(this))"), 6)
         browser = read(KT / "WallpapersActivity.kt")
         self.assertIn("if (item.plus && !Plus.unlocked(this)) return@WallpaperAdapter", browser)
         # The preview pages through its list: locked walls never go in it.
-        self.assertIn("adapter.currentItems().filter { !it.plus || owned }", browser)
-        self.assertIn("picked.filter { !it.plus || owned }", browser)
+        self.assertIn("val on = Plus.active(this)", browser)
+        self.assertIn("adapter.currentItems().filter { !it.plus || on }", browser)
+        # Export is the purchase's, not the trial's: a copy outlasts it.
+        self.assertIn("val owned = Plus.owned(this)\n        val wallpapers = picked.filter { !it.plus || owned }",
+                      browser)
         self.assertNotIn("startExport(adapter.selectedItems())", browser)
         # And My requests refuses to open without Plus, whatever started it.
         requests = read(KT / "RequestsActivity.kt")
-        self.assertLess(requests.index("if (!Plus.owned(this))"), requests.index("setContentView"))
+        self.assertLess(requests.index("if (!Plus.active(this))"), requests.index("setContentView"))
 
     def test_rotation_runs_in_the_wallpaper_engine_and_needs_plus(self):
         engine = read(KT / "LiveWallpaperService.kt")
         self.assertIn("if (shown) LoopRotation.advanceIfDue(applicationContext)", engine)
         rotation = read(KT / "LoopRotation.kt")
         due = rotation.split("fun advanceIfDue(", 1)[1]
-        self.assertLess(due.index("Plus.owned(context)"), due.index("Prefs.setLiveLoopId"))
+        self.assertLess(due.index("if (!Plus.active(context, now)) return false"),
+                        due.index("Prefs.setLiveLoopId"))
         # It only ever plays what is already on the TV; the engine never downloads.
         self.assertIn("LiveLoopDownloader.playable(context, it) != null", rotation)
         self.assertNotIn("fetch(", rotation)
@@ -434,6 +443,25 @@ class PlusExtras(unittest.TestCase):
         for hours, name in ((1, "settings_rotate_hour"), (6, "settings_rotate_6h"),
                             (24, "settings_rotate_day")):
             self.assertIn(f"{hours} -> R.string.{name}", labels)
+
+    def test_night_loop_is_read_by_the_engine_needs_plus_and_never_downloads(self):
+        engine = read(KT / "LiveWallpaperService.kt")
+        self.assertIn("loop = LiveLoop.byId(DayNight.loopId(applicationContext))", engine)
+        # A home screen left on still changes over: the engine re-reads at the
+        # boundary while visible, and never leaves the callback behind.
+        self.assertIn("handler.postDelayed(switchCheck, wait + SWITCH_SLACK_MS)", engine)
+        self.assertEqual(engine.count("handler.removeCallbacks(switchCheck)"), 3)
+        night = read(KT / "DayNight.kt")
+        active = night.split("fun active(", 1)[1].split("\n\n", 1)[0]
+        self.assertIn("Plus.active(context) &&", active)
+        # An unplayable night loop falls back to the day choice, never a still.
+        self.assertIn("LiveLoopDownloader.playable(context, night) != null) night.id else day", night)
+        self.assertNotIn("fetch(", night)
+        # Settings offers only loops already on the TV.
+        settings = read(KT / "SettingsActivity.kt")
+        row = settings.split("row(R.id.set_night_row)", 1)[1].split("row(R.id.set_hours_row)", 1)[0]
+        self.assertIn("LiveLoopDownloader.playable(this, it) != null", row)
+        self.assertIn("R.string.settings_night_none", row)
 
     def test_my_requests_records_only_on_play_and_reads_github_by_number(self):
         log = read(KT / "RequestLog.kt")
@@ -465,6 +493,71 @@ class PlusExtras(unittest.TestCase):
         self.assertTrue((APP / "src/play/assets/manifest/plus-wallpapers.json").exists())
         self.assertFalse((APP / "src/main/assets/manifest/plus-wallpapers.json").exists())
         self.assertFalse(list((APP / "src/main/assets").rglob("*spectra*")))
+
+
+class PlusTrial(unittest.TestCase):
+    """Core Premium's one 24-hour trial: on-device extras only, once per TV."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.plus = read(KT / "Plus.kt")
+        cls.strings = read(APP / "src/main/res/values/strings.xml")
+
+    def string(self, name):
+        found = re.search(rf'<string name="{name}">([^<]*)</string>', self.strings)
+        self.assertIsNotNone(found, name)
+        return found.group(1)
+
+    def test_it_lasts_what_the_button_says_and_runs_once(self):
+        self.assertIn("const val TRIAL_MS = 24L * 60 * 60 * 1000", self.plus)
+        self.assertIn("24 hours", self.string("plus_trial_button"))
+        start = self.plus.split("fun startTrial(", 1)[1].split("\n    }\n", 1)[0]
+        # Once: a second press finds the stored start and stores nothing.
+        self.assertLess(start.index("if (trialStart(context) != null) return false"),
+                        start.index("putLong(KEY_STARTED, now)"))
+        # A clock set back before the start ends it rather than restarting it.
+        trial = self.plus.split("fun trial(", 1)[1].split("\n\n", 1)[0]
+        self.assertIn("now < started || now >= started + TRIAL_MS -> Trial.Ended", trial)
+
+    def test_active_is_the_purchase_or_a_running_trial_and_only_on_play(self):
+        active = self.plus.split("fun active(", 1)[1].split("\n\n", 1)[0]
+        self.assertIn("owned(context) ||", active)
+        self.assertIn("PlusStore.AVAILABLE && trial(trialStart(context), now) is Trial.Running", active)
+        unlocked = self.plus.split("fun unlocked(", 1)[1].split("\n    }\n", 1)[0]
+        self.assertIn("if (if (purchase) owned(activity) else active(activity)) return true", unlocked)
+
+    def test_the_trial_unlocks_what_the_tv_decides_and_nothing_else(self):
+        # On-device extras read active().
+        for name, call in (("LoopRotation.kt", "Plus.active(context, now)"),
+                           ("DayNight.kt", "Plus.active(context)"),
+                           ("ProjectivyWalls.kt", "Plus.active(context, now)"),
+                           ("RequestsActivity.kt", "Plus.active(this)")):
+            self.assertIn(call, read(KT / name), name)
+        # What Google must confirm, or what outlasts the trial, reads owned().
+        auditor = read(KT / "AuditorActivity.kt")
+        self.assertIn("Plus.unlocked(this, purchase = true)", auditor)
+        self.assertIn("!Plus.owned(this) -> getString(R.string.audit_request_all_locked)", auditor)
+        preview = read(KT / "WallpaperPreviewActivity.kt")
+        save = preview.split("private fun onSaveClicked()", 1)[1].split("\n    }\n", 1)[0]
+        self.assertLess(save.index("?.plus == true && !Plus.owned(this)"),
+                        save.index("saveNow()"))
+        # The token still rides only with a purchase: the trial has none.
+        self.assertEqual(re.findall(r"purchaseToken\([^)]*\)[^\n]*", self.plus),
+                         ["purchaseToken(context) != null"])
+
+    def test_the_card_offers_it_once_and_only_beside_a_price(self):
+        support = read(KT / "SupportActivity.kt")
+        self.assertIn("val offer = buyable && trial is Plus.Trial.Unused", support)
+        self.assertIn("tryIt.visibility = if (offer) View.VISIBLE else View.GONE", support)
+        layout = read(APP / "src/main/res/layout/activity_support.xml")
+        button = layout.split('android:id="@+id/support_plus_trial"', 1)[1].split("/>", 1)[0]
+        self.assertIn('android:visibility="gone"', button)
+        # Settings shows the time left on the Core Premium row.
+        self.assertIn("R.string.settings_plus_trial_fmt", read(KT / "SettingsActivity.kt"))
+        # The policy says the trial is kept on the TV and sends nothing.
+        policy = " ".join(read(ROOT / "docs/privacy.html").split())
+        self.assertIn("try it free for 24 hours, once", policy)
+        self.assertIn("starting it sends nothing", policy)
 
 
 if __name__ == "__main__":

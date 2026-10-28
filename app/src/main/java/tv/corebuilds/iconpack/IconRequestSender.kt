@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.concurrent.Executors
+import org.json.JSONArray
 import org.json.JSONObject
 
 /**
@@ -40,6 +41,7 @@ object IconRequestSender {
 
     private const val CONNECT_TIMEOUT_MS = 5_000
     private const val READ_TIMEOUT_MS = 10_000
+    private const val BATCH_READ_TIMEOUT_MS = 45_000
 
     fun send(
         endpoint: String,
@@ -53,6 +55,92 @@ object IconRequestSender {
         IO.execute {
             val issue = post(endpoint, appName, component, deviceNote, mapped, plusToken)
             MAIN.post { onResult(issue) }
+        }
+    }
+
+    /** One app in a Request all press. */
+    data class BatchApp(val appName: String, val component: String, val mapped: Boolean)
+
+    /** The broker's answer for one app: its issue, or 0 when that one failed. */
+    data class BatchResult(val component: String, val issue: Int, val duplicate: Boolean)
+
+    sealed class BatchOutcome {
+        /** The batch was taken; each app answered on its own. */
+        data class Filed(val results: List<BatchResult>) : BatchOutcome()
+
+        /**
+         * The batch as a whole was not: [status] 0 when nothing answered (no
+         * network), otherwise the broker's status and its [error], such as no
+         * confirmed Plus purchase (403) or the daily limit (429).
+         */
+        data class Refused(val status: Int, val error: String) : BatchOutcome()
+    }
+
+    /**
+     * Core Builds Plus "Request all": [apps], at most [BatchRequest.MAX], in
+     * one POST to the broker's batch route ([BatchRequest.url]). The payload
+     * is the single press's fields for each app, one device note and the Plus
+     * token; the broker refuses a batch whose purchase Google does not
+     * confirm. Answers on the main thread.
+     */
+    fun sendBatch(
+        url: String,
+        apps: List<BatchApp>,
+        deviceNote: String,
+        plusToken: String,
+        onResult: (BatchOutcome) -> Unit,
+    ) {
+        IO.execute {
+            val outcome = postBatch(url, apps, deviceNote, plusToken)
+            MAIN.post { onResult(outcome) }
+        }
+    }
+
+    /** Worker thread only. */
+    private fun postBatch(url: String, apps: List<BatchApp>, deviceNote: String,
+                          plusToken: String): BatchOutcome {
+        var conn: HttpURLConnection? = null
+        return try {
+            conn = (URL(url).openConnection() as HttpURLConnection).apply {
+                requestMethod = "POST"
+                connectTimeout = CONNECT_TIMEOUT_MS
+                // Up to ten issues are filed one after another before the answer.
+                readTimeout = BATCH_READ_TIMEOUT_MS
+                doOutput = true
+                setRequestProperty("Content-Type", "application/json")
+                setRequestProperty("Accept", "application/json")
+            }
+            val list = JSONArray()
+            for (app in apps) {
+                list.put(JSONObject()
+                    .put("app_name", app.appName)
+                    .put("component", app.component)
+                    .apply { if (app.mapped) put("mapped", true) })
+            }
+            val body = JSONObject()
+                .put("device", deviceNote)
+                .put("plus_token", plusToken)
+                .put("apps", list)
+                .toString()
+            OutputStreamWriter(conn.outputStream, Charsets.UTF_8).use { it.write(body) }
+            val code = conn.responseCode
+            val stream = if (code in 200..399) conn.inputStream else conn.errorStream
+            val text = stream?.let { input ->
+                BufferedReader(InputStreamReader(input)).use { it.readText() }
+            }.orEmpty()
+            val json = runCatching { JSONObject(text) }.getOrNull()
+            if (code !in 200..299 || json == null) {
+                return BatchOutcome.Refused(code, json?.optString("error").orEmpty())
+            }
+            val results = json.optJSONArray("results") ?: JSONArray()
+            BatchOutcome.Filed((0 until results.length()).map { i ->
+                val r = results.getJSONObject(i)
+                BatchResult(r.optString("component"), r.optInt("issue", 0), r.optBoolean("duplicate"))
+            })
+        } catch (_: Exception) {
+            BatchOutcome.Refused(0, "")
+        } finally {
+            conn?.disconnect()
         }
     }
 
