@@ -19,14 +19,21 @@ import tv.corebuilds.eq.export.Profile
  *
  * Android does not expose another app's actual media destination. On API 33+
  * [current] asks for the anticipated route for media attributes; earlier
- * versions rank connected outputs as a fallback: Bluetooth or USB, then wired,
- * HDMI (eARC/ARC before plain HDMI), then the built-in speaker. At measurement
- * time the sweep's own `AudioTrack` route is more direct evidence: when Android
- * reports a recognized device, [tag] stores that actual output kind. If it does
- * not, the connected-output estimate is used. A mismatch later means the
- * profile is not applied to a different chain.
+ * versions use a connected-output estimate only when one external candidate
+ * is present; competing external endpoints are treated as ambiguous. At
+ * measurement time the route reported for the sweep's own `AudioTrack` is
+ * stronger evidence, but does not prove the acoustic path or downstream signal
+ * processing. If Android reports no route, the connected-output estimate is
+ * retained and labeled as such.
  */
 object OutputRoute {
+
+    fun evidenceDescription(evidence: Evidence): String = when (evidence) {
+        Evidence.ANTICIPATED -> "anticipated media route"
+        Evidence.CONNECTED_ESTIMATE -> "connected-output estimate"
+        Evidence.TRACK_REPORTED -> "route reported for the sweep track"
+        Evidence.AMBIGUOUS -> "ambiguous route"
+    }
 
     /** Output kinds, stored in profiles. Stable strings: they are saved data. */
     const val SPEAKER = "speaker"
@@ -42,8 +49,15 @@ object OutputRoute {
      * steps aside once Android reports a real one.
      */
     const val UNKNOWN = "unknown"
+    /** More than one plausible output was reported; no single-output profile is safe. */
+    const val AMBIGUOUS = "ambiguous"
 
-    data class Output(val kind: String, val name: String)
+    enum class Evidence { ANTICIPATED, CONNECTED_ESTIMATE, TRACK_REPORTED, AMBIGUOUS }
+    data class Output(
+        val kind: String,
+        val name: String,
+        val evidence: Evidence = Evidence.CONNECTED_ESTIMATE
+    )
 
     /** The label a person reads: "TV speakers", "HDMI ARC (soundbar)". */
     fun label(kind: String?): String = when (kind) {
@@ -54,6 +68,7 @@ object OutputRoute {
         USB -> "USB audio"
         WIRED -> "Wired headphones or line out"
         UNKNOWN -> "an output Android did not name"
+        AMBIGUOUS -> "multiple or ambiguous audio outputs"
         null -> "any output"
         else -> kind
     }
@@ -79,9 +94,10 @@ object OutputRoute {
     }
 
     /**
-     * Best available media output estimate. API 33+ predicts the route for
-     * media attributes; older releases fall back to ranking connected outputs.
-     * This still cannot prove where another app's current stream is routed.
+     * Best available media route indication. API 33+ asks for the anticipated
+     * route for media attributes; earlier releases use a connected-output
+     * estimate only when one external candidate is present. Neither proves
+     * where another app's current stream is routed.
      */
     fun current(context: Context): Output? {
         val am = context.getSystemService(AudioManager::class.java) ?: return null
@@ -97,21 +113,49 @@ object OutputRoute {
                 emptyList()
             }
             if (mediaRoute.isNotEmpty()) {
-                // Android returned an anticipated route but Core EQ does not
-                // recognize its device kind: do not replace that evidence with
-                // a lower-confidence connected-device ranking.
-                return mediaRoute.firstNotNullOfOrNull { device ->
-                    kindOf(device.type)?.let { kind ->
-                        Output(kind, displayName(kind, device.productName?.toString()))
-                    }
+                // A duplicated route is a mixture of endpoints, not permission
+                // to select the first one. Preserve that uncertainty so no
+                // single-output profile (including a legacy profile) is applied.
+                val candidates = mediaRoute.map { device ->
+                    val kind = kindOf(device.type) ?: UNKNOWN
+                    Output(
+                        kind,
+                        if (kind == UNKNOWN) label(UNKNOWN)
+                        else displayName(kind, device.productName?.toString()),
+                        Evidence.ANTICIPATED
+                    )
                 }
+                return resolveCandidates(candidates)
             }
         }
 
         val connected = am.getDevices(AudioManager.GET_DEVICES_OUTPUTS).toList()
-        val kind = pickKind(connected.map { it.type }) ?: return null
-        val device = connected.firstOrNull { kindOf(it.type) == kind }
-        return Output(kind, displayName(kind, device?.productName?.toString()))
+        // Built-in speakers are commonly listed even while an external route
+        // is connected, so do not count them as a competing candidate. More
+        // than one distinct external endpoint cannot be resolved reliably on
+        // these API levels; fail closed instead of ranking a possibly inactive
+        // Bluetooth/USB/HDMI device as the live media route.
+        val external = connected.mapNotNull { device ->
+            val kind = kindOf(device.type) ?: return@mapNotNull null
+            if (kind == SPEAKER) return@mapNotNull null
+            Output(kind, displayName(kind, device.productName?.toString()), Evidence.CONNECTED_ESTIMATE)
+        }.distinct()
+        val speaker = connected.firstOrNull { kindOf(it.type) == SPEAKER }?.let {
+            Output(SPEAKER, displayName(SPEAKER, it.productName?.toString()), Evidence.CONNECTED_ESTIMATE)
+        }
+        return resolveConnectedCandidates(external, speaker)
+    }
+
+    internal fun resolveConnectedCandidates(external: List<Output>, speaker: Output?): Output? = when {
+        external.size > 1 -> Output(AMBIGUOUS, label(AMBIGUOUS), Evidence.AMBIGUOUS)
+        external.size == 1 -> external.single()
+        else -> speaker
+    }
+
+    internal fun resolveCandidates(candidates: List<Output>): Output? {
+        if (candidates.isEmpty()) return null
+        if (candidates.size == 1) return candidates.single()
+        return Output(AMBIGUOUS, label(AMBIGUOUS), Evidence.AMBIGUOUS)
     }
 
     /**
@@ -139,22 +183,43 @@ object OutputRoute {
     }
 
     /**
-     * Tag a measurement with the sweep's actual routed output when recognized.
-     * The predicted/connected-output estimate is only the fallback when Android
-     * does not report a useful routed device. This prevents a sweep measured on
-     * TV speakers from being mislabeled as an attached HDMI soundbar merely
-     * because that endpoint had higher connection priority.
+     * Tag a measurement from the route reported for its own AudioTrack. A null
+     * or empty list means Android supplied no route and leaves the estimate as
+     * fallback. A reported but unrecognized route remains unknown; it must not
+     * be replaced by a more convenient connected-device guess.
      */
-    fun tag(ranked: Output?, routedType: Int?, routedProduct: String?, model: String = Build.MODEL): Output? {
-        val routedKind = routedType?.let(::kindOf)
-        return when {
-            routedKind != null -> Output(routedKind, displayName(routedKind, routedProduct, model))
-            else -> ranked
+    fun tag(
+        ranked: Output?,
+        routedDevices: List<AudioDeviceInfo>?,
+        model: String = Build.MODEL
+    ): Output? {
+        if (routedDevices.isNullOrEmpty()) return ranked
+        val candidates = routedDevices.map { device ->
+            val kind = kindOf(device.type) ?: UNKNOWN
+            Output(
+                kind,
+                if (kind == UNKNOWN) label(UNKNOWN)
+                else displayName(kind, device.productName?.toString(), model),
+                Evidence.TRACK_REPORTED
+            )
         }
+        return resolveCandidates(candidates)
+    }
+
+    /** Compatibility overload for callers/tests with one reported route. */
+    fun tag(ranked: Output?, routedType: Int?, routedProduct: String?, model: String = Build.MODEL): Output? {
+        val type = routedType ?: return ranked
+        val kind = kindOf(type) ?: UNKNOWN
+        return Output(
+            kind,
+            if (kind == UNKNOWN) label(UNKNOWN) else displayName(kind, routedProduct, model),
+            Evidence.TRACK_REPORTED
+        )
     }
 
     /** The key a new measurement is saved under: never null, which is reserved for old profiles. */
-    fun keyFor(output: Output?): String = output?.kind ?: UNKNOWN
+    fun keyFor(output: Output?): String =
+        output?.kind?.takeUnless { it == AMBIGUOUS } ?: UNKNOWN
 
     /** Why a profile was, or was not, picked for the current output. */
     data class Pick(val profile: Profile?, val switched: Boolean)
@@ -171,6 +236,7 @@ object OutputRoute {
      */
     fun pick(profiles: List<Profile>, chosenId: String?, kind: String?, outputName: String? = null): Pick {
         val chosen = profiles.firstOrNull { it.id == chosenId } ?: profiles.maxByOrNull { it.timestampMs }
+        if (kind == AMBIGUOUS) return Pick(null, switched = chosen != null)
         if (kind == null) {
             if (chosen == null || chosen.outputKind == null || chosen.outputKind == UNKNOWN) {
                 return Pick(chosen, switched = false)

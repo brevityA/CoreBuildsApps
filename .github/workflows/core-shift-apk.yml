@@ -71,9 +71,9 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Install Android platform 34
+      - name: Install Android platform 37
         run: |
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-34" "build-tools;34.0.0"
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.0" "build-tools;36.0.0"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
@@ -110,7 +110,7 @@ jobs:
               exit 1
               ;;
           esac
-          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --print-certs "$APK"
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --print-certs "$APK"
           echo "APK signature verified."
 
       - name: Name the APK for the stable Downloader URL

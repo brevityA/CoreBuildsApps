@@ -66,15 +66,13 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      # The bundles compile against API 36 (the Play target-API floor for an
-      # app that lists for phones). Stated here for the same reason suite-ci
-      # states it: the runner image carrying android-36 today is not a promise,
-      # and an auto-download mid-build is a slow mystery rather than a failure.
-      - name: Install Android platform 36
+      # The suite's Play and sideload bundles compile and target API 37.
+      # API 37 is packaged as android-37.0; AGP 9.4.0 uses build-tools 36.
+      - name: Install Android platform 37
         run: |
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
-            "platforms;android-36" "build-tools;36.0.0" \
-            || bash tools/install_android_platform.sh 36 36.0.0
+            "platforms;android-37.0" "build-tools;36.0.0" \
+            || bash tools/install_android_platform.sh 37 36.0.0
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6

@@ -6,19 +6,16 @@ plugins {
 
 android {
     namespace = "tv.corebuilds.iconpack"
-    // compileSdk 36 with targetSdk 36: Play rejects a new app that targets
-    // anything below API 36 unless it is TV-only. The Play listing is TV-only
-    // (src/play's manifest requires leanback), which would allow 34, but 36
-    // meets both floors and keeps a later phone listing free of a target
-    // change. minSdk stays 21 for Fire TV.
-    compileSdk = 36
+    // Suite-wide API 37 baseline, including the Play and sideload variants.
+    // minSdk stays 21 for Fire TV.
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "tv.corebuilds.iconpack"
         minSdk = 21
-        targetSdk = 36
-        versionCode = 58
-        versionName = "2.5.0"
+        targetSdk = 37
+        versionCode = 60
+        versionName = "2.5.2"
 
         // Read by the updater code: where to check for a newer release and
         // which FileProvider authority serves the downloaded APK.

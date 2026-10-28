@@ -81,6 +81,11 @@
         </activity>
 
         <activity
+            android:name=".FirstRunActivity"
+            android:exported="false"
+            android:label="@string/first_run_title" />
+
+        <activity
             android:name=".MeasureActivity"
             android:exported="false"
             android:label="@string/measure_title" />
@@ -113,6 +118,7 @@
         <activity
             android:name=".companion.PhoneCompanionActivity"
             android:exported="false"
+            android:windowSoftInputMode="adjustResize"
             android:label="@string/action_companion" />
 
         <activity
@@ -147,6 +153,17 @@
             android:name=".apply.EqService"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />
+
+        <!-- Optional user-granted access to active media-session package/state only. -->
+        <service
+            android:name=".apply.CoreEqNotificationListener"
+            android:label="@string/media_session_access_label"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
 
         <!-- Protected system broadcasts only: they cannot be sent by other apps. -->
         <receiver

@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Core Views Studio</title>
+<link href="https://unpkg.com/maplibre-gl@6.13.0/dist/maplibre-gl.css" rel="stylesheet">
+<style>
+  :root {
+    --void: #04070f;
+    --night: #0d1117;
+    --panel: #101722;
+    --hair: #1d2735;
+    --ink: #e8eef7;
+    --muted: #8b98a9;
+    --cyan: #00e5ff;
+    --violet: #8a4890;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; background: var(--void); color: var(--ink);
+    font: 13px/1.45 "Outfit", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; }
+  #app { display: grid; grid-template-columns: 320px 1fr; height: 100%; }
+
+  aside { background: var(--panel); border-right: 1px solid var(--hair);
+    padding: 18px 16px 28px; overflow-y: auto; }
+  h1 { font-size: 15px; letter-spacing: .14em; text-transform: uppercase; margin: 0 0 2px; }
+  h1 span { color: var(--cyan); }
+  .sub { color: var(--muted); font-size: 11px; margin: 0 0 18px; }
+  fieldset { border: 0; border-top: 1px solid var(--hair); margin: 0 0 14px; padding: 14px 0 0; }
+  legend { color: var(--muted); font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+    padding: 0; }
+  label { display: block; margin: 9px 0 0; color: var(--muted); font-size: 11px; }
+  select, input[type=number], input[type=text] {
+    width: 100%; margin-top: 4px; padding: 7px 8px; border-radius: 7px;
+    background: var(--night); color: var(--ink); border: 1px solid var(--hair);
+    font: inherit;
+  }
+  input[type=range] { width: 100%; margin-top: 6px; accent-color: var(--cyan); }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+  button { padding: 9px 10px; border-radius: 8px; border: 1px solid var(--hair);
+    background: var(--night); color: var(--ink); font: inherit; cursor: pointer; }
+  button:hover { border-color: #2b3a4f; }
+  button.primary { border-color: transparent; background: var(--cyan); color: #04121a;
+    font-weight: 600; }
+  button.rec { border-color: #5a2030; color: #ff8fa3; }
+  button.rec[data-on="1"] { background: #5a2030; color: #fff; }
+  button:disabled { opacity: .45; cursor: default; }
+  .note { color: var(--muted); font-size: 11px; margin-top: 10px; }
+  .note b { color: #c8d3e0; font-weight: 500; }
+  output { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  main { position: relative; overflow: hidden; }
+  #map { position: absolute; inset: 0; }
+  .slate { position: absolute; left: 26px; bottom: 24px; z-index: 2; pointer-events: none;
+    text-shadow: 0 2px 14px rgba(0,0,0,.9); max-width: 60%; }
+  .slate .series { font-size: 10px; letter-spacing: .3em; text-transform: uppercase;
+    color: var(--cyan); margin-bottom: 6px; }
+  .slate .title { font-size: 30px; font-weight: 600; letter-spacing: -.01em; }
+  .slate .place { font-size: 13px; color: #c3ccd8; margin-top: 2px; }
+  .slate .caption { margin-top: 14px; font-size: 15px; color: #eef3fa; opacity: 0;
+    transition: opacity .5s ease; }
+  .slate .caption.on { opacity: 1; }
+  .timebar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; z-index: 3;
+    background: rgba(255,255,255,.08); }
+  .timebar i { display: block; height: 100%; width: 0; background: var(--cyan); }
+  .hud { position: absolute; right: 16px; top: 14px; z-index: 2; text-align: right;
+    font-size: 11px; color: var(--muted); background: rgba(4,7,15,.72);
+    border: 1px solid var(--hair); border-radius: 8px; padding: 8px 10px;
+    font-variant-numeric: tabular-nums; }
+  .hud b { color: var(--ink); font-weight: 500; }
+  .badge { position: absolute; right: 16px; bottom: 16px; z-index: 2; font-size: 10px;
+    color: var(--muted); background: rgba(4,7,15,.7); border: 1px solid var(--hair);
+    border-radius: 999px; padding: 4px 10px; }
+  .badge.rec { color: #ff8fa3; border-color: #5a2030; }
+
+  dialog { border: 1px solid var(--hair); border-radius: 12px; background: var(--panel);
+    color: var(--ink); width: min(720px, 92vw); padding: 0; }
+  dialog::backdrop { background: rgba(2,4,9,.72); }
+  dialog .head { display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 16px; border-bottom: 1px solid var(--hair); }
+  dialog textarea { width: 100%; height: 420px; border: 0; background: var(--night);
+    color: #cfe6ee; font: 12px/1.5 ui-monospace, "SF Mono", Menlo, monospace;
+    padding: 14px 16px; resize: none; }
+</style>
+</head>
+<body>
+<div id="app">
+  <aside>
+    <h1>Core <span>Views</span></h1>
+    <p class="sub">Studio — fly the camera, keep the move.</p>
+
+    <fieldset>
+      <legend>View</legend>
+      <label>Place
+        <select id="place"></select>
+      </label>
+      <label>Camera move
+        <select id="move">
+          <option value="crane-up">Crane up — reveal a skyline</option>
+          <option value="orbit">Orbit — circle the subject</option>
+          <option value="reveal">Reveal — pull back over a ridge</option>
+          <option value="ridge-follow">Ridge follow — track a ridge line</option>
+          <option value="descend">Descend — settle onto the subject</option>
+          <option value="top-down-descend">Top-down descend — tilt in from above</option>
+          <option value="glide">Glide — a steady travelling shot</option>
+          <option value="track">Track — pass the subject side-on</option>
+        </select>
+      </label>
+      <div class="row">
+        <label>Start height <span class="m">m</span>
+          <input id="altA" type="number" value="600" min="20" max="6000" step="10">
+        </label>
+        <label>End height <span class="m">m</span>
+          <input id="altB" type="number" value="260" min="20" max="6000" step="10">
+        </label>
+      </div>
+      <label>Pitch — <output id="pitchOut">62</output>°
+        <input id="pitch" type="range" min="0" max="80" value="62">
+      </label>
+      <label>Duration — <output id="durOut">20</output> s
+        <input id="duration" type="range" min="8" max="40" value="20">
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Look</legend>
+      <label>Base map
+        <select id="basemap">
+          <option value="osm">OpenStreetMap + terrain</option>
+          <option value="hillshade">Terrain only (hillshade)</option>
+          <option value="custom">Custom raster template…</option>
+        </select>
+      </label>
+      <label id="customWrap" hidden>Tile URL with {z}/{x}/{y}
+        <input id="customUrl" type="text" placeholder="https://…/{z}/{x}/{y}.png">
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Captions</legend>
+      <div id="captions" class="note">Pick a view.</div>
+    </fieldset>
+
+    <div class="buttons">
+      <button id="play" class="primary">Play move</button>
+      <button id="stop">Restart</button>
+      <button id="record" class="rec">Record WebM</button>
+      <button id="export">Export path</button>
+    </div>
+    <p class="note">
+      <b>Record</b> captures the canvas in real time — keep the tab visible and
+      let the move finish. <b>Export path</b> writes the camera keyframes and a
+      ready-to-paste <code>catalog.json</code> entry.
+    </p>
+    <p class="note">
+      Preview imagery is for art direction only. What ships is decided by the
+      licence table in <code>docs/research/core-views-aerial-2026-10.md</code>.
+    </p>
+  </aside>
+
+  <main>
+    <div id="map"></div>
+    <div class="hud">
+      <div>alt <b id="hudAlt">—</b> m</div>
+      <div>brg <b id="hudBrg">—</b>° · ptc <b id="hudPtc">—</b>°</div>
+      <div>t <b id="hudT">0.0</b> s</div>
+    </div>
+    <div class="slate">
+      <div class="series">Core Views · Core Builds</div>
+      <div class="title" id="slateTitle">—</div>
+      <div class="place" id="slatePlace"></div>
+      <div class="caption" id="slateCaption"></div>
+    </div>
+    <div class="badge" id="badge">idle</div>
+    <div class="timebar"><i id="progress"></i></div>
+  </main>
+</div>
+
+<dialog id="sheet">
+  <div class="head">
+    <strong id="sheetTitle">Export</strong>
+    <span>
+      <button id="copy">Copy</button>
+      <button id="close">Close</button>
+    </span>
+  </div>
+  <textarea id="sheetBody" spellcheck="false"></textarea>
+</dialog>
+
+<script type="module">
+import * as maplibregl from 'https://unpkg.com/maplibre-gl@6.13.0/dist/maplibre-gl.mjs';
+
+const $ = (id) => document.getElementById(id);
+const DEG = Math.PI / 180;
+const FPS = 30;
+
+// --- catalogue -------------------------------------------------------------
+
+let catalog = { views: [] };
+try {
+  const res = await fetch('../../views/catalog.json', { cache: 'no-store' });
+  if (res.ok) catalog = await res.json();
+} catch (err) {
+  console.warn('catalog.json not readable; serve the repo root, not this folder', err);
+}
+
+const views = (catalog.views ?? []).filter((v) => Array.isArray(v.coordinates));
+const catalogById = new Map(views.map((v) => [v.id, v]));
+
+for (const view of views) {
+  const opt = document.createElement('option');
+  opt.value = view.id;
+  opt.textContent = `${String(view.number).padStart(2, '0')} · ${view.title} — ${view.region}`;
+  $('place').appendChild(opt);
+}
+if (!views.length) {
+  const opt = document.createElement('option');
+  opt.textContent = 'Serve the repo root to load views/catalog.json';
+  $('place').appendChild(opt);
+}
+
+// --- map -------------------------------------------------------------------
+
+const map = new maplibregl.Map({
+  container: 'map',
+  style: styleFor('osm'),
+  center: [151.2108, -33.8523],
+  zoom: 13,
+  pitch: 60,
+  bearing: 0,
+  maxPitch: 85,
+  attributionControl: { compact: true },
+  // captureStream() on a WebGL canvas needs the buffer to survive the frame
+  preserveDrawingBuffer: true,
+});
+
+function styleFor(kind) {
+  const sources = {
+    dem: { type: 'raster-dem', url: 'https://tiles.mapterhorn.com/tilejson.json' },
+  };
+  const layers = [];
+  if (kind !== 'hillshade') {
+    sources.base = {
+      type: 'raster',
+      tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+      tileSize: 256,
+      maxzoom: 19,
+      attribution: '© OpenStreetMap contributors · terrain © Mapterhorn',
+    };
+    layers.push({
+      id: 'base',
+      type: 'raster',
+      source: 'base',
+      // A dark, desaturated grade: this is a view, not a road atlas. The grade
+      // is preview-only and is not part of the render pipeline.
+      paint: {
+        'raster-saturation': -0.45,
+        'raster-contrast': 0.18,
+        'raster-brightness-min': 0.02,
+        'raster-brightness-max': 0.86,
+      },
+    });
+  }
+  layers.push({
+    id: 'hills',
+    type: 'hillshade',
+    source: 'dem',
+    paint: { 'hillshade-shadow-color': '#0a1018', 'hillshade-highlight-color': '#1c2a3a' },
+  });
+  return { version: 8, sources, layers, terrain: { source: 'dem', exaggeration: 1 }, sky: {} };
+}
+
+map.on('load', () => {
+  // Re-apply the move once the terrain mesh exists, so the first frame the
+  // camera sees is the one it would record.
+  scrub(elapsed);
+});
+
+map.on('error', (e) => console.warn('map:', e?.error?.message ?? e));
+
+// --- camera moves ----------------------------------------------------------
+
+/** Height above ground (m) -> MapLibre zoom, for 512px tiles and a 2.2x frame. */
+function zoomForAltitude(altitudeM, lat) {
+  const canvasH = map.getCanvas().clientHeight || 800;
+  const groundSpan = Math.max(altitudeM * 2.2, 50);      // metres across the frame
+  const metresPerPixel = groundSpan / canvasH;
+  const z = Math.log2((156543.03392 * Math.cos(lat * DEG)) / metresPerPixel) - 1;
+  return Math.min(20, Math.max(1, z));
+}
+
+const wrap360 = (deg) => ((deg % 360) + 360) % 360;
+
+/**
+ * The whole art direction is here: one pure function from (move, t) to a
+ * camera. Keeping it pure is what lets Export write the same keyframes that
+ * Play just flew.
+ */
+function cameraAt(view, move, t, duration, opts) {
+  const [lat, lon] = view.coordinates;
+  const u = Math.max(0, Math.min(1, t / duration));
+  const ease = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2; // ease-in-out
+  const altA = opts.altA, altB = opts.altB, pitch0 = opts.pitch;
+  let altitude = altA + (altB - altA) * ease;
+  let pitch = pitch0;
+  let bearing = 0;
+  let lngLat = [lon, lat];
+
+  const metresToLng = (m, atLat) => m / (111320 * Math.cos(atLat * DEG));
+  const metresToLat = (m) => m / 110540;
+
+  switch (move) {
+    case 'crane-up':
+      pitch = pitch0 + 8 * ease;
+      bearing = 0;
+      break;
+    case 'orbit':
+      bearing = 360 * ease;
+      break;
+    case 'reveal':
+      altitude = altA + (altB - altA) * Math.pow(ease, 1.6);
+      pitch = pitch0 - 18 * ease;
+      break;
+    case 'ridge-follow': {
+      const forward = altA * 1.6 * ease;
+      lngLat = [lon + metresToLng(forward * Math.sin(0.6), lat),
+                lat + metresToLat(forward * Math.cos(0.6))];
+      bearing = 25 * Math.sin(ease * Math.PI * 2);
+      break;
+    }
+    case 'descend':
+      pitch = pitch0 + 10 * ease;
+      bearing = 12 * Math.sin(ease * Math.PI);
+      break;
+    case 'top-down-descend':
+      pitch = 12 + (pitch0 - 12) * ease;
+      bearing = 20 * ease;
+      break;
+    case 'glide': {
+      const travel = altA * 2.4 * ease;
+      lngLat = [lon + metresToLng(travel, lat), lat + metresToLat(travel * 0.35)];
+      bearing = 8;
+      break;
+    }
+    case 'track': {
+      const travel = (altA * 2.8) * (u - 0.5);
+      lngLat = [lon + metresToLng(travel, lat), lat + metresToLat(travel * 0.2)];
+      bearing = 70;
+      break;
+    }
+  }
+
+  return {
+    center: lngLat,
+    zoom: zoomForAltitude(altitude, lat),
+    pitch: Math.max(0, Math.min(85, pitch)),
+    bearing: wrap360(bearing),
+    altitude,
+  };
+}
+
+function applyCamera(camera) {
+  map.jumpTo({
+    center: camera.center,
+    zoom: camera.zoom,
+    pitch: camera.pitch,
+    bearing: camera.bearing,
+  });
+}
+
+// --- state -----------------------------------------------------------------
+
+let currentId = views[0]?.id ?? null;
+let raf = 0;
+let playing = false;
+let startedAt = 0;
+let elapsed = 0;
+let recorder = null;
+let chunks = [];
+
+const opts = () => ({
+  altA: Number($('altA').value) || 400,
+  altB: Number($('altB').value) || 200,
+  pitch: Number($('pitch').value),
+});
+
+const duration = () => Number($('duration').value);
+const move = () => $('move').value;
+
+function selectView(id) {
+  const view = catalogById.get(id);
+  if (!view) return;
+  currentId = id;
+  $('place').value = id;
+  $('slateTitle').textContent = view.title;
+  $('slatePlace').textContent = view.place;
+  map.jumpTo({ center: [view.coordinates[1], view.coordinates[0]] });
+  if (view.camera?.startHeightM) $('altA').value = view.camera.startHeightM;
+  if (view.camera?.endHeightM) $('altB').value = view.camera.endHeightM;
+  if (view.camera?.move && $('move').querySelector(`option[value="${view.camera.move}"]`)) {
+    $('move').value = view.camera.move;
+  }
+  renderCaptions(view);
+  scrub(0);
+}
+
+function renderCaptions(view) {
+  const box = $('captions');
+  box.textContent = '';
+  if (!view.captions?.length) {
+    box.textContent = 'No captions in the catalogue for this view.';
+    return;
+  }
+  for (const caption of view.captions) {
+    const row = document.createElement('div');
+    row.style.margin = '4px 0';
+    row.innerHTML = `<span style="color:#00e5ff">${caption.at}s</span> — ${caption.text}`;
+    box.appendChild(row);
+  }
+}
+
+function showCaptionAt(view, t) {
+  const el = $('slateCaption');
+  const caption = [...(view.captions ?? [])].reverse().find((c) => t >= c.at);
+  const visible = caption && t - caption.at < 6;
+  el.textContent = visible ? caption.text : '';
+  el.classList.toggle('on', Boolean(visible));
+}
+
+function scrub(t) {
+  const view = catalogById.get(currentId);
+  if (!view) return;
+  const camera = cameraAt(view, move(), t, duration(), opts());
+  applyCamera(camera);
+  showCaptionAt(view, t);
+  $('hudAlt').textContent = Math.round(camera.altitude);
+  $('hudBrg').textContent = Math.round(camera.bearing);
+  $('hudPtc').textContent = Math.round(camera.pitch);
+  $('hudT').textContent = t.toFixed(1);
+  $('progress').style.width = `${Math.min(100, (t / duration()) * 100)}%`;
+}
+
+function tick(now) {
+  if (!playing) return;
+  const t = (now - startedAt) / 1000;
+  elapsed = t;
+  if (t >= duration()) {
+    scrub(duration());
+    stopPlayback();
+    return;
+  }
+  scrub(t);
+  raf = requestAnimationFrame(tick);
+}
+
+function startPlayback() {
+  if (playing) stopPlayback();
+  playing = true;
+  startedAt = performance.now();
+  $('badge').textContent = recorder ? 'recording' : 'playing';
+  $('badge').classList.toggle('rec', Boolean(recorder));
+  raf = requestAnimationFrame(tick);
+}
+
+function stopPlayback() {
+  playing = false;
+  cancelAnimationFrame(raf);
+  if (!recorder) {
+    $('badge').textContent = 'idle';
+    $('badge').classList.remove('rec');
+  }
+}
+
+// --- recording -------------------------------------------------------------
+
+async function toggleRecord() {
+  if (recorder) {
+    recorder.stop();
+    return;
+  }
+  const canvas = map.getCanvas();
+  const stream = canvas.captureStream(FPS);
+  const mime = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm']
+    .find((type) => MediaRecorder.isTypeSupported(type));
+  if (!mime) {
+    $('badge').textContent = 'no WebM encoder';
+    return;
+  }
+  chunks = [];
+  recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 16_000_000 });
+  recorder.ondataavailable = (event) => { if (event.data.size) chunks.push(event.data); };
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: 'video/webm' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${currentId}-preview.webm`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    recorder = null;
+    $('record').dataset.on = '0';
+    $('record').textContent = 'Record WebM';
+    $('badge').textContent = 'saved';
+    $('badge').classList.remove('rec');
+  };
+  $('record').dataset.on = '1';
+  $('record').textContent = 'Stop recording';
+  recorder.start();
+  scrub(0);
+  startPlayback();
+}
+
+// --- export ----------------------------------------------------------------
+
+function cameraPath() {
+  const view = catalogById.get(currentId);
+  if (!view) return null;
+  const d = duration();
+  const samples = [];
+  for (let t = 0; t <= d + 0.001; t += 0.5) {
+    const camera = cameraAt(view, move(), t, d, opts());
+    samples.push({
+      t: Number(t.toFixed(2)),
+      center: [Number(camera.center[0].toFixed(6)), Number(camera.center[1].toFixed(6))],
+      altitudeM: Math.round(camera.altitude),
+      zoom: Number(camera.zoom.toFixed(3)),
+      pitch: Number(camera.pitch.toFixed(2)),
+      bearing: Number(camera.bearing.toFixed(2)),
+    });
+  }
+  return {
+    view: view.id,
+    move: move(),
+    durationSeconds: d,
+    fps: FPS,
+    terrain: 'mapterhorn',
+    keyframes: samples,
+  };
+}
+
+function catalogEntry() {
+  const view = catalogById.get(currentId);
+  if (!view) return {};
+  return {
+    ...view,
+    durationSeconds: duration(),
+    camera: {
+      ...view.camera,
+      move: move(),
+      startHeightM: opts().altA,
+      endHeightM: opts().altB,
+      fps: 30,
+    },
+    status: 'planned',
+    renditions: { '1080-SDR': null, '4K-SDR': null, '1080-HDR': null, '4K-HDR': null },
+    thumbnail: null,
+  };
+}
+
+function openSheet(title, body) {
+  $('sheetTitle').textContent = title;
+  $('sheetBody').value = body;
+  $('sheet').showModal();
+}
+
+// --- wiring ----------------------------------------------------------------
+
+$('place').addEventListener('change', (e) => selectView(e.target.value));
+$('move').addEventListener('change', () => scrub(elapsed));
+$('altA').addEventListener('input', () => scrub(elapsed));
+$('altB').addEventListener('input', () => scrub(elapsed));
+$('pitch').addEventListener('input', () => {
+  $('pitchOut').textContent = $('pitch').value;
+  scrub(elapsed);
+});
+$('duration').addEventListener('input', () => {
+  $('durOut').textContent = $('duration').value;
+  scrub(Math.min(elapsed, duration()));
+});
+$('play').addEventListener('click', startPlayback);
+$('stop').addEventListener('click', () => { elapsed = 0; scrub(0); });
+$('record').addEventListener('click', toggleRecord);
+$('export').addEventListener('click', () => {
+  const path = cameraPath();
+  if (!path) return;
+  openSheet('Camera path + catalogue entry',
+    JSON.stringify({ cameraPath: path, catalogEntry: catalogEntry() }, null, 2));
+});
+$('copy').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText($('sheetBody').value);
+    $('copy').textContent = 'Copied';
+    setTimeout(() => { $('copy').textContent = 'Copy'; }, 1400);
+  } catch (err) {
+    $('sheetBody').select();
+  }
+});
+$('close').addEventListener('click', () => $('sheet').close());
+
+$('basemap').addEventListener('change', (e) => {
+  $('customWrap').hidden = e.target.value !== 'custom';
+  if (e.target.value === 'custom') return;
+  map.setStyle(styleFor(e.target.value), { diff: false });
+});
+$('customUrl').addEventListener('change', (e) => {
+  const template = e.target.value.trim();
+  if (!template) return;
+  const style = styleFor('hillshade');
+  style.sources.custom = {
+    type: 'raster', tiles: [template], tileSize: 256, maxzoom: 19,
+    attribution: 'custom — check the licence before you ship this',
+  };
+  style.layers.unshift({ id: 'custom', type: 'raster', source: 'custom' });
+  map.setStyle(style, { diff: false });
+});
+
+selectView(currentId);
+</script>
+</body>
+</html>

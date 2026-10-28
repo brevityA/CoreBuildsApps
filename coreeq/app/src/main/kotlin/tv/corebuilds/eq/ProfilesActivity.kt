@@ -1,23 +1,25 @@
 package tv.corebuilds.eq
 
 import android.os.Bundle
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.dsp.DspConstants
 import tv.corebuilds.eq.dsp.ManualEq
-import tv.corebuilds.eq.dsp.Targets
 import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
+import tv.corebuilds.eq.export.ProfileExchange
 import tv.corebuilds.eq.mode.ContentMode
 import tv.corebuilds.eq.mode.ContentModeStore
 import tv.corebuilds.eq.ui.CurveGraphView
@@ -37,10 +39,12 @@ class ProfilesActivity : TvActivity() {
     private lateinit var btnChipParametric: Button
     private lateinit var btnChipGraphicEq: Button
     private lateinit var btnChipJson: Button
+    private lateinit var btnChipPoweramp: Button
     private lateinit var btnExport: Button
     private lateinit var btnDelete: Button
     private lateinit var btnAnnounce: Button
     private lateinit var textAnnounceCard: TextView
+    private lateinit var btnCardSeconds: Button
     private lateinit var btnPlaybackHud: Button
     private lateinit var textPlaybackHud: TextView
     private lateinit var btnAllowOverlay: Button
@@ -51,7 +55,7 @@ class ProfilesActivity : TvActivity() {
     private var selectedExportFormat = ExportFormat.PARAMETRIC
 
     private enum class ExportFormat {
-        PARAMETRIC, GRAPHIC_EQ, JSON
+        PARAMETRIC, GRAPHIC_EQ, JSON, POWERAMP_JSON
     }
 
     override fun onResume() {
@@ -76,10 +80,12 @@ class ProfilesActivity : TvActivity() {
         btnChipParametric = findViewById(R.id.chip_parametric)
         btnChipGraphicEq = findViewById(R.id.chip_graphiceq)
         btnChipJson = findViewById(R.id.chip_json)
+        btnChipPoweramp = findViewById(R.id.chip_poweramp_json)
         btnExport = findViewById(R.id.btn_export_profile)
         btnDelete = findViewById(R.id.btn_delete_profile)
         btnAnnounce = findViewById(R.id.btn_announce_applied)
         textAnnounceCard = findViewById(R.id.text_announce_card)
+        btnCardSeconds = findViewById(R.id.btn_card_seconds)
         btnPlaybackHud = findViewById(R.id.btn_playback_hud)
         textPlaybackHud = findViewById(R.id.text_playback_hud)
         btnAllowOverlay = findViewById(R.id.btn_allow_overlay)
@@ -90,9 +96,20 @@ class ProfilesActivity : TvActivity() {
         loadProfiles()
 
         btnExport.setOnClickListener { exportCurrentProfile() }
+        findViewById<Button>(R.id.btn_import_profile).setOnClickListener {
+            if (!tv.corebuilds.eq.ui.FilePicker.open(this, REQ_IMPORT_PROFILE)) {
+                Toast.makeText(this, "No file picker is available.", Toast.LENGTH_LONG).show()
+            }
+        }
         btnDelete.setOnClickListener { deleteCurrentProfile() }
         btnAnnounce.setOnClickListener {
             profileStore.announceApplied = !profileStore.announceApplied
+            refreshOverlaySettings()
+        }
+        btnCardSeconds.setOnClickListener {
+            // 1 to 10 s, then back to 1: one press per second, no keyboard needed.
+            val next = profileStore.cardSeconds % ProfileStore.CARD_SECONDS_RANGE.last + 1
+            profileStore.cardSeconds = next
             refreshOverlaySettings()
         }
         btnPlaybackHud.setOnClickListener {
@@ -105,6 +122,42 @@ class ProfilesActivity : TvActivity() {
         refreshOverlaySettings()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != REQ_IMPORT_PROFILE || resultCode != RESULT_OK) return
+        val uri = data?.data ?: return
+        try {
+            val stream = contentResolver.openInputStream(uri) ?: error("Cannot open this file.")
+            val bytes = stream.use { input ->
+                val out = java.io.ByteArrayOutputStream()
+                val buffer = ByteArray(8192)
+                while (true) {
+                    val count = input.read(buffer)
+                    if (count < 0) break
+                    out.write(buffer, 0, count)
+                    require(out.size() <= ProfileExchange.MAX_CHARS * 4) { "Profile file is too large." }
+                }
+                out.toByteArray()
+            }
+            val imported = ProfileExchange.parse(String(bytes, Charsets.UTF_8))
+            val profile = imported.profile
+            AlertDialog.Builder(this)
+                .setTitle("Import Core EQ profile?")
+                .setMessage("${profile.name}\n${profile.filters.size} room filters · ${profile.manualFilters.size} manual filters · ${imported.overlays.size} mode overlays\n\nThis imports settings and measurement provenance. It does not validate that the profile matches this device or output.")
+                .setPositiveButton("Import") { _, _ ->
+                    profileStore.saveProfile(profile, setAsActive = true)
+                    imported.overlays.forEach { (mode, filters) -> modeStore.saveModeFilters(profile.id, mode, filters) }
+                    EqService.send(this, EqService.ACTION_REAPPLY)
+                    Toast.makeText(this, "Imported ${profile.name}", Toast.LENGTH_LONG).show()
+                    loadProfiles()
+                }
+                .setNegativeButton(android.R.string.cancel, null)
+                .show()
+        } catch (e: Exception) {
+            Toast.makeText(this, e.message ?: "Could not import profile.", Toast.LENGTH_LONG).show()
+        }
+    }
+
     /** Describe both independent overlay features and share Android's overlay permission. */
     private fun refreshOverlaySettings() {
         val announce = profileStore.announceApplied
@@ -112,13 +165,14 @@ class ProfilesActivity : TvActivity() {
         btnAnnounce.showSwitch(announce, R.string.profiles_announce_on, R.string.profiles_announce_off)
         btnPlaybackHud.showSwitch(playbackHud, R.string.profiles_playback_hud_on, R.string.profiles_playback_hud_off)
         val allowed = OverlayPermission.allowed(this)
-        textAnnounceCard.setText(
-            when {
-                !announce -> R.string.profiles_card_off
-                allowed -> R.string.profiles_card_allowed
-                else -> R.string.profiles_card_needs_permission
-            }
-        )
+        val seconds = profileStore.cardSeconds
+        btnCardSeconds.text = getString(R.string.profiles_card_seconds, seconds)
+        btnCardSeconds.visibility = if (announce) View.VISIBLE else View.GONE
+        textAnnounceCard.text = when {
+            !announce -> getString(R.string.profiles_card_off)
+            allowed -> getString(R.string.profiles_card_allowed, seconds)
+            else -> getString(R.string.profiles_card_needs_permission)
+        }
         textPlaybackHud.setText(
             when {
                 !playbackHud -> R.string.profiles_playback_hud_off_note
@@ -168,6 +222,11 @@ class ProfilesActivity : TvActivity() {
             updateChipStates()
             selectedProfile?.let { refreshPreampDisplay(it) }
         }
+        btnChipPoweramp.setOnClickListener {
+            selectedExportFormat = ExportFormat.POWERAMP_JSON
+            updateChipStates()
+            selectedProfile?.let { refreshPreampDisplay(it) }
+        }
         updateChipStates()
     }
 
@@ -175,6 +234,7 @@ class ProfilesActivity : TvActivity() {
         btnChipParametric.isActivated = (selectedExportFormat == ExportFormat.PARAMETRIC)
         btnChipGraphicEq.isActivated = (selectedExportFormat == ExportFormat.GRAPHIC_EQ)
         btnChipJson.isActivated = (selectedExportFormat == ExportFormat.JSON)
+        btnChipPoweramp.isActivated = (selectedExportFormat == ExportFormat.POWERAMP_JSON)
     }
 
     private fun loadProfiles() {
@@ -243,16 +303,19 @@ class ProfilesActivity : TvActivity() {
                 val hz = effective.curve[index].hz
                 effective.correctionAt(hz) + ManualEq.responseDb(effective.manualFilters, hz)
             }
-            val target = Targets.targetCurve(profile.target, freqs)
+            // The profile's own target: an imported one is read from the profile, never from
+            // whatever curve is imported now. Null (imported, curve not saved) draws no target.
+            val target = profile.targetDb(freqs)
 
-            val series = listOf(
+            val series = listOfNotNull(
                 Series("TOTAL EQ", ContextCompat.getColor(this, R.color.cb_signal_cyan), corr),
-                Series("TARGET", ContextCompat.getColor(this, R.color.cb_dusk_violet), target)
+                target?.let { Series("TARGET", ContextCompat.getColor(this, R.color.cb_dusk_violet), it) }
             )
             graphProfile.setData(
                 freqs = freqs,
                 series = series,
-                title = "${profile.name.uppercase(Locale.US)} · ${mode.title.uppercase(Locale.US)} — EQ vs TARGET",
+                title = "${profile.name.uppercase(Locale.US)} · ${mode.title.uppercase(Locale.US)} — " +
+                    if (target != null) "EQ vs TARGET" else "EQ",
                 yRange = 15.0,
                 tHz = profile.transitionHz
             )
@@ -297,6 +360,7 @@ class ProfilesActivity : TvActivity() {
                     getString(R.string.profile_preamp_graphic, preamp, mode.title, output)
                 }
             }
+            ExportFormat.POWERAMP_JSON -> getString(R.string.profile_preamp_poweramp_json, Formats.recommendedPreampDb(effective), mode.title, output)
             ExportFormat.JSON -> getString(
                 R.string.profile_preamp_json,
                 Formats.recommendedPreampDb(effective), mode.title, output
@@ -323,6 +387,11 @@ class ProfilesActivity : TvActivity() {
                 filename = "${stem}_graphiceq.txt"
                 content = Formats.exportGraphicEq(effective)
                 label = "GraphicEQ Curve · ${mode.title}"
+            }
+            ExportFormat.POWERAMP_JSON -> {
+                filename = "${stem}_poweramp.json"
+                content = Formats.exportPowerampJson(effective)
+                label = "Poweramp Equalizer preset JSON"
             }
             ExportFormat.JSON -> {
                 filename = "${stem}_profile.json"
@@ -400,4 +469,6 @@ class ProfilesActivity : TvActivity() {
         val textBadge: TextView = view.findViewById(R.id.item_profile_badge)
         val textSub: TextView = view.findViewById(R.id.item_profile_sub)
     }
+
+    companion object { private const val REQ_IMPORT_PROFILE = 4201 }
 }

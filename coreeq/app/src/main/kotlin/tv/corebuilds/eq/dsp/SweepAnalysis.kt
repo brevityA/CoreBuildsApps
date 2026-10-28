@@ -1,5 +1,7 @@
 package tv.corebuilds.eq.dsp
 
+import tv.corebuilds.eq.CorrectionLimits
+
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
@@ -43,7 +45,28 @@ data class SweepResult(
     /** T20 per octave, 125 Hz-2 kHz; null where that octave's decay did not stand clear of its noise. */
     val rt60ByOctave: Map<Double, Double?> = emptyMap(),
     /** The capture clock against the player's, from the timing markers; null when they were not found. */
-    val driftPpm: Double? = null
+    val driftPpm: Double? = null,
+    /**
+     * The highest frequency the correction reaches: [DspConstants.F_MAX], or lower when the
+     * capture's bandwidth ended early (an 8 kHz remote codec). Kept so seats can be combined
+     * ([SeatAverage]) without correcting past the edge of the narrowest one.
+     */
+    val fMaxHz: Double = DspConstants.F_MAX,
+    /**
+     * The minimum-phase test per band before [minPhaseOk] waives it above this sweep's own
+     * [transitionHz]. [SeatAverage] combines these under the combined transition, so a seat
+     * whose decay put its transition lower cannot switch on a band its own test failed.
+     * Empty on results built without it, where [minPhaseOk] stands in.
+     */
+    val phaseGate: BooleanArray = BooleanArray(0),
+    /**
+     * How far each band's correction is trusted, 0..1, from its own signal over
+     * noise ([Correction.bandConfidence]). The correction has already been
+     * scaled by it; kept so the report can say "partly trusted" instead of
+     * calling a marginal band either clean or unusable. Empty when the source
+     * carried no per-band SNR (a REW import).
+     */
+    val confidence: DoubleArray = DoubleArray(0)
 )
 
 /**
@@ -155,8 +178,21 @@ object SweepAnalysis {
         target: String,
         volumeM3: Double?,
         seconds: Double = Sweep.SECONDS,
-        nFilters: Int = DspConstants.PEAKING_FILTERS
+        nFilters: Int = DspConstants.PEAKING_FILTERS,
+        /**
+         * The user's chosen correction ceiling, or null for the trusted
+         * default. It can only narrow the band: [CorrectionLimits.ceilingHz]
+         * caps it at 8 kHz, and the measured bandwidth edge caps it further.
+         */
+        ceilingHz: Double? = null
     ): SweepResult {
+        // Reject an unusable request before any DSP: an empty or non-finite
+        // capture, a broken sample rate or a blank target would otherwise
+        // surface as a zero-length array or a NaN deep in the curve maths.
+        require(fs > 0) { "Sample rate must be positive, got $fs" }
+        require(recording.isNotEmpty()) { "The capture is empty" }
+        require(seconds > 0.0 && seconds.isFinite()) { "Sweep length must be positive, got $seconds" }
+        require(nFilters > 0) { "At least one peaking filter is required, got $nFilters" }
         val minSamples = ((seconds + 0.5) * fs).toInt()
         if (recording.size < minSamples) {
             throw MeasurementException(
@@ -210,8 +246,14 @@ object SweepAnalysis {
         val keep = if (edge != null) max(1, edge - 1) else allCentres.size
         val centres = allCentres.copyOf(keep)
         val bandSnr = allSnr.copyOf(keep)
-        val fMax = if (keep < allCentres.size) min(DspConstants.F_MAX, centres.last() * 2.0.pow(1.0 / 6.0))
-        else DspConstants.F_MAX
+        val measuredMax = if (keep < allCentres.size) {
+            min(DspConstants.F_MAX, centres.last() * 2.0.pow(1.0 / 6.0))
+        } else {
+            DspConstants.F_MAX
+        }
+        // The measured edge and the user's ceiling can both only narrow the
+        // corrected band. `ceiling` is what the rest of this function uses.
+        val fMax = CorrectionLimits.effectiveCeilingHz(measuredMax, ceilingHz)
 
         val targetDb = Targets.targetCurve(target, centres)
         val measured = alignTo(centres, allDb.copyOf(keep), targetDb)
@@ -219,6 +261,16 @@ object SweepAnalysis {
         val nulls = Correction.detectNulls(centres, measured)
         val rolloff = Correction.detectLowRolloff(centres, measured)
         val floorHz = max(DspConstants.F_MIN, rolloff)
+        // A speaker that only works above the ceiling leaves nothing to
+        // correct. Refuse with the reason rather than throwing a bare
+        // "corrected band is empty" from the curve maths.
+        if (fMax <= floorHz) {
+            throw MeasurementException(
+                "The correction ceiling (${"%.0f".format(fMax)} Hz) is at or below where this " +
+                    "speaker starts working (${"%.0f".format(floorHz)} Hz), so there is nothing to correct. " +
+                    "Raise the ceiling or measure again."
+            )
+        }
         val (gdFreqs, excess) = excessGroupDelayMs(ir, peak, fs)
         // Below the transition only, as in the reference: that is where the
         // corrector inverts; above it the field is diffuse and the correction
@@ -227,6 +279,10 @@ object SweepAnalysis {
         checkTimeline(centres, gate, transition)
         val minPhaseOk = BooleanArray(centres.size) { gate[it] || centres[it] >= transition }
         val correctable = BooleanArray(centres.size) { minPhaseOk[it] && bandSnr[it] >= BAND_MIN_SNR_DB }
+        // Trust is graded, not a cliff: a band on the gate keeps nothing, a
+        // marginal one keeps part of its correction. The gates still decide
+        // *whether* a band may be touched; the weight decides how much.
+        val confidence = Correction.bandConfidence(bandSnr)
         val correction = Correction.calculateCorrectionCurve(
             centres, measured, targetDb,
             fMin = floorHz,
@@ -234,7 +290,8 @@ object SweepAnalysis {
             transitionHz = transition,
             nullMask = nulls,
             minPhaseOk = correctable,
-            maxBoostBelowTransition = SINGLE_SEAT_BOOST_DB
+            maxBoostBelowTransition = Correction.boostBudgetDb(1),
+            confidence = confidence
         )
         val filters = Peaking.fitPeakingFilters(centres, correction, nFilters)
 
@@ -256,7 +313,10 @@ object SweepAnalysis {
             preampDb = Peaking.preampDb(filters),
             bandSnrDb = bandSnr,
             rt60ByOctave = octaves,
-            driftPpm = drift
+            driftPpm = drift,
+            fMaxHz = fMax,
+            phaseGate = gate,
+            confidence = confidence
         )
     }
 

@@ -505,8 +505,16 @@ def main():
                   + [f"{i['drawable']}_banner" for i in icons]
                   + [f"cb_back_{n}" for n in BACKS]
                   + ["cb_mask", "cb_upon", "cb_banner"])
+    # Launchers load these resources by name from outside this APK. The
+    # resource shrinker cannot see that contract, and AGP's release shrink
+    # removes an XML resource with no in-app R reference. Preserve the ADW
+    # appfilter and picker/browser lists (plus the legacy iconpack list) just
+    # as explicitly as the dynamically looked-up drawables above.
+    keep_resources = [f"@drawable/{n}" for n in keep_names] + [
+        "@xml/appfilter", "@xml/drawable", "@xml/iconpack",
+    ]
     k.append('<resources xmlns:tools="http://schemas.android.com/tools"\n'
-             '    tools:keep="' + ",".join(f"@drawable/{n}" for n in keep_names) + '" />')
+             '    tools:keep="' + ",".join(keep_resources) + '" />')
     raw_dir = ROOT / "app" / "src" / "main" / "res" / "raw"
     raw_dir.mkdir(parents=True, exist_ok=True)
     write(raw_dir / "keep.xml", "\n".join(k) + "\n")

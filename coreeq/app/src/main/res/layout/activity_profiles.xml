@@ -75,6 +75,21 @@
                 android:textSize="@dimen/cb_text_data"
                 android:focusable="true" />
 
+            <!-- How long the card stays up: 1 to 10 seconds, cycled on each press. -->
+            <Button
+                android:id="@+id/btn_card_seconds"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cb_target_min"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:background="@drawable/bg_toggle"
+                android:gravity="start|center_vertical"
+                android:paddingStart="@dimen/cb_card_padding"
+                android:paddingEnd="@dimen/cb_card_padding"
+                android:text="@string/profiles_card_seconds"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_data"
+                android:focusable="true" />
+
             <!-- How the notice shows on this TV, and the way to the card when
                  "Display over other apps" is not allowed yet. -->
             <TextView
@@ -209,6 +224,19 @@
                     android:paddingStart="@dimen/cb_space_md"
                     android:paddingEnd="@dimen/cb_space_md"
                     android:focusable="true" />
+
+                <Button
+                    android:id="@+id/chip_poweramp_json"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:layout_marginStart="@dimen/cb_space_xs"
+                    android:background="@drawable/bg_chip_toggle"
+                    android:text="@string/export_chip_poweramp_json"
+                    android:textColor="@color/chip_text"
+                    android:textSize="@dimen/cb_text_data"
+                    android:paddingStart="@dimen/cb_space_md"
+                    android:paddingEnd="@dimen/cb_space_md"
+                    android:focusable="true" />
             </LinearLayout>
 
             <TextView
@@ -249,6 +277,17 @@
                     android:textStyle="bold"
                     android:focusable="true"
                     android:layout_marginEnd="@dimen/cb_space_sm" />
+
+                <Button
+                    android:id="@+id/btn_import_profile"
+                    android:layout_width="140dp"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:layout_marginEnd="@dimen/cb_space_sm"
+                    android:background="@drawable/bg_ghost"
+                    android:text="@string/action_import_profile"
+                    android:textColor="@color/cb_signal_cyan"
+                    android:textSize="@dimen/cb_text_label"
+                    android:focusable="true" />
 
                 <Button
                     android:id="@+id/btn_delete_profile"

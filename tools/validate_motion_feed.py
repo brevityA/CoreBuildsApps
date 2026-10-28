@@ -6,6 +6,14 @@ that every referenced MP4/thumb exists on disk under Motion/live/, and that no
 stray media files are missing from the feed (catches edits to
 build_motion_feed.py that forgot to regenerate).
 
+Core Views loops share the folder but are not in this feed, on purpose: they
+are drawn contour art on a camera path, not footage of a place, and a feed
+whose entries are named after places is the last place to publish them as
+though they were. They are checked against their own roster instead -
+`tests/test_coreviews_wallpapers.py` - and this script only insists that every
+`coreviews-*` file on disk is one of theirs, so a stale re-render left behind
+by a rename still fails here.
+
 Exit 0 iff all checks pass.  Run:  python tools/validate_motion_feed.py
 """
 
@@ -68,14 +76,27 @@ def main():
             else:
                 referenced.add(name)
 
+    # Core Views loops: in the folder, deliberately not in this feed.
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from coreviews_roster import CLIPS as VIEW_CLIPS
+
+    views = {c.mp4.name for c in VIEW_CLIPS} | {c.thumb.name for c in VIEW_CLIPS}
+
     # No stray media files (leftovers from an edited CLIPS list).
     for dirname, _subdirs, files in os.walk(LIVE):
         for name in files:
-            if name.endswith((".mp4", ".jpg")) and name not in referenced:
+            if not name.endswith((".mp4", ".jpg")):
+                continue
+            if name.startswith("coreviews-"):
+                if name not in views:
+                    ok = fail(f"unreferenced Core Views media file: {name}")
+                continue
+            if name not in referenced:
                 ok = fail(f"unreferenced media file: {name}")
 
     if ok:
-        print(f"  OK: {len(feed)} live wallpapers · feed↔files consistent")
+        print(f"  OK: {len(feed)} live wallpapers · feed↔files consistent "
+              f"· {len(VIEW_CLIPS)} Core Views loops on their own roster")
     return 0 if ok else 1
 
 

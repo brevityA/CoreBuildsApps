@@ -1,0 +1,626 @@
+{
+  "schema": 1,
+  "series": "Core Views",
+  "season": 1,
+  "updated": "2026-10-23",
+  "baseUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/views/",
+  "notes": "Season 1 needs no camera: eleven views render from open imagery and terrain, one comes from the NASA archive. Every rendition is null until tools/render_views.py has produced it; tools/build_views_feed.py publishes only views marked ready, so an unrendered entry can never become a dead 404 in someone's screensaver.",
+  "views": [
+    {
+      "id": "coreviews-01-three-sisters",
+      "number": 1,
+      "title": "Three Sisters",
+      "place": "Blue Mountains, New South Wales",
+      "region": "New South Wales",
+      "country": "AU",
+      "coordinates": [
+        -33.732,
+        150.312
+      ],
+      "timeOfDay": "sunrise",
+      "scene": "countryside",
+      "lane": "render",
+      "durationSeconds": 32,
+      "camera": {
+        "move": "ridge-follow",
+        "startHeightM": 900,
+        "endHeightM": 1040,
+        "fps": 30
+      },
+      "captions": [
+        {
+          "at": 4,
+          "text": "The Jamison Valley, filled with morning cloud"
+        },
+        {
+          "at": 18,
+          "text": "Three Sisters, sandstone pillars above the mist"
+        }
+      ],
+      "status": "planned",
+      "renditions": {
+        "1080-SDR": null,
+        "4K-SDR": null,
+        "1080-HDR": null,
+        "4K-HDR": null
+      },
+      "thumbnail": null,
+      "credits": [
+        {
+          "source": "Contains modified Copernicus Sentinel data 2026",
+          "license": "Copernicus Sentinel Data Licence",
+          "url": "https://cds.climate.copernicus.eu/licences/ec-sentinel"
+        },
+        {
+          "source": "© DLR e.V. / Airbus DS, provided under COPERNICUS",
+          "license": "Copernicus DEM GLO-30",
+          "url": "https://dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM"
+        }
+      ]
+    },
+    {
+      "id": "coreviews-02-hawkesbury",
+      "number": 2,
+      "title": "Hawkesbury",
+      "place": "Brooklyn, New South Wales",
+      "region": "New South Wales",
+      "country": "AU",
+      "coordinates": [
+        -33.548,
+        151.22
+      ],
+      "timeOfDay": "day",
+      "scene": "sea",
+      "lane": "render",
+      "durationSeconds": 30,
+      "camera": {
+        "move": "glide",
+        "startHeightM": 220,
+        "endHeightM": 180,
+        "fps": 30
+      },
+      "captions": [
+        {
+          "at": 5,
+          "text": "The Hawkesbury meets Broken Bay"
+        },
+        {
+          "at": 19,
+          "text": "Sandstone ridges fall to the river"
+        }
+      ],
+      "status": "planned",
+      "renditions": {
+        "1080-SDR": null,
+        "4K-SDR": null,
+        "1080-HDR": null,
+        "4K-HDR": null
+      },
+      "thumbnail": null,
+      "credits": [
+        {
+          "source": "Contains modified Copernicus Sentinel data 2026",
+          "license": "Copernicus Sentinel Data Licence",
+          "url": "https://cds.climate.copernicus.eu/licences/ec-sentinel"
+        },
+        {
+          "source": "© DLR e.V. / Airbus DS, provided under COPERNICUS",
+          "license": "Copernicus DEM GLO-30",
+          "url": "https://dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM"
+        }
+      ]
+    },
+    {
+      "id": "coreviews-03-wattamolla",
+      "number": 3,
+      "title": "Wattamolla",
+      "place": "Royal National Park, New South Wales",
+      "region": "New South Wales",
+      "country": "AU",
+      "coordinates": [
+        -34.137,
+        151.118
+      ],
+      "timeOfDay": "day",
+      "scene": "waterfall",
+      "lane": "render",
+      "durationSeconds": 28,
+      "camera": {
+        "move": "descend",
+        "startHeightM": 420,
+        "endHeightM": 120,
+        "fps": 30
+      },
+      "captions": [
+        {
+          "at": 4,
+          "text": "Wattamolla Falls drops straight to the sea"
+        },
+        {
+          "at": 17,
+          "text": "The Royal National Park, declared 1879"
+        }
+      ],
+      "status": "planned",
+      "renditions": {
+        "1080-SDR": null,
+        "4K-SDR": null,
+        "1080-HDR": null,
+        "4K-HDR": null
+      },
+      "thumbnail": null,
+      "credits": [
+        {
+          "source": "Contains modified Copernicus Sentinel data 2026",
+          "license": "Copernicus Sentinel Data Licence",
+          "url": "https://cds.climate.copernicus.eu/licences/ec-sentinel"
+        },
+        {
+          "source": "© Mapterhorn terrain",
+          "license": "Per-source open data (CC BY 4.0 and equivalents)",
+          "url": "https://mapterhorn.com/attribution"
+        }
+      ]
+    },
+    {
+      "id": "coreviews-04-hyams-beach",
+      "number": 4,
+      "title": "Hyams Beach",
+      "place": "Jervis Bay, New South Wales",
+      "region": "New South Wales",
+      "country": "AU",
+      "coordinates": [
+        -35.1,
+        150.69
+      ],
+      "timeOfDay": "day",
+      "scene": "beach",
+      "lane": "render",
+      "durationSeconds": 30,
+      "camera": {
+        "move": "glide",
+        "startHeightM": 160,
+        "endHeightM": 140,
+        "fps": 30
+      },
+      "captions": [
+        {
+          "at": 5,
+          "text": "Jervis Bay, white sand over seagrass flats"
+        },
+        {
+          "at": 20,
+          "text": "Point Perpendicular closes the bay"
+        }
+      ],
+      "status": "planned",
+      "renditions": {
+        "1080-SDR": null,
+        "4K-SDR": null,
+        "1080-HDR": null,
+        "4K-HDR": null
+      },
+      "thumbnail": null,
+      "credits": [
+        {
+          "source": "Contains modified Copernicus Sentinel data 2026",
+          "license": "Copernicus Sentinel Data Licence",
+          "url": "https://cds.climate.copernicus.eu/licences/ec-sentinel"
+        },
+        {
+          "source": "© Mapterhorn terrain",
+          "license": "Per-source open data (CC BY 4.0 and equivalents)",
+          "url": "https://mapterhorn.com/attribution"
+        }
+      ]
+    },
+    {
+      "id": "coreviews-05-lord-howe",
+      "number": 5,
+      "title": "Lord Howe",
+      "place": "Lord Howe Island, New South Wales",
+      "region": "New South Wales",
+      "country": "AU",
+      "coordinates": [
+        -31.555,
+        159.083
+      ],
+      "timeOfDay": "day",
+      "scene": "sea",
+      "lane": "render",
+      "durationSeconds": 34,
+      "camera": {
+        "move": "orbit",
+        "startHeightM": 900,
+        "endHeightM": 900,
+        "fps": 30
+      },
+      "captions": [
+        {
+          "at": 5,
+          "text": "Lord Howe rises from the Tasman Sea"
+        },
+        {
+          "at": 19,
+          "text": "Mount Gower and Lidgbird, the island's twin peaks"
+        }
+      ],
+      "status": "planned",
+      "renditions": {
+        "1080-SDR": null,
+        "4K-SDR": null,
+        "1080-HDR": null,
+        "4K-HDR": null
+      },
+      "thumbnail": null,
+      "credits": [
+        {
+          "source": "Contains modified Copernicus Sentinel data 2026",
+          "license": "Copernicus Sentinel Data Licence",
+          "url": "https://cds.climate.copernicus.eu/licences/ec-sentinel"
+        },
+        {
+          "source": "© Mapterhorn terrain",
+          "license": "Per-source open data (CC BY 4.0 and equivalents)",
+          "url": "https://mapterhorn.com/attribution"
+        }
+      ]
+    },
+    {
+      "id": "coreviews-06-wineglass-bay",
+      "number": 6,
+      "title": "Wineglass Bay",
+      "place": "Freycinet, Tasmania",
+      "region": "Tasmania",
+      "country": "AU",
+      "coordinates": [
+        -42.15,
+        148.29
+      ],
+      "timeOfDay": "sunrise",
+      "scene": "beach",
+      "lane": "render",
+      "durationSeconds": 32,
+      "camera": {
+        "move": "reveal",
+        "startHeightM": 320,
+        "endHeightM": 900,
+        "fps": 30
+      },
+      "captions": [
+        {
+          "at": 4,
+          "text": "The Hazards, pink granite above Coles Bay"
+        },
+        {
+          "at": 20,
+          "text": "Wineglass Bay, cut off from the road"
+        }
+      ],
+      "status": "planned",
+      "renditions": {
+        "1080-SDR": null,
+        "4K-SDR": null,
+        "1080-HDR": null,
+        "4K-HDR": null
+      },
+      "thumbnail": null,
+      "credits": [
+        {
+          "source": "Contains modified Copernicus Sentinel data 2026",
+          "license": "Copernicus Sentinel Data Licence",
+          "url": "https://cds.climate.copernicus.eu/licences/ec-sentinel"
+        },
+        {
+          "source": "© Mapterhorn terrain",
+          "license": "Per-source open data (CC BY 4.0 and equivalents)",
+          "url": "https://mapterhorn.com/attribution"
+        }
+      ]
+    },
+    {
+      "id": "coreviews-07-twelve-apostles",
+      "number": 7,
+      "title": "Twelve Apostles",
+      "place": "Port Campbell, Victoria",
+      "region": "Victoria",
+      "country": "AU",
+      "coordinates": [
+        -38.662,
+        143.105
+      ],
+      "timeOfDay": "sunset",
+      "scene": "sea",
+      "lane": "render",
+      "durationSeconds": 30,
+      "camera": {
+        "move": "track",
+        "startHeightM": 260,
+        "endHeightM": 260,
+        "fps": 30
+      },
+      "captions": [
+        {
+          "at": 4,
+          "text": "Limestone stacks, cut back by the Southern Ocean"
+        },
+        {
+          "at": 18,
+          "text": "The Twelve Apostles — seven still stand"
+        }
+      ],
+      "status": "planned",
+      "renditions": {
+        "1080-SDR": null,
+        "4K-SDR": null,
+        "1080-HDR": null,
+        "4K-HDR": null
+      },
+      "thumbnail": null,
+      "credits": [
+        {
+          "source": "Contains modified Copernicus Sentinel data 2026",
+          "license": "Copernicus Sentinel Data Licence",
+          "url": "https://cds.climate.copernicus.eu/licences/ec-sentinel"
+        },
+        {
+          "source": "© Mapterhorn terrain",
+          "license": "Per-source open data (CC BY 4.0 and equivalents)",
+          "url": "https://mapterhorn.com/attribution"
+        }
+      ]
+    },
+    {
+      "id": "coreviews-08-uluru",
+      "number": 8,
+      "title": "Uluru",
+      "place": "Uluru-Kata Tjuta, Northern Territory",
+      "region": "Northern Territory",
+      "country": "AU",
+      "coordinates": [
+        -25.3444,
+        131.0369
+      ],
+      "timeOfDay": "sunset",
+      "scene": "countryside",
+      "lane": "render",
+      "durationSeconds": 34,
+      "camera": {
+        "move": "orbit",
+        "startHeightM": 1100,
+        "endHeightM": 1100,
+        "fps": 30
+      },
+      "captions": [
+        {
+          "at": 4,
+          "text": "Uluru, Anangu country"
+        },
+        {
+          "at": 18,
+          "text": "The arkose sandstone turns at last light"
+        }
+      ],
+      "status": "planned",
+      "renditions": {
+        "1080-SDR": null,
+        "4K-SDR": null,
+        "1080-HDR": null,
+        "4K-HDR": null
+      },
+      "thumbnail": null,
+      "credits": [
+        {
+          "source": "Contains modified Copernicus Sentinel data 2026",
+          "license": "Copernicus Sentinel Data Licence",
+          "url": "https://cds.climate.copernicus.eu/licences/ec-sentinel"
+        },
+        {
+          "source": "© DLR e.V. / Airbus DS, provided under COPERNICUS",
+          "license": "Copernicus DEM GLO-30",
+          "url": "https://dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM"
+        }
+      ]
+    },
+    {
+      "id": "coreviews-09-whitehaven",
+      "number": 9,
+      "title": "Whitehaven",
+      "place": "Whitsunday Island, Queensland",
+      "region": "Queensland",
+      "country": "AU",
+      "coordinates": [
+        -20.283,
+        149.04
+      ],
+      "timeOfDay": "day",
+      "scene": "beach",
+      "lane": "render",
+      "durationSeconds": 28,
+      "camera": {
+        "move": "top-down-descend",
+        "startHeightM": 900,
+        "endHeightM": 260,
+        "fps": 30
+      },
+      "captions": [
+        {
+          "at": 4,
+          "text": "Hill Inlet, where the tide paints the sand"
+        },
+        {
+          "at": 17,
+          "text": "Whitehaven Beach, silica sand"
+        }
+      ],
+      "status": "planned",
+      "renditions": {
+        "1080-SDR": null,
+        "4K-SDR": null,
+        "1080-HDR": null,
+        "4K-HDR": null
+      },
+      "thumbnail": null,
+      "credits": [
+        {
+          "source": "Contains modified Copernicus Sentinel data 2026",
+          "license": "Copernicus Sentinel Data Licence",
+          "url": "https://cds.climate.copernicus.eu/licences/ec-sentinel"
+        },
+        {
+          "source": "© Mapterhorn terrain",
+          "license": "Per-source open data (CC BY 4.0 and equivalents)",
+          "url": "https://mapterhorn.com/attribution"
+        }
+      ]
+    },
+    {
+      "id": "coreviews-10-kati-thanda",
+      "number": 10,
+      "title": "Kati Thanda",
+      "place": "Lake Eyre, South Australia",
+      "region": "South Australia",
+      "country": "AU",
+      "coordinates": [
+        -28.55,
+        137.35
+      ],
+      "timeOfDay": "day",
+      "scene": "patterns",
+      "lane": "render",
+      "durationSeconds": 32,
+      "camera": {
+        "move": "glide",
+        "startHeightM": 1400,
+        "endHeightM": 1100,
+        "fps": 30
+      },
+      "captions": [
+        {
+          "at": 4,
+          "text": "Kati Thanda–Lake Eyre, usually a salt pan"
+        },
+        {
+          "at": 19,
+          "text": "Water arrives, and the basin blooms"
+        }
+      ],
+      "status": "planned",
+      "renditions": {
+        "1080-SDR": null,
+        "4K-SDR": null,
+        "1080-HDR": null,
+        "4K-HDR": null
+      },
+      "thumbnail": null,
+      "credits": [
+        {
+          "source": "Contains modified Copernicus Sentinel data 2026",
+          "license": "Copernicus Sentinel Data Licence",
+          "url": "https://cds.climate.copernicus.eu/licences/ec-sentinel"
+        },
+        {
+          "source": "© Mapterhorn terrain",
+          "license": "Per-source open data (CC BY 4.0 and equivalents)",
+          "url": "https://mapterhorn.com/attribution"
+        }
+      ]
+    },
+    {
+      "id": "coreviews-11-ningaloo",
+      "number": 11,
+      "title": "Ningaloo",
+      "place": "Coral Bay, Western Australia",
+      "region": "Western Australia",
+      "country": "AU",
+      "coordinates": [
+        -23.14,
+        113.77
+      ],
+      "timeOfDay": "day",
+      "scene": "sea",
+      "lane": "render",
+      "durationSeconds": 30,
+      "camera": {
+        "move": "track",
+        "startHeightM": 380,
+        "endHeightM": 380,
+        "fps": 30
+      },
+      "captions": [
+        {
+          "at": 4,
+          "text": "Ningaloo Reef begins at the shore"
+        },
+        {
+          "at": 18,
+          "text": "Coral Bay, where the reef comes in close"
+        }
+      ],
+      "status": "planned",
+      "renditions": {
+        "1080-SDR": null,
+        "4K-SDR": null,
+        "1080-HDR": null,
+        "4K-HDR": null
+      },
+      "thumbnail": null,
+      "credits": [
+        {
+          "source": "Contains modified Copernicus Sentinel data 2026",
+          "license": "Copernicus Sentinel Data Licence",
+          "url": "https://cds.climate.copernicus.eu/licences/ec-sentinel"
+        },
+        {
+          "source": "© Mapterhorn terrain",
+          "license": "Per-source open data (CC BY 4.0 and equivalents)",
+          "url": "https://mapterhorn.com/attribution"
+        }
+      ]
+    },
+    {
+      "id": "coreviews-12-terminator",
+      "number": 12,
+      "title": "Terminator",
+      "place": "Low Earth orbit",
+      "region": "Earth",
+      "country": null,
+      "coordinates": null,
+      "timeOfDay": "night",
+      "scene": "space",
+      "lane": "archive",
+      "durationSeconds": 30,
+      "camera": {
+        "move": "archive-timelapse",
+        "startHeightM": null,
+        "endHeightM": null,
+        "fps": 30
+      },
+      "captions": [
+        {
+          "at": 4,
+          "text": "The day-night terminator, from the ISS"
+        },
+        {
+          "at": 18,
+          "text": "City lights under a thin atmosphere"
+        }
+      ],
+      "status": "planned",
+      "renditions": {
+        "1080-SDR": null,
+        "4K-SDR": null,
+        "1080-HDR": null,
+        "4K-HDR": null
+      },
+      "thumbnail": null,
+      "credits": [
+        {
+          "source": "NASA ISS imagery",
+          "license": "Public domain (NASA media usage guidelines)",
+          "url": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
+        }
+      ]
+    }
+  ]
+}

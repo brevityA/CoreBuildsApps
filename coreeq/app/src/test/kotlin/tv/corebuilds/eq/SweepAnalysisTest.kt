@@ -605,4 +605,47 @@ class SweepAnalysisTest {
 
     @Suppress("unused")
     private fun rms(x: DoubleArray) = sqrt(x.sumOf { it * it } / x.size)
+
+    @Test
+    fun aNarrowerCeilingStopsTheCorrectionEarly() {
+        val room = bassAtTarget(reverbRoom(0.4))
+        val full = SweepAnalysis.analyze(capture(room = room), capFs, "flat", 54.0)
+        val narrow = SweepAnalysis.analyze(capture(room = room), capFs, "flat", 54.0, ceilingHz = 500.0)
+        assertEquals(500.0, narrow.fMaxHz, 1e-9)
+        assertEquals("a ceiling must not change where the measurement stopped",
+            full.centresHz.size, narrow.centresHz.size)
+        for (i in narrow.centresHz.indices) {
+            if (narrow.centresHz[i] > 500.0) {
+                assertEquals("${narrow.centresHz[i]} Hz is above the ceiling", 0.0, narrow.correctionDb[i], 0.0)
+            }
+        }
+        // Deliberately no "the bass is byte-identical" assertion here. The
+        // sweep path recentres the curve to zero mean over the corrected band
+        // and then clamps each band to its boost/cut limit, so a narrower
+        // ceiling gives a different mean, a constant shift, and different
+        // clipping at the limits. The shape-preserving property is pinned one
+        // layer down, in CorrectionCeilingTest, on the import path where the
+        // arithmetic is visible; this test pins what is unique to the sweep:
+        // where the band ends, and that nothing past it is corrected.
+    }
+
+    @Test
+    fun aCeilingWiderThanTheMicrophoneIsClampedNotTrusted() {
+        val room = bassAtTarget(reverbRoom(0.4))
+        val result = SweepAnalysis.analyze(capture(room = room), capFs, "flat", 54.0, ceilingHz = 20000.0)
+        assertTrue("clamped ceiling ${result.fMaxHz}", result.fMaxHz <= DspConstants.F_MAX)
+    }
+
+    @Test
+    fun anUnusableRequestIsRefusedBeforeAnyDspRuns() {
+        org.junit.Assert.assertThrows(IllegalArgumentException::class.java) {
+            SweepAnalysis.analyze(DoubleArray(0), capFs, "flat", 54.0)
+        }
+        org.junit.Assert.assertThrows(IllegalArgumentException::class.java) {
+            SweepAnalysis.analyze(DoubleArray(1000), 0, "flat", 54.0)
+        }
+        org.junit.Assert.assertThrows(IllegalArgumentException::class.java) {
+            SweepAnalysis.analyze(DoubleArray(1000), capFs, "flat", 54.0, nFilters = 0)
+        }
+    }
 }

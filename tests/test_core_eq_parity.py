@@ -28,6 +28,13 @@ SOURCE_PAIRS = {
     ("SweepAnalysis.kt", "MIN_BAND_HZ"): "MIN_BAND_HZ",
     ("SweepAnalysis.kt", "RT60_MAX_TAIL_S"): "RT60_MAX_TAIL_S",
     ("Correction.kt", "MAX_NULL_SKIP"): "MAX_NULL_SKIP",
+    # 1.8.0: the closed loop. A band the check did not hear is not refined, and the
+    # comparison the refinement reads its evidence from needs the same band floor
+    # and the same alignment window as the figures on screen.
+    ("SweepAnalysis.kt", "BAND_MIN_SNR_DB"): "BAND_MIN_SNR_DB",
+    ("PostCorrectionCheck.kt", "MIN_BANDS"): "CHECK_MIN_BANDS",
+    ("PostCorrectionCheck.kt", "ALIGN_LO_HZ"): "CHECK_ALIGN_LO_HZ",
+    ("PostCorrectionCheck.kt", "ALIGN_HI_HZ"): "CHECK_ALIGN_HI_HZ",
 }
 PAIRS = {
     "MIN_HZ": "F_MIN",
@@ -52,6 +59,17 @@ DSP_PAIRS = {
     "NFFT": "NFFT",
     "ESS_SECONDS": "ESS_SECONDS",
     "MIN_PHASE_TOLERANCE_MS": "MIN_PHASE_TOLERANCE_MS",
+    # 1.7.1: graded trust and the seat-count boost budget. These change what the
+    # corrector asks for, so the reference and the app must agree on them.
+    "MULTI_SEAT_BOOST_DB": "MULTI_SEAT_BOOST_DB",
+    "CONFIDENCE_LO_SNR_DB": "CONFIDENCE_LO_SNR_DB",
+    "CONFIDENCE_FULL_SNR_DB": "CONFIDENCE_FULL_SNR_DB",
+    "CONFIDENCE_MIN": "CONFIDENCE_MIN",
+    # 1.8.0: how far one check sweep may move a band, and what it takes for a
+    # lift to be applied at all.
+    "REFINE_MAX_STEP_DB": "REFINE_MAX_STEP_DB",
+    "REFINE_MIN_DEFICIT_DB": "REFINE_MIN_DEFICIT_DB",
+    "REFINE_MIN_APPLIED_DB": "REFINE_MIN_APPLIED_DB",
 }
 
 
@@ -80,6 +98,37 @@ class CorrectionLimitParity(unittest.TestCase):
                 self.assertIsNotNone(m, f"{kotlin_name} missing from {file}")
                 self.assertEqual(float(m.group(1)), float(getattr(dsp, py_name)))
 
+
+
+    def test_kotlin_ceiling_choices_match_the_reference(self):
+        src = KOTLIN_LIMITS.read_text(encoding="utf-8")
+        m = re.search(r"CEILING_CHOICES_HZ = doubleArrayOf\(([^)]*)\)", src)
+        self.assertIsNotNone(m, "CEILING_CHOICES_HZ missing from CorrectionLimits.kt")
+        values = []
+        for raw in m.group(1).split(","):
+            raw = raw.strip()
+            if not raw:
+                continue
+            if raw == "MAX_HZ":
+                values.append(dsp.F_MAX)
+            else:
+                values.append(float(raw))
+        self.assertEqual(values, list(dsp.CORRECTION_CEILING_CHOICES_HZ))
+
+    def test_ceiling_never_widens_and_never_leaves_the_trusted_band(self):
+        for requested in (-1.0, 0.0, 20.0, 40.0, 500.0, 8000.0, 20000.0, float("nan"),
+                          float("inf"), float("-inf"), None):
+            with self.subTest(requested=requested):
+                value = dsp.ceiling_hz(requested)
+                self.assertGreaterEqual(value, dsp.F_MIN)
+                self.assertLessEqual(value, dsp.F_MAX)
+
+    def test_effective_ceiling_takes_the_narrower_of_measurement_and_choice(self):
+        self.assertEqual(dsp.effective_ceiling_hz(5600.0, None), 5600.0)
+        self.assertEqual(dsp.effective_ceiling_hz(5600.0, 1000.0), 1000.0)
+        self.assertEqual(dsp.effective_ceiling_hz(1000.0, 4000.0), 1000.0)
+        self.assertEqual(dsp.effective_ceiling_hz(float("nan"), 500.0), 500.0)
+        self.assertEqual(dsp.effective_ceiling_hz(0.0, None), dsp.F_MAX)
 
 if __name__ == "__main__":
     unittest.main()

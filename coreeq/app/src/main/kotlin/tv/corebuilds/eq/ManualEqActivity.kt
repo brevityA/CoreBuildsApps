@@ -1,7 +1,6 @@
 package tv.corebuilds.eq
 
 import android.content.BroadcastReceiver
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -343,12 +342,7 @@ class ManualEqActivity : TvActivity() {
     /** Import a Poweramp JSON preset or an AutoEq/Equalizer APO correction text file. */
     private fun pickCorrectionFile() {
         if (importing) return
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-            .addCategory(Intent.CATEGORY_OPENABLE)
-            .setType("*/*")
-        try {
-            startActivityForResult(intent, REQ_IMPORT_EQ)
-        } catch (e: ActivityNotFoundException) {
+        if (!tv.corebuilds.eq.ui.FilePicker.open(this, REQ_IMPORT_EQ)) {
             showImportError(getString(R.string.manual_eq_import_no_picker))
         }
     }
