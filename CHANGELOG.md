@@ -85,6 +85,21 @@ All notable changes to the Core Builds Icon Pack. Format follows
     sideload build keeps the lock, since it can land on a phone.
   - Play's report reads the whole bundle, so a library call can still raise
     the first warning.
+- **`tests/test_play_listing.py` keeps both Console upload fixes.** The
+  first upload hit two refusals on 2026-10-21, and `docs/PLAY-CONSOLE.md`
+  now covers both:
+  - *Automatic protection*: Play's installer check needs `minSdk` 24, and the
+    bundles declare 21. §5 says to switch **Installer check** off before
+    the first upload.
+  - *Dedicated Android TV track*: a bundle that requires
+    `android.software.leanback` is refused on the shared closed track. §4
+    says to opt into the dedicated Android TV track first, which can't be
+    undone, and flags that Google doesn't say whether its testers count
+    toward the 12-tester gate.
+
+  §7 and §9 point at both. A test reads `minSdk` and the Play manifests'
+  leanback requirement, and keeps each fix in the walkthrough while its
+  cause holds.
 - **`tests/test_navigation_graph.py` reads screens, not meta-data keys.** It
   matched every `android:name` ending in "Activity", so Projectivy's
   `settingsActivity` key read as a screen with no way in. It now reads
