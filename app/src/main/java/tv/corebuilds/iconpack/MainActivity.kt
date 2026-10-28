@@ -821,8 +821,10 @@ class MainActivity : TvActivity() {
             if (filtered.size == all.size) {
                 getString(R.string.pack_stats_fmt, iconCount, mappedComponents())
             } else {
+                // Apps matched, not tiles: a search that hits only an
+                // alternate's name still matched its app, once.
                 getString(R.string.icon_filter_fmt,
-                    filtered.count { !it.alternate }, iconCount)
+                    filtered.mapTo(HashSet()) { it.app }.size, iconCount)
             }
         bindEmptyState(filtered.size, q)
         // The grid and the empty state just swapped places; down from the

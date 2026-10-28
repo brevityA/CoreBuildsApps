@@ -46,6 +46,9 @@ class IconAdapter(
          */
         val alternate: Boolean get() = ALTERNATE.containsMatchIn(drawable)
 
+        /** The app this tile is art for: itself, or an alternate's icon. */
+        val app: String get() = drawable.replace(ALTERNATE, "")
+
         companion object {
             /** `<icon>_alt`, `<icon>_alt2`, ... — tools/alternates.ALT_RE. */
             val ALTERNATE = Regex("_alt\\d*$")

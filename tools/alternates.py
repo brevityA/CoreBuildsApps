@@ -83,9 +83,10 @@ def errors(data: dict) -> list[str]:
         if not spec.get("source"):
             out.append(f"{d}: alternate carries no source — who supplied it?")
         box = spec.get("square")
-        if not (isinstance(box, list) and len(box) == 4
-                and all(isinstance(v, int) for v in box)
-                and box[2] - box[0] == box[3] - box[1] > 0):
+        box_ok = (isinstance(box, list) and len(box) == 4
+                  and all(isinstance(v, int) for v in box)
+                  and box[2] - box[0] == box[3] - box[1] > 0)
+        if not box_ok:
             out.append(f"{d}: square must be a square [x0, y0, x1, y1] box")
         path = ROOT / spec.get("file", "")
         if not spec.get("file") or not path.is_file():
@@ -103,8 +104,7 @@ def errors(data: dict) -> list[str]:
         if w * 9 != h * 16:
             out.append(f"{d}: {spec['file']} is {w}x{h}; the banner is the whole "
                        f"source, so it must be 16:9")
-        if isinstance(box, list) and len(box) == 4 and not (
-                0 <= box[0] < box[2] <= w and 0 <= box[1] < box[3] <= h):
+        if box_ok and not (0 <= box[0] < box[2] <= w and 0 <= box[1] < box[3] <= h):
             out.append(f"{d}: square box {box} falls outside the {w}x{h} source")
     return out
 

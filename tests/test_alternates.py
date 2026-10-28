@@ -68,6 +68,10 @@ class CatalogBlock(unittest.TestCase):
         self.assertIn("manual-only", broken(usage="auto"))
         self.assertIn("unknown icon", broken(of="no_such_icon"))
         self.assertIn("square must be", broken(square=[0, 0, 10, 20]))
+        # A malformed box is reported by name, never compared against the
+        # source's size (None < int would raise instead).
+        self.assertIn("square must be", broken(square=[None, 0, 10, 10]))
+        self.assertIn("square must be", broken(square="459,752"))
         renamed = copy.deepcopy(CATALOG)
         renamed["alternates"]["wuplay_logo"] = renamed["alternates"].pop("wuplay_alt")
         self.assertIn("is named wuplay_alt", " | ".join(alternates.errors(renamed)))
@@ -210,6 +214,10 @@ class CountsAreApps(unittest.TestCase):
     def test_main_activity_shows_app_counts(self):
         src = read(APP / "java/tv/corebuilds/iconpack/MainActivity.kt")
         self.assertIn("iconCount = all.count { !it.alternate }", src)
+        # A search hitting only "WuPlay (alternative)" still matched one app.
+        self.assertIn("filtered.mapTo(HashSet()) { it.app }.size", src)
+        adapter = read(APP / "java/tv/corebuilds/iconpack/IconAdapter.kt")
+        self.assertIn('val app: String get() = drawable.replace(ALTERNATE, "")', adapter)
         for fmt in ("R.string.pack_stats_fmt, all.size",
                     "R.string.search_hint_fmt, all.size",
                     "getString(R.string.chip_all), all.size",
