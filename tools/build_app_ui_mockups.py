@@ -238,18 +238,35 @@ LIVE_THUMBS = ROOT / "Motion/live/thumbs"
 
 
 def live_loops() -> list[dict]:
-    src = (ROOT / "app/src/main/java/tv/corebuilds/iconpack/LiveLoop.kt").read_text(
-        encoding="utf-8")
-    body = re.search(r"val LOOPS: List<Loop> = listOf\((.*?)\n    \)",
-                     src, re.DOTALL).group(1)
-    base = re.search(r'RAW_BASE\s*=\s*\n?\s*"([^"]+)"', src).group(1)
-    titles = re.findall(r'title = "([^"]+)"', body)
-    files = re.findall(r'fileName = "([^"]+)"', body)
-    series = re.search(r'const val SERIES = "([^"]+)"', src).group(1)
-    return [
-        {"name": title, "series": series, "url": base + file_name, "live": True}
-        for title, file_name in zip(titles, files)
-    ]
+    """Every loop the wallpaper browser lists, from the Kotlin that lists them.
+
+    Two generated lists since Core Views shipped: the Motion line's in
+    `LiveLoop.kt` (`MOTION_LOOPS`) and the aerial season's in
+    `CoreViewsLoop.kt` (`LOOPS`). `LiveLoop.LOOPS` is the two concatenated, so
+    reading only the first file would draw a grid eleven tiles short of the
+    app's - the drift this check exists to catch. Both live under the one Live
+    chip: `Loop.series` defaults to `LiveLoop.SERIES`, and neither set
+    overrides it.
+    """
+    source = ROOT / "app/src/main/java/tv/corebuilds/iconpack"
+    series = re.search(r'const val SERIES = "([^"]+)"',
+                       (source / "LiveLoop.kt").read_text(encoding="utf-8")).group(1)
+    loops = []
+    for name, list_name in (
+        ("LiveLoop.kt", "MOTION_LOOPS"),      # the Motion line's forty-eight
+        ("CoreViewsLoop.kt", "LOOPS"),        # the Core Views season's twelve
+    ):
+        src = (source / name).read_text(encoding="utf-8")
+        body = re.search(rf"val {list_name}: List<Loop> = listOf\((.*?)\n    \)",
+                         src, re.DOTALL).group(1)
+        base = re.search(r'RAW_BASE\s*=\s*\n?\s*"([^"]+)"', src).group(1)
+        titles = re.findall(r'title = "([^"]+)"', body)
+        files = re.findall(r'fileName = "([^"]+)"', body)
+        loops += [
+            {"name": title, "series": series, "url": base + file_name, "live": True}
+            for title, file_name in zip(titles, files)
+        ]
+    return loops
 
 
 LIVE_LOOPS = live_loops()
@@ -946,10 +963,13 @@ def wallpapers_frame() -> tuple[Image.Image, str]:
         py += tile_h
         row += 1
 
-    note = ("MOCKUP - wallpapers from activity_wallpapers.xml + strings.xml + "
-            f"manifest/wallpapers.json ({len(WALLPAPERS)} stills) + LiveLoop.kt "
-            f"({len(LIVE_LOOPS)} motion loops, LIVE badge), bundled thumbs; "
-            "example: focus, chip")
+    # The caption band ellipsizes rather than overflow the panel, so this line
+    # has to stay short enough to survive whole: the LIVE badge and the counts
+    # are the honesty clauses, and a "MOCKUP - ..." that ends in "..." names
+    # no fiction at all. Counts are interpolated, never typed.
+    note = ("MOCKUP - wallpapers: activity_wallpapers.xml + strings.xml + "
+            f"{len(WALLPAPERS)} stills + {len(LIVE_LOOPS)} live loops "
+            "(LiveLoop.kt, CoreViewsLoop.kt); example: focus, chip")
     return img, note
 
 

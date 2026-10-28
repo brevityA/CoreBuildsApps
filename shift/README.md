@@ -45,7 +45,7 @@ cd shift && ./gradlew :app:assembleDebug    # JDK 17 + Android SDK
 ```
 
 Standalone Gradle root, package `dev.corebuilds.shift`, version **2.3.5** (versionCode 11),
-minSdk 26, target/compile 34, AGP 8.5.2 / Kotlin 1.9.24. Dependencies: appcompat,
+minSdk 26, target/compile 37, AGP 9.4.0 / built-in Kotlin 2.2.10. Dependencies: appcompat,
 core-ktx, recyclerview, Media3 (ExoPlayer, UI, session).
 
 **Screensaver:** system `DreamService`. Settings → Screensaver → Core Shift, or

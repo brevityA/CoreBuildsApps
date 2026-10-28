@@ -114,10 +114,45 @@ class OutputRouteTest {
     }
 
     @Test
+    fun multipleReportedOutputsAreAmbiguousAndNeverBorrowSingleOutputOrLegacyProfiles() {
+        val simultaneous = OutputRoute.resolveCandidates(
+            listOf(
+                OutputRoute.Output(SPEAKER, "TV speakers", OutputRoute.Evidence.ANTICIPATED),
+                OutputRoute.Output(HDMI_ARC, "Soundbar", OutputRoute.Evidence.ANTICIPATED)
+            )
+        )
+        assertEquals(OutputRoute.AMBIGUOUS, simultaneous?.kind)
+        assertEquals(OutputRoute.Evidence.AMBIGUOUS, simultaneous?.evidence)
+
+        val legacy = profile("legacy", 900, null)
+        val speaker = profile("speaker", 800, SPEAKER)
+        assertNull(OutputRoute.pick(listOf(legacy, speaker), "legacy", OutputRoute.AMBIGUOUS).profile)
+        assertNull(OutputRoute.pick(listOf(legacy), "legacy", OutputRoute.AMBIGUOUS).profile)
+    }
+
+    @Test
+    fun pre33ConnectedEstimateUsesOnlyOneExternalCandidateAndIgnoresBuiltInSpeakerPresence() {
+        val speaker = OutputRoute.Output(SPEAKER, "TV speakers", OutputRoute.Evidence.CONNECTED_ESTIMATE)
+        val arc = OutputRoute.Output(HDMI_ARC, "Soundbar", OutputRoute.Evidence.CONNECTED_ESTIMATE)
+        val bluetooth = OutputRoute.Output(BLUETOOTH, "Headphones", OutputRoute.Evidence.CONNECTED_ESTIMATE)
+        assertEquals(arc, OutputRoute.resolveConnectedCandidates(listOf(arc), speaker))
+        assertEquals(speaker, OutputRoute.resolveConnectedCandidates(emptyList(), speaker))
+        assertEquals(OutputRoute.AMBIGUOUS, OutputRoute.resolveConnectedCandidates(listOf(arc, bluetooth), speaker)?.kind)
+    }
+
+    @Test
+    fun aSingleUnrecognizedReportedTrackDoesNotFallBackToAConnectedGuess() {
+        val estimate = OutputRoute.Output(HDMI_ARC, "Soundbar")
+        val tagged = OutputRoute.tag(estimate, AudioDeviceInfo.TYPE_REMOTE_SUBMIX, null, model = "Test")
+        assertEquals(OutputRoute.UNKNOWN, tagged?.kind)
+        assertEquals(OutputRoute.Evidence.TRACK_REPORTED, tagged?.evidence)
+    }
+
+    @Test
     fun whenAndroidDoesNotSayTheRankedGuessStands() {
         val ranked = OutputRoute.Output(HDMI_ARC, "Sonos Beam")
         assertEquals(ranked, OutputRoute.tag(ranked, null, null, model = "MiTV"))
-        assertEquals(ranked, OutputRoute.tag(ranked, AudioDeviceInfo.TYPE_REMOTE_SUBMIX, null, model = "MiTV"))
+        assertEquals(OutputRoute.UNKNOWN, OutputRoute.tag(ranked, AudioDeviceInfo.TYPE_REMOTE_SUBMIX, null, model = "MiTV")?.kind)
         assertNull(OutputRoute.tag(null, null, null, model = "MiTV"))
         assertEquals(BLUETOOTH, OutputRoute.tag(null, AudioDeviceInfo.TYPE_BLUETOOTH_A2DP, "Buds", model = "MiTV")?.kind)
     }

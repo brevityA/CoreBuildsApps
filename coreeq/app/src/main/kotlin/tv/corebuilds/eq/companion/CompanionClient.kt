@@ -44,6 +44,29 @@ internal class CompanionClient(
         return post(CompanionServer.RPC_PATH, secret, payload)
     }
 
+    /**
+     * Asks the TV to show its pairing screen. Unauthenticated and unencrypted by design: the
+     * TV answers with `{"ok":true}` and does nothing else. Returns the HTTP status.
+     */
+    fun wake(): Int {
+        val body = "{}".toByteArray(StandardCharsets.US_ASCII)
+        Socket().use { socket ->
+            socket.tcpNoDelay = true
+            socket.connect(InetSocketAddress(host, port), CONNECT_TIMEOUT_MS)
+            socket.soTimeout = READ_TIMEOUT_MS
+            val output = socket.getOutputStream()
+            val headers = "POST ${CompanionServer.WAKE_PATH} HTTP/1.1\r\n" +
+                "Host: $host:$port\r\n" +
+                "Content-Type: application/json\r\n" +
+                "Content-Length: ${body.size}\r\n" +
+                "Connection: close\r\n\r\n"
+            output.write(headers.toByteArray(StandardCharsets.US_ASCII))
+            output.write(body)
+            output.flush()
+            return readResponse(socket.getInputStream()).first
+        }
+    }
+
     private fun post(path: String, key: ByteArray, payload: JSONObject): JSONObject {
         val requestBody = CompanionCrypto.encryptJson(key, path, payload)
         Socket().use { socket ->

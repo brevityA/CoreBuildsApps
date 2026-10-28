@@ -345,6 +345,22 @@ def core_mark(c):
             f'<polygon points="256,166 346,256 256,346 166,256" {_s(c, 32)}/>')
 
 
+def core_glyphs_mark(c):
+    """The glyphs apps' existing launcher mark: ring, square, play and hex.
+
+    Shared by the catalog and build_glyphs_branding.py so applying the pack
+    cannot replace their violet identity with the main pack's cyan mark.
+    """
+    s = _s(c, 26.2)
+    return (
+        f'<rect x="72" y="72" width="368" height="368" rx="92" {_s(c, 32)}/>'
+        f'<circle cx="190" cy="190" r="40" {s}/>'
+        f'<rect x="282" y="150" width="80" height="80" rx="16" {s}/>'
+        f'<path d="M 172 300 L 208 322 L 172 344 Z" {s}/>'
+        f'<path d="M 322 282 L 354 300 L 354 344 L 322 362 L 290 344 L 290 300 Z" {s}/>'
+    )
+
+
 def store_bag(c):
     """App stores — shopping bag with a download arrow. Drawn since the
     2026-10-18 sweep; before it the bag was empty and matched Aptoide's."""
@@ -526,7 +542,7 @@ GLYPHS = {
     "remote": remote, "smile_arrow": smile_arrow, "plus_star": plus_star,
     "apple_tv": apple_tv, "eye": eye, "waves_circle": waves_circle,
     "chat_screen": chat_screen, "gear": gear, "folder": folder,
-    "core_mark": core_mark,
+    "core_mark": core_mark, "core_glyphs_mark": core_glyphs_mark,
     "monogram_9": monogram_9, "monogram_7": monogram_7,
     "monogram_10": monogram_10,
 }

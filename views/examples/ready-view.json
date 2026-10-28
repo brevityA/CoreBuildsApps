@@ -1,0 +1,76 @@
+{
+  "note": "Worked example, not published. This is what one view looks like once it has been rendered and flipped to ready, and what the builders emit for it. Generated - do not hand-edit; run python tools/build_views_feed.py --examples.",
+  "catalogEntry": {
+    "id": "coreviews-01-three-sisters",
+    "number": 1,
+    "title": "Three Sisters",
+    "place": "Blue Mountains, New South Wales",
+    "region": "New South Wales",
+    "country": "AU",
+    "coordinates": [
+      -33.732,
+      150.312
+    ],
+    "timeOfDay": "sunrise",
+    "scene": "countryside",
+    "lane": "render",
+    "durationSeconds": 32,
+    "camera": {
+      "move": "ridge-follow",
+      "startHeightM": 900,
+      "endHeightM": 1040,
+      "fps": 30
+    },
+    "captions": [
+      {
+        "at": 4,
+        "text": "The Jamison Valley, filled with morning cloud"
+      },
+      {
+        "at": 18,
+        "text": "Three Sisters, sandstone pillars above the mist"
+      }
+    ],
+    "status": "ready",
+    "renditions": {
+      "1080-SDR": "coreviews-01-three-sisters.mp4",
+      "4K-SDR": "coreviews-01-three-sisters-4k.mp4",
+      "1080-HDR": null,
+      "4K-HDR": null
+    },
+    "thumbnail": "coreviews-01-three-sisters.jpg",
+    "credits": [
+      {
+        "source": "Contains modified Copernicus Sentinel data 2026",
+        "license": "Copernicus Sentinel Data Licence",
+        "url": "https://cds.climate.copernicus.eu/licences/ec-sentinel"
+      },
+      {
+        "source": "© DLR e.V. / Airbus DS, provided under COPERNICUS",
+        "license": "Copernicus DEM GLO-30",
+        "url": "https://dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM"
+      }
+    ]
+  },
+  "aerialViewsEntry": {
+    "id": "coreviews-01-three-sisters",
+    "accessibilityLabel": "Three Sisters — Blue Mountains, New South Wales · Core Views by Core Builds",
+    "type": "aerial",
+    "timeOfDay": "sunrise",
+    "scene": "countryside",
+    "url-1080-SDR": "https://github.com/brevityA/CoreBuildsApps/releases/download/views/coreviews-01-three-sisters.mp4",
+    "url-4K-SDR": "https://github.com/brevityA/CoreBuildsApps/releases/download/views/coreviews-01-three-sisters-4k.mp4",
+    "pointsOfInterest": {
+      "4": "The Jamison Valley, filled with morning cloud",
+      "18": "Three Sisters, sandstone pillars above the mist"
+    }
+  },
+  "overflightEntry": {
+    "location": "Core Views · New South Wales",
+    "title": "Three Sisters",
+    "author": "Core Builds",
+    "url_img": "https://github.com/brevityA/CoreBuildsApps/releases/download/views/coreviews-01-three-sisters.jpg",
+    "url_1080p": "https://github.com/brevityA/CoreBuildsApps/releases/download/views/coreviews-01-three-sisters.mp4",
+    "url_4k": "https://github.com/brevityA/CoreBuildsApps/releases/download/views/coreviews-01-three-sisters-4k.mp4"
+  }
+}

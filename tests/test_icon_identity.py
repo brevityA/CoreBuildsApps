@@ -46,6 +46,31 @@ class IdentityTests(unittest.TestCase):
     def test_catalog_accepts_every_icon(self):
         self.assertEqual(validate(ICONS, CATALOG["artwork"]), [])
 
+    def test_glyphs_apps_keep_their_native_mark_when_the_pack_is_applied(self):
+        import build_glyphs_branding as branding
+
+        main = BY_ID["corebuilds"]
+        for drawable in ("corebuilds_glyphs", "corebuilds_glyphs_pack"):
+            icon = BY_ID[drawable]
+            with self.subTest(drawable=drawable):
+                self.assertEqual(icon["brand"], "corebuilds_glyphs")
+                self.assertEqual(icon["style"], CORE_MONOLINE)
+                self.assertEqual(icon["color"], "#A366FF")
+                self.assertEqual(icon["color"], branding.ACCENT)
+                self.assertIs(GLYPHS[icon["glyph"]], branding.glyph_mark)
+                self.assertNotEqual(icon["glyph"], main["glyph"])
+                self.assertNotEqual(icon["color"], main["color"])
+                # Check the resolved art too: a bad alias could undo a correct
+                # catalog and appfilter, for squares as well as banners.
+                for suffix in ("", "_banner"):
+                    with Image.open(art_path(NODPI, drawable + suffix, ALIASES)) as glyphs, \
+                         Image.open(art_path(NODPI, main["drawable"] + suffix, ALIASES)) as pack:
+                        self.assertNotEqual(glyphs.convert("RGBA").tobytes(),
+                                            pack.convert("RGBA").tobytes())
+                        self.assertNotEqual(glyphs.convert("RGBA").getchannel("A").tobytes(),
+                                            pack.convert("RGBA").getchannel("A").tobytes(),
+                                            "the glyphs apps must differ by shape, not only colour")
+
     def test_same_brand_must_not_drift_in_colour_or_glyph(self):
         for field, wrong in (("color", "#FF0000"), ("glyph", "tile_N")):
             rows = copy.deepcopy([BY_ID["ninenow"], BY_ID["ninenow_2"]])
@@ -963,10 +988,23 @@ class ShrinkKeepRules(unittest.TestCase):
     def test_every_catalog_drawable_and_banner_is_pinned(self):
         root = ET.parse(self.RES / "raw/keep.xml").getroot()
         pinned = {v.removeprefix("@drawable/")
-                  for v in root.get(f"{self.TOOLS}keep").split(",")}
+                  for v in root.get(f"{self.TOOLS}keep").split(",")
+                  if v.startswith("@drawable/")}
         icons = json.loads((ROOT / "tools/catalog.json").read_text(encoding="utf-8"))["icons"]
         wanted = {i["drawable"] for i in icons} | {f"{i['drawable']}_banner" for i in icons}
         self.assertEqual(sorted(wanted - pinned), [])
+
+    def test_launcher_xml_resources_are_pinned_for_release_shrinking(self):
+        root = ET.parse(self.RES / "raw/keep.xml").getroot()
+        pinned = set(root.get(f"{self.TOOLS}keep").split(","))
+        # Launchers resolve these by resource name from another package; the
+        # app itself only reads the copies under assets/, so code-based resource
+        # shrinking has no reference to keep them alive.
+        self.assertTrue(
+            {"@xml/appfilter", "@xml/drawable", "@xml/iconpack"} <= pinned,
+            "release shrinking can strip launcher-facing XML and make the pack "
+            "disappear from Projectivy or its icon picker",
+        )
 
 if __name__ == "__main__":
     unittest.main()

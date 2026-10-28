@@ -28,3 +28,7 @@ tools/device_scan.txt
 # Kotlin 2 (AGP 9 built-in Kotlin) writes per-project session data and
 # daemon crash logs here; none of it is source
 .kotlin/
+
+# Core Views render output: frames, plans and MP4s are per-machine. Rendered
+# renditions go to the `views` release lane, never into git.
+views/render/

@@ -11,6 +11,9 @@ import kotlin.math.tanh
  */
 object Targets {
 
+    /** The conventional pivot every house-curve control normalises around. */
+    const val PIVOT_HZ = 630.0
+
     fun shelfDb(f: DoubleArray, cornerHz: Double, gainDb: Double): DoubleArray {
         val out = DoubleArray(f.size)
         for (i in f.indices) {
@@ -60,13 +63,14 @@ object Targets {
         freqs: DoubleArray,
         bassBoostDb: Double = 0.0,
         tiltDbPerOct: Double = -1.0,
-        pivotHz: Double = 630.0,
+        pivotHz: Double = PIVOT_HZ,
         presenceDb: Double = 2.0,
         trimDb: Double = 0.0
     ): DoubleArray {
         val out = DoubleArray(freqs.size)
         val normalizedKind = kind.lowercase().trim()
         if (normalizedKind == "flat") return out
+        if (normalizedKind == CustomTarget.KEY) return CustomTarget.targetDb(freqs)
 
         val bassGain = when (normalizedKind) {
             "room", "harman" -> 3.5

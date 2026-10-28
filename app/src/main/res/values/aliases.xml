@@ -3,6 +3,7 @@
 <resources>
     <drawable name="adguard_2">@drawable/adguard</drawable>
     <drawable name="bbciplayer">@drawable/bbc_iplayer</drawable>
+    <drawable name="corebuilds_glyphs_pack">@drawable/corebuilds_glyphs</drawable>
     <drawable name="discoveryplus">@drawable/discovery</drawable>
     <drawable name="ertflix_2">@drawable/ertflix</drawable>
     <drawable name="foxsports_2">@drawable/foxsports</drawable>

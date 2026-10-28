@@ -6,12 +6,12 @@
 
 | Product | Path | Package ID | Version | Downloader / stable tag |
 |---|---|---|---:|---|
-| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `2.5.0` | `5270601` / `iconpack` |
+| Core Builds Icon Pack | `app/` with repo-root Gradle | `tv.corebuilds.iconpack` | `2.5.2` | `5270601` / `iconpack` |
 | Core Line | `ticker/` + `ticker/android/` | `dev.corebuilds.line` | `1.4.4` | `7375676` / `coreline` |
 | Core Shift | `shift/` | `dev.corebuilds.shift` | `2.3.5` | `8829421` / `shift` |
 | Core Motion | `motion-plugin/` | `tv.corebuilds.motion` | `1.0.0` | `[USER TO SUPPLY]` / `motion` |
 | Core Doctor | `doctor/` | `dev.corebuilds.doctor` | `0.1.0` | `8664938` / `doctor` |
-| Core EQ | `coreeq/` | `tv.corebuilds.eq` | `1.5.2` | `7946159` / `coreeq` |
+| Core EQ | `coreeq/` | `tv.corebuilds.eq` | `1.8.0` | `7946159` / `coreeq` |
 
 (Retired 2026-09-24: Core Builds Pixel Neon and Core Builds Pop. The suite
 keeps one icon pack. Their shipped tags stay as history; do not resurrect
@@ -49,7 +49,7 @@ versioned from `app/build.gradle.kts`. Banners are the icon pack's default
 launcher auto-applies whatever the selected package's appfilter maps, so the
 in-app Banners/Glyphs toggle works by pointing launchers at one package or the
 other (`GlyphsCompanion.kt`). The companion has no Kotlin, no dependencies and
-no committed art: `python tools/build_icons.py` writes its square appfilter and
+no duplicated catalog art: `python tools/build_icons.py` writes its square appfilter and
 browser (and the `glyphs` flavor's identical copies under `app/src/glyphs/`,
 which `build_banners_pack.py --check` holds byte-equal),
 `python tools/build_banners_pack.py` derives the icon pack's banner XML
@@ -66,11 +66,41 @@ filename and release workflow together. (1.9.4 shipped the opposite split, a
 Banners companion `tv.corebuilds.iconpack.banners`; it is retired - do not
 resurrect `banners/`.)
 
+`views/` is not a product and must not become one by accident. It is the
+Core Views catalogue — a content line for aerial loops that publishes two
+feeds (`views/aerial-entries.json` for Aerial Views, `views/overflight-feed.json`
+for Overflight) from one source, `views/catalog.json`. It has no Gradle root,
+no `suite.json` row, no release tag and no APK. Media goes on the `views`
+release lane, never into git; a view with `status: planned` publishes nothing,
+so an unrendered entry cannot become a dead URL in a user's screensaver. The
+consumer parses with `ignoreUnknownKeys = true`, which is why
+`tools/build_views_feed.py` validates rendition key names itself and
+`tests/test_views_feed.py` pins the app's `timeOfDay` / `scene` vocabularies.
+Imagery is a licence decision with a flag attached: `render_views.py` carries a
+`redistributable` verdict per basemap and `--for-publish` refuses a source that
+may not ship, a view whose credits omit the required attribution, and a move
+that wants more zoom than the imagery has. Do not add a basemap to that table
+without a licence you can point at.
+Half the season already plays, through the icon pack rather than through an
+app of its own: `LiveWallpaperService` plays twelve loops generated from the
+same catalogue — drawn contour art on each view's **real** camera track, not
+renders of the place, because no rendition exists yet. Those loops are
+`tools/build_coreviews_loops.py` over `tools/coreviews_roster.py`, their
+Kotlin list is `tools/build_coreviews_kt.py` into `CoreViewsLoop.kt`, and
+`LiveLoop.LOOPS` is that list appended to the Motion line's (Motion first, so
+the shipped default does not move). `docs/CORE_VIEWS_WALLPAPERS.md` is the
+map; `tests/test_coreviews_wallpapers.py` holds the catalogue, the roster, the
+committed MP4s and the Kotlin list together, and fails if a rendition is
+claimed before one is rendered.
+If Core Views ever ships an app, that is a new product with an ID from
+`tv.corebuilds.*` and it goes through this file's normal lifecycle — not a
+gradual accretion onto the content line.
+
 Do not merge Gradle roots. Do not split the GitHub repo. Do not rename package IDs. Do not repoint floating Downloader tags. New apps use `tv.corebuilds.<name>`; the current `dev.` IDs are history, not a style to copy.
 
 ## One rule
 
-`tools/catalog.json` is the only source of truth for the icon pack. Never hand-edit generated icon XML, icon/banner art, `aliases.xml`, `keep.xml`, `docs/IconPackList.md`, `docs/preview.*`, or generated wallpaper output under `Wallpapers/series-8-amoled/**`, `Wallpapers/series-9-deep-space/**` and `Wallpapers/series-10-cinema/**`.
+`tools/catalog.json` is the only source of truth for the icon pack. Never hand-edit generated icon XML, icon/banner art, `aliases.xml`, `keep.xml`, `docs/IconPackList.md`, `docs/preview.*`, or generated wallpaper output under `Wallpapers/series-8-amoled/**`, `Wallpapers/series-9-deep-space/**` and `Wallpapers/series-10-cinema/**`. `views/catalog.json` is the source of truth for the Core Views loops: never hand-edit `CoreViewsLoop.kt`, the MP4s in `Motion/live/coreviews-*`, their posters or `app/src/main/assets/coreviews_thumbs/**` — regenerate them.
 
 Classic pack changes run the four generators and the validator:
 
@@ -93,7 +123,7 @@ another brand's. When `check_lookalikes.py` names a new pair, give one of
 them the cue its brand actually has (the word, if its logo is a word),
 never an entry in `tools/lookalike_baseline.json`.
 
-Paste the validator receipt. Current receipt: `Validated 1020 icons · 1947 components`.
+Paste the validator receipt. Current receipt: `Validated 1022 icons · 1950 components`.
 
 **The pack identity takes precedence over literal vendor-logo reproduction.**
 Reviewed brand entries use `style: core_monoline`: 32px rounded primary strokes,

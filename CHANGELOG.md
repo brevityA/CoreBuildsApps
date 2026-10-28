@@ -37,7 +37,7 @@ All notable changes to the Core Builds Icon Pack. Format follows
   everyone. The Plus card, the Settings row, the Play listing,
   `docs/PLAY-CONSOLE.md` §8 and `docs/privacy.html` (effective 22 October
   2026) say so.
-- **`tests/test_projectivy_walls.py` holds the Projectivy contract.** 13
+- **`tests/test_projectivy_walls.py` holds the Projectivy contract.** 14
   tests: the AIDL and contract constants are Core Motion's byte for byte,
   the hand-written parcel keeps Core Motion's field order, the manifest
   carries what Projectivy reads, each build gets its own id, and the free
@@ -54,6 +54,37 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **`tests/test_ui_wiring.py` accepts a zero-padded positional integer.**
   `%1$02d`, the night hours' "20:00", is valid `String.format` grammar that
   the gate rejected.
+- **Glyphs apps keep their own icon when the pack is applied.** The catalog
+  mapped Core Builds Glyphs Pack to the main pack's cyan icon, overriding the
+  companion's violet launcher art. It now uses the existing violet glyph mark
+  for both square icons and banners, with its own name. The standalone Core
+  Builds Glyphs app and the Play package IDs are mapped too, using their actual
+  activity namespaces. Launcher branding and catalog art share one glyph
+  definition; the main pack's artwork is unchanged.
+- **`tests/test_glyphs_pack.py` and `tests/test_icon_identity.py` guard self-icons.**
+  Checks cover all three packs' generated mappings, full and shorthand
+  components, distinct banner labels, native launcher layers and resolved
+  square/banner art, so neither an appfilter nor an alias can restore the
+  confusing main-pack icon.
+- **`tests/test_gradle_unit_test_variants.py` follows the suite's AGP 9 migration.**
+  The pre-existing content-CI failure still assumed four roots used AGP 8.
+  Doctor, Motion, Shift and Line now explicitly retain release-variant unit
+  test tasks, as the suite release workflow requires, and the gate covers all
+  migrated roots rather than only the first two.
+
+## [2.5.1] — 2026-10-24
+
+### Added
+
+### Changed
+
+### Fixed
+
+- **Projectivity launcher discovery in release builds.** Keep the launcher-facing
+  `appfilter.xml`, icon picker `drawable.xml` and legacy `iconpack.xml` resources
+  out of resource shrinking; they are resolved by launchers by name, not by app
+  code. The generated keep rules now preserve them for Projectivity and other
+  compatible launchers.
 
 ## [2.5.0] — 2026-10-21
 

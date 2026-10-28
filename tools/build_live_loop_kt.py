@@ -50,7 +50,7 @@ def render() -> str:
      * preference written by a newer build can never leave the home screen
      * blank.
      */
-    val LOOPS: List<Loop> = listOf(
+    val MOTION_LOOPS: List<Loop> = listOf(
 '''
     return doc + ",\n".join(entries) + "\n    )\n"
 

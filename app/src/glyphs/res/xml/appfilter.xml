@@ -417,8 +417,13 @@
     <!-- Core Builds -->
     <item component="ComponentInfo{tv.corebuilds.iconpack/tv.corebuilds.iconpack.MainActivity}" drawable="corebuilds"/>
     <item component="ComponentInfo{tv.corebuilds.iconpack/.MainActivity}" drawable="corebuilds"/>
-    <item component="ComponentInfo{tv.corebuilds.iconpack.glyphs/tv.corebuilds.iconpack.glyphs.GlyphsHomeActivity}" drawable="corebuilds"/>
-    <item component="ComponentInfo{tv.corebuilds.iconpack.glyphs/.GlyphsHomeActivity}" drawable="corebuilds"/>
+    <item component="ComponentInfo{tv.corebuilds.iconpack.play/tv.corebuilds.iconpack.MainActivity}" drawable="corebuilds"/>
+    <!-- Core Builds Glyphs -->
+    <item component="ComponentInfo{tv.corebuilds.glyphs/tv.corebuilds.iconpack.MainActivity}" drawable="corebuilds_glyphs"/>
+    <!-- Core Builds Glyphs Pack -->
+    <item component="ComponentInfo{tv.corebuilds.iconpack.glyphs/tv.corebuilds.iconpack.glyphs.GlyphsHomeActivity}" drawable="corebuilds_glyphs_pack"/>
+    <item component="ComponentInfo{tv.corebuilds.iconpack.glyphs/.GlyphsHomeActivity}" drawable="corebuilds_glyphs_pack"/>
+    <item component="ComponentInfo{tv.corebuilds.iconpack.glyphs.play/tv.corebuilds.iconpack.glyphs.GlyphsHomeActivity}" drawable="corebuilds_glyphs_pack"/>
     <!-- Core Doctor -->
     <item component="ComponentInfo{dev.corebuilds.doctor/dev.corebuilds.doctor.MainActivity}" drawable="coredoctor"/>
     <item component="ComponentInfo{dev.corebuilds.doctor/.MainActivity}" drawable="coredoctor"/>

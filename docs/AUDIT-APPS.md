@@ -2,6 +2,16 @@
 
 Date: 2026-09-06. Agent knowledge cutoff: 2024-06; current Play/Android requirements below were verified against official docs during this audit where cited, otherwise marked `[UNVERIFIED]`.
 
+> **API 37 migration update (2026-10-24):** The SDK values and toolchain in the
+> inventory below are a historical 2026-09-06 snapshot. All suite Android
+> modules now compile and target API 37, including the sideload-only apps.
+> Every Gradle root is on AGP 9.4.0 / Gradle 9.7.0. All use AGP built-in Kotlin except Motion, which uses aligned KGP 2.2.10 for its frozen upstream Parcelize model;
+> Core Doctor also uses the Kotlin 2.x Compose compiler plugin. Core Line's
+> phone-pairing server declares and requests Android 17's local-network runtime
+> permission before opening its LAN listener; Core Doctor requests that
+> permission before checking a user-entered add-on URL. `tools/gradle_envelope.json` and
+> `tests/test_android_api37_migration.py` are the current machine-checked truth.
+
 ## Official policy/readiness checks verified
 
 - Google Play target API: starting 2026-08-31, new apps and updates must target Android 16 / API 36+, except Android TV and Android XR apps which must target Android 14 / API 34+; existing apps must target Android 15 / API 35+ to remain available to new users on devices above the app target. Source: <https://developer.android.com/google/play/requirements/target-sdk>.

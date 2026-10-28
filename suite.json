@@ -4,8 +4,8 @@
   "apps": {
     "iconpack": {
       "name": "Core Builds Icon Pack",
-      "versionName": "2.5.0",
-      "versionCode": 58,
+      "versionName": "2.5.2",
+      "versionCode": 60,
       "tagPrefix": "v",
       "floatingTag": "iconpack",
       "downloader": "5270601",
@@ -16,8 +16,8 @@
       "legacyApk": "app-release.apk",
       "metadata": "Latestrelease/version.json",
       "section": "icon-pack",
-      "iconCount": 1020,
-      "componentCount": 1238
+      "iconCount": 1022,
+      "componentCount": 1241
     },
     "line": {
       "name": "Core Line",
@@ -77,8 +77,8 @@
     },
     "eq": {
       "name": "Core EQ",
-      "versionName": "1.5.2",
-      "versionCode": 13,
+      "versionName": "1.8.0",
+      "versionCode": 18,
       "tagPrefix": "coreeq-v",
       "floatingTag": "coreeq",
       "downloader": "7946159",

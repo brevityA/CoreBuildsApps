@@ -1,9 +1,10 @@
 package tv.corebuilds.eq
 
 import android.Manifest
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.AudioManager
+import android.media.audiofx.AudioEffect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -17,19 +18,28 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import tv.corebuilds.eq.apply.DynamicsProcessingEngine
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.dsp.Correction
+import tv.corebuilds.eq.dsp.CorrectionReport
+import tv.corebuilds.eq.dsp.CustomTarget
 import tv.corebuilds.eq.dsp.DspConstants
 import tv.corebuilds.eq.dsp.ImportResult
+import tv.corebuilds.eq.dsp.AutoApplyPolicy
 import tv.corebuilds.eq.dsp.MeasurementQuality
 import tv.corebuilds.eq.dsp.MeasurementException
+import tv.corebuilds.eq.dsp.CorrectionRefinement
+import tv.corebuilds.eq.dsp.PostCorrectionCheck
 import tv.corebuilds.eq.dsp.RepeatabilityAnalysis
 import tv.corebuilds.eq.dsp.RepeatabilityComparison
 import tv.corebuilds.eq.dsp.RewImport
+import tv.corebuilds.eq.dsp.SeatAverage
 import tv.corebuilds.eq.dsp.Sweep
 import tv.corebuilds.eq.dsp.SweepAnalysis
 import tv.corebuilds.eq.dsp.SweepResult
+import tv.corebuilds.eq.dsp.TargetCurveImport
+import tv.corebuilds.eq.ui.FilePicker
 import tv.corebuilds.eq.dsp.Targets
 import tv.corebuilds.eq.export.CaptureInfo
 import tv.corebuilds.eq.export.CurvePoint
@@ -70,6 +80,26 @@ class MeasureActivity : TvActivity() {
         val roomIndex: Int
     )
 
+    /** What a sweep is for: a new measurement, or evidence about the one on screen. */
+    private enum class SweepKind { PRIMARY, REPEAT, SEAT, CHECK }
+
+    /** Everything a sweep is analysed with, fixed when it starts. */
+    private data class SweepPlan(
+        val kind: SweepKind,
+        val target: String,
+        val volumeM3: Double?,
+        /** Top of the corrected band, as chosen when the sweep started. */
+        val ceilingHz: Double,
+        val targetIndex: Int,
+        val roomIndex: Int,
+        /** SEAT: the seats so far, first seat first. */
+        val seatsBefore: List<SweepCapture> = emptyList(),
+        /** CHECK: the result whose correction the sweep plays through. */
+        val checked: SweepResult? = null,
+        /** The bass budget that correction used, so a refinement obeys the same one. */
+        val boostBudgetDb: Double = Correction.boostBudgetDb(1)
+    )
+
     private lateinit var profileStore: ProfileStore
     private lateinit var stimulusPlayer: StimulusPlayer
     private lateinit var captureEngine: CaptureEngine
@@ -86,9 +116,17 @@ class MeasureActivity : TvActivity() {
     private lateinit var btnImport: Button
     private lateinit var btnRoom: Button
     private lateinit var btnTarget: Button
+    private lateinit var btnCeiling: Button
+    private lateinit var cardRefine: View
+    private lateinit var btnAddSeat: Button
+    private lateinit var btnCheck: Button
+    private lateinit var btnRefine: Button
 
     private var roomIndex = 1
     private var targetIndex = 0
+    private var ceilingIndex = CorrectionLimits.CeilingChoice.DEFAULT.index
+    private var useCustomTarget = false
+    private lateinit var btnTargetImport: Button
     private var result: SweepResult? = null
     /** A REW import replaces the sweep result for display and saving (plan M10). */
     private var importResult: ImportResult? = null
@@ -106,8 +144,24 @@ class MeasureActivity : TvActivity() {
     private var repeatComparisonClearedDueToSettings = false
     private var activeMicName: String? = null
     private var activeOutput: OutputRoute.Output? = null
-    private var pendingRepeatPermission = false
-    private var measurementIsRepeat = false
+    /** The sweep to start once the microphone permission is granted. */
+    private var pendingKind: SweepKind? = null
+    private var measurementKind = SweepKind.PRIMARY
+    /** Seats averaged into [result], first seat first; empty while [result] is one seat. */
+    private var seats: List<SweepCapture> = emptyList()
+    private var seatAverage: SeatAverage.Averaged? = null
+    /** The last check sweep of [result]'s correction; cleared whenever [result] changes. */
+    private var correctionCheck: PostCorrectionCheck.Comparison? = null
+    /** Why the check's chain differed from the measurement's, when it did. */
+    private var correctionCheckNote: String? = null
+    /** The refinement the last check bought, waiting for the user to accept it (1.8.0). */
+    private var pendingRefinement: CorrectionRefinement.Refined? = null
+    /** Why a refinement that should have been possible was not offered or moved nothing. */
+    private var refinementNote: String? = null
+    /** The refinement this correction is carrying, once accepted; null for a plain sweep. */
+    private var appliedRefinement: CorrectionRefinement.Refined? = null
+    /** The correction a check sweep plays through; released when the sweep ends. */
+    private var checkEffect: AudioEffect? = null
     /** Current media-route estimate captured when an external REW file is imported. */
     private var importedOutputEstimate: OutputRoute.Output? = null
     /** Bumped per measurement, so a late callback from an earlier one is ignored. */
@@ -137,10 +191,20 @@ class MeasureActivity : TvActivity() {
         btnImport = findViewById(R.id.btn_measure_import)
         btnRoom = findViewById(R.id.btn_room_size)
         btnTarget = findViewById(R.id.btn_target)
+        btnCeiling = findViewById(R.id.btn_ceiling)
+        btnTargetImport = findViewById(R.id.btn_target_import)
+        cardRefine = findViewById(R.id.card_refine)
+        btnAddSeat = findViewById(R.id.btn_measure_add_seat)
+        btnCheck = findViewById(R.id.btn_measure_check)
+        btnRefine = findViewById(R.id.btn_measure_refine)
 
         val prefs = getSharedPreferences(PREFS, MODE_PRIVATE)
         roomIndex = prefs.getInt(KEY_ROOM, 1).coerceIn(ROOMS.indices)
         targetIndex = prefs.getInt(KEY_TARGET, 0).coerceIn(TARGETS.indices)
+        // A stored index from a build with a different list is clamped by
+        // CeilingChoice rather than trusted.
+        ceilingIndex = prefs.getInt(KEY_CEILING, CorrectionLimits.CeilingChoice.DEFAULT.index)
+        restoreCustomTarget(prefs)
 
         btnRoom.setOnClickListener {
             roomIndex = (roomIndex + 1) % ROOMS.size
@@ -149,13 +213,28 @@ class MeasureActivity : TvActivity() {
             refreshChoices()
         }
         btnTarget.setOnClickListener {
-            targetIndex = (targetIndex + 1) % TARGETS.size
-            prefs.edit().putInt(KEY_TARGET, targetIndex).apply()
+            // The first press leaves an imported target and returns to the built-in choice.
+            if (useCustomTarget) {
+                useCustomTarget = false
+            } else {
+                targetIndex = (targetIndex + 1) % TARGETS.size
+            }
+            prefs.edit().putInt(KEY_TARGET, targetIndex).putBoolean(KEY_USE_CUSTOM, useCustomTarget).apply()
             clearRepeatComparisonForSettingsChange()
+            refreshChoices()
+        }
+        btnTargetImport.setOnClickListener { pickTargetFile() }
+        btnCeiling.setOnClickListener {
+            ceilingIndex = CorrectionLimits.CeilingChoice(ceilingIndex).next().index
+            prefs.edit().putInt(KEY_CEILING, ceilingIndex).apply()
+            renderCeiling()
             refreshChoices()
         }
         btnStart.setOnClickListener { startMeasurement() }
         btnRepeat.setOnClickListener { startRepeatMeasurement() }
+        btnAddSeat.setOnClickListener { startMeasurement(SweepKind.SEAT) }
+        btnCheck.setOnClickListener { startMeasurement(SweepKind.CHECK) }
+        btnRefine.setOnClickListener { applyRefinement() }
         btnStop.setOnClickListener { cancelMeasurement("Stopped. Nothing was saved.") }
         btnSave.setOnClickListener { saveAndFinish() }
         btnImport.setOnClickListener { pickRewImport() }
@@ -165,9 +244,29 @@ class MeasureActivity : TvActivity() {
         btnRoom.requestFocus()
     }
 
+    /**
+     * The ceiling the next analysis will use. [CorrectionLimits.ceilingHz]
+     * clamps it, so a corrupt pref cannot widen the band.
+     */
+    private fun chosenCeilingHz(): Double = CorrectionLimits.CeilingChoice(ceilingIndex).hz
+
+    private fun renderCeiling() {
+        val choice = CorrectionLimits.CeilingChoice(ceilingIndex)
+        btnCeiling.text = if (choice.isFullBand) {
+            getString(R.string.measure_ceiling_full, choice.hz.toInt())
+        } else {
+            getString(R.string.measure_ceiling_button, choice.hz.toInt())
+        }
+    }
+
     private fun refreshChoices() {
         btnRoom.text = getString(R.string.measure_room_button, ROOMS[roomIndex].label)
-        btnTarget.text = getString(R.string.measure_target_button, TARGETS[targetIndex].label)
+        btnTarget.text = if (useCustomTarget) {
+            getString(R.string.measure_target_custom)
+        } else {
+            getString(R.string.measure_target_button, TARGETS[targetIndex].label)
+        }
+        renderCeiling()
         val capture = lastCapture
         val imported = importInput
         if (imported != null && importResult != null && !measuring && !importing) {
@@ -179,25 +278,54 @@ class MeasureActivity : TvActivity() {
             // Lock the controls until the matching analysis completes so Save
             // cannot combine a new target label with the previous correction.
             val generation = ++sweepReanalysisGeneration
-            val target = TARGETS[targetIndex].key
+            val target = activeTargetKey()
             val volume = ROOMS[roomIndex].volumeM3
+            val ceiling = chosenCeilingHz()
+            val selectedTargetIndex = targetIndex
+            val selectedRoomIndex = roomIndex
+            val seatCaptures = seats
             setSweepReanalysisBusy(true)
             textStatus.text = getString(R.string.measure_analysing)
             thread(name = "CoreEqReanalysis") {
-                val updated = try {
-                    SweepAnalysis.analyze(capture, lastRate, target, volume)
+                // Every seat is analysed again and re-averaged: one seat on the old target
+                // would put a different correction under the new label.
+                val updated: Triple<SweepResult, List<SweepCapture>, SeatAverage.Averaged?>? = try {
+                    if (seatCaptures.size >= 2) {
+                        val again = seatCaptures.map {
+                            it.copy(
+                                result = SweepAnalysis.analyze(it.samples, it.rate, target, volume, ceilingHz = ceiling),
+                                targetIndex = selectedTargetIndex,
+                                roomIndex = selectedRoomIndex
+                            )
+                        }
+                        val averaged = SeatAverage.average(again.map { it.result }, target, volume)
+                        Triple(averaged.result, again, averaged)
+                    } else {
+                        Triple(
+                            SweepAnalysis.analyze(capture, lastRate, target, volume, ceilingHz = ceiling),
+                            emptyList(), null
+                        )
+                    }
                 } catch (e: Exception) {
                     Log.w(TAG, "Re-analysis failed", e)
                     null
                 }
                 runOnUiThread {
                     if (generation != sweepReanalysisGeneration || isFinishing || isDestroyed) return@runOnUiThread
-                    setSweepReanalysisBusy(false)
+                    correctionCheck = null
+                    correctionCheckNote = null
+                    clearRefinement()
                     if (updated != null) {
-                        result = updated
-                        showResult(updated)
+                        result = updated.first
+                        seats = updated.second
+                        seatAverage = updated.third
+                        setSweepReanalysisBusy(false)
+                        showResult(updated.first)
                     } else {
                         result = null
+                        seats = emptyList()
+                        seatAverage = null
+                        setSweepReanalysisBusy(false)
                         btnSave.visibility = View.GONE
                         btnRepeat.visibility = View.GONE
                         btnStart.setText(R.string.measure_start)
@@ -229,13 +357,72 @@ class MeasureActivity : TvActivity() {
         graphMeasure.setData(
             centres,
             listOf(Series("TARGET", ContextCompat.getColor(this, R.color.cb_signal_cyan),
-                Targets.targetCurve(TARGETS[targetIndex].key, centres))),
-            "TARGET · ${TARGETS[targetIndex].label.uppercase(Locale.US)}",
+                Targets.targetCurve(activeTargetKey(), centres))),
+            "TARGET · ${activeTargetTitle().uppercase(Locale.US)}",
             20.0,
             Correction.transitionHz(ROOMS[roomIndex].volumeM3, null)
         )
         renderQuality()
+        updateRefineButtons()
     }
+
+    /** Add a seat and Check belong to a sweep on screen; an import or no result hides them. */
+    private fun updateRefineButtons() {
+        val sweep = result != null && importResult == null
+        val seatCount = maxOf(1, seats.size)
+        cardRefine.visibility = if (sweep) View.VISIBLE else View.GONE
+        btnAddSeat.visibility = if (sweep && seatCount < SeatAverage.MAX_SEATS) View.VISIBLE else View.GONE
+        btnAddSeat.text = getString(R.string.measure_add_seat_button, seatCount + 1, SeatAverage.MAX_SEATS)
+        // A same-spot repeat describes one seat; once seats are averaged it has nothing to compare.
+        if (seats.size >= 2) btnRepeat.visibility = View.GONE
+        val idle = !measuring && !importing && !sweepReanalysisInProgress
+        btnAddSeat.isEnabled = idle
+        btnCheck.isEnabled = idle
+        // A refinement is only offered once a check has been scored against this correction.
+        btnRefine.visibility = if (sweep && pendingRefinement != null) View.VISIBLE else View.GONE
+        btnRefine.isEnabled = idle
+    }
+
+    /** The seats and check lines, under whatever the repeat line says. */
+    private fun evidenceLines(): List<String> {
+        if (result == null || importResult != null) return emptyList()
+        val lines = mutableListOf<String>()
+        val averaged = seatAverage
+        if (averaged != null && seats.size >= 2) {
+            lines += String.format(
+                Locale.US, getString(R.string.measure_seats_summary),
+                averaged.seatsUsed, averaged.boostBudgetDb
+            )
+            val out = averaged.leftOut
+            val offDb = averaged.leftOutDb
+            if (out != null && offDb != null) {
+                lines += String.format(Locale.US, getString(R.string.measure_seats_left_out), out + 1, offDb)
+            }
+        }
+        val check = correctionCheck
+        if (check != null) {
+            val after = check.after
+            val summary = String.format(
+                Locale.US, getString(R.string.measure_check_summary),
+                after.bands, after.rmsDb ?: 0.0, check.before.rmsDb ?: 0.0, check.predicted.rmsDb ?: 0.0,
+                after.worstDb ?: 0.0, hzLabel(after.worstHz ?: 0.0)
+            )
+            lines += correctionCheckNote?.let { getString(R.string.measure_check_provisional, "$summary $it") } ?: summary
+        }
+        appliedRefinement?.let { ref ->
+            lines += String.format(
+                Locale.US, getString(R.string.measure_refine_summary),
+                ref.changed, if (ref.changed == 1) "" else "s", ref.largestDb,
+                ref.before.rmsDb ?: 0.0, ref.after.rmsDb ?: 0.0,
+                ref.heldBack, if (ref.heldBack == 1) "" else "s"
+            )
+        }
+        refinementNote?.let { lines += it }
+        return lines
+    }
+
+    private fun hzLabel(hz: Double): String =
+        if (hz >= 1000.0) String.format(Locale.US, "%.1f kHz", hz / 1000.0) else String.format(Locale.US, "%.0f Hz", hz)
 
     /**
      * The quality line follows whatever result is on screen: a sweep shows its
@@ -258,7 +445,7 @@ class MeasureActivity : TvActivity() {
                         resources.getQuantityString(R.plurals.measure_room_gated, room.phaseGatedBands, room.phaseGatedBands),
                         room.transitionHz.roundToInt()
                     )
-                )
+                ).append("\n").append(getString(R.string.quality_accuracy_caveat))
                 textQuality.text = line
                 textQuality.setTextColor(ContextCompat.getColor(this, R.color.cb_slate))
                 textQuality.visibility = View.VISIBLE
@@ -304,19 +491,30 @@ class MeasureActivity : TvActivity() {
                 )
                 textRepeatability.visibility = View.VISIBLE
             }
-            sweepAvailable -> {
+            sweepAvailable && seats.size < 2 -> {
                 textRepeatability.setText(R.string.measure_repeat_intro)
                 textRepeatability.visibility = View.VISIBLE
             }
-            else -> textRepeatability.visibility = View.GONE
+            else -> {
+                textRepeatability.text = ""
+                textRepeatability.visibility = View.GONE
+            }
+        }
+        val extra = evidenceLines()
+        if (extra.isNotEmpty()) {
+            textRepeatability.text = (listOf(textRepeatability.text.toString()).filter { it.isNotBlank() } + extra)
+                .joinToString("\n")
+            textRepeatability.visibility = View.VISIBLE
         }
     }
 
-    private fun startRepeatMeasurement() {
-        val current = result ?: return
-        val samples = lastCapture ?: return
-        if (importResult != null) return
-        val baseline = SweepCapture(
+    /** The single sweep on screen (the first seat, once seats are averaged) as a capture. */
+    private fun currentCapture(): SweepCapture? {
+        seats.firstOrNull()?.let { return it }
+        val current = result ?: return null
+        val samples = lastCapture ?: return null
+        if (importResult != null) return null
+        return SweepCapture(
             result = current,
             samples = samples,
             rate = lastRate,
@@ -326,26 +524,55 @@ class MeasureActivity : TvActivity() {
             targetIndex = targetIndex,
             roomIndex = roomIndex
         )
-        startMeasurement(baseline)
     }
 
-    private fun startMeasurement(repeatAgainst: SweepCapture? = null) {
+    private fun startRepeatMeasurement() {
+        if (seats.size >= 2) return
+        val baseline = currentCapture() ?: return
+        startMeasurement(SweepKind.REPEAT, baseline)
+    }
+
+    private fun startMeasurement(kind: SweepKind = SweepKind.PRIMARY, repeatAgainst: SweepCapture? = null) {
         if (measuring || importing || sweepReanalysisInProgress) return
+        // Seats and checks add to a sweep on screen; without one there is nothing to add to.
+        val seatsBefore = if (kind == SweepKind.SEAT) seats.ifEmpty { listOfNotNull(currentCapture()) } else emptyList()
+        if (kind == SweepKind.SEAT && (seatsBefore.isEmpty() || seatsBefore.size >= SeatAverage.MAX_SEATS)) return
+        val checked = if (kind == SweepKind.CHECK) (result?.takeIf { importResult == null } ?: return) else null
+        if (kind == SweepKind.REPEAT && repeatAgainst == null) return
         sweepReanalysisGeneration += 1
         if (!captureEngine.hasPermission()) {
-            pendingRepeatPermission = repeatAgainst != null
+            pendingKind = kind
             requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQ_MIC)
             return
         }
-        pendingRepeatPermission = false
-        val isRepeatCapture = repeatAgainst != null
-        measurementIsRepeat = isRepeatCapture
+        pendingKind = null
+        // The check plays through the correction itself, on a session of its own: the
+        // service stays suspended below, so the sweep is corrected once, by exactly this
+        // profile, whether the service would have reached it through the output mix or not.
+        val playbackSession = if (checked != null) {
+            try {
+                openCheckCorrection(buildSweepProfile(checked, System.currentTimeMillis()))
+            } catch (e: Exception) {
+                Log.w(TAG, "Check correction refused", e)
+                releaseCheckCorrection()
+                textStatus.text = "${textStatus.text}\nCheck not run: this TV refused to run the correction on the " +
+                    "check sweep (${e.message ?: e.javaClass.simpleName}). The correction is unchanged."
+                return
+            }
+        } else {
+            null
+        }
+        measurementKind = kind
         repeatComparisonClearedDueToSettings = false
-        repeatBaseline = repeatAgainst
-        repeatCapture = null
-        repeatComparison = null
-        repeatabilityCheck = null
-        if (!isRepeatCapture) {
+        // A seat or a check leaves the same-spot repeat as it is until it succeeds.
+        if (kind == SweepKind.CHECK) clearRefinement()
+        if (kind == SweepKind.PRIMARY || kind == SweepKind.REPEAT) {
+            repeatBaseline = repeatAgainst
+            repeatCapture = null
+            repeatComparison = null
+            repeatabilityCheck = null
+        }
+        if (kind == SweepKind.PRIMARY) {
             result = null
             lastCapture = null
             importResult = null
@@ -354,6 +581,11 @@ class MeasureActivity : TvActivity() {
             measuredOutput = null
             micName = null
             captureInfo = null
+            seats = emptyList()
+            seatAverage = null
+            correctionCheck = null
+            correctionCheckNote = null
+            clearRefinement()
             btnStart.setText(R.string.measure_start)
             btnRepeat.visibility = View.GONE
         }
@@ -367,19 +599,31 @@ class MeasureActivity : TvActivity() {
         val generation = measurementGeneration
         val selectedTargetIndex = targetIndex
         val selectedRoomIndex = roomIndex
-        val selectedTarget = TARGETS[selectedTargetIndex].key
-        val selectedVolume = ROOMS[selectedRoomIndex].volumeM3
+        val plan = SweepPlan(
+            kind = kind,
+            target = activeTargetKey(),
+            volumeM3 = ROOMS[selectedRoomIndex].volumeM3,
+            ceilingHz = chosenCeilingHz(),
+            targetIndex = selectedTargetIndex,
+            roomIndex = selectedRoomIndex,
+            seatsBefore = seatsBefore,
+            checked = checked,
+            // The budget the correction on screen was built with: a refinement must not raise it.
+            boostBudgetDb = seatAverage?.boostBudgetDb ?: Correction.boostBudgetDb(1)
+        )
         btnStart.isEnabled = false
         btnRepeat.isEnabled = false
         btnRoom.isEnabled = false
         btnTarget.isEnabled = false
+        btnCeiling.isEnabled = false
         btnSave.setText(R.string.measure_save)
         btnSave.visibility = View.GONE
         btnImport.isEnabled = false
+        updateRefineButtons()
         progressMeasure.progress = 0
         textStatus.text = getString(R.string.measure_opening_mic)
         renderQuality()
-        EqService.send(this, EqService.ACTION_SUSPEND) // our own correction must not colour the sweep
+        EqService.send(this, EqService.ACTION_SUSPEND) // the service's correction must not colour the sweep
 
         val total = LEAD_SECONDS + Sweep.STIMULUS_SECONDS + SweepAnalysis.TAIL_SECONDS
         captureEngine.start(total, object : CaptureListener {
@@ -394,13 +638,14 @@ class MeasureActivity : TvActivity() {
                 activeOutput = ranked
                 btnStart.postDelayed({
                     if (measuring && measurementGeneration == generation) stimulusPlayer.playSweep(
-                        onError = { msg -> runOnUiThread { fail(msg, isRepeatCapture) } },
-                        onRouted = { device ->
-                            val tagged = OutputRoute.tag(ranked, device?.type, device?.productName?.toString())
+                        onError = { msg -> runOnUiThread { fail(msg, kind) } },
+                        onRouted = { devices ->
+                            val tagged = OutputRoute.tag(ranked, devices)
                             runOnUiThread {
                                 if (measuring && measurementGeneration == generation) activeOutput = tagged
                             }
-                        }
+                        },
+                        sessionId = playbackSession
                     )
                 }, (LEAD_SECONDS * 1000).toLong())
             }
@@ -422,19 +667,37 @@ class MeasureActivity : TvActivity() {
                 val outputAtCapture = activeOutput
                 val micAtCapture = activeMicName
                 runOnUiThread { textStatus.text = getString(R.string.measure_analysing) }
-                analyse(
-                    samples, sampleRate, info, isRepeatCapture,
-                    selectedTarget, selectedVolume, selectedTargetIndex, selectedRoomIndex,
-                    micAtCapture, outputAtCapture, generation
-                )
+                analyse(samples, sampleRate, info, plan, micAtCapture, outputAtCapture, generation)
             }
 
             override fun onError(message: String) {
                 runOnUiThread {
-                    if (measuring && measurementGeneration == generation) fail(message, isRepeatCapture)
+                    if (measuring && measurementGeneration == generation) fail(message, kind)
                 }
             }
         })
+    }
+
+    /**
+     * A fresh audio session with [profile]'s correction on it, for a check sweep to play
+     * into. The effect goes on before the track exists, so Android does not make the
+     * sweep a fast track, which cannot carry one. The limiter is the default protection-only
+     * one, and the tone layers are left off: they are not the correction being checked.
+     */
+    private fun openCheckCorrection(profile: Profile): Int {
+        releaseCheckCorrection()
+        val audio = getSystemService(AudioManager::class.java)
+        val session = audio.generateAudioSessionId()
+        check(session > 0) { "Android gave no audio session (generateAudioSessionId returned $session)" }
+        checkEffect = DynamicsProcessingEngine.create(session, profile).effect
+        return session
+    }
+
+    private fun releaseCheckCorrection() {
+        val effect = checkEffect ?: return
+        checkEffect = null
+        runCatching { effect.enabled = false }
+        runCatching { effect.release() }
     }
 
     private var lastCapture: DoubleArray? = null
@@ -444,11 +707,7 @@ class MeasureActivity : TvActivity() {
         samples: DoubleArray,
         rate: Int,
         info: CaptureInfo,
-        isRepeatCapture: Boolean,
-        target: String,
-        volumeM3: Double?,
-        selectedTargetIndex: Int,
-        selectedRoomIndex: Int,
+        plan: SweepPlan,
         capturedMicName: String?,
         capturedOutput: OutputRoute.Output?,
         generation: Int
@@ -463,7 +722,9 @@ class MeasureActivity : TvActivity() {
                 ))
             } else {
                 try {
-                    Result.success(SweepAnalysis.analyze(samples, rate, target, volumeM3))
+                    Result.success(
+                        SweepAnalysis.analyze(samples, rate, plan.target, plan.volumeM3, ceilingHz = plan.ceilingHz)
+                    )
                 } catch (e: MeasurementException) {
                     Result.failure(e)
                 } catch (e: Exception) {
@@ -471,26 +732,52 @@ class MeasureActivity : TvActivity() {
                     Result.failure(MeasurementException("Analysis failed: ${e.javaClass.simpleName}: ${e.message}"))
                 }
             }
+            // The average and the comparison refit and re-read whole curves: worker-thread work.
+            val analyzed = outcome.getOrNull()
+            val averaged = if (plan.kind == SweepKind.SEAT && analyzed != null) {
+                try {
+                    SeatAverage.average(plan.seatsBefore.map { it.result } + analyzed, plan.target, plan.volumeM3)
+                } catch (e: Exception) {
+                    Log.w(TAG, "Seat average failed", e)
+                    null
+                }
+            } else null
+            val comparison = if (plan.kind == SweepKind.CHECK && analyzed != null) {
+                plan.checked?.let { PostCorrectionCheck.compare(it, analyzed) }
+            } else null
+            // The refinement is a peaking fit over the whole curve, so it is worker work too.
+            // It is only *offered*: nothing changes until the user accepts it.
+            val refinement = if (plan.kind == SweepKind.CHECK && analyzed != null && comparison != null) {
+                plan.checked?.let { base ->
+                    try {
+                        CorrectionRefinement.refine(base, analyzed, plan.boostBudgetDb)
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Refinement failed", e)
+                        null
+                    }
+                }
+            } else null
             runOnUiThread {
                 if (!measuring || measurementGeneration != generation || isFinishing || isDestroyed) return@runOnUiThread
-                outcome.onSuccess { analyzed ->
+                outcome.onSuccess { sweep ->
                     finishMeasuring()
                     val capture = SweepCapture(
-                        result = analyzed,
+                        result = sweep,
                         samples = samples,
                         rate = rate,
                         captureInfo = info,
                         micName = capturedMicName,
                         output = capturedOutput,
-                        targetIndex = selectedTargetIndex,
-                        roomIndex = selectedRoomIndex
+                        targetIndex = plan.targetIndex,
+                        roomIndex = plan.roomIndex
                     )
-                    if (isRepeatCapture) {
-                        completeRepeat(capture)
-                    } else {
-                        installPrimaryCapture(capture)
+                    when (plan.kind) {
+                        SweepKind.PRIMARY -> installPrimaryCapture(capture)
+                        SweepKind.REPEAT -> completeRepeat(capture)
+                        SweepKind.SEAT -> completeSeat(plan.seatsBefore, capture, averaged)
+                        SweepKind.CHECK -> completeCheck(capture, comparison, refinement)
                     }
-                }.onFailure { fail(it.message ?: it.javaClass.simpleName, isRepeatCapture) }
+                }.onFailure { fail(it.message ?: it.javaClass.simpleName, plan.kind) }
             }
         }
     }
@@ -509,18 +796,157 @@ class MeasureActivity : TvActivity() {
         repeatCapture = null
         repeatComparison = null
         repeatabilityCheck = null
+        seats = emptyList()
+        seatAverage = null
+        correctionCheck = null
+        correctionCheckNote = null
+        clearRefinement()
         btnStart.setText(R.string.measure_start_new)
         btnRepeat.visibility = View.VISIBLE
         btnRepeat.isEnabled = true
         showResult(capture.result)
         btnSave.visibility = View.VISIBLE
         btnSave.requestFocus()
+        maybeAutoApply(capture)
+    }
+
+    /**
+     * Once per output kind, a clean (GREEN) first measurement is saved and applied without a
+     * tap. Later measurements, weaker recordings, and outputs Android did not name are only
+     * shown, as before. The applied kinds are kept on the TV.
+     */
+    private fun maybeAutoApply(capture: SweepCapture) {
+        val prefs = getSharedPreferences(PREFS, MODE_PRIVATE)
+        val device = OutputRoute.keyFor(capture.output).takeIf { it != OutputRoute.UNKNOWN }
+        val applied = prefs.getStringSet(KEY_AUTO_APPLIED, emptySet()) ?: emptySet()
+        if (AutoApplyPolicy.decide(device, applied) != AutoApplyPolicy.Action.AUTO_APPLY) return
+        val tier = MeasurementQuality.tier(MeasurementQuality.score(capture.result))
+        if (tier != MeasurementQuality.Tier.GREEN) return
+        val profile = buildSweepProfile(capture.result, System.currentTimeMillis())
+        // A failed save must not count as applied: the next clean measurement may still auto-apply.
+        try {
+            profileStore.saveProfile(profile, setAsActive = true)
+        } catch (e: Exception) {
+            Log.w(TAG, "Auto-apply could not save the profile", e)
+            textStatus.text = getString(R.string.measure_auto_apply_failed)
+            return
+        }
+        EqService.send(this, EqService.ACTION_REAPPLY)
+        prefs.edit()
+            .putStringSet(KEY_AUTO_APPLIED, AutoApplyPolicy.recordApplied(device!!, applied))
+            .apply()
+        textStatus.text = getString(R.string.measure_auto_applied, profile.name)
+    }
+
+    /**
+     * A new seat joins the average only on the chain the first seat was measured on: another
+     * output or microphone would average two different systems.
+     */
+    private fun completeSeat(before: List<SweepCapture>, capture: SweepCapture, averaged: SeatAverage.Averaged?) {
+        val first = before.firstOrNull()
+        val refused = when {
+            first == null -> "The first seat is no longer available."
+            else -> repeatPathMismatch(first, capture)?.let { "$it Keep the same output and remote for every seat." }
+                ?: if (averaged == null) "The seats could not be averaged." else null
+        }
+        if (refused != null || averaged == null) {
+            keepResultAfter("Seat not added: $refused The result on screen is unchanged.")
+            return
+        }
+        // A same-spot repeat described the first seat alone; the average replaces it.
+        repeatBaseline = null
+        repeatCapture = null
+        repeatComparison = null
+        repeatabilityCheck = null
+        repeatComparisonClearedDueToSettings = false
+        seats = before + capture
+        seatAverage = averaged
+        correctionCheck = null
+        correctionCheckNote = null
+        clearRefinement()
+        result = averaged.result
+        btnStart.setText(R.string.measure_start_new)
+        showResult(averaged.result)
+        btnSave.visibility = View.VISIBLE
+        btnSave.requestFocus()
+    }
+
+    /**
+     * A check changes nothing but the evidence shown: the correction and what Save keeps stay
+     * put. A scored check also *offers* a refinement of the correction (1.8.0), which the user
+     * accepts with its own button; this method never applies it.
+     */
+    private fun completeCheck(
+        capture: SweepCapture,
+        comparison: PostCorrectionCheck.Comparison?,
+        refinement: CorrectionRefinement.Refined?
+    ) {
+        if (result == null) {
+            fail("The measurement being checked is no longer on screen.", SweepKind.CHECK)
+            return
+        }
+        if (comparison == null) {
+            keepResultAfter(getString(R.string.measure_check_unscored))
+            return
+        }
+        pendingRefinement = null
+        appliedRefinement = null
+        correctionCheck = comparison
+        correctionCheckNote = currentCapture()?.let { repeatPathMismatch(it, capture) }
+        // A refinement read from a sweep taken on another chain would move the correction on
+        // evidence that does not describe the same measurement, so it is not offered at all.
+        refinementNote = when {
+            correctionCheckNote != null ->
+                getString(R.string.measure_refine_unavailable, correctionCheckNote!!)
+            refinement == null -> getString(R.string.measure_refine_nothing)
+            else -> {
+                pendingRefinement = refinement
+                null
+            }
+        }
+        keepResultAfter(null)
+    }
+
+    /**
+     * Accept the refinement the last check offered: the correction on screen becomes the one the
+     * check implies, and Save keeps it. The check's own figures stay on screen as the evidence
+     * for the change.
+     */
+    private fun applyRefinement() {
+        val refined = pendingRefinement ?: return
+        result = refined.result
+        seatAverage = seatAverage?.copy(result = refined.result)
+        pendingRefinement = null
+        appliedRefinement = refined
+        refinementNote = null
+        keepResultAfter(null)
+        textStatus.text = "${textStatus.text}\n${getString(R.string.measure_refine_applied)}"
+    }
+
+    /** A refinement belongs to one correction: a new sweep, seat or repeat drops it. */
+    private fun clearRefinement() {
+        pendingRefinement = null
+        appliedRefinement = null
+        refinementNote = null
+    }
+
+    /** Back to the result on screen after a seat or check sweep, with [note] under the summary. */
+    private fun keepResultAfter(note: String?) {
+        val r = result ?: return
+        btnStart.setText(R.string.measure_start_new)
+        btnRepeat.visibility = View.VISIBLE
+        btnRepeat.isEnabled = true
+        btnSave.setText(R.string.measure_save)
+        btnSave.visibility = View.VISIBLE
+        showResult(r, repeatComparison)
+        if (note != null) textStatus.text = "${textStatus.text}\n$note"
+        btnSave.requestFocus()
     }
 
     private fun completeRepeat(capture: SweepCapture) {
         val baseline = repeatBaseline
         if (baseline == null) {
-            fail("The first sweep is no longer available. Measure again.", isRepeatCapture = true)
+            fail("The first sweep is no longer available. Measure again.", SweepKind.REPEAT)
             return
         }
         val pathMismatch = repeatPathMismatch(baseline, capture)
@@ -556,6 +982,7 @@ class MeasureActivity : TvActivity() {
         // Keep the first sweep as the profile curve. A repeat is evidence, not
         // an implicit average or an automatic replacement of the correction.
         result = baseline.result
+        clearRefinement()
         lastCapture = baseline.samples
         lastRate = baseline.rate
         captureInfo = baseline.captureInfo
@@ -595,10 +1022,19 @@ class MeasureActivity : TvActivity() {
         }
         graphSeries += Series("TARGET", ContextCompat.getColor(this, R.color.cb_dusk_violet), r.targetDb)
         graphSeries += Series("CORRECTION", ContextCompat.getColor(this, R.color.cb_signal_cyan), r.correctionDb)
-        val title = if (repeatCapture != null) {
-            String.format(Locale.US, "SAME-POSITION REPEAT · FULL CORRECTION BELOW %.0f HZ", r.transitionHz)
-        } else {
-            String.format(Locale.US, "MEASURED vs TARGET · FULL CORRECTION BELOW %.0f HZ", r.transitionHz)
+        correctionCheck?.let { check ->
+            // Drawn over the bands both sweeps share; past those the line simply ends.
+            val values = DoubleArray(r.centresHz.size) { k -> check.afterDb.getOrElse(k) { Double.NaN } }
+            graphSeries += Series("CHECK · CORRECTION ON", ContextCompat.getColor(this, R.color.cb_success), values)
+        }
+        val averagedSeats = if (seats.size >= 2) seats.size - (if (seatAverage?.leftOut != null) 1 else 0) else 0
+        val title = when {
+            repeatCapture != null ->
+                String.format(Locale.US, "SAME-POSITION REPEAT · FULL CORRECTION BELOW %.0f HZ", r.transitionHz)
+            averagedSeats >= 2 ->
+                String.format(Locale.US, "%d-SEAT AVERAGE vs TARGET · FULL CORRECTION BELOW %.0f HZ", averagedSeats, r.transitionHz)
+            else ->
+                String.format(Locale.US, "MEASURED vs TARGET · FULL CORRECTION BELOW %.0f HZ", r.transitionHz)
         }
         graphMeasure.setData(r.centresHz, graphSeries, title, 20.0, r.transitionHz)
         val rt = r.rt60Seconds?.let { String.format(Locale.US, "RT60 %.2f s", it) } ?: "RT60 not measurable (noisy decay)"
@@ -607,7 +1043,10 @@ class MeasureActivity : TvActivity() {
         val noisy = r.centresHz.indices.count {
             r.centresHz[it] >= r.floorHz && r.bandSnrDb.getOrElse(it) { Double.MAX_VALUE } < SweepAnalysis.BAND_MIN_SNR_DB
         }
-        val top = r.centresHz.lastOrNull() ?: DspConstants.F_MAX
+        // The graph's last band is where the *measurement* stopped; the
+        // correction may have stopped earlier at the user's ceiling. Reporting
+        // the band edge as the corrected range was the old, wrong claim.
+        val top = r.fMaxHz.coerceAtMost(r.centresHz.lastOrNull() ?: DspConstants.F_MAX)
         val clock = r.driftPpm?.takeIf { kotlin.math.abs(it) > SweepAnalysis.MIN_DRIFT_PPM }
             ?.let { String.format(Locale.US, " · clock drift %+.0f ppm corrected", it) } ?: ""
         val resultSummary = String.format(
@@ -616,26 +1055,108 @@ class MeasureActivity : TvActivity() {
             rt, r.floorHz, top / 1000, nulls, if (nulls == 1) "" else "s",
             gated, if (gated == 1) "" else "s", noisy, if (noisy == 1) "" else "s", r.snrDb, clock
         )
-        textStatus.text = listOfNotNull(resultSummary, captureInfo?.summary()).joinToString("\n")
+        val output = measuredOutput
+        val outputSummary = when {
+            output?.kind == OutputRoute.AMBIGUOUS -> getString(R.string.measure_output_ambiguous)
+            output != null -> getString(
+                R.string.measure_output_evidence,
+                output.name,
+                OutputRoute.evidenceDescription(output.evidence)
+            )
+            else -> getString(R.string.measure_output_unreported)
+        }
+        // Why bands were left alone, and what the room does that EQ cannot fix.
+        val reportLines = CorrectionReport.summaryLines(r, limit = 2)
+        val adviceLines = CorrectionReport.roomAdvice(r)
+        textStatus.text = (
+            listOfNotNull(resultSummary, outputSummary, captureInfo?.summary()) +
+                reportLines + adviceLines
+            ).joinToString("\n")
         renderQuality()
+        updateRefineButtons()
     }
 
     /** REW measurement import (plan M10): File → Export → Measurement as text. */
+    /** The key the analysis and the saved profile use: "custom" while an imported target is active. */
+    private fun activeTargetKey(): String =
+        if (useCustomTarget && CustomTarget.points != null) CustomTarget.KEY else TARGETS[targetIndex].key
+
+    /** The imported curve a profile saved now must keep, so it still draws its own target after the next import. */
+    private fun activeTargetPoints(): List<Pair<Double, Double>> =
+        if (activeTargetKey() == CustomTarget.KEY) CustomTarget.points.orEmpty() else emptyList()
+
+    private fun activeTargetTitle(): String =
+        if (useCustomTarget && CustomTarget.points != null) getString(R.string.measure_target_custom_title)
+        else TARGETS[targetIndex].label
+
+    private fun restoreCustomTarget(prefs: android.content.SharedPreferences) {
+        useCustomTarget = prefs.getBoolean(KEY_USE_CUSTOM, false)
+        val saved = prefs.getString(KEY_CUSTOM_TARGET, null)
+        val parsed = saved?.let { TargetCurveImport.parse(it) }
+        CustomTarget.points = (parsed as? TargetCurveImport.Result.Ok)?.points
+        if (CustomTarget.points == null) useCustomTarget = false
+    }
+
+    private fun pickTargetFile() {
+        if (measuring || importing) return
+        if (!FilePicker.open(this, REQ_TARGET_IMPORT, FilePicker.TEXT_TYPES)) {
+            textStatus.text = getString(R.string.measure_target_import_failed,
+                getString(R.string.measure_target_picker_missing))
+        }
+    }
+
+    /** Reads a GraphicEQ file as the target. Nothing changes unless the whole file parses. */
+    private fun loadCustomTarget(uri: Uri) {
+        val text = try {
+            contentResolver.openInputStream(uri)?.use { stream ->
+                // Read at most MAX_BYTES + 1 bytes; readNBytes needs API 33, and minSdk is 30.
+                val out = java.io.ByteArrayOutputStream()
+                val buf = ByteArray(4096)
+                var total = 0
+                while (total <= TargetCurveImport.MAX_BYTES) {
+                    val n = stream.read(buf, 0, minOf(buf.size, TargetCurveImport.MAX_BYTES + 1 - total))
+                    if (n < 0) break
+                    out.write(buf, 0, n)
+                    total += n
+                }
+                if (total > TargetCurveImport.MAX_BYTES) null else out.toString(Charsets.UTF_8.name())
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Target file could not be read", e)
+            null
+        }
+        if (text == null) {
+            textStatus.text = getString(R.string.measure_target_import_failed,
+                getString(R.string.measure_target_unreadable))
+            return
+        }
+        when (val parsed = TargetCurveImport.parse(text)) {
+            is TargetCurveImport.Result.Error ->
+                textStatus.text = getString(R.string.measure_target_import_failed, parsed.message)
+            is TargetCurveImport.Result.Ok -> {
+                CustomTarget.points = parsed.points
+                useCustomTarget = true
+                getSharedPreferences(PREFS, MODE_PRIVATE).edit()
+                    .putString(KEY_CUSTOM_TARGET, text)
+                    .putBoolean(KEY_USE_CUSTOM, true)
+                    .apply()
+                clearRepeatComparisonForSettingsChange()
+                refreshChoices()
+                if (parsed.notes.isNotEmpty()) textStatus.text = parsed.notes.joinToString(" ")
+            }
+        }
+    }
+
     private fun pickRewImport() {
         if (measuring || importing) return
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-            .addCategory(Intent.CATEGORY_OPENABLE)
-            .setType("*/*")
-        try {
-            startActivityForResult(intent, REQ_IMPORT)
-        } catch (e: ActivityNotFoundException) {
-            importFailed("This TV's system file picker is unavailable. Enable its Files app or use a TV file-transfer app, then try again.")
+        if (!FilePicker.open(this, REQ_IMPORT)) {
+            importFailed("This TV has no file picker. Install a file manager or use a TV file-transfer app, then try again.")
         }
     }
 
     private fun importRewFile(uri: Uri) {
         if (measuring || importing) return
-        val target = TARGETS[targetIndex].key
+        val target = activeTargetKey()
         val volume = ROOMS[roomIndex].volumeM3
         setImportBusy(true)
         textStatus.text = getString(R.string.measure_importing)
@@ -694,13 +1215,13 @@ class MeasureActivity : TvActivity() {
     }
 
     private fun reanalyzeImport(source: RewMeasurement) {
-        val target = TARGETS[targetIndex].key
+        val target = activeTargetKey()
         val volume = ROOMS[roomIndex].volumeM3
         setImportBusy(true)
         textStatus.text = getString(R.string.measure_importing)
         val worker = thread(name = "CoreEqRewReanalysis", start = false) {
             val analyzed = try {
-                RewImport.analyze(source.frequenciesHz, source.magnitudesDb, target, volume)
+                RewImport.analyze(source.frequenciesHz, source.magnitudesDb, target, volume, ceilingHz = chosenCeilingHz())
             } catch (e: Exception) {
                 Log.w(TAG, "REW re-analysis failed", e)
                 null
@@ -738,6 +1259,7 @@ class MeasureActivity : TvActivity() {
         btnRoom.isEnabled = enabled
         btnTarget.isEnabled = enabled
         btnSave.isEnabled = !busy && !importing
+        updateRefineButtons()
     }
 
     private fun setImportBusy(busy: Boolean) {
@@ -749,6 +1271,7 @@ class MeasureActivity : TvActivity() {
         btnRoom.isEnabled = enabled
         btnTarget.isEnabled = enabled
         btnSave.isEnabled = !busy && !sweepReanalysisInProgress
+        updateRefineButtons()
     }
 
     private fun importFailed(reason: String) {
@@ -764,6 +1287,11 @@ class MeasureActivity : TvActivity() {
         repeatComparison = null
         repeatabilityCheck = null
         repeatComparisonClearedDueToSettings = false
+        seats = emptyList()
+        seatAverage = null
+        correctionCheck = null
+        correctionCheckNote = null
+        clearRefinement()
         btnRepeat.visibility = View.GONE
         btnStart.setText(R.string.measure_start_new)
         btnSave.setText(R.string.measure_import_save)
@@ -782,33 +1310,46 @@ class MeasureActivity : TvActivity() {
         val analysisStatus = String.format(
             Locale.US,
             "REW %d pts · %.0f Hz–%.0f kHz · %d null%s untouched · %.0f Hz fallback; room size unused; min-phase unverified",
-            imp.pointsRead, imp.floorHz, DspConstants.F_MAX / 1000,
+            imp.pointsRead, imp.floorHz, imp.fMaxHz / 1000,
             nulls, if (nulls == 1) "" else "s", imp.transitionHz
         )
         val outputStatus = importedOutputEstimate?.let {
             getString(R.string.measure_import_output_estimate, it.name)
         } ?: getString(R.string.measure_import_output_unknown)
-        textStatus.text = analysisStatus + outputStatus
+        textStatus.text = listOf(analysisStatus, outputStatus)
+            .plus(CorrectionReport.summaryLines(imp, limit = 2))
+            .joinToString("\n")
         renderQuality()
+        updateRefineButtons()
         btnSave.visibility = View.VISIBLE
         btnSave.requestFocus()
     }
 
-    private fun fail(message: String, isRepeatCapture: Boolean = measurementIsRepeat) {
+    private fun fail(message: String, kind: SweepKind = measurementKind) {
         finishMeasuring()
         progressMeasure.progress = 0
-        if (isRepeatCapture && result != null) {
-            repeatBaseline = null
-            repeatCapture = null
-            repeatComparison = null
-            repeatabilityCheck = null
+        val kept = result
+        if (kind != SweepKind.PRIMARY && kept != null) {
+            if (kind == SweepKind.REPEAT) {
+                repeatBaseline = null
+                repeatCapture = null
+                repeatComparison = null
+                repeatabilityCheck = null
+            }
             btnStart.setText(R.string.measure_start_new)
             btnRepeat.visibility = View.VISIBLE
             btnRepeat.isEnabled = true
             btnSave.setText(R.string.measure_save)
             btnSave.visibility = View.VISIBLE
-            showResult(result!!)
-            textStatus.text = "${textStatus.text}\nRepeat not compared: $message. The first sweep remains available; nothing was averaged."
+            showResult(kept, repeatComparison)
+            // Most failure messages end in a full stop already; the templates add their own.
+            val reason = message.trimEnd().trimEnd('.')
+            val note = when (kind) {
+                SweepKind.SEAT -> "Seat not added: $reason. The result on screen is unchanged."
+                SweepKind.CHECK -> "Check not run: $reason. The correction is unchanged."
+                else -> "Repeat not compared: $reason. The first sweep remains available; nothing was averaged."
+            }
+            textStatus.text = "${textStatus.text}\n$note"
             btnStart.requestFocus()
             return
         }
@@ -821,6 +1362,11 @@ class MeasureActivity : TvActivity() {
         repeatComparison = null
         repeatabilityCheck = null
         repeatComparisonClearedDueToSettings = false
+        seats = emptyList()
+        seatAverage = null
+        correctionCheck = null
+        correctionCheckNote = null
+        clearRefinement()
         btnRepeat.visibility = View.GONE
         btnStart.setText(R.string.measure_start)
         btnSave.visibility = View.GONE
@@ -833,35 +1379,45 @@ class MeasureActivity : TvActivity() {
     private fun finishMeasuring() {
         measuring = false
         measurementGeneration += 1 // invalidate late callbacks from the capture just ended
-        measurementIsRepeat = false
+        measurementKind = SweepKind.PRIMARY
         btnStop.isEnabled = false
         btnStop.visibility = View.GONE
         stimulusPlayer.stop()
+        releaseCheckCorrection()
         captureEngine.stop()
         btnStart.isEnabled = true
         btnRepeat.isEnabled = result != null && importResult == null
         btnRoom.isEnabled = true
         btnTarget.isEnabled = true
+        btnCeiling.isEnabled = true
         btnImport.isEnabled = true
+        updateRefineButtons()
         EqService.send(this, EqService.ACTION_RESUME)
     }
 
     private fun cancelMeasurement(message: String) {
         if (!measuring) return
-        val wasRepeat = measurementIsRepeat
+        val kind = measurementKind
         finishMeasuring()
         progressMeasure.progress = 0
-        if (wasRepeat && result != null) {
-            repeatBaseline = null
-            repeatCapture = null
-            repeatComparison = null
-            repeatabilityCheck = null
+        if (kind != SweepKind.PRIMARY && result != null) {
+            if (kind == SweepKind.REPEAT) {
+                repeatBaseline = null
+                repeatCapture = null
+                repeatComparison = null
+                repeatabilityCheck = null
+            }
             btnStart.setText(R.string.measure_start_new)
             btnRepeat.visibility = View.VISIBLE
             btnRepeat.isEnabled = true
             btnSave.setText(R.string.measure_save)
             btnSave.visibility = View.VISIBLE
-            textStatus.text = "$message The first sweep remains available; nothing was averaged."
+            updateRefineButtons()
+            textStatus.text = when (kind) {
+                SweepKind.SEAT -> "$message The seat was not added; the result on screen is unchanged."
+                SweepKind.CHECK -> "$message The check did not finish; the correction is unchanged."
+                else -> "$message The first sweep remains available; nothing was averaged."
+            }
         } else {
             textStatus.text = message
         }
@@ -876,17 +1432,29 @@ class MeasureActivity : TvActivity() {
             return
         }
         val r = result ?: return
+        val profile = buildSweepProfile(r, now)
+        profileStore.saveProfile(profile, setAsActive = true)
+        EqService.send(this, EqService.ACTION_REAPPLY)
+        Toast.makeText(this, getString(R.string.measure_saved, profile.name), Toast.LENGTH_SHORT).show()
+        finish()
+    }
+
+    /** The profile Save keeps for [r]; a check sweep plays this same profile's correction. */
+    private fun buildSweepProfile(r: SweepResult, now: Long): Profile {
         val bands = Correction.collapseToBands(
             DISPLAY_BANDS_HZ, { hz -> interpolate(hz, r.centresHz, r.correctionDb) }, -1500, 1500
         ).map { PlatformBand(it.first, it.second) }
         val output = measuredOutput
         val savedRepeatability = repeatabilityCheck
+        val averaged = seatAverage?.takeIf { seats.size >= 2 }
+        val check = correctionCheck
         val baseName = getString(R.string.measure_profile_name, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(now)))
-        val profile = Profile(
+        return Profile(
             id = "profile-$now",
             name = if (output != null) "$baseName · ${output.name}" else baseName,
             timestampMs = now,
-            target = TARGETS[targetIndex].key,
+            target = activeTargetKey(),
+            targetPoints = activeTargetPoints(),
             micType = micName ?: "microphone",
             captureInfo = captureInfo,
             repeatabilityCheck = savedRepeatability,
@@ -898,6 +1466,7 @@ class MeasureActivity : TvActivity() {
             schroederHz = r.schroederHz,
             transitionHz = r.transitionHz,
             rolloffHz = r.floorHz,
+            correctionCeilingHz = r.fMaxHz,
             snrDb = r.snrDb,
             qualityScore = MeasurementQuality.score(r),
             nullsUntouchedHz = r.centresHz.indices.filter { r.nullMask[it] }.map { r.centresHz[it] },
@@ -912,12 +1481,32 @@ class MeasureActivity : TvActivity() {
                     add("Optional same-position repeat retained as a separate trace; captures are never averaged. The comparison is descriptive only, with no qualified pass/fail threshold, and does not generalize to other seats or rooms.")
                     savedRepeatability.note?.let { add(it) }
                 }
+                if (averaged != null) {
+                    add(String.format(Locale.US,
+                        "Energy average of %d seats (%d measured): each band is the mean power across seats, then corrected with the limits unchanged apart from the bass budget, which rises to %.0f dB below the transition because more than one seat agreed on the dip. A band is corrected only where every seat measured it cleanly, and only as far as the weakest seat is trusted. The microphone, output and capture details are the first seat's.",
+                        averaged.seatsUsed, seats.size, averaged.boostBudgetDb))
+                    val out = averaged.leftOut
+                    val offDb = averaged.leftOutDb
+                    if (out != null && offDb != null) {
+                        add(String.format(Locale.US,
+                            "Seat %d left out of the average: its 300 Hz-3 kHz response sat %.1f dB RMS from the other seats.",
+                            out + 1, offDb))
+                    }
+                }
+                if (check != null) {
+                    add(String.format(Locale.US,
+                        "Check sweep with this correction on, one position: %.1f dB RMS from the target over %d bands (room alone %.1f dB, predicted %.1f dB). Bands the correction leaves alone are not counted. Descriptive only.",
+                        check.after.rmsDb ?: 0.0, check.after.bands, check.before.rmsDb ?: 0.0, check.predicted.rmsDb ?: 0.0))
+                    correctionCheckNote?.let { add("Check chain: $it") }
+                }
+                appliedRefinement?.let { ref ->
+                    add(String.format(Locale.US,
+                        "Correction refined by a check sweep played through it: %d bands moved by up to %.1f dB (%d raised, %d lowered, %d refused by the rules), predicted residual %.1f -> %.1f dB RMS over the bands both sweeps could speak for. One capture at one position; the room was not measured again, and the measurement above is unchanged.",
+                        ref.changed, ref.largestDb, ref.raised, ref.lowered, ref.heldBack,
+                        ref.before.rmsDb ?: 0.0, ref.after.rmsDb ?: 0.0))
+                }
             }
         )
-        profileStore.saveProfile(profile, setAsActive = true)
-        EqService.send(this, EqService.ACTION_REAPPLY)
-        Toast.makeText(this, getString(R.string.measure_saved, profile.name), Toast.LENGTH_SHORT).show()
-        finish()
     }
 
     /**
@@ -935,7 +1524,8 @@ class MeasureActivity : TvActivity() {
             id = "profile-$now",
             name = if (output != null) "$baseName · ${output.name}" else baseName,
             timestampMs = now,
-            target = TARGETS[targetIndex].key,
+            target = activeTargetKey(),
+            targetPoints = activeTargetPoints(),
             micType = "REW import",
             deviceName = "REW",
             stimulus = "rew_import",
@@ -945,6 +1535,7 @@ class MeasureActivity : TvActivity() {
             schroederHz = null,
             transitionHz = imp.transitionHz,
             rolloffHz = imp.floorHz,
+            correctionCeilingHz = imp.fMaxHz,
             snrDb = null,
             nullsUntouchedHz = imp.centresHz.indices.filter { imp.nullMask[it] }.map { imp.centresHz[it] },
             preampDb = imp.preampDb,
@@ -969,6 +1560,11 @@ class MeasureActivity : TvActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQ_TARGET_IMPORT) {
+            val targetUri = data?.data
+            if (resultCode == RESULT_OK && targetUri != null) loadCustomTarget(targetUri)
+            return
+        }
         if (requestCode != REQ_IMPORT) return
         val uri = data?.data
         if (resultCode == RESULT_OK && uri != null) {
@@ -979,11 +1575,11 @@ class MeasureActivity : TvActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode != REQ_MIC) return
+        val kind = pendingKind ?: SweepKind.PRIMARY
+        pendingKind = null
         if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
-            if (pendingRepeatPermission) startRepeatMeasurement() else startMeasurement()
-            pendingRepeatPermission = false
+            if (kind == SweepKind.REPEAT) startRepeatMeasurement() else startMeasurement(kind)
         } else {
-            pendingRepeatPermission = false
             textStatus.text = getString(R.string.measure_failed,
                 "Core EQ needs the microphone to hear the sweep. Allow it when asked, or in Settings → Apps → Core EQ → Permissions.")
         }
@@ -997,6 +1593,7 @@ class MeasureActivity : TvActivity() {
     override fun onDestroy() {
         importThread?.interrupt()
         importThread = null
+        releaseCheckCorrection()
         super.onDestroy()
     }
 
@@ -1017,6 +1614,7 @@ class MeasureActivity : TvActivity() {
         private const val TAG = "CoreEqMeasure"
         private const val REQ_MIC = 42
         private const val REQ_IMPORT = 43
+        private const val REQ_TARGET_IMPORT = 44
         private const val REW_IMPORT_MEASUREMENT_NOTE =
             "REW magnitude-only import: no decay analysis; optional phase column is not analysed; room size cannot inform transition; transition defaults to 300 Hz; minimum-phase gate unverified."
         private const val REW_IMPORT_OUTPUT_ESTIMATE_NOTE =
@@ -1028,6 +1626,10 @@ class MeasureActivity : TvActivity() {
         private const val PREFS = "core_eq_measure"
         private const val KEY_ROOM = "room_index"
         private const val KEY_TARGET = "target_index"
+        private const val KEY_USE_CUSTOM = "use_custom_target"
+        private const val KEY_AUTO_APPLIED = "auto_applied_outputs"
+        private const val KEY_CUSTOM_TARGET = "custom_target_text"
+        private const val KEY_CEILING = "ceiling_index"
         /** Silence recorded before the sweep, so the noise estimate and latency have room. */
         private const val LEAD_SECONDS = 0.5
         private const val CLIP_DBFS = -0.5

@@ -1,19 +1,17 @@
 {
-  "versionCode": 13,
-  "versionName": "1.5.2",
-  "releaseDate": "2026-10-13",
+  "versionCode": 18,
+  "versionName": "1.8.0",
+  "releaseDate": "2026-10-27",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "cd45b677fe36217c26a1b4a2c983d656fb41b3b936cc5fada7bddde44c1d91bd",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.5.2",
+  "apkSha256": "80a825f6f598930563f434cf6fcd5149beae90e105eed9ca5778b993a715b039",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.8.0",
   "minSdk": 30,
   "highlights": [
-    "Backend-aware fit diagnostics.",
-    "Same-position repeatability check.",
-    "Repeatability provenance in profile JSON.",
-    "Playback status chip.",
-    "Android phone companion.",
-    "Poweramp EQ preset import.",
-    "Normal-package beta release.",
-    "Phone companion security limits."
+    "The check sweep now changes the correction, if you let it.",
+    "Seven rules decide how far one check is believed.",
+    "The \"before \u2192 after\" figure starts from what the check heard, not from the old measurement.",
+    "A refinement is not offered across a changed chain.",
+    "`Correction.budgetEnvelope`.",
+    "Tests."
   ]
 }

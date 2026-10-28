@@ -61,8 +61,11 @@ class LoopCatalogueTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.src = kt("LiveLoop.kt")
+        # The Motion line's list. Since the Core Views season shipped, that
+        # is MOTION_LOOPS; LiveLoop.LOOPS is it plus CoreViewsLoop.LOOPS, and
+        # tests/test_coreviews_wallpapers.py pins the other half.
         cls.loops_body = re.search(
-            r"val LOOPS: List<Loop> = listOf\((.*?)\n    \)", cls.src, re.DOTALL
+            r"val MOTION_LOOPS: List<Loop> = listOf\((.*?)\n    \)", cls.src, re.DOTALL
         ).group(1)
         cls.ids = re.findall(r'id = "([^"]+)"', cls.loops_body)
         cls.titles = re.findall(r'title = "([^"]+)"', cls.loops_body)
