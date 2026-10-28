@@ -65,10 +65,10 @@
     "purchases": false,
     "ads": false,
     "expected_rating": "Everyone / PEGI 3",
-    "note": "A square icon pack. Nothing here is user-generated, shared or interactive with strangers, it sells nothing (Core Builds Plus is the icon pack's, not this app's), and with no INTERNET permission everything it shows is in the install."
+    "note": "A square icon pack. Nothing here is user-generated, shared or interactive with strangers, it sells nothing (Core Premium is the icon pack's, not this app's), and with no INTERNET permission everything it shows is in the install."
   },
   "sources": {
-    "generator": "fd5b695f87985af259f1272dbcaf91edeca55c0eb426f2ffbed05ab229ec3f59",
+    "generator": "3d56751da0663e053b87942443e9e2341bd89559f4cc8719bda82202cf476f3b",
     "branding": "82d64c7e2d5136deedce3c743a294ab008c31cf2c0d3757d7fe94ad0f37b26b3",
     "drawable_xml": "31480e87a9be883e6874f5b860b58d82bcb10bd3c27b6fcb18a0285702f49f6f",
     "appfilter_xml": "9ad2b9b985790b617cf61cced8f86ac2cf7fe1813f8e509cdfa48bebc2cf6d03",

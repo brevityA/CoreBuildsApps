@@ -145,6 +145,8 @@ jobs:
           python tests/test_ui_wiring.py
           python tests/test_brandmark_badge.py
           python tests/test_themed_icons.py
+          python tests/test_projectivy_walls.py
+          python tests/test_batch_requests.py
           python tests/test_navigation_graph.py
           python tests/test_tv_scale.py
           python tests/test_mapping_hygiene.py

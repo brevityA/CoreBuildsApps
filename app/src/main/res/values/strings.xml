@@ -32,7 +32,7 @@
     <string name="chip_all">All</string>
     <string name="chip_new_fmt">New (%1$d)</string>
     <string name="chip_live">Live</string>
-    <string name="chip_plus">Plus</string>
+    <string name="chip_plus">Premium</string>
     <string name="chip_favourites_fmt">Favourites (%1$d)</string>
     <string name="chip_brandmarks">Brandmarks</string>
     <string name="icon_selected_fmt">%1$s · %2$s. Assign it from the launcher icon picker if it did not auto-apply.</string>
@@ -196,8 +196,8 @@
     <string name="wp_done">Done</string>
     <string name="wp_live_badge">LIVE</string>
     <string name="wp_live_spoken">, live wallpaper</string>
-    <string name="wp_plus_badge">PLUS</string>
-    <string name="wp_plus_spoken">, Core Builds Plus wallpaper</string>
+    <string name="wp_plus_badge">PREMIUM</string>
+    <string name="wp_plus_spoken">, Core Premium wallpaper</string>
     <!-- Favourites: the preview's toggle and the grid tile's star. The
          button's label carries the state; the spoken description says
          what a press does. -->
@@ -207,7 +207,8 @@
     <string name="wp_fav_remove_desc">Remove from favourites</string>
     <string name="wp_fav_badge">★</string>
     <string name="wp_fav_spoken">, favourite</string>
-    <string name="wp_plus_held_fmt">Plus walls left out (%1$d): they need Core Builds Plus.</string>
+    <string name="wp_plus_held_fmt">Spectra walls left out (%1$d): saving them comes with buying Core Premium.</string>
+    <string name="wp_plus_save_needs_purchase">Saving a Spectra wall to Pictures comes with buying Core Premium. The trial can still set it.</string>
     <string name="wp_set_live">Set live wallpaper</string>
     <string name="wp_save_for_monet">Save for Monet</string>
     <string name="wp_live_sub">Plays on the home screen. Downloads once, then runs offline.</string>
@@ -249,23 +250,36 @@
     <string name="settings_appinfo_title">Launcher app info</string>
     <string name="settings_appinfo_sub">The system page for the detected launcher. Force Stop there clears a bitmap cache re-applying cannot reach.</string>
     <string name="settings_group_suite">SUITE</string>
-    <string name="settings_group_plus">CORE BUILDS PLUS</string>
-    <string name="settings_plus_title">Core Builds Plus</string>
-    <string name="settings_plus_sub">One purchase: priority requests, My requests, loop rotation and the Spectra wallpapers.</string>
+    <string name="settings_group_plus">CORE PREMIUM</string>
+    <string name="settings_plus_title">Core Premium</string>
+    <string name="settings_plus_sub">One purchase: priority requests (one or all at once), My requests, loop rotation, a night loop, Projectivy walls and the Spectra wallpapers.</string>
     <string name="settings_plus_owned">Owned</string>
     <string name="settings_plus_buy">See it</string>
+    <string name="settings_plus_trial_fmt">Trial · %1$s</string>
     <string name="settings_rotate_title">Rotate live loops</string>
     <string name="settings_rotate_sub">The live wallpaper moves to your next downloaded loop when you come back home after this long.</string>
     <string name="settings_rotate_off">Off</string>
     <string name="settings_rotate_hour">Every hour</string>
     <string name="settings_rotate_6h">Every 6 hours</string>
     <string name="settings_rotate_day">Every day</string>
+    <string name="settings_night_title">Night loop</string>
+    <string name="settings_night_sub">Plays instead of your live loop during night hours, then hands back. Offers the loops already on this TV.</string>
+    <string name="settings_night_none">Download a loop in Wallpapers first. The night loop plays only what is already on this TV.</string>
+    <string name="settings_hours_title">Night hours</string>
+    <string name="settings_hours_sub">When the night loop and the night walls take over, by this TV\'s clock.</string>
+    <string name="settings_hours_fmt">%1$02d:00\u2013%2$02d:00</string>
+    <string name="settings_walls_title">Projectivy walls</string>
+    <string name="settings_walls_sub">What Projectivy rotates with this pack as its wallpaper source: all walls, your favourites or one series.</string>
+    <string name="settings_walls_night_title">Projectivy walls at night</string>
+    <string name="settings_walls_night_sub">What it rotates during night hours instead.</string>
+    <string name="settings_walls_all">All walls</string>
+    <string name="settings_walls_favourites">Favourites (%1$d)</string>
     <string name="settings_requests_title">My requests</string>
     <string name="settings_requests_sub">Every icon you requested from this TV, and how far each one has got.</string>
     <string name="settings_requests_open">Open</string>
-    <string name="settings_plus_locked">Plus</string>
+    <string name="settings_plus_locked">Premium</string>
     <string name="requests_label">My requests</string>
-    <string name="requests_kicker">CORE BUILDS PLUS</string>
+    <string name="requests_kicker">CORE PREMIUM</string>
     <string name="requests_summary_fmt">Requested from this TV: %1$d \u00b7 in this pack: %2$d \u00b7 drawn, waiting for an update: %3$d</string>
     <string name="requests_empty">Nothing requested from this TV yet. Press an app under Missing icons and its request appears here.</string>
     <string name="requests_issue_fmt">#%1$d \u00b7 %2$s</string>
@@ -300,6 +314,8 @@
     <string name="faq_override_body">Projectivy keeps an icon you picked by hand until you pick again, so a per-app override survives every pack update. Re-assign the tile from the launcher\'s icon picker, or choose the pack default there, to hand the tile back to Core Builds.</string>
     <string name="faq_monet_title">Send to Monet: what it can and cannot take</string>
     <string name="faq_monet_body">Wallpapers go to Monet straight from Preview or Export (Send to Monet, Monet 1.0.72 or newer, Premium). The icon pack does not: Monet has no apply intent. It discovers packs through the standard discovery actions, and you choose Core Builds under Monet Settings → Apps → Icon pack.</string>
+    <string name="faq_projectivy_title">Projectivy can rotate these walls itself</string>
+    <string name="faq_projectivy_body">Projectivy 4.51 or newer lists this pack as a wallpaper source (wallpaper sources are a Projectivy Premium feature). Choose it in Projectivy\'s wallpaper settings and the main collection rotates on Projectivy\'s own interval; Projectivy downloads each one from the same public address this app uses. With Core Premium (Google Play build), Settings → Projectivy walls picks favourites, one series or Spectra, with a second choice for night hours.</string>
     <string name="faq_unmapped_title">An installed app has no icon</string>
     <string name="faq_unmapped_body">Auto-assign needs the exact activity your box launches, and some apps ship different mobile and Leanback activities. Read the component off the device with the ADB scanning guide in the repo docs and send a mapping request; the next tranche picks it up.</string>
     <string name="chip_count_fmt">%1$s (%2$d)</string>
@@ -338,6 +354,13 @@
     <string name="audit_qr_icon_hint">The app\'s current launcher icon — attach a photo of this screen to the issue</string>
     <string name="audit_request_sending">Sending the request…</string>
     <string name="audit_request_sent_fmt">Request filed — issue #%1$d. Thank you.</string>
+    <string name="audit_request_all_fmt">Request all (%1$d)</string>
+    <string name="audit_request_all_locked">Request all · Premium</string>
+    <string name="audit_request_all_confirm_fmt">Press again: send %1$d</string>
+    <string name="audit_request_all_explain_fmt">Press again to send %1$d priority requests at once: each app\'s name and component and this TV\'s device note, as one press on each would. Up to %2$d apps a press, %3$d presses a day.</string>
+    <string name="audit_request_all_done_fmt">%1$d filed as priority, %2$d already open and +1ed, %3$d not filed.</string>
+    <string name="audit_request_all_refused_fmt">Request all did not go through: %1$s</string>
+    <string name="audit_request_all_offline">Request all needs the network. Nothing was sent.</string>
     <string name="audit_request_offline">Direct request unavailable — scan the code with your phone instead.</string>
 
     <!-- Icon inspector -->
@@ -396,7 +419,7 @@
     <string name="about_network_one">1.  A request for the update manifest, when update checks are on or when you press Check for updates here, and the update itself when you choose to download it.</string>
     <string name="about_network_two">2.  A request for each wallpaper or live loop you choose to download, and for Core Builds Glyphs Pack the first time you switch the art style to Glyphs.</string>
     <string name="about_network_three">3.  A request when you report a missing icon: the app name, the component it runs as, and a one-line note with this build&#8217;s pack version, the TV&#8217;s model, its Android version and the launcher in use.</string>
-    <string name="about_network_tracker">4.  With Core Builds Plus: a missing-icon report also carries this TV\'s Play purchase token, which the request service checks with Google and never stores, and My requests asks GitHub for each of your requests\' issue, by number.</string>
+    <string name="about_network_tracker">4.  With Core Premium: a missing-icon report also carries this TV\'s Play purchase token, which the request service checks with Google and never stores, and My requests asks GitHub for each of your requests\' issue, by number.</string>
     <string name="about_network_none">That is the whole list. No analytics, no installed-app list, no identifier. Icons ship inside the app and are never fetched.</string>
     <string name="about_links">LINKS</string>
     <!-- About > Check for updates. The row's title is the button through the
@@ -431,18 +454,26 @@
     <string name="support_sponsors_qr_hint">QR code for GitHub Sponsors</string>
     <string name="support_kofi_qr_hint">QR code for Ko-fi</string>
 
-    <!-- Core Builds Plus, the Google Play build's one-time unlock (Plus.kt).
-         The GitHub builds never show these: their PlusStore is not AVAILABLE. -->
-    <string name="plus_name">Core Builds Plus</string>
+    <!-- Core Premium (Plus.kt; "Plus" is its name in code), the Google Play
+         build's one-time unlock. The GitHub builds never show these: their
+         PlusStore is not AVAILABLE. -->
+    <string name="plus_name">Core Premium</string>
     <string name="plus_loading">Asking Google Play\u2026</string>
-    <string name="plus_loading_button">Plus</string>
-    <string name="plus_buy_fmt">Get Plus \u00b7 %1$s</string>
-    <string name="plus_for_sale">One purchase, no subscription: priority icon requests, My requests, live loop rotation and the 12 Spectra wallpapers.</string>
-    <string name="plus_owned">Plus is active on this Google account: priority requests, My requests (Settings), loop rotation (Settings) and Spectra (Wallpapers). Thank you.</string>
-    <string name="plus_owned_button">Plus is active</string>
-    <string name="plus_pending">Payment pending. Plus switches on when Google Play confirms it.</string>
+    <string name="plus_loading_button">Premium</string>
+    <string name="plus_buy_fmt">Get Premium \u00b7 %1$s</string>
+    <string name="plus_for_sale">One purchase, no subscription: priority icon requests, one app or every missing app at once, My requests, live loop rotation, a night loop, your choice of what Projectivy rotates, and the 12 Spectra wallpapers.</string>
+    <string name="plus_owned">Core Premium is active on this Google account: priority requests, Request all under Missing icons, and in Settings My requests, loop rotation, the night loop and Projectivy walls; Spectra is in Wallpapers. Thank you.</string>
+    <string name="plus_owned_button">Premium is active</string>
+    <string name="plus_pending">Payment pending. Premium switches on when Google Play confirms it.</string>
     <string name="plus_pending_button">Pending</string>
-    <string name="plus_unavailable_fmt">Google Play can\'t sell Plus here: %1$s.</string>
+    <string name="plus_unavailable_fmt">Google Play can\'t sell Premium here: %1$s.</string>
     <string name="plus_unavailable_button">Unavailable</string>
-    <string name="plus_not_yet">Plus goes on sale when one-press icon requests are live, since priority is part of it. There is nothing to buy yet.</string>
+    <string name="plus_not_yet">Core Premium goes on sale when one-press icon requests are live, since priority is part of it. There is nothing to buy yet.</string>
+    <!-- The 24-hour trial (Plus.startTrial): once per TV, kept on the TV. -->
+    <string name="plus_trial_button">Try free for 24 hours</string>
+    <string name="plus_trial_started_fmt">Core Premium is on for %1$s. Priority requests and saving Spectra walls to Pictures come with the purchase.</string>
+    <string name="plus_trial_running_fmt">Free trial: %1$s left. Loop rotation, the night loop, Projectivy walls, My requests and Spectra are on until then. Priority requests, Request all and saving Spectra walls to Pictures come with the purchase.</string>
+    <string name="plus_trial_ended">Your free trial has ended.</string>
+    <string name="plus_trial_hours_fmt">%1$d h</string>
+    <string name="plus_trial_minutes_fmt">%1$d min</string>
 </resources>

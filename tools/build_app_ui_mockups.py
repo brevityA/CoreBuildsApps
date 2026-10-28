@@ -1098,7 +1098,7 @@ def faq_frame() -> tuple[Image.Image, str]:
     y = top + dp(6)
     f_title = font("sans", DIMENS["cb_text_body"], bold=True)
     f_body = font("sans", DIMENS["cb_text_data"])
-    for key in ("cache", "override", "monet", "unmapped"):
+    for key in ("cache", "override", "monet", "projectivy", "unmapped"):
         title = STRINGS[f"faq_{key}_title"]
         body = STRINGS[f"faq_{key}_body"]
         lines = wrap(draw, body, f_body, W - 2 * g - dp(40))
