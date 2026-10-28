@@ -111,9 +111,16 @@ class TheClaimsMatchTheCode(unittest.TestCase):
 
     def test_the_icon_request_payload_it_itemises_is_the_payload_sent(self):
         sender = self.src["IconRequestSender.kt"]
-        fields = set(re.findall(r'\.put\("([a-z_]+)"', sender))
+        single = sender.split("private fun post(", 1)[1]
+        fields = set(re.findall(r'\.put\("([a-z_]+)"', single))
         self.assertEqual(fields, {"app_name", "component", "device"},
                          "IconRequestSender's payload moved; the policy must follow")
+        # Request all (Plus) sends the same fields for several apps, and the
+        # policy has its own row for it.
+        batch = sender.split("private fun postBatch(", 1)[1].split("private fun post(", 1)[0]
+        self.assertEqual(set(re.findall(r'\bput\("([a-z_]+)"', batch)),
+                         fields | {"mapped", "plus_token", "apps"})
+        self.assertIn("Request all", self.html)
         for field in ("app name", "component name", "device note"):
             self.assertIn(field, self.html, f"policy does not name the {field!r} field")
         # Plus owners' requests carry one more field, conditionally.

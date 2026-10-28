@@ -3,6 +3,7 @@ package tv.corebuilds.iconpack
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -73,6 +74,7 @@ class AuditorActivity : TvActivity() {
         findViewById<View>(R.id.audit_back).setOnClickListener {
             if (qrPanel.visibility == View.VISIBLE) showList() else finish()
         }
+        findViewById<View>(R.id.audit_request_all).setOnClickListener { requestAll() }
 
         list.layoutManager = LinearLayoutManager(this)
         // A list that animates its rows on first layout drops the focus the
@@ -134,6 +136,8 @@ class AuditorActivity : TvActivity() {
             return
         }
         count.text = getString(R.string.audit_count_fmt, result.checked)
+        auditItems = result.items
+        showRequestAll()
         val adapter = AuditorAdapter(result.items, packageManager) { reportOrQr(it) }
         list.adapter = adapter
         // The adapter lands after the first frame, so focus has already
@@ -188,6 +192,7 @@ class AuditorActivity : TvActivity() {
             if (issue > 0) {
                 // My requests (Core Builds Plus) lists it; a no-op off Play.
                 RequestLog.record(this, issue, item.label, item.component, item.mapped)
+                showRequestAll()
                 Toast.makeText(this,
                                getString(R.string.audit_request_sent_fmt, issue),
                                Toast.LENGTH_LONG).show()
@@ -196,6 +201,94 @@ class AuditorActivity : TvActivity() {
                                Toast.LENGTH_SHORT).show()
                 showQr(item)
             }
+        }
+    }
+
+    // ---- Request all (Core Builds Plus) -------------------------------------
+
+    private var auditItems: List<AppAudit.Item> = emptyList()
+
+    /** Until when a first press stays armed; the second press inside it sends. */
+    private var armedUntil = 0L
+
+    private fun pendingBatch(): List<AppAudit.Item> =
+        BatchRequest.pending(auditItems, { it.component },
+                             RequestLog.all(this).map { it.component }.toSet())
+
+    /**
+     * The header's Request all: Google Play only (with Plus on sale or owned),
+     * only with a broker baked in, and only while some missing app has not
+     * been requested from this TV. Locked, it reads "Plus" and opens the Plus
+     * card, like every other Plus control.
+     */
+    private fun showRequestAll() {
+        val button = findViewById<TextView>(R.id.audit_request_all)
+        val pending = pendingBatch()
+        button.visibility = if (Plus.shown(this) &&
+            getString(R.string.audit_request_endpoint).isNotBlank() &&
+            pending.isNotEmpty()) View.VISIBLE else View.GONE
+        button.text = when {
+            !Plus.owned(this) -> getString(R.string.audit_request_all_locked)
+            SystemClock.elapsedRealtime() <= armedUntil ->
+                getString(R.string.audit_request_all_confirm_fmt, pending.size)
+            else -> getString(R.string.audit_request_all_fmt, pending.size)
+        }
+    }
+
+    /**
+     * Two presses, no dialog: the first arms the button and says what will be
+     * sent, the second (within [ARM_MS]) sends it. Up to ten public issues is
+     * not something a stray press of the remote should file.
+     */
+    private fun requestAll() {
+        if (!Plus.unlocked(this) || requestInFlight) return
+        val pending = pendingBatch()
+        val token = PlusStore.purchaseToken(this)
+        if (pending.isEmpty() || token == null) {
+            showRequestAll()
+            return
+        }
+        val now = SystemClock.elapsedRealtime()
+        if (now > armedUntil) {
+            armedUntil = now + ARM_MS
+            showRequestAll()
+            Toast.makeText(this, getString(R.string.audit_request_all_explain_fmt, pending.size,
+                                           BatchRequest.MAX, BatchRequest.PER_DAY),
+                           Toast.LENGTH_LONG).show()
+            findViewById<View>(R.id.audit_request_all).postDelayed({ showRequestAll() }, ARM_MS + 50)
+            return
+        }
+        armedUntil = 0L
+        requestInFlight = true
+        Toast.makeText(this, R.string.audit_request_sending, Toast.LENGTH_SHORT).show()
+        val labels = pending.associate { it.component to it }
+        IconRequestSender.sendBatch(
+            BatchRequest.url(getString(R.string.audit_request_endpoint)),
+            pending.map { IconRequestSender.BatchApp(it.label, it.component, it.mapped) },
+            deviceNote(), token,
+        ) { outcome ->
+            requestInFlight = false
+            when (outcome) {
+                is IconRequestSender.BatchOutcome.Filed -> {
+                    for (r in outcome.results) {
+                        val item = labels[r.component] ?: continue
+                        // My requests lists each one; a no-op off Play.
+                        RequestLog.record(this, r.issue, item.label, item.component, item.mapped)
+                    }
+                    val filed = outcome.results.count { it.issue > 0 && !it.duplicate }
+                    val voted = outcome.results.count { it.issue > 0 && it.duplicate }
+                    val failed = outcome.results.count { it.issue <= 0 } + (pending.size - outcome.results.size)
+                    Toast.makeText(this, getString(R.string.audit_request_all_done_fmt,
+                                                   filed, voted, failed),
+                                   Toast.LENGTH_LONG).show()
+                }
+                is IconRequestSender.BatchOutcome.Refused -> Toast.makeText(this,
+                    if (outcome.status == 0) getString(R.string.audit_request_all_offline)
+                    else getString(R.string.audit_request_all_refused_fmt,
+                                   outcome.error.ifBlank { "HTTP ${outcome.status}" }),
+                    Toast.LENGTH_LONG).show()
+            }
+            if (!isFinishing && !isDestroyed) showRequestAll()
         }
     }
 
@@ -266,4 +359,8 @@ class AuditorActivity : TvActivity() {
     }
 
     private fun enc(value: String): String = URLEncoder.encode(value, "UTF-8")
+
+    private companion object {
+        const val ARM_MS = 5_000L
+    }
 }

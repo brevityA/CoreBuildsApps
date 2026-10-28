@@ -22,6 +22,14 @@ All notable changes to the Core Builds Icon Pack. Format follows
   loop, then hands back to the one picked in the preview. A home screen left
   on changes over at the hour. Only loops already on the TV are offered, and
   nothing downloads. Settings → Night loop and Night hours.
+- **Request all, a Core Builds Plus extra.** Missing icons gains a Request
+  all button. Pressed twice, it files up to 10 of the listed apps this TV has
+  not requested yet as priority requests in one send, and My requests lists
+  each. The request service takes it only when Google confirms the Plus
+  purchase, at most three times a day per purchase, through a new `/v1/batch`
+  route. Each app is filed, or +1ed, exactly as one press would file it.
+  The privacy policy, the Data safety answer and Console step 8 say so. The
+  request service must be redeployed for it to work.
 - **Projectivy walls, a Core Builds Plus extra.** Two Settings rows choose
   what Projectivy rotates from the pack, by day and during night hours: all
   walls (with Spectra), favourites, or one of 12 series. A choice that

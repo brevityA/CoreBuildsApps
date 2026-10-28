@@ -326,7 +326,9 @@ class StoreTruth(unittest.TestCase):
         # form becomes a false statement on the store page.
         sender = (ROOT / "app/src/main/java/tv/corebuilds/iconpack/IconRequestSender.kt"
                   ).read_text(encoding="utf-8")
-        posted = set(re.findall(r'[.\s]put\("([a-z_]+)"', sender)) - {"mapped"}
+        # "apps" is Request all's list of per-app entries: the same fields,
+        # several apps (tests/test_batch_requests.py holds it to that).
+        posted = set(re.findall(r'[.\s]put\("([a-z_]+)"', sender)) - {"mapped", "apps"}
         # The sender only runs with the broker baked in, so its whole payload
         # is the broker-on answer; the committed answer is this build's.
         declared = set(listing.data_safety(plus=True)

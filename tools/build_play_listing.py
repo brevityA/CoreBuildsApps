@@ -240,8 +240,8 @@ COPY = {
 PLUS_COPY = (
     "CORE BUILDS PLUS\n"
     "Optional, one purchase through Google Play, no subscription: your icon "
-    "requests are filed as priority, My requests shows how far each one has "
-    "got, the live wallpaper can rotate through your loops and play a second "
+    "requests are filed as priority, one app or every missing app at once, "
+    "My requests shows how far each one has got, the live wallpaper can rotate through your loops and play a second "
     "one at night, you choose what Projectivy rotates from this pack "
     "(favourites, one series, a night set), and Spectra adds {plus_walls} "
     "more wallpapers. Every icon, all {walls} stills, every loop and every "
@@ -309,9 +309,10 @@ BROKER_COLLECTED = [
         "optional": True,
         "shared": False,
         "purposes": ["App functionality"],
-        "what": "the one app the user presses under Missing icons (name and "
+        "what": "the app the user presses under Missing icons (name and "
                 "component) and the launcher in use, filed as a public GitHub "
-                "issue",
+                "issue; with Plus, Request all sends the same for up to 10 "
+                "unrequested missing apps in one press",
     },
     {
         "type": "Financial info > Purchase history",

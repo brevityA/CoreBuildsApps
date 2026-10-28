@@ -247,7 +247,8 @@ it adds; until then the Play build sells nothing and the steps below wait.
    `collected` types into Data safety, from the regenerated `listing.json`.
 8. **Internal test before anyone pays.** On a TV, as a license tester: each
    extra opens the Plus card before buying. Buy. Then a missing-icon press
-   files an issue labelled `priority`; *My requests* lists it; *Rotate live
+   files an issue labelled `priority`; *My requests* lists it; *Request all*,
+   pressed twice, files the rest (up to 10) as `priority` and lists each; *Rotate live
    loops* set to every hour moves the live wallpaper after an hour with two
    or more loops downloaded; a *Night loop* plays from the start of *Night
    hours* with the home screen left on; with the pack as Projectivy's

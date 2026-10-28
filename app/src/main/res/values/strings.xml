@@ -251,7 +251,7 @@
     <string name="settings_group_suite">SUITE</string>
     <string name="settings_group_plus">CORE BUILDS PLUS</string>
     <string name="settings_plus_title">Core Builds Plus</string>
-    <string name="settings_plus_sub">One purchase: priority requests, My requests, loop rotation, a night loop, Projectivy walls and the Spectra wallpapers.</string>
+    <string name="settings_plus_sub">One purchase: priority requests (one or all at once), My requests, loop rotation, a night loop, Projectivy walls and the Spectra wallpapers.</string>
     <string name="settings_plus_owned">Owned</string>
     <string name="settings_plus_buy">See it</string>
     <string name="settings_rotate_title">Rotate live loops</string>
@@ -352,6 +352,13 @@
     <string name="audit_qr_icon_hint">The app\'s current launcher icon — attach a photo of this screen to the issue</string>
     <string name="audit_request_sending">Sending the request…</string>
     <string name="audit_request_sent_fmt">Request filed — issue #%1$d. Thank you.</string>
+    <string name="audit_request_all_fmt">Request all (%1$d)</string>
+    <string name="audit_request_all_locked">Request all · Plus</string>
+    <string name="audit_request_all_confirm_fmt">Press again: send %1$d</string>
+    <string name="audit_request_all_explain_fmt">Press again to send %1$d priority requests at once: each app\'s name and component and this TV\'s device note, as one press on each would. Up to %2$d apps a press, %3$d presses a day.</string>
+    <string name="audit_request_all_done_fmt">%1$d filed as priority, %2$d already open and +1ed, %3$d not filed.</string>
+    <string name="audit_request_all_refused_fmt">Request all did not go through: %1$s</string>
+    <string name="audit_request_all_offline">Request all needs the network. Nothing was sent.</string>
     <string name="audit_request_offline">Direct request unavailable — scan the code with your phone instead.</string>
 
     <!-- Icon inspector -->
@@ -451,8 +458,8 @@
     <string name="plus_loading">Asking Google Play\u2026</string>
     <string name="plus_loading_button">Plus</string>
     <string name="plus_buy_fmt">Get Plus \u00b7 %1$s</string>
-    <string name="plus_for_sale">One purchase, no subscription: priority icon requests, My requests, live loop rotation, a night loop, your choice of what Projectivy rotates, and the 12 Spectra wallpapers.</string>
-    <string name="plus_owned">Plus is active on this Google account: priority requests, and in Settings My requests, loop rotation, the night loop and Projectivy walls; Spectra is in Wallpapers. Thank you.</string>
+    <string name="plus_for_sale">One purchase, no subscription: priority icon requests, one app or every missing app at once, My requests, live loop rotation, a night loop, your choice of what Projectivy rotates, and the 12 Spectra wallpapers.</string>
+    <string name="plus_owned">Plus is active on this Google account: priority requests, Request all under Missing icons, and in Settings My requests, loop rotation, the night loop and Projectivy walls; Spectra is in Wallpapers. Thank you.</string>
     <string name="plus_owned_button">Plus is active</string>
     <string name="plus_pending">Payment pending. Plus switches on when Google Play confirms it.</string>
     <string name="plus_pending_button">Pending</string>
