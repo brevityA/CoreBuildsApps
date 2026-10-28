@@ -72,8 +72,9 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Fixed
 
-- **The Play bundles clear both pre-launch warnings on 57 (2.4.4).** Neither
-  blocked the release.
+- **`tests/test_play_build.py` keeps out both pre-launch warnings' causes.**
+  Play's report on 57 (2.4.4) raised two. Neither blocked the release, and
+  only Play's next report can say whether both are gone.
   - *Deprecated edge-to-edge APIs*: the app no longer paints the system bars.
     `Prefs.applyChrome` dropped its `Window.setStatusBarColor` and
     `setNavigationBarColor` calls, and both themes (the pack's and the Glyphs
@@ -82,9 +83,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
   - *Orientation restriction*: the Play build no longer locks `MainActivity`
     to landscape. Its listing is TV-only, where every screen is landscape. The
     sideload build keeps the lock, since it can land on a phone.
-  - `tests/test_play_build.py` keeps both away. Play's report reads the whole
-    bundle, so a library call can still raise the first warning; the next
-    report says.
+  - Play's report reads the whole bundle, so a library call can still raise
+    the first warning.
 - **`tests/test_navigation_graph.py` reads screens, not meta-data keys.** It
   matched every `android:name` ending in "Activity", so Projectivy's
   `settingsActivity` key read as a screen with no way in. It now reads

@@ -274,12 +274,16 @@ class SeparateApps(unittest.TestCase):
         # blocked the release; both are cheap to keep away.
         # 1. Deprecated edge-to-edge APIs: no code calls the bar-colour
         #    setters and no theme sets the bar colours, in either module.
+        # Case-insensitive, so the Java-style setters (setStatusBarColor(...))
+        # count as well as the Kotlin properties; comments are stripped first,
+        # since Prefs.applyChrome's doc names the setters it dropped.
+        comment = re.compile(r"/\*.*?\*/|//[^\n]*|<!--.*?-->", re.S)
         for root in (APP / "src", ROOT / "glyphs/src"):
             for path in list(root.rglob("*.kt")) + list(root.rglob("*.xml")):
-                text = read(path)
+                code = comment.sub("", read(path)).lower()
                 for word in ("statusBarColor", "navigationBarColor", "navigationBarDividerColor",
                              "LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES"):
-                    self.assertNotIn(word, text, f"{path.relative_to(ROOT)} uses {word}")
+                    self.assertNotIn(word.lower(), code, f"{path.relative_to(ROOT)} uses {word}")
         # 2. Orientation restriction: the Play overlay removes MainActivity's
         #    landscape lock; the sideload manifest keeps it (validate.py).
         play = ET.parse(APP / "src/play/AndroidManifest.xml").getroot()
