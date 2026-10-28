@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import tv.corebuilds.eq.apply.BandMapping
+import tv.corebuilds.eq.dsp.TvSoundEq
 import tv.corebuilds.eq.apply.DumpsysDiscovery
 import tv.corebuilds.eq.apply.EffectLadder
 import tv.corebuilds.eq.apply.EqService
@@ -18,7 +19,6 @@ import tv.corebuilds.eq.ui.showSwitch
 import tv.corebuilds.eq.update.UpdateChecker
 import tv.corebuilds.eq.update.UpdateInstaller
 import tv.corebuilds.eq.update.UpdatePrefs
-import java.util.Locale
 import kotlin.concurrent.thread
 
 class CapabilityActivity : TvActivity() {
@@ -41,7 +41,6 @@ class CapabilityActivity : TvActivity() {
     private lateinit var btnInstallUpdate: Button
     private lateinit var btnUpdateAuto: Button
     private var pendingUpdate: UpdateChecker.Result.Available? = null
-    private var lastBandCentres: List<Double>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -191,7 +190,6 @@ class CapabilityActivity : TvActivity() {
         thread(name = "CapabilityProbeThread") {
             val verdict = EffectLadder.probe(this)
             runOnUiThread {
-                lastBandCentres = if (verdict.platformEqualizerSupported) verdict.bandCentresHz else null
                 statusSession0.text = if (verdict.session0Supported) {
                     "Supported on this hardware HAL"
                 } else {
@@ -249,26 +247,16 @@ class CapabilityActivity : TvActivity() {
         }
         val mode = modeStore.currentDecision().mode
         val active = modeStore.effectiveProfile(base, mode)
-        val centres = lastBandCentres ?: listOf(60.0, 230.0, 910.0, 3600.0, 14000.0)
-        // One home for the band maths (BandMapping): the export cannot drift
-        // from what the service applies.
-        val gains = BandMapping.gainsDb(active, centres)
-        val sb = StringBuilder()
-        sb.append("CORE EQ · TV SOUND SETTINGS REFERENCE\n")
-        sb.append("Profile: ").append(active.name).append(" · ").append(mode.title).append("\n")
-        sb.append("Target: ").append(active.target).append("\n")
-        sb.append(String.format(Locale.US, "Bands: %s\n", if (lastBandCentres != null) "this TV's own equaliser" else "the common 5-band layout"))
-        sb.append("------------------------------------\n")
-        for (i in centres.indices) {
-            val db = gains[i]
-            val sign = if (db > 0) "+" else ""
-            sb.append(String.format(Locale.US, "  %6.0f Hz : %s%.1f dB\n", centres[i], sign, db))
+        // 1.9.0: the values are sampled at each television equaliser's *own* centres, from the
+        // curve the correction asks for (BandMapping.requestedGainsDb, which includes the room
+        // correction, the manual layer and the mode's tone layer). A TV's equaliser has no
+        // preamp, so the headroom shift the service applies would be wrong here: it would
+        // slide every band down and leave the shape on a menu that cannot take negative gain.
+        val settings = TvSoundEq.GRIDS.map { grid ->
+            TvSoundEq.setting({ hz -> BandMapping.requestedGainsDb(active, listOf(hz))[0] }, grid)
         }
-        sb.append("------------------------------------\n")
-        sb.append("Enter these values in the TV's own sound equaliser, at the nearest band it offers.\n")
-        sb.append("Every band is lowered by the largest boost, so the correction cannot clip.\n")
-
-        val result = Formats.exportToDevice(this, sb.toString(), "tv_settings_bands_${mode.key}.txt")
+        val report = TvSoundEq.report("${active.name} · ${mode.title}", settings)
+        val result = Formats.exportToDevice(this, report, "tv_sound_values_${mode.key}.txt")
         Toast.makeText(this, result.message, Toast.LENGTH_LONG).show()
     }
 

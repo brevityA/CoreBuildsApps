@@ -6,6 +6,85 @@ Core EQ (`tv.corebuilds.eq`) keeps its own changelog. The repository-root
 must never land there. Releases are `coreeq-v<version>` tags (see
 `PUBLISHING.md`).
 
+## [1.9.0] — 2026-10-28
+
+**Nothing below was checked on a TV, a phone or a soundbar, and no display was measured
+with a colorimeter.** The new maths — the TV-equaliser mapping, the manual presets, the
+gamma and PQ codes behind the test patterns — is covered by this repository's Android-free
+Kotlin harness (183 cases, 16 classes, green) and ships in CI's `testDebugUnitTest`. CI also
+compiled the changed activities and `TestPatternView`, linted them, and installed and
+launched the app on the API 30 and 37.0 emulators — the screens build and open — but nobody
+has typed a value into a television's sound menu, looked at the new patterns on a panel, or
+pressed the new buttons with a remote.
+
+- **Twelve generic manual presets, each with a sentence saying what it does.** The manual EQ
+  used to be mostly product presets, which is no help to somebody with speakers Core EQ has
+  never detected. `ManualEq.BUILT_IN_PRESETS` now carries Flat plus eleven shapes that make no
+  claim about anybody's hardware — bass lift, speech clarity, less bass, night quiet, warm,
+  bright, podcast, sibilance tame, small-speaker body, remove boom, low-volume loudness — and
+  the preset picker shows the description on a second line, because "Warm" is a mood, not an
+  explanation. A preset is a tone, never a correction; the descriptions say so.
+- **The TV's own sound equaliser gets real numbers now.** Most televisions will not let Core EQ
+  near the built-in speakers, but all of them have a sound menu with a graphic equaliser in it:
+  five bands at 100 Hz / 300 Hz / 1 kHz / 3 kHz / 10 kHz at ±6 dB on most Samsung and LG sets,
+  seven bands at 125 Hz–8 kHz at ±12 dB on a Sony running Google TV. `TvSoundEq` maps any curve
+  onto those grids by sampling it at the menu's own centres — **Manual EQ → "Show these as TV
+  settings…"** shows the result and can export it as a text file.
+- **Three things the mapping refuses to pretend.** A band outside Core EQ's trusted 40 Hz–8 kHz
+  is reported as "—" with the reason, never as 0 dB, because 0 dB reads as "leave the treble
+  alone" and that is a recommendation the app has not earned (the Samsung 10 kHz slider is
+  therefore always "—"). A value the menu cannot accept is clamped and the wanted value is
+  printed next to it. And the report says what the numbers are not: the sliders are far wider
+  than Core EQ's filters, their shape is unpublished, and the result is a starting point to
+  adjust by ear.
+- **The capability screen's TV export was writing a layout no TV has.** It built a five-band
+  file from a guessed 60/230/910/3600/14000 Hz layout on hardware that reported nothing. It now
+  writes the `TvSoundEq` report for both known grids, sampled from the curve the correction
+  actually asks for — not the headroom-shifted one the service applies, because a television's
+  equaliser has no preamp and shifting it would leave a shape the menu cannot express.
+- **The calibration guide asks instead of lecturing.** `DisplayCalibrationActivity` was a fixed
+  list of ten patterns with one paragraph each: everybody got the same text and nobody was told
+  what to do when it looked wrong. It is now a ten-step walkthrough from `CalibrationGuide` —
+  picture mode, overscan, black, white, gamma, colour, sharpness, motion, uniformity, HDR, record
+  — where each step offers the answers a person can actually give ("the outer marker is cut
+  off", "the whole screen glows grey", "the top row stutters"), shows the advice for the one
+  chosen, and sends Next to the repair step that answer named.
+- **It also says which faults are not settings.** Motion smear is the panel's response time,
+  blotches are dirty-screen effect, and a 1080p interface on a 4K panel is Android's own UI
+  resolution. Sending somebody to a picture menu for those is worse than telling them the truth,
+  and the guide says it before they spend an evening on it.
+- **The display is described from what Android reports, above the first step.** Resolution,
+  refresh and HDR types come from `Display`; the notes turn them into consequences — this mode
+  is not a multiple of 24, so 24p material will judder unevenly; this display reports no HDR, so
+  the HDR pattern is a grey ramp here, and if the TV does support it the input's enhanced mode
+  is the usual reason Android cannot see it. Nothing here is guessed from the model name.
+- **Four test patterns were lying, and are fixed.** Black level used one-code steps (0…15) — a 6%
+  range in which bars 0 and 1 are the same colour on every panel, so "make bar 2 visible" could
+  not be followed; it is now two codes apart, 0…30, each labelled. White level stepped by one
+  code from 240 and put sixteen indistinguishable bars on screen; it now runs 200…255 with the
+  top at 250/253/255. Gamma drew `255·0.5^(1/γ)`, which put the γ2.4 patch at code **191** — a
+  near-white square on a 128 field, making every display look like γ1.8; patches are now derived
+  from the display's transfer, with a power-law row (γ2.2 → 128, γ2.4 → 120) and a BT.1886 row
+  that includes the standard's black offset (γ2.4 → 123). HDR drew six hand-picked greys and
+  claimed PQ tracking; it now draws real ST.2084 codes (100 nits → 128, 1000 nits → 192) and
+  says on screen whether the output is actually HDR.
+- **Three new patterns, and sizes in dp.** 24p judder (a marker stepped at 24 updates a second
+  against one at 60), motion resolution (gratings dragged at three speeds) and a device-pixel
+  grid, which together cover the part of a display no picture menu can change. Pattern text and
+  zones are now in dp, so a 4K panel no longer gets a 28-pixel label the size of a pinhead; the
+  two places where a device pixel is the point — the sharpness 1-pixel zone and the pixel grid —
+  still use one.
+- **The pattern arithmetic is testable, and tested.** It moved into `DisplayMath` (pure Kotlin,
+  no Android imports) so `DisplayMathTest` can pin it. Its first run failed twice for real
+  reasons: the white ladder contained 252/253/254, which are one code apart, and BT.1886 turns
+  out to be *brighter* than the plain power law because the black offset lifts mid-grey — not
+  darker, as first assumed. Both were fixed in the model, not in the assertions.
+- **Tests.** 40 new Kotlin cases across four files (`ManualPresetsTest`, `TvSoundEqTest`,
+  `CalibrationGuideTest`, `DisplayMathTest`) in the Android-free harness, which now runs 183.
+  They include the cases that would have caught the old behaviour: a gamma patch that must not be
+  the old 191, a ladder whose adjacent bars must stay separable, a refused TV band that must not
+  read 0 dB, and a clamp that must print what it wanted.
+
 ## [1.8.0] — 2026-10-28
 
 **Nothing below was checked on a TV, a phone or a soundbar, and no acoustic
