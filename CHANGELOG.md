@@ -8,6 +8,19 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Fixed
 
+- **The Play bundles clear both pre-launch warnings on 57 (2.4.4).** Neither
+  blocked the release.
+  - *Deprecated edge-to-edge APIs*: the app no longer paints the system bars.
+    `Prefs.applyChrome` dropped its `Window.setStatusBarColor` and
+    `setNavigationBarColor` calls, and both themes (the pack's and the Glyphs
+    Pack's) dropped their bar colours. A TV draws no bars, and from Android
+    15 the window draws behind them, so nothing anyone sees changes.
+  - *Orientation restriction*: the Play build no longer locks `MainActivity`
+    to landscape. Its listing is TV-only, where every screen is landscape. The
+    sideload build keeps the lock, since it can land on a phone.
+  - `tests/test_play_build.py` keeps both away. Play's report reads the whole
+    bundle, so a library call can still raise the first warning; the next
+    report says.
 - **Glyphs apps keep their own icon when the pack is applied.** The catalog
   mapped Core Builds Glyphs Pack to the main pack's cyan icon, overriding the
   companion's violet launcher art. It now uses the existing violet glyph mark

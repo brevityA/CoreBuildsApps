@@ -27,4 +27,15 @@
         android:required="true"
         tools:replace="android:required" />
 
+    <!-- No orientation lock on Play. Play's pre-launch report asks for it
+         gone: from Android 16 large screens ignore it, and the Play listing
+         is TV-only, where every screen is landscape already. The sideload
+         build keeps the lock (src/main, held by tools/validate.py), because
+         it can land on a phone and its layouts are drawn for landscape. -->
+    <application>
+        <activity
+            android:name=".MainActivity"
+            tools:remove="android:screenOrientation" />
+    </application>
+
 </manifest>

@@ -85,13 +85,13 @@
     "app/src/main/res/values/issue_prefill.xml": "fd85418cdd4ccdc59f0f0793b32fc7d96e01f23f80f7f38a3e3d4d7699393ced",
     "app/src/main/res/values/strings.xml": "729a0aa22b9f8b5d45fcea3480190406031beb67a958591d4a18cc25491266ec",
     "app/src/main/res/values/suite_hub.xml": "aff339700a9e6751b31ed189c2695e77ce18b80332f104f94e9235cdd05ef74a",
-    "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
+    "app/src/main/res/values/themes.xml": "2a4dd5dba6529c6f56bff18acdadbd193dd585fa266f6199d6fef4985d8d55ab",
     "glyphs/src/main/res/layout/glyphs_home.xml": "f937cab93c7cdd9a3e7c8707b05d3a4cb362bf07dce8d65bbc1745c0e1304f9c",
     "glyphs/src/main/res/values/colors.xml": "899a929d4478679daaf9e1adf6f9a04e6214361f44631c3dbe1e6635289178fb",
     "glyphs/src/main/res/values/dimens.xml": "a9b5758f1b31180fc8ce022edbc76bce21c93494b96a85a07b9f97eb610f72dc",
     "glyphs/src/main/res/values/strings.xml": "d95d048d9c4e1c35c373d0cde1d93fa8bff6a11e63e99302cb936fd5b0be0a9a",
     "glyphs/src/main/res/values/strings_home.xml": "17c322a7574c2409827d846ecea92c9c2d2d245c0a8641639ab3025929cc340f",
-    "glyphs/src/main/res/values/themes.xml": "04671aa0949e5c13039820d2762860c89ee84e240d061b9f5554ea00a3391c7f",
+    "glyphs/src/main/res/values/themes.xml": "9c4df0279da16d795dcbc7b1bfb3bd8bf479d45341edad81fb76e6f002eafe9d",
     "glyphs/src/main/res/xml/appfilter.xml": "9ad2b9b985790b617cf61cced8f86ac2cf7fe1813f8e509cdfa48bebc2cf6d03",
     "glyphs/src/main/res/xml/drawable.xml": "31480e87a9be883e6874f5b860b58d82bcb10bd3c27b6fcb18a0285702f49f6f",
     "tools/build_app_ui_mockups.py": "f53264d1126e04a2be6dafdb775121626ffc3a65fef7b6c715b8c7dbad724139",
@@ -101,7 +101,7 @@
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "c528dac668bde3ce5bf49a7b9f8390cea0561c5a76a25e3cac212fc822e3bcaf",
+  "inputs_digest": "af13b6bc85989bb227012d6c9ea9f1f1640ed7b70183584f972809d0f0217ba8",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
@@ -121,5 +121,5 @@
     "count": 19,
     "digest": "d9dc5c6e30087f7db5ef4958804d07e73799bb56d056a4b3f0e8ae688efef922"
   },
-  "renderer": "python 3.11.2, freetype 2.13.2, layout basic, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
+  "renderer": "python 3.11.17, freetype 2.13.2, layout raqm, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
 }
