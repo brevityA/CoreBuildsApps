@@ -27,6 +27,7 @@ colour kept as the one thread on the card.
 | Weight | Primary 40 · detail 32.8 / 27.2 (0.82 / 0.68), constant pack-wide — bolder than Classic's 32 because the disc carries mass the way the WuPlay mark does |
 | Keyline | The same presence pass Classic ships: a night ring keeps the white disc defined on a bright wallpaper |
 | Geometry | Unchanged — the catalog's glyphs, the committed Classic fit, nothing redrawn |
+| Owner-supplied art | **WuPlay** ships the mark its owner supplied, not a glyph: `source/wuplay.png`, its circle scaled onto the `r=211` disc and resampled, nothing else. No cut, no keyline. The black lobe is drawn for dark chrome, where it reads as part of the ground |
 
 A circle crops a square, so the bbox-corner fit is deliberately conservative:
 wide wordmarks fill the disc, square constructions sit inset like engraving.
@@ -46,6 +47,7 @@ same centring audit — with the Wu lockup:
 | Brand thread | The category kicker (VOD, STREAM, …) keeps each app's **brand accent** — the one colour on the card, and what Monet reads off it |
 | Names | Each app's own name (plus `banner_name` / `banner_glyph` / glyph-only overrides) — banners separate what monochrome squares cannot: 13 IPTV players share one coin, never one name |
 | Keyline | None — banners ship without the presence pass, exactly like Classic's |
+| Owner-supplied art | **WuPlay**'s banner is its owner's whole lockup, `source/wuplay.png` at 320×180: their mark, their wordmark, their layout, no kicker |
 
 Mappings: `appfilter-banners.xml` is derived from this pack's square
 appfilter with the same `_banner` suffix rule as `build_banners_pack.py`,
@@ -78,6 +80,7 @@ wu-pack/
 ├── svg/                 1022 square masters (mask knockout, 512)
 ├── banners/             1022 banner masters (Wu lockup, 1280×720)
 ├── webp/                squares + <d>_banner tiles; dup renders ship once
+├── source/wuplay.png    owner-supplied WuPlay lockup (5120×2880), pinned by hash
 ├── values/aliases.xml   square dup renders → canonical art
 ├── values/banner_aliases.xml
 ├── appfilter.xml         component → disc (copied from the glyph companion)
@@ -105,6 +108,8 @@ Both generators run the Classic catalog validation first (same gate
 `tools/build_icons.py` uses), then print receipts for everything they wrote.
 Gate: `python3 tests/test_wu_pack.py` (stdlib only — style constants,
 monochrome masters, mapping parity with both shipped appfilters, art
-resolution, sheet coverage).
+resolution, sheet coverage — plus one Pillow check that WuPlay's tiles are a
+resample of the supplied file and nothing more).
 
-Never hand-edit this folder — regenerate.
+Never hand-edit this folder — regenerate. The one file that is not generated
+is `source/wuplay.png`; replacing it means updating its hash in the test.

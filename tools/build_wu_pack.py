@@ -27,9 +27,14 @@ components. Writes deterministically:
   wu-pack/drawable.xml                  icon browser grid (from glyphs/)
   wu-pack/preview.svg / preview.png     contact sheet on pure black
 
+Owner-supplied art (PROVIDED) ships as supplied instead: WuPlay's square is
+its owner's mark and its banner their whole lockup, from
+wu-pack/source/wuplay.png, resampled and nothing else.
+
 Receipts voice: prints exactly what was written, counted.
 """
 import argparse
+import base64
 import io
 import json
 import re
@@ -67,6 +72,19 @@ SCALE_HI = 1.60
 MASK_ID = "wuDisc"
 WHITE = "#FFFFFF"
 CUT = "#000000"            # mask luminance: black cuts, white keeps
+
+# Owner-supplied art. WuPlay's owner provided its mark and banner, and both
+# ship exactly as provided: never redrawn as a glyph, never cut from a disc,
+# no keyline. The source is the 5120x2880 transparent lockup, mark left and
+# wordmark right. "mark" is the mark's circle in source pixels (1266 square);
+# the wordmark's W starts at x=1673, inside that box, so every column from
+# "word_x" on is cleared before the crop. Only the black lobe sits past it.
+PROVIDED = {
+    "wuplay": {"source": OUT / "source" / "wuplay.png",
+               "mark": (459, 752, 1725, 2018),
+               "word_x": 1673},
+}
+ART_ID = "wuArt"
 
 _STROKE_RE = re.compile(r'stroke="[^"]*"')
 _FILL_HEX_RE = re.compile(r'fill="(#[0-9A-Fa-f]{6}|url\([^)]*\))"')
@@ -137,10 +155,48 @@ def disc_body(icon, metrics, fits, stats):
             f"{body}</g>")
 
 
+def png_data_uri(image):
+    buf = io.BytesIO()
+    image.save(buf, "PNG", optimize=True)
+    return ("data:image/png;base64,"
+            + base64.b64encode(buf.getvalue()).decode("ascii"))
+
+
+def provided_square(drawable):
+    """The owner's mark on the 512 grid: its circle scaled onto the disc
+    (r=DISC_R) and centred, so it sits at a coin's size. Resampled only."""
+    from PIL import Image
+    spec = PROVIDED[drawable]
+    with Image.open(spec["source"]) as src:
+        src = src.convert("RGBA")
+        src.paste((0, 0, 0, 0), (spec["word_x"], 0, src.width, src.height))
+        mark = src.crop(spec["mark"])
+    side = 2 * DISC_R
+    tile = Image.new("RGBA", (GRID, GRID), (0, 0, 0, 0))
+    tile.paste(mark.resize((side, side), Image.LANCZOS),
+               (int(CENTER) - DISC_R, int(CENTER) - DISC_R))
+    return tile
+
+
+_provided_uri = {}
+
+
+def provided_image(drawable, uid):
+    """The owner's mark as one <image> on the 512 grid, the footprint a
+    coin takes, so the sheet and banners place it like any other."""
+    if drawable not in _provided_uri:
+        _provided_uri[drawable] = png_data_uri(provided_square(drawable))
+    return (f'<image id="{ART_ID}-{uid}" x="0" y="0" width="{GRID}" '
+            f'height="{GRID}" href="{_provided_uri[drawable]}"/>')
+
+
 def wu_svg(icon, uid, metrics, fits, stats):
     """One master: white disc rect behind a mask that keeps the disc and
     cuts the glyph. Standalone files use the drawable as uid; the contact
-    sheet inlines many icons, so ids must be unique per composition."""
+    sheet inlines many icons, so ids must be unique per composition.
+    Owner-supplied art takes the same 512 footprint as its own image."""
+    if icon["drawable"] in PROVIDED:
+        return provided_image(icon["drawable"], uid)
     mid = f"{MASK_ID}-{uid}"
     inner = disc_body(icon, metrics, fits, stats)
     return (
@@ -328,17 +384,22 @@ def main():
             from PIL import Image
             from svg_renderer import svg2png
             for icon in icons:
-                png = svg2png(url=str(SVG_DIR / f"{icon['drawable']}.svg"),
-                              output_width=GRID, output_height=GRID,
-                              background_color=None)
-                art = apply_presence(Image.open(io.BytesIO(png)))
+                if icon["drawable"] in PROVIDED:
+                    # As supplied: straight from the source, no keyline.
+                    art = provided_square(icon["drawable"])
+                else:
+                    png = svg2png(url=str(SVG_DIR / f"{icon['drawable']}.svg"),
+                                  output_width=GRID, output_height=GRID,
+                                  background_color=None)
+                    art = apply_presence(Image.open(io.BytesIO(png)))
                 WEBP_DIR.mkdir(parents=True, exist_ok=True)
                 art.save(WEBP_DIR / f"{icon['drawable']}{ART_EXT}", "WEBP",
                          lossless=True)
                 art_written += 1
             print(f"✓ WebP {GRID}px transparent written "
                   f"({art_written}/{len(icons)}) → wu-pack/webp/ "
-                  f"(night keyline)")
+                  f"(night keyline; {len(PROVIDED)} owner-supplied as "
+                  f"supplied: {', '.join(sorted(PROVIDED))})")
         except (ImportError, OSError) as exc:
             print(f"❌ rasterisation failed ({exc}) — SVG masters are on "
                   f"disk. Run: .venv/bin/pip install -r tools/requirements.txt")

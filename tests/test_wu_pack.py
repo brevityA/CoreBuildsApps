@@ -19,17 +19,24 @@ What this pins, and why:
    the fallback furniture whose drawables live in the Classic app;
 4. every drawable the XML names resolves — to a WebP on disk or through
    values/aliases.xml, exactly like Classic's duplicate renders;
-5. the contact sheet actually shows every icon.
+5. the contact sheet actually shows every icon;
+6. owner-supplied art ships as supplied: WuPlay's square and banner are a
+   resample of wu-pack/source/wuplay.png, a file pinned by hash, with no
+   glyph, mask, wordmark or keyline drawn over it.
 
 Stdlib only: like tests/test_glyphs_pack.py, this must run without a
-rasteriser, an Android SDK or the generator's venv.
+rasteriser, an Android SDK or the generator's venv. The one pixel check (6)
+needs Pillow, which CI installs first; without it that check skips.
 
 Run: python3 tests/test_wu_pack.py
 """
 from __future__ import annotations
 
+import base64
+import hashlib
 import json
 import re
+import struct
 import sys
 import unittest
 from pathlib import Path
@@ -44,6 +51,13 @@ GLYPH_APPFILTER = ROOT / "glyphs" / "src" / "main" / "res" / "xml" / "appfilter.
 HEX_RE = re.compile(r"#[0-9A-Fa-f]{6}")
 ITEM_RE = re.compile(r'<item component="([^"]+)" drawable="([^"]+)"')
 DRAWABLE_RE = re.compile(r'drawable="([^"]+)"')
+
+# Owner-supplied art: drawable -> sha256 of the file its owner supplied.
+# Replacing the art means replacing the file and this hash, on purpose.
+PROVIDED = {
+    "wuplay": "9aa21e1d112b8b1919a46893497b70eb276ef606b4738ced1e5bda3fa9eb3d9a",
+}
+DATA_PNG_RE = re.compile(r'href="data:image/png;base64,([A-Za-z0-9+/=]+)"')
 
 
 def read(path: Path) -> str:
@@ -88,6 +102,8 @@ class WuMasters(unittest.TestCase):
 
     def test_masters_are_monochrome_masked_discs(self) -> None:
         for path in sorted(SVG_DIR.glob("*.svg")):
+            if path.stem in PROVIDED:
+                continue    # its own art, pinned in WuProvidedArt
             src = read(path)
             with self.subTest(drawable=path.stem):
                 self.assertIn('viewBox="0 0 512 512"', src)
@@ -163,8 +179,10 @@ class WuPreview(unittest.TestCase):
     def test_contact_sheet_shows_every_icon(self) -> None:
         sheet = read(WU / "preview.svg")
         icons = catalog_drawables()
-        # one grid coin per icon plus the brand mark and the size ladder
-        coins = len(re.findall(r'mask id="wuDisc-', sheet))
+        # one grid coin per icon plus the brand mark and the size ladder;
+        # owner-supplied art takes a coin's place as its own image
+        coins = (len(re.findall(r'mask id="wuDisc-', sheet))
+                 + len(re.findall(r'<image id="wuArt-', sheet)))
         self.assertGreaterEqual(coins, len(icons) + 5)
         self.assertIn(">wu pack<", sheet)
 
@@ -194,6 +212,8 @@ class WuBanners(unittest.TestCase):
         icons = {i["drawable"]: i
                  for i in json.loads(read(ROOT / "tools" / "catalog.json"))["icons"]}
         for path in sorted((WU / "banners").glob("*.svg")):
+            if path.stem in PROVIDED:
+                continue    # the owner's own lockup, pinned in WuProvidedArt
             src = read(path)
             icon = icons[path.stem]
             with self.subTest(drawable=path.stem):
@@ -251,6 +271,96 @@ class WuBanners(unittest.TestCase):
     def test_banner_preview_exists(self) -> None:
         png = WU / "preview-banners.png"
         self.assertTrue(png.is_file() and png.stat().st_size > 20_000)
+
+
+def png_size(data: bytes) -> tuple[int, int]:
+    """Width and height from a PNG's IHDR, stdlib only."""
+    assert data[:8] == b"\x89PNG\r\n\x1a\n", "not a PNG"
+    return struct.unpack(">II", data[16:24])
+
+
+class WuProvidedArt(unittest.TestCase):
+    """WuPlay ships the art its owner supplied, unchanged: the square is the
+    mark, the banner the whole lockup. Not a glyph, not a coin, no keyline."""
+
+    def spec(self, drawable: str) -> dict:
+        src = read(TOOL)
+        m = re.search(rf'"{drawable}": \{{"source": OUT / "source" / '
+                      rf'"([^"]+)",\s*"mark": \((\d+), (\d+), (\d+), (\d+)\),'
+                      rf'\s*"word_x": (\d+)\}}', src)
+        self.assertIsNotNone(m, f"{drawable} missing from PROVIDED")
+        return {"source": WU / "source" / m.group(1),
+                "mark": tuple(int(m.group(i)) for i in range(2, 6)),
+                "word_x": int(m.group(6))}
+
+    def test_tool_and_test_pin_the_same_art(self) -> None:
+        src = read(TOOL)
+        block = re.search(r"^PROVIDED = \{\n(.*?)^\}", src, re.M | re.S)
+        self.assertIsNotNone(block, "PROVIDED missing from build_wu_pack.py")
+        have = set(re.findall(r'^    "([a-z0-9_]+)": \{', block.group(1), re.M))
+        self.assertEqual(have, set(PROVIDED),
+                         "owner-supplied art changed without its hash here")
+        self.assertTrue(set(PROVIDED) <= set(catalog_drawables()))
+
+    def test_source_is_the_supplied_file(self) -> None:
+        for drawable, digest in PROVIDED.items():
+            with self.subTest(drawable=drawable):
+                data = self.spec(drawable)["source"].read_bytes()
+                self.assertEqual(hashlib.sha256(data).hexdigest(), digest,
+                                 "the supplied art was edited or replaced")
+                self.assertEqual(png_size(data), (5120, 2880),
+                                 "the supplied lockup is 16:9 at 4x the master")
+
+    def test_masters_embed_the_art_and_draw_nothing_over_it(self) -> None:
+        for drawable in PROVIDED:
+            for path, size in ((SVG_DIR / f"{drawable}.svg", (512, 512)),
+                               (WU / "banners" / f"{drawable}.svg", (1280, 720))):
+                with self.subTest(master=str(path.relative_to(ROOT))):
+                    src = read(path)
+                    self.assertEqual(src.count(f'<image id="wuArt-{drawable}"'), 1)
+                    pngs = DATA_PNG_RE.findall(src)
+                    self.assertEqual(len(pngs), 1)
+                    self.assertEqual(png_size(base64.b64decode(pngs[0])), size)
+                    for drawn in ("<mask", "<path", "<circle", "<rect",
+                                  "<text", "stroke="):
+                        self.assertNotIn(drawn, src,
+                                         f"something is drawn over the art ({drawn})")
+
+    def test_shipped_tiles_are_a_resample_of_the_source(self) -> None:
+        """Pixels, not just files: the square is the mark's circle scaled
+        onto the r=211 disc (the wordmark's W cleared first), the banner the
+        whole lockup at 320x180, and nothing else — no keyline either."""
+        try:
+            from PIL import Image
+        except ImportError:
+            self.skipTest("Pillow not installed (CI installs it)")
+
+        def same(a, b) -> bool:
+            # Over two grounds, so alpha and every visible colour must match;
+            # lossless WebP may rewrite the colour of fully clear pixels.
+            for ground in ((0, 0, 0, 255), (255, 255, 255, 255)):
+                pa, pb = (Image.alpha_composite(Image.new("RGBA", x.size, ground),
+                                                x.convert("RGBA")) for x in (a, b))
+                if pa.tobytes() != pb.tobytes():
+                    return False
+            return True
+
+        for drawable in PROVIDED:
+            spec = self.spec(drawable)
+            with Image.open(spec["source"]) as src:
+                src = src.convert("RGBA")
+            banner = src.resize((320, 180), Image.LANCZOS)
+            clear = src.copy()
+            clear.paste((0, 0, 0, 0), (spec["word_x"], 0, clear.width, clear.height))
+            square = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
+            square.paste(clear.crop(spec["mark"]).resize((422, 422), Image.LANCZOS),
+                         (45, 45))
+            with self.subTest(drawable=drawable, art="square"):
+                with Image.open(WEBP_DIR / f"{drawable}.webp") as tile:
+                    self.assertTrue(same(tile, square), "square is not the mark as supplied")
+            with self.subTest(drawable=drawable, art="banner"):
+                with Image.open(WEBP_DIR / f"{drawable}_banner.webp") as tile:
+                    self.assertTrue(same(tile, banner), "banner is not the lockup as supplied")
 
 
 if __name__ == "__main__":

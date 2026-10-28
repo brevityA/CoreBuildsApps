@@ -19,6 +19,10 @@ every banner is its app's own wordmark in the pack's letters. That also
 means banners separate what monochrome squares cannot: the 13 IPTV players
 share one coin but never one name.
 
+Owner-supplied art (build_wu_pack.PROVIDED) is the exception: WuPlay's
+banner is its owner's own lockup, resampled from the source and nothing
+else — no coin, no stroke wordmark, no kicker, no recentring.
+
 Writes, mirroring build_banners + build_banners_pack:
   wu-pack/banners/<drawable>.svg        1280x720 master (4x)
   wu-pack/webp/<d>_banner.webp          320x180 RGBA lossless WebP
@@ -102,9 +106,26 @@ def coin_group(icon, uid, tx, ty, scale, stats):
             f'scale({scale:.5f})">{inner}</g>')
 
 
+def provided_banner(drawable, size):
+    """The owner's whole lockup at `size`. The source is 16:9, so this is
+    a straight resample."""
+    from PIL import Image
+    with Image.open(wu.PROVIDED[drawable]["source"]) as src:
+        return src.convert("RGBA").resize(size, Image.LANCZOS)
+
+
+_provided_uri = {}
+
+
 def banner_inner(icon, uid, stats):
     """Lockup body (no <svg> wrapper): coin + kicker + name, for both the
     master files and the inline preview."""
+    d = icon["drawable"]
+    if d in wu.PROVIDED:
+        if d not in _provided_uri:
+            _provided_uri[d] = wu.png_data_uri(provided_banner(d, (W, H)))
+        return (f'<image id="{wu.ART_ID}-{uid}" x="0" y="0" width="{W}" '
+                f'height="{H}" href="{_provided_uri[d]}"/>')
     name = icon.get("banner_name") or icon["name"]
     glyph = icon.get("banner_glyph") or icon["glyph"]
     accent = display_accent(icon["color"],
@@ -259,8 +280,10 @@ def main():
     for icon in icons:
         # Measure-and-shift the drawn ink to dead centre, the same audit
         # Classic banners pass: grids and letters carry side bearings.
-        write(BANNER_DIR / f"{icon['drawable']}.svg",
-              recentre(banner_svg(icon, icon["drawable"], stats)))
+        svg = banner_svg(icon, icon["drawable"], stats)
+        if icon["drawable"] not in wu.PROVIDED:
+            svg = recentre(svg)    # owner-supplied art keeps its own layout
+        write(BANNER_DIR / f"{icon['drawable']}.svg", svg)
     print(f"✓ banner SVG masters written ({len(icons)}/{len(icons)}) "
           f"→ wu-pack/banners/ ({W}×{H})")
 
@@ -272,12 +295,15 @@ def main():
         from svg_renderer import svg2png
         WEBP_DIR.mkdir(parents=True, exist_ok=True)
         for icon in icons:
-            raw = svg2png(url=str(BANNER_DIR / f"{icon['drawable']}.svg"),
-                          output_width=PNG_W, output_height=PNG_H,
-                          background_color=None)
-            Image.open(io.BytesIO(raw)).save(
-                WEBP_DIR / f"{icon['drawable']}_banner{ART_EXT}", "WEBP",
-                lossless=True)
+            if icon["drawable"] in wu.PROVIDED:
+                art = provided_banner(icon["drawable"], (PNG_W, PNG_H))
+            else:
+                raw = svg2png(url=str(BANNER_DIR / f"{icon['drawable']}.svg"),
+                              output_width=PNG_W, output_height=PNG_H,
+                              background_color=None)
+                art = Image.open(io.BytesIO(raw))
+            art.save(WEBP_DIR / f"{icon['drawable']}_banner{ART_EXT}", "WEBP",
+                     lossless=True)
             art_written += 1
         print(f"✓ banner WebP {PNG_W}×{PNG_H} transparent written "
               f"({art_written}/{len(icons)}) → wu-pack/webp/")

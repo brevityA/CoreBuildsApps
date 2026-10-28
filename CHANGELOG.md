@@ -18,7 +18,10 @@ All notable changes to the Core Builds Icon Pack. Format follows
   light tracked wordmark, category kicker in each brand's accent, the same
   1950 entries as the shipped banner appfilter. The Classic pack's art,
   validators and shipped app are untouched; `tests/test_wu_pack.py`
-  pins the style constants, monochrome masters and mapping parity.
+  pins the style constants, monochrome masters and mapping parity. WuPlay
+  ships the art its owner supplied, unchanged: its square is the mark and
+  its banner the whole lockup, both resampled from `wu-pack/source/wuplay.png`
+  with no coin, kicker or keyline added.
 - **The walls as a Projectivy wallpaper source.** Projectivy 4.51 or newer
   lists the pack under its wallpaper settings (wallpaper sources are a
   Projectivy Premium feature). Chosen there, the main collection, 132 walls,
