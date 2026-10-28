@@ -77,14 +77,16 @@ object ProjectivyWalls {
 
     /** True when a star changes what Projectivy rotates. */
     fun usesFavourites(context: Context): Boolean =
-        Plus.owned(context) &&
+        Plus.active(context) &&
             (Prefs.wallsSource(context) == FAVOURITES || Prefs.wallsNight(context) == FAVOURITES)
 
     /** The walls Projectivy gets now, from this TV's settings. */
     fun walls(context: Context, now: Long = System.currentTimeMillis()): List<Wallpaper> = pick(
         main = WallpaperCatalog.load(context),
         plus = WallpaperCatalog.loadPlus(context),
-        owned = Plus.owned(context),
+        // Bought or on trial: when the trial runs out, Projectivy's next
+        // fetch (its list is cached for an hour) is back to the main walls.
+        owned = Plus.active(context, now),
         source = Prefs.wallsSource(context),
         night = Prefs.wallsNight(context),
         isNight = DayNight.isNightAt(context, now),

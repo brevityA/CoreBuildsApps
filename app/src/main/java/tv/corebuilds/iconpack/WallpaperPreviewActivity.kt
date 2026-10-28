@@ -667,6 +667,12 @@ class WallpaperPreviewActivity : TvActivity() {
     // ---- Save ----------------------------------------------------------------
 
     private fun onSaveClicked() {
+        // The trial shows and sets the Plus walls; a copy in Pictures would
+        // outlast it, so saving one is the purchase's.
+        if (wallpapers.getOrNull(currentIndex)?.plus == true && !Plus.owned(this)) {
+            toast(getString(R.string.wp_plus_save_needs_purchase))
+            return
+        }
         val perm = WallpaperSetter.storagePermission()
         if (perm != null &&
             ContextCompat.checkSelfPermission(this, perm) != PackageManager.PERMISSION_GRANTED

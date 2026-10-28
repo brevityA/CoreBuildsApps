@@ -196,9 +196,9 @@ this one repo. When the App trio is also set, the App wins. When the
 token expires, requests fail with a 502 and the auditor falls back to the
 QR; replace the secret and redeploy.
 
-### Core Builds Plus: priority requests (`GOOGLE_SERVICE_ACCOUNT_JSON`)
+### Core Premium: priority requests (`GOOGLE_SERVICE_ACCOUNT_JSON`)
 
-The Google Play build sells Core Builds Plus, a one-time product
+The Google Play build sells Core Premium (Plus in code), a one-time product
 (`core_builds_plus`), and sends its purchase token as `plus_token` with
 each one-press request. With a service account configured, the broker
 asks the Google Play Developer API

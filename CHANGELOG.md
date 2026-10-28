@@ -17,20 +17,30 @@ All notable changes to the Core Builds Icon Pack. Format follows
   register their own source, so one TV can hold several without a clash.
   Settings → Troubleshooting and FAQ has a card on it. Not yet seen inside
   Projectivy: no build of this has run on a TV.
-- **Night loop, a Core Builds Plus extra.** During night hours (20–07,
+- **Core Premium free for 24 hours, once per TV.** Beside the price, the
+  Premium card offers *Try free for 24 hours*. It switches on loop rotation,
+  the night loop, Projectivy walls, My requests and Spectra, and Settings
+  shows the time left on the Core Premium row. Priority requests, Request all
+  and saving a Spectra wall to Pictures stay with the purchase: the request
+  service checks the purchase with Google, and a saved copy would outlast the
+  trial. The trial runs on the TV's own clock and sends nothing; a clock set
+  back ends it instead of restarting it. It is not a Play offer, since Play
+  has trials for subscriptions only, so clearing the app's data offers it
+  again. Like the purchase, it appears once the request service is live.
+- **Night loop, a Core Premium extra.** During night hours (20–07,
   21–07, 22–06 or 19–07, by the TV's clock) the live wallpaper plays a second
   loop, then hands back to the one picked in the preview. A home screen left
   on changes over at the hour. Only loops already on the TV are offered, and
   nothing downloads. Settings → Night loop and Night hours.
-- **Request all, a Core Builds Plus extra.** Missing icons gains a Request
+- **Request all, a Core Premium extra.** Missing icons gains a Request
   all button. Pressed twice, it files up to 10 of the listed apps this TV has
   not requested yet as priority requests in one send, and My requests lists
-  each. The request service takes it only when Google confirms the Plus
+  each. The request service takes it only when Google confirms the Premium
   purchase, at most three times a day per purchase, through a new `/v1/batch`
   route. Each app is filed, or +1ed, exactly as one press would file it.
   The privacy policy, the Data safety answer and Console step 8 say so. The
   request service must be redeployed for it to work.
-- **Projectivy walls, a Core Builds Plus extra.** Two Settings rows choose
+- **Projectivy walls, a Core Premium extra.** Two Settings rows choose
   what Projectivy rotates from the pack, by day and during night hours: all
   walls (with Spectra), favourites, or one of 12 series. A choice that
   matches no wall falls back to the day choice, then to everything, so the
@@ -39,19 +49,26 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Changed
 
-- **Plus lists six extras.** Priority requests, My requests, loop rotation,
-  the night loop, Projectivy walls and Spectra. Every icon, the main
-  collection (in Projectivy's rotation too) and every screen still ship to
-  everyone. The Plus card, the Settings row, the Play listing,
-  `docs/PLAY-CONSOLE.md` §8 and `docs/privacy.html` (effective 22 October
-  2026) say so.
+- **Core Builds Plus is now Core Premium, with six extras.** Priority
+  requests, My requests, loop rotation, the night loop, Projectivy walls and
+  Spectra. Every icon, the main collection (in Projectivy's rotation too) and
+  every screen still ship to everyone. The Premium card, the Settings group,
+  the Spectra chip and badge, the Play listing, the request service's issue
+  text, `docs/PLAY-CONSOLE.md` §8 and `docs/privacy.html` (effective 28
+  October 2026) say so. The Play product ID stays `core_builds_plus`: buyers
+  never see it, and Play never renames one.
 - **`tests/test_projectivy_walls.py` holds the Projectivy contract.** 14
   tests: the AIDL and contract constants are Core Motion's byte for byte,
   the hand-written parcel keeps Core Motion's field order, the manifest
   carries what Projectivy reads, each build gets its own id, and the free
-  and Plus tiers split where they should. It runs in `build.yml` and
+  and Premium tiers split where they should. It runs in `build.yml` and
   `suite-ci.yml`. The app module's first JUnit tests, `DayNightTest` (5)
   and `ProjectivyWallsTest` (7), run in CI's existing unit-test task.
+- **`tests/test_play_build.py` holds the trial to its word.** `PlusTrial` (4
+  tests) checks that it lasts what the button says and starts once, that only
+  the on-device extras read it, and that the purchase-only three, the token
+  and the policy stay as stated. JUnit `PlusTrialTest` (4) runs its clock:
+  24 hours, a clock set back ends it, and the time left never reads zero.
 
 ### Fixed
 

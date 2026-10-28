@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 
 /**
  * Two ways to support Core Builds, as codes a phone camera reads off the TV.
@@ -17,14 +18,17 @@ import android.widget.TextView
  * whether anyone gives or not; the screen says so rather than leaving a
  * reader to wonder.
  *
- * The Google Play build shows Core Builds Plus in the codes' place: Play's
- * Payments policy keeps a Play app's payments inside Play Billing. Plus is
- * sold only once the request broker is baked in (audit_request_endpoint),
- * because priority requests are the whole of what it adds.
+ * The Google Play build shows Core Premium (Plus in code) in the codes'
+ * place: Play's Payments policy keeps a Play app's payments inside Play
+ * Billing. Premium is sold only once the request broker is baked in
+ * (audit_request_endpoint), because priority requests are part of what it
+ * sells. While it is on sale and this TV has not had it, the card also
+ * offers the one 24-hour trial ([Plus.startTrial]).
  */
 class SupportActivity : TvActivity() {
 
     private var plus: PlusSession? = null
+    private var lastState: PlusState? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Prefs.applyChrome(this)
@@ -63,8 +67,10 @@ class SupportActivity : TvActivity() {
 
     /** One Plus state on the card; null means Plus is not on sale in this build yet. */
     private fun render(state: PlusState?) {
+        lastState = state
         val status = findViewById<TextView>(R.id.support_plus_status)
         val button = findViewById<TextView>(R.id.support_plus_buy)
+        val trial = Plus.trial(Plus.trialStart(this), System.currentTimeMillis())
         when (state) {
             null -> {
                 status.setText(R.string.plus_not_yet)
@@ -75,7 +81,13 @@ class SupportActivity : TvActivity() {
                 button.setText(R.string.plus_loading_button)
             }
             is PlusState.ForSale -> {
-                status.setText(R.string.plus_for_sale)
+                status.text = when (trial) {
+                    is Plus.Trial.Running ->
+                        getString(R.string.plus_trial_running_fmt, Plus.trialLeftLabel(this, trial.leftMs))
+                    Plus.Trial.Ended ->
+                        getString(R.string.plus_trial_ended) + " " + getString(R.string.plus_for_sale)
+                    Plus.Trial.Unused -> getString(R.string.plus_for_sale)
+                }
                 button.text = getString(R.string.plus_buy_fmt, state.price)
             }
             PlusState.Pending -> {
@@ -95,12 +107,29 @@ class SupportActivity : TvActivity() {
         // Only an item on sale is a control. A focused view that stops being
         // focusable hands the cursor to whatever Android picks next, so Back
         // takes it first, deliberately.
+        val back = findViewById<View>(R.id.support_back)
         val buyable = state is PlusState.ForSale
-        if (!buyable && button.hasFocus()) findViewById<View>(R.id.support_back).requestFocus()
+        if (!buyable && button.hasFocus()) back.requestFocus()
         button.isFocusable = buyable
         button.isClickable = buyable
         button.setOnClickListener(if (buyable) View.OnClickListener { plus?.buy() } else null)
         if (buyable) button.requestFocus()
+
+        // The trial, offered once, and only beside something to buy after it.
+        val tryIt = findViewById<TextView>(R.id.support_plus_trial)
+        val offer = buyable && trial is Plus.Trial.Unused
+        if (!offer && tryIt.hasFocus()) back.requestFocus()
+        tryIt.visibility = if (offer) View.VISIBLE else View.GONE
+        tryIt.setOnClickListener(if (offer) View.OnClickListener { startTrial() } else null)
+    }
+
+    private fun startTrial() {
+        if (Plus.startTrial(this)) {
+            Toast.makeText(this, getString(R.string.plus_trial_started_fmt,
+                                           Plus.trialLeftLabel(this, Plus.TRIAL_MS)),
+                           Toast.LENGTH_LONG).show()
+        }
+        render(lastState)
     }
 
     private fun show(qrId: Int, urlId: Int, url: String, side: Int) {

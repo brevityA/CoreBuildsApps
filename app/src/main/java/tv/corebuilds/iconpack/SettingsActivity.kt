@@ -219,12 +219,18 @@ class SettingsActivity : TvActivity() {
         showPlusRows()
     }
 
-    /** Each Plus row's value: its setting when owned, "Plus" while locked. */
+    /** Each Plus row's value: its setting when on (bought or on trial), "Premium" while locked. */
     private fun showPlusRows() {
         if (!Plus.shown(this)) return
-        val owned = Plus.owned(this)
-        findViewById<TextView>(R.id.set_plus_value).setText(
-            if (owned) R.string.settings_plus_owned else R.string.settings_plus_buy)
+        val now = System.currentTimeMillis()
+        val owned = Plus.active(this, now)
+        val trial = Plus.trial(Plus.trialStart(this), now)
+        findViewById<TextView>(R.id.set_plus_value).text = when {
+            Plus.owned(this) -> getString(R.string.settings_plus_owned)
+            trial is Plus.Trial.Running ->
+                getString(R.string.settings_plus_trial_fmt, Plus.trialLeftLabel(this, trial.leftMs))
+            else -> getString(R.string.settings_plus_buy)
+        }
         findViewById<TextView>(R.id.set_rotate_value).text = when {
             !owned -> getString(R.string.settings_plus_locked)
             else -> getString(when (Prefs.liveRotateHours(this)) {

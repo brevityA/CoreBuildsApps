@@ -185,12 +185,13 @@ class TheClaimsMatchTheCode(unittest.TestCase):
         # The rate-limit bucket's KV TTL is the "62 minutes" the page states.
         self.assertIn("expirationTtl: 3700", worker)
         self.assertIn("IP address</strong>, held by the broker for at most 62 minutes", text)
-        self.assertIn("SHA-256 hash of a Plus purchase token</strong>", text)
+        self.assertIn("SHA-256 hash of a Premium purchase token</strong>", text)
 
     def test_the_purchase_it_describes_is_the_one_sold_and_when(self):
-        # The page describes Core Builds Plus and the condition it is sold
-        # under, so it is true both before and after the broker is baked in.
-        self.assertIn("Core Builds Plus", self.html)
+        # The page describes Core Premium (Plus in code) and the condition it
+        # is sold under, so it is true both before and after the broker is
+        # baked in.
+        self.assertIn("Core Premium", self.html)
         text = flat(self.html)
         self.assertIn("offered only in builds where the request broker is enabled", text)
         self.assertIn("Until then the Play build offers no purchases", text)

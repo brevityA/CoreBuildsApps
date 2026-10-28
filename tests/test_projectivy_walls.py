@@ -142,7 +142,8 @@ class TierTests(unittest.TestCase):
         self.assertIn("if (!owned) return main", pick)
         self.assertLess(pick.index("if (!owned) return main"), pick.index("main + plus"))
         live = self.walls.split("fun walls(", 1)[1].split("\n    )\n", 1)[0]
-        self.assertIn("owned = Plus.owned(context)", live)
+        # Bought or on trial; Plus.active is false off Play and after the trial.
+        self.assertIn("owned = Plus.active(context, now)", live)
 
     def test_both_rows_are_plus_and_tell_projectivy(self):
         for row, setter in (("set_walls_row", "Prefs.setWallsSource"),
