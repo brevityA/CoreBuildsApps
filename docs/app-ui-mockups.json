@@ -17,8 +17,8 @@
       "structure": "ff531f20bb2e93b7e2285712fe2651a53fadfad16acf5462ff16a953af4df808"
     },
     "app-ui-faq.png": {
-      "bytes": 162217,
-      "structure": "ada4e0bfa51eb4bda720461d7bbbf2fca57076be3e9a10752213f67dc45c57fd"
+      "bytes": 161783,
+      "structure": "4034b5f0e2df8f2fbc6c2cbc49dc64db2f4b1873f5f757a9086794094ead63a9"
     },
     "app-ui-glyphs-home.png": {
       "bytes": 86142,
@@ -65,7 +65,7 @@
     "app/src/main/res/layout/activity_requests.xml": "9df584f2307f9d39f149267935bfe0303e5b01f242e820a8a3c53478bc3024fb",
     "app/src/main/res/layout/activity_settings.xml": "984cd5c7b878b3ea236aad440f4e54ef17c3328d13d88f5e6ed53b8490b62ed2",
     "app/src/main/res/layout/activity_suite.xml": "48d703fbff75550a6e2742a79f9119216c22829908dd68cc04421d134b4988a7",
-    "app/src/main/res/layout/activity_support.xml": "bfc1b0ae21fa88c1fd675a2ea5be0ef73abb497dbe153dcd012d6e4969c33278",
+    "app/src/main/res/layout/activity_support.xml": "555332a5ee464f03e04783012b0617e1a595f468d5bb0bc5c709e0dc5a0bf1c1",
     "app/src/main/res/layout/activity_wallpaper_preview.xml": "7743aa8ceaccc98bc72bfff391fb9a0579764c5312801580f8d8227f7ffea473",
     "app/src/main/res/layout/activity_wallpapers.xml": "0fc98170040d477e03bc4388aa4d55f6200b44931bb34133e081e300bf0f53f9",
     "app/src/main/res/layout/activity_whats_new.xml": "07202a4d6c480101043885cefcc1d55afec0f2d9d1eabdc9c19c4d12195ff79d",
@@ -84,7 +84,7 @@
     "app/src/main/res/values/icon_pack.xml": "c6efd5efda38df7c364bf607f673f75dfbf450d24eb06e628485e0772e3519d4",
     "app/src/main/res/values/integers.xml": "11f53fa581807ef4bc77de22cd01c3ad55db7e180b0d13a051a1a6cdbf819c6e",
     "app/src/main/res/values/issue_prefill.xml": "fd85418cdd4ccdc59f0f0793b32fc7d96e01f23f80f7f38a3e3d4d7699393ced",
-    "app/src/main/res/values/strings.xml": "765cacf019f78942a8bdacd7119e91c4dba894b4849242286780c7ef9cfea74e",
+    "app/src/main/res/values/strings.xml": "ea58b76684bf2654e299d88fd21d9232d9b8f08437e0a7fca51fa2aefdefc9b8",
     "app/src/main/res/values/suite_hub.xml": "aff339700a9e6751b31ed189c2695e77ce18b80332f104f94e9235cdd05ef74a",
     "app/src/main/res/values/themes.xml": "ecac526951fe40b6c5c01df0ec36730d0e197fd9511862cf587a2143773b46be",
     "glyphs/src/main/res/layout/glyphs_home.xml": "f937cab93c7cdd9a3e7c8707b05d3a4cb362bf07dce8d65bbc1745c0e1304f9c",
@@ -102,7 +102,7 @@
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "70ffc285bdf35b3f2413e1b589eb9b4e634b1166024401f6101601ebc693b64d",
+  "inputs_digest": "7c1b87f304955955aae06044b48627e6c61ea59b2d02cd8d1fe74db6a82aba45",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,

@@ -42,7 +42,7 @@ and <code>tv.corebuilds.iconpack.glyphs.play</code>, which have no network code
 and send nothing) and Core Builds Glyphs (<code>tv.corebuilds.glyphs</code>, the
 icon pack drawn in glyph art, covered wherever this page says "the app").</p>
 
-<p><strong>Effective:</strong> 22 October 2026.</p>
+<p><strong>Effective:</strong> 28 October 2026.</p>
 
 <h2>There is no account, and no profile</h2>
 <p>The app has no sign-in, no user identifier and no analytics, advertising or
@@ -82,11 +82,11 @@ described below. Nothing is collected in the background.</p>
         enabled, the Core Builds broker, which files the issue on your behalf</td>
   </tr>
   <tr>
-    <td>Google Play build, if you own Core Builds Plus: you press
+    <td>Google Play build, if you own Core Premium: you press
         <em>Request icon</em></td>
     <td>The same request, plus this TV's Google Play purchase token for Core
-        Builds Plus. The broker asks Google's Play Developer API whether the
-        token is a real Plus purchase that has not been cancelled or refunded,
+        Premium. The broker asks Google's Play Developer API whether the
+        token is a real Premium purchase that has not been cancelled or refunded,
         and if so labels the issue <em>priority</em>. The token is never
         logged, filed or stored: a one-way SHA-256 hash of it is kept with
         Google's answer for at most six hours (ten minutes when the answer is
@@ -94,7 +94,7 @@ described below. Nothing is collected in the background.</p>
     <td>The Core Builds broker, which checks the token with Google</td>
   </tr>
   <tr>
-    <td>Google Play build, if you own Core Builds Plus: you press
+    <td>Google Play build, if you own Core Premium: you press
         <em>Request all</em> twice</td>
     <td>The same request for up to 10 of the missing apps on the list that
         this TV has not requested yet, in one send: each app's name and
@@ -104,7 +104,7 @@ described below. Nothing is collected in the background.</p>
     <td>The Core Builds broker, which checks the token with Google</td>
   </tr>
   <tr>
-    <td>Google Play build, with Core Builds Plus: you open <em>My requests</em></td>
+    <td>Google Play build, with Core Premium or its trial: you open <em>My requests</em></td>
     <td>One request per icon request filed from this TV, asking for that
         public issue's state by its number (at most 30 reads in any hour; an issue
         read in the last 10 minutes is not read again). Nothing about you or the TV is sent.</td>
@@ -138,7 +138,7 @@ described below. Nothing is collected in the background.</p>
   advertising network, no data broker, no analytics provider and no server of
   ours that stores your activity. The broker, when it is enabled, keeps your IP
   address for at most 62 minutes to rate-limit requests, never writes it to the
-  issue, and keeps nothing else beyond the Plus hash described above. Its code
+  issue, and keeps nothing else beyond the Premium hash described above. Its code
   is public: <code>tools/icon_request_broker/</code> in the repository.</p>
 </div>
 
@@ -153,11 +153,12 @@ sends only that app's name and component.</p>
 <p>If you use <em>Export</em>, wallpaper masters are copied into
 <code>Pictures/CoreBuilds</code> on your own storage so a launcher such as Monet
 can rotate them. Downloaded wallpapers and loops are cached in the app's private
-storage. On the Google Play build the app also keeps the Core Builds Plus
-purchase token, if you own Plus, and for <em>My requests</em> the list of
+storage. On the Google Play build the app also keeps the Core Premium
+purchase token, if you own Premium; the time you started its 24-hour trial, if
+you did; and for <em>My requests</em> the list of
 requests filed from this TV (up to 200: each app's name, component and issue
 number, all of which are already public in the issue). Live loop rotation, the
-night loop and the Projectivy walls settings run on the TV and send nothing. Everything in the app's private storage is removed
+night loop, the Projectivy walls settings and the trial run on the TV and send nothing. Everything in the app's private storage is removed
 when you clear the app's data or uninstall the app. Exported wallpapers are
 ordinary files in your <code>Pictures</code> folder: they stay there until you
 delete them.</p>
@@ -175,21 +176,25 @@ delete them.</p>
       for its own self-update and the Glyphs companion. The Play build removes
       this permission entirely.</li>
   <li><strong>Google Play billing</strong> — Google Play build only, to sell
-      and confirm the Core Builds Plus purchase.</li>
+      and confirm the Core Premium purchase.</li>
 </ul>
 
 <h2>Purchases</h2>
 <p>The GitHub / Downloader build has no purchases. The Google Play build can
-offer one: <strong>Core Builds Plus</strong>, an optional one-time purchase
+offer one: <strong>Core Premium</strong>, an optional one-time purchase
 (no subscription) that adds priority icon requests, <em>My requests</em>, live
 loop rotation, the night loop, the choice of what Projectivy rotates from the
 pack, and the Spectra wallpapers. It is offered only in builds where
 the request broker is enabled, because priority requests need it. Until then
 the Play build offers no purchases.</p>
+<p>Where it is offered, each TV can try it free for 24 hours, once. The trial
+is kept on the TV by the app's own clock: starting it sends nothing, involves
+no payment detail, and ends by itself. It does not include priority requests
+or saving Spectra walls to Pictures, which come with the purchase.</p>
 <p>Payment is processed by Google Play under Google's own privacy policy. No
 card or billing detail, Google account name or e-mail address ever reaches the
 app or the broker: the app learns only whether this TV's Google account owns
-Plus, and keeps the purchase token Play gives it. Play Console gives developers
+Premium, and keeps the purchase token Play gives it. Play Console gives developers
 an order record (order number, product, price, date, country), which Core
 Builds uses only for refunds and tax. Refunds go through Google Play.</p>
 
@@ -200,7 +205,8 @@ from anyone, including children.</p>
 
 <h2>Your control</h2>
 <p>On the TV, clearing the app's data removes its settings, cache, request list
-and Plus token. Off the TV, only three things can exist, and only after you
+and Premium token, and the record of a trial (so clearing it offers the trial
+again). Off the TV, only three things can exist, and only after you
 press <em>Request icon</em>:</p>
 <ul>
   <li><strong>The public issue.</strong> Filed from your browser, it is yours:
@@ -212,7 +218,7 @@ press <em>Request icon</em>:</p>
   <li><strong>Your IP address</strong>, held by the broker for at most 62
       minutes for rate limiting. It expires by itself and is never written anywhere
       else.</li>
-  <li><strong>A SHA-256 hash of a Plus purchase token</strong>, held by the
+  <li><strong>A SHA-256 hash of a Premium purchase token</strong>, held by the
       broker with Google's answer for at most six hours. It expires by
       itself.</li>
 </ul>

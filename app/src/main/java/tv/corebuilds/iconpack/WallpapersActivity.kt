@@ -32,11 +32,12 @@ import androidx.recyclerview.widget.RecyclerView
  * video pickers find them - so Live, Export and Select all save every loop
  * in one go instead of one preview at a time.
  *
- * The Google Play build adds the Core Builds Plus walls (series 15, Spectra)
- * once Plus is on sale or owned: a Plus chip after All, a PLUS badge, and
- * without Plus owned a press opens the Plus card instead of the preview, and
- * an export leaves them out. They are not part of New, which stays the
- * main collection's release.
+ * The Google Play build adds the Core Premium walls (series 15, Spectra; Plus
+ * in code) once Premium is on sale or owned: a Premium chip after All, a
+ * PREMIUM badge, and without Premium or its trial a press opens the Premium
+ * card instead of the preview. An export leaves them out unless Premium is
+ * bought. They are not part of New, which stays the main collection's
+ * release.
  *
  * Favourites are starred in the preview ([Prefs.wallpaperFavourites]); once
  * there is one, a Favourites chip follows All (and Plus), and starred tiles
@@ -83,8 +84,8 @@ class WallpapersActivity : TvActivity() {
         adapter = WallpaperAdapter(all) { item ->
             if (item.plus && !Plus.unlocked(this)) return@WallpaperAdapter
             // The preview pages through its list, so it gets only what opens.
-            val owned = Plus.owned(this)
-            val visible = adapter.currentItems().filter { !it.plus || owned }
+            val on = Plus.active(this)
+            val visible = adapter.currentItems().filter { !it.plus || on }
             val index = visible.indexOfFirst { it.url == item.url }.coerceAtLeast(0)
             startActivity(
                 Intent(this, WallpaperPreviewActivity::class.java).apply {
@@ -304,7 +305,8 @@ class WallpapersActivity : TvActivity() {
     private fun beginExport(picked: List<Wallpaper>) {
         // Stills and loops travel together: WallpaperExporter sends each to
         // its own shared folder (Pictures / Movies), so a mixed selection
-        // is one progress screen, not two. Plus walls go only with Plus.
+        // is one progress screen, not two. Plus walls go only with the
+        // purchase: a copy in Pictures outlasts the trial.
         val owned = Plus.owned(this)
         val wallpapers = picked.filter { !it.plus || owned }
         val held = picked.size - wallpapers.size

@@ -27,7 +27,7 @@ import java.util.concurrent.Executors
  * hour can spend it again; two still stay at GitHub's 60.
  *
  * Opened from Settings, and only through [Plus.unlocked]; it checks again
- * itself so a stale intent cannot open it without Plus.
+ * itself so a stale intent cannot open it without Plus (bought or on trial).
  */
 class RequestsActivity : TvActivity() {
 
@@ -37,7 +37,7 @@ class RequestsActivity : TvActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         Prefs.applyChrome(this)
         super.onCreate(savedInstanceState)
-        if (!Plus.owned(this)) {
+        if (!Plus.active(this)) {
             finish()
             return
         }

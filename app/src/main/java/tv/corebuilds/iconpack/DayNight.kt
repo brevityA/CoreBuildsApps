@@ -36,9 +36,14 @@ object DayNight {
     fun isNightAt(context: Context, now: Long = System.currentTimeMillis()): Boolean =
         isNight(hourOf(now), window(context))
 
-    /** True when the schedule can change what plays: Plus owned and a night loop chosen. */
+    /**
+     * True when the schedule can change what plays: Plus on (bought or on
+     * trial) and a night loop chosen. A trial that ends mid-evening hands
+     * back at the engine's next look: the home screen returning, or the
+     * boundary it already scheduled.
+     */
     fun active(context: Context): Boolean =
-        Plus.owned(context) && Prefs.nightLoopId(context) != null
+        Plus.active(context) && Prefs.nightLoopId(context) != null
 
     /**
      * The loop the engine should play at [now]: the night loop during night

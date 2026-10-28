@@ -138,7 +138,7 @@ export function validateBatch(payload) {
   const unknown = Object.keys(payload).filter((k) => !["apps", "device", "plus_token"].includes(k));
   if (unknown.length) return { ok: false, status: 400, error: `unknown fields: ${unknown.join(", ")}` };
   if (typeof payload.plus_token !== "string") {
-    return { ok: false, status: 400, error: "plus_token is required: Request all is a Core Builds Plus extra" };
+    return { ok: false, status: 400, error: "plus_token is required: Request all is a Core Premium extra" };
   }
   const apps = payload.apps;
   if (!Array.isArray(apps) || apps.length === 0 || apps.length > BATCH_MAX) {
@@ -407,7 +407,7 @@ export function reportKind({ mapped }) {
  */
 export function issueBody({ appName, component, device, mapped = false, priority = false }) {
   return reportBody({ appName, component, device, mapped }) + (priority
-    ? "\n\n_Core Builds Plus: the purchase was checked with Google Play, so this is a priority request._"
+    ? "\n\n_Core Premium: the purchase was checked with Google Play, so this is a priority request._"
     : "");
 }
 
@@ -466,7 +466,7 @@ async function ensureLabel(token, { label, description }) {
 }
 
 const PRIORITY_KIND = { label: PRIORITY_LABEL,
-  description: "Requested by a Core Builds Plus owner; done first" };
+  description: "Requested by a Core Premium owner; done first" };
 
 async function fileOrComment(token, value, ready = null) {
   // A batch ensures each label once, not once per app: Workers cap the
@@ -485,7 +485,7 @@ async function fileOrComment(token, value, ready = null) {
         `+1 from the in-app auditor's one-press request` +
         (value.device ? ` — ${value.device}` : "") +
         ". A repeat counts as a vote, not a new issue." +
-        (value.priority ? " From a Core Builds Plus owner, so it is now priority." : "") }),
+        (value.priority ? " From a Core Premium owner, so it is now priority." : "") }),
     });
     if (value.priority) {
       await ensure(PRIORITY_KIND);
@@ -538,7 +538,7 @@ export function discordPayload(value) {
         { name: "Component name", value: "`" + value.component + "`" },
         { name: "Device", value: value.device || "_not supplied_" },
         ...(value.priority
-          ? [{ name: "Priority", value: "Core Builds Plus, checked with Google Play" }]
+          ? [{ name: "Priority", value: "Core Premium, checked with Google Play" }]
           : []),
       ],
       footer: { text: "One-press anonymous auditor request — convert to a GitHub issue" },
@@ -632,7 +632,7 @@ async function handleBatch(request, env) {
   if (!(await verifyPlus(env, plusToken))) {
     logEvent({ evt: "batch_refused" });
     return json({ ok: false,
-                  error: "Request all is a Core Builds Plus extra; Google Play did not confirm this purchase" },
+                  error: "Request all is a Core Premium extra; Google Play did not confirm this purchase" },
                 403);
   }
   if (!(await batchAllowed(env, await sha256Hex(plusToken)))) {

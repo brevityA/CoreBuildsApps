@@ -69,7 +69,9 @@ class ControlTests(unittest.TestCase):
         self.assertIn('getString(R.string.audit_request_endpoint).isNotBlank()', show)
         self.assertIn("!Plus.owned(this) -> getString(R.string.audit_request_all_locked)", show)
         press = self.auditor.split("private fun requestAll()", 1)[1].split("\n    }\n\n", 1)[0]
-        self.assertIn("if (!Plus.unlocked(this) || requestInFlight) return", press)
+        # The purchase, not the trial: the broker files a batch only on a
+        # token Google confirms, so the trial must not arm it.
+        self.assertIn("if (!Plus.unlocked(this, purchase = true) || requestInFlight) return", press)
         layout = read(ROOT / "app/src/main/res/layout/activity_auditor.xml")
         button = layout.split('android:id="@+id/audit_request_all"', 1)[1].split("/>", 1)[0]
         self.assertIn('android:visibility="gone"', button)

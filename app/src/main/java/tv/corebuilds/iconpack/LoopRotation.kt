@@ -38,11 +38,12 @@ object LoopRotation {
 
     /**
      * Called by the engine as the home screen comes back. Moves the live loop
-     * choice when Plus is owned, rotation is on and the interval has passed
-     * since the loop last changed (by hand or by rotation); true when it did.
+     * choice when Plus is on (bought or on trial), rotation is on and the
+     * interval has passed since the loop last changed (by hand or by
+     * rotation); true when it did.
      */
     fun advanceIfDue(context: Context, now: Long = System.currentTimeMillis()): Boolean {
-        if (!Plus.owned(context)) return false
+        if (!Plus.active(context, now)) return false
         val hours = Prefs.liveRotateHours(context)
         if (hours <= 0) return false
         val since = Prefs.liveLoopChangedAt(context)

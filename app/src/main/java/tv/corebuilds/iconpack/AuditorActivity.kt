@@ -218,8 +218,9 @@ class AuditorActivity : TvActivity() {
     /**
      * The header's Request all: Google Play only (with Plus on sale or owned),
      * only with a broker baked in, and only while some missing app has not
-     * been requested from this TV. Locked, it reads "Plus" and opens the Plus
-     * card, like every other Plus control.
+     * been requested from this TV. Locked, it reads "Premium" and opens the
+     * Plus card, like every other Plus control. The trial does not unlock it:
+     * the broker files a batch only on a purchase Google confirms.
      */
     private fun showRequestAll() {
         val button = findViewById<TextView>(R.id.audit_request_all)
@@ -241,7 +242,7 @@ class AuditorActivity : TvActivity() {
      * not something a stray press of the remote should file.
      */
     private fun requestAll() {
-        if (!Plus.unlocked(this) || requestInFlight) return
+        if (!Plus.unlocked(this, purchase = true) || requestInFlight) return
         val pending = pendingBatch()
         val token = PlusStore.purchaseToken(this)
         if (pending.isEmpty() || token == null) {

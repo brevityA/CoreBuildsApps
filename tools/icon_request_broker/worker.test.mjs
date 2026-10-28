@@ -532,7 +532,7 @@ test("a Plus request files with the priority label, and the token reaches no one
   const [, created] = stub.sent.find(([u, b]) => u.endsWith("/issues") && b);
   const issue = JSON.parse(created);
   assert.deepEqual(issue.labels, [ISSUE_LABEL, PRIORITY_LABEL]);
-  assert.ok(issue.body.includes("Core Builds Plus"));
+  assert.ok(issue.body.includes("Core Premium"));
   for (const [url, body] of stub.sent) {
     if (url.includes("androidpublisher.googleapis.com")) continue;
     assert.ok(!url.includes(PLUS_TOKEN) && !body.includes(PLUS_TOKEN), `token sent to ${url}`);
