@@ -269,6 +269,30 @@ class SeparateApps(unittest.TestCase):
             signing = gradle.split("signingConfigs {", 1)[1].split('create("release")', 1)[0]
             self.assertIn('System.getenv("PLAY_KEY_ALIAS")', signing, module)
 
+    def test_play_bundles_avoid_the_pre_launch_warnings(self):
+        # Play's pre-launch report on 57 (2.4.4) flagged two things. Neither
+        # blocked the release; both are cheap to keep away.
+        # 1. Deprecated edge-to-edge APIs: no code calls the bar-colour
+        #    setters and no theme sets the bar colours, in either module.
+        # Case-insensitive, so the Java-style setters (setStatusBarColor(...))
+        # count as well as the Kotlin properties; comments are stripped first,
+        # since Prefs.applyChrome's doc names the setters it dropped.
+        comment = re.compile(r"/\*.*?\*/|//[^\n]*|<!--.*?-->", re.S)
+        for root in (APP / "src", ROOT / "glyphs/src"):
+            for path in list(root.rglob("*.kt")) + list(root.rglob("*.xml")):
+                code = comment.sub("", read(path)).lower()
+                for word in ("statusBarColor", "navigationBarColor", "navigationBarDividerColor",
+                             "LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES"):
+                    self.assertNotIn(word.lower(), code, f"{path.relative_to(ROOT)} uses {word}")
+        # 2. Orientation restriction: the Play overlay removes MainActivity's
+        #    landscape lock; the sideload manifest keeps it (validate.py).
+        play = ET.parse(APP / "src/play/AndroidManifest.xml").getroot()
+        removed = [a for a in play.iter("activity")
+                   if a.get(f"{ANDROID}name") == ".MainActivity"
+                   and a.get("{http://schemas.android.com/tools}remove") == "android:screenOrientation"]
+        self.assertEqual(len(removed), 1)
+        self.assertIn('android:screenOrientation="landscape"', read(APP / "src/main/AndroidManifest.xml"))
+
     def test_glyphs_flavor_has_no_play_variant(self):
         # As a play variant the glyphs flavor would take the play build type's
         # FileProvider authority and collide with the Play icon pack on one TV.
