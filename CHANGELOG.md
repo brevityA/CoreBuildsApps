@@ -8,6 +8,15 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
+- **WuPlay's own logo as an alternative icon.** It sits straight after WuPlay
+  wherever you pick an icon by hand: the grid that Projectivy's per-app
+  *choose icon* opens, and both packs' icon browsers, as a banner in this pack
+  and a square in Core Builds Glyphs. Nothing applies it on its own, so
+  WuPlay keeps its Core Builds icon until you choose this one. The art is the
+  logo its owner supplied, resampled and otherwise unchanged:
+  `tools/alternates/wuplay.png`, pinned by hash in the catalog's new
+  `alternates` block. Counts stay counts of apps (1022), so the alternate
+  adds a tile, not an app. Not yet seen on a TV.
 - **The walls as a Projectivy wallpaper source.** Projectivy 4.51 or newer
   lists the pack under its wallpaper settings (wallpaper sources are a
   Projectivy Premium feature). Chosen there, the main collection, 132 walls,

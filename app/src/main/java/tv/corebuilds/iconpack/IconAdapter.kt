@@ -38,7 +38,19 @@ class IconAdapter(
          * disagree about what counts.
          */
         val bespoke: Boolean = false
-    )
+    ) {
+        /**
+         * An alternate (`<icon>_alt`, tools/alternates.py): extra art for an
+         * app the grid already counts, listed straight after it so a launcher
+         * picker offers both. A tile, never a count.
+         */
+        val alternate: Boolean get() = ALTERNATE.containsMatchIn(drawable)
+
+        companion object {
+            /** `<icon>_alt`, `<icon>_alt2`, ... — tools/alternates.ALT_RE. */
+            val ALTERNATE = Regex("_alt\\d*$")
+        }
+    }
 
     class VH(view: View) : RecyclerView.ViewHolder(view) {
         val image: ImageView = view.findViewById(R.id.icon_image)

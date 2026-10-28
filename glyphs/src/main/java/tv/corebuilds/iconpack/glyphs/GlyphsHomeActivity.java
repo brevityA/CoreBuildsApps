@@ -13,6 +13,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 /**
  * The front door: what a user sees when they open Core Builds Glyphs.
@@ -34,6 +35,9 @@ import java.io.IOException;
  * the focus ring is a state selector rather than a Material ripple.
  */
 public class GlyphsHomeActivity extends Activity {
+
+    /** tools/alternates.py: {@code <icon>_alt} is extra art, not an app. */
+    private static final Pattern ALTERNATE = Pattern.compile("_alt\\d*$");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,9 +83,12 @@ public class GlyphsHomeActivity extends Activity {
             int count = 0;
             int event = parser.getEventType();
             while (event != XmlPullParser.END_DOCUMENT) {
-                if (event == XmlPullParser.START_TAG
+                String value = event == XmlPullParser.START_TAG
                         && "item".equals(parser.getName())
-                        && parser.getAttributeValue(null, attribute) != null) {
+                        ? parser.getAttributeValue(null, attribute) : null;
+                // An alternate (<icon>_alt) is extra art for an app the
+                // browser already lists; it is never counted as one.
+                if (value != null && !ALTERNATE.matcher(value).find()) {
                     count++;
                 }
                 event = parser.next();

@@ -64,6 +64,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import build_branding as branding  # noqa: E402
+from alternates import is_alternate  # noqa: E402
 import build_glyphs_branding as glyphs_branding  # noqa: E402
 from PIL import Image  # noqa: E402
 
@@ -664,9 +665,11 @@ def glyphs_dir() -> Path:
 
 
 def _count_items(path: Path, attribute: str) -> int:
-    """GlyphsHomeActivity.countItems: <item> rows carrying the attribute."""
+    """GlyphsHomeActivity.countItems: <item> rows carrying the attribute,
+    alternates (extra art for an app already listed) left out."""
     return sum(1 for el in ET.parse(path).getroot().iter("item")
-               if el.get(attribute) is not None)
+               if el.get(attribute) is not None
+               and not is_alternate(el.get(attribute)))
 
 
 def glyph_counts() -> dict:
