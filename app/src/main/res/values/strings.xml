@@ -207,8 +207,8 @@
     <string name="wp_fav_remove_desc">Remove from favourites</string>
     <string name="wp_fav_badge">★</string>
     <string name="wp_fav_spoken">, favourite</string>
-    <string name="wp_plus_held_fmt">Spectra walls left out (%1$d): saving them comes with buying Core Premium.</string>
-    <string name="wp_plus_save_needs_purchase">Saving a Spectra wall to Pictures comes with buying Core Premium. The trial can still set it.</string>
+    <string name="wp_plus_held_fmt">Premium walls left out (%1$d): saving them comes with buying Core Premium.</string>
+    <string name="wp_plus_save_needs_purchase">Saving a Premium wall to Pictures comes with buying Core Premium. The trial can still set it.</string>
     <string name="wp_set_live">Set live wallpaper</string>
     <string name="wp_save_for_monet">Save for Monet</string>
     <string name="wp_live_sub">Plays on the home screen. Downloads once, then runs offline.</string>
@@ -252,7 +252,7 @@
     <string name="settings_group_suite">SUITE</string>
     <string name="settings_group_plus">CORE PREMIUM</string>
     <string name="settings_plus_title">Core Premium</string>
-    <string name="settings_plus_sub">One purchase: priority requests (one or all at once), My requests, loop rotation, a night loop, Projectivy walls and the Spectra wallpapers.</string>
+    <string name="settings_plus_sub">One purchase: priority requests (one or all at once), My requests, loop rotation, a night loop, Projectivy walls and the Spectra and Aurum wallpapers.</string>
     <string name="settings_plus_owned">Owned</string>
     <string name="settings_plus_buy">See it</string>
     <string name="settings_plus_trial_fmt">Trial · %1$s</string>
@@ -461,8 +461,8 @@
     <string name="plus_loading">Asking Google Play\u2026</string>
     <string name="plus_loading_button">Premium</string>
     <string name="plus_buy_fmt">Get Premium \u00b7 %1$s</string>
-    <string name="plus_for_sale">One purchase, no subscription: priority icon requests, one app or every missing app at once, My requests, live loop rotation, a night loop, your choice of what Projectivy rotates, and the 12 Spectra wallpapers.</string>
-    <string name="plus_owned">Core Premium is active on this Google account: priority requests, Request all under Missing icons, and in Settings My requests, loop rotation, the night loop and Projectivy walls; Spectra is in Wallpapers. Thank you.</string>
+    <string name="plus_for_sale">One purchase, no subscription: priority icon requests, one app or every missing app at once, My requests, live loop rotation, a night loop, your choice of what Projectivy rotates, and the 24 Spectra and Aurum wallpapers.</string>
+    <string name="plus_owned">Core Premium is active on this Google account: priority requests, Request all under Missing icons, and in Settings My requests, loop rotation, the night loop and Projectivy walls; Spectra and Aurum are under Premium in Wallpapers. Thank you.</string>
     <string name="plus_owned_button">Premium is active</string>
     <string name="plus_pending">Payment pending. Premium switches on when Google Play confirms it.</string>
     <string name="plus_pending_button">Pending</string>
@@ -471,8 +471,8 @@
     <string name="plus_not_yet">Core Premium goes on sale when one-press icon requests are live, since priority is part of it. There is nothing to buy yet.</string>
     <!-- The 24-hour trial (Plus.startTrial): once per TV, kept on the TV. -->
     <string name="plus_trial_button">Try free for 24 hours</string>
-    <string name="plus_trial_started_fmt">Core Premium is on for %1$s. Priority requests and saving Spectra walls to Pictures come with the purchase.</string>
-    <string name="plus_trial_running_fmt">Free trial: %1$s left. Loop rotation, the night loop, Projectivy walls, My requests and Spectra are on until then. Priority requests, Request all and saving Spectra walls to Pictures come with the purchase.</string>
+    <string name="plus_trial_started_fmt">Core Premium is on for %1$s. Priority requests and saving Premium walls to Pictures come with the purchase.</string>
+    <string name="plus_trial_running_fmt">Free trial: %1$s left. Loop rotation, the night loop, Projectivy walls, My requests, Spectra and Aurum are on until then. Priority requests, Request all and saving Premium walls to Pictures come with the purchase.</string>
     <string name="plus_trial_ended">Your free trial has ended.</string>
     <string name="plus_trial_hours_fmt">%1$d h</string>
     <string name="plus_trial_minutes_fmt">%1$d min</string>

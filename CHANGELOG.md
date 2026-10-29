@@ -19,9 +19,9 @@ All notable changes to the Core Builds Icon Pack. Format follows
   Projectivy: no build of this has run on a TV.
 - **Core Premium free for 24 hours, once per TV.** Beside the price, the
   Premium card offers *Try free for 24 hours*. It switches on loop rotation,
-  the night loop, Projectivy walls, My requests and Spectra, and Settings
-  shows the time left on the Core Premium row. Priority requests, Request all
-  and saving a Spectra wall to Pictures stay with the purchase: the request
+  the night loop, Projectivy walls, My requests, Spectra and Aurum, and
+  Settings shows the time left on the Core Premium row. Priority requests,
+  Request all and saving a Premium wall to Pictures stay with the purchase: the request
   service checks the purchase with Google, and a saved copy would outlast the
   trial. The trial runs on the TV's own clock and sends nothing; a clock set
   back ends it instead of restarting it. It is not a Play offer, since Play
@@ -42,10 +42,18 @@ All notable changes to the Core Builds Icon Pack. Format follows
   request service must be redeployed for it to work.
 - **Projectivy walls, a Core Premium extra.** Two Settings rows choose
   what Projectivy rotates from the pack, by day and during night hours: all
-  walls (with Spectra), favourites, or one of 12 series. A choice that
-  matches no wall falls back to the day choice, then to everything, so the
-  rotation is never empty. A change reaches Projectivy at once; night hours
-  begin within the hour Projectivy keeps its list.
+  walls (with Spectra and Aurum), favourites, or one of 13 series. A choice
+  that matches no wall falls back to the day choice, then to everything, so
+  the rotation is never empty. A change reaches Projectivy at once; night
+  hours begin within the hour Projectivy keeps its list.
+- **Aurum, a second Core Premium wallpaper series.** 12 4K walls, 169–180, in
+  gold on a warm black: Art Deco geometry (a sunburst, scallop fans, a
+  stepped spire, chevrons, ziggurat arches, a lattice), a guilloche rosette,
+  and gold as a material (kintsugi seams, crumpled leaf, molten ribbons, an
+  eclipse corona, a fall of gold glints). It sits under the Premium chip after
+  Spectra, so Core Premium now adds 24 walls. Like Spectra it is listed only by
+  the Google Play build, and procedural and seeded
+  (`tools/build_aurum_wallpapers.py`, `docs/aurum-wallpapers.png`).
 - **SPORT FM TV.** A dedicated red crest with FM/TV stroke lettering, in both
   square and banner form, maps the exact SHIELD scanner component from #382:
   `gr.sportfmtv.app/com.yinzcam.connectedtv.MainActivity`. The artwork is an
