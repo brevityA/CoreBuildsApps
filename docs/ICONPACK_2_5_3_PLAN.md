@@ -5,7 +5,27 @@ reports** from the 10-open-issue triage are implemented in this branch;
 the other 3 issues are standing QA trackers. This is not a published release.
 
 **Build version: 2.5.3 / versionCode 61** for both Play and sideload variants.
-**1023 icons · 1247 catalog components · 1958 emitted mappings.**
+**1026 icons · 1253 catalog components · 1967 emitted mappings** after the
+29 October follow-up below (1023 · 1247 · 1958 in the 26 October batch).
+
+## 29 October follow-up: six more reports
+
+Built on this branch after `main` (Core Premium, the Projectivy walls source)
+was merged in, so one release carries both batches. The Play build is the
+only one planned for it.
+
+- **New icons, each an original Core monoline redraw with a hashed
+  128 px reference and pixel-sampled colour under `tools/reference/`:**
+  Plezy (#390, `plezy_play_waves`), StreamFC (#404, `streamfc_ball`) and
+  Radio France (#391, `radiofrance_ring`, a two-stop gradient).
+- **Device-reported components added to existing icons:** PBS (#402,
+  `com.pbs.video.startup.StartupActivity`), YouTube TV (#403,
+  `ChrobaltMainActivity`) and 8K Player VIP+ (#405, the same developer's
+  build, on the existing 8K Player VIP icon). #406 repeats #380 (ABC iview),
+  which this branch already maps.
+- **Not built:** Aurora Player (#392) has no Play listing and its photo is not
+  readable here, so there is no brand reference to draw from; Blackout (#394)
+  is a photo only, with no component. Both stay open for the reporter.
 
 ## SPORT FM TV — new icon
 
@@ -81,8 +101,8 @@ Glyphs Pack generation path, including both `res/xml` and `assets` copies.
 
 ## Verification
 
-- Validator: **Validated 1023 icons · 1958 components · 33803 checks run;
-  33803 passed**.
+- Validator: **Validated 1026 icons · 1967 components · 33930 checks run;
+  33930 passed** (29 October; 1023 · 1958 · 33803 on 26 October).
 - Mapping hygiene: **15 tests**; icon identity: **75 tests**; glyph-pack
   contracts: **40 tests**; themed icons: **4 tests** — passed locally.
 - Icon centring, uniformity, wordmark, stroke-spacing, palette and look-alike

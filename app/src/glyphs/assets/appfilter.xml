@@ -31,6 +31,7 @@
     <item component="ComponentInfo{com.divergentftb.xtreamplayeranddownloader/.start.SpActivity}" drawable="xtreamplayeranddownloader"/>
     <!-- A 8k Player Vip -->
     <item component="ComponentInfo{com.shadeed.S4kvip/com.shadeed.ibopro.MainActivity}" drawable="a_8k_player_vip"/>
+    <item component="ComponentInfo{shadeed.Player8kVip/shadeed.player4k.pages.SplashActivity}" drawable="a_8k_player_vip"/>
     <!-- A&amp;E -->
     <item component="ComponentInfo{com.aetn.aetv.watch.androidtv/com.aetn.android.tveapps.app.MainActivity}" drawable="androidtv_3"/>
     <!-- ABC iview -->
@@ -1730,6 +1731,8 @@
     <!-- PBS -->
     <item component="ComponentInfo{com.pbs.video/com.pbs.video.StartupActivity}" drawable="video"/>
     <item component="ComponentInfo{com.pbs.video/.StartupActivity}" drawable="video"/>
+    <item component="ComponentInfo{com.pbs.video/com.pbs.video.startup.StartupActivity}" drawable="video"/>
+    <item component="ComponentInfo{com.pbs.video/.startup.StartupActivity}" drawable="video"/>
     <!-- PBS Kids -->
     <item component="ComponentInfo{org.pbskids.video/org.pbskids.video.ui.root.MainActivity}" drawable="pbs_kids"/>
     <item component="ComponentInfo{org.pbskids.video/.ui.root.MainActivity}" drawable="pbs_kids"/>
@@ -1801,6 +1804,9 @@
     <item component="ComponentInfo{com.plexapp.android/tv.plex.app.MainActivity}" drawable="plex"/>
     <!-- Plexamp -->
     <item component="ComponentInfo{tv.plex.labs.plexamp/com.plexamp.MainActivity}" drawable="plexamp"/>
+    <!-- Plezy -->
+    <item component="ComponentInfo{com.edde746.plezy/com.edde746.plezy.MainActivity}" drawable="plezy"/>
+    <item component="ComponentInfo{com.edde746.plezy/.MainActivity}" drawable="plezy"/>
     <!-- Pluto TV -->
     <item component="ComponentInfo{tv.pluto.android/tv.pluto.android.EntryPoint}" drawable="pluto_tv"/>
     <item component="ComponentInfo{tv.pluto.android/.EntryPoint}" drawable="pluto_tv"/>
@@ -1907,6 +1913,8 @@
     <item component="ComponentInfo{dev.trooped.tvquickbars/.ui.SplashActivity}" drawable="quickbars_for_home_assistant"/>
     <!-- QuickSupport -->
     <item component="ComponentInfo{com.teamviewer.quicksupport.market/com.teamviewer.quicksupport.ui.QSActivity}" drawable="quicksupport"/>
+    <!-- Radio France -->
+    <item component="ComponentInfo{com.radiofrance.radio.radiofrance.android/com.radiofrance.android.tv.TvMainActivity}" drawable="radio_france"/>
     <!-- Radio On TV -->
     <item component="ComponentInfo{de.fitzood.radio.tv/de.fitzood.radio.tv.MainActivity}" drawable="radio_on_tv"/>
     <item component="ComponentInfo{de.fitzood.radio.tv/.MainActivity}" drawable="radio_on_tv"/>
@@ -2274,6 +2282,9 @@
     <!-- Stream Vault -->
     <item component="ComponentInfo{com.streamvault.app/com.streamvault.app.MainActivity}" drawable="streamvault"/>
     <item component="ComponentInfo{com.streamvault.app/.MainActivity}" drawable="streamvault"/>
+    <!-- StreamFC -->
+    <item component="ComponentInfo{dev.mogoni.streamfc/dev.mogoni.streamfc.MainActivity}" drawable="streamfc"/>
+    <item component="ComponentInfo{dev.mogoni.streamfc/.MainActivity}" drawable="streamfc"/>
     <!-- Streamflix -->
     <item component="ComponentInfo{com.streamflixreborn.streamflix/com.streamflixreborn.streamflix.activities.main.MainTvActivity}" drawable="streamflix"/>
     <item component="ComponentInfo{com.streamflixreborn.streamflix/.activities.main.MainTvActivity}" drawable="streamflix"/>
@@ -2947,6 +2958,7 @@
     <item component="ComponentInfo{com.google.android.youtube.tvmusic/com.google.android.apps.youtube.tvmusic.activity.MainActivity}" drawable="tvmusic"/>
     <!-- YouTube TV -->
     <item component="ComponentInfo{com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.MainActivity}" drawable="tvunplugged"/>
+    <item component="ComponentInfo{com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.ChrobaltMainActivity}" drawable="tvunplugged"/>
     <!-- YoWindow -->
     <item component="ComponentInfo{yo.app.free/yo.activity.MainActivity}" drawable="yowindow"/>
     <item component="ComponentInfo{yo.app.free/yo.tv.TvActivity}" drawable="yowindow"/>

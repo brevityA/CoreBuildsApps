@@ -1,6 +1,6 @@
 # Supported applications
 
-`1023` icons · `1247` mapped components · pack v2.5.3
+`1026` icons · `1253` mapped components · pack v2.5.3
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -14,7 +14,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | 9Now | `ninenow` | `#1048E0` | `#124EEE` | `com.mi9.gomi/.MainActivity`<br>`au.com.nine.now.tv/.MainActivity` |
 | 9Now CTV | `ninenow_2` | `#1048E0` | `#124EEE` | `au.com.ninenow.ctv/au.com.ninenow.ctv.TvActivity` |
 | 9Xtream | `xtreamplayeranddownloader` | `#F80008` | `#F80008` | `com.divergentftb.xtreamplayeranddownloader/com.divergentftb.xtreamplayeranddownloader.start.SpActivity` |
-| A 8k Player Vip | `a_8k_player_vip` | `#E2BA6E` | `#E2BA6E` | `com.shadeed.S4kvip/com.shadeed.ibopro.MainActivity` |
+| A 8k Player Vip | `a_8k_player_vip` | `#E2BA6E` | `#E2BA6E` | `com.shadeed.S4kvip/com.shadeed.ibopro.MainActivity`<br>`shadeed.Player8kVip/shadeed.player4k.pages.SplashActivity` |
 | A&E | `androidtv_3` | `#C95CFF` | `#C95CFF` | `com.aetn.aetv.watch.androidtv/com.aetn.android.tveapps.app.MainActivity` |
 | ABC iview | `abciview` | `#20B8B8` | `#20B8B8` | `au.net.abc.iview/.MainActivity`<br>`au.net.abc.iview.tv/.MainActivity`<br>`au.net.abc.iview/au.net.abc.iview.ui.MainActivity`<br>`au.net.abc.iview/au.net.abc.iview.ui.router.TvLauncherActivity` |
 | ABC News | `abcnews` | `#000000` | `#E6EDF3` | `com.abc.abcnews/com.disney.datg.android.androidtv.splash.AbcNewsSplashScreenActivity` |
@@ -599,7 +599,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Parsec | `parsec` | `#E94C89` | `#E94C89` | `tv.parsec.client/tv.parsec.client.MainActivity` |
 | PatchWall | `patchwall` | `#F8C808` | `#F8C808` | `com.mitv.tvhome.atv/com.mitv.tvhome.atv.app.PatchWallActivity` |
 | Pathé Thuis | `pathethuis` | `#FFC426` | `#FFC426` | `nl.pathe.thuis/nl.pathe.thuis.LaunchActivity` |
-| PBS | `video` | `#283990` | `#3E55C9` | `com.pbs.video/com.pbs.video.StartupActivity` |
+| PBS | `video` | `#283990` | `#3E55C9` | `com.pbs.video/com.pbs.video.StartupActivity`<br>`com.pbs.video/com.pbs.video.startup.StartupActivity` |
 | PBS Kids | `pbs_kids` | `#A6CE38` | `#A6CE38` | `org.pbskids.video/org.pbskids.video.ui.root.MainActivity` |
 | PCAPdroid | `remote_capture` | `#A068D0` | `#A068D0` | `com.emanuelef.remote_capture/com.emanuelef.remote_capture.activities.MainActivity` |
 | Peacock | `peacockandroid` | `#000000` | `#E6EDF3` | `com.peacocktv.peacockandroid/com.peacock.peacocktv.GoogleMainActivity` |
@@ -626,6 +626,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | PlayStation | `playstation` | `#0070D1` | `#0070D1` | `com.playstation.remoteplay/.MainActivity`<br>`com.scee.psxandroid/.MainActivity` |
 | Plex | `plex` | `#EBAF00` | `#EBAF00` | `com.plexapp.android/com.plexapp.plex.activities.SplashActivity`<br>`com.plexapp.mediaserver.smb/.MainActivity`<br>`com.plexapp.android/tv.plex.app.MainActivity` |
 | Plexamp | `plexamp` | `#FF7A2E` | `#FF7A2E` | `tv.plex.labs.plexamp/com.plexamp.MainActivity` |
+| Plezy | `plezy` | `#EB7450` | `#EB7450` | `com.edde746.plezy/com.edde746.plezy.MainActivity` |
 | Pluto TV | `pluto_tv` | `#FFF200` | `#FFF200` | `tv.pluto.android/tv.pluto.android.EntryPoint`<br>`tv.pluto.android/com.paramount.android.pplus.features.splash.tv.SplashMediatorActivity` |
 | PMX | `pmx` | `#00C2C2` | `#00C2C2` | `com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivityM`<br>`com.mirfatif.permissionmanagerx/com.mirfatif.permissionmanagerx.fwk.MainActivity` |
 | Pocket Casts | `pocketcasts` | `#F43E37` | `#F43E37` | `au.com.shiftyjelly.pocketcasts/au.com.shiftyjelly.pocketcasts.TvActivity` |
@@ -659,6 +660,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Quick Panel | `tcl_quick_panel` | `#0080F8` | `#0080F8` | `com.tcl.suspension/com.tcl.suspension.ui.main.MainActivity` |
 | Quickbars For Home Assistant | `quickbars_for_home_assistant` | `#80D2E9` | `#80D2E9` | `dev.trooped.tvquickbars/dev.trooped.tvquickbars.ui.SplashActivity` |
 | QuickSupport | `quicksupport` | `#050A52` | `#3946F3` | `com.teamviewer.quicksupport.market/com.teamviewer.quicksupport.ui.QSActivity` |
+| Radio France | `radio_france` | `#D000AB` | `#D000AB` | `com.radiofrance.radio.radiofrance.android/com.radiofrance.android.tv.TvMainActivity` |
 | Radio On TV | `radio_on_tv` | `#FF4D4D` | `#FF4D4D` | `de.fitzood.radio.tv/de.fitzood.radio.tv.MainActivity` |
 | Radio Paradise | `radioparadisewidget` | `#F2B43E` | `#F2B43E` | `com.earthflare.android.radioparadisewidget.gpv2/com.cratorsoft.act.ActRPHD`<br>`com.earthflare.android.radioparadisewidget.gpv2/com.cratorsoft.act.ActRPHD_` |
 | radio.net | `radio_net` | `#60E040` | `#60E040` | `de.radio.android/de.radio.android.tv.activities.TvMainActivity` |
@@ -779,6 +781,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Stream Fire | `stream_fire` | `#F8B800` | `#F8B800` | `com.streamfire.app/com.streamfire.app.ui.HomeActivity` |
 | Stream Locator | `streamlocator_vpn` | `#F8A018` | `#F8A018` | `com.streamlocator.vpn/com.streamlocator.vpn.ui.tv.home.TVHomeActivity` |
 | Stream Vault | `streamvault` | `#9B59B6` | `#9B59B6` | `com.streamvault.app/com.streamvault.app.MainActivity` |
+| StreamFC | `streamfc` | `#3396D3` | `#3396D3` | `dev.mogoni.streamfc/dev.mogoni.streamfc.MainActivity` |
 | Streamflix | `streamflix` | `#E50914` | `#E50914` | `com.streamflixreborn.streamflix/com.streamflixreborn.streamflix.activities.main.MainTvActivity` |
 | Streamflix | `streamflix_2` | `#04D2CE` | `#04D2CE` | `com.tanasi.streamflix/com.tanasi.streamflix.activities.main.MainTvActivity` |
 | StreamShow | `devinterestdev` | `#6BBE6D` | `#6BBE6D` | `com.devinterestdev.streamshow/com.devinterestdev.streamshow.TvActivity` |
@@ -1016,7 +1019,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | YouTube | `youtube` | `#FF0033` | `#FF0033` | `com.google.android.youtube.tv/com.google.android.apps.youtube.tv.activity.ShellActivity`<br>`com.google.android.youtube/.HomeActivity` |
 | YouTube Kids | `youtube_2` | `#FF0033` | `#FF0033` | `com.google.android.youtube.tvkids/com.google.android.apps.youtube.tvkids.activity.MainActivity` |
 | YouTube Music | `tvmusic` | `#FF0033` | `#FF0033` | `com.google.android.youtube.tvmusic/com.google.android.apps.youtube.tvmusic.activity.MainActivity` |
-| YouTube TV | `tvunplugged` | `#FF0033` | `#FF0033` | `com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.MainActivity` |
+| YouTube TV | `tvunplugged` | `#FF0033` | `#FF0033` | `com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.MainActivity`<br>`com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.ChrobaltMainActivity` |
 | YoWindow | `yowindow` | `#007DB0` | `#007DB0` | `yo.app.free/yo.activity.MainActivity`<br>`yo.app.free/yo.tv.TvActivity` |
 | Zaap TV | `zaap_tv` | `#F88000` | `#F88000` | `com.zaaptv.mw.client.atv/com.alphaott.webtv.client.launcher.SystemLauncherActivity` |
 | Zank Remote | `zank_remote` | `#006766` | `#006C6A` | `zank.remote/zank.remote.MainActivity`<br>`zank.remote/zank.remote.AndroidTV` |

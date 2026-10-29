@@ -51,6 +51,14 @@ All notable changes to the Core Builds Icon Pack. Format follows
   `gr.sportfmtv.app/com.yinzcam.connectedtv.MainActivity`. The artwork is an
   original Core monoline interpretation of the verified brand cues, with
   sampled colour and reference provenance; no vendor image is bundled.
+- **Plezy, StreamFC and Radio France.** Three new icons, each mapped to the
+  exact component the Missing icons scanner reported: Plezy (#390), a
+  rounded play shape holding two waves, in coral; StreamFC (#404), a
+  football drawn open, in its blue; Radio France (#391), two offset quarter
+  rings and a stem, in the magenta-to-red gradient of its launcher icon.
+  Original Core monoline redraws, with each colour sampled from the app's
+  Google Play icon and the reference kept, hash-pinned, under
+  `tools/reference/`; no vendor image ships.
 
 ### Changed
 
@@ -99,6 +107,12 @@ All notable changes to the Core Builds Icon Pack. Format follows
   that differ from the installed package. All older mappings and artwork
   stay unchanged. The fixes reach banners, the standalone glyphs app and the
   Glyphs Pack companion together.
+- **PBS, YouTube TV and 8K Player VIP+ now apply on the reported devices.**
+  Each already had an icon, but the scanner reported a launch component the
+  pack did not map: PBS's `startup.StartupActivity` (#402), YouTube TV's
+  `ChrobaltMainActivity` (#403) and the 8K Player VIP+ build
+  `shadeed.Player8kVip` (#405), which shares the 8K Player VIP icon. The
+  older mappings stay.
 - **`tests/test_mapping_hygiene.py` guards the five launcher reports.**
   Pins both the new and legacy components to their existing icons in the
   catalog and all six generated appfilters (`res/xml` and `assets` for each

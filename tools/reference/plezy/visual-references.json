@@ -1,0 +1,27 @@
+{
+  "usage": "reference-only: brand cues and colour sampling for an original Core monoline redraw; never shipped as art",
+  "source": "https://play.google.com/store/apps/details?id=com.edde746.plezy",
+  "captured": "2026-10-29",
+  "references": [
+    {
+      "path": "launcher-icon-128.png",
+      "sha256": "827dcaab34fb3b8aaf80ebfd62e2a355ed60b5db8a5ce0dbd4b172e66a9379ea",
+      "size": [
+        128,
+        128
+      ],
+      "note": "Google Play launcher icon (og:image), downsized from 256 px to 128 px for evidence only"
+    }
+  ],
+  "color_sample": {
+    "part": "play shape (upper body)",
+    "box": [
+      22,
+      30,
+      40,
+      50
+    ],
+    "path": "launcher-icon-128.png",
+    "color": "#EB7450"
+  }
+}

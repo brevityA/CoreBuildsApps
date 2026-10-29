@@ -262,6 +262,15 @@ class OctoberLauncherReports(unittest.TestCase):
           "au.net.abc.iview/au.net.abc.iview.ui.MainActivity")),
         (383, "moonfin", "org.moonfin.androidtv/org.moonfin.androidtv.MainActivity",
          ("org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity",)),
+        (402, "video", "com.pbs.video/com.pbs.video.startup.StartupActivity",
+         ("com.pbs.video/com.pbs.video.StartupActivity",)),
+        (403, "tvunplugged",
+         "com.google.android.youtube.tvunplugged/"
+         "com.google.android.apps.youtube.tvunplugged.activity.ChrobaltMainActivity",
+         ("com.google.android.youtube.tvunplugged/"
+          "com.google.android.apps.youtube.tvunplugged.activity.MainActivity",)),
+        (405, "a_8k_player_vip", "shadeed.Player8kVip/shadeed.player4k.pages.SplashActivity",
+         ("com.shadeed.S4kvip/com.shadeed.ibopro.MainActivity",)),
     )
 
     @classmethod
@@ -311,6 +320,47 @@ class OctoberLauncherReports(unittest.TestCase):
                                               issue=issue, component=form):
                                 self.assertEqual(mapped.get(f"ComponentInfo{{{form}}}"),
                                                  drawable + suffix)
+
+
+class OctoberNewAppMappings(unittest.TestCase):
+    """The 29 October requests: three new apps, each mapped to its exact
+    scanner component in all three packs (both name forms where one exists),
+    citing the device report, and none marked unverified."""
+
+    NEW = (
+        (390, "plezy", "com.edde746.plezy/com.edde746.plezy.MainActivity"),
+        (391, "radio_france",
+         "com.radiofrance.radio.radiofrance.android/com.radiofrance.android.tv.TvMainActivity"),
+        (404, "streamfc", "dev.mogoni.streamfc/dev.mogoni.streamfc.MainActivity"),
+    )
+
+    def test_catalog_cites_the_report(self):
+        by_id = {i["drawable"]: i for i in json.loads(CATALOG.read_text(encoding="utf-8"))["icons"]}
+        for issue, drawable, component in self.NEW:
+            with self.subTest(issue=issue):
+                icon = by_id[drawable]
+                self.assertEqual(icon["components"], [component])
+                self.assertIn(f"issue #{issue}", icon["mapping_source"])
+                self.assertIn(component, icon["mapping_source"])
+                self.assertNotIn("unverified", icon)
+
+    def test_every_pack_maps_it(self):
+        for tree, suffix in (("app/src/main", "_banner"),
+                             ("app/src/glyphs", ""),
+                             ("glyphs/src/main", "")):
+            for folder in ("res/xml", "assets"):
+                path = ROOT / tree / folder / "appfilter.xml"
+                mapped = {i.get("component"): i.get("drawable")
+                          for i in ET.parse(path).getroot().findall("item")}
+                for issue, drawable, component in self.NEW:
+                    pkg, activity = component.split("/", 1)
+                    forms = [component]
+                    if activity.startswith(pkg + "."):
+                        forms.append(f"{pkg}/{activity[len(pkg):]}")
+                    for form in forms:
+                        with self.subTest(path=path.relative_to(ROOT), issue=issue, form=form):
+                            self.assertEqual(mapped.get(f"ComponentInfo{{{form}}}"),
+                                             drawable + suffix)
 
 
 class RequestedAppMappings(unittest.TestCase):
