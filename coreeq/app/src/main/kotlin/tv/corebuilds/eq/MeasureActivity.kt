@@ -29,6 +29,7 @@ import tv.corebuilds.eq.dsp.ImportResult
 import tv.corebuilds.eq.dsp.AutoApplyPolicy
 import tv.corebuilds.eq.dsp.MeasurementQuality
 import tv.corebuilds.eq.dsp.MeasurementException
+import tv.corebuilds.eq.dsp.CorrectionRefinement
 import tv.corebuilds.eq.dsp.PostCorrectionCheck
 import tv.corebuilds.eq.dsp.RepeatabilityAnalysis
 import tv.corebuilds.eq.dsp.RepeatabilityComparison
@@ -94,7 +95,9 @@ class MeasureActivity : TvActivity() {
         /** SEAT: the seats so far, first seat first. */
         val seatsBefore: List<SweepCapture> = emptyList(),
         /** CHECK: the result whose correction the sweep plays through. */
-        val checked: SweepResult? = null
+        val checked: SweepResult? = null,
+        /** The bass budget that correction used, so a refinement obeys the same one. */
+        val boostBudgetDb: Double = Correction.boostBudgetDb(1)
     )
 
     private lateinit var profileStore: ProfileStore
@@ -117,6 +120,7 @@ class MeasureActivity : TvActivity() {
     private lateinit var cardRefine: View
     private lateinit var btnAddSeat: Button
     private lateinit var btnCheck: Button
+    private lateinit var btnRefine: Button
 
     private var roomIndex = 1
     private var targetIndex = 0
@@ -150,6 +154,12 @@ class MeasureActivity : TvActivity() {
     private var correctionCheck: PostCorrectionCheck.Comparison? = null
     /** Why the check's chain differed from the measurement's, when it did. */
     private var correctionCheckNote: String? = null
+    /** The refinement the last check bought, waiting for the user to accept it (1.8.0). */
+    private var pendingRefinement: CorrectionRefinement.Refined? = null
+    /** Why a refinement that should have been possible was not offered or moved nothing. */
+    private var refinementNote: String? = null
+    /** The refinement this correction is carrying, once accepted; null for a plain sweep. */
+    private var appliedRefinement: CorrectionRefinement.Refined? = null
     /** The correction a check sweep plays through; released when the sweep ends. */
     private var checkEffect: AudioEffect? = null
     /** Current media-route estimate captured when an external REW file is imported. */
@@ -186,6 +196,7 @@ class MeasureActivity : TvActivity() {
         cardRefine = findViewById(R.id.card_refine)
         btnAddSeat = findViewById(R.id.btn_measure_add_seat)
         btnCheck = findViewById(R.id.btn_measure_check)
+        btnRefine = findViewById(R.id.btn_measure_refine)
 
         val prefs = getSharedPreferences(PREFS, MODE_PRIVATE)
         roomIndex = prefs.getInt(KEY_ROOM, 1).coerceIn(ROOMS.indices)
@@ -223,6 +234,7 @@ class MeasureActivity : TvActivity() {
         btnRepeat.setOnClickListener { startRepeatMeasurement() }
         btnAddSeat.setOnClickListener { startMeasurement(SweepKind.SEAT) }
         btnCheck.setOnClickListener { startMeasurement(SweepKind.CHECK) }
+        btnRefine.setOnClickListener { applyRefinement() }
         btnStop.setOnClickListener { cancelMeasurement("Stopped. Nothing was saved.") }
         btnSave.setOnClickListener { saveAndFinish() }
         btnImport.setOnClickListener { pickRewImport() }
@@ -302,6 +314,7 @@ class MeasureActivity : TvActivity() {
                     if (generation != sweepReanalysisGeneration || isFinishing || isDestroyed) return@runOnUiThread
                     correctionCheck = null
                     correctionCheckNote = null
+                    clearRefinement()
                     if (updated != null) {
                         result = updated.first
                         seats = updated.second
@@ -365,6 +378,9 @@ class MeasureActivity : TvActivity() {
         val idle = !measuring && !importing && !sweepReanalysisInProgress
         btnAddSeat.isEnabled = idle
         btnCheck.isEnabled = idle
+        // A refinement is only offered once a check has been scored against this correction.
+        btnRefine.visibility = if (sweep && pendingRefinement != null) View.VISIBLE else View.GONE
+        btnRefine.isEnabled = idle
     }
 
     /** The seats and check lines, under whatever the repeat line says. */
@@ -375,7 +391,7 @@ class MeasureActivity : TvActivity() {
         if (averaged != null && seats.size >= 2) {
             lines += String.format(
                 Locale.US, getString(R.string.measure_seats_summary),
-                seats.size - (if (averaged.leftOut != null) 1 else 0), SweepAnalysis.SINGLE_SEAT_BOOST_DB
+                averaged.seatsUsed, averaged.boostBudgetDb
             )
             val out = averaged.leftOut
             val offDb = averaged.leftOutDb
@@ -393,6 +409,15 @@ class MeasureActivity : TvActivity() {
             )
             lines += correctionCheckNote?.let { getString(R.string.measure_check_provisional, "$summary $it") } ?: summary
         }
+        appliedRefinement?.let { ref ->
+            lines += String.format(
+                Locale.US, getString(R.string.measure_refine_summary),
+                ref.changed, if (ref.changed == 1) "" else "s", ref.largestDb,
+                ref.before.rmsDb ?: 0.0, ref.after.rmsDb ?: 0.0,
+                ref.heldBack, if (ref.heldBack == 1) "" else "s"
+            )
+        }
+        refinementNote?.let { lines += it }
         return lines
     }
 
@@ -540,6 +565,7 @@ class MeasureActivity : TvActivity() {
         measurementKind = kind
         repeatComparisonClearedDueToSettings = false
         // A seat or a check leaves the same-spot repeat as it is until it succeeds.
+        if (kind == SweepKind.CHECK) clearRefinement()
         if (kind == SweepKind.PRIMARY || kind == SweepKind.REPEAT) {
             repeatBaseline = repeatAgainst
             repeatCapture = null
@@ -559,6 +585,7 @@ class MeasureActivity : TvActivity() {
             seatAverage = null
             correctionCheck = null
             correctionCheckNote = null
+            clearRefinement()
             btnStart.setText(R.string.measure_start)
             btnRepeat.visibility = View.GONE
         }
@@ -580,7 +607,9 @@ class MeasureActivity : TvActivity() {
             targetIndex = selectedTargetIndex,
             roomIndex = selectedRoomIndex,
             seatsBefore = seatsBefore,
-            checked = checked
+            checked = checked,
+            // The budget the correction on screen was built with: a refinement must not raise it.
+            boostBudgetDb = seatAverage?.boostBudgetDb ?: Correction.boostBudgetDb(1)
         )
         btnStart.isEnabled = false
         btnRepeat.isEnabled = false
@@ -716,6 +745,18 @@ class MeasureActivity : TvActivity() {
             val comparison = if (plan.kind == SweepKind.CHECK && analyzed != null) {
                 plan.checked?.let { PostCorrectionCheck.compare(it, analyzed) }
             } else null
+            // The refinement is a peaking fit over the whole curve, so it is worker work too.
+            // It is only *offered*: nothing changes until the user accepts it.
+            val refinement = if (plan.kind == SweepKind.CHECK && analyzed != null && comparison != null) {
+                plan.checked?.let { base ->
+                    try {
+                        CorrectionRefinement.refine(base, analyzed, plan.boostBudgetDb)
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Refinement failed", e)
+                        null
+                    }
+                }
+            } else null
             runOnUiThread {
                 if (!measuring || measurementGeneration != generation || isFinishing || isDestroyed) return@runOnUiThread
                 outcome.onSuccess { sweep ->
@@ -734,7 +775,7 @@ class MeasureActivity : TvActivity() {
                         SweepKind.PRIMARY -> installPrimaryCapture(capture)
                         SweepKind.REPEAT -> completeRepeat(capture)
                         SweepKind.SEAT -> completeSeat(plan.seatsBefore, capture, averaged)
-                        SweepKind.CHECK -> completeCheck(capture, comparison)
+                        SweepKind.CHECK -> completeCheck(capture, comparison, refinement)
                     }
                 }.onFailure { fail(it.message ?: it.javaClass.simpleName, plan.kind) }
             }
@@ -759,6 +800,7 @@ class MeasureActivity : TvActivity() {
         seatAverage = null
         correctionCheck = null
         correctionCheckNote = null
+        clearRefinement()
         btnStart.setText(R.string.measure_start_new)
         btnRepeat.visibility = View.VISIBLE
         btnRepeat.isEnabled = true
@@ -821,6 +863,7 @@ class MeasureActivity : TvActivity() {
         seatAverage = averaged
         correctionCheck = null
         correctionCheckNote = null
+        clearRefinement()
         result = averaged.result
         btnStart.setText(R.string.measure_start_new)
         showResult(averaged.result)
@@ -828,8 +871,16 @@ class MeasureActivity : TvActivity() {
         btnSave.requestFocus()
     }
 
-    /** A check changes nothing but the evidence shown: the correction and what Save keeps stay put. */
-    private fun completeCheck(capture: SweepCapture, comparison: PostCorrectionCheck.Comparison?) {
+    /**
+     * A check changes nothing but the evidence shown: the correction and what Save keeps stay
+     * put. A scored check also *offers* a refinement of the correction (1.8.0), which the user
+     * accepts with its own button; this method never applies it.
+     */
+    private fun completeCheck(
+        capture: SweepCapture,
+        comparison: PostCorrectionCheck.Comparison?,
+        refinement: CorrectionRefinement.Refined?
+    ) {
         if (result == null) {
             fail("The measurement being checked is no longer on screen.", SweepKind.CHECK)
             return
@@ -838,9 +889,45 @@ class MeasureActivity : TvActivity() {
             keepResultAfter(getString(R.string.measure_check_unscored))
             return
         }
+        pendingRefinement = null
+        appliedRefinement = null
         correctionCheck = comparison
         correctionCheckNote = currentCapture()?.let { repeatPathMismatch(it, capture) }
+        // A refinement read from a sweep taken on another chain would move the correction on
+        // evidence that does not describe the same measurement, so it is not offered at all.
+        refinementNote = when {
+            correctionCheckNote != null ->
+                getString(R.string.measure_refine_unavailable, correctionCheckNote!!)
+            refinement == null -> getString(R.string.measure_refine_nothing)
+            else -> {
+                pendingRefinement = refinement
+                null
+            }
+        }
         keepResultAfter(null)
+    }
+
+    /**
+     * Accept the refinement the last check offered: the correction on screen becomes the one the
+     * check implies, and Save keeps it. The check's own figures stay on screen as the evidence
+     * for the change.
+     */
+    private fun applyRefinement() {
+        val refined = pendingRefinement ?: return
+        result = refined.result
+        seatAverage = seatAverage?.copy(result = refined.result)
+        pendingRefinement = null
+        appliedRefinement = refined
+        refinementNote = null
+        keepResultAfter(null)
+        textStatus.text = "${textStatus.text}\n${getString(R.string.measure_refine_applied)}"
+    }
+
+    /** A refinement belongs to one correction: a new sweep, seat or repeat drops it. */
+    private fun clearRefinement() {
+        pendingRefinement = null
+        appliedRefinement = null
+        refinementNote = null
     }
 
     /** Back to the result on screen after a seat or check sweep, with [note] under the summary. */
@@ -895,6 +982,7 @@ class MeasureActivity : TvActivity() {
         // Keep the first sweep as the profile curve. A repeat is evidence, not
         // an implicit average or an automatic replacement of the correction.
         result = baseline.result
+        clearRefinement()
         lastCapture = baseline.samples
         lastRate = baseline.rate
         captureInfo = baseline.captureInfo
@@ -1203,6 +1291,7 @@ class MeasureActivity : TvActivity() {
         seatAverage = null
         correctionCheck = null
         correctionCheckNote = null
+        clearRefinement()
         btnRepeat.visibility = View.GONE
         btnStart.setText(R.string.measure_start_new)
         btnSave.setText(R.string.measure_import_save)
@@ -1277,6 +1366,7 @@ class MeasureActivity : TvActivity() {
         seatAverage = null
         correctionCheck = null
         correctionCheckNote = null
+        clearRefinement()
         btnRepeat.visibility = View.GONE
         btnStart.setText(R.string.measure_start)
         btnSave.visibility = View.GONE
@@ -1392,10 +1482,9 @@ class MeasureActivity : TvActivity() {
                     savedRepeatability.note?.let { add(it) }
                 }
                 if (averaged != null) {
-                    val used = seats.size - (if (averaged.leftOut != null) 1 else 0)
                     add(String.format(Locale.US,
-                        "Energy average of %d seats (%d measured): each band is the mean power across seats, then corrected as one seat would be, with the bass lift still capped at %.0f dB below the transition. A band is corrected only where every seat measured it cleanly. The microphone, output and capture details are the first seat's.",
-                        used, seats.size, SweepAnalysis.SINGLE_SEAT_BOOST_DB))
+                        "Energy average of %d seats (%d measured): each band is the mean power across seats, then corrected with the limits unchanged apart from the bass budget, which rises to %.0f dB below the transition because more than one seat agreed on the dip. A band is corrected only where every seat measured it cleanly, and only as far as the weakest seat is trusted. The microphone, output and capture details are the first seat's.",
+                        averaged.seatsUsed, seats.size, averaged.boostBudgetDb))
                     val out = averaged.leftOut
                     val offDb = averaged.leftOutDb
                     if (out != null && offDb != null) {
@@ -1409,6 +1498,12 @@ class MeasureActivity : TvActivity() {
                         "Check sweep with this correction on, one position: %.1f dB RMS from the target over %d bands (room alone %.1f dB, predicted %.1f dB). Bands the correction leaves alone are not counted. Descriptive only.",
                         check.after.rmsDb ?: 0.0, check.after.bands, check.before.rmsDb ?: 0.0, check.predicted.rmsDb ?: 0.0))
                     correctionCheckNote?.let { add("Check chain: $it") }
+                }
+                appliedRefinement?.let { ref ->
+                    add(String.format(Locale.US,
+                        "Correction refined by a check sweep played through it: %d bands moved by up to %.1f dB (%d raised, %d lowered, %d refused by the rules), predicted residual %.1f -> %.1f dB RMS over the bands both sweeps could speak for. One capture at one position; the room was not measured again, and the measurement above is unchanged.",
+                        ref.changed, ref.largestDb, ref.raised, ref.lowered, ref.heldBack,
+                        ref.before.rmsDb ?: 0.0, ref.after.rmsDb ?: 0.0))
                 }
             }
         )

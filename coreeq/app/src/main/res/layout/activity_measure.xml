@@ -290,6 +290,23 @@
                     android:paddingEnd="@dimen/cb_space_sm"
                     android:focusable="true"
                     android:layout_marginTop="@dimen/cb_space_xs" />
+
+                <Button
+                    android:id="@+id/btn_measure_refine"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/cb_target_min"
+                    android:background="@drawable/bg_ghost"
+                    android:text="@string/measure_refine_button"
+                    android:textColor="@color/ghost_text"
+                    android:textSize="@dimen/cb_text_data"
+                    android:textAllCaps="false"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="@dimen/cb_space_sm"
+                    android:paddingEnd="@dimen/cb_space_sm"
+                    android:focusable="true"
+                    android:visibility="gone"
+                    android:layout_marginTop="@dimen/cb_space_xs" />
+
             </LinearLayout>
 
             <!-- REW import (plan M10): measure elsewhere, correct here. -->

@@ -187,6 +187,85 @@ object Correction {
     /** Null bands in a row the roll-off walk may step over: a room cancellation spans one or two third-octaves. */
     const val MAX_NULL_SKIP = 2
 
+    /**
+     * How far to trust each band, 0..1, from its signal over noise (1.7.1).
+     *
+     * The old rule was a cliff: a band at 9.9 dB was left at 0 dB and one at
+     * 10.1 dB was corrected in full, so two captures of the same room could
+     * disagree about a band by the whole correction. Scaling the gain instead
+     * keeps a marginal band corrected *less*, which is the behaviour the
+     * measurement actually supports. At or under [DspConstants.CONFIDENCE_LO_SNR_DB]
+     * the band is worth nothing; from [DspConstants.CONFIDENCE_FULL_SNR_DB] up,
+     * everything; linear between. A finite floor keeps a barely-trusted band
+     * from producing a sub-0.1 dB filter that only spends filter budget.
+     */
+    fun bandConfidence(snrDb: DoubleArray): DoubleArray {
+        val span = DspConstants.CONFIDENCE_FULL_SNR_DB - DspConstants.CONFIDENCE_LO_SNR_DB
+        return DoubleArray(snrDb.size) { i ->
+            val snr = snrDb[i]
+            if (!snr.isFinite()) {
+                0.0
+            } else {
+                val frac = (snr - DspConstants.CONFIDENCE_LO_SNR_DB) / span
+                if (frac <= 0.0) 0.0 else frac.coerceAtMost(1.0).coerceAtLeast(DspConstants.CONFIDENCE_MIN)
+            }
+        }
+    }
+
+    /**
+     * The bass boost a correction may ask for, from how many seats agreed.
+     *
+     * One seat cannot tell the room's dip from that chair's, so it gets
+     * [SweepAnalysis.SINGLE_SEAT_BOOST_DB]. Two or more seats agreed on the
+     * curve that was averaged, which is evidence, so the cap rises to
+     * [DspConstants.MULTI_SEAT_BOOST_DB]. Still far under `MAX_BOOST_DB`: the
+     * microphone stays uncalibrated either way.
+     */
+    fun boostBudgetDb(seats: Int): Double =
+        if (seats >= 2) DspConstants.MULTI_SEAT_BOOST_DB else SweepAnalysis.SINGLE_SEAT_BOOST_DB
+
+    /** What a correction may ask for at each frequency: `floorDb` below, `ceilingDb` above. */
+    data class BudgetEnvelope(val floorDb: DoubleArray, val ceilingDb: DoubleArray)
+
+    /**
+     * The per-band budget [calculateCorrectionCurve] holds itself to: full
+     * correction below the transition, shaping only above it, ramped across the
+     * octave between so the two regimes join without a step.
+     *
+     * Exposed because [CorrectionRefinement] must obey *exactly* the same
+     * envelope when it moves a band from a check sweep. Two copies of this
+     * arithmetic would be two chances to disagree about how much bass a
+     * correction may lift.
+     */
+    fun budgetEnvelope(
+        freqs: DoubleArray,
+        transitionHz: Double = DspConstants.DEFAULT_TRANSITION_HZ,
+        maxBoost: Double = DspConstants.MAX_BOOST_DB,
+        maxCut: Double = DspConstants.MAX_CUT_DB,
+        maxBoostBelowTransition: Double = maxBoost,
+        cutOnly: Boolean = false
+    ): BudgetEnvelope {
+        val n = freqs.size
+        val loT = max(transitionHz, 1.0)
+        val hiT = loT * 2.0
+        val ceiling = DoubleArray(n)
+        val floor = DoubleArray(n)
+        // Below the transition a single-seat, uncalibrated sweep may lift
+        // only [maxBoostBelowTransition]: see SweepAnalysis.SINGLE_SEAT_BOOST_DB.
+        val lowBoost = min(maxBoost, maxBoostBelowTransition)
+        for (i in 0 until n) {
+            val f = freqs[i]
+            val mix = when {
+                f <= loT -> 0.0
+                f >= hiT -> 1.0
+                else -> 0.5 * (1.0 - cos(Math.PI * log2(f / loT)))
+            }
+            ceiling[i] = if (cutOnly) 0.0 else lowBoost + (DspConstants.MAX_SHAPING_DB - lowBoost) * mix
+            floor[i] = -maxCut + (maxCut - DspConstants.MAX_SHAPING_DB) * mix
+        }
+        return BudgetEnvelope(floor, ceiling)
+    }
+
     fun limitSlope(
         freqs: DoubleArray,
         curve: DoubleArray,
@@ -268,7 +347,13 @@ object Correction {
         maxSlope: Double = DspConstants.MAX_SLOPE_DB_PER_OCT,
         nullMask: BooleanArray? = null,
         minPhaseOk: BooleanArray? = null,
-        maxBoostBelowTransition: Double = maxBoost
+        maxBoostBelowTransition: Double = maxBoost,
+        /**
+         * Per-band trust, 0..1, from [bandConfidence]. Null means "trust every
+         * band the gates already allowed", which is what a measurement with no
+         * per-band SNR (a REW import) can honestly claim.
+         */
+        confidence: DoubleArray? = null
     ): DoubleArray {
         require(freqs.size == measuredDb.size) {
             "Measured curve has ${measuredDb.size} points for ${freqs.size} frequencies"
@@ -285,11 +370,14 @@ object Correction {
         val raw = DoubleArray(n) { -(smoothed[it] - targetDb[it]) }
 
         val actualNullMask = nullMask ?: detectNulls(freqs, measuredDb)
+        // A null may not be *boosted* (it may still be cut); a band that failed
+        // the minimum-phase gate may not be touched at all.
+        val phaseBlocked = BooleanArray(n) { i -> minPhaseOk != null && !minPhaseOk[i] }
         for (i in 0 until n) {
             if (actualNullMask[i] && raw[i] > 0.0) {
                 raw[i] = 0.0
             }
-            if (minPhaseOk != null && !minPhaseOk[i]) {
+            if (phaseBlocked[i]) {
                 raw[i] = 0.0
             }
             if (cutOnly) {
@@ -299,21 +387,11 @@ object Correction {
 
         val loT = max(transitionHz, 1.0)
         val hiT = loT * 2.0
-        val ceiling = DoubleArray(n)
-        val floor = DoubleArray(n)
-
+        // The same envelope CorrectionRefinement obeys when a check sweep moves a band.
+        val envelope = budgetEnvelope(freqs, transitionHz, maxBoost, maxCut, maxBoostBelowTransition, cutOnly)
+        val ceiling = envelope.ceilingDb
+        val floor = envelope.floorDb
         for (i in 0 until n) {
-            val f = freqs[i]
-            val mix = when {
-                f <= loT -> 0.0
-                f >= hiT -> 1.0
-                else -> 0.5 * (1.0 - cos(Math.PI * log2(f / loT)))
-            }
-            // Below the transition a single-seat, uncalibrated sweep may lift
-            // only [maxBoostBelowTransition]: see SweepAnalysis.SINGLE_SEAT_BOOST_DB.
-            val lowBoost = min(maxBoost, maxBoostBelowTransition)
-            ceiling[i] = if (cutOnly) 0.0 else lowBoost + (DspConstants.MAX_SHAPING_DB - lowBoost) * mix
-            floor[i] = -maxCut + (maxCut - DspConstants.MAX_SHAPING_DB) * mix
             raw[i] = raw[i].coerceIn(floor[i], ceiling[i])
         }
 
@@ -340,6 +418,25 @@ object Correction {
 
         for (i in 0 until n) {
             limited[i] = limited[i].coerceIn(floor[i], ceiling[i])
+        }
+
+        // Scale by how far each band is trusted. After the budget, so a band
+        // that is only half trusted asks for half of what it was allowed.
+        if (confidence != null && confidence.size == n) {
+            for (i in 0 until n) {
+                limited[i] *= confidence[i].coerceIn(0.0, 1.0)
+            }
+        }
+
+        // Re-centring moves *every* band by one constant, and that constant is
+        // exactly what used to break the two refusals above: a null that had
+        // been zeroed came back as a +2 dB boost, and a phase-gated band came
+        // off zero, so the app boosted a cancellation in the same report that
+        // told the user it was "not boosted". Re-assert both on the final
+        // curve, after every step that can move it.
+        for (i in 0 until n) {
+            if (actualNullMask[i] && limited[i] > 0.0) limited[i] = 0.0
+            if (phaseBlocked[i]) limited[i] = 0.0
             if (freqs[i] < fMin || freqs[i] > fMax) {
                 limited[i] = 0.0
             }

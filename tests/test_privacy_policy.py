@@ -111,9 +111,16 @@ class TheClaimsMatchTheCode(unittest.TestCase):
 
     def test_the_icon_request_payload_it_itemises_is_the_payload_sent(self):
         sender = self.src["IconRequestSender.kt"]
-        fields = set(re.findall(r'\.put\("([a-z_]+)"', sender))
+        single = sender.split("private fun post(", 1)[1]
+        fields = set(re.findall(r'\.put\("([a-z_]+)"', single))
         self.assertEqual(fields, {"app_name", "component", "device"},
                          "IconRequestSender's payload moved; the policy must follow")
+        # Request all (Plus) sends the same fields for several apps, and the
+        # policy has its own row for it.
+        batch = sender.split("private fun postBatch(", 1)[1].split("private fun post(", 1)[0]
+        self.assertEqual(set(re.findall(r'\bput\("([a-z_]+)"', batch)),
+                         fields | {"mapped", "plus_token", "apps"})
+        self.assertIn("Request all", self.html)
         for field in ("app name", "component name", "device note"):
             self.assertIn(field, self.html, f"policy does not name the {field!r} field")
         # Plus owners' requests carry one more field, conditionally.
@@ -178,12 +185,13 @@ class TheClaimsMatchTheCode(unittest.TestCase):
         # The rate-limit bucket's KV TTL is the "62 minutes" the page states.
         self.assertIn("expirationTtl: 3700", worker)
         self.assertIn("IP address</strong>, held by the broker for at most 62 minutes", text)
-        self.assertIn("SHA-256 hash of a Plus purchase token</strong>", text)
+        self.assertIn("SHA-256 hash of a Premium purchase token</strong>", text)
 
     def test_the_purchase_it_describes_is_the_one_sold_and_when(self):
-        # The page describes Core Builds Plus and the condition it is sold
-        # under, so it is true both before and after the broker is baked in.
-        self.assertIn("Core Builds Plus", self.html)
+        # The page describes Core Premium (Plus in code) and the condition it
+        # is sold under, so it is true both before and after the broker is
+        # baked in.
+        self.assertIn("Core Premium", self.html)
         text = flat(self.html)
         self.assertIn("offered only in builds where the request broker is enabled", text)
         self.assertIn("Until then the Play build offers no purchases", text)

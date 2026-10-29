@@ -6,6 +6,116 @@ Core EQ (`tv.corebuilds.eq`) keeps its own changelog. The repository-root
 must never land there. Releases are `coreeq-v<version>` tags (see
 `PUBLISHING.md`).
 
+## [1.9.0] — 2026-10-28
+
+**Nothing below was checked on a TV, a phone or a soundbar, and no display was measured
+with a colorimeter.** The new maths — the TV-equaliser mapping, the manual presets, the
+gamma and PQ codes behind the test patterns — is covered by this repository's Android-free
+Kotlin harness (183 cases, 16 classes, green) and ships in CI's `testDebugUnitTest`. CI also
+compiled the changed activities and `TestPatternView`, linted them, and installed and
+launched the app on the API 30 and 37.0 emulators — the screens build and open — but nobody
+has typed a value into a television's sound menu, looked at the new patterns on a panel, or
+pressed the new buttons with a remote.
+
+- **Twelve generic manual presets, each with a sentence saying what it does.** The manual EQ
+  used to be mostly product presets, which is no help to somebody with speakers Core EQ has
+  never detected. `ManualEq.BUILT_IN_PRESETS` now carries Flat plus eleven shapes that make no
+  claim about anybody's hardware — bass lift, speech clarity, less bass, night quiet, warm,
+  bright, podcast, sibilance tame, small-speaker body, remove boom, low-volume loudness — and
+  the preset picker shows the description on a second line, because "Warm" is a mood, not an
+  explanation. A preset is a tone, never a correction; the descriptions say so.
+- **The TV's own sound equaliser gets real numbers now.** Most televisions will not let Core EQ
+  near the built-in speakers, but all of them have a sound menu with a graphic equaliser in it:
+  five bands at 100 Hz / 300 Hz / 1 kHz / 3 kHz / 10 kHz at ±6 dB on most Samsung and LG sets,
+  seven bands at 125 Hz–8 kHz at ±12 dB on a Sony running Google TV. `TvSoundEq` maps any curve
+  onto those grids by sampling it at the menu's own centres — **Manual EQ → "Show these as TV
+  settings…"** shows the result and can export it as a text file.
+- **Three things the mapping refuses to pretend.** A band outside Core EQ's trusted 40 Hz–8 kHz
+  is reported as "—" with the reason, never as 0 dB, because 0 dB reads as "leave the treble
+  alone" and that is a recommendation the app has not earned (the Samsung 10 kHz slider is
+  therefore always "—"). A value the menu cannot accept is clamped and the wanted value is
+  printed next to it. And the report says what the numbers are not: the sliders are far wider
+  than Core EQ's filters, their shape is unpublished, and the result is a starting point to
+  adjust by ear.
+- **The capability screen's TV export was writing a layout no TV has.** It built a five-band
+  file from a guessed 60/230/910/3600/14000 Hz layout on hardware that reported nothing. It now
+  writes the `TvSoundEq` report for both known grids, sampled from the curve the correction
+  actually asks for — not the headroom-shifted one the service applies, because a television's
+  equaliser has no preamp and shifting it would leave a shape the menu cannot express.
+- **The calibration guide asks instead of lecturing.** `DisplayCalibrationActivity` was a fixed
+  list of ten patterns with one paragraph each: everybody got the same text and nobody was told
+  what to do when it looked wrong. It is now a ten-step walkthrough from `CalibrationGuide` —
+  picture mode, overscan, black, white, gamma, colour, sharpness, motion, uniformity, HDR, record
+  — where each step offers the answers a person can actually give ("the outer marker is cut
+  off", "the whole screen glows grey", "the top row stutters"), shows the advice for the one
+  chosen, and sends Next to the repair step that answer named.
+- **It also says which faults are not settings.** Motion smear is the panel's response time,
+  blotches are dirty-screen effect, and a 1080p interface on a 4K panel is Android's own UI
+  resolution. Sending somebody to a picture menu for those is worse than telling them the truth,
+  and the guide says it before they spend an evening on it.
+- **The display is described from what Android reports, above the first step.** Resolution,
+  refresh and HDR types come from `Display`; the notes turn them into consequences — this mode
+  is not a multiple of 24, so 24p material will judder unevenly; this display reports no HDR, so
+  the HDR pattern is a grey ramp here, and if the TV does support it the input's enhanced mode
+  is the usual reason Android cannot see it. Nothing here is guessed from the model name.
+- **Four test patterns were lying, and are fixed.** Black level used one-code steps (0…15) — a 6%
+  range in which bars 0 and 1 are the same colour on every panel, so "make bar 2 visible" could
+  not be followed; it is now two codes apart, 0…30, each labelled. White level stepped by one
+  code from 240 and put sixteen indistinguishable bars on screen; it now runs 200…255 with the
+  top at 250/253/255. Gamma drew `255·0.5^(1/γ)`, which put the γ2.4 patch at code **191** — a
+  near-white square on a 128 field, making every display look like γ1.8; patches are now derived
+  from the display's transfer, with a power-law row (γ2.2 → 128, γ2.4 → 120) and a BT.1886 row
+  that includes the standard's black offset (γ2.4 → 123). HDR drew six hand-picked greys and
+  claimed PQ tracking; it now draws real ST.2084 codes (100 nits → 128, 1000 nits → 192) and
+  says on screen whether the output is actually HDR.
+- **Three new patterns, and sizes in dp.** 24p judder (a marker stepped at 24 updates a second
+  against one at 60), motion resolution (gratings dragged at three speeds) and a device-pixel
+  grid, which together cover the part of a display no picture menu can change. Pattern text and
+  zones are now in dp, so a 4K panel no longer gets a 28-pixel label the size of a pinhead; the
+  two places where a device pixel is the point — the sharpness 1-pixel zone and the pixel grid —
+  still use one.
+- **The pattern arithmetic is testable, and tested.** It moved into `DisplayMath` (pure Kotlin,
+  no Android imports) so `DisplayMathTest` can pin it. Its first run failed twice for real
+  reasons: the white ladder contained 252/253/254, which are one code apart, and BT.1886 turns
+  out to be *brighter* than the plain power law because the black offset lifts mid-grey — not
+  darker, as first assumed. Both were fixed in the model, not in the assertions.
+- **Tests.** 40 new Kotlin cases across four files (`ManualPresetsTest`, `TvSoundEqTest`,
+  `CalibrationGuideTest`, `DisplayMathTest`) in the Android-free harness, which now runs 183.
+  They include the cases that would have caught the old behaviour: a gamma patch that must not be
+  the old 191, a ladder whose adjacent bars must stay separable, a refused TV band that must not
+  read 0 dB, and a clamp that must print what it wanted.
+
+## [1.8.0] — 2026-10-28
+
+**Nothing below was checked on a TV, a phone or a soundbar, and no acoustic
+measurement was taken for this release.** The refinement arithmetic is covered
+off-device by `CorrectionRefinementTest` (in this repository's Android-free
+Kotlin harness, and in CI's `testDebugUnitTest`) and by the Python reference in
+`tools/core_eq_dsp.py`. CI also compiled `MeasureActivity`, linted it and
+installed and launched the app on the API 30 and 37.0 emulators — the screen
+builds — but the new button has not been pressed on a device.
+
+- **The check sweep now changes the correction, if you let it.** *Check correction* has always reported three numbers and stopped: the room alone, the residual the correction should leave, and what the check actually heard. The difference between the last two is the useful part — band by band it says which way the correction was wrong — and a new **Use the check to refine** button offers to apply it. It is never applied on its own: the button appears only after a scored check, the correction on screen changes only when you press it, and Save keeps whatever is on screen. Check again afterwards to see whether the refinement helped; Save without pressing it and the check is evidence and nothing more, as before.
+- **Seven rules decide how far one check is believed.** The step is taken only on bands both sweeps can speak for (the same mask the figures on screen use); its weighted mean is removed first, so a check taken at another volume refines *shape* and not level; it is scaled by the weaker of the two sweeps' per-band confidence; a band can relax toward 0 dB but never change the direction the first measurement justified, and a band left at 0 dB is not touched; a lift needs a deficit the check itself heard at least 0.5 dB deep and must not sit on a cancellation the check found; the correction's own budget still applies — through the same `budgetEnvelope` the curve is clamped by, so the seat bass cap cannot be exceeded by the back door; and one band moves at most **3 dB**, slope-limited, with steps under 0.1 dB dropped rather than spending a filter on them. `docs/research/core-eq-closed-loop-refinement-2026-10-28.md` records why each exists.
+- **The "before → after" figure starts from what the check heard, not from the old measurement.** Once the two disagree the older curve no longer describes the room, so the refinement is predicted from the check's own residual plus the step. The result card says how many bands moved, by how much, what the residual is expected to become, and how many bands the rules refused to move — so "the check disagreed and nothing was done about it" is visible rather than silent.
+- **A refinement is not offered across a changed chain.** If the check's microphone, output, target or room setting differed from the measurement's, the check is still scored and still says so, but no refinement is offered: it would move the correction on evidence that does not describe the same measurement. The same line explains it.
+- **`Correction.budgetEnvelope`.** The per-band floor and ceiling the curve is held to is now one function, used by both the corrector and the refinement. Two copies of that arithmetic would be two chances to disagree about how much bass a correction may lift.
+- **Tests.** Fourteen new Kotlin cases and twelve in the Python reference, plus three new constants pairs held to the reference by `tests/test_core_eq_parity.py`. The rules are pinned by tests that fail without them: removing the level re-centring, the sign rule, the deficit guard or the shared-band mask each breaks a named case. The two implementations are held to one room — the same fixture prints −2.0080 dB at 100 Hz in both.
+
+## [1.7.1] — 2026-10-27
+
+**Nothing below was checked on a TV, a phone or a soundbar.** The correction
+arithmetic is covered by the off-device unit suite and by the Python reference
+in `tools/core_eq_dsp.py`; the phone-companion screen needs the Android SDK, was
+not compiled here, and has not been run. No acoustic measurement was taken.
+
+- **A cancellation is no longer boosted behind a report that says it wasn't.** The corrector refused nulls and minimum-phase-gated bands on the raw curve, and then two later steps moved every band: the slope limiter, and — decisively — the re-centring pass, which adds one constant to all of them. In a room that is hot against the target the correction mean is negative, so re-centring lifts the whole curve, and a null that had been zeroed came back at **+2.2 dB** and a gated band at **+3.0 dB** — in the same result that told you `63 Hz · deep null · not boosted`. Both refusals are now re-asserted on the finished curve, after every step that can move it, in the app and in the reference. Found while making the corrector smarter; the new tests fail on the old code with exactly those numbers. Not measured in a room.
+- **Bands are trusted by degrees instead of all-or-nothing.** A band 0.1 dB over the 10 dB signal-to-noise gate used to be corrected in full and a band 0.1 dB under it left at zero, so two sweeps of the same room could disagree by the whole correction. Trust now ramps from nothing at the gate to full at 20 dB over it, and the correction is scaled by it: a marginal band asks for less rather than being switched on or off. The gates still decide *whether* a band may be touched.
+- **A second seat buys more bass correction, and a third buys none.** Below the transition the bass lift was capped at +2 dB for one seat, because one seat cannot tell the room's dip from that chair's. When two or more seats were averaged that evidence exists, so the cap rises to **+3 dB** — still far below the +6 dB ceiling, because the microphone stays uncalibrated either way. The result card and the saved profile now state the budget that was actually used.
+- **The phone companion can be driven with a D-pad again.** Every control on that screen is built in code, and a `Button` constructed in code is *not* focusable the way one inflated from a layout is — so the screen had no focus targets at all and nothing ever requested initial focus. On a phone that is invisible; on a remote the cursor has nowhere to land and the first press is swallowed. It matters beyond phones: Home sends **any** device without `FEATURE_LEANBACK` straight to this screen, so a TV box or projector running a phone-style Android build lands there with a remote in hand. The button builder now sets focusable/clickable, the screen places the cursor when it opens, moving it into the remote panel when that appears, and the scroll container hands focus to its children instead of holding it. **The screen was not compiled or run here** — the properties are pinned by `tests/test_core_eq_companion_focus.py`, which fails on the previous source.
+- **A per-band audit for the refusals.** `CorrectionReport.gateViolations` reports any band whose gate and whose applied gain disagree. The wording still describes the gate, as before; this is the check that says whether the curve kept its promise.
+- **Tests.** Eight new Kotlin cases on the curve (the two leaks above, the general "every refusal survives the finished curve" case, the confidence ramp, its NaN/unreadable handling, half-trust halving a gain, and the seat budget) and eight in the Python reference, plus the companion-focus contract above. Two new constants pairs are held to the reference by `tests/test_core_eq_parity.py`.
+
 ## [1.7.0] — 2026-10-25
 
 **Nothing below was checked on a TV, a phone or a soundbar.** Every figure and

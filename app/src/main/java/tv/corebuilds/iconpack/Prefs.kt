@@ -32,6 +32,10 @@ object Prefs {
     const val KEY_LIVE_LOOP = "live_loop"
     const val KEY_LIVE_LOOP_CHANGED_AT = "live_loop_changed_at"
     const val KEY_LIVE_ROTATE_HOURS = "live_rotate_hours"
+    const val KEY_NIGHT_LOOP = "night_loop"
+    const val KEY_NIGHT_WINDOW = "night_window"
+    const val KEY_WALLS_SOURCE = "projectivy_walls"
+    const val KEY_WALLS_NIGHT = "projectivy_walls_night"
     const val KEY_WHATS_NEW_SEEN = "whats_new_seen_version"
     const val KEY_WP_NEW_SEEN = "wallpapers_new_seen_since"
     const val KEY_WP_FAVOURITES = "wallpaper_favourites"
@@ -188,6 +192,51 @@ object Prefs {
         edit.apply()
     }
 
+    /**
+     * The loop [LiveWallpaperService] plays during night hours instead of
+     * [liveLoopId] (Core Builds Plus), or null when the schedule is off. Read
+     * through [DayNight.loopId]; written by Settings' night-loop row.
+     */
+    fun nightLoopId(context: Context): String? =
+        prefs(context).getString(KEY_NIGHT_LOOP, null)
+
+    fun setNightLoopId(context: Context, loopId: String?) {
+        prefs(context).edit().apply {
+            if (loopId == null) remove(KEY_NIGHT_LOOP) else putString(KEY_NIGHT_LOOP, loopId)
+        }.apply()
+    }
+
+    /** Index into [DayNight.WINDOWS]; out-of-range values read as the default. */
+    fun nightWindow(context: Context): Int =
+        prefs(context).getInt(KEY_NIGHT_WINDOW, 0).takeIf { it in DayNight.WINDOWS.indices } ?: 0
+
+    fun setNightWindow(context: Context, index: Int) {
+        prefs(context).edit().putInt(KEY_NIGHT_WINDOW, index).apply()
+    }
+
+    /**
+     * What Projectivy's rotation draws from when the pack is its wallpaper
+     * source: [ProjectivyWalls.ALL], [ProjectivyWalls.FAVOURITES] or a series
+     * id. Choosing is Core Builds Plus; without it [ProjectivyWalls.pick]
+     * serves the main collection whatever is stored here.
+     */
+    fun wallsSource(context: Context): String =
+        prefs(context).getString(KEY_WALLS_SOURCE, ProjectivyWalls.ALL) ?: ProjectivyWalls.ALL
+
+    fun setWallsSource(context: Context, source: String) {
+        prefs(context).edit().putString(KEY_WALLS_SOURCE, source).apply()
+    }
+
+    /** What Projectivy's rotation draws from during night hours (Plus), or null for no change. */
+    fun wallsNight(context: Context): String? =
+        prefs(context).getString(KEY_WALLS_NIGHT, null)
+
+    fun setWallsNight(context: Context, source: String?) {
+        prefs(context).edit().apply {
+            if (source == null) remove(KEY_WALLS_NIGHT) else putString(KEY_WALLS_NIGHT, source)
+        }.apply()
+    }
+
     fun set(context: Context, key: String, value: Boolean) {
         prefs(context).edit().putBoolean(key, value).apply()
     }
@@ -199,12 +248,16 @@ object Prefs {
      * `@color/cb_night` background for the designed case; this only overrides
      * the window beneath them when the void option is on, so a screen that has
      * not opted in still looks exactly as drawn.
+     *
+     * The system bars are left alone. A TV draws none, and from Android 15 the
+     * window draws behind them anyway, so painting them changed nothing that
+     * anyone sees; Play's pre-launch report flags Window.setStatusBarColor and
+     * setNavigationBarColor as deprecated edge-to-edge APIs, and this was the
+     * app's only call to either.
      */
     fun applyChrome(activity: android.app.Activity) {
         if (!amoled(activity)) return
         val void = androidx.core.content.ContextCompat.getColor(activity, R.color.cb_void)
         activity.window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(void))
-        activity.window.statusBarColor = void
-        activity.window.navigationBarColor = void
     }
 }

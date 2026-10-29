@@ -8,11 +8,72 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
+- **The walls as a Projectivy wallpaper source.** Projectivy 4.51 or newer
+  lists the pack under its wallpaper settings (wallpaper sources are a
+  Projectivy Premium feature). Chosen there, the main collection, 132 walls,
+  rotates on Projectivy's own interval, in every build. Projectivy downloads
+  each wall from the manifest's public address, as the app's browser does;
+  the app sends nothing. The GitHub, Play, test and Glyphs builds each
+  register their own source, so one TV can hold several without a clash.
+  Settings → Troubleshooting and FAQ has a card on it. Not yet seen inside
+  Projectivy: no build of this has run on a TV.
+- **Core Premium free for 24 hours, once per TV.** Beside the price, the
+  Premium card offers *Try free for 24 hours*. It switches on loop rotation,
+  the night loop, Projectivy walls, My requests and Spectra, and Settings
+  shows the time left on the Core Premium row. Priority requests, Request all
+  and saving a Spectra wall to Pictures stay with the purchase: the request
+  service checks the purchase with Google, and a saved copy would outlast the
+  trial. The trial runs on the TV's own clock and sends nothing; a clock set
+  back ends it instead of restarting it. It is not a Play offer, since Play
+  has trials for subscriptions only, so clearing the app's data offers it
+  again. Like the purchase, it appears once the request service is live.
+- **Night loop, a Core Premium extra.** During night hours (20–07,
+  21–07, 22–06 or 19–07, by the TV's clock) the live wallpaper plays a second
+  loop, then hands back to the one picked in the preview. A home screen left
+  on changes over at the hour. Only loops already on the TV are offered, and
+  nothing downloads. Settings → Night loop and Night hours.
+- **Request all, a Core Premium extra.** Missing icons gains a Request
+  all button. Pressed twice, it files up to 10 of the listed apps this TV has
+  not requested yet as priority requests in one send, and My requests lists
+  each. The request service takes it only when Google confirms the Premium
+  purchase, at most three times a day per purchase, through a new `/v1/batch`
+  route. Each app is filed, or +1ed, exactly as one press would file it.
+  The privacy policy, the Data safety answer and Console step 8 say so. The
+  request service must be redeployed for it to work.
+- **Projectivy walls, a Core Premium extra.** Two Settings rows choose
+  what Projectivy rotates from the pack, by day and during night hours: all
+  walls (with Spectra), favourites, or one of 12 series. A choice that
+  matches no wall falls back to the day choice, then to everything, so the
+  rotation is never empty. A change reaches Projectivy at once; night hours
+  begin within the hour Projectivy keeps its list.
 - **SPORT FM TV.** A dedicated red crest with FM/TV stroke lettering, in both
   square and banner form, maps the exact SHIELD scanner component from #382:
   `gr.sportfmtv.app/com.yinzcam.connectedtv.MainActivity`. The artwork is an
   original Core monoline interpretation of the verified brand cues, with
   sampled colour and reference provenance; no vendor image is bundled.
+
+### Changed
+
+- **Core Builds Plus is now Core Premium, with six extras.** Priority
+  requests, My requests, loop rotation, the night loop, Projectivy walls and
+  Spectra. Every icon, the main collection (in Projectivy's rotation too) and
+  every screen still ship to everyone. The Premium card, the Settings group,
+  the Spectra chip and badge, the Play listing, the request service's issue
+  text, `docs/PLAY-CONSOLE.md` §8 and `docs/privacy.html` (effective 28
+  October 2026) say so. The Play product ID stays `core_builds_plus`: buyers
+  never see it, and Play never renames one.
+- **`tests/test_projectivy_walls.py` holds the Projectivy contract.** 14
+  tests: the AIDL and contract constants are Core Motion's byte for byte,
+  the hand-written parcel keeps Core Motion's field order, the manifest
+  carries what Projectivy reads, each build gets its own id, and the free
+  and Premium tiers split where they should. It runs in `build.yml` and
+  `suite-ci.yml`. The app module's first JUnit tests, `DayNightTest` (5)
+  and `ProjectivyWallsTest` (7), run in CI's existing unit-test task.
+- **`tests/test_play_build.py` holds the trial to its word.** `PlusTrial` (4
+  tests) checks that it lasts what the button says and starts once, that only
+  the on-device extras read it, and that the purchase-only three, the token
+  and the policy stay as stated. JUnit `PlusTrialTest` (4) runs its clock:
+  24 hours, a clock set back ends it, and the time left never reads zero.
 
 ### Fixed
 
@@ -43,6 +104,41 @@ All notable changes to the Core Builds Icon Pack. Format follows
   catalog and all six generated appfilters (`res/xml` and `assets` for each
   pack), and requires provenance from the device report rather than claiming
   the new names came from the older reference pack.
+- **`tests/test_play_build.py` keeps out both pre-launch warnings' causes.**
+  Play's report on 57 (2.4.4) raised two. Neither blocked the release, and
+  only Play's next report can say whether both are gone.
+  - *Deprecated edge-to-edge APIs*: the app no longer paints the system bars.
+    `Prefs.applyChrome` dropped its `Window.setStatusBarColor` and
+    `setNavigationBarColor` calls, and both themes (the pack's and the Glyphs
+    Pack's) dropped their bar colours. A TV draws no bars, and from Android
+    15 the window draws behind them, so nothing anyone sees changes.
+  - *Orientation restriction*: the Play build no longer locks `MainActivity`
+    to landscape. Its listing is TV-only, where every screen is landscape. The
+    sideload build keeps the lock, since it can land on a phone.
+  - Play's report reads the whole bundle, so a library call can still raise
+    the first warning.
+- **`tests/test_play_listing.py` keeps both Console upload fixes.** The
+  first upload hit two refusals on 2026-10-21, and `docs/PLAY-CONSOLE.md`
+  now covers both:
+  - *Automatic protection*: Play's installer check needs `minSdk` 24, and the
+    bundles declare 21. §5 says to switch **Installer check** off before
+    the first upload.
+  - *Dedicated Android TV track*: a bundle that requires
+    `android.software.leanback` is refused on the shared closed track. §4
+    says to opt into the dedicated Android TV track first, which can't be
+    undone, and flags that Google doesn't say whether its testers count
+    toward the 12-tester gate.
+
+  §7 and §9 point at both. A test reads `minSdk` and the Play manifests'
+  leanback requirement, and keeps each fix in the walkthrough while its
+  cause holds.
+- **`tests/test_navigation_graph.py` reads screens, not meta-data keys.** It
+  matched every `android:name` ending in "Activity", so Projectivy's
+  `settingsActivity` key read as a screen with no way in. It now reads
+  `<activity>` elements only.
+- **`tests/test_ui_wiring.py` accepts a zero-padded positional integer.**
+  `%1$02d`, the night hours' "20:00", is valid `String.format` grammar that
+  the gate rejected.
 - **Glyphs apps keep their own icon when the pack is applied.** The catalog
   mapped Core Builds Glyphs Pack to the main pack's cyan icon, overriding the
   companion's violet launcher art. It now uses the existing violet glyph mark

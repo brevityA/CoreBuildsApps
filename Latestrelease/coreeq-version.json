@@ -1,19 +1,19 @@
 {
-  "versionCode": 16,
-  "versionName": "1.7.0",
-  "releaseDate": "2026-10-26",
+  "versionCode": 19,
+  "versionName": "1.9.0",
+  "releaseDate": "2026-10-28",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "a8ee70b413dcf44800db4f6e3c95d4fa8f7acdbb02620bfc90a6008ae649d9cc",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.7.0",
+  "apkSha256": "797201e0478da5fe65ecba95565783412c250acaf1a9e36ce9c4b4c001a8773b",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.9.0",
   "minSdk": 30,
   "highlights": [
-    "You can now set how far up the correction reaches.",
-    "The result card says why each band was left alone.",
-    "The \"corrects X\u2013Y kHz\" line was wrong whenever a ceiling applied.",
-    "The parametric export always names its correction band, and now names the right one.",
-    "A/B switch on Home, and it does not cheat.",
-    "JBL Bar 2.0 \u00b7 Everyday preset.",
-    "\"JBL Bar 2.0 \u00b7 Open stage\" is now \"\u00b7 Air\".",
-    "Honest in-app text."
+    "Twelve generic manual presets, each with a sentence saying what it does.",
+    "The TV's own sound equaliser gets real numbers now.",
+    "Three things the mapping refuses to pretend.",
+    "The capability screen's TV export was writing a layout no TV has.",
+    "The calibration guide asks instead of lecturing.",
+    "It also says which faults are not settings.",
+    "The display is described from what Android reports, above the first step.",
+    "Four test patterns were lying, and are fixed."
   ]
 }

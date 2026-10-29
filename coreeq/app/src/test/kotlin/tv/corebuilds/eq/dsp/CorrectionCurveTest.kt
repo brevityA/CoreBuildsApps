@@ -137,6 +137,124 @@ class CorrectionCurveTest {
         assertEquals("mean correction over 100 Hz-10 kHz", 0.0, mean, 0.6)
     }
 
+    // ---- the 1.7.1 gate leak ----
+    //
+    // Every refusal used to be applied to the raw curve and then undone by the
+    // two steps after it: slope limiting and, decisively, the re-centring pass,
+    // which adds one constant to *every* band. A room with a broad peak above
+    // target makes the correction mean negative, so re-centring lifts the whole
+    // curve — and a null that had been zeroed came back as +2.2 dB, a gated band
+    // as +3.0 dB. The app then boosted a cancellation while the result card said
+    // "not boosted". These two tests are the shape that reproduces it.
+
+    /** A flat 8 dB peak across the band: every band wants a cut, so re-centring lifts. */
+    private fun broadPeak(): DoubleArray = DoubleArray(freqs.size) { 8.0 }
+
+    @Test
+    fun aNullIsNotBoostedEvenWhenRecentringWouldLiftEveryBand() {
+        for (nullHz in doubleArrayOf(250.0, 500.0, 1000.0)) {
+            val room = broadPeak().also { it[freqs.indexOfFirst { f -> f >= nullHz }] = -20.0 }
+            val nulls = Correction.detectNulls(freqs, room)
+            assertTrue("$nullHz Hz must be detected as a null", nulls.any { it })
+            val result = correction(room, nullMask = nulls)
+            val i = freqs.indexOfFirst { f -> f >= nullHz }
+            assertTrue(
+                "the null at ${freqs[i]} Hz was boosted to ${result[i]} dB by re-centring",
+                result[i] <= 1e-9
+            )
+        }
+    }
+
+    @Test
+    fun aPhaseGatedBandIsNotCorrectedEvenWhenRecentringWouldLiftEveryBand() {
+        val room = broadPeak()
+        val gated = freqs.indexOfFirst { it >= 200.0 }
+        val phaseOk = BooleanArray(freqs.size) { true }.also { it[gated] = false }
+        val result = Correction.calculateCorrectionCurve(
+            freqs, room, DoubleArray(freqs.size),
+            transitionHz = 1e6, minPhaseOk = phaseOk
+        )
+        assertEquals(
+            "a band that failed the gate must stay at exactly 0 dB",
+            0.0, result[gated], 0.0
+        )
+    }
+
+    @Test
+    fun noRefusalIsEverContradictedByTheCurveItLeaves() {
+        // The general form: build a room whose refusals and whose re-centring
+        // pull in opposite directions, then check the finished curve agrees
+        // with every refusal it was given.
+        val room = broadPeak()
+        room[freqs.indexOfFirst { it >= 315.0 }] = -22.0
+        val nulls = Correction.detectNulls(freqs, room)
+        val phaseOk = BooleanArray(freqs.size) { true }.also {
+            it[freqs.indexOfFirst { f -> f >= 2000.0 }] = false
+        }
+        val result = Correction.calculateCorrectionCurve(
+            freqs, room, DoubleArray(freqs.size),
+            nullMask = nulls, minPhaseOk = phaseOk
+        )
+        for (i in freqs.indices) {
+            if (nulls[i]) {
+                assertTrue("null at ${freqs[i]} Hz carries ${result[i]} dB", result[i] <= 1e-9)
+            }
+            if (!phaseOk[i]) {
+                assertEquals("gated band ${freqs[i]} Hz moved", 0.0, result[i], 0.0)
+            }
+        }
+    }
+
+    // ---- graded trust (1.7.1) ----
+
+    @Test
+    fun confidenceIsZeroAtTheGateAndFullTwentyDecibelsClear() {
+        assertEquals("on the gate", 0.0, Correction.bandConfidence(doubleArrayOf(10.0))[0], 0.0)
+        assertEquals("below the gate", 0.0, Correction.bandConfidence(doubleArrayOf(4.0))[0], 0.0)
+        assertEquals("twenty dB clear", 1.0, Correction.bandConfidence(doubleArrayOf(20.0))[0], 0.0)
+        assertEquals("well clear", 1.0, Correction.bandConfidence(doubleArrayOf(45.0))[0], 0.0)
+    }
+
+    @Test
+    fun confidenceRampsBetweenInsteadOfJumping() {
+        val ramp = Correction.bandConfidence(doubleArrayOf(11.0, 15.0, 19.0))
+        assertTrue("11 dB should be barely trusted, was ${ramp[0]}", ramp[0] in 0.0..0.2)
+        assertTrue("15 dB should be about half, was ${ramp[1]}", ramp[1] in 0.4..0.6)
+        assertTrue("19 dB should be nearly all, was ${ramp[2]}", ramp[2] > 0.85)
+        assertTrue("the ramp must increase", ramp[0] <= ramp[1] && ramp[1] <= ramp[2])
+    }
+
+    @Test
+    fun anUnreadableBandIsNeverGivenAPositiveWeight() {
+        val conf = Correction.bandConfidence(doubleArrayOf(Double.NaN, Double.NEGATIVE_INFINITY))
+        assertEquals("NaN SNR", 0.0, conf[0], 0.0)
+        assertEquals("-inf SNR", 0.0, conf[1], 0.0)
+    }
+
+    @Test
+    fun halfTrustedBandsGetHalfTheCorrection() {
+        val room = measured(Triple(500.0, 6.0, 0.7))
+        val full = correction(room, transitionHz = 1e6)
+        val half = Correction.calculateCorrectionCurve(
+            freqs, room, DoubleArray(freqs.size),
+            transitionHz = 1e6, confidence = DoubleArray(freqs.size) { 0.5 }
+        )
+        val i = freqs.indexOfFirst { it >= 500.0 }
+        assertTrue("the fixture must ask for a cut at 500 Hz", full[i] < -1.0)
+        assertEquals("half trust must halve the gain", full[i] / 2.0, half[i], 0.05)
+    }
+
+    // ---- the seat-count boost budget (1.7.1) ----
+
+    @Test
+    fun theBassBudgetRisesWithASecondSeatAndStopsThere() {
+        assertEquals(SweepAnalysis.SINGLE_SEAT_BOOST_DB, Correction.boostBudgetDb(1), 0.0)
+        assertEquals(DspConstants.MULTI_SEAT_BOOST_DB, Correction.boostBudgetDb(2), 0.0)
+        assertEquals(DspConstants.MULTI_SEAT_BOOST_DB, Correction.boostBudgetDb(3), 0.0)
+        assertTrue("the multi-seat budget must still be conservative", DspConstants.MULTI_SEAT_BOOST_DB < DspConstants.MAX_BOOST_DB)
+        assertTrue("and above one seat's", DspConstants.MULTI_SEAT_BOOST_DB > SweepAnalysis.SINGLE_SEAT_BOOST_DB)
+    }
+
     @Test
     fun aFlatRoomAgainstAFlatTargetAsksForAlmostNothing() {
         val result = correction(DoubleArray(freqs.size))

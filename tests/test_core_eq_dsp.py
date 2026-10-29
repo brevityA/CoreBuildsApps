@@ -326,6 +326,82 @@ class TestCorrection:
         corr = dsp.correction_curve(third_octave, measured, target)
         assert corr[null_at] <= 1e-6
 
+    def test_a_null_is_not_boosted_even_when_recentring_would_lift_every_band(self, third_octave):
+        """The 1.7.1 gate leak, in the reference.
+
+        Every refusal was applied before _limit_slope and the re-centring pass,
+        and re-centring adds one constant to every band. A room that is hot
+        against target everywhere makes that constant positive, which lifted a
+        zeroed null back to +2 dB and a gated band off zero. The refusal has to
+        survive the steps that move the curve.
+        """
+        for null_hz in (250.0, 500.0, 1000.0):
+            measured = np.full_like(third_octave, 8.0)
+            at = int(np.argmin(np.abs(third_octave - null_hz)))
+            measured[at] = -20.0
+            nulls = dsp.detect_nulls(third_octave, measured)
+            assert bool(nulls[at]), f"{null_hz} Hz must be detected as a null"
+            corr = dsp.correction_curve(
+                third_octave, measured, np.zeros_like(third_octave),
+                null_mask=nulls,
+            )
+            assert corr[at] <= 1e-9, f"null at {third_octave[at]} Hz boosted to {corr[at]:+.2f} dB"
+
+    def test_recentring_cannot_revive_a_gated_band(self, third_octave):
+        measured = np.full_like(third_octave, 8.0)
+        at = int(np.argmin(np.abs(third_octave - 200.0)))
+        gate = np.ones_like(third_octave, dtype=bool)
+        gate[at] = False
+        corr = dsp.correction_curve(
+            third_octave, measured, np.zeros_like(third_octave),
+            transition_hz_=1e6, min_phase_ok=gate,
+        )
+        assert corr[at] == 0.0, f"gated band moved to {corr[at]:+.3f} dB"
+
+    def test_every_refusal_survives_the_finished_curve(self, third_octave):
+        measured = np.full_like(third_octave, 6.0)
+        null_at = int(np.argmin(np.abs(third_octave - 315.0)))
+        measured[null_at] = -22.0
+        gated_at = int(np.argmin(np.abs(third_octave - 2000.0)))
+        gate = np.ones_like(third_octave, dtype=bool)
+        gate[gated_at] = False
+        nulls = dsp.detect_nulls(third_octave, measured)
+        corr = dsp.correction_curve(third_octave, measured, np.zeros_like(third_octave),
+                                    null_mask=nulls, min_phase_ok=gate)
+        if bool(nulls[null_at]):
+            assert corr[null_at] <= 1e-9
+        assert corr[gated_at] == 0.0
+
+    def test_band_confidence_ramps_instead_of_stepping(self):
+        assert float(dsp.band_confidence([4.0])[0]) == 0.0
+        assert float(dsp.band_confidence([10.0])[0]) == 0.0
+        assert abs(float(dsp.band_confidence([15.0])[0]) - 0.5) < 1e-9
+        assert float(dsp.band_confidence([20.0])[0]) == 1.0
+        assert float(dsp.band_confidence([45.0])[0]) == 1.0
+        ramp = dsp.band_confidence([11.0, 14.0, 18.0])
+        assert bool(np.all(np.diff(ramp) >= 0.0)), "confidence must not fall as SNR rises"
+
+    def test_an_unreadable_band_is_never_trusted(self):
+        assert float(dsp.band_confidence([np.nan])[0]) == 0.0
+        assert float(dsp.band_confidence([-np.inf])[0]) == 0.0
+
+    def test_half_trusted_bands_get_half_the_correction(self, third_octave):
+        measured = np.zeros_like(third_octave)
+        at = int(np.argmin(np.abs(third_octave - 500.0)))
+        measured[at] = 6.0
+        full = dsp.correction_curve(third_octave, measured, np.zeros_like(third_octave), transition_hz_=1e6)
+        half = dsp.correction_curve(third_octave, measured, np.zeros_like(third_octave),
+                                    transition_hz_=1e6,
+                                    confidence=np.full_like(third_octave, 0.5))
+        assert full[at] < -1.0, f"fixture should ask for a cut, got {full[at]:+.2f}"
+        assert abs(half[at] - full[at] / 2.0) < 0.05
+
+    def test_the_bass_budget_rises_with_a_second_seat_and_stops(self):
+        assert dsp.boost_budget_db(1) == dsp.SINGLE_SEAT_BOOST_DB
+        assert dsp.boost_budget_db(2) == dsp.MULTI_SEAT_BOOST_DB
+        assert dsp.boost_budget_db(3) == dsp.MULTI_SEAT_BOOST_DB
+        assert dsp.SINGLE_SEAT_BOOST_DB < dsp.MULTI_SEAT_BOOST_DB < dsp.MAX_BOOST_DB
+
     def test_min_phase_gate_is_honoured(self, third_octave):
         """Where the gate says no, the correction is zero."""
         measured = np.zeros_like(third_octave)
@@ -708,6 +784,165 @@ class TestRecordingAnalysis:
         assert res["transition_hz"] > 0
         assert "Preamp:" in res["preset_txt"] or "# Core EQ: no filters" in res["preset_txt"]
         assert len(res["centres"]) > 0
+
+
+# ---------------------------------------------------------------------------
+# The closed loop: a check sweep refining the correction (1.8.0)
+#
+# The fixture is the one in CorrectionRefinementTest.kt, so the two
+# implementations are held to the same room: a broad bass lift, a mid dip and a
+# cancellation at the 80 Hz band. The Kotlin figures quoted below are what that
+# harness prints for the same input.
+# ---------------------------------------------------------------------------
+
+def _refinement_fixture():
+    freqs, _ = dsp.welch_db(dsp.pink_noise(seconds=0.5), dsp.FS)
+    centres, _ = dsp.octave_bands(freqs, np.zeros_like(freqs), n=3.0)
+    f = centres[(centres >= 40.0) & (centres <= dsp.F_MAX)]
+    room = (5.0 * np.exp(-0.5 * (np.log2(f / 90.0) / 0.6) ** 2)
+            - 2.5 * np.exp(-0.5 * (np.log2(f / 1200.0) / 0.5) ** 2)
+            - 9.0 * np.exp(-0.5 * (np.log2(f / 80.0) / 0.15) ** 2))
+    target = np.zeros(f.size)
+    nulls = dsp.detect_nulls(f, room)
+    conf = dsp.band_confidence(np.full(f.size, 40.0))
+    correction = dsp.correction_curve(
+        f, room, target, transition_hz_=300.0, null_mask=nulls, confidence=conf,
+        max_boost_below_transition=dsp.SINGLE_SEAT_BOOST_DB)
+    predicted = room + correction - target
+    return f, room, target, nulls, conf, correction, predicted
+
+
+def _refine(error, *, snr=None, nulls=None, f=None, room=None, target=None, conf=None,
+            correction=None, predicted=None, gated_at=None):
+    f, room, target, nulls0, conf0, correction, predicted = _refinement_fixture()
+    heard = target + predicted + error
+    check_conf = conf0 if snr is None else dsp.band_confidence(np.full(f.size, snr))
+    return dsp.refine_with_check(
+        f, room, target, correction, heard,
+        null_mask=nulls0, min_phase_ok=None if gated_at is None else (f != gated_at),
+        base_confidence=conf0, check_confidence=check_conf,
+        check_null_mask=nulls, transition_hz_=300.0,
+        boost_budget_db=dsp.SINGLE_SEAT_BOOST_DB)
+
+
+class TestCorrectionRefinement:
+    def test_a_level_difference_changes_nothing(self):
+        result = _refine(np.full(22, 2.5))
+        assert result is None
+
+    def test_a_room_louder_than_predicted_gets_a_deeper_cut(self):
+        f, _, _, _, _, correction, _ = _refinement_fixture()
+        error = 2.5 * np.exp(-0.5 * (np.log2(f / 100.0) / 0.7) ** 2)
+        result = _refine(error)
+        k = int(np.argmin(np.abs(f - 100.0)))
+        print("100 Hz:", correction[k], "->", result.correction_db[k], "step", result.step_db[k])
+        assert result.step_db[k] < -0.2
+        assert result.correction_db[k] < 0.0, "a cut must stay a cut"
+        assert abs(result.step_db[k]) <= dsp.REFINE_MAX_STEP_DB + 1e-9
+        assert result.predicted_after_rms_db < result.predicted_before_rms_db
+
+    def test_the_kotlin_harness_agrees_on_the_same_room(self):
+        """CorrectionRefinementTest prints -2.0080 dB for this band; the reference must land there."""
+        f, _, _, _, _, _, _ = _refinement_fixture()
+        error = 2.5 * np.exp(-0.5 * (np.log2(f / 100.0) / 0.7) ** 2)
+        result = _refine(error)
+        k = int(np.argmin(np.abs(f - 100.0)))
+        print("python step at 100 Hz:", result.step_db[k], "kotlin: -2.008033537196149")
+        assert abs(result.step_db[k] - -2.008033537196149) < 0.05
+
+    def test_a_band_moves_at_most_one_step(self):
+        f, _, _, _, _, _, _ = _refinement_fixture()
+        error = 9.0 * np.exp(-0.5 * (np.log2(f / 100.0) / 0.5) ** 2)
+        result = _refine(error)
+        assert result.largest_db <= dsp.REFINE_MAX_STEP_DB + 1e-9
+
+    def test_a_band_the_correction_could_not_touch_is_not_refined(self):
+        f, _, _, nulls, _, correction, _ = _refinement_fixture()
+        result = _refine(np.full(f.size, 3.0))
+        untouched = dsp.left_alone(f, nulls, dsp.F_MIN, dsp.F_MAX, None, None)
+        assert untouched.any()
+        if result is not None:
+            assert np.all(result.step_db[untouched] == 0.0)
+            assert np.all(result.correction_db[untouched] == correction[untouched])
+
+    def test_a_band_the_check_could_not_hear_is_left_alone(self):
+        f, _, _, _, _, _, _ = _refinement_fixture()
+        error = -3.0 * np.exp(-0.5 * (np.log2(f / 125.0) / 0.5) ** 2)
+        k = int(np.argmin(np.abs(f - 125.0)))
+        quiet = _refine(error, snr=4.0)
+        if quiet is not None:
+            assert quiet.step_db[k] == 0.0
+        half = _refine(error, snr=15.0)
+        full = _refine(error)
+        print("125 Hz half-trusted", half.step_db[k], "fully", full.step_db[k])
+        assert abs(half.step_db[k]) < abs(full.step_db[k])
+
+    def test_a_cut_is_never_turned_into_a_boost(self):
+        f, _, _, _, _, correction, _ = _refinement_fixture()
+        cut = int(np.where((correction < -0.1) & (correction > -1.0))[0][0])
+        error = -6.0 * np.exp(-0.5 * (np.log2(f / f[cut]) / 0.5) ** 2)
+        result = _refine(error)
+        print(f[cut], "cut:", correction[cut], "->", result.correction_db[cut])
+        assert result.correction_db[cut] <= 0.0
+        assert result.correction_db[cut] >= correction[cut]
+
+    def test_a_cancellation_the_check_found_is_not_filled(self):
+        f, room, target, nulls0, conf, correction, predicted = _refinement_fixture()
+        error = -8.0 * np.exp(-0.5 * (np.log2(f / 1250.0) / 0.06) ** 2)
+        heard = target + predicted + error
+        check_nulls = dsp.detect_nulls(f, heard)
+        assert check_nulls.any()
+        result = dsp.refine_with_check(
+            f, room, target, correction, heard, null_mask=nulls0,
+            base_confidence=conf, check_confidence=conf, check_null_mask=check_nulls,
+            transition_hz_=300.0, boost_budget_db=dsp.SINGLE_SEAT_BOOST_DB)
+        if result is not None:
+            assert np.all(result.step_db[check_nulls] <= 0.0)
+
+    def test_a_level_error_the_alignment_could_not_absorb_moves_nothing(self):
+        f, room, target, nulls0, conf, correction, predicted = _refinement_fixture()
+        gated = int(np.argmin(np.abs(f - 1000.0)))
+        heard = target + predicted
+        heard[gated] -= 8.0
+        min_phase = np.ones(f.size, dtype=bool)
+        min_phase[gated] = False
+        assert dsp.refine_with_check(
+            f, room, target, correction, heard, null_mask=nulls0, min_phase_ok=min_phase,
+            base_confidence=conf, check_confidence=conf, transition_hz_=300.0,
+            boost_budget_db=dsp.SINGLE_SEAT_BOOST_DB) is None
+
+    def test_the_refined_curve_stays_inside_the_budget(self):
+        f, room, target, nulls0, conf, correction, predicted = _refinement_fixture()
+        error = -3.5 * np.exp(-0.5 * (np.log2(f / 250.0) / 0.5) ** 2)
+        result = _refine(error)
+        floor, ceiling = dsp.budget_envelope(
+            f, 300.0, max_boost_below_transition=dsp.SINGLE_SEAT_BOOST_DB)
+        assert np.all(result.correction_db <= ceiling + 1e-9)
+        assert np.all(result.correction_db >= floor - 1e-9)
+        # Bands the correction may not touch are byte-for-byte where they were.
+        skip = dsp.left_alone(f, nulls0, dsp.F_MIN, dsp.F_MAX, None, None)
+        assert np.all(result.correction_db[skip] == correction[skip])
+
+    def test_a_check_past_the_corrections_band_refines_the_shared_bands(self):
+        f, room, target, nulls0, conf, correction, predicted = _refinement_fixture()
+        m = f.size - 4
+        error = 2.0 * np.exp(-0.5 * (np.log2(f / 100.0) / 0.7) ** 2)
+        heard = (target + predicted + error)[:m]
+        result = dsp.refine_with_check(
+            f[:m], room[:m], target[:m], correction[:m], heard, null_mask=nulls0[:m],
+            base_confidence=conf[:m], check_confidence=conf, check_null_mask=None,
+            transition_hz_=300.0, boost_budget_db=dsp.SINGLE_SEAT_BOOST_DB)
+        assert result is not None
+        assert result.correction_db.size == m
+        assert result.changed > 0
+
+    def test_two_curves_that_cannot_be_compared_are_refused(self):
+        f, room, target, nulls0, conf, correction, predicted = _refinement_fixture()
+        assert dsp.refine_with_check(
+            f, room, target, correction, (target + predicted)[:-1],
+            null_mask=nulls0, base_confidence=conf, check_confidence=conf) is None
+        assert dsp.refine_with_check(
+            f[:4], room[:4], target[:4], correction[:4], (target + predicted)[:4]) is None
 
 
 # ---------------------------------------------------------------------------

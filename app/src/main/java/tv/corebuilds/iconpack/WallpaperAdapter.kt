@@ -57,7 +57,7 @@ class WallpaperAdapter(
             if (holder.image.tag == item.thumbAsset) holder.image.setImageBitmap(bmp)
         }
         holder.label.text = item.title
-        // One corner badge: LIVE for a loop, PLUS for a Core Builds Plus wall.
+        // One corner badge: LIVE for a loop, PREMIUM for a Core Premium wall.
         holder.badge.visibility = if (item.isLive || item.plus) View.VISIBLE else View.GONE
         holder.badge.setText(if (item.plus) R.string.wp_plus_badge else R.string.wp_live_badge)
         bindFavourite(holder, item)

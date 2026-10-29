@@ -22,4 +22,9 @@ export const MAPPING_TITLE_PREFIX = "[Not applying] ";
 export const PRIORITY_LABEL = "priority";
 export const PLAY_PACKAGE = "tv.corebuilds.iconpack.play";
 export const PLUS_PRODUCT_ID = "core_builds_plus";
-export const WORKER_VERSION = "2026-10-19-iconreq06";
+// Core Builds Plus "Request all": one press files up to BATCH_MAX missing apps,
+// at most BATCH_PER_DAY presses a day per purchase. Pinned to the app's
+// BatchRequest by tests/test_batch_requests.py.
+export const BATCH_MAX = 10;
+export const BATCH_PER_DAY = 3;
+export const WORKER_VERSION = "2026-10-28-iconreq07";

@@ -59,8 +59,27 @@ object PostCorrectionCheck {
      */
     fun leftAlone(r: SweepResult): BooleanArray = BooleanArray(r.centresHz.size) { k ->
         val hz = r.centresHz[k]
-        r.nullMask[k] || hz < r.floorHz || hz > r.fMaxHz || !r.minPhaseOk[k] ||
+        r.nullMask.getOrElse(k) { false } || hz < r.floorHz || hz > r.fMaxHz ||
+            !r.minPhaseOk.getOrElse(k) { true } ||
             r.bandSnrDb.getOrElse(k) { Double.MAX_VALUE } < SweepAnalysis.BAND_MIN_SNR_DB
+    }
+
+    /**
+     * Bands neither sweep may speak for: the ones [made]'s correction was not
+     * allowed to touch, plus the ones [check] did not hear over its own noise.
+     * [compare] and [CorrectionRefinement] share this so the figures on screen
+     * and the refinement computed from them describe the same bands.
+     */
+    fun sharedSkip(
+        made: SweepResult,
+        check: SweepResult,
+        n: Int = minOf(made.centresHz.size, check.centresHz.size)
+    ): BooleanArray {
+        val untouched = leftAlone(made)
+        return BooleanArray(n) { k ->
+            untouched.getOrElse(k) { true } ||
+                check.bandSnrDb.getOrElse(k) { Double.MAX_VALUE } < SweepAnalysis.BAND_MIN_SNR_DB
+        }
     }
 
     /**
@@ -72,7 +91,9 @@ object PostCorrectionCheck {
         val before: Result,
         val predicted: Result,
         val after: Result,
-        val afterDb: DoubleArray
+        val afterDb: DoubleArray,
+        /** Bands all three figures left out; [CorrectionRefinement] refines only the rest. */
+        val skip: BooleanArray = BooleanArray(0)
     )
 
     /**
@@ -87,10 +108,7 @@ object PostCorrectionCheck {
         if ((0 until n).any { abs(made.centresHz[it] - check.centresHz[it]) > 1e-6 }) return null
         val centres = made.centresHz.copyOf(n)
         val target = made.targetDb.copyOf(n)
-        val untouched = leftAlone(made)
-        val skip = BooleanArray(n) { k ->
-            untouched[k] || check.bandSnrDb.getOrElse(k) { Double.MAX_VALUE } < SweepAnalysis.BAND_MIN_SNR_DB
-        }
+        val skip = sharedSkip(made, check, n)
         val room = made.measuredDb.copyOf(n)
         val corrected = DoubleArray(n) { room[it] + made.correctionDb[it] }
         val afterDb = align(centres, check.measuredDb.copyOf(n), target) ?: return null
@@ -98,7 +116,7 @@ object PostCorrectionCheck {
         val predicted = alignedResidual(centres, corrected, target, skip) ?: return null
         val after = residual(centres, afterDb, target, skip)
         if (!before.sufficient || !after.sufficient) return null
-        return Comparison(before, predicted, after, afterDb)
+        return Comparison(before, predicted, after, afterDb, skip)
     }
 
     /**
