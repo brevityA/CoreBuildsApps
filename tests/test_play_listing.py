@@ -573,7 +573,7 @@ class GlyphsPackListing(unittest.TestCase):
             self.assertNotIn(banned, text, f"metadata policy: {banned!r}")
 
     def test_copy_does_not_claim_every_glyph_is_single_colour(self):
-        catalog = json.loads((ROOT / "tools/catalog.json").read_text())
+        catalog = json.loads((ROOT / "tools/catalog.json").read_text(encoding="utf-8"))
         self.assertTrue(any(i.get("secondary") or i.get("gradient")
                             for i in catalog["icons"]), "the catalog carries multicolour marks")
         text = GLYPHS_SPEC["copy"]["full_description"].lower()

@@ -14977,7 +14977,7 @@
       "glyph_source": "original Core rounded-monoline interpretation of the official crest, FM lettering and TV tag; compact Greek vendor lettering is not traced. References: https://www.sportfmtv.gr/ and https://play.google.com/store/apps/details?id=gr.sportfmtv.app; hashed visual references in tools/reference/sportfm-tv/ (2026-10-26)",
       "name_source": "request #382 spells SPORT FM TV; the matching gr.sportfmtv.app Google Play listing spells SPORTFM TV (2026-10-26)",
       "secondary": {
-        "color": "#FFFFFF",
+        "color": "#E6EDF3",
         "parts": [
           1
         ],

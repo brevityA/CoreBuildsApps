@@ -73,7 +73,7 @@ class IdentityTests(unittest.TestCase):
 
     def test_october_requests_use_reviewed_marks_not_generic_letter_shells(self):
         expected = {
-            "sport_fm_tv": ("sportfm_crest", "#CE1039", "#FFFFFF", [1]),
+            "sport_fm_tv": ("sportfm_crest", "#CE1039", "#E6EDF3", [1]),
             "tvlok": ("tvlok_play_tiles", "#17A5DF", "#8E46AE", [0]),
         }
         for drawable, (glyph, accent, second, parts) in expected.items():
