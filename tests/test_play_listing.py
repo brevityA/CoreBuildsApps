@@ -467,16 +467,34 @@ class StoreTruth(unittest.TestCase):
 
     def test_check_refuses_a_broker_build_without_the_latch(self):
         import contextlib, io
-        original = listing.broker_enabled
+        original, latch = listing.broker_enabled, listing.BROKER_SHIPPED
+        # Whatever the tree holds, a broker build with the latch off is refused.
         listing.broker_enabled = lambda: True
+        listing.BROKER_SHIPPED = False
         out = io.StringIO()
         try:
-            self.assertFalse(listing.BROKER_SHIPPED)
             with contextlib.redirect_stdout(out):
                 self.assertEqual(listing.check(), 1)
         finally:
-            listing.broker_enabled = original
+            listing.broker_enabled, listing.BROKER_SHIPPED = original, latch
         self.assertIn("BROKER_SHIPPED is False", out.getvalue())
+
+    def test_premium_is_on_in_the_play_build_only(self):
+        # The owner's call (2026-10-30): the Play build posts to the request
+        # service and sells Core Premium; the GitHub / Downloader build keeps
+        # the QR panel. So the URL lives in a Play-only override, main's
+        # generated value stays empty, and the latch is set.
+        play = listing.PLAY_ENDPOINT_RES.read_text(encoding="utf-8")
+        url = re.search(r'name="audit_request_endpoint"[^>]*>([^<]*)<', play).group(1)
+        self.assertRegex(url, r"^https://[a-z0-9.-]+\.workers\.dev/$")
+        self.assertEqual(listing.play_endpoint(), url)
+        main = (ROOT / "app/src/main/res/values/issue_prefill.xml").read_text(encoding="utf-8")
+        self.assertIn('<string name="audit_request_endpoint"></string>', main)
+        self.assertTrue(listing.broker_enabled())
+        self.assertTrue(listing.BROKER_SHIPPED)
+        self.assertTrue(SPEC["content_rating"]["purchases"])
+        self.assertTrue(SPEC["data_safety"]["collects_user_data"])
+        self.assertIn("CORE PREMIUM", SPEC["copy"]["full_description"])
 
     def test_check_catches_a_broker_baked_in_without_new_answers(self):
         original = listing.broker_enabled

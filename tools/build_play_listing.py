@@ -152,10 +152,26 @@ def broker_enabled() -> bool:
     press opens a prefilled GitHub form and the app itself sends nothing.
     Reading it here means baking the URL in fails --check until the listing
     and its answers are regenerated, instead of shipping last release's form.
+
+    The listing describes the Play build, so this reads what that build
+    resolves: the Play-only override (app/src/play/res/values/
+    request_service.xml) when it has one, else main's generated value.
     """
-    xml = (RES / "values/issue_prefill.xml").read_text(encoding="utf-8")
-    found = re.search(r'<string name="audit_request_endpoint">([^<]*)</string>', xml)
-    return bool(found and found.group(1).strip())
+    return bool(play_endpoint())
+
+
+PLAY_ENDPOINT_RES = ROOT / "app/src/play/res/values/request_service.xml"
+
+
+def play_endpoint() -> str:
+    """The request service URL the Play build resolves, or "" for none."""
+    pattern = r'<string name="audit_request_endpoint"[^>]*>([^<]*)</string>'
+    for path in (PLAY_ENDPOINT_RES, RES / "values/issue_prefill.xml"):
+        if path.is_file():
+            found = re.search(pattern, path.read_text(encoding="utf-8"))
+            if found:
+                return found.group(1).strip()
+    return ""
 
 
 # One-way latch for the store answers. Play keeps one Data safety form and one
@@ -165,7 +181,7 @@ def broker_enabled() -> bool:
 # this True in the change that bakes the broker URL in (--check refuses a
 # broker-enabled tree without it), and set it back only once every track has
 # moved past the last broker build.
-BROKER_SHIPPED = False
+BROKER_SHIPPED = True
 
 
 def answers_cover_broker() -> bool:

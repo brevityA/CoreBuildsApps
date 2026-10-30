@@ -70,6 +70,15 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Changed
 
+- **Core Premium is on sale in the Google Play build.** That build now
+  carries the request service's address, so a missing-icon press files the
+  request in one step, Core Premium's card offers the purchase and the
+  24-hour trial, and a buyer's requests are labelled priority. The
+  GitHub / Downloader build is unchanged: it keeps the QR panel and sells
+  nothing. The Play listing's description, Data safety and content rating
+  answers are regenerated to match (`docs/play/listing.json`). Nothing has
+  been bought on a TV yet; `docs/PLAY-CONSOLE.md` §8 lists the Console
+  steps and the test.
 - **Core Builds Plus is now Core Premium, with six extras.** Priority
   requests, My requests, loop rotation, the night loop, Projectivy walls and
   Spectra. Every icon, the main collection (in Projectivy's rotation too) and

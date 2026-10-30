@@ -14,7 +14,7 @@
   "copy": {
     "title": "Core Builds Icon Pack",
     "short_description": "1026 icons and 132 wallpapers built for Android TV. No ads, no account.",
-    "full_description": "An icon and wallpaper pack made for the television, not a phone app stretched onto one.\n\nICONS\n1026 icons, mapped for the apps people actually run on a TV: streaming services, players, launchers, tools. Every app gets two shapes: a 16:9 banner, which this pack applies, and a square glyph, applied by the free Core Builds Glyphs Pack. The Art style switch moves between them, and the first time you pick square it takes you to the Glyphs Pack.\n\nWALLPAPERS\n132 stills across 11 series, from deep space to circuit boards, each with a matching thumbnail bundled in the app. The grid works offline; the full-size image downloads when you pick it, and saves to your own Pictures folder if you would rather set it yourself.\n\nLIVE LOOPS\n48 animated wallpapers, played by the system rather than a video app, so they keep moving while you browse.\n\nHONEST ABOUT YOUR TV\nThe auditor lists which of your installed apps the pack covers, shows the exact icon file it would draw for any app, and can request a missing icon in one press. There is no account and no sign-in. Nothing is analysed in the background.\n\nWORKS WITH\nLaunchers that accept icon packs, including Projectivy, FLauncher, AT4K, Leanback Launcher and Lawnchair variants. Where a launcher cannot be driven directly, the app says so and points you at the manual picker instead of pretending.\n\nPRIVACY\nNo advertising, no analytics, no tracking, no account. Wallpapers are fetched from a public address; an icon request sends the app name, the component and a device note, and only when you press it."
+    "full_description": "An icon and wallpaper pack made for the television, not a phone app stretched onto one.\n\nICONS\n1026 icons, mapped for the apps people actually run on a TV: streaming services, players, launchers, tools. Every app gets two shapes: a 16:9 banner, which this pack applies, and a square glyph, applied by the free Core Builds Glyphs Pack. The Art style switch moves between them, and the first time you pick square it takes you to the Glyphs Pack.\n\nWALLPAPERS\n132 stills across 11 series, from deep space to circuit boards, each with a matching thumbnail bundled in the app. The grid works offline; the full-size image downloads when you pick it, and saves to your own Pictures folder if you would rather set it yourself.\n\nLIVE LOOPS\n48 animated wallpapers, played by the system rather than a video app, so they keep moving while you browse.\n\nHONEST ABOUT YOUR TV\nThe auditor lists which of your installed apps the pack covers, shows the exact icon file it would draw for any app, and can request a missing icon in one press. There is no account and no sign-in. Nothing is analysed in the background.\n\nWORKS WITH\nLaunchers that accept icon packs, including Projectivy, FLauncher, AT4K, Leanback Launcher and Lawnchair variants. Where a launcher cannot be driven directly, the app says so and points you at the manual picker instead of pretending.\n\nCORE PREMIUM\nOptional, one purchase through Google Play, no subscription: your icon requests are filed as priority, one app or every missing app at once, My requests shows how far each one has got, the live wallpaper can rotate through your loops and play a second one at night, you choose what Projectivy rotates from this pack (favourites, one series, a night set), and Spectra and Aurum add 24 more wallpapers. Try it free for 24 hours first, once per TV. Every icon, all 132 stills, every loop and every screen ship to everyone either way.\n\nPRIVACY\nNo advertising, no analytics, no tracking, no account. Wallpapers are fetched from a public address; an icon request sends the app name, the component and a device note, and only when you press it. With Core Premium, a request also carries the Google Play purchase token, which is checked with Google and never stored."
   },
   "assets": {
     "icon": {
@@ -88,22 +88,44 @@
     ]
   },
   "data_safety": {
-    "collects_user_data": false,
+    "collects_user_data": true,
     "shares_user_data": false,
     "has_ads": false,
     "encrypted_in_transit": true,
-    "deletion_request_url": null,
-    "rationale": "No analytics, advertising or crash SDKs are linked; the app has no account, no identifier and no background upload. The one POST the user can trigger (an icon request) carries the app name, the component and a device note - no device ID, no advertising ID, no IP-derived store beyond a rate-limit window on the broker - and the policy states it verbatim.",
+    "deletion_request_url": "https://github.com/brevityA/CoreBuildsApps/issues",
+    "rationale": "No analytics, advertising or crash SDKs are linked; the app has no account, no identifier and no background upload. A missing-icon press posts the app name, the component and a device note to the request broker, which files them as a public GitHub issue; a Core Premium owner's press also carries the purchase token, which the broker checks with Google and never stores. Nothing is shared with a third party, and the policy states each field verbatim.",
     "user_initiated_icon_request": {
       "endpoint_owner": "icon request broker (tools/icon_request_broker)",
       "fields": [
         "app_name",
         "component",
-        "device"
+        "device",
+        "plus_token"
       ],
       "identifiers": [],
       "trigger": "the user presses Request icon on an auditor row"
-    }
+    },
+    "collected": [
+      {
+        "type": "App activity > Installed apps",
+        "optional": true,
+        "shared": false,
+        "purposes": [
+          "App functionality"
+        ],
+        "what": "the app the user presses under Missing icons (name and component) and the launcher in use, filed as a public GitHub issue; with Core Premium, Request all sends the same for up to 10 unrequested missing apps in one press"
+      },
+      {
+        "type": "Financial info > Purchase history",
+        "optional": true,
+        "shared": false,
+        "purposes": [
+          "App functionality"
+        ],
+        "what": "Core Premium owners only: the Google Play purchase token, checked with Google and never stored; a SHA-256 of it is cached for at most six hours"
+      }
+    ],
+    "not_a_listed_type": "TV model, Android version and pack version, from the device note; stated in docs/privacy.html"
   },
   "content_rating": {
     "category": "All Other App Types",
@@ -115,13 +137,13 @@
     "gambling": false,
     "user_generated_content_shared": false,
     "location_sharing": false,
-    "purchases": false,
+    "purchases": true,
     "ads": false,
     "expected_rating": "Everyone / PEGI 3",
     "note": "A wallpaper and icon pack. Nothing here is user-generated, shared or interactive with strangers. 'online_content' is the full-size wallpapers and live loops, downloaded after install from this repo; none of it is rated content. 'purchases' follows the broker: Core Premium is on sale exactly when the broker is baked in, and the answer stays yes while a track still serves such a build (BROKER_SHIPPED)."
   },
   "sources": {
-    "generator": "8a26ace7f5378f7dda1a805e0c45c048b6808d59e135d755a0908af9142532ef",
+    "generator": "6cb00918d911110bb663919b69e7ea1d6ddc3c0c71c6845e69d348fa7b30acba",
     "branding": "4fa4d2dcbac033c4ca1a1651570529bd7cfe82baf0b837b10f491d58c69f22e6",
     "icon_pack_xml": "a02a79a00bb26cfb3300006d25dea8efbe4ea8467c8bba9598239b1525b7314f",
     "wallpapers_json": "0bc4f85d2ff7d2e2c646088cd450957c5e7a58c0519be85923207356dafb3490",

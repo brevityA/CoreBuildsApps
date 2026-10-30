@@ -79,7 +79,7 @@ Two of these deserve care rather than speed:
 - **Content rating says "no purchases"** while nothing is for sale. Core
   Premium goes on sale in the same build that bakes the request broker in (§8), and
   `tools/build_play_listing.py` moves three things with that one switch: the
-  purchases answer, the Data safety answers, and a CORE BUILDS PLUS paragraph
+  purchases answer, the Data safety answers, and a CORE PREMIUM paragraph
   in the full description. `--check` fails if the broker is baked in and the
   listing was not regenerated, so the form cannot keep last release's answers.
 
@@ -91,7 +91,7 @@ Play Console → **Grow → Store presence → Main store listing**.
 - **Short description**: paste `copy.short_description` from `listing.json`
   (80-character limit; currently 71)
 - **Full description**: paste `copy.full_description` (4000 limit; currently
-  1549)
+  2215)
 - **App icon**: `docs/play/icon-512.png`
 - **Feature graphic**: `docs/play/feature-graphic-1024x500.png`
 - **TV banner**: `docs/play/tv-banner-1280x720.png` — required for a TV listing
@@ -253,8 +253,8 @@ night) and two wallpaper series, Spectra and Aurum (24 walls). Every icon, the
 main wallpaper collection (in
 Projectivy's rotation too) and every screen ship to everyone. It is on sale
 only in a build with the request broker baked in, because priority requests
-are part of what it sells; until then the Play build sells nothing and the
-steps below wait.
+are part of what it sells. The Play build has it baked in from 2.5.3 (61), so
+steps 5 and 6 are done; the rest are Console's and the test on a TV.
 
 Each TV can try it free for 24 hours, once, from the Premium card. The trial
 is the app's own clock, not a Play offer (Play offers trials on subscriptions
@@ -285,11 +285,15 @@ app's data offers the trial again.
    call the Play Developer API, stored as the Core-Builds secret
    `ICONREQ_GOOGLE_SERVICE_ACCOUNT_JSON`. Core-Builds' *Deploy icon-request
    broker* workflow then smokes it with `--require-plus`, and `/healthz`
-   reports `"plus": true`.
-6. **Bake the endpoint in** (repo):
-   `python tools/build_issue_prefills.py --endpoint=https://<broker URL>`,
-   set `BROKER_SHIPPED = True` in `tools/build_play_listing.py`, then run
-   `python tools/build_play_listing.py`, and commit all three. The latch keeps
+   reports `"plus": true`. Done: it did on 2026-10-29.
+6. **Bake the endpoint in** (repo). Done for 2.5.3. The URL is in
+   `app/src/play/res/values/request_service.xml`, which overrides the empty
+   value `tools/build_issue_prefills.py` generates into main, so only the
+   Play build posts to the service and the GitHub / Downloader build keeps
+   the QR panel. (`build_issue_prefills.py --endpoint=URL` would bake it into
+   every build instead.) `BROKER_SHIPPED = True` in
+   `tools/build_play_listing.py` and the regenerated listing went in the same
+   change, as they must. The latch keeps
    Data safety and the purchases answer covering broker builds for as long as
    any track still serves one, because Play keeps one form for every version
    on every track; `--check` refuses a broker build without it. From that

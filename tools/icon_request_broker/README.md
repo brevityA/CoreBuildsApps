@@ -313,6 +313,10 @@ deploy on any overlap.
    ```
    Release the pack; auditor presses file directly from then on. Until that
    value is baked, presses silently keep the QR fallback — nothing breaks.
+   That command bakes it into every build. Since 2.5.3 only the Google Play
+   build carries it, as an override in
+   `app/src/play/res/values/request_service.xml`, so the GitHub / Downloader
+   build keeps the QR panel (`docs/PLAY-CONSOLE.md` §8 step 6).
 
 ## Turn it off
 
