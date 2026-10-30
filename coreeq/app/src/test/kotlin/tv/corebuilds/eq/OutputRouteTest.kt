@@ -208,4 +208,17 @@ class OutputRouteTest {
         val generic = profile("generic", 200, HDMI_ARC)
         assertEquals("generic", OutputRoute.pick(listOf(beam, generic), "beam", HDMI_ARC, "Yamaha Receiver").profile?.id)
     }
+
+    @Test
+    fun `HDMI and optical can carry a bitstream, PCM-only outputs cannot`() {
+        assertTrue(OutputRoute.bitstreamCapable(HDMI, emptyList()))
+        assertTrue(OutputRoute.bitstreamCapable(HDMI_ARC, emptyList()))
+        // Optical is filed under WIRED with analogue line outs; it counts while connected.
+        assertTrue(OutputRoute.bitstreamCapable(OutputRoute.WIRED, listOf(AudioDeviceInfo.TYPE_LINE_DIGITAL)))
+        assertFalse(OutputRoute.bitstreamCapable(OutputRoute.WIRED, listOf(AudioDeviceInfo.TYPE_LINE_ANALOG)))
+        assertFalse(OutputRoute.bitstreamCapable(OutputRoute.WIRED, emptyList()))
+        for (kind in listOf(BLUETOOTH, SPEAKER, OutputRoute.USB, null)) {
+            assertFalse(OutputRoute.bitstreamCapable(kind, listOf(AudioDeviceInfo.TYPE_LINE_DIGITAL)))
+        }
+    }
 }

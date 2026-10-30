@@ -282,14 +282,39 @@ object OutputRoute {
     /**
      * Dolby and DTS sent to a soundbar or receiver as a bitstream never pass
      * through Android's mixer, so no on-device equaliser reaches them. True
-     * when this output may be carrying such audio (Android 12+ reports the
-     * surround setting; before that the answer is unknown, so false).
+     * when this output may be carrying such audio: it can carry a bitstream
+     * ([bitstreamCapable]) and the Surround sound setting lets one through
+     * ([SurroundOutput]). Until 1.10.0 this was HDMI on Android 12+ only, so an
+     * optical soundbar, and every Android 11 box, never saw the warning.
      */
-    fun mayPassThrough(context: Context, kind: String?): Boolean {
-        if (kind != HDMI_ARC && kind != HDMI) return false
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return false
-        val am = context.getSystemService(AudioManager::class.java) ?: return false
-        return am.encodedSurroundMode != AudioManager.ENCODED_SURROUND_OUTPUT_NEVER
+    fun mayPassThrough(context: Context, kind: String?): Boolean =
+        mayCarryBitstream(context, kind) && SurroundOutput.mayBypass(SurroundOutput.read(context))
+
+    /** True when an output of [kind] here could carry Dolby or DTS undecoded, whatever the setting says. */
+    fun mayCarryBitstream(context: Context, kind: String?): Boolean {
+        val types = if (kind == WIRED) connectedTypes(context) else emptyList()
+        return bitstreamCapable(kind, types)
+    }
+
+    /**
+     * HDMI and HDMI ARC can carry Dolby and DTS undecoded; so can optical
+     * (S/PDIF), which Android reports as TYPE_LINE_DIGITAL and Core EQ files
+     * under [WIRED] with analogue line outs, so a wired route counts when an
+     * optical output is connected. Bluetooth, USB and analogue only take PCM.
+     */
+    internal fun bitstreamCapable(kind: String?, connectedTypes: List<Int>): Boolean = when (kind) {
+        HDMI_ARC, HDMI -> true
+        WIRED -> AudioDeviceInfo.TYPE_LINE_DIGITAL in connectedTypes
+        else -> false
+    }
+
+    private fun connectedTypes(context: Context): List<Int> {
+        val am = context.getSystemService(AudioManager::class.java) ?: return emptyList()
+        return try {
+            am.getDevices(AudioManager.GET_DEVICES_OUTPUTS).map { it.type }
+        } catch (_: SecurityException) {
+            emptyList()
+        }
     }
 
     // API 31 route constants are guarded by the SDK checks above; Android 11

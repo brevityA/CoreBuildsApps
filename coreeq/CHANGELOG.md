@@ -6,6 +6,43 @@ Core EQ (`tv.corebuilds.eq`) keeps its own changelog. The repository-root
 must never land there. Releases are `coreeq-v<version>` tags (see
 `PUBLISHING.md`).
 
+## [1.10.0] — 2026-10-30
+
+**Nothing below was checked on a TV, a soundbar or a speaker pair.** The new maths (the
+centre restore, the bass guard, the Surround sound decisions and the optical check) is
+covered by the Android-free Kotlin harness (572 tests, 10 of them new, green), and lint
+passes. Nobody has played a 5.1 film through it, or pressed the new switch with a remote.
+
+- **Stereo speakers, for 5.1 on two speakers.** A new switch at the top of Extra effects,
+  off by default, for a 2.0 soundbar or a speaker pair. Folding 5.1 to stereo (Android's
+  `ChannelMix`: fronts at 1.0, the centre at 0.707 into both sides, each surround at 0.707,
+  the LFE at 0.5) leaves the centre channel, where the dialogue is, 3 dB under the effects it
+  used to sit above, and pours in a bass channel small speakers cannot play. The switch
+  answers both:
+  - **Centre restore:** +3 dB across 2.2–4.5 kHz, Dialogue boost's curve at the fold's
+    deficit. Dialogue boost's +2 dB is not added on top, and a Dialogue or House target's
+    own +2 dB is counted, so those get +1 dB. Android gives apps no mid/side stage, so music
+    in that band rises with the speech; the note says so.
+  - **Bass guard:** −6 dB below half an octave under the speaker's measured roll-off, nothing
+    from the roll-off up. Content the speaker cannot play only spends headroom, and the
+    protection limiter answered every explosion by pulling the dialogue down with it. A
+    manual profile, with no measured roll-off, assumes 80 Hz. It works below the roll-off
+    and Low-volume bass above it, so the two never fight.
+- **It makes sure Android does the fold.** Dolby and DTS sent to a soundbar as a bitstream
+  are folded by the soundbar, where Core EQ never hears them. On an output that can carry
+  one (HDMI, HDMI ARC, optical), switching Stereo speakers on sets the TV's Surround sound to
+  Never, through Android 12's public `AudioManager.setEncodedSurroundMode`, once the user
+  allows Core EQ to "Modify system settings" (the new `WRITE_SETTINGS` permission; the
+  screen opens Android's page for it). Switching it off puts the old mode back, but only
+  while the setting is still Never: a later choice is never undone. On Bluetooth, USB and
+  analogue outputs nothing is changed, because they only take PCM. On Android 11, which has
+  no public switch, the panel gives the TV menu path and
+  `adb shell settings put global encoded_surround_output 1`.
+- **The bitstream warning now covers optical and Android 11.** It used to check HDMI on
+  Android 12+ only. Optical (S/PDIF) carries Dolby and DTS too, and Android 11 stores the
+  setting in a global Core EQ can read, so a soundbar on optical and every Android 11 box
+  (Shield among them) went unwarned. Home, Setup and the status line now cover both.
+
 ## [1.9.0] — 2026-10-28
 
 **Nothing below was checked on a TV, a phone or a soundbar, and no display was measured
