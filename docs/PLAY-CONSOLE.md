@@ -121,6 +121,26 @@ Play Console → **Store settings**.
   `android.software.leanback`, so Play never offers this build to a phone.
   Add the form factor under *Test and release → Advanced settings → Form
   factors → Android TV*; TV releases get an extra quality review.
+- **Dedicated Android TV track — before the first closed release.** A bundle
+  that requires `android.software.leanback` is refused on the shared tracks:
+  the closed release fails with *"APKs and bundles must not require following
+  features: android.software.leanback. Some features can only be required in
+  dedicated tracks."* (seen 2026-10-21). Under *Form factors*, choose
+  **Manage** next to Android TV, then **Use a dedicated release track for
+  Android TV**, **Opt in** and Save. Console needs TV screenshots on every
+  store listing first, and says the choice **can't be changed**. It is the one
+  we want: TV releases then live on their own tracks, and the shared tracks
+  stay free for a phone build if one ever ships. Closed testing then has an
+  Android TV track (create one with the Android TV form factor if it isn't
+  listed); use it for §7. **Unverified:** Google's help doesn't say whether
+  testers on the TV track count toward the 12-tester / 14-day production
+  gate. Watch the Dashboard's *Production* checklist once testers opt in. If
+  its count stays at 0, the fallback is a phone-compatible Play build on the
+  shared closed track, and `required="false"` alone does not make one. It
+  also needs the Phone form factor on the listing, phone screenshots of the
+  app actually running on a phone (§3 forbids rendering one), and first a
+  phone layout someone has tested, which the app does not have yet. Treat it
+  as a project, not a setting.
 
 ## 5. Build the bundle
 
@@ -173,6 +193,26 @@ own listing (§9) and **both go out in the same window with matched rollouts** �
 `docs/RELEASE-INFRA.md`, because the pack refuses a companion whose
 `versionCode` is behind its own.
 
+**Before the first upload, switch off the Installer check.** Play turns on
+*Automatic protection* for a new app, and its installer check injects code
+that needs `minSdk` 24. Both bundles declare 21, so the upload is refused:
+*"Play automatic protection requires a minimum SDK version of 24 or higher.
+The uploaded app bundle has a minimum SDK version of 21."* (seen 2026-10-21).
+Go to **Test and release → App integrity → Automatic protection**, turn
+**Installer check** off, Save, and reload to confirm it stayed off. Then
+remove the refused bundle from the release and upload it again. Do it in
+both apps. That app-level switch is what cleared the refusal on 2026-10-21.
+The release editor also offers **App bundle enhancements → Automatic
+protection → Turn off protection for this release**, but Play re-applies
+protection to the next upload, so on its own it would bring the refusal
+back with every release.
+
+This is a trade-off, not a free switch. With the check off, a copy of the
+**Play build** installed from outside Play runs without Play's install
+check. Keeping it on means `minSdk` 24, which drops TV boxes still on
+Android 5 or 6 (Fire OS 5 is Android 5.1). The sideload build was never
+under the check: it is unrestricted on purpose.
+
 ## 6. Turn on the privacy policy URL
 
 The policy is a file in the repo (`docs/privacy.html`); Play needs a URL.
@@ -198,6 +238,9 @@ Pages there instead.
 | **Closed testing** | Start the 12-tester / 14-day clock | Data safety complete |
 | **Production** | Public listing | Closed test met, then apply for production access |
 
+These are the **Android TV** tracks once §4's dedicated track is on. The
+shared closed track refuses these bundles.
+
 Release notes are per track and per language (500 characters): keep them plain
 and factual — what changed, and anything a user must do.
 
@@ -206,7 +249,8 @@ and factual — what changed, and anything a user must do.
 Core Premium (`Plus` in the code and the product ID) is one managed product,
 bought once: priority icon requests, *My requests*, live loop rotation, the
 night loop, the choice of what Projectivy rotates from the pack (by day and at
-night) and Spectra (12 walls). Every icon, the main wallpaper collection (in
+night) and two wallpaper series, Spectra and Aurum (24 walls). Every icon, the
+main wallpaper collection (in
 Projectivy's rotation too) and every screen ship to everyone. It is on sale
 only in a build with the request broker baked in, because priority requests
 are part of what it sells; until then the Play build sells nothing and the
@@ -215,7 +259,7 @@ steps below wait.
 Each TV can try it free for 24 hours, once, from the Premium card. The trial
 is the app's own clock, not a Play offer (Play offers trials on subscriptions
 only), so Console has nothing to set up for it. It switches on everything the
-TV decides for itself; priority requests, *Request all* and saving a Spectra
+TV decides for itself; priority requests, *Request all* and saving a Premium
 wall to Pictures stay with the purchase, because the broker checks the
 purchase with Google and a saved copy would outlast the trial. Clearing the
 app's data offers the trial again.
@@ -257,15 +301,16 @@ app's data offers the trial again.
 8. **Internal test before anyone pays.** On a TV, as a license tester: each
    extra opens the Premium card before buying. Press *Try free for 24
    hours*: the extras below unlock, Settings reads *Trial · 24 h*, while
-   *Request all* and Save on a Spectra wall still ask for the purchase. Buy. Then a missing-icon press
+   *Request all* and Save on a Spectra or Aurum wall still ask for the purchase. Buy. Then a missing-icon press
    files an issue labelled `priority`; *My requests* lists it; *Request all*,
    pressed twice, files the rest (up to 10) as `priority` and lists each; *Rotate live
    loops* set to every hour moves the live wallpaper after an hour with two
    or more loops downloaded; a *Night loop* plays from the start of *Night
    hours* with the home screen left on; with the pack as Projectivy's
-   wallpaper source, *Projectivy walls* set to Spectra rotates only Spectra
+   wallpaper source, *Projectivy walls* set to Aurum rotates only Aurum
    (`adb logcat -s CoreBuilds/Walls` shows each fetch and its count); the
-   Premium chip's Spectra walls open and download.
+   Premium chip lists Spectra then Aurum, 24 walls, and they open and
+   download.
 
 None of this has run on a TV yet: no device has bought Core Premium or run
 its trial. Step 8 is the
@@ -274,8 +319,8 @@ label.
 
 ## 9. Core Builds Glyphs Pack: the second app
 
-The Glyphs Pack (`glyphs/`) is the square companion: the same 1950 launcher
-components, drawn as 1022 square glyphs. On Play, the icon pack's **Art
+The Glyphs Pack (`glyphs/`) is the square companion: the same 1967 launcher
+components, drawn as 1026 square glyphs. On Play, the icon pack's **Art
 style** switch opens this app's listing when the pack is missing
 (`GlyphsCompanion.ensure`), so it has to exist before anyone can pick Square.
 In Console it is a separate app, with its own package, listing, forms and
@@ -302,7 +347,7 @@ tester clock. §1–§7 apply again; only the values below differ.
    library. `listing.json` leaves encryption and deletion `null` because
    nothing is sent.
 3. **Store listing.** Paste `copy.short_description` (80-character limit;
-   currently 69) and `copy.full_description` (4000 limit; currently 1015).
+   currently 69) and `copy.full_description` (4000 limit; currently 1028).
    - **App icon**: `docs/play/glyphs/icon-512.png`
    - **Feature graphic**: `docs/play/glyphs/feature-graphic-1024x500.png`
    - **TV banner**: `docs/play/glyphs/tv-banner-1280x720.png`
@@ -314,8 +359,11 @@ tester clock. §1–§7 apply again; only the values below differ.
    Leanback banner use, not the icon pack's.
 4. **Store settings.** The same category and contact email as the pack.
    **Form factors: TV only.** The Glyphs Play manifest requires
-   `android.software.leanback`, as the pack's does.
-5. **Upload only `glyphs-play.aab`** from the same `play.yml` run
+   `android.software.leanback`, as the pack's does, so this app needs its own
+   **dedicated Android TV track** too (§4), opted in before its first closed
+   release.
+5. **Switch off the Installer check** (§5) before the first upload, then
+   **upload only `glyphs-play.aab`** from the same `play.yml` run
    (`glyphs/build/outputs/bundle/play/*.aab`). Both bundles are signed with
    the same upload key. Play App Signing may give each app its own signing
    key, and the pack allows for that: on Play it trusts a companion that Play

@@ -359,7 +359,11 @@ def collect() -> list[str]:
     pack = re.findall(r"<item>([a-z0-9_]+)</item>",
                       read(ROOT / "app" / "src" / "main" / "res" / "values" / "icon_pack.xml")
                       .split('name="icon_pack"')[1].split("</string-array>")[0])
-    unmapped = [d for d in pack
+    # An alternate (<icon>_alt) is never mapped itself; the inspector shows
+    # its icon's components, so it is mapped exactly when its icon is.
+    check("IconAdapter.IconItem.ALTERNATE" in inspector,
+          "InspectorActivity: an alternate must show its icon's components")
+    unmapped = [d for d in (re.sub(r"_alt\d*$", "", d) for d in pack)
                 if f'drawable="{d}"' not in appfilter
                 and f'drawable="{d}_banner"' not in appfilter]
     check(not unmapped,

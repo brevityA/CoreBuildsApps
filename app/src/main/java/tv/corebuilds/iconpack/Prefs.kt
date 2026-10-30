@@ -248,12 +248,16 @@ object Prefs {
      * `@color/cb_night` background for the designed case; this only overrides
      * the window beneath them when the void option is on, so a screen that has
      * not opted in still looks exactly as drawn.
+     *
+     * The system bars are left alone. A TV draws none, and from Android 15 the
+     * window draws behind them anyway, so painting them changed nothing that
+     * anyone sees; Play's pre-launch report flags Window.setStatusBarColor and
+     * setNavigationBarColor as deprecated edge-to-edge APIs, and this was the
+     * app's only call to either.
      */
     fun applyChrome(activity: android.app.Activity) {
         if (!amoled(activity)) return
         val void = androidx.core.content.ContextCompat.getColor(activity, R.color.cb_void)
         activity.window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(void))
-        activity.window.statusBarColor = void
-        activity.window.navigationBarColor = void
     }
 }

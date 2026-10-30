@@ -64,6 +64,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import build_branding as branding  # noqa: E402
+from alternates import is_alternate  # noqa: E402
 import build_glyphs_branding as glyphs_branding  # noqa: E402
 from PIL import Image  # noqa: E402
 
@@ -126,7 +127,7 @@ def loop_count() -> int:
 
 
 def plus_wall_count() -> int:
-    """Spectra, the Core Builds Plus collection, as bundled into the Play build."""
+    """Spectra and Aurum, the Core Premium walls, as bundled into the Play build."""
     path = ROOT / "app/src/play/assets/manifest/plus-wallpapers.json"
     return len(json.loads(path.read_text(encoding="utf-8"))["wallpapers"])
 
@@ -243,8 +244,8 @@ PLUS_COPY = (
     "requests are filed as priority, one app or every missing app at once, "
     "My requests shows how far each one has got, the live wallpaper can rotate through your loops and play a second "
     "one at night, you choose what Projectivy rotates from this pack "
-    "(favourites, one series, a night set), and Spectra adds {plus_walls} "
-    "more wallpapers. Try it free for 24 hours first, once per TV. Every "
+    "(favourites, one series, a night set), and Spectra and Aurum add "
+    "{plus_walls} more wallpapers. Try it free for 24 hours first, once per TV. Every "
     "icon, all {walls} stills, every loop and every screen ship to everyone "
     "either way.\n"
     "\n"
@@ -664,9 +665,11 @@ def glyphs_dir() -> Path:
 
 
 def _count_items(path: Path, attribute: str) -> int:
-    """GlyphsHomeActivity.countItems: <item> rows carrying the attribute."""
+    """GlyphsHomeActivity.countItems: <item> rows carrying the attribute,
+    alternates (extra art for an app already listed) left out."""
     return sum(1 for el in ET.parse(path).getroot().iter("item")
-               if el.get(attribute) is not None)
+               if el.get(attribute) is not None
+               and not is_alternate(el.get(attribute)))
 
 
 def glyph_counts() -> dict:
@@ -683,7 +686,7 @@ GLYPHS_COPY = {
     ),
     "full_description": (
         "The square half of Core Builds Icon Pack: {icons} icons drawn as "
-        "flat, single-colour glyphs, for launchers that show square tiles.\n"
+        "rounded-line glyphs with colour accents, for launchers that show square tiles.\n"
         "\n"
         "SAME APPS, SQUARE ART\n"
         "Core Builds Icon Pack draws 16:9 banners. This pack draws the same "

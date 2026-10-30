@@ -142,6 +142,11 @@
                 style="@style/CoreEQ.ActionRow"
                 android:text="@string/manual_eq_import_file" />
 
+            <Button
+                android:id="@+id/btn_manual_eq_tv_values"
+                style="@style/CoreEQ.ActionRow"
+                android:text="@string/manual_eq_tv_values" />
+
             <TextView
                 android:id="@+id/text_manual_headroom"
                 android:layout_width="match_parent"

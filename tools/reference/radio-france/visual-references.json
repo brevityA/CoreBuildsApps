@@ -1,0 +1,40 @@
+{
+  "usage": "reference-only: brand cues and colour sampling for an original Core monoline redraw; never shipped as art",
+  "source": "https://play.google.com/store/apps/details?id=com.radiofrance.radio.radiofrance.android",
+  "captured": "2026-10-29",
+  "references": [
+    {
+      "path": "launcher-icon-128.png",
+      "sha256": "044e58ee1be1bd2d80a2845372ee7677d6df80dfbd19ff78aacb67646221f387",
+      "size": [
+        128,
+        128
+      ],
+      "note": "Google Play launcher icon (og:image), downsized from 256 px to 128 px for evidence only"
+    }
+  ],
+  "color_samples": [
+    {
+      "part": "upper-left ring (gradient top)",
+      "path": "launcher-icon-128.png",
+      "box": [
+        16,
+        66,
+        30,
+        80
+      ],
+      "color": "#D000AB"
+    },
+    {
+      "part": "lower ring end (gradient bottom)",
+      "path": "launcher-icon-128.png",
+      "box": [
+        58,
+        100,
+        70,
+        110
+      ],
+      "color": "#FE0000"
+    }
+  ]
+}

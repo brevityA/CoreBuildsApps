@@ -89,6 +89,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from drawable_art import art_path, read_aliases  # noqa: E402
+from alternates import is_alternate  # noqa: E402
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -214,6 +215,9 @@ PACK = ICON_PACK["icon_pack"]
 NAMES = ICON_PACK["icon_names"]
 CATS = ICON_PACK["icon_categories"]
 BESPOKE = [b == "1" for b in ICON_PACK["icon_bespoke"]]
+# MainActivity.iconCount: apps, so an alternate's extra tile is not counted.
+APPS = [not is_alternate(d) for d in PACK]
+ICON_COUNT = sum(APPS)
 
 ICONS_DIR = RES / "drawable-nodpi"
 ALIASES = read_aliases(RES / "values")
@@ -672,11 +676,13 @@ def wallpapers_entry_sub() -> str:
 
 def category_counts() -> list[tuple[str, str, int]]:
     counts: dict[str, int] = {}
-    for cat in CATS:
-        counts[cat] = counts.get(cat, 0) + 1
-    out = [("ALL", STRINGS["chip_all"], len(PACK))]
+    for cat, app in zip(CATS, APPS):
+        if app:
+            counts[cat] = counts.get(cat, 0) + 1
+    out = [("ALL", STRINGS["chip_all"], ICON_COUNT)]
     if any(BESPOKE):
-        out.append(("BESPOKE", STRINGS["chip_brandmarks"], sum(BESPOKE)))
+        out.append(("BESPOKE", STRINGS["chip_brandmarks"],
+                    sum(b and a for b, a in zip(BESPOKE, APPS))))
     for key, label in CHIP_ORDER:
         if key in counts:
             out.append((key, label, counts[key]))
@@ -741,7 +747,7 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
         ry += dp(24)
     else:
         draw_text(draw, (g, ry + dp(26)),
-                  fmt(STRINGS["pack_stats_fmt"], len(PACK), COMPONENT_COUNT),
+                  fmt(STRINGS["pack_stats_fmt"], ICON_COUNT, COMPONENT_COUNT),
                   f_data, colour("cb_slate"))
         ry += dp(48)
     button(img, g, ry, STRINGS["cta_apply"], "cta", min_w_dp=DIMENS["cb_rail_width"])
@@ -805,7 +811,7 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
 
     # ---- RIGHT PANE ------------------------------------------------------
     search_field(img, pane_l, body_top, (right - pane_l) / SCALE,
-                 hint=fmt(STRINGS["search_hint_fmt"], len(PACK)))
+                 hint=fmt(STRINGS["search_hint_fmt"], ICON_COUNT))
     py = body_top + row_h + gap
     x = pane_l
     f_chip = font("sans", DIMENS["cb_text_label"], bold=True)
@@ -1503,9 +1509,11 @@ def _glyphs_values(file: str, tag: str) -> dict[str, str]:
 
 
 def _glyphs_count(xml_file: str, attribute: str) -> int:
-    """GlyphsHomeActivity.countItems: <item> rows carrying the attribute."""
+    """GlyphsHomeActivity.countItems: <item> rows carrying the attribute,
+    alternates left out."""
     return sum(1 for el in _xml(GLYPHS_RES / "xml" / xml_file).iter("item")
-               if el.get(attribute) is not None)
+               if el.get(attribute) is not None
+               and not is_alternate(el.get(attribute)))
 
 
 def glyphs_home_frame() -> tuple[Image.Image, str]:

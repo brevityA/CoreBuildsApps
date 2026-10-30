@@ -219,6 +219,29 @@ class TheWalkthroughAgreesWithTheAssets(unittest.TestCase):
         self.assertIn(f"**Online Content: {pack}**", pack_section)
         self.assertIn(f"**Online Content: {glyphs}**", glyphs_section)
 
+    def test_it_names_the_console_settings_these_bundles_trip(self):
+        # The first upload hit two refusals, each caused by a fact of the
+        # build. Read the facts; while they hold, the walkthrough carries the fix.
+        flat = " ".join(self.doc.split())
+        for gradle in ("app/build.gradle.kts", "glyphs/build.gradle.kts"):
+            text = (ROOT / gradle).read_text(encoding="utf-8")
+            min_sdk = int(re.search(r"minSdk = (\d+)", text).group(1))
+            if min_sdk < 24:
+                self.assertIn("Installer check", flat, gradle)
+                # The instruction, not just the name: "on" must fail here.
+                self.assertIn("turn **Installer check** off", flat, gradle)
+                self.assertIn(f"minimum SDK version of {min_sdk}", flat, gradle)
+        android = "{http://schemas.android.com/apk/res/android}"
+        for manifest in ("app/src/play/AndroidManifest.xml",
+                         "glyphs/src/play/AndroidManifest.xml"):
+            leanback = [
+                f for f in ET.parse(ROOT / manifest).getroot().iter("uses-feature")
+                if f.get(f"{android}name") == "android.software.leanback"
+            ]
+            # An absent android:required means required, as Android reads it.
+            if any(f.get(f"{android}required", "true") == "true" for f in leanback):
+                self.assertIn("Use a dedicated release track for Android TV", flat, manifest)
+
     def test_it_walks_the_glyphs_pack_listing_too(self):
         # The second app is a second package name typed into a form that can
         # never be edited; both of its ids and its own asset folder are named.
@@ -408,7 +431,9 @@ class StoreTruth(unittest.TestCase):
         self.assertNotIn("PREMIUM", off["full_description"])
         self.assertIn("CORE PREMIUM", on["full_description"])
         self.assertIn("free for 24 hours", on["full_description"])
-        self.assertIn(f"Spectra adds {n['plus_walls']} more wallpapers", on["full_description"])
+        self.assertIn(f"Spectra and Aurum add {n['plus_walls']} more wallpapers",
+                      on["full_description"])
+        self.assertEqual(n["plus_walls"], 24)
         self.assertIn(f"all {n['walls']} stills", on["full_description"])
         self.assertLessEqual(len(on["full_description"]), listing.FULL_MAX)
         self.assertEqual(off["short_description"], on["short_description"])
@@ -549,6 +574,14 @@ class GlyphsPackListing(unittest.TestCase):
                        "download now", "premium", "unlock"):
             self.assertNotIn(banned, text, f"metadata policy: {banned!r}")
 
+    def test_copy_does_not_claim_every_glyph_is_single_colour(self):
+        catalog = json.loads((ROOT / "tools/catalog.json").read_text(encoding="utf-8"))
+        self.assertTrue(any(i.get("secondary") or i.get("gradient")
+                            for i in catalog["icons"]), "the catalog carries multicolour marks")
+        text = GLYPHS_SPEC["copy"]["full_description"].lower()
+        self.assertIn("colour accents", text)
+        self.assertNotRegex(text, r"\b(?:single[- ]colou?r|monochrome) glyphs\b")
+
     def test_title_is_the_label_launchers_list(self):
         # Someone told "choose Core Builds Glyphs Pack" must find that string
         # both on the store page and in the launcher's icon pack list.
@@ -566,7 +599,9 @@ class GlyphsPackListing(unittest.TestCase):
 
         n = GLYPHS_SPEC["counts"]
         self.assertEqual(n, listing.glyph_counts())
-        self.assertEqual(n["icons"], len(items("drawable.xml", "drawable")))
+        # Icons are apps: an alternate (<icon>_alt) is extra art for one.
+        self.assertEqual(n["icons"], len([d for d in items("drawable.xml", "drawable")
+                                          if not re.search(r"_alt\d*$", d)]))
         self.assertEqual(n["components"], len(items("appfilter.xml", "component")))
         full = GLYPHS_SPEC["copy"]["full_description"]
         self.assertIn(f"{n['icons']} icons", full)

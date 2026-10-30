@@ -69,6 +69,11 @@
     <string name="manual_eq_save">Save</string>
     <string name="manual_eq_save_hint">Preset name</string>
     <string name="manual_eq_import_file">Import EQ preset or correction file…</string>
+    <string name="manual_eq_tv_values">Show these as TV settings…</string>
+    <string name="manual_eq_tv_values_title">Your TV\'s own equaliser</string>
+    <string name="manual_eq_tv_values_empty">This preset is Flat, so there is nothing to type in. Choose a preset or move a band first.</string>
+    <string name="manual_eq_tv_values_export">Export as a text file</string>
+    <string name="manual_eq_tv_values_close">Close</string>
     <string name="manual_eq_import_busy">Reading the correction file…</string>
     <string name="manual_eq_import_no_picker">This TV has no file picker or file manager. Install a file manager, then try again.</string>
     <string name="manual_eq_import_unreadable">That file could not be read.</string>
@@ -233,6 +238,8 @@
     <string name="calibration_prev">← Previous</string>
     <string name="calibration_toggle_overlay">Toggle instructions</string>
     <string name="calibration_step_counter">Step %1$d of %2$d</string>
+    <string name="calibration_continue">Continue →</string>
+    <string name="calibration_finish">Finish</string>
 
     <!-- Home: HDMI bitstream caveat (1.3.0) -->
     <string name="passthrough_warning">⚠ HDMI audio may carry Dolby or DTS as a bitstream here, which skips all on-device EQ, Core EQ included. To correct it, set the TV\'s Surround sound (or Audio format) to PCM.</string>

@@ -2,14 +2,13 @@
 <!--
   The home screen's theme. A framework parent on purpose: this module ships no
   library dependencies, so there is no AppCompat or Material theme to inherit.
-  Theme.Material and both bar colours are API 21, which is this module's
-  minSdk.
+  Theme.Material is API 21, which is this module's minSdk. No bar colours:
+  Play's pre-launch report flags them as deprecated edge-to-edge parameters,
+  and a TV draws no system bars to colour.
 -->
 <resources>
     <style name="GlyphsHome" parent="@android:style/Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/glyphs_night</item>
-        <item name="android:statusBarColor">@color/glyphs_night</item>
-        <item name="android:navigationBarColor">@color/glyphs_night</item>
         <item name="android:colorAccent">@color/glyphs_cyan</item>
     </style>
 </resources>

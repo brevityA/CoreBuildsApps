@@ -618,6 +618,7 @@
     <item drawable="playstation" />
     <item drawable="plex" />
     <item drawable="plexamp" />
+    <item drawable="plezy" />
     <item drawable="pluto_tv" />
     <item drawable="pmx" />
     <item drawable="pocketcasts" />
@@ -651,6 +652,7 @@
     <item drawable="tcl_quick_panel" />
     <item drawable="quickbars_for_home_assistant" />
     <item drawable="quicksupport" />
+    <item drawable="radio_france" />
     <item drawable="radio_on_tv" />
     <item drawable="radioparadisewidget" />
     <item drawable="radio_net" />
@@ -750,6 +752,7 @@
     <item drawable="source_input" />
     <item drawable="sparkletv" />
     <item drawable="speedtesttv" />
+    <item drawable="sport_fm_tv" />
     <item drawable="sport_tv" />
     <item drawable="sportseverywhere" />
     <item drawable="sportsfire" />
@@ -770,6 +773,7 @@
     <item drawable="stream_fire" />
     <item drawable="streamlocator_vpn" />
     <item drawable="streamvault" />
+    <item drawable="streamfc" />
     <item drawable="streamflix" />
     <item drawable="streamflix_2" />
     <item drawable="devinterestdev" />
@@ -984,6 +988,7 @@
     <item drawable="wow2" />
     <item drawable="wrestle_universe" />
     <item drawable="wuplay" />
+    <item drawable="wuplay_alt" />
     <item drawable="x_tv" />
     <item drawable="lonelycatgames" />
     <item drawable="xbox" />
