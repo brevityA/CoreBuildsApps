@@ -249,7 +249,8 @@ and factual — what changed, and anything a user must do.
 Core Premium (`Plus` in the code and the product ID) is one managed product,
 bought once: priority icon requests, *My requests*, live loop rotation, the
 night loop, the choice of what Projectivy rotates from the pack (by day and at
-night) and Spectra (12 walls). Every icon, the main wallpaper collection (in
+night) and two wallpaper series, Spectra and Aurum (24 walls). Every icon, the
+main wallpaper collection (in
 Projectivy's rotation too) and every screen ship to everyone. It is on sale
 only in a build with the request broker baked in, because priority requests
 are part of what it sells; until then the Play build sells nothing and the
@@ -258,7 +259,7 @@ steps below wait.
 Each TV can try it free for 24 hours, once, from the Premium card. The trial
 is the app's own clock, not a Play offer (Play offers trials on subscriptions
 only), so Console has nothing to set up for it. It switches on everything the
-TV decides for itself; priority requests, *Request all* and saving a Spectra
+TV decides for itself; priority requests, *Request all* and saving a Premium
 wall to Pictures stay with the purchase, because the broker checks the
 purchase with Google and a saved copy would outlast the trial. Clearing the
 app's data offers the trial again.
@@ -300,15 +301,16 @@ app's data offers the trial again.
 8. **Internal test before anyone pays.** On a TV, as a license tester: each
    extra opens the Premium card before buying. Press *Try free for 24
    hours*: the extras below unlock, Settings reads *Trial · 24 h*, while
-   *Request all* and Save on a Spectra wall still ask for the purchase. Buy. Then a missing-icon press
+   *Request all* and Save on a Spectra or Aurum wall still ask for the purchase. Buy. Then a missing-icon press
    files an issue labelled `priority`; *My requests* lists it; *Request all*,
    pressed twice, files the rest (up to 10) as `priority` and lists each; *Rotate live
    loops* set to every hour moves the live wallpaper after an hour with two
    or more loops downloaded; a *Night loop* plays from the start of *Night
    hours* with the home screen left on; with the pack as Projectivy's
-   wallpaper source, *Projectivy walls* set to Spectra rotates only Spectra
+   wallpaper source, *Projectivy walls* set to Aurum rotates only Aurum
    (`adb logcat -s CoreBuilds/Walls` shows each fetch and its count); the
-   Premium chip's Spectra walls open and download.
+   Premium chip lists Spectra then Aurum, 24 walls, and they open and
+   download.
 
 None of this has run on a TV yet: no device has bought Core Premium or run
 its trial. Step 8 is the

@@ -3,7 +3,7 @@
   "version": "1.0",
   "author": "brevityA",
   "note": "Core Builds Plus extra: only the Google Play build lists these walls (tools/sync_wallpaper_manifest.py bundles this file into app/src/play/assets). Same entry grammar as manifest.json.",
-  "count": 12,
+  "count": 24,
   "wallpapers": [
     {
       "name": "157 Fraunhofer",
@@ -87,6 +87,90 @@
       "series": "series-15-spectra",
       "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-15-spectra/corebuilds-168-moonbow.png",
       "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-168-moonbow.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "169 Sunburst",
+      "series": "series-16-aurum",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-16-aurum/corebuilds-169-sunburst.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-169-sunburst.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "170 Scallop Fans",
+      "series": "series-16-aurum",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-16-aurum/corebuilds-170-scallop-fans.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-170-scallop-fans.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "171 Spire",
+      "series": "series-16-aurum",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-16-aurum/corebuilds-171-spire.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-171-spire.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "172 Chevrons",
+      "series": "series-16-aurum",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-16-aurum/corebuilds-172-chevrons.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-172-chevrons.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "173 Guilloche",
+      "series": "series-16-aurum",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-16-aurum/corebuilds-173-guilloche.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-173-guilloche.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "174 Kintsugi",
+      "series": "series-16-aurum",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-16-aurum/corebuilds-174-kintsugi.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-174-kintsugi.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "175 Ziggurat",
+      "series": "series-16-aurum",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-16-aurum/corebuilds-175-ziggurat.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-175-ziggurat.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "176 Gold Leaf",
+      "series": "series-16-aurum",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-16-aurum/corebuilds-176-gold-leaf.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-176-gold-leaf.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "177 Lattice",
+      "series": "series-16-aurum",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-16-aurum/corebuilds-177-lattice.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-177-lattice.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "178 Molten",
+      "series": "series-16-aurum",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-16-aurum/corebuilds-178-molten.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-178-molten.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "179 Eclipse",
+      "series": "series-16-aurum",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-16-aurum/corebuilds-179-eclipse.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-179-eclipse.jpg",
+      "resolution": "3840x2160"
+    },
+    {
+      "name": "180 Gold Rain",
+      "series": "series-16-aurum",
+      "url": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/series-16-aurum/corebuilds-180-gold-rain.png",
+      "thumb": "https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Wallpapers/thumbs/corebuilds-180-gold-rain.jpg",
       "resolution": "3840x2160"
     }
   ]

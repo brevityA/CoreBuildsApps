@@ -431,7 +431,9 @@ class StoreTruth(unittest.TestCase):
         self.assertNotIn("PREMIUM", off["full_description"])
         self.assertIn("CORE PREMIUM", on["full_description"])
         self.assertIn("free for 24 hours", on["full_description"])
-        self.assertIn(f"Spectra adds {n['plus_walls']} more wallpapers", on["full_description"])
+        self.assertIn(f"Spectra and Aurum add {n['plus_walls']} more wallpapers",
+                      on["full_description"])
+        self.assertEqual(n["plus_walls"], 24)
         self.assertIn(f"all {n['walls']} stills", on["full_description"])
         self.assertLessEqual(len(on["full_description"]), listing.FULL_MAX)
         self.assertEqual(off["short_description"], on["short_description"])

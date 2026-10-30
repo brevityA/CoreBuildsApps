@@ -44,7 +44,7 @@ data class Wallpaper(
      */
     val since: String = "",
     /**
-     * A Core Builds Plus wall (Wallpapers/plus-manifest.json, series 15):
+     * A Core Builds Plus wall (Wallpapers/plus-manifest.json, series 15 and 16):
      * listed only in the Google Play build, and opened or saved only with
      * Plus owned.
      */

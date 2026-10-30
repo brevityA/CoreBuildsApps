@@ -20,8 +20,9 @@ class ProjectivyWallsTest {
     private val wild = wall("b", "series-13-wild")
     private val flux = wall("c", "series-14-flux")
     private val spectra = wall("d", "series-15-spectra", plus = true)
+    private val aurum = wall("f", "series-16-aurum", plus = true)
     private val main = listOf(earth, wild, flux)
-    private val plus = listOf(spectra)
+    private val plus = listOf(spectra, aurum)
 
     private fun pick(
         owned: Boolean = true,
@@ -46,7 +47,9 @@ class ProjectivyWallsTest {
         assertEquals(listOf(wild, spectra),
             pick(source = ProjectivyWalls.FAVOURITES, favourites = setOf("b.png", "d.png")))
         assertEquals(listOf(flux), pick(source = "series-14-flux"))
-        assertEquals(plus, pick(source = "series-15-spectra"))
+        // Each Premium series is its own choice, as each main series is.
+        assertEquals(listOf(spectra), pick(source = "series-15-spectra"))
+        assertEquals(listOf(aurum), pick(source = "series-16-aurum"))
     }
 
     @Test fun theNightSourceAppliesOnlyAtNight() {
@@ -64,7 +67,8 @@ class ProjectivyWallsTest {
     @Test fun theRowOffersAllFavouritesThenEachSeriesOnce() {
         assertEquals(
             listOf(ProjectivyWalls.ALL, ProjectivyWalls.FAVOURITES,
-                "series-12-earth", "series-13-wild", "series-14-flux", "series-15-spectra"),
+                "series-12-earth", "series-13-wild", "series-14-flux", "series-15-spectra",
+                "series-16-aurum"),
             ProjectivyWalls.sources(main + plus + wall("e", "series-12-earth")),
         )
     }
