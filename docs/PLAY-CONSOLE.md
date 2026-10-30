@@ -317,8 +317,8 @@ label.
 
 ## 9. Core Builds Glyphs Pack: the second app
 
-The Glyphs Pack (`glyphs/`) is the square companion: the same 1950 launcher
-components, drawn as 1022 square glyphs. On Play, the icon pack's **Art
+The Glyphs Pack (`glyphs/`) is the square companion: the same 1967 launcher
+components, drawn as 1026 square glyphs. On Play, the icon pack's **Art
 style** switch opens this app's listing when the pack is missing
 (`GlyphsCompanion.ensure`), so it has to exist before anyone can pick Square.
 In Console it is a separate app, with its own package, listing, forms and
@@ -345,7 +345,7 @@ tester clock. §1–§7 apply again; only the values below differ.
    library. `listing.json` leaves encryption and deletion `null` because
    nothing is sent.
 3. **Store listing.** Paste `copy.short_description` (80-character limit;
-   currently 69) and `copy.full_description` (4000 limit; currently 1015).
+   currently 69) and `copy.full_description` (4000 limit; currently 1028).
    - **App icon**: `docs/play/glyphs/icon-512.png`
    - **Feature graphic**: `docs/play/glyphs/feature-graphic-1024x500.png`
    - **TV banner**: `docs/play/glyphs/tv-banner-1280x720.png`

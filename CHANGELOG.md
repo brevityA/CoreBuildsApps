@@ -46,6 +46,19 @@ All notable changes to the Core Builds Icon Pack. Format follows
   matches no wall falls back to the day choice, then to everything, so the
   rotation is never empty. A change reaches Projectivy at once; night hours
   begin within the hour Projectivy keeps its list.
+- **SPORT FM TV.** A dedicated red crest with FM/TV stroke lettering, in both
+  square and banner form, maps the exact SHIELD scanner component from #382:
+  `gr.sportfmtv.app/com.yinzcam.connectedtv.MainActivity`. The artwork is an
+  original Core monoline interpretation of the verified brand cues, with
+  sampled colour and reference provenance; no vendor image is bundled.
+- **Plezy, StreamFC and Radio France.** Three new icons, each mapped to the
+  exact component the Missing icons scanner reported: Plezy (#390), a
+  rounded play shape holding two waves, in coral; StreamFC (#404), a
+  football drawn open, in its blue; Radio France (#391), two offset quarter
+  rings and a stem, in the magenta-to-red gradient of its launcher icon.
+  Original Core monoline redraws, with each colour sampled from the app's
+  Google Play icon and the reference kept, hash-pinned, under
+  `tools/reference/`; no vendor image ships.
 
 ### Changed
 
@@ -72,6 +85,39 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Fixed
 
+- **TVLok now has its real icon and launcher mappings.** The generic TL
+  broadcast shell is replaced by the app's overlapping violet/cyan play-tile
+  cue in Core monoline. Static inspection of the official 1.0.192 APK proves
+  both `com.tvlok.app.ui.MainActivity` and the distinct TV alias
+  `com.tvlok.app.ui.TvLauncherActivity` under `com.tvlok.app`. The two old
+  guesses from #155/#352 are removed; unverified mappings fall from 75 to 73.
+  APK/resource hashes and small, explicitly downsized artwork references are
+  retained, not the APK itself. Physical-device confirmation remains pending.
+- **`tests/test_mapping_hygiene.py` and `tests/test_icon_identity.py` cover the new requests.**
+  Regressions pin SPORT FM TV's YinzCam namespace, TVLok's actual alias and
+  its static APK evidence, reference hashes, sampled accents and two-tone
+  declarations. Both requests retain the normal square/banner rendering
+  pipeline; `tools/build_icon_review.py --requests` shows them at tile size
+  and in actual-size banners beside unchanged neighbours.
+- **Five existing icons now apply to newly reported launch components.**
+  F-Droid (#377), Voltra TV (#378), Poweramp Equalizer (#379), ABC iview
+  (#380) and Moonfin (#383) already had artwork, but their reports named
+  components the pack did not map. Add those exact device-reported names,
+  including Poweramp's `standard_adaptive` alias and the activity namespaces
+  that differ from the installed package. All older mappings and artwork
+  stay unchanged. The fixes reach banners, the standalone glyphs app and the
+  Glyphs Pack companion together.
+- **PBS, YouTube TV and 8K Player VIP+ now apply on the reported devices.**
+  Each already had an icon, but the scanner reported a launch component the
+  pack did not map: PBS's `startup.StartupActivity` (#402), YouTube TV's
+  `ChrobaltMainActivity` (#403) and the 8K Player VIP+ build
+  `shadeed.Player8kVip` (#405), which shares the 8K Player VIP icon. The
+  older mappings stay.
+- **`tests/test_mapping_hygiene.py` guards the five launcher reports.**
+  Pins both the new and legacy components to their existing icons in the
+  catalog and all six generated appfilters (`res/xml` and `assets` for each
+  pack), and requires provenance from the device report rather than claiming
+  the new names came from the older reference pack.
 - **`tests/test_play_build.py` keeps out both pre-launch warnings' causes.**
   Play's report on 57 (2.4.4) raised two. Neither blocked the release, and
   only Play's next report can say whether both are gone.

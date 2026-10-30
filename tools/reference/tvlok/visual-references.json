@@ -1,0 +1,63 @@
+{
+  "inspection_run": "https://github.com/brevityA/CoreBuildsApps/actions/runs/40303327290",
+  "usage": "reference-only; not bundled or used as glyph geometry",
+  "rights": "Original TVLok artwork remains its owner's property; no MIT/CC0 grant is implied.",
+  "references": [
+    {
+      "path": "preview/E8.png",
+      "source_resource": "res/E8.png",
+      "source_sha256": "7c3625485b051d23aa7b13beaa4da8483d4d5483be80e5b9eb720e50cf8b591e",
+      "source_size": [
+        1280,
+        720
+      ],
+      "size": [
+        192,
+        108
+      ],
+      "transformation": "RGBA PNG; fit within 192 pixels with LANCZOS, no upscaling",
+      "sha256": "807e1e699c3720f812f370b4a16de1c53f1dd41d1169b3642a973d6274380739"
+    },
+    {
+      "path": "preview/Jt.png",
+      "source_resource": "res/Jt.png",
+      "source_sha256": "228a28520762170723149fdb494bfdf6b17ad80820a35539bf62dfd44ea8b4cb",
+      "source_size": [
+        512,
+        512
+      ],
+      "size": [
+        192,
+        192
+      ],
+      "transformation": "RGBA PNG; fit within 192 pixels with LANCZOS, no upscaling",
+      "sha256": "0e1393fc1b96dd198a6e9b2e47fa07ef9f8fad7e84e6257910ebecb35edd380c"
+    }
+  ],
+  "color_samples": [
+    {
+      "part": "front",
+      "path": "preview/Jt.png",
+      "box": [
+        68,
+        56,
+        84,
+        84
+      ],
+      "method": "Per-channel median, rounded to nearest integer",
+      "color": "#17A5DF"
+    },
+    {
+      "part": "rear",
+      "path": "preview/Jt.png",
+      "box": [
+        92,
+        38,
+        116,
+        46
+      ],
+      "method": "Per-channel median, rounded to nearest integer",
+      "color": "#8E46AE"
+    }
+  ]
+}

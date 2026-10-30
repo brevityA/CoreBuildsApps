@@ -683,7 +683,7 @@ GLYPHS_COPY = {
     ),
     "full_description": (
         "The square half of Core Builds Icon Pack: {icons} icons drawn as "
-        "flat, single-colour glyphs, for launchers that show square tiles.\n"
+        "rounded-line glyphs with colour accents, for launchers that show square tiles.\n"
         "\n"
         "SAME APPS, SQUARE ART\n"
         "Core Builds Icon Pack draws 16:9 banners. This pack draws the same "

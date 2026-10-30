@@ -1,13 +1,20 @@
 {
-  "versionCode": 60,
-  "versionName": "2.5.2",
-  "iconCount": 1022,
-  "componentCount": 1241,
-  "releaseDate": "2026-10-25",
+  "versionCode": 61,
+  "versionName": "2.5.3",
+  "iconCount": 1026,
+  "componentCount": 1253,
+  "releaseDate": "2026-10-26",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Glyphs apps keep their own icon when the pack is applied"
+    "The walls as a Projectivy wallpaper source",
+    "Core Premium free for 24 hours, once per TV",
+    "Night loop, a Core Premium extra",
+    "Request all, a Core Premium extra",
+    "Projectivy walls, a Core Premium extra",
+    "SPORT FM TV",
+    "Plezy, StreamFC and Radio France",
+    "Core Builds Plus is now Core Premium, with six extras"
   ]
 }

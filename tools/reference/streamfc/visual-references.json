@@ -1,0 +1,27 @@
+{
+  "usage": "reference-only: brand cues and colour sampling for an original Core monoline redraw; never shipped as art",
+  "source": "https://play.google.com/store/apps/details?id=dev.mogoni.streamfc",
+  "captured": "2026-10-29",
+  "references": [
+    {
+      "path": "launcher-icon-128.png",
+      "sha256": "201bae76184e8fdf1adb2b7ae0d1b3995dda50896790d5ca50da18ad5dd1d5c4",
+      "size": [
+        128,
+        128
+      ],
+      "note": "Google Play launcher icon (og:image), downsized from 256 px to 128 px for evidence only"
+    }
+  ],
+  "color_sample": {
+    "part": "field",
+    "box": [
+      0,
+      0,
+      128,
+      10
+    ],
+    "path": "launcher-icon-128.png",
+    "color": "#3396D3"
+  }
+}
