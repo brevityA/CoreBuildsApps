@@ -121,9 +121,9 @@
     "note": "A wallpaper and icon pack. Nothing here is user-generated, shared or interactive with strangers. 'online_content' is the full-size wallpapers and live loops, downloaded after install from this repo; none of it is rated content. 'purchases' follows the broker: Core Premium is on sale exactly when the broker is baked in, and the answer stays yes while a track still serves such a build (BROKER_SHIPPED)."
   },
   "sources": {
-    "generator": "8a26ace7f5378f7dda1a805e0c45c048b6808d59e135d755a0908af9142532ef",
+    "generator": "90e0d05e59fa737ed0d05949644020a81d00835404f636873bfb3251196084f3",
     "branding": "4fa4d2dcbac033c4ca1a1651570529bd7cfe82baf0b837b10f491d58c69f22e6",
-    "icon_pack_xml": "a02a79a00bb26cfb3300006d25dea8efbe4ea8467c8bba9598239b1525b7314f",
+    "icon_pack_xml": "b900338b5086e30e3c76050faa1bcd66c5815e02f4086f95709a0fa417b0bce1",
     "wallpapers_json": "0bc4f85d2ff7d2e2c646088cd450957c5e7a58c0519be85923207356dafb3490",
     "live_loop_kt": "00e56ef0764c460c81526d97b4b4a57085caf1e489a905c57d0d553ba4248b51",
     "frames": {

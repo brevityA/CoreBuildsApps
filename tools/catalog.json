@@ -15209,5 +15209,22 @@
       "treatment": "APK verifies identity and the lowercase no / interrupted-underline cue. Classic uses an original single-accent monoline motif and the standard Outfit/category/rail banner, not the traced white wordmark.",
       "usage": "reference-only"
     }
+  },
+  "alternates": {
+    "wuplay_alt": {
+      "of": "wuplay",
+      "name": "WuPlay (alternative)",
+      "file": "tools/alternates/wuplay.png",
+      "sha256": "9aa21e1d112b8b1919a46893497b70eb276ef606b4738ced1e5bda3fa9eb3d9a",
+      "square": [
+        459,
+        752,
+        1725,
+        2018
+      ],
+      "clear_from_x": 1673,
+      "source": "Supplied by the pack owner on 2026-10-28, to ship unchanged as a manually chosen alternative",
+      "usage": "manual-only"
+    }
   }
 }

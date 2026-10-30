@@ -65,6 +65,8 @@ class MainActivity : TvActivity() {
      * in [nearestSurvivor] mean something.
      */
     private var catalogOrder: Map<String, Int> = emptyMap()
+    /** Apps in the grid: every tile but the alternates. */
+    private var iconCount = 0
 
     /** The first entry of the rail's last row: Support, except on Play. */
     private val railHead: Int =
@@ -118,9 +120,12 @@ class MainActivity : TvActivity() {
             )
         }
         catalogOrder = all.withIndex().associate { (index, item) -> item.drawable to index }
+        // Alternates are extra tiles for apps already in the grid, so every
+        // number on this screen counts apps and leaves them out.
+        iconCount = all.count { !it.alternate }
 
         findViewById<TextView>(R.id.count).text =
-            getString(R.string.pack_stats_fmt, all.size, mappedComponents())
+            getString(R.string.pack_stats_fmt, iconCount, mappedComponents())
 
         pickBanners = if (pickFixedByPack() &&
             intent.getBooleanExtra(GlyphsCompanion.EXTRA_PICK_GLYPHS, false)) {
@@ -579,11 +584,12 @@ class MainActivity : TvActivity() {
         // Counts are tallied from the same generated arrays that feed the
         // grid, so a chip can never advertise a number the grid cannot back
         // up. A hand-typed "(184)" goes stale on the next tranche; this does
-        // not.
-        val counts = all.groupingBy { it.category }.eachCount()
+        // not. They count apps: an alternate is a second tile for one.
+        val apps = all.filterNot { it.alternate }
+        val counts = apps.groupingBy { it.category }.eachCount()
         val keys = mutableListOf(ALL)
         val labels = mutableListOf(
-            getString(R.string.chip_count_fmt, getString(R.string.chip_all), all.size)
+            getString(R.string.chip_count_fmt, getString(R.string.chip_all), iconCount)
         )
         // Brandmarks is not a category — it cuts across all of them — so it is
         // added by hand next to All rather than through CHIP_ORDER, and
@@ -595,7 +601,7 @@ class MainActivity : TvActivity() {
             labels += getString(
                 R.string.chip_count_fmt,
                 getString(R.string.chip_brandmarks),
-                all.count { it.bespoke }
+                apps.count { it.bespoke }
             )
         }
         for ((key, label) in CHIP_ORDER) {
@@ -646,7 +652,7 @@ class MainActivity : TvActivity() {
      */
     private fun bindSearch() {
         val search = findViewById<EditText>(R.id.search)
-        search.hint = getString(R.string.search_hint_fmt, all.size)
+        search.hint = getString(R.string.search_hint_fmt, iconCount)
         search.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
             override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
@@ -813,9 +819,12 @@ class MainActivity : TvActivity() {
         adapter.submit(filtered)
         findViewById<TextView>(R.id.count).text =
             if (filtered.size == all.size) {
-                getString(R.string.pack_stats_fmt, all.size, mappedComponents())
+                getString(R.string.pack_stats_fmt, iconCount, mappedComponents())
             } else {
-                getString(R.string.icon_filter_fmt, filtered.size, all.size)
+                // Apps matched, not tiles: a search that hits only an
+                // alternate's name still matched its app, once.
+                getString(R.string.icon_filter_fmt,
+                    filtered.mapTo(HashSet()) { it.app }.size, iconCount)
             }
         bindEmptyState(filtered.size, q)
         // The grid and the empty state just swapped places; down from the
@@ -998,7 +1007,7 @@ class MainActivity : TvActivity() {
                 getString(
                     R.string.empty_body_query_fmt,
                     categoryLabel(category),
-                    all.count(::inCategory)
+                    appsInCategory()
                 )
             }
 
@@ -1008,7 +1017,7 @@ class MainActivity : TvActivity() {
         clearSearch.visibility = if (q.isEmpty()) View.GONE else View.VISIBLE
         clearFilter.visibility = if (category == ALL) View.GONE else View.VISIBLE
         clearFilter.text =
-            getString(R.string.empty_clear_filter, all.count(::inCategory))
+            getString(R.string.empty_clear_filter, appsInCategory())
     }
 
     /**
@@ -1026,6 +1035,10 @@ class MainActivity : TvActivity() {
         BESPOKE -> item.bespoke
         else -> item.category == category
     }
+
+    /** Apps in the current category: an alternate's tile is not another app. */
+    private fun appsInCategory(): Int =
+        all.filter(::inCategory).mapTo(HashSet()) { it.app }.size
 
     private fun categoryLabel(key: String): String = when (key) {
         BESPOKE -> getString(R.string.chip_brandmarks)

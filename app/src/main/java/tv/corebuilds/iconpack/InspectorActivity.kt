@@ -71,7 +71,10 @@ class InspectorActivity : TvActivity() {
         val xml = assets.open("appfilter.xml").bufferedReader().use { it.readText() }
         // appfilter maps every component to the square glyph or banner drawable;
         // strip any '_banner' suffix so we match whichever form the pack mapped.
+        // An alternate (<icon>_alt) is never mapped itself: it is extra art for
+        // an app the appfilter maps, so it shows that app's components.
         val base = drawable.removeSuffix("_banner")
+            .replace(IconAdapter.IconItem.ALTERNATE, "")
         val pattern = Regex(
             "component=\"ComponentInfo\\{([^}]+)\\}\"\\s+drawable=\"$base(?:_banner)?\""
         )

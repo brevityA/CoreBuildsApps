@@ -344,6 +344,7 @@ jobs:
           python tests/test_render_stack.py
           python tests/test_changelog_contract.py
           python tests/test_glyphs_pack.py
+          python tests/test_alternates.py
           python tests/test_icon_palette.py
           # The coverage report's CI half: no network - it only proves the
           # committed docs/COVERAGE.md exists and the weekly refresh

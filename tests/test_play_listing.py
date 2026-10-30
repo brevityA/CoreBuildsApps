@@ -599,7 +599,9 @@ class GlyphsPackListing(unittest.TestCase):
 
         n = GLYPHS_SPEC["counts"]
         self.assertEqual(n, listing.glyph_counts())
-        self.assertEqual(n["icons"], len(items("drawable.xml", "drawable")))
+        # Icons are apps: an alternate (<icon>_alt) is extra art for one.
+        self.assertEqual(n["icons"], len([d for d in items("drawable.xml", "drawable")
+                                          if not re.search(r"_alt\d*$", d)]))
         self.assertEqual(n["components"], len(items("appfilter.xml", "component")))
         full = GLYPHS_SPEC["copy"]["full_description"]
         self.assertIn(f"{n['icons']} icons", full)
