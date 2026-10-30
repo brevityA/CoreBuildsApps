@@ -40,14 +40,21 @@ Two comments in that file matter as much as the numbers:
 The centre arrives in both channels at 0.707, which is 3.01 dB below a front at 1.0 — and that is
 the only statement for which "3 dB down" is true. What a listener hears is not a channel:
 
+Everything below is relative to the same signal reproduced by one speaker at unity.
+
 | quantity | value |
 |---|---|
-| centre, per channel, versus a front at unity | −3.01 dB |
-| centre summed coherently across L+R, versus a front at unity | **+3.01 dB** |
-| centre summed incoherently (power) | 0.00 dB |
+| centre, per channel | −3.01 dB |
+| centre summed coherently across L+R (on axis) | **+3.01 dB** |
+| centre summed incoherently (diffuse field) | 0.00 dB |
 
-Two speakers, one signal, one listener between them: the fold leaves dialogue at the same level as
-a front-panned effect, or marginally above it. It does not leave it 3 dB under.
+So the fold is **level-neutral**, not 3 dB down: on axis a centred voice arrives 3 dB *hotter* than
+the same content from one speaker, and at the same level in a diffuse field. Real programme is a
+mixture — dialogue in the centre, music and effects decorrelated across L+R, which sum
+incoherently — so the balance is approximately preserved. The original phrasing, and the first
+version of this note, said "the same level as a front-panned effect at unity" for the +3.01 dB
+row, which conflates the two columns; the table above is the correct one, and a test in
+`ToneLayersTest` now pins all three numbers.
 
 What the fold costs is the **image** and the **headroom**. A phantom centre built from two spaced
 sources is comb-filtered and narrow, and it collapses towards the nearer speaker as soon as the

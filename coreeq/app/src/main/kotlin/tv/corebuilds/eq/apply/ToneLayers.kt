@@ -106,10 +106,11 @@ data class ToneLayers(
          *
          * The centre is therefore mixed into each channel 3.01 dB below a front, and
          * that is where the useful arithmetic stops. A centred voice arrives in
-         * *both* channels, so a listener sitting between two spaced speakers sums it
-         * coherently: 0.707 + 0.707 is +3.01 dB, the same level as a front-panned
-         * effect at unity (an incoherent sum would be 0.00 dB). The fold does not
-         * bury dialogue 3 dB under the effects. Level is not what is wrong with it.
+         * *both* channels, so what reaches the listener is not that 3 dB deficit: on
+         * axis the two copies sum coherently to +3.01 dB against the same signal from
+         * one speaker, and in a diffuse field to 0.00 dB. The fold is level-neutral;
+         * it does not bury dialogue 3 dB under the effects. Level is not what is
+         * wrong with it.
          *
          * What is wrong is the image and the drivers. Two spaced sources form a
          * phantom centre: comb-filtered, narrow, collapsing the moment the listener

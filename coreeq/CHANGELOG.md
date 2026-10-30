@@ -22,10 +22,10 @@ passes. Nobody has played a 5.1 film through it, or pressed the new switch with 
   - **Speech lift:** +3 dB across 2.2–4.5 kHz, on Dialogue boost's curve. **It is a presence
     lift, not the fold's deficit put back.** ChannelMix mixes the centre into each channel at
     0.707 — 3.01 dB below a front — but the centre is in *both* channels, so a listener between
-    two spaced speakers sums it coherently at +3.01 dB: the same level as a front-panned effect.
-    The fold costs the centre its image (a comb-filtered phantom, which collapses off-axis) and
-    spends small drivers' headroom where intelligibility lives, and that is what the lift is
-    for. Dialogue boost's +2 dB is not added on top, and a Dialogue or House target's own +2 dB
+    two spaced speakers gets +3.01 dB against the same signal from one speaker on axis, and
+    0.00 dB in a diffuse field. The fold is level-neutral: it does not under-level dialogue at
+    all. What it costs is the image (a comb-filtered phantom that collapses off-axis) and the
+    small drivers' headroom where intelligibility lives, and that is what the lift is for. Dialogue boost's +2 dB is not added on top, and a Dialogue or House target's own +2 dB
     is counted, so those get +1 dB. Android gives apps no mid/side stage, so music in that band
     rises with the speech; the note says so.
   - **Bass guard:** −6 dB below half an octave under the speaker's measured roll-off, nothing
