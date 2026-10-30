@@ -173,6 +173,10 @@ class ToneLayersTest {
         // No measured roll-off: a compact speaker's 80 Hz is assumed.
         assertEquals(ToneLayers.bassGuardDb(50.0, 80.0), ToneLayers.bassGuardDb(50.0, 0.0), 0.0)
         assertEquals(ToneLayers.BASS_GUARD_DB, ToneLayers.bassGuardDb(40.0, 0.0), 1e-9)
+        // A manual profile carries Profile's 40 Hz default, not a measurement: 80 Hz is assumed.
+        val manual = profile(rolloffHz = 40.0, manualOnly = true)
+        assertEquals(ToneLayers.BASS_GUARD_DB, stereo.responseDb(manual, 50.0), 1e-9)
+        assertEquals(0.0, stereo.responseDb(manual, 80.0), 1e-9)
     }
 
     @Test

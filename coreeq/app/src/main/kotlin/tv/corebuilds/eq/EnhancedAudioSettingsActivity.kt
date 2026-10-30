@@ -160,6 +160,8 @@ class EnhancedAudioSettingsActivity : TvActivity() {
             setSurroundNever()
             changed()
         }
+        // Switched off while the old mode could not be put back: try again.
+        if (!prefs.stereoSpeakersEnabled && prefs.surroundRestoreMode != null) restoreSurround()
         refresh() // the volume may have moved while this screen was away
     }
 
@@ -192,9 +194,17 @@ class EnhancedAudioSettingsActivity : TvActivity() {
     private fun stereoOff() {
         prefs.stereoSpeakersEnabled = false
         prefs.surroundPending = false
+        restoreSurround()
+    }
+
+    /**
+     * The saved mode is forgotten only once it is back, or no longer Core EQ's
+     * to restore. If Android refuses (the permission was taken away), it is
+     * kept, retried on the next visit, and the panel says how to do it by hand.
+     */
+    private fun restoreSurround() {
         val restore = SurroundOutput.restoreTo(prefs.surroundRestoreMode, SurroundOutput.read(this))
-        if (restore != null) SurroundOutput.write(this, restore)
-        prefs.surroundRestoreMode = null
+        if (restore == null || SurroundOutput.write(this, restore)) prefs.surroundRestoreMode = null
     }
 
     private fun setSurroundNever() {
@@ -265,7 +275,10 @@ class EnhancedAudioSettingsActivity : TvActivity() {
      * this output, and if not, what to change; null while off.
      */
     private fun stereoStatus(): String? {
-        if (!prefs.stereoSpeakersEnabled) return null
+        if (!prefs.stereoSpeakersEnabled) {
+            val stuck = prefs.surroundRestoreMode ?: return null
+            return getString(R.string.extras_stereo_restore_failed, SurroundOutput.label(stuck))
+        }
         if (!bitstreamOutput()) return getString(R.string.extras_stereo_pcm_only)
         val mode = SurroundOutput.read(this)
         if (mode == SurroundOutput.NEVER) {

@@ -66,7 +66,8 @@ data class ToneLayers(
         val presence = presenceGainDb(profile)
         if (presence > 0.0) db += Targets.presenceDb(doubleArrayOf(hz), presence)[0]
         if (lowVolumeBassDb > 0.0) db += lowVolumeBassDb * lowShelf(hz) * rolloffFade(hz, profile.rolloffHz)
-        if (stereoDownmix) db += bassGuardDb(hz, profile.rolloffHz)
+        // A manual profile measured nothing: its rolloffHz is Profile's 40 Hz default, not a speaker's.
+        if (stereoDownmix) db += bassGuardDb(hz, if (profile.manualOnly) 0.0 else profile.rolloffHz)
         return db
     }
 

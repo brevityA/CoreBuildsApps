@@ -35,12 +35,14 @@ passes. Nobody has played a 5.1 film through it, or pressed the new switch with 
   allows Core EQ to "Modify system settings" (the new `WRITE_SETTINGS` permission; the
   screen opens Android's page for it). Switching it off puts the old mode back, but only
   while the setting is still Never: a later choice is never undone. On Bluetooth, USB and
-  analogue outputs nothing is changed, because they only take PCM. On Android 11, which has
+  analogue outputs nothing is changed, because they only take PCM. If Android refuses to
+  put the old mode back (the permission was withdrawn), Core EQ keeps it, retries on the
+  next visit and says how to restore it by hand. On Android 11, which has
   no public switch, the panel gives the TV menu path and
   `adb shell settings put global encoded_surround_output 1`.
 - **The bitstream warning now covers optical and Android 11.** It used to check HDMI on
-  Android 12+ only. Optical (S/PDIF) carries Dolby and DTS too, and Android 11 stores the
-  setting in a global Core EQ can read, so a soundbar on optical and every Android 11 box
+  Android 12+ only. Optical (S/PDIF) carries Dolby and DTS too, and Android 11 keeps the
+  Surround sound mode in a global setting Core EQ can read, so a soundbar on optical and every Android 11 box
   (Shield among them) went unwarned. Home, Setup and the status line now cover both.
 
 ## [1.9.0] — 2026-10-28
