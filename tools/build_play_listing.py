@@ -257,11 +257,12 @@ COPY = {
 PLUS_COPY = (
     "CORE PREMIUM\n"
     "Optional, one purchase through Google Play, no subscription: your icon "
-    "requests are filed as priority, one app or every missing app at once, "
+    "requests are filed as priority, one app or up to 10 missing apps at once, "
     "My requests shows how far each one has got, the live wallpaper can rotate through your loops and play a second "
     "one at night, you choose what Projectivy rotates from this pack "
     "(favourites, one series, a night set), and Spectra and Aurum add "
-    "{plus_walls} more wallpapers. Try it free for 24 hours first, once per TV. Every "
+    "{plus_walls} more wallpapers. Try it free for 24 hours first, once per TV; "
+    "the trial has everything but priority requests and Request all. Every "
     "icon, all {walls} stills, every loop and every screen ship to everyone "
     "either way.\n"
     "\n"
@@ -339,7 +340,8 @@ BROKER_COLLECTED = [
         "purposes": ["App functionality"],
         "what": "Core Premium owners only: the Google Play purchase token, checked with "
                 "Google and never stored; a SHA-256 of it is cached for at most "
-                "six hours",
+                "six hours, and after Request all it keys that day's batch count "
+                "for at most 24 hours and 10 minutes",
     },
 ]
 

@@ -85,8 +85,10 @@ All notable changes to the Core Builds Icon Pack. Format follows
   24-hour trial, and a buyer's requests are labelled priority. The
   GitHub / Downloader build is unchanged: it keeps the QR panel and sells
   nothing. The Play listing's description, Data safety and content rating
-  answers are regenerated to match (`docs/play/listing.json`). Nothing has
-  been bought on a TV yet; `docs/PLAY-CONSOLE.md` §8 lists the Console
+  answers are regenerated to match (`docs/play/listing.json`), and
+  `docs/privacy.html` (effective 30 October 2026) says which build sends a
+  request straight away and how long the Request all count is kept. Nothing
+  has been bought on a TV yet; `docs/PLAY-CONSOLE.md` §8 lists the Console
   steps and the test.
 - **Core Builds Plus is now Core Premium, with six extras.** Priority
   requests, My requests, loop rotation, the night loop, Projectivy walls and

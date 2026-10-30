@@ -495,6 +495,17 @@ class StoreTruth(unittest.TestCase):
         self.assertTrue(SPEC["content_rating"]["purchases"])
         self.assertTrue(SPEC["data_safety"]["collects_user_data"])
         self.assertIn("CORE PREMIUM", SPEC["copy"]["full_description"])
+        # The copy promises no more than the app does: Request all files at
+        # most BatchRequest.MAX per press, and the trial leaves out the two
+        # features the request service checks with Google.
+        full = SPEC["copy"]["full_description"]
+        batch = (ROOT / "app/src/main/java/tv/corebuilds/iconpack/BatchRequest.kt").read_text(encoding="utf-8")
+        cap = re.search(r"const val MAX = (\d+)", batch).group(1)
+        self.assertIn(f"one app or up to {cap} missing apps at once", full)
+        self.assertNotIn("every missing app at once", full)
+        self.assertIn("the trial has everything but priority requests and Request all", full)
+        token = [c for c in SPEC["data_safety"]["collected"] if "Purchase" in c["type"]][0]
+        self.assertIn("24 hours and 10 minutes", token["what"])
 
     def test_check_catches_a_broker_baked_in_without_new_answers(self):
         original = listing.broker_enabled

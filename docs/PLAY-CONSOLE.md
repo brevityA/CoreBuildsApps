@@ -91,7 +91,7 @@ Play Console → **Grow → Store presence → Main store listing**.
 - **Short description**: paste `copy.short_description` from `listing.json`
   (80-character limit; currently 71)
 - **Full description**: paste `copy.full_description` (4000 limit; currently
-  2215)
+  2283)
 - **App icon**: `docs/play/icon-512.png`
 - **Feature graphic**: `docs/play/feature-graphic-1024x500.png`
 - **TV banner**: `docs/play/tv-banner-1280x720.png` — required for a TV listing
