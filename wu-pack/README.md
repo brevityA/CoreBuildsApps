@@ -70,6 +70,10 @@ and holds the same 1950 entries as the shipped pack's banner appfilter.
   art. Accents separated them in Classic; here the browser tile repeats.
   The mapping is unaffected, the banners tell them apart by name, and the
   build prints the groups every run.
+- **Owner alternates stay Classic-only.** Catalog `alternates`
+  (owner-supplied raster tiles such as `wuplay_alt`) never enter an
+  appfilter and never wear a style — the Wu browsers list drawn Wu art
+  only, and the generators drop them when copying the companion XML.
 
 ## Layout
 

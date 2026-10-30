@@ -28,6 +28,7 @@
     <item component="ComponentInfo{com.divergentftb.xtreamplayeranddownloader/.start.SpActivity}" drawable="xtreamplayeranddownloader_banner"/>
     <!-- A 8k Player Vip -->
     <item component="ComponentInfo{com.shadeed.S4kvip/com.shadeed.ibopro.MainActivity}" drawable="a_8k_player_vip_banner"/>
+    <item component="ComponentInfo{shadeed.Player8kVip/shadeed.player4k.pages.SplashActivity}" drawable="a_8k_player_vip_banner"/>
     <!-- A&amp;E -->
     <item component="ComponentInfo{com.aetn.aetv.watch.androidtv/com.aetn.android.tveapps.app.MainActivity}" drawable="androidtv_3_banner"/>
     <!-- ABC iview -->
@@ -37,6 +38,8 @@
     <item component="ComponentInfo{au.net.abc.iview.tv/.MainActivity}" drawable="abciview_banner"/>
     <item component="ComponentInfo{au.net.abc.iview/au.net.abc.iview.ui.MainActivity}" drawable="abciview_banner"/>
     <item component="ComponentInfo{au.net.abc.iview/.ui.MainActivity}" drawable="abciview_banner"/>
+    <item component="ComponentInfo{au.net.abc.iview/au.net.abc.iview.ui.router.TvLauncherActivity}" drawable="abciview_banner"/>
+    <item component="ComponentInfo{au.net.abc.iview/.ui.router.TvLauncherActivity}" drawable="abciview_banner"/>
     <!-- ABC News -->
     <item component="ComponentInfo{com.abc.abcnews/com.disney.datg.android.androidtv.splash.AbcNewsSplashScreenActivity}" drawable="abcnews_banner"/>
     <!-- Ace Stream -->
@@ -718,6 +721,7 @@
     <!-- F-Droid -->
     <item component="ComponentInfo{org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity}" drawable="f_droid_banner"/>
     <item component="ComponentInfo{org.fdroid.fdroid/.views.main.MainActivity}" drawable="f_droid_banner"/>
+    <item component="ComponentInfo{org.fdroid.fdroid/org.fdroid.MainActivity}" drawable="f_droid_banner"/>
     <!-- F1 TV -->
     <item component="ComponentInfo{com.formulaone.production/com.avs.f1.ui.splash.SplashActivity}" drawable="production_banner"/>
     <!-- Falcon Cast -->
@@ -1401,6 +1405,8 @@
     <item component="ComponentInfo{org.monplayer.mpapp/.MainActivity}" drawable="monplayer_banner"/>
     <!-- Moonfin -->
     <item component="ComponentInfo{org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity}" drawable="moonfin_banner"/>
+    <item component="ComponentInfo{org.moonfin.androidtv/org.moonfin.androidtv.MainActivity}" drawable="moonfin_banner"/>
+    <item component="ComponentInfo{org.moonfin.androidtv/.MainActivity}" drawable="moonfin_banner"/>
     <!-- Moonlight -->
     <item component="ComponentInfo{com.limelight/com.limelight.PcView}" drawable="moonlight_banner"/>
     <item component="ComponentInfo{com.limelight/.PcView}" drawable="moonlight_banner"/>
@@ -1722,6 +1728,8 @@
     <!-- PBS -->
     <item component="ComponentInfo{com.pbs.video/com.pbs.video.StartupActivity}" drawable="video_banner"/>
     <item component="ComponentInfo{com.pbs.video/.StartupActivity}" drawable="video_banner"/>
+    <item component="ComponentInfo{com.pbs.video/com.pbs.video.startup.StartupActivity}" drawable="video_banner"/>
+    <item component="ComponentInfo{com.pbs.video/.startup.StartupActivity}" drawable="video_banner"/>
     <!-- PBS Kids -->
     <item component="ComponentInfo{org.pbskids.video/org.pbskids.video.ui.root.MainActivity}" drawable="pbs_kids_banner"/>
     <item component="ComponentInfo{org.pbskids.video/.ui.root.MainActivity}" drawable="pbs_kids_banner"/>
@@ -1793,6 +1801,9 @@
     <item component="ComponentInfo{com.plexapp.android/tv.plex.app.MainActivity}" drawable="plex_banner"/>
     <!-- Plexamp -->
     <item component="ComponentInfo{tv.plex.labs.plexamp/com.plexamp.MainActivity}" drawable="plexamp_banner"/>
+    <!-- Plezy -->
+    <item component="ComponentInfo{com.edde746.plezy/com.edde746.plezy.MainActivity}" drawable="plezy_banner"/>
+    <item component="ComponentInfo{com.edde746.plezy/.MainActivity}" drawable="plezy_banner"/>
     <!-- Pluto TV -->
     <item component="ComponentInfo{tv.pluto.android/tv.pluto.android.EntryPoint}" drawable="pluto_tv_banner"/>
     <item component="ComponentInfo{tv.pluto.android/.EntryPoint}" drawable="pluto_tv_banner"/>
@@ -1817,6 +1828,7 @@
     <!-- Poweramp Equalizer -->
     <item component="ComponentInfo{com.maxmpz.equalizer/com.maxmpz.equalizer.StartupActivity}" drawable="poweramp_eq_banner"/>
     <item component="ComponentInfo{com.maxmpz.equalizer/.StartupActivity}" drawable="poweramp_eq_banner"/>
+    <item component="ComponentInfo{com.maxmpz.equalizer/com.maxmpz.audioplayer.standard_adaptive}" drawable="poweramp_eq_banner"/>
     <!-- PPSSPP -->
     <item component="ComponentInfo{org.ppsspp.ppsspp/org.ppsspp.ppsspp.PpssppActivity}" drawable="ppsspp_banner"/>
     <item component="ComponentInfo{org.ppsspp.ppsspp/.PpssppActivity}" drawable="ppsspp_banner"/>
@@ -1898,6 +1910,8 @@
     <item component="ComponentInfo{dev.trooped.tvquickbars/.ui.SplashActivity}" drawable="quickbars_for_home_assistant_banner"/>
     <!-- QuickSupport -->
     <item component="ComponentInfo{com.teamviewer.quicksupport.market/com.teamviewer.quicksupport.ui.QSActivity}" drawable="quicksupport_banner"/>
+    <!-- Radio France -->
+    <item component="ComponentInfo{com.radiofrance.radio.radiofrance.android/com.radiofrance.android.tv.TvMainActivity}" drawable="radio_france_banner"/>
     <!-- Radio On TV -->
     <item component="ComponentInfo{de.fitzood.radio.tv/de.fitzood.radio.tv.MainActivity}" drawable="radio_on_tv_banner"/>
     <item component="ComponentInfo{de.fitzood.radio.tv/.MainActivity}" drawable="radio_on_tv_banner"/>
@@ -2194,6 +2208,8 @@
     <!-- Speedtest TV -->
     <item component="ComponentInfo{com.rma.speedtesttv/com.rma.speedtesttv.ui.SplashActivity}" drawable="speedtesttv_banner"/>
     <item component="ComponentInfo{com.rma.speedtesttv/.ui.SplashActivity}" drawable="speedtesttv_banner"/>
+    <!-- SPORT FM TV -->
+    <item component="ComponentInfo{gr.sportfmtv.app/com.yinzcam.connectedtv.MainActivity}" drawable="sport_fm_tv_banner"/>
     <!-- Sport TV -->
     <item component="ComponentInfo{pt.sporttv.app.androidtv/pt.sporttv.app.ui.SplashScreenTVActivity}" drawable="sport_tv_banner"/>
     <!-- Sports Everywhere -->
@@ -2263,6 +2279,9 @@
     <!-- Stream Vault -->
     <item component="ComponentInfo{com.streamvault.app/com.streamvault.app.MainActivity}" drawable="streamvault_banner"/>
     <item component="ComponentInfo{com.streamvault.app/.MainActivity}" drawable="streamvault_banner"/>
+    <!-- StreamFC -->
+    <item component="ComponentInfo{dev.mogoni.streamfc/dev.mogoni.streamfc.MainActivity}" drawable="streamfc_banner"/>
+    <item component="ComponentInfo{dev.mogoni.streamfc/.MainActivity}" drawable="streamfc_banner"/>
     <!-- Streamflix -->
     <item component="ComponentInfo{com.streamflixreborn.streamflix/com.streamflixreborn.streamflix.activities.main.MainTvActivity}" drawable="streamflix_banner"/>
     <item component="ComponentInfo{com.streamflixreborn.streamflix/.activities.main.MainTvActivity}" drawable="streamflix_banner"/>
@@ -2595,10 +2614,10 @@
     <item component="ComponentInfo{net.cj.cjhv.gs.tving/net.cj.cjhv.gs.tving.view.scaleup.ScaleupIntroActivity}" drawable="tving_banner"/>
     <item component="ComponentInfo{net.cj.cjhv.gs.tving/.view.scaleup.ScaleupIntroActivity}" drawable="tving_banner"/>
     <!-- TVLok -->
-    <item component="ComponentInfo{com.tvlok.app/com.tvlok.app.MainActivity}" drawable="tvlok_banner"/>
-    <item component="ComponentInfo{com.tvlok.app/.MainActivity}" drawable="tvlok_banner"/>
-    <item component="ComponentInfo{com.tvlok.tv/com.tvlok.tv.MainActivity}" drawable="tvlok_banner"/>
-    <item component="ComponentInfo{com.tvlok.tv/.MainActivity}" drawable="tvlok_banner"/>
+    <item component="ComponentInfo{com.tvlok.app/com.tvlok.app.ui.MainActivity}" drawable="tvlok_banner"/>
+    <item component="ComponentInfo{com.tvlok.app/.ui.MainActivity}" drawable="tvlok_banner"/>
+    <item component="ComponentInfo{com.tvlok.app/com.tvlok.app.ui.TvLauncherActivity}" drawable="tvlok_banner"/>
+    <item component="ComponentInfo{com.tvlok.app/.ui.TvLauncherActivity}" drawable="tvlok_banner"/>
     <!-- TVNZ+ -->
     <item component="ComponentInfo{nz.co.tvnz.ondemand.tv/nz.co.tvnz.ondemand.SplashScreenTVActivity}" drawable="tvnzplus_banner"/>
     <!-- TVO Kids -->
@@ -2765,6 +2784,7 @@
     <!-- Voltra TV -->
     <item component="ComponentInfo{com.amhkor.voltratv/com.amhkor.voltratv.tv.SplashActivity}" drawable="voltra_tv_banner"/>
     <item component="ComponentInfo{com.amhkor.voltratv/.tv.SplashActivity}" drawable="voltra_tv_banner"/>
+    <item component="ComponentInfo{com.amhkor.voltratv/com.voltra.voltratv.tv.SplashActivity}" drawable="voltra_tv_banner"/>
     <!-- Volume Booster -->
     <item component="ComponentInfo{com.goodev.volume.booster/com.goodev.volume.booster.SpeakerBoost}" drawable="booster_banner"/>
     <item component="ComponentInfo{com.goodev.volume.booster/.SpeakerBoost}" drawable="booster_banner"/>
@@ -2935,6 +2955,7 @@
     <item component="ComponentInfo{com.google.android.youtube.tvmusic/com.google.android.apps.youtube.tvmusic.activity.MainActivity}" drawable="tvmusic_banner"/>
     <!-- YouTube TV -->
     <item component="ComponentInfo{com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.MainActivity}" drawable="tvunplugged_banner"/>
+    <item component="ComponentInfo{com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.ChrobaltMainActivity}" drawable="tvunplugged_banner"/>
     <!-- YoWindow -->
     <item component="ComponentInfo{yo.app.free/yo.activity.MainActivity}" drawable="yowindow_banner"/>
     <item component="ComponentInfo{yo.app.free/yo.tv.TvActivity}" drawable="yowindow_banner"/>

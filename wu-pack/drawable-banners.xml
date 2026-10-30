@@ -74,6 +74,7 @@
     <item drawable="mediabrowser_banner" />
     <item drawable="pixee_banner" />
     <item drawable="plex_banner" />
+    <item drawable="plezy_banner" />
     <item drawable="silo_banner" />
     <category title="Wu Banners · On demand" />
     <item drawable="tenplay_banner" />
@@ -232,6 +233,7 @@
     <item drawable="podcastaddict_banner" />
     <item drawable="poweramp_eq_banner" />
     <item drawable="music_banner" />
+    <item drawable="radio_france_banner" />
     <item drawable="radio_on_tv_banner" />
     <item drawable="radioparadisewidget_banner" />
     <item drawable="radio_net_banner" />
@@ -277,12 +279,14 @@
     <item drawable="rally_tv_banner" />
     <item drawable="americasvoicenews_banner" />
     <item drawable="rugbypass_tv_banner" />
+    <item drawable="sport_fm_tv_banner" />
     <item drawable="sport_tv_banner" />
     <item drawable="sportseverywhere_banner" />
     <item drawable="sportsfire_banner" />
     <item drawable="sportsnet_banner" />
     <item drawable="sportzx_banner" />
     <item drawable="sync_sports_banner" />
+    <item drawable="streamfc_banner" />
     <item drawable="rlcplus_banner" />
     <item drawable="talksport_banner" />
     <item drawable="tennis_channel_banner" />
