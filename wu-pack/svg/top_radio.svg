@@ -1,0 +1,3 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs><mask id="wuDisc-top_radio" maskUnits="userSpaceOnUse" x="0" y="0" width="512" height="512"><rect width="512" height="512" fill="#000000"/><circle cx="256" cy="256" r="211" fill="#FFFFFF"/><g transform="translate(256 256) scale(0.7278) translate(-256 -256)"><path d="M 148 344 C 88 344 72 272 120 244 C 108 180 172 140 220 168 C 244 112 336 112 356 176 C 420 172 452 256 400 300 C 408 336 380 352 352 344 L 260 344 L 220 416 L 212 344 Z" fill="none" stroke="#000000" stroke-width="45.1" stroke-linecap="round" stroke-linejoin="round"/></g></mask></defs><rect width="512" height="512" fill="#FFFFFF" mask="url(#wuDisc-top_radio)"/>
+</svg>
