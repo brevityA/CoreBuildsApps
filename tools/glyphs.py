@@ -9483,3 +9483,88 @@ _WM5 = {
 GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM5.items()})
 GLYPHS.update({"euroleague_ball": euroleague_ball, "airplaytouch_cursor": airplaytouch_cursor,
                "ampchor_power": ampchor_power, "eaglecast_star": eaglecast_star})
+
+
+# Issue batch 2026-10-26 (2.5.3): a new sports service and a corrected player.
+# These are original Core constructions, not vectorisations of the source art.
+def sportfm_crest(c):
+    """SPORT FM TV: the red crest, its FM lettering and TV tag.
+
+    The vendor's tightly packed Greek lettering does not survive in our
+    32px linework at tile size. Keep the distinctive crest / FM / TV cues,
+    draw the letters in the pack's face, and let the common banner carry the
+    full name. Primitive 1 is the light-ink FM (catalog secondary).
+    """
+    return (f'<path d="M 104 56 L 408 56 L 408 198 Q 408 244 366 266 '
+            f'L 256 310 L 146 266 Q 104 244 104 198 Z" {_s(c, 32)}/>'
+            + stroke_lockup("FM", c, cap_h=128, max_w=208, cy=162)
+            + stroke_lockup("TV", c, cap_h=104, max_w=184, cy=400))
+
+
+def tvlok_play_tiles(c):
+    """TVLok: the offset, tilted rear tile behind a rounded play tile.
+
+    Only the visible rear edge is drawn: a transparent monoline foreground
+    must not reveal a made-up diagonal through its play symbol. Primitive 0
+    takes the rear tile's violet; the front and play keep the shared cyan.
+    """
+    return (f'<path d="M 144 164 L 330 104 Q 374 92 386 136 '
+            f'L 414 246 Q 426 290 396 298" {_s(c, 32)}/>'
+            f'<rect x="76" y="180" width="328" height="236" rx="64" {_s(c, 32)}/>'
+            f'<path d="M 210 244 L 292 298 L 210 352 Z" {_s(c, 26)}/>')
+
+
+GLYPHS.update({"sportfm_crest": sportfm_crest, "tvlok_play_tiles": tvlok_play_tiles})
+
+
+# Issue batch 2026-10-29: three requests from the Missing icons scanner.
+# Original Core constructions after each app's launcher icon, not traces.
+def plezy_play_waves(c):
+    """Plezy: a rounded play triangle holding two waves.
+
+    The launcher icon is a soft coral play shape with a double tilde inside;
+    the tilde is what separates it from every other play mark in the pack.
+    """
+    return (f'<path d="M 152 84 Q 112 62 112 108 L 112 404 Q 112 450 152 428 '
+            f'L 420 280 Q 462 256 420 232 Z" {_s(c, 32)}/>'
+            f'<path d="M 168 222 C 192 196 218 196 238 218 C 258 240 284 240 308 214" {_s(c, 26)}/>'
+            f'<path d="M 168 296 C 192 270 218 270 238 292 C 258 314 284 314 308 288" {_s(c, 26)}/>')
+
+
+def streamfc_ball(c):
+    """StreamFC: the football alone, drawn open: an outlined centre panel
+    sitting low, seams to five rim panels whose edges meet the ball's rim."""
+    import math
+
+    def pt(r, deg, cy=268):
+        return 256 + r * math.cos(math.radians(deg)), cy + r * math.sin(math.radians(deg))
+
+    pent = [pt(62, -90 + 72 * k) for k in range(5)]
+    centre = "M " + " L ".join(f"{x:.1f} {y:.1f}" for x, y in pent) + " Z"
+    seams = []
+    for k in range(5):
+        a = -90 + 72 * k
+        (x0, y0), (x1, y1) = pent[k], pt(120, a)
+        seams.append(f"M {x0:.1f} {y0:.1f} L {x1:.1f} {y1:.1f}")
+        for side in (-28, 28):
+            x2, y2 = pt(172, a + side, cy=262)
+            seams.append(f"M {x1:.1f} {y1:.1f} L {x2:.1f} {y2:.1f}")
+    return (f'<circle cx="256" cy="256" r="192" {_s(c, 32)}/>'
+            f'<path d="{centre}" {_s(c, 26)}/>'
+            f'<path d="{" ".join(seams)}" {_s(c, 21)}/>')
+
+
+def radiofrance_ring(c):
+    """Radio France: two quarter rings offset around one hole, the upper one
+    carrying the stem.
+
+    The launcher icon's ring is cut into an upper-right and a lower-left
+    piece that each run a little past the centre line, so they read as one
+    ring that has slipped; the stem rises from the upper piece's top.
+    """
+    return (f'<path d="M 256 76 L 256 182 A 118 118 0 0 1 370.0 330.5" {_s(c, 32)}/>'
+            f'<path d="M 142.0 269.5 A 118 118 0 0 0 286.5 414.0" {_s(c, 32)}/>')
+
+
+GLYPHS.update({"plezy_play_waves": plezy_play_waves, "streamfc_ball": streamfc_ball,
+               "radiofrance_ring": radiofrance_ring})

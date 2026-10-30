@@ -75,6 +75,7 @@
     <item drawable="mediabrowser" />
     <item drawable="pixee" />
     <item drawable="plex" />
+    <item drawable="plezy" />
     <item drawable="silo" />
     <category title="Square · On demand" />
     <item drawable="tenplay" />
@@ -233,6 +234,7 @@
     <item drawable="podcastaddict" />
     <item drawable="poweramp_eq" />
     <item drawable="music" />
+    <item drawable="radio_france" />
     <item drawable="radio_on_tv" />
     <item drawable="radioparadisewidget" />
     <item drawable="radio_net" />
@@ -278,12 +280,14 @@
     <item drawable="rally_tv" />
     <item drawable="americasvoicenews" />
     <item drawable="rugbypass_tv" />
+    <item drawable="sport_fm_tv" />
     <item drawable="sport_tv" />
     <item drawable="sportseverywhere" />
     <item drawable="sportsfire" />
     <item drawable="sportsnet" />
     <item drawable="sportzx" />
     <item drawable="sync_sports" />
+    <item drawable="streamfc" />
     <item drawable="rlcplus" />
     <item drawable="talksport" />
     <item drawable="tennis_channel" />

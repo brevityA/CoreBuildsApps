@@ -620,6 +620,7 @@
         <item>playstation</item>
         <item>plex</item>
         <item>plexamp</item>
+        <item>plezy</item>
         <item>pluto_tv</item>
         <item>pmx</item>
         <item>pocketcasts</item>
@@ -653,6 +654,7 @@
         <item>tcl_quick_panel</item>
         <item>quickbars_for_home_assistant</item>
         <item>quicksupport</item>
+        <item>radio_france</item>
         <item>radio_on_tv</item>
         <item>radioparadisewidget</item>
         <item>radio_net</item>
@@ -752,6 +754,7 @@
         <item>source_input</item>
         <item>sparkletv</item>
         <item>speedtesttv</item>
+        <item>sport_fm_tv</item>
         <item>sport_tv</item>
         <item>sportseverywhere</item>
         <item>sportsfire</item>
@@ -772,6 +775,7 @@
         <item>stream_fire</item>
         <item>streamlocator_vpn</item>
         <item>streamvault</item>
+        <item>streamfc</item>
         <item>streamflix</item>
         <item>streamflix_2</item>
         <item>devinterestdev</item>
@@ -1645,6 +1649,7 @@
         <item>PlayStation</item>
         <item>Plex</item>
         <item>Plexamp</item>
+        <item>Plezy</item>
         <item>Pluto TV</item>
         <item>PMX</item>
         <item>Pocket Casts</item>
@@ -1678,6 +1683,7 @@
         <item>Quick Panel</item>
         <item>Quickbars For Home Assistant</item>
         <item>QuickSupport</item>
+        <item>Radio France</item>
         <item>Radio On TV</item>
         <item>Radio Paradise</item>
         <item>radio.net</item>
@@ -1777,6 +1783,7 @@
         <item>Source</item>
         <item>Sparkle TV</item>
         <item>Speedtest TV</item>
+        <item>SPORT FM TV</item>
         <item>Sport TV</item>
         <item>Sports Everywhere</item>
         <item>Sportsfire</item>
@@ -1797,6 +1804,7 @@
         <item>Stream Fire</item>
         <item>Stream Locator</item>
         <item>Stream Vault</item>
+        <item>StreamFC</item>
         <item>Streamflix</item>
         <item>Streamflix</item>
         <item>StreamShow</item>
@@ -2670,6 +2678,7 @@
         <item>GAMING</item>
         <item>MEDIA</item>
         <item>APP</item>
+        <item>MEDIA</item>
         <item>APP</item>
         <item>TOOL</item>
         <item>MUSIC</item>
@@ -2703,6 +2712,7 @@
         <item>SYSTEM</item>
         <item>TOOL</item>
         <item>APP</item>
+        <item>MUSIC</item>
         <item>MUSIC</item>
         <item>MUSIC</item>
         <item>MUSIC</item>
@@ -2807,6 +2817,7 @@
         <item>SPORT</item>
         <item>SPORT</item>
         <item>SPORT</item>
+        <item>SPORT</item>
         <item>MUSIC</item>
         <item>APP</item>
         <item>STREAM</item>
@@ -2822,6 +2833,7 @@
         <item>APP</item>
         <item>VPN</item>
         <item>LIVE</item>
+        <item>SPORT</item>
         <item>STREAM</item>
         <item>APP</item>
         <item>STREAM</item>
@@ -3759,6 +3771,8 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3898,50 +3912,6 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>0</item>
@@ -3965,7 +3935,53 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
         <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -4101,5 +4117,5 @@
         <item>1</item>
         <item>1</item>
     </integer-array>
-    <integer name="icon_count">1022</integer>
+    <integer name="icon_count">1026</integer>
 </resources>

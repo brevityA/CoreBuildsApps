@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "2.5.2",
+    "version": "2.5.3",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 1022
+    "count": 1026
   },
   "icons": [
     {
@@ -97,10 +97,11 @@
       "color": "#E2BA6E",
       "glyph": "iptv_player",
       "components": [
-        "com.shadeed.S4kvip/com.shadeed.ibopro.MainActivity"
+        "com.shadeed.S4kvip/com.shadeed.ibopro.MainActivity",
+        "shadeed.Player8kVip/shadeed.player4k.pages.SplashActivity"
       ],
       "category": "PLAYER",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "mapping_source": "Projectivy Icon Pack 1.1.9 (com.shadeed.S4kvip/com.shadeed.ibopro.MainActivity); issue #405 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.5.1, Projectivy; the same developer's 8K Player VIP+ build, which shares this icon): shadeed.Player8kVip/shadeed.player4k.pages.SplashActivity is the reported launcher component; older mappings retained",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.shadeed.S4kvip (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #E2BA6E, replacing an accent that did not match it (2026-09-28)",
       "color_reviewed": "2026-09-28"
     },
@@ -126,10 +127,11 @@
       "components": [
         "au.net.abc.iview/.MainActivity",
         "au.net.abc.iview.tv/.MainActivity",
-        "au.net.abc.iview/au.net.abc.iview.ui.MainActivity"
+        "au.net.abc.iview/au.net.abc.iview.ui.MainActivity",
+        "au.net.abc.iview/au.net.abc.iview.ui.router.TvLauncherActivity"
       ],
       "category": "VOD",
-      "mapping_source": "Projectivy Icon Pack 1.1.9 (au.net.abc.iview/au.net.abc.iview.ui.MainActivity); au.net.abc.iview/.MainActivity pre-provenance, first committed in 9f588fdae (2026-08-17, v1.0.0); au.net.abc.iview.tv/.MainActivity pre-provenance, first committed in 9f588fdae (2026-08-17, v1.0.0)",
+      "mapping_source": "Projectivy Icon Pack 1.1.9 (au.net.abc.iview/au.net.abc.iview.ui.MainActivity); au.net.abc.iview/.MainActivity pre-provenance, first committed in 9f588fdae (2026-08-17, v1.0.0); au.net.abc.iview.tv/.MainActivity pre-provenance, first committed in 9f588fdae (2026-08-17, v1.0.0); issue #380 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, pack 2.5.1, Projectivy): au.net.abc.iview/au.net.abc.iview.ui.router.TvLauncherActivity is the reported launcher component; older mappings retained",
       "color_source": "sampled (current mark, teal) — logos.fandom.com/wiki/ABC_iview",
       "color_reviewed": "2026-09-08",
       "color_note": null,
@@ -3295,10 +3297,11 @@
       "color": "#1976D2",
       "glyph": "fdroid_robot",
       "components": [
-        "org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity"
+        "org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity",
+        "org.fdroid.fdroid/org.fdroid.MainActivity"
       ],
       "category": "APP",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "mapping_source": "Projectivy Icon Pack 1.1.9 (org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity); issue #377 (device-reported via the pack's Missing icons scanner on Z30 PRO, Android 11, pack 2.5.1, Projectivy): org.fdroid.fdroid/org.fdroid.MainActivity is the reported launcher component; older mappings retained",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null,
       "glyph_source": "brand-informed redraw of the Projectivy Icon Pack 1.1.9 artwork for org.fdroid.fdroid (github.com/SicMundus86/ProjectivyIconPack, used as reference only); Core monoline geometry, not a trace (2026-09-27)",
@@ -6715,10 +6718,11 @@
       "color": "#B453E6",
       "glyph": "moonfin_wave",
       "components": [
-        "org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity"
+        "org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity",
+        "org.moonfin.androidtv/org.moonfin.androidtv.MainActivity"
       ],
       "category": "APP",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "mapping_source": "Projectivy Icon Pack 1.1.9 (org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity); issue #383 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.5.1, Projectivy): org.moonfin.androidtv/org.moonfin.androidtv.MainActivity is the reported launcher component; older mappings retained",
       "color_source": "sampled from the official launcher icon (Google Play listing for org.moonfin.androidtv): gradient start #B453E6 (2026-09-26)",
       "color_reviewed": "2026-09-26",
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for org.moonfin.androidtv); Core monoline geometry, not a trace (2026-09-26)",
@@ -8291,10 +8295,11 @@
       "color": "#283990",
       "glyph": "pbs_mark",
       "components": [
-        "com.pbs.video/com.pbs.video.StartupActivity"
+        "com.pbs.video/com.pbs.video.StartupActivity",
+        "com.pbs.video/com.pbs.video.startup.StartupActivity"
       ],
       "category": "APP",
-      "mapping_source": "Projectivy Icon Pack 1.1.9, as drawable \"pbs\"",
+      "mapping_source": "Projectivy Icon Pack 1.1.9 (com.pbs.video/com.pbs.video.StartupActivity, as drawable \"pbs\"); issue #402 (device-reported via the pack's Missing icons scanner on BRAVIA 4K AE2, Android 14, pack 2.5.1, Projectivy): com.pbs.video/com.pbs.video.startup.StartupActivity is the reported launcher component; older mappings retained",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
     },
@@ -8694,10 +8699,11 @@
       "color": "#FF6D00",
       "glyph": "equalizer",
       "components": [
-        "com.maxmpz.equalizer/.StartupActivity"
+        "com.maxmpz.equalizer/.StartupActivity",
+        "com.maxmpz.equalizer/com.maxmpz.audioplayer.standard_adaptive"
       ],
       "category": "MUSIC",
-      "mapping_source": "pre-provenance; first committed in ecaa0d231 (2026-08-18, v1.3.0)",
+      "mapping_source": "pre-provenance; first committed in ecaa0d231 (2026-08-18, v1.3.0); issue #379 (device-reported via the pack's Missing icons scanner on onn 4K Pro Streaming Device, Android 14, pack 2.5.1, Monet): com.maxmpz.equalizer/com.maxmpz.audioplayer.standard_adaptive is the reported launcher component; older mappings retained",
       "color_source": "brand reference (pre-provenance, unverified)",
       "color_reviewed": null
     },
@@ -12078,10 +12084,11 @@
       "color": "#FF0033",
       "glyph": "iptv_player",
       "components": [
-        "com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.MainActivity"
+        "com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.MainActivity",
+        "com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.ChrobaltMainActivity"
       ],
       "category": "VIDEO",
-      "mapping_source": "Projectivy Icon Pack 1.1.9, as drawable \"youtube_tv\"",
+      "mapping_source": "Projectivy Icon Pack 1.1.9 (com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.MainActivity, as drawable \"youtube_tv\"); issue #403 (device-reported via the pack's Missing icons scanner on BRAVIA 4K AE2, Android 14, pack 2.5.1, Projectivy): com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.ChrobaltMainActivity is the reported launcher component; older mappings retained",
       "color_source": "YouTube Red #FF0033, the logo palette's primary red in Google's YouTube brand palette (partnermarketinghub.withgoogle.com, YouTube Kids visual identity), which replaced #FF0000 (2026-10-07)",
       "color_reviewed": "2026-10-07",
       "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.google.android.youtube.tvunplugged (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the YouTube TV logo for this package (2026-09-27)"
@@ -14218,10 +14225,11 @@
       "color": "#00E676",
       "glyph": "voltra_v",
       "components": [
-        "com.amhkor.voltratv/com.amhkor.voltratv.tv.SplashActivity"
+        "com.amhkor.voltratv/com.amhkor.voltratv.tv.SplashActivity",
+        "com.amhkor.voltratv/com.voltra.voltratv.tv.SplashActivity"
       ],
       "category": "STREAM",
-      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
+      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV); issue #378 (device-reported via the pack's Missing icons scanner on Z30 PRO, Android 11, pack 2.5.1; scan says Projectivy, launcher field says Monet): com.amhkor.voltratv/com.voltra.voltratv.tv.SplashActivity is the reported launcher component; older mappings retained",
       "color_source": "owner TV audit 2026-09-21: Voltra green V cue from stock icon",
       "color_reviewed": "2026-09-21",
       "glyph_source": "brand-informed redraw of the launcher tile in a supporter's device screenshot (Projectivy on a TCL Google TV, 2026-09-27): the V with a lightning-bolt arm; Core monoline geometry, not a trace (2026-09-27)"
@@ -14272,21 +14280,27 @@
     {
       "name": "TVLok",
       "drawable": "tvlok",
-      "color": "#00F5D4",
+      "color": "#17A5DF",
       "components": [
-        "com.tvlok.app/com.tvlok.app.MainActivity",
-        "com.tvlok.tv/com.tvlok.tv.MainActivity"
-      ],
-      "unverified": [
-        "com.tvlok.app/com.tvlok.app.MainActivity",
-        "com.tvlok.tv/com.tvlok.tv.MainActivity"
+        "com.tvlok.app/com.tvlok.app.ui.MainActivity",
+        "com.tvlok.app/com.tvlok.app.ui.TvLauncherActivity"
       ],
       "category": "STREAM",
-      "mapping_source": "pre-provenance; first committed in 37eef3613 (2026-09-23, v1.9.2). Both components are package guesses never seen on a device: #155 asked the requester for one and got no answer, and #352 (Monet, 2026-10-19) reports the pack's TVLok icon is not the right one on that TV; flagged unverified in 2.5.0",
-      "color_source": "tvlok.com brand (cyan/magenta play mark); snapped to shared teal slot #00F5D4; package candidates unconfirmed — issue #155 asked requester, 2026-09",
-      "color_reviewed": null,
-      "glyph": "broadcast_T",
-      "mark": "TL"
+      "mapping_source": "official TVLok 1.0.192 / code 1129 APK, linked by https://tvlok.com/download and statically inspected on 2026-10-26; tools/reference/tvlok/receipt.json pins APK SHA-256 a627b2a4f6a3e09cf17549f2407de3d04b226b44aab6b3375e53e7760ab47b63. Its LAUNCHER activity is com.tvlok.app.ui.MainActivity and its LEANBACK_LAUNCHER activity-alias is com.tvlok.app.ui.TvLauncherActivity. Replaces the two unverified package/activity guesses from #155 and #352; not installed or device-tested",
+      "color_source": "sampled representative cyan #17A5DF from the front tile in the official APK's launcher resource res/Jt.png; tools/reference/tvlok/visual-references.json records the exact sample on its hash-pinned downsized preview. The vendor gradient is simplified to two flat brand accents, not copied (2026-10-26)",
+      "color_reviewed": "2026-10-26",
+      "glyph": "tvlok_play_tiles",
+      "brand": "tvlok",
+      "style": "core_monoline",
+      "glyph_source": "original Core rounded-monoline interpretation of the official APK's offset, tilted violet rear tile and cyan play tile, replacing the generic TL broadcast shell; tools/reference/tvlok/receipt.json and preview/Jt.png retain the source evidence. No vendor pixels or paths used as shipped geometry (2026-10-26)",
+      "name_source": "application label TVLok from the official 1.0.192 APK (tools/reference/tvlok/receipt.json, 2026-10-26)",
+      "secondary": {
+        "color": "#8E46AE",
+        "parts": [
+          0
+        ],
+        "source": "sampled representative violet #8E46AE from the exposed rear tile in the official APK's res/Jt.png; sample coordinates and the downsized resource hash are recorded in tools/reference/tvlok/visual-references.json (2026-10-26)"
+      }
     },
     {
       "name": "MaxPlayer",
@@ -14945,6 +14959,83 @@
       "color_source": "sampled from the logo on eaglecast.tv (cropped-new-icon-512.png): the chevron's red #C12033, over a navy #202F64 star (2026-10-21)",
       "color_reviewed": "2026-10-21",
       "glyph_source": "original Core monoline mark: a five-point star crossed by a wide chevron - the wing laid over the star on the service's logo, redrawn as an outline, not traced (2026-10-21)"
+    },
+    {
+      "name": "SPORT FM TV",
+      "drawable": "sport_fm_tv",
+      "brand": "sport_fm_tv",
+      "color": "#CE1039",
+      "glyph": "sportfm_crest",
+      "style": "core_monoline",
+      "components": [
+        "gr.sportfmtv.app/com.yinzcam.connectedtv.MainActivity"
+      ],
+      "category": "SPORT",
+      "mapping_source": "issue #382 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.5.1, Projectivy, 2026-10-25): gr.sportfmtv.app/com.yinzcam.connectedtv.MainActivity is the reported launcher component. The installed package differs from its YinzCam activity namespace; no same-package activity is invented",
+      "color_source": "sampled from the red TV tag in the Google Play launcher-icon thumbnail mirrored by AppBrain for gr.sportfmtv.app: #CE1039; corroborated by the official sportfmtv.gr crest. Pixel sample and hashed references in tools/reference/sportfm-tv/visual-references.json (2026-10-26)",
+      "color_reviewed": "2026-10-26",
+      "glyph_source": "original Core rounded-monoline interpretation of the official crest, FM lettering and TV tag; compact Greek vendor lettering is not traced. References: https://www.sportfmtv.gr/ and https://play.google.com/store/apps/details?id=gr.sportfmtv.app; hashed visual references in tools/reference/sportfm-tv/ (2026-10-26)",
+      "name_source": "request #382 spells SPORT FM TV; the matching gr.sportfmtv.app Google Play listing spells SPORTFM TV (2026-10-26)",
+      "secondary": {
+        "color": "#E6EDF3",
+        "parts": [
+          1
+        ],
+        "source": "white lettering inside the red crest on the official sportfmtv.gr mark and gr.sportfmtv.app listing icon; our FM is redrawn in the common stroke letters and white renders as Core light ink (2026-10-26)"
+      }
+    },
+    {
+      "name": "Plezy",
+      "drawable": "plezy",
+      "color": "#EB7450",
+      "glyph": "plezy_play_waves",
+      "style": "core_monoline",
+      "components": [
+        "com.edde746.plezy/com.edde746.plezy.MainActivity"
+      ],
+      "category": "MEDIA",
+      "mapping_source": "issue #390 (device-reported via the pack's Missing icons scanner on BRAVIA 4K AE2, Android 14, pack 2.5.1): com.edde746.plezy/com.edde746.plezy.MainActivity is the reported launcher component",
+      "color_source": "sampled from the Google Play launcher icon for com.edde746.plezy: the play shape's upper body #EB7450. Pixel sample and hashed reference in tools/reference/plezy/visual-references.json (2026-10-29)",
+      "color_reviewed": "2026-10-29",
+      "glyph_source": "original Core rounded-monoline interpretation of the launcher icon's rounded play shape and double wave; not a trace. Reference: https://play.google.com/store/apps/details?id=com.edde746.plezy; hashed visual reference in tools/reference/plezy/ (2026-10-29)",
+      "name_source": "request #390 and the Google Play listing spell Plezy (2026-10-29)"
+    },
+    {
+      "name": "StreamFC",
+      "drawable": "streamfc",
+      "color": "#3396D3",
+      "glyph": "streamfc_ball",
+      "style": "core_monoline",
+      "components": [
+        "dev.mogoni.streamfc/dev.mogoni.streamfc.MainActivity"
+      ],
+      "category": "SPORT",
+      "mapping_source": "issue #404 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.5.1, Projectivy): dev.mogoni.streamfc/dev.mogoni.streamfc.MainActivity is the reported launcher component",
+      "color_source": "sampled from the Google Play launcher icon for dev.mogoni.streamfc: its blue field #3396D3, which the ball sits on. Pixel sample and hashed reference in tools/reference/streamfc/visual-references.json (2026-10-29)",
+      "color_reviewed": "2026-10-29",
+      "glyph_source": "original Core rounded-monoline football: an outlined centre panel set low with seams to the rim, drawn apart from Aparat Sport's filled-panel ball; not a trace. Reference: https://play.google.com/store/apps/details?id=dev.mogoni.streamfc; hashed visual reference in tools/reference/streamfc/ (2026-10-29)",
+      "name_source": "request #404 and the Google Play listing spell StreamFC (2026-10-29)"
+    },
+    {
+      "name": "Radio France",
+      "drawable": "radio_france",
+      "color": "#D000AB",
+      "glyph": "radiofrance_ring",
+      "style": "core_monoline",
+      "components": [
+        "com.radiofrance.radio.radiofrance.android/com.radiofrance.android.tv.TvMainActivity"
+      ],
+      "category": "MUSIC",
+      "mapping_source": "issue #391 (device-reported via the pack's Missing icons scanner on BRAVIA 4K AE2, Android 14, pack 2.5.1): com.radiofrance.radio.radiofrance.android/com.radiofrance.android.tv.TvMainActivity is the reported launcher component. The TV activity's namespace differs from the installed package; no same-package activity is invented",
+      "color_source": "sampled from the Google Play launcher icon for com.radiofrance.radio.radiofrance.android: the upper-left ring #D000AB, the gradient's top stop. Pixel samples and hashed reference in tools/reference/radio-france/visual-references.json (2026-10-29)",
+      "color_reviewed": "2026-10-29",
+      "gradient": [
+        "#D000AB",
+        "#FE0000"
+      ],
+      "gradient_source": "sampled from the same launcher icon: the ring runs from #D000AB at the upper left to #FE0000 at the lower end; its two ends (2026-10-29)",
+      "glyph_source": "original Core rounded-monoline interpretation of the launcher icon's two offset quarter rings and stem; not a trace. Reference: https://play.google.com/store/apps/details?id=com.radiofrance.radio.radiofrance.android; hashed visual reference in tools/reference/radio-france/ (2026-10-29)",
+      "name_source": "request #391 spells Radio France, as the Google Play listing does (2026-10-29)"
     }
   ],
   "artwork": {

@@ -431,7 +431,9 @@ class StoreTruth(unittest.TestCase):
         self.assertNotIn("PREMIUM", off["full_description"])
         self.assertIn("CORE PREMIUM", on["full_description"])
         self.assertIn("free for 24 hours", on["full_description"])
-        self.assertIn(f"Spectra adds {n['plus_walls']} more wallpapers", on["full_description"])
+        self.assertIn(f"Spectra and Aurum add {n['plus_walls']} more wallpapers",
+                      on["full_description"])
+        self.assertEqual(n["plus_walls"], 24)
         self.assertIn(f"all {n['walls']} stills", on["full_description"])
         self.assertLessEqual(len(on["full_description"]), listing.FULL_MAX)
         self.assertEqual(off["short_description"], on["short_description"])
@@ -571,6 +573,14 @@ class GlyphsPackListing(unittest.TestCase):
         for banned in ("best ", "#1", "number one", "top rated", "award winning",
                        "download now", "premium", "unlock"):
             self.assertNotIn(banned, text, f"metadata policy: {banned!r}")
+
+    def test_copy_does_not_claim_every_glyph_is_single_colour(self):
+        catalog = json.loads((ROOT / "tools/catalog.json").read_text(encoding="utf-8"))
+        self.assertTrue(any(i.get("secondary") or i.get("gradient")
+                            for i in catalog["icons"]), "the catalog carries multicolour marks")
+        text = GLYPHS_SPEC["copy"]["full_description"].lower()
+        self.assertIn("colour accents", text)
+        self.assertNotRegex(text, r"\b(?:single[- ]colou?r|monochrome) glyphs\b")
 
     def test_title_is_the_label_launchers_list(self):
         # Someone told "choose Core Builds Glyphs Pack" must find that string

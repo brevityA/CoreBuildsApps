@@ -201,17 +201,38 @@ class ThumbnailTests(unittest.TestCase):
 
 
 class PlusCollectionTests(unittest.TestCase):
-    """Series 15 (Spectra), the Core Builds Plus walls: indexed apart from the
-    main collection and bundled only into the Google Play build."""
+    """Series 15 (Spectra) and 16 (Aurum), the Core Premium walls (Plus in
+    code): indexed apart from the main collection and bundled only into the
+    Google Play build."""
+
+    # Each Premium series and the tool that draws it, in manifest order.
+    GENERATORS = {
+        "series-15-spectra": "tools/build_plus_wallpapers.py",
+        "series-16-aurum": "tools/build_aurum_wallpapers.py",
+    }
 
     def setUp(self):
         self.manifest = json.loads(_read(PLUS_MANIFEST))
         self.walls = self.manifest["wallpapers"]
 
-    def test_twelve_walls_counted(self):
+    def test_two_series_of_twelve_counted(self):
         self.assertEqual(self.manifest["count"], len(self.walls))
-        self.assertEqual(len(self.walls), 12)
-        self.assertEqual({w["series"] for w in self.walls}, {"series-15-spectra"})
+        self.assertEqual(len(self.walls), 24)
+        series = [w["series"] for w in self.walls]
+        # One series after the other, so the Premium chip shows them as sets.
+        self.assertEqual(series, sorted(series, key=list(self.GENERATORS).index))
+        for name in self.GENERATORS:
+            self.assertEqual(series.count(name), 12, name)
+
+    def test_the_copy_names_the_count(self):
+        # The purchase card and Settings say how many walls Premium adds.
+        n = len(self.walls)
+        main = _read(ROOT / "app/src/main/res/values/strings.xml")
+        play = _read(ROOT / "app/src/play/res/values/strings.xml")
+        self.assertIn(f"the {n} Spectra and Aurum wallpapers", main)
+        self.assertIn(f"Spectra and Aurum, {n} wallpapers, are yours", play)
+        self.assertIn("<string name=\"support_title\">Core Premium</string>", play)
+        self.assertNotIn("Core Builds Plus</string>", play)
 
     def test_numbers_do_not_collide_with_the_main_collection(self):
         main = json.loads(_read(MANIFEST))["wallpapers"]
@@ -239,9 +260,10 @@ class PlusCollectionTests(unittest.TestCase):
         self.assertFalse((ROOT / "app/src/main/assets/manifest/plus-wallpapers.json").exists())
 
     def test_the_series_has_its_generator(self):
-        gen = _read(ROOT / "tools/build_plus_wallpapers.py")
         for w in self.walls:
+            gen = _read(ROOT / self.GENERATORS[w["series"]])
             self.assertIn(w["url"].rsplit("/", 1)[-1].removesuffix(".png").split("-", 2)[2], gen)
+            self.assertIn(w["series"], gen)
 
 
 def _cache_keys():

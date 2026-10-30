@@ -497,6 +497,12 @@ class PlusExtras(unittest.TestCase):
         self.assertTrue((APP / "src/play/assets/manifest/plus-wallpapers.json").exists())
         self.assertFalse((APP / "src/main/assets/manifest/plus-wallpapers.json").exists())
         self.assertFalse(list((APP / "src/main/assets").rglob("*spectra*")))
+        self.assertFalse(list((APP / "src/main/assets").rglob("*aurum*")))
+        # The thumbs are named by number, not series, so check them by name.
+        plus = json.loads(read(APP / "src/play/assets/manifest/plus-wallpapers.json"))
+        shipped = {p.name for p in (APP / "src/main/assets").rglob("*.jpg")}
+        for w in plus["wallpapers"]:
+            self.assertNotIn(w["thumb"].rsplit("/", 1)[-1], shipped, w["name"])
 
 
 class PlusTrial(unittest.TestCase):

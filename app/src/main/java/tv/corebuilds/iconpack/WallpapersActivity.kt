@@ -32,8 +32,9 @@ import androidx.recyclerview.widget.RecyclerView
  * video pickers find them - so Live, Export and Select all save every loop
  * in one go instead of one preview at a time.
  *
- * The Google Play build adds the Core Premium walls (series 15, Spectra; Plus
- * in code) once Premium is on sale or owned: a Premium chip after All, a
+ * The Google Play build adds the Core Premium walls (series 15 Spectra and 16
+ * Aurum; Plus in code) once Premium is on sale or owned: one Premium chip
+ * after All for both, a
  * PREMIUM badge, and without Premium or its trial a press opens the Premium
  * card instead of the preview. An export leaves them out unless Premium is
  * bought. They are not part of New, which stays the main collection's

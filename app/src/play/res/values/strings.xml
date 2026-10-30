@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Play build wording: what the Play build actually sends, where its
-     updates come from, and what the Plus card sells. Play's Device and Network
-     Abuse policy rules out the GitHub update row, so About's row opens this
-     app's Play listing; its Payments policy rules out the Ko-fi and Sponsors
-     codes, so SupportActivity is the Core Builds Plus card over Play Billing,
-     reached from Settings > Core Builds Plus and never from a Support door.
+     updates come from, and what the Core Premium card sells (Plus in code).
+     Play's Device and Network Abuse policy rules out the GitHub update row,
+     so About's row opens this app's Play listing; its Payments policy rules
+     out the Ko-fi and Sponsors codes, so SupportActivity is the Core Premium
+     card over Play Billing, reached from Settings > Core Premium and never
+     from a Support door.
 
      This overlay must keep the main list's shape, item for item: Play replaces
      the update item and the wallpaper item, but the missing-icon report on
@@ -16,10 +17,10 @@
     <string name="about_update_label">Updates from Google Play</string>
     <string name="about_update_sub">Google Play updates this app. Press to open its listing.</string>
 
-    <string name="support_label">Plus</string>
-    <string name="support_kicker">PLUS</string>
-    <string name="support_title">Core Builds Plus</string>
-    <string name="support_body">Plus is a one-time purchase through Google Play. It adds six things: your icon requests are filed as priority and drawn first, one app or every missing app at once; My requests shows how far each one has got; the live wallpaper can rotate through your loops; it can play a second loop during night hours; with this pack as Projectivy\'s wallpaper source, you choose what Projectivy rotates (favourites, one series or Spectra) by day and by night; and Spectra, 12 wallpapers, is yours.</string>
-    <string name="support_mode">Optional. Every icon, the main wallpaper collection (in Projectivy\'s rotation too) and every screen ship to everyone; Plus adds the six things above.</string>
+    <string name="support_label">Premium</string>
+    <string name="support_kicker">PREMIUM</string>
+    <string name="support_title">Core Premium</string>
+    <string name="support_body">Core Premium is a one-time purchase through Google Play. It adds six things: your icon requests are filed as priority and drawn first, one app or every missing app at once; My requests shows how far each one has got; the live wallpaper can rotate through your loops; it can play a second loop during night hours; with this pack as Projectivy\'s wallpaper source, you choose what Projectivy rotates (favourites, one series, Spectra or Aurum) by day and by night; and Spectra and Aurum, 24 wallpapers, are yours.</string>
+    <string name="support_mode">Optional. Every icon, the main wallpaper collection (in Projectivy\'s rotation too) and every screen ship to everyone; Premium adds the six things above.</string>
     <string name="support_footer">Price and payment come from Google Play. Core Builds never sees your card or your Google account.</string>
 </resources>
