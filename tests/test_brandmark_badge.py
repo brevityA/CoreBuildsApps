@@ -47,8 +47,12 @@ def arrays(path: Path) -> tuple[list[str], list[int]]:
 
 
 def catalog_flags() -> dict[str, bool]:
-    icons = json.loads((ROOT / "tools/catalog.json").read_text())["icons"]
-    return {i["drawable"]: not is_monogram(i["glyph"]) for i in icons}
+    data = json.loads((ROOT / "tools/catalog.json").read_text())
+    flags = {i["drawable"]: not is_monogram(i["glyph"]) for i in data["icons"]}
+    # Alternates are grid tiles too (tools/alternates.py): supplied brand art,
+    # so flagged as drawn.
+    flags.update({d: True for d in data.get("alternates") or {}})
+    return flags
 
 
 def test_monogram_registry_is_not_empty():
