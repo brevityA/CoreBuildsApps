@@ -9,20 +9,25 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 ## [1.10.0] — 2026-10-30
 
 **Nothing below was checked on a TV, a soundbar or a speaker pair.** The new maths (the
-centre restore, the bass guard, the Surround sound decisions and the optical check) is
+speech lift, the bass guard, the Surround sound decisions and the optical check) is
 covered by the Android-free Kotlin harness (572 tests, 10 of them new, green), and lint
 passes. Nobody has played a 5.1 film through it, or pressed the new switch with a remote.
 
 - **Stereo speakers, for 5.1 on two speakers.** A new switch at the top of Extra effects,
   off by default, for a 2.0 soundbar or a speaker pair. Folding 5.1 to stereo (Android's
   `ChannelMix`: fronts at 1.0, the centre at 0.707 into both sides, each surround at 0.707,
-  the LFE at 0.5) leaves the centre channel, where the dialogue is, 3 dB under the effects it
-  used to sit above, and pours in a bass channel small speakers cannot play. The switch
-  answers both:
-  - **Centre restore:** +3 dB across 2.2–4.5 kHz, Dialogue boost's curve at the fold's
-    deficit. Dialogue boost's +2 dB is not added on top, and a Dialogue or House target's
-    own +2 dB is counted, so those get +1 dB. Android gives apps no mid/side stage, so music
-    in that band rises with the speech; the note says so.
+  the LFE at 0.5) turns the centre channel, where the dialogue is, into a phantom image
+  between two spaced speakers, and pours in a bass channel small speakers cannot play. The
+  switch answers both:
+  - **Speech lift:** +3 dB across 2.2–4.5 kHz, on Dialogue boost's curve. **It is a presence
+    lift, not the fold's deficit put back.** ChannelMix mixes the centre into each channel at
+    0.707 — 3.01 dB below a front — but the centre is in *both* channels, so a listener between
+    two spaced speakers sums it coherently at +3.01 dB: the same level as a front-panned effect.
+    The fold costs the centre its image (a comb-filtered phantom, which collapses off-axis) and
+    spends small drivers' headroom where intelligibility lives, and that is what the lift is
+    for. Dialogue boost's +2 dB is not added on top, and a Dialogue or House target's own +2 dB
+    is counted, so those get +1 dB. Android gives apps no mid/side stage, so music in that band
+    rises with the speech; the note says so.
   - **Bass guard:** −6 dB below half an octave under the speaker's measured roll-off, nothing
     from the roll-off up. Content the speaker cannot play only spends headroom, and the
     protection limiter answered every explosion by pulling the dialogue down with it. A
@@ -40,6 +45,13 @@ passes. Nobody has played a 5.1 film through it, or pressed the new switch with 
   next visit and says how to restore it by hand. On Android 11, which has
   no public switch, the panel gives the TV menu path and
   `adb shell settings put global encoded_surround_output 1`.
+- **The restore is now one tested rule, not two lines in an activity.** Switching Stereo
+  speakers off puts the Surround sound mode back only if the setting is still Never, and
+  forgets the saved mode only once Android has accepted the write. That rule used to live
+  inside `EnhancedAudioSettingsActivity`, where the regression below could not be tested;
+  `SurroundOutput.restore` takes the write as a function and returns what is still owed, so
+  a refused write (permission withdrawn) keeps the saved mode and retries on the next visit,
+  and that path is now pinned by a test that fails without it.
 - **The bitstream warning now covers optical and Android 11.** It used to check HDMI on
   Android 12+ only. Optical (S/PDIF) carries Dolby and DTS too, and Android 11 keeps the
   Surround sound mode in a global setting Core EQ can read, so a soundbar on optical and every Android 11 box

@@ -53,17 +53,54 @@ class SurroundOutputTest {
         assertEquals(OnAction.NOTHING, SurroundOutput.onAction(SurroundOutput.NEVER, 30, false, true))
     }
 
+    /** A writer that records what it was asked to write and whether it pretends to succeed. */
+    private class Writer(private val succeeds: Boolean) {
+        val written = mutableListOf<Int>()
+        fun write(mode: Int): Boolean {
+            written += mode
+            return succeeds
+        }
+    }
+
     @Test
     fun `switching off puts back the replaced mode, never a later choice`() {
-        assertEquals(SurroundOutput.AUTO, SurroundOutput.restoreTo(SurroundOutput.AUTO, SurroundOutput.NEVER))
-        assertEquals(SurroundOutput.MANUAL, SurroundOutput.restoreTo(SurroundOutput.MANUAL, SurroundOutput.NEVER))
+        val writer = Writer(succeeds = true)
+        // Nothing is left owed once the write went through, and the mode is what was written.
+        assertNull(SurroundOutput.restore(SurroundOutput.AUTO, SurroundOutput.NEVER, writer::write))
+        assertNull(SurroundOutput.restore(SurroundOutput.MANUAL, SurroundOutput.NEVER, writer::write))
+        assertEquals(listOf(SurroundOutput.AUTO, SurroundOutput.MANUAL), writer.written)
         // Somebody set it to Always since: that stays.
-        assertNull(SurroundOutput.restoreTo(SurroundOutput.AUTO, SurroundOutput.ALWAYS))
+        assertNull(SurroundOutput.restore(SurroundOutput.AUTO, SurroundOutput.ALWAYS, writer::write))
         // Core EQ changed nothing, or the setting cannot be read.
-        assertNull(SurroundOutput.restoreTo(null, SurroundOutput.NEVER))
-        assertNull(SurroundOutput.restoreTo(SurroundOutput.AUTO, null))
-        assertNull(SurroundOutput.restoreTo(SurroundOutput.NEVER, SurroundOutput.NEVER))
-        assertNull(SurroundOutput.restoreTo(7, SurroundOutput.NEVER))
+        assertNull(SurroundOutput.restore(null, SurroundOutput.NEVER, writer::write))
+        assertNull(SurroundOutput.restore(SurroundOutput.AUTO, null, writer::write))
+        assertNull(SurroundOutput.restore(SurroundOutput.NEVER, SurroundOutput.NEVER, writer::write))
+        assertNull(SurroundOutput.restore(7, SurroundOutput.NEVER, writer::write))
+        // Nothing above was written: no mode was restored, so none was passed to the writer.
+        assertEquals(2, writer.written.size)
+    }
+
+    /**
+     * The regression CodeRabbit found: a refused write used to be treated as a restore, so the
+     * saved mode was forgotten and the user's own setting was lost with it.
+     */
+    @Test
+    fun `a write Android refuses keeps the saved mode so the next visit retries`() {
+        val refused = Writer(succeeds = false)
+        assertEquals(
+            "the saved mode must stay owed",
+            SurroundOutput.AUTO,
+            SurroundOutput.restore(SurroundOutput.AUTO, SurroundOutput.NEVER, refused::write)
+        )
+        assertEquals("and it must have been attempted", listOf(SurroundOutput.AUTO), refused.written)
+
+        // Once the permission is back, the same saved mode goes through and is forgotten.
+        val allowed = Writer(succeeds = true)
+        assertNull(SurroundOutput.restore(SurroundOutput.AUTO, SurroundOutput.NEVER, allowed::write))
+        // A mode that is no longer Core EQ's to restore is dropped without a write at all.
+        val untouched = Writer(succeeds = true)
+        assertNull(SurroundOutput.restore(SurroundOutput.AUTO, SurroundOutput.ALWAYS, untouched::write))
+        assertTrue("nothing should be written", untouched.written.isEmpty())
     }
 
     @Test

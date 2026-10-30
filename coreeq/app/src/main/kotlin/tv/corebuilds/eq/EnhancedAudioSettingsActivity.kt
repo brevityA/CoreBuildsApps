@@ -203,8 +203,12 @@ class EnhancedAudioSettingsActivity : TvActivity() {
      * kept, retried on the next visit, and the panel says how to do it by hand.
      */
     private fun restoreSurround() {
-        val restore = SurroundOutput.restoreTo(prefs.surroundRestoreMode, SurroundOutput.read(this))
-        if (restore == null || SurroundOutput.write(this, restore)) prefs.surroundRestoreMode = null
+        // The saved mode comes back only once Android has accepted it (SurroundOutput.restore);
+        // until then it stays, so a withdrawn permission cannot lose the user's own setting.
+        prefs.surroundRestoreMode = SurroundOutput.restore(
+            prefs.surroundRestoreMode,
+            SurroundOutput.read(this)
+        ) { mode -> SurroundOutput.write(this, mode) }
     }
 
     private fun setSurroundNever() {
