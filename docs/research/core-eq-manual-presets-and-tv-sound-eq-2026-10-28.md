@@ -19,7 +19,7 @@ A preset here is a **tone**, not a correction. It says "this is a shape"; it doe
 room is wrong at 80 Hz", which only a measurement can say. Every preset must therefore be
 modest, and every description says what it does *and* what it does not do.
 
-All twelve live in `ManualEq.BUILT_IN_PRESETS` (ten bands, 40 Hz–8 kHz, ±6 dB, Q 1.0), Flat
+All fourteen live in `ManualEq.BUILT_IN_PRESETS` (ten bands, 40 Hz–8 kHz, ±6 dB, Q 1.0), Flat
 first, and each carries a `description` shown on the second line of the picker:
 
 | id | shape (band: dB) | what it is for |
@@ -36,6 +36,8 @@ first, and each carries a `description` shown on the second line of the picker:
 | `small-speaker-body` | 40 −3, 63 −2.5, 125 +2, 250 +1.5, 500 +0.5 | a driver that cannot do 40 Hz: cut what it fakes, lift what it can do |
 | `remove-boom` | 125 −3, 250 −2.5, 500 −1, 1k +0.5 | one-note bass around 150 Hz |
 | `low-volume-loudness` | 40 +1, 63 +2, 125 +1, 4k +1, 8k +1.5 | the loudness curve, roughly, at low volume |
+| `smooth-mids` | 2k −1, 4k −2 | harsh or nasal vocals, without cutting the air at 6–8 kHz |
+| `air` | 6.3k +1, 8k +1.5 | breath and sparkle on dull recordings, without touching bass or presence |
 
 Measured with the same RBJ peaking arithmetic the app uses (`Peaking.peakingMagnitudeDb`,
 48 kHz, 4001-point log sweep 40 Hz–8 kHz), highest and lowest point of each combined response:

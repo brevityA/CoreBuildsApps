@@ -198,6 +198,27 @@ object ManualEq {
                 "so this lifts them. Sounds right quietly and too bright loud — that is the " +
                 "point, so use it only while the volume is down."
         )
+
+    ManualEqPreset(
+        "smooth-mids",
+        "Smooth mids · reduce harshness",
+        listOf(
+            PeakingFilter(2_000.0, 0.9, -1.0),
+            PeakingFilter(4_000.0, 0.9, -2.0)
+        ),
+        "Takes the edge off nasal or harsh vocals around 2–4 kHz while leaving the air at " +
+            "6–8 kHz alone. Distinct from Tame sibilance, which starts higher at 4 kHz."
+    ),
+    ManualEqPreset(
+        "air",
+        "Air · presence",
+        listOf(
+            PeakingFilter(6_300.0, 0.9, 1.0),
+            PeakingFilter(8_000.0, 0.9, 1.5)
+        ),
+        "A gentle lift above 6 kHz for breath and sparkle on dull recordings. It does not " +
+            "touch the bass or the presence band, so it will not make dialogue harsh."
+    ),
     )
 
     /** The gain shown by a fixed control, or 0 dB if it has not been changed. */
