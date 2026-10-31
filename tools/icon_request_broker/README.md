@@ -306,13 +306,20 @@ deploy on any overlap.
      -d '{"app_name":"Deluart Test App","component":"com.deluart.test/.MainActivity","device":"Scanned on curl, Android 14, pack dev"}'
    # -> {"ok":true,"issue":N,"duplicate":false}  (then close that issue)
    ```
-6. **Bake the URL into the pack** (this is the only app-side step):
-   ```bash
-   cd ../.. && python tools/build_issue_prefills.py \
-     --endpoint https://<name>.<subdomain>.workers.dev/
-   ```
-   Release the pack; auditor presses file directly from then on. Until that
+6. **Bake the URL into the pack** (this is the only app-side step). Only
+   the Google Play build carries it, from the first Play upload built after
+   this change (versionCode 62 on main after 2.5.4; if 62 is already on a
+   Play track, raise the version code first): put the URL in
+   `app/src/play/res/values/request_service.xml` and leave
+   `audit_request_endpoint` empty in the generated
+   `app/src/main/res/values/issue_prefill.xml`, so the GitHub / Downloader
+   build keeps the QR panel (`docs/PLAY-CONSOLE.md` §8 step 6). Then run
+   `python tools/build_play_listing.py` for the store answers.
+   Release the pack; Play presses file directly from then on. Until that
    value is baked, presses silently keep the QR fallback — nothing breaks.
+   (`python tools/build_issue_prefills.py --endpoint <url>` writes the main
+   value instead, which turns requests on in every build. Don't run it unless
+   the GitHub / Downloader build should send them too.)
 
 ## Turn it off
 

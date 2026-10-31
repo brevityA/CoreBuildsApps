@@ -153,10 +153,26 @@ def broker_enabled() -> bool:
     press opens a prefilled GitHub form and the app itself sends nothing.
     Reading it here means baking the URL in fails --check until the listing
     and its answers are regenerated, instead of shipping last release's form.
+
+    The listing describes the Play build, so this reads what that build
+    resolves: the Play-only override (app/src/play/res/values/
+    request_service.xml) when it has one, else main's generated value.
     """
-    xml = (RES / "values/issue_prefill.xml").read_text(encoding="utf-8")
-    found = re.search(r'<string name="audit_request_endpoint">([^<]*)</string>', xml)
-    return bool(found and found.group(1).strip())
+    return bool(play_endpoint())
+
+
+PLAY_ENDPOINT_RES = ROOT / "app/src/play/res/values/request_service.xml"
+
+
+def play_endpoint() -> str:
+    """The request service URL the Play build resolves, or "" for none."""
+    pattern = r'<string name="audit_request_endpoint"[^>]*>([^<]*)</string>'
+    for path in (PLAY_ENDPOINT_RES, RES / "values/issue_prefill.xml"):
+        if path.is_file():
+            found = re.search(pattern, path.read_text(encoding="utf-8"))
+            if found:
+                return found.group(1).strip()
+    return ""
 
 
 # One-way latch for the store answers. Play keeps one Data safety form and one
@@ -166,7 +182,7 @@ def broker_enabled() -> bool:
 # this True in the change that bakes the broker URL in (--check refuses a
 # broker-enabled tree without it), and set it back only once every track has
 # moved past the last broker build.
-BROKER_SHIPPED = False
+BROKER_SHIPPED = True
 
 
 def answers_cover_broker() -> bool:
@@ -241,11 +257,12 @@ COPY = {
 PLUS_COPY = (
     "CORE PREMIUM\n"
     "Optional, one purchase through Google Play, no subscription: your icon "
-    "requests are filed as priority, one app or every missing app at once, "
+    "requests are filed as priority, one app or up to 10 missing apps at once, "
     "My requests shows how far each one has got, the live wallpaper can rotate through your loops and play a second "
     "one at night, you choose what Projectivy rotates from this pack "
     "(favourites, one series, a night set), and Spectra and Aurum add "
-    "{plus_walls} more wallpapers. Try it free for 24 hours first, once per TV. Every "
+    "{plus_walls} more wallpapers. Try it free for 24 hours first, once per TV; "
+    "the trial has everything but priority requests and Request all. Every "
     "icon, all {walls} stills, every loop and every screen ship to everyone "
     "either way.\n"
     "\n"
@@ -323,7 +340,8 @@ BROKER_COLLECTED = [
         "purposes": ["App functionality"],
         "what": "Core Premium owners only: the Google Play purchase token, checked with "
                 "Google and never stored; a SHA-256 of it is cached for at most "
-                "six hours",
+                "six hours, and after Request all it keys that day's batch count "
+                "for at most 24 hours and 10 minutes",
     },
 ]
 
