@@ -6,6 +6,24 @@ Core EQ (`tv.corebuilds.eq`) keeps its own changelog. The repository-root
 must never land there. Releases are `coreeq-v<version>` tags (see
 `PUBLISHING.md`).
 
+## [1.10.1] — 2026-10-31
+
+**Nothing below was checked on a TV, a soundbar or a speaker pair.** The route query
+is the one the output label has used since 1.8, the rule around it is in the
+Android-free Kotlin harness (green), and no device has been watched with headphones
+playing and an optical output plugged in at the same time.
+
+- **Bitstream capability is judged by the output in use, not every port plugged in.**
+  `OutputRoute` counted any connected optical output (Android's `TYPE_LINE_DIGITAL`)
+  as making a wired route able to carry Dolby or DTS undecoded. With wired headphones
+  or an analogue line-out actually playing — an optical port stays connected beside
+  them — switching Stereo speakers on still set the TV's Surround sound to Never, for
+  an output that only ever takes PCM. On Android 13 (API 33) and later Core EQ now
+  asks which devices handle media (`getAudioDevicesForAttributes`, the same query
+  behind the output label) and counts only those; where Android names no route, and
+  on Android 11–12, the connected-output estimate stands exactly as in 1.10.0.
+  This is the decision 1.10.0 deferred as finding 2 of the review, tracked in #413.
+
 ## [1.10.0] — 2026-10-30
 
 **Nothing below was checked on a TV, a soundbar or a speaker pair.** The new maths (the
