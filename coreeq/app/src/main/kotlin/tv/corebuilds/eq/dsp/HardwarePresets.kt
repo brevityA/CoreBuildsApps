@@ -484,7 +484,7 @@ object HardwarePresets {
         brand = "Sonos",
         name = "Sonos Beam Gen 2",
         kind = Kind.SOUNDBAR,
-        nameMatch = Regex("""(?<![a-z0-9])(?:sonos[\s_-]*)?beam[\s_-]*(?:gen[\s_-]*2|g2)(?![a-z0-9])""", RegexOption.IGNORE_CASE),
+        nameMatch = Regex("""(?<![a-z0-9])(?:sonos[\s_-]*)?beam[\s_-]*(?:\(?gen[\s_-]*2\)?|g2)(?![a-z0-9])""", RegexOption.IGNORE_CASE),
         // The original Beam is a different product; its name lacks the generation.
         nameExclude = null,
         presets = listOf(
