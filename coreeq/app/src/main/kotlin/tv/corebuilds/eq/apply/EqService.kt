@@ -1184,7 +1184,7 @@ class EqService : Service() {
     private fun limiter(): LimiterSettings = enhancedPrefs?.limiter() ?: LimiterSettings()
 
     /**
-     * Dialogue boost and Low-volume bass for this moment. The lift is measured
+     * Dialogue boost, Low-volume bass and Stereo speakers for this moment. The lift is measured
      * from the current output's own reference volume, recorded the first time
      * that output reports one ([LowVolumeBass]); a volume Android does not
      * report (fixed-volume outputs) adds nothing.
@@ -1192,7 +1192,11 @@ class EqService : Service() {
     private fun toneLayers(): ToneLayers {
         val prefs = enhancedPrefs ?: return ToneLayers.NONE
         val bass = if (prefs.lowVolumeBassEnabled) LowVolumeBass.read(this, prefs).liftDb else 0.0
-        return ToneLayers(dialogue = prefs.dialogueBoostEnabled, lowVolumeBassDb = bass)
+        return ToneLayers(
+            dialogue = prefs.dialogueBoostEnabled,
+            lowVolumeBassDb = bass,
+            stereoDownmix = prefs.stereoSpeakersEnabled
+        )
     }
 
     override fun onDestroy() {

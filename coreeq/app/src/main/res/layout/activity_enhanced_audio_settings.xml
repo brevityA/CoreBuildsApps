@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Extra effects (1.2.1; dialogue and low-volume bass since 1.3.0). Five
-     switches, all off by default, applied the moment they change. Since
-     1.3.0 the switches are one list on the left and the right panel explains
-     whichever has focus, the Android TV settings pattern, so the screen fits
-     960 x 540dp without scrolling. The ScrollView only matters when the TV's
-     system text size is turned up. -->
+<!-- Extra effects (1.2.1; dialogue and low-volume bass since 1.3.0; stereo
+     speakers since 1.10.0). Six switches, all off by default, applied the
+     moment they change. Since 1.3.0 the switches are one list on the left and
+     the right panel explains whichever has focus, the Android TV settings
+     pattern. At 960 x 540dp the sixth row leaves Night mode about 24dp below
+     the fold, and focusing it scrolls it into view; the ScrollView also
+     covers a TV whose system text size is turned up. -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:requiresFadingEdge="vertical"
@@ -67,6 +68,11 @@
                 <TextView
                     style="@style/CoreEQ.MenuHeading"
                     android:text="@string/extras_group_tone" />
+
+                <Button
+                    android:id="@+id/btn_extras_stereo"
+                    style="@style/CoreEQ.SwitchRow"
+                    tools:text="Stereo speakers: Off" />
 
                 <Button
                     android:id="@+id/btn_extras_dialogue"

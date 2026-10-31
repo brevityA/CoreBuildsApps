@@ -200,7 +200,7 @@ object SetupGuide {
                     id = "passthrough",
                     title = "Check the TV's surround setting",
                     state = State.INFO,
-                    detail = "HDMI may carry Dolby or DTS as a bitstream, and Core EQ cannot process that. On the TV, set Surround sound (or Audio format) to PCM. Core EQ cannot see the current stream format, so this is a check, not a missing step.",
+                    detail = "HDMI or optical may carry Dolby or DTS as a bitstream, and Core EQ cannot process that. On the TV, set Surround sound (or Audio format) to Never or PCM. Core EQ cannot see the current stream format, so this is a check, not a missing step.",
                     command = null
                 )
             )

@@ -27,9 +27,15 @@ import kotlin.math.tanh
 data class ToneLayers(
     val dialogue: Boolean = false,
     /** Low-volume bass shelf height in dB, 0..[MAX_LOW_VOLUME_BASS_DB]. */
-    val lowVolumeBassDb: Double = 0.0
+    val lowVolumeBassDb: Double = 0.0,
+    /**
+     * Stereo speakers (1.10.0): 5.1 folded to two channels. Lifts speech by
+     * [CENTRE_RESTORE_DB] and cuts what the speaker cannot play by
+     * [BASS_GUARD_DB]. See [presenceGainDb] and [bassGuardDb].
+     */
+    val stereoDownmix: Boolean = false
 ) {
-    val isEmpty: Boolean get() = !dialogue && lowVolumeBassDb <= 0.0
+    val isEmpty: Boolean get() = !dialogue && lowVolumeBassDb <= 0.0 && !stereoDownmix
 
     /**
      * Dialogue and House targets already carry the same +2 dB presence box
@@ -39,19 +45,45 @@ data class ToneLayers(
     fun dialogueApplies(profile: Profile): Boolean =
         dialogue && (profile.manualOnly || profile.target !in PRESENCE_TARGETS)
 
+    /**
+     * The speech-band lift this profile gets, in dB: the larger of Dialogue
+     * boost's +2 and Stereo speakers' +3, less the presence a Dialogue or House
+     * target already carries. The two never stack: both answer the same
+     * complaint, quiet speech.
+     */
+    fun presenceGainDb(profile: Profile): Double {
+        val wanted = max(
+            if (dialogue) DIALOGUE_DB else 0.0,
+            if (stereoDownmix) CENTRE_RESTORE_DB else 0.0
+        )
+        val carried = if (!profile.manualOnly && profile.target in PRESENCE_TARGETS) DIALOGUE_DB else 0.0
+        return max(0.0, wanted - carried)
+    }
+
     /** The layers' combined response at [hz], in dB, for [profile]. */
     fun responseDb(profile: Profile, hz: Double): Double {
         var db = 0.0
-        if (dialogueApplies(profile)) db += dialogueDb(hz)
+        val presence = presenceGainDb(profile)
+        if (presence > 0.0) db += Targets.presenceDb(doubleArrayOf(hz), presence)[0]
         if (lowVolumeBassDb > 0.0) db += lowVolumeBassDb * lowShelf(hz) * rolloffFade(hz, profile.rolloffHz)
+        // A manual profile measured nothing: its rolloffHz is Profile's 40 Hz default, not a speaker's.
+        if (stereoDownmix) db += bassGuardDb(hz, if (profile.manualOnly) 0.0 else profile.rolloffHz)
         return db
     }
 
     /** Status words for the service line, e.g. "dialogue +2 dB + low-volume bass +1.5 dB". */
-    fun label(profile: Profile): String = listOfNotNull(
-        "dialogue +2 dB".takeIf { dialogueApplies(profile) },
-        "low-volume bass +%.1f dB".format(java.util.Locale.US, lowVolumeBassDb).takeIf { lowVolumeBassDb > 0.0 }
-    ).joinToString(" + ")
+    fun label(profile: Profile): String {
+        val presence = presenceGainDb(profile)
+        val speech = when {
+            presence <= 0.0 -> null
+            stereoDownmix -> "stereo: centre +%.0f dB, bass guard".format(java.util.Locale.US, presence)
+            else -> "dialogue +%.0f dB".format(java.util.Locale.US, presence)
+        } ?: "stereo: bass guard".takeIf { stereoDownmix }
+        return listOfNotNull(
+            speech,
+            "low-volume bass +%.1f dB".format(java.util.Locale.US, lowVolumeBassDb).takeIf { lowVolumeBassDb > 0.0 }
+        ).joinToString(" + ")
+    }
 
     companion object {
         val NONE = ToneLayers()
@@ -62,6 +94,34 @@ data class ToneLayers(
          * box the Dialogue target uses.
          */
         const val DIALOGUE_DB = 2.0
+
+        /**
+         * Stereo speakers' speech lift. Android folds 5.1 to two channels with
+         * audio_utils' ChannelMix: each front at 1.0, the centre at 0.707
+         * (−3 dB) into both sides, each surround at 0.707 into its own side and
+         * the LFE at 0.5 (−6 dB) into both. Dialogue lives in the centre, so the
+         * fold leaves it 3 dB under the effects and music it used to sit above.
+         * This puts those 3 dB back in the speech band, on the same box as
+         * [DIALOGUE_DB]. It cannot separate the centre from the rest: Android
+         * gives apps no mid/side stage, so music in that band rises too.
+         */
+        const val CENTRE_RESTORE_DB = 3.0
+
+        /**
+         * Stereo speakers' cut below what the speaker can play. The folded LFE
+         * arrives at −6 dB in both channels, and on small stereo speakers it is
+         * mostly energy they cannot reproduce: it spends headroom, and Core EQ's
+         * protection limiter answers each explosion by pulling the dialogue down
+         * with it. Halving it (−6 dB) below half an octave under the roll-off
+         * stops that, and leaves everything the speaker does play alone.
+         */
+        const val BASS_GUARD_DB = -6.0
+
+        /**
+         * The roll-off assumed where none was measured (manual profiles): about
+         * where compact 2.0 soundbars and bookshelf pairs stop.
+         */
+        const val DEFAULT_SMALL_SPEAKER_ROLLOFF_HZ = 80.0
 
         /**
          * The remote-hardware research pass (§2.2): a +2 to +3 dB smooth rise
@@ -86,6 +146,16 @@ data class ToneLayers(
         private val ISO_63_HZ = EqualLoudness.FREQUENCIES_HZ.indexOfFirst { it == 63.0 }
 
         fun dialogueDb(hz: Double): Double = Targets.presenceDb(doubleArrayOf(hz), DIALOGUE_DB)[0]
+
+        /**
+         * [BASS_GUARD_DB] below half an octave under the roll-off ([rolloffFade]'s
+         * shape, mirrored), nothing from the roll-off up. A profile with no
+         * measured roll-off uses [DEFAULT_SMALL_SPEAKER_ROLLOFF_HZ].
+         */
+        fun bassGuardDb(hz: Double, rolloffHz: Double): Double {
+            val corner = if (rolloffHz > 0.0) rolloffHz else DEFAULT_SMALL_SPEAKER_ROLLOFF_HZ
+            return BASS_GUARD_DB * (1.0 - rolloffFade(hz, corner))
+        }
 
         /** 1 well below the corner, 0.5 at it, 0 an octave above: the shape of [Targets.shelfDb], mirrored. */
         fun lowShelf(hz: Double): Double =

@@ -242,7 +242,7 @@
     <string name="calibration_finish">Finish</string>
 
     <!-- Home: HDMI bitstream caveat (1.3.0) -->
-    <string name="passthrough_warning">⚠ HDMI audio may carry Dolby or DTS as a bitstream here, which skips all on-device EQ, Core EQ included. To correct it, set the TV\'s Surround sound (or Audio format) to PCM.</string>
+    <string name="passthrough_warning">⚠ HDMI or optical audio may carry Dolby or DTS as a bitstream here, which skips all on-device EQ, Core EQ included. To correct it, set the TV\'s Surround sound (or Audio format) to Never or PCM. On stereo speakers, Stereo speakers in Extra effects can set it for you on Android 12 and later.</string>
 
     <!-- Recording score (1.3.2: the recording only; the room is reported, not scored) -->
     <string name="quality_excellent">excellent</string>
@@ -275,6 +275,7 @@
     <string name="extras_heading">Extra effects</string>
     <string name="extras_group_tone">Tone</string>
     <string name="extras_group_level">Level</string>
+    <string name="extras_name_stereo">Stereo speakers</string>
     <string name="extras_name_dialogue">Dialogue boost</string>
     <string name="extras_name_low_bass">Low-volume bass</string>
     <string name="extras_name_bass">Bass boost</string>
@@ -289,9 +290,20 @@
     <string name="extras_loudness_note">Android\'s LoudnessEnhancer. Raises quiet content by up to +4 dB (podcasts, news); none for music.</string>
     <string name="extras_night_on">Night mode: On</string>
     <string name="extras_night_off">Night mode: Off</string>
+    <!-- Stereo speakers (1.10.0): 5.1 films on two speakers. -->
+    <string name="extras_stereo_on">Stereo speakers: On</string>
+    <string name="extras_stereo_off">Stereo speakers: Off</string>
+    <string name="extras_stereo_note">For 5.1 films and shows on two speakers, such as a 2.0 soundbar or a speaker pair. Folding 5.1 to stereo puts the centre channel, where the dialogue is, 3 dB under the effects, and adds the bass channel your speakers cannot play. This lifts speech by 3 dB (Dialogue boost\'s 2 dB is not added on top) and cuts bass below your speakers\' range, so explosions stop pulling the dialogue down. Core EQ only hears the fold when Android does it, which on HDMI and optical needs Surround sound set to Never or PCM: on Android 12 and later, once allowed, this switch sets it; otherwise the line below says how.</string>
+    <string name="extras_stereo_pcm_only">This output only takes PCM (Bluetooth, USB or analogue), so Android always mixes 5.1 to stereo before Core EQ. Nothing else to set.</string>
+    <string name="extras_stereo_never">Surround sound is Never: Android decodes Dolby and DTS and mixes them to stereo before Core EQ, so every film is covered.</string>
+    <string name="extras_stereo_restore">Core EQ changed Surround sound from %1$s to Never, and puts %1$s back when you switch this off.</string>
+    <string name="extras_stereo_ask">Surround sound is %1$s, so Dolby and DTS can reach your speakers undecoded and skip Core EQ. Allow Core EQ to modify system settings and it sets Never for you (switch this off and on to be asked again), or set Surround sound to Never yourself under Advanced sound settings. Over ADB: %2$s</string>
+    <string name="extras_stereo_manual">Surround sound is %1$s, and this Android version gives apps no switch for it. Set it to Never (or PCM) under the TV\'s Advanced sound settings, so Dolby and DTS are mixed to stereo where Core EQ hears them. Over ADB: %2$s</string>
+    <string name="extras_stereo_restore_failed">Android would not let Core EQ put Surround sound back to %1$s. It tries again next time this screen opens; or set it under the TV\'s Advanced sound settings.</string>
+    <string name="extras_stereo_unknown">Android does not report the Surround sound setting here. If films still sound thin in some apps, set Surround sound (or Audio format) to Never or PCM in the TV\'s sound settings. Over ADB: %1$s</string>
     <string name="extras_dialogue_on">Dialogue boost: On</string>
     <string name="extras_dialogue_off">Dialogue boost: Off</string>
-    <string name="extras_dialogue_note">+2 dB across 2.2–4.5 kHz, where most of speech intelligibility sits, back to neutral by 6.5 kHz so sibilance is not lifted. Profiles measured with the Dialogue or House target already include it, so it adds nothing there.</string>
+    <string name="extras_dialogue_note">+2 dB across 2.2–4.5 kHz, where most of speech intelligibility sits, back to neutral by 6.5 kHz so sibilance is not lifted. Profiles measured with the Dialogue or House target already include it, so it adds nothing there. With Stereo speakers on, its +3 dB is used instead.</string>
     <string name="extras_low_bass_on">Low-volume bass: On</string>
     <string name="extras_low_bass_off">Low-volume bass: Off</string>
     <string name="extras_low_bass_note">Ears lose bass first as volume drops (ISO 226). Switch this on at the volume you usually watch at: below it, up to +3 dB is added under 100 Hz, never below what your speaker can play. The rest of the sound is lowered to match, so nothing clips.</string>
