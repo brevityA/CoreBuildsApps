@@ -4,8 +4,8 @@
   "apps": {
     "iconpack": {
       "name": "Core Builds Icon Pack",
-      "versionName": "2.5.3",
-      "versionCode": 61,
+      "versionName": "2.5.4",
+      "versionCode": 62,
       "tagPrefix": "v",
       "floatingTag": "iconpack",
       "downloader": "5270601",
@@ -16,8 +16,8 @@
       "legacyApk": "app-release.apk",
       "metadata": "Latestrelease/version.json",
       "section": "icon-pack",
-      "iconCount": 1026,
-      "componentCount": 1253
+      "iconCount": 1028,
+      "componentCount": 1256
     },
     "line": {
       "name": "Core Line",

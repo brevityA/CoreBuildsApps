@@ -9568,3 +9568,33 @@ def radiofrance_ring(c):
 
 GLYPHS.update({"plezy_play_waves": plezy_play_waves, "streamfc_ball": streamfc_ball,
                "radiofrance_ring": radiofrance_ring})
+
+
+# Issue batch 2026-10-31: two requests whose scanner photos named the
+# component. Original Core constructions after each app's launcher icon, not
+# traces.
+def aurora_player_a(c):
+    """Aurora Player: an A with no crossbar and a rounded apex, a play wedge
+    standing in its opening.
+
+    The launcher icon's A is two broad legs meeting in a soft peak, with a
+    small play triangle low in the gap; the missing bar and the wedge are what
+    separate it from arvio_a's play-wedge A, which keeps its crossbar.
+    """
+    return (f'<path d="M 120 424 L 214 158 Q 256 52 298 158 L 392 424" {_s(c, 40)}/>'
+            f'<path d="M 236 318 L 236 400 L 306 359 Z" {_s(c, 26)}/>')
+
+
+def blackout_power(c):
+    """Blackout: the power symbol, its ring open wide at the top and the stem
+    standing clear of the gap.
+
+    The launcher icon draws the ring in white and the stem in amber; primitive
+    0 is the ring, so a duotone entry can give it the light ink. No outer ring,
+    unlike coreelec_power.
+    """
+    return (f'<path d="{_arc_cw(256, 284, 150, 306, 234)}" {_s(c, 34)}/>'
+            f'<path d="M 256 92 L 256 262" {_s(c, 34)}/>')
+
+
+GLYPHS.update({"aurora_player_a": aurora_player_a, "blackout_power": blackout_power})

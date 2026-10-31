@@ -1,6 +1,6 @@
 # Supported applications
 
-`1026` icons · `1253` mapped components · pack v2.5.3
+`1028` icons · `1256` mapped components · pack v2.5.4
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -84,6 +84,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | ATV Tools Server | `atvtools` | `#8B949E` | `#8B949E` | `dev.vodik7.atvtoolsserver/.MainActivity` |
 | Audials | `audials` | `#282676` | `#5350C6` | `com.audials.paid/com.audials.main.SplashScreenActivity` |
 | Audiomack | `audiomack` | `#FFA200` | `#FFA200` | `com.audiomack/com.audiomack.ui.splash.SplashActivity` |
+| Aurora Player | `aurora_player` | `#8F5AF3` | `#8F5AF3` | `app.auroraiptv/app.auroraiptv.MainActivity` |
 | Aurora Store | `aurora_store` | `#00C2FF` | `#00C2FF` | `com.aurora.store/.MainActivity`<br>`com.aurora.store/com.aurora.store.ComposeActivity` |
 | AV Source | `av_source` | `#FF5CA8` | `#FF5CA8` | `com.spocky.projengmenu/.activities.input.SourceAVActivity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceAVActivity` |
 | Award VPN | `award` | `#20C0A8` | `#20C0A8` | `com.award.VPN/app.award.update.SplashActivity` |
@@ -106,6 +107,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Binged | `binged` | `#E8453C` | `#E8453C` | `net.binged.tv/net.binged.tv.MainActivity` |
 | Bitdefender | `bitdefender` | `#ED1C24` | `#ED1C24` | `com.bitdefender.vpn/com.bitdefender.vpn.MainActivity` |
 | BitTV | `bit_tv` | `#008FD7` | `#008FD7` | `com.live_streaming_tv.online_tv/com.live_streaming_tv.online_tv.BitTVActivity`<br>`com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.MainActivity`<br>`com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.ui.MainActivity` |
+| Blackout | `blackout` | `#F9C05E` | `#F9C05E` | `com.blackout.tv/com.blackout.tv.CommandActivity` |
 | Blip | `blip` | `#E00000` | `#E00000` | `net.blip.android/net.blip.android.MainActivity` |
 | Blokada | `blokada` | `#F5A200` | `#F5A200` | `org.blokada.fyra/core.PanelActivity` |
 | Bloomberg TV+ | `bloomberg` | `#F89018` | `#F89018` | `com.bloomberg.btva/tv.accedo.one.app.bootstrap.BootstrapActivity` |
@@ -401,7 +403,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Kable One | `tveverywhere` | `#BF1017` | `#C11017` | `com.kableone.tveverywhere/com.kableone.tveverywhere.ui.main.view.activity.SplashScreenActivity` |
 | Kanopy | `kanopy` | `#6CC24A` | `#6CC24A` | `com.kanopy.tvapp/com.kanopy.tvapp.MainActivity` |
 | KaraFun | `kfandroid` | `#D5167A` | `#D5167A` | `com.recisio.kfandroid/com.recisio.kfandroid.start.StartActivity` |
-| Kayo | `kayo` | `#58B068` | `#58B068` | `au.com.kayosports.tv/.MainActivity`<br>`au.com.streamotion.hyperion/.MainActivity`<br>`au.com.kayosports.tv/au.com.foxsports.martian.tv.main.MainActivity`<br>`au.com.streamotion.hyperion/au.com.foxsports.martian.tv.main.MainActivity` |
+| Kayo | `kayo` | `#58B068` | `#58B068` | `au.com.kayosports.tv/.MainActivity`<br>`au.com.streamotion.hyperion/.MainActivity`<br>`au.com.kayosports.tv/au.com.foxsports.martian.tv.main.MainActivity`<br>`au.com.streamotion.hyperion/au.com.foxsports.martian.tv.main.MainActivity`<br>`au.com.kayosports.tv/com.dazn.MainActivity` |
 | KDE Connect | `kde_connect` | `#FF5CA8` | `#FF5CA8` | `org.kde.kdeconnect_tp/org.kde.kdeconnect.UserInterface.MainActivity` |
 | Kemo IPTV | `kemo_iptv` | `#D02030` | `#D02030` | `de.cyberdream.iptv.tv.player/de.cyberdream.dreamepg.MainActivityTV` |
 | Kemo Stream | `streamingkemo` | `#D42137` | `#D42137` | `com.kemoiptv.streamingkemo/com.kemoiptv.streamingkemo.MainActivity` |

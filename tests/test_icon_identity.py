@@ -92,7 +92,8 @@ class IdentityTests(unittest.TestCase):
                 self.assertIn("tools/reference/", icon["glyph_source"])
 
     def test_request_references_are_hash_pinned_and_not_runtime_art(self):
-        for directory in ("sportfm-tv", "tvlok", "plezy", "streamfc", "radio-france"):
+        for directory in ("sportfm-tv", "tvlok", "plezy", "streamfc", "radio-france",
+                          "aurora-player", "blackout"):
             root = ROOT / "tools/reference" / directory
             evidence = json.loads((root / "visual-references.json").read_text())
             self.assertTrue(evidence["usage"].startswith("reference-only"))
@@ -139,6 +140,39 @@ class IdentityTests(unittest.TestCase):
                     self.assertEqual(colour, sample["color"])
                 # The accent (and both gradient stops) are the recorded samples.
                 self.assertEqual([s["color"] for s in samples], gradient or [accent])
+
+    def test_scanner_photo_requests_are_reviewed_monoline_marks(self):
+        # 31 October: the accent is sampled from the app's own launcher icon as
+        # the pack's scanner showed it in the reporter's photo.
+        expected = {
+            "aurora_player": ("aurora_player_a", "#8F5AF3", None, "aurora-player"),
+            "blackout": ("blackout_power", "#F9C05E", ("#E6EDF3", [0]), "blackout"),
+        }
+        from collections import Counter
+        for drawable, (glyph, accent, second, ref) in expected.items():
+            with self.subTest(drawable=drawable):
+                icon = BY_ID[drawable]
+                self.assertEqual(icon["glyph"], glyph)
+                self.assertEqual(icon["style"], CORE_MONOLINE)
+                self.assertEqual(icon["color"], accent)
+                self.assertEqual(icon["color_reviewed"], "2026-10-31")
+                self.assertNotIn("mark", icon)
+                self.assertNotIn("gradient", icon)
+                self.assertIn(f"tools/reference/{ref}/", icon["glyph_source"])
+                if second:
+                    self.assertEqual(icon["secondary"]["color"], second[0])
+                    self.assertEqual(icon["secondary"]["parts"], second[1])
+                    self.assertFalse(secondary_errors(icon))
+                else:
+                    self.assertNotIn("secondary", icon)
+                sample = json.loads((ROOT / "tools/reference" / ref
+                                     / "visual-references.json").read_text())["color_sample"]
+                with Image.open(ROOT / "tools/reference" / ref / sample["path"]) as image:
+                    pixels = [p for p in image.convert("RGB").crop(tuple(sample["box"])).getdata()
+                              if not min(p) > 200 and max(p) > 60]
+                colour = "#{:02X}{:02X}{:02X}".format(*Counter(pixels).most_common(1)[0][0])
+                self.assertEqual(colour, sample["color"])
+                self.assertEqual(colour, accent)
 
     def test_requested_accents_reproduce_the_recorded_pixel_samples(self):
         from collections import Counter

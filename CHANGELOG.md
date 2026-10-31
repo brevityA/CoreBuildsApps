@@ -6,6 +6,29 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.5.4] — 2026-10-31
+
+### Added
+
+- **Aurora Player and Blackout.** Two new icons, each mapped to the exact
+  component in the scanner photo attached to its request: Aurora Player
+  (#392), an A with no crossbar and a play wedge in its opening, in violet;
+  Blackout (#394), the power symbol, an amber stem over a light ring.
+  Original Core monoline redraws, each accent sampled from the app's own
+  icon as the scanner showed it, with the reference crop kept, hash-pinned,
+  under `tools/reference/`; no vendor image ships. 1026 -> 1028 icons.
+
+### Fixed
+
+- **Kayo applies again.** Current Kayo builds launch
+  `com.dazn.MainActivity` inside `au.com.kayosports.tv`, as the scanner
+  reported on a Smart TV Pro running Android 14 (#409). That component now
+  maps to the existing Kayo icon in every pack; the older ones stay.
+- **`tests/test_mapping_hygiene.py` and `tests/test_icon_identity.py` cover the 31 October requests.**
+  Kayo's DAZN component joins the pinned launcher reports; Aurora Player
+  and Blackout join the new-app mappings, with their reference crops
+  hash-pinned and their accents reproduced from the recorded pixel samples.
+
 ## [2.5.3] — 2026-10-31
 
 ### Added
