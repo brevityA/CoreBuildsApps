@@ -1195,7 +1195,10 @@ class EqService : Service() {
         return ToneLayers(
             dialogue = prefs.dialogueBoostEnabled,
             lowVolumeBassDb = bass,
-            stereoDownmix = prefs.stereoSpeakersEnabled
+            stereoDownmix = prefs.stereoSpeakersEnabled,
+            // What is playing right now: only the stereo speech lift listens (1.11.0),
+            // from the same auto-detect/manual pick ExtraPlan already gets.
+            contentType = extrasContentType()
         )
     }
 

@@ -748,7 +748,10 @@ internal class CompanionServer(
         }
         val captureInfo = parseCaptureInfo(request.optJSONObject("capture"), rate)
         val result = try {
-            SweepAnalysis.analyze(samples, rate, session.target, session.volumeM3)
+            SweepAnalysis.analyze(
+                samples, rate, session.target, session.volumeM3,
+                micResponse = captureInfo.microphoneResponse
+            )
         } catch (e: MeasurementException) {
             throw e
         } catch (e: Exception) {
@@ -978,7 +981,7 @@ internal class CompanionServer(
             outputKind = OutputRoute.keyFor(output),
             outputName = outputName,
             measurementNotes = buildList {
-                add("Phone microphone capture: device response and Android audio processing may vary by model; Android microphone metadata is stored, not applied as calibration.")
+                add("Phone microphone capture: device response and Android audio processing may vary by model; Android microphone metadata is applied only where it is usable (four or more in-band points, capped at ±6 dB per band) and stored with the profile either way.")
                 if (repeatabilityCheck != null) {
                     add("Optional same-position repeat retained as a separate trace; captures are never averaged, no physically qualified pass/fail threshold is applied, and results do not generalize to other seats or rooms.")
                     repeatabilityCheck.note?.let { note -> add(note) }

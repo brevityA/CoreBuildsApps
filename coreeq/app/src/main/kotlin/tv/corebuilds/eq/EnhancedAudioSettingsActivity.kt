@@ -279,23 +279,42 @@ class EnhancedAudioSettingsActivity : TvActivity() {
      * this output, and if not, what to change; null while off.
      */
     private fun stereoStatus(): String? {
-        if (!prefs.stereoSpeakersEnabled) {
-            val stuck = prefs.surroundRestoreMode ?: return null
-            return getString(R.string.extras_stereo_restore_failed, SurroundOutput.label(stuck))
-        }
-        if (!bitstreamOutput()) return getString(R.string.extras_stereo_pcm_only)
         val mode = SurroundOutput.read(this)
-        if (mode == SurroundOutput.NEVER) {
-            val restored = prefs.surroundRestoreMode
-            val never = getString(R.string.extras_stereo_never)
-            return if (restored == null) never
-            else never + " " + getString(R.string.extras_stereo_restore, SurroundOutput.label(restored))
-        }
-        return when {
-            mode == null -> getString(R.string.extras_stereo_unknown, SurroundOutput.ADB_NEVER_COMMAND)
-            Build.VERSION.SDK_INT >= SurroundOutput.PUBLIC_API_SDK ->
-                getString(R.string.extras_stereo_ask, SurroundOutput.label(mode), SurroundOutput.adbAllowCommand(packageName))
-            else -> getString(R.string.extras_stereo_manual, SurroundOutput.label(mode), SurroundOutput.ADB_NEVER_COMMAND)
+        // One decision table ([SurroundOutput.status], unit-tested): with the write
+        // permission in hand and the setting still not Never, asking for the
+        // permission again would be a lie (#413 finding 5) — say how to finish.
+        return when (
+            SurroundOutput.status(
+                stereoOn = prefs.stereoSpeakersEnabled,
+                restoreOwed = prefs.surroundRestoreMode != null,
+                mode = mode,
+                sdk = Build.VERSION.SDK_INT,
+                canWrite = SurroundOutput.canChange(this),
+                bitstreamOutput = bitstreamOutput()
+            )
+        ) {
+            SurroundOutput.Status.HIDDEN -> null
+            SurroundOutput.Status.OFF_RESTORE_STUCK -> getString(
+                R.string.extras_stereo_restore_failed, SurroundOutput.label(prefs.surroundRestoreMode)
+            )
+            SurroundOutput.Status.PCM_ONLY -> getString(R.string.extras_stereo_pcm_only)
+            SurroundOutput.Status.SETTLED -> {
+                val never = getString(R.string.extras_stereo_never)
+                val restored = prefs.surroundRestoreMode
+                if (restored == null) never
+                else never + " " + getString(R.string.extras_stereo_restore, SurroundOutput.label(restored))
+            }
+            SurroundOutput.Status.UNREADABLE ->
+                getString(R.string.extras_stereo_unknown, SurroundOutput.ADB_NEVER_COMMAND)
+            SurroundOutput.Status.ASK_PERMISSION -> getString(
+                R.string.extras_stereo_ask, SurroundOutput.label(mode), SurroundOutput.adbAllowCommand(packageName)
+            )
+            SurroundOutput.Status.NEEDS_MANUAL -> getString(
+                R.string.extras_stereo_needs_manual, SurroundOutput.label(mode), SurroundOutput.ADB_NEVER_COMMAND
+            )
+            SurroundOutput.Status.MANUAL_ONLY -> getString(
+                R.string.extras_stereo_manual, SurroundOutput.label(mode), SurroundOutput.ADB_NEVER_COMMAND
+            )
         }
     }
 
