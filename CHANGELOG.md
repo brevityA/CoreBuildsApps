@@ -12,11 +12,13 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 - **Aurora Player and Blackout.** Two new icons, each mapped to the exact
   component in the scanner photo attached to its request: Aurora Player
-  (#392), an A with no crossbar and a play wedge in its opening, in violet;
-  Blackout (#394), the power symbol, an amber stem over a light ring.
-  Original Core monoline redraws, each accent sampled from the app's own
-  icon as the scanner showed it, with the reference crop kept, hash-pinned,
-  under `tools/reference/`; no vendor image ships. 1026 -> 1028 icons.
+  (#392), an A with no crossbar and a play wedge in its opening, running
+  orchid to cyan as its icon does; Blackout (#394), the power symbol, amber
+  at the stem fading to light ink at the base of the ring, its icon's two
+  colours. Original Core monoline redraws in gradient, each stop sampled
+  from the app's own icon as the scanner showed it, with the reference crop
+  kept, hash-pinned, under `tools/reference/`; no vendor image ships.
+  1026 -> 1028 icons.
 
 ### Fixed
 

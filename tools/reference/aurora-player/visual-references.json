@@ -13,15 +13,28 @@
       "note": "the app's launcher icon as the pack's Missing icons scanner shows it, cropped from the reporter's photo of the TV screen attached to issue #392 and downsized to 128 px for evidence only"
     }
   ],
-  "color_sample": {
-    "part": "left leg",
-    "box": [
-      28,
-      70,
-      38,
-      90
-    ],
-    "path": "scanner-tile-128.png",
-    "color": "#8F5AF3"
-  }
+  "color_samples": [
+    {
+      "part": "apex",
+      "box": [
+        56,
+        16,
+        72,
+        28
+      ],
+      "path": "scanner-tile-128.png",
+      "color": "#C074F0"
+    },
+    {
+      "part": "right foot",
+      "box": [
+        96,
+        96,
+        112,
+        112
+      ],
+      "path": "scanner-tile-128.png",
+      "color": "#30AAF2"
+    }
+  ]
 }

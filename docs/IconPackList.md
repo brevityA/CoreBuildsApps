@@ -84,7 +84,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | ATV Tools Server | `atvtools` | `#8B949E` | `#8B949E` | `dev.vodik7.atvtoolsserver/.MainActivity` |
 | Audials | `audials` | `#282676` | `#5350C6` | `com.audials.paid/com.audials.main.SplashScreenActivity` |
 | Audiomack | `audiomack` | `#FFA200` | `#FFA200` | `com.audiomack/com.audiomack.ui.splash.SplashActivity` |
-| Aurora Player | `aurora_player` | `#8F5AF3` | `#8F5AF3` | `app.auroraiptv/app.auroraiptv.MainActivity` |
+| Aurora Player | `aurora_player` | `#C074F0` | `#C074F0` | `app.auroraiptv/app.auroraiptv.MainActivity` |
 | Aurora Store | `aurora_store` | `#00C2FF` | `#00C2FF` | `com.aurora.store/.MainActivity`<br>`com.aurora.store/com.aurora.store.ComposeActivity` |
 | AV Source | `av_source` | `#FF5CA8` | `#FF5CA8` | `com.spocky.projengmenu/.activities.input.SourceAVActivity`<br>`com.spocky.projengmenu/.ui.guidedActions.activities.input.SourceAVActivity` |
 | Award VPN | `award` | `#20C0A8` | `#20C0A8` | `com.award.VPN/app.award.update.SplashActivity` |

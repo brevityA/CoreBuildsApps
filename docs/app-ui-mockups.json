@@ -96,13 +96,13 @@
     "glyphs/src/main/res/xml/appfilter.xml": "4959846c326705f5cebcb995fd749fd2b48a17ddf0916c283b48f77bf3c66ba0",
     "glyphs/src/main/res/xml/drawable.xml": "ba07579650c610ac6612c39dd1d701beda417898bade33ecddb89cf98da4c6e3",
     "tools/build_app_ui_mockups.py": "f33dde26de329f28597b890aebc276818e5b31021684381933bf30fa01b9f643",
-    "tools/catalog.json": "68062f72df041eea17aaa5dd9fb2dabf868e35865dfa01ff44936fadfd393a38",
+    "tools/catalog.json": "c7566aa171801a8bb193cf86a34c61632f23f3f26d310c32af04429c4e6c752f",
     "tools/fonts/DejaVuSansMono-Bold.ttf": "2964f6dac8e6e9d71613928340f17bf868e9ea51692cca333c79e74962f02233",
     "tools/fonts/DejaVuSansMono.ttf": "0f5db4f1749979d961019838b160bec74abdf7f9eca69553fe1aa856bbff49a4",
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "a80d83d8ed432fc8243aacee8daea3ffe7b13f56bd6a3498eaea07cf68f24c1c",
+  "inputs_digest": "e42b51c71f1131122c46fda5c004be8c6ecb8b5b0ea571a5e89dacf85a86290d",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,

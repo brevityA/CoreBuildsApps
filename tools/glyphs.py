@@ -9589,9 +9589,9 @@ def blackout_power(c):
     """Blackout: the power symbol, its ring open wide at the top and the stem
     standing clear of the gap.
 
-    The launcher icon draws the ring in white and the stem in amber; primitive
-    0 is the ring, so a duotone entry can give it the light ink. No outer ring,
-    unlike coreelec_power.
+    The launcher icon draws the ring in white and the stem in amber; the
+    catalog's gradient carries both, amber at the stem to light ink at the
+    ring's base. No outer ring, unlike coreelec_power.
     """
     return (f'<path d="{_arc_cw(256, 284, 150, 306, 234)}" {_s(c, 34)}/>'
             f'<path d="M 256 92 L 256 262" {_s(c, 34)}/>')

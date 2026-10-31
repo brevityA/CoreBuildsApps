@@ -15041,7 +15041,7 @@
     {
       "name": "Aurora Player",
       "drawable": "aurora_player",
-      "color": "#8F5AF3",
+      "color": "#C074F0",
       "glyph": "aurora_player_a",
       "style": "core_monoline",
       "components": [
@@ -15049,10 +15049,15 @@
       ],
       "category": "PLAYER",
       "mapping_source": "issue #392 (device-reported via the pack's Missing icons scanner, Projectivy, pack 2.5.1, 2026-10-27): the attached photo of the scanner screen reads app.auroraiptv/app.auroraiptv.MainActivity, matching the component typed in the issue",
-      "color_source": "sampled from the app's own launcher icon as the scanner shows it in the #392 photo: the left leg's violet #8F5AF3. Pixel sample and hashed reference in tools/reference/aurora-player/visual-references.json (2026-10-31)",
+      "color_source": "sampled from the app's own launcher icon as the scanner shows it in the #392 photo: the apex's orchid #C074F0. Pixel samples and hashed reference in tools/reference/aurora-player/visual-references.json (2026-10-31)",
       "color_reviewed": "2026-10-31",
       "glyph_source": "original Core rounded-monoline interpretation of the launcher icon's crossbar-less A and the play wedge in its opening; not a trace. Reference: the #392 scanner photo; hashed visual reference in tools/reference/aurora-player/ (2026-10-31)",
-      "name_source": "the scanner photo in #392 labels the app Aurora Player (2026-10-31)"
+      "name_source": "the scanner photo in #392 labels the app Aurora Player (2026-10-31)",
+      "gradient": [
+        "#C074F0",
+        "#30AAF2"
+      ],
+      "gradient_source": "sampled from the same launcher icon: the A runs from orchid #C074F0 at the apex to cyan #30AAF2 at the right foot; its two ends, drawn top to bottom as the pack's gradients are (2026-10-31)"
     },
     {
       "name": "Blackout",
@@ -15069,13 +15074,11 @@
       "color_reviewed": "2026-10-31",
       "glyph_source": "original Core rounded-monoline interpretation of the launcher icon's power symbol, ring open at the top with the stem clear of it; not a trace. Reference: the #394 scanner photo; hashed visual reference in tools/reference/blackout/ (2026-10-31)",
       "name_source": "the scanner photo in #394 labels the app Blackout (2026-10-31)",
-      "secondary": {
-        "color": "#E6EDF3",
-        "parts": [
-          0
-        ],
-        "source": "the white ring of the launcher icon in the #394 scanner photo; white renders as Core light ink (2026-10-31)"
-      }
+      "gradient": [
+        "#F9C05E",
+        "#E6EDF3"
+      ],
+      "gradient_source": "the launcher icon in the #394 scanner photo is flat two-colour, an amber stem over a white ring; the gradient carries both top to bottom: the stem's sampled amber #F9C05E, then the ring's white as Core light ink #E6EDF3 (2026-10-31)"
     }
   ],
   "artwork": {
