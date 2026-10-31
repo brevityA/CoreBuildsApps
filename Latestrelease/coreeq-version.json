@@ -1,15 +1,12 @@
 {
-  "versionCode": 20,
-  "versionName": "1.10.0",
+  "versionCode": 21,
+  "versionName": "1.10.1",
   "releaseDate": "2026-10-31",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "3f81a97892dde7fa22a2893f73864b9200bff337cacf3052c538adde88d876e3",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.10.0",
+  "apkSha256": "4ede9a70ddb43dda99f7cb41d01045962d6e4b1decc75788c91007596fd5e9b9",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.10.1",
   "minSdk": 30,
   "highlights": [
-    "Stereo speakers, for 5.1 on two speakers.",
-    "It makes sure Android does the fold.",
-    "The restore is now one tested rule, not two lines in an activity.",
-    "The bitstream warning now covers optical and Android 11."
+    "Bitstream capability is judged by the output in use, not every port plugged in."
   ]
 }
