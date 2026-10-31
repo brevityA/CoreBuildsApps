@@ -306,8 +306,10 @@ deploy on any overlap.
      -d '{"app_name":"Deluart Test App","component":"com.deluart.test/.MainActivity","device":"Scanned on curl, Android 14, pack dev"}'
    # -> {"ok":true,"issue":N,"duplicate":false}  (then close that issue)
    ```
-6. **Bake the URL into the pack** (this is the only app-side step). Since
-   2.5.3 only the Google Play build carries it: put the URL in
+6. **Bake the URL into the pack** (this is the only app-side step). Only
+   the Google Play build carries it, from the first Play upload built after
+   this change (versionCode 62 on main after 2.5.4; if 62 is already on a
+   Play track, raise the version code first): put the URL in
    `app/src/play/res/values/request_service.xml` and leave
    `audit_request_endpoint` empty in the generated
    `app/src/main/res/values/issue_prefill.xml`, so the GitHub / Downloader

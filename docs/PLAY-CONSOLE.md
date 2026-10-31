@@ -253,8 +253,10 @@ night) and two wallpaper series, Spectra and Aurum (24 walls). Every icon, the
 main wallpaper collection (in
 Projectivy's rotation too) and every screen ship to everyone. It is on sale
 only in a build with the request broker baked in, because priority requests
-are part of what it sells. The Play build has it baked in from 2.5.3 (61), so
-steps 5 and 6 are done; the rest are Console's and the test on a TV.
+are part of what it sells. The Play build has it baked in from the first
+upload built after this change: versionCode 62 on main after 2.5.4 (if 62 is
+already on a Play track, raise the version code first). Steps 5 and 6 are
+done; the rest are Console's and the test on a TV.
 
 Each TV can try it free for 24 hours, once, from the Premium card. The trial
 is the app's own clock, not a Play offer (Play offers trials on subscriptions
@@ -286,7 +288,8 @@ app's data offers the trial again.
    `ICONREQ_GOOGLE_SERVICE_ACCOUNT_JSON`. Core-Builds' *Deploy icon-request
    broker* workflow then smokes it with `--require-plus`, and `/healthz`
    reports `"plus": true`. Done: it did on 2026-10-29.
-6. **Bake the endpoint in** (repo). Done for 2.5.3. The URL is in
+6. **Bake the endpoint in** (repo). Done, for every Play build from that
+   upload on. The URL is in
    `app/src/play/res/values/request_service.xml`, which overrides the empty
    value `tools/build_issue_prefills.py` generates into main, so only the
    Play build posts to the service and the GitHub / Downloader build keeps
