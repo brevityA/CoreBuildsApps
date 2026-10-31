@@ -271,6 +271,9 @@ class OctoberLauncherReports(unittest.TestCase):
           "com.google.android.apps.youtube.tvunplugged.activity.MainActivity",)),
         (405, "a_8k_player_vip", "shadeed.Player8kVip/shadeed.player4k.pages.SplashActivity",
          ("com.shadeed.S4kvip/com.shadeed.ibopro.MainActivity",)),
+        # Kayo now launches a DAZN activity outside its package's namespace.
+        (409, "kayo", "au.com.kayosports.tv/com.dazn.MainActivity",
+         ("au.com.kayosports.tv/au.com.foxsports.martian.tv.main.MainActivity",)),
     )
 
     @classmethod
@@ -323,15 +326,18 @@ class OctoberLauncherReports(unittest.TestCase):
 
 
 class OctoberNewAppMappings(unittest.TestCase):
-    """The 29 October requests: three new apps, each mapped to its exact
+    """The 29 and 31 October requests: five new apps, each mapped to its exact
     scanner component in all three packs (both name forms where one exists),
-    citing the device report, and none marked unverified."""
+    citing the device report, and none marked unverified. Aurora Player and
+    Blackout's components were read off the scanner photos in their issues."""
 
     NEW = (
         (390, "plezy", "com.edde746.plezy/com.edde746.plezy.MainActivity"),
         (391, "radio_france",
          "com.radiofrance.radio.radiofrance.android/com.radiofrance.android.tv.TvMainActivity"),
         (404, "streamfc", "dev.mogoni.streamfc/dev.mogoni.streamfc.MainActivity"),
+        (392, "aurora_player", "app.auroraiptv/app.auroraiptv.MainActivity"),
+        (394, "blackout", "com.blackout.tv/com.blackout.tv.CommandActivity"),
     )
 
     def test_catalog_cites_the_report(self):

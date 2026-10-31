@@ -176,6 +176,7 @@
     <item drawable="zeniptv" />
     <category title="Wu · Players" />
     <item drawable="a_8k_player_vip" />
+    <item drawable="aurora_player" />
     <item drawable="basis" />
     <item drawable="dream_player_tv" />
     <item drawable="gridstreamr" />
@@ -363,6 +364,7 @@
     <item drawable="apktime" />
     <item drawable="atvtools" />
     <item drawable="background_apps_processes" />
+    <item drawable="blackout" />
     <item drawable="buttonmappertv" />
     <item drawable="developer_tools" />
     <item drawable="download_navi" />

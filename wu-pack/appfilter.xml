@@ -227,6 +227,9 @@
     <!-- Audiomack -->
     <item component="ComponentInfo{com.audiomack/com.audiomack.ui.splash.SplashActivity}" drawable="audiomack"/>
     <item component="ComponentInfo{com.audiomack/.ui.splash.SplashActivity}" drawable="audiomack"/>
+    <!-- Aurora Player -->
+    <item component="ComponentInfo{app.auroraiptv/app.auroraiptv.MainActivity}" drawable="aurora_player"/>
+    <item component="ComponentInfo{app.auroraiptv/.MainActivity}" drawable="aurora_player"/>
     <!-- Aurora Store -->
     <item component="ComponentInfo{com.aurora.store/com.aurora.store.MainActivity}" drawable="aurora_store"/>
     <item component="ComponentInfo{com.aurora.store/.MainActivity}" drawable="aurora_store"/>
@@ -297,6 +300,9 @@
     <item component="ComponentInfo{com.bittv.androiddigitaltvapp/.MainActivity}" drawable="bit_tv"/>
     <item component="ComponentInfo{com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.ui.MainActivity}" drawable="bit_tv"/>
     <item component="ComponentInfo{com.bittv.androiddigitaltvapp/.ui.MainActivity}" drawable="bit_tv"/>
+    <!-- Blackout -->
+    <item component="ComponentInfo{com.blackout.tv/com.blackout.tv.CommandActivity}" drawable="blackout"/>
+    <item component="ComponentInfo{com.blackout.tv/.CommandActivity}" drawable="blackout"/>
     <!-- Blip -->
     <item component="ComponentInfo{net.blip.android/net.blip.android.MainActivity}" drawable="blip"/>
     <item component="ComponentInfo{net.blip.android/.MainActivity}" drawable="blip"/>
@@ -1159,6 +1165,7 @@
     <item component="ComponentInfo{au.com.streamotion.hyperion/.MainActivity}" drawable="kayo"/>
     <item component="ComponentInfo{au.com.kayosports.tv/au.com.foxsports.martian.tv.main.MainActivity}" drawable="kayo"/>
     <item component="ComponentInfo{au.com.streamotion.hyperion/au.com.foxsports.martian.tv.main.MainActivity}" drawable="kayo"/>
+    <item component="ComponentInfo{au.com.kayosports.tv/com.dazn.MainActivity}" drawable="kayo"/>
     <!-- KDE Connect -->
     <item component="ComponentInfo{org.kde.kdeconnect_tp/org.kde.kdeconnect.UserInterface.MainActivity}" drawable="kde_connect"/>
     <!-- Kemo IPTV -->

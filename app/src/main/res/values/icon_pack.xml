@@ -78,6 +78,7 @@
         <item>atvtools</item>
         <item>audials</item>
         <item>audiomack</item>
+        <item>aurora_player</item>
         <item>aurora_store</item>
         <item>av_source</item>
         <item>award</item>
@@ -100,6 +101,7 @@
         <item>binged</item>
         <item>bitdefender</item>
         <item>bit_tv</item>
+        <item>blackout</item>
         <item>blip</item>
         <item>blokada</item>
         <item>bloomberg</item>
@@ -1107,6 +1109,7 @@
         <item>ATV Tools Server</item>
         <item>Audials</item>
         <item>Audiomack</item>
+        <item>Aurora Player</item>
         <item>Aurora Store</item>
         <item>AV Source</item>
         <item>Award VPN</item>
@@ -1129,6 +1132,7 @@
         <item>Binged</item>
         <item>Bitdefender</item>
         <item>BitTV</item>
+        <item>Blackout</item>
         <item>Blip</item>
         <item>Blokada</item>
         <item>Bloomberg TV+</item>
@@ -2136,6 +2140,7 @@
         <item>TOOL</item>
         <item>APP</item>
         <item>MUSIC</item>
+        <item>PLAYER</item>
         <item>STORE</item>
         <item>SYSTEM</item>
         <item>VPN</item>
@@ -2158,6 +2163,7 @@
         <item>STREAM</item>
         <item>VPN</item>
         <item>STREAM</item>
+        <item>TOOL</item>
         <item>APP</item>
         <item>VPN</item>
         <item>APP</item>
@@ -3217,6 +3223,8 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -4117,5 +4125,5 @@
         <item>1</item>
         <item>1</item>
     </integer-array>
-    <integer name="icon_count">1026</integer>
+    <integer name="icon_count">1028</integer>
 </resources>
