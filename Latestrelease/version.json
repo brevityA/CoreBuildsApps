@@ -1,13 +1,20 @@
 {
-  "versionCode": 59,
-  "versionName": "2.5.1",
-  "iconCount": 1020,
-  "componentCount": 1238,
-  "releaseDate": "2026-10-24",
+  "versionCode": 61,
+  "versionName": "2.5.3",
+  "iconCount": 1026,
+  "componentCount": 1253,
+  "releaseDate": "2026-10-31",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Projectivity launcher discovery in release builds"
+    "Core Builds Wu Pack",
+    "WuPlay's own logo as an alternative icon",
+    "The walls as a Projectivy wallpaper source",
+    "Core Premium free for 24 hours, once per TV",
+    "Night loop, a Core Premium extra",
+    "Request all, a Core Premium extra",
+    "Projectivy walls, a Core Premium extra",
+    "Aurum, a second Core Premium wallpaper series"
   ]
 }
