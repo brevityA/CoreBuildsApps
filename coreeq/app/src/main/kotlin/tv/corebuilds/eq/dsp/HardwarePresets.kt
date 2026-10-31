@@ -419,8 +419,171 @@ object HardwarePresets {
             "No measured response from Core EQ."
     )
 
+
+    /** Sonos Arc (5.0.2 Dolby Atmos, 11 drivers: eight elliptical woofers, three silk-dome tweeters). */
+    private val SONOS_ARC = Model(
+        id = "sonos-arc",
+        brand = "Sonos",
+        name = "Sonos Arc",
+        kind = Kind.SOUNDBAR,
+        nameMatch = Regex("""(?<![a-z0-9])(?:sonos[\s_-]*)?arc(?![a-z0-9])""", RegexOption.IGNORE_CASE),
+        // The Arc Ultra is a different revision with more drivers and more bass;
+        // its name still contains "Arc", so exclude it explicitly.
+        nameExclude = Regex("""ultra""", RegexOption.IGNORE_CASE),
+        presets = listOf(
+            ManualEqPreset(
+                id = "sonos-arc-movie",
+                name = "Sonos Arc · Movie",
+                filters = listOf(
+                    bell(63.0, -1.5),    // reviews: the rich bass can dominate effects
+                    bell(250.0, -0.5),
+                    bell(2_000.0, 1.0),  // dialogue presence
+                    bell(4_000.0, 0.5)
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-arc-dialogue",
+                name = "Sonos Arc · Dialogue",
+                filters = listOf(
+                    bell(250.0, -1.0),
+                    bell(1_000.0, 1.0),
+                    bell(2_000.0, 1.5),
+                    bell(4_000.0, 1.0)
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-arc-music",
+                name = "Sonos Arc · Music",
+                filters = listOf(
+                    bell(63.0, -1.0),
+                    bell(250.0, -0.5),
+                    bell(8_000.0, 1.0)   // restores the air a warm-leaning tilt takes away
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-arc-late-night",
+                name = "Sonos Arc · Late night",
+                filters = listOf(
+                    bell(40.0, -2.5),    // less sub rumble for neighbours and sleep
+                    bell(63.0, -1.5),
+                    bell(125.0, -1.0),
+                    bell(2_000.0, 1.0)   // keeps speech readable at low volume
+                )
+            )
+        ),
+        basis = "Specification: Sonos Arc (5.0.2 channel Dolby Atmos, 11 drivers – 8 elliptical woofers " +
+            "and 3 silk-dome tweeters, 11 Class-D amplifiers, Trueplay room tuning). " +
+            "Character: reviews find a balanced midrange with clear dialogue that can read bright, " +
+            "powerful rich bass, and some lack of very low bass without a sub. " +
+            "Not measured by Core EQ."
+    )
+
+    /** Sonos Beam (Gen 2) (Dolby Atmos via virtual height, 4 elliptical mid-woofers, centre tweeter, 3 passive radiators). */
+    private val SONOS_BEAM_GEN_2 = Model(
+        id = "sonos-beam-gen-2",
+        brand = "Sonos",
+        name = "Sonos Beam Gen 2",
+        kind = Kind.SOUNDBAR,
+        nameMatch = Regex("""(?<![a-z0-9])(?:sonos[\s_-]*)?beam[\s_-]*(?:gen[\s_-]*2|g2)(?![a-z0-9])""", RegexOption.IGNORE_CASE),
+        // The original Beam is a different product; its name lacks the generation.
+        nameExclude = null,
+        presets = listOf(
+            ManualEqPreset(
+                id = "sonos-beam-gen-2-movie",
+                name = "Sonos Beam Gen 2 · Movie",
+                filters = listOf(
+                    bell(63.0, -1.0),    // modest bass for a compact bar; keep effects clear
+                    bell(2_000.0, 1.0),  // dialogue presence
+                    bell(4_000.0, 0.5)
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-beam-gen-2-dialogue",
+                name = "Sonos Beam Gen 2 · Dialogue",
+                filters = listOf(
+                    bell(250.0, -0.5),
+                    bell(1_000.0, 1.0),
+                    bell(2_000.0, 1.5)   // reviews: the centre tweeter targets clear dialogue
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-beam-gen-2-music",
+                name = "Sonos Beam Gen 2 · Music",
+                filters = listOf(
+                    bell(63.0, -1.0),
+                    bell(8_000.0, 1.0)   // a little air for a small driver set
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-beam-gen-2-late-night",
+                name = "Sonos Beam Gen 2 · Late night",
+                filters = listOf(
+                    bell(40.0, -2.0),    // less low-end at low volume
+                    bell(125.0, -1.0),
+                    bell(2_000.0, 1.0)   // keeps speech readable when quiet
+                )
+            )
+        ),
+        basis = "Specification: Sonos Beam (Gen 2) (Dolby Atmos, 4 elliptical mid-woofers, 1 centre tweeter, " +
+            "3 passive radiators, HDMI eARC, Trueplay). Character: reviews find focused dialogue " +
+            "clarity and modest bass output for a compact bar, with Trueplay making an audible difference. " +
+            "Not measured by Core EQ."
+    )
+
+    /** Sonos Ray (2.0 stereo, optical, 2 woofers, 2 tweeters; bass rolls off near 65 Hz). */
+    private val SONOS_RAY = Model(
+        id = "sonos-ray",
+        brand = "Sonos",
+        name = "Sonos Ray",
+        kind = Kind.SOUNDBAR,
+        nameMatch = Regex("""(?<![a-z0-9])(?:sonos[\s_-]*)?ray(?![a-z0-9])""", RegexOption.IGNORE_CASE),
+        nameExclude = null,
+        presets = listOf(
+            ManualEqPreset(
+                id = "sonos-ray-movie",
+                name = "Sonos Ray · Movie",
+                filters = listOf(
+                    bell(250.0, -0.5),
+                    bell(2_000.0, 1.0),  // dialogue presence
+                    bell(4_000.0, 0.5)
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-ray-dialogue",
+                name = "Sonos Ray · Dialogue",
+                filters = listOf(
+                    bell(1_000.0, 1.0),
+                    bell(2_000.0, 1.5),  // mirrors the Ray's Speech Enhancement 1–4 kHz lift
+                    bell(4_000.0, 1.0)
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-ray-music",
+                name = "Sonos Ray · Music",
+                filters = listOf(
+                    bell(125.0, 1.0),    // the body band the small woofers can still produce
+                    bell(250.0, 0.5),
+                    bell(8_000.0, 0.5)
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-ray-late-night",
+                name = "Sonos Ray · Late night",
+                filters = listOf(
+                    bell(63.0, -1.5),    // tight, not booming bass down low
+                    bell(125.0, -1.0),
+                    bell(2_000.0, 1.0)   // keeps speech readable when quiet
+                )
+            )
+        ),
+        basis = "Specification: Sonos Ray (2.0 stereo, 2 woofers, 2 tweeters, optical input, " +
+            "bass+treble EQ and Speech Enhancement in the Sonos app). Character: reviews find " +
+            "best-in-class dialogue clarity, tight rather than booming bass, and output rolling " +
+            "off near 65 Hz. Not measured by Core EQ."
+    )
+
     /** Every shipped hardware model, in the order the picker lists them. */
-    val MODELS: List<Model> = listOf(JBL_BAR_800, JBL_BAR_2_0, SAMSUNG_Q800H, SONY_BAR_6, LG_S80TR, JBL_BAR_1000_MK2)
+    val MODELS: List<Model> = listOf(JBL_BAR_800, JBL_BAR_2_0, SAMSUNG_Q800H, SONY_BAR_6, LG_S80TR, JBL_BAR_1000_MK2, SONOS_ARC, SONOS_BEAM_GEN_2, SONOS_RAY)
 
     /** Every shipped hardware preset, flat across models. */
     val PRESETS: List<ManualEqPreset> = MODELS.flatMap { it.presets }

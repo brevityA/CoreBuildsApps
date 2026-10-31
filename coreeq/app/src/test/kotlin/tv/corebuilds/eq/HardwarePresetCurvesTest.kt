@@ -119,4 +119,28 @@ class HardwarePresetCurvesTest {
             model.presets.any { it.id == "jbl-bar-2-0-everyday" }
         )
     }
+
+    @Test
+    fun theArcMoviePresetTamesTheBassReviewsCallPowerful() {
+        assertTrue("63 Hz must be cut", ManualEq.gainAtBand(preset("sonos-arc-movie").filters, 1) < 0.0)
+    }
+
+    @Test
+    fun theRayDialoguePresetLiftsTheSpeechEnhancementBand() {
+        // Sonos' Speech Enhancement boosts roughly the 1–4 kHz speech band; the
+        // Ray dialogue preset does the same thing from Core EQ's ten bands.
+        val dialogue = preset("sonos-ray-dialogue")
+        assertTrue("1 kHz must be lifted", ManualEq.gainAtBand(dialogue.filters, 5) > 0.0)
+        assertTrue("2 kHz must be lifted", ManualEq.gainAtBand(dialogue.filters, 6) > 0.0)
+        assertTrue("4 kHz must be lifted", ManualEq.gainAtBand(dialogue.filters, 7) > 0.0)
+    }
+
+    @Test
+    fun theSonosLateNightPresetsCutTheLowEnd() {
+        for (id in listOf("sonos-arc-late-night", "sonos-beam-gen-2-late-night", "sonos-ray-late-night")) {
+            val preset = preset(id)
+            assertTrue("$id turns the low end down",
+                ManualEq.gainAtBand(preset.filters, 0) <= 0.0 || ManualEq.gainAtBand(preset.filters, 1) <= 0.0)
+        }
+    }
 }
