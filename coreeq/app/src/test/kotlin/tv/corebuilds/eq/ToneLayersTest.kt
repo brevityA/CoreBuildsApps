@@ -132,11 +132,30 @@ class ToneLayersTest {
         assertEquals(0.0, LowVolumeBass.settle(storedDb = -12.0, nowDb = null).liftDb, 0.0)
     }
 
+    /**
+     * The arithmetic the lift rests on, pinned because the first version of it told the wrong
+     * story: ChannelMix mixes the centre into each channel at 0.707, which is 3.01 dB below a
+     * front — but the centre is in *both* channels, so a listener between two spaced speakers
+     * sums it to +3.01 dB against the same signal from one speaker (0.00 dB in a diffuse field).
+     * The fold costs image and headroom, not 3 dB of level — it does not under-level dialogue at
+     * all — and the constant is a presence lift for the image and the drivers.
+     */
     @Test
-    fun `stereo speakers puts back the 3 dB the 5_1 fold takes from the centre`() {
-        // ChannelMix folds the centre in at 0.707 under fronts at 1.0.
-        // 0.707 is -3.01 dB; the lift is that, rounded to the 0.5 dB steps the layers use.
-        assertEquals(-20.0 * kotlin.math.log10(0.707), ToneLayers.CENTRE_RESTORE_DB, 0.05)
+    fun `the 5_1 fold costs the centre its image, not 3 dB at the listener`() {
+        val coefficient = 0.707
+        val perChannel = 20.0 * kotlin.math.log10(coefficient)
+        val coherent = 20.0 * kotlin.math.log10(coefficient + coefficient)
+        val incoherent = 10.0 * kotlin.math.log10(2.0 * coefficient * coefficient)
+        println("centre per channel %.2f dB, coherent sum %.2f dB, incoherent %.2f dB".format(perChannel, coherent, incoherent))
+        // Per channel, the centre is 3 dB down — and that is the only place "3 dB down" is true.
+        assertEquals(-3.0, perChannel, 0.05)
+        // At the listener both channels carry it: coherent on axis it is 3 dB *hotter* than the
+        // same signal from one speaker, and level with it in a diffuse field. Never 3 dB down.
+        assertEquals(3.0, coherent, 0.05)
+        assertEquals(0.0, incoherent, 0.05)
+        assertTrue("the fold must not under-level the centre", coherent > 0.0)
+        // So the lift is not the fold's deficit put back: it is a fixed presence lift.
+        assertEquals(3.0, ToneLayers.STEREO_PRESENCE_DB, 0.0)
         val stereo = ToneLayers(stereoDownmix = true)
         assertFalse(stereo.isEmpty)
         for (hz in listOf(2200.0, 3000.0, 4500.0)) assertEquals(3.0, stereo.responseDb(profile(), hz), 1e-9)
@@ -197,8 +216,8 @@ class ToneLayersTest {
             "dialogue +2 dB + low-volume bass +1.5 dB",
             ToneLayers(dialogue = true, lowVolumeBassDb = 1.5).label(profile())
         )
-        assertEquals("stereo: centre +3 dB, bass guard", ToneLayers(stereoDownmix = true).label(profile()))
-        assertEquals("stereo: centre +3 dB, bass guard", ToneLayers(dialogue = true, stereoDownmix = true).label(profile()))
-        assertEquals("stereo: centre +1 dB, bass guard", ToneLayers(stereoDownmix = true).label(profile("house")))
+        assertEquals("stereo: speech +3 dB, bass guard", ToneLayers(stereoDownmix = true).label(profile()))
+        assertEquals("stereo: speech +3 dB, bass guard", ToneLayers(dialogue = true, stereoDownmix = true).label(profile()))
+        assertEquals("stereo: speech +1 dB, bass guard", ToneLayers(stereoDownmix = true).label(profile("house")))
     }
 }

@@ -121,10 +121,20 @@ object SurroundOutput {
     }
 
     /**
-     * The mode to put back when Stereo speakers is switched off: the one Core
-     * EQ replaced, but only while the setting is still Never. If somebody
-     * changed it since, that was their choice and it stays.
+     * Puts the saved mode back when Stereo speakers is switched off, and returns what is still
+     * owed: null when the mode is back or is no longer Core EQ's to restore, otherwise the saved
+     * mode again, so the caller keeps it and retries.
+     *
+     * The rule is narrow on purpose. Core EQ restores only what it replaced, and only while the
+     * setting is still Never: if somebody changed it since, that was their choice and it stays.
+     * A write Android refuses — the permission was withdrawn — must not look like a restore, or
+     * the saved mode is lost and the user's own setting is gone with it.
+     *
+     * [write] is the effect, passed in rather than called here, so this whole rule is unit-tested
+     * without a device; the failure path in particular is the one that regressed before.
      */
-    fun restoreTo(saved: Int?, current: Int?): Int? =
-        saved?.takeIf { current == NEVER && it in AUTO..MANUAL && it != NEVER }
+    fun restore(saved: Int?, current: Int?, write: (Int) -> Boolean): Int? {
+        val mode = saved?.takeIf { current == NEVER && it in AUTO..MANUAL && it != NEVER } ?: return null
+        return if (write(mode)) null else saved
+    }
 }

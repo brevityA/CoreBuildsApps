@@ -30,7 +30,7 @@ data class ToneLayers(
     val lowVolumeBassDb: Double = 0.0,
     /**
      * Stereo speakers (1.10.0): 5.1 folded to two channels. Lifts speech by
-     * [CENTRE_RESTORE_DB] and cuts what the speaker cannot play by
+     * [STEREO_PRESENCE_DB] and cuts what the speaker cannot play by
      * [BASS_GUARD_DB]. See [presenceGainDb] and [bassGuardDb].
      */
     val stereoDownmix: Boolean = false
@@ -54,7 +54,7 @@ data class ToneLayers(
     fun presenceGainDb(profile: Profile): Double {
         val wanted = max(
             if (dialogue) DIALOGUE_DB else 0.0,
-            if (stereoDownmix) CENTRE_RESTORE_DB else 0.0
+            if (stereoDownmix) STEREO_PRESENCE_DB else 0.0
         )
         val carried = if (!profile.manualOnly && profile.target in PRESENCE_TARGETS) DIALOGUE_DB else 0.0
         return max(0.0, wanted - carried)
@@ -76,7 +76,7 @@ data class ToneLayers(
         val presence = presenceGainDb(profile)
         val speech = when {
             presence <= 0.0 -> null
-            stereoDownmix -> "stereo: centre +%.0f dB, bass guard".format(java.util.Locale.US, presence)
+            stereoDownmix -> "stereo: speech +%.0f dB, bass guard".format(java.util.Locale.US, presence)
             else -> "dialogue +%.0f dB".format(java.util.Locale.US, presence)
         } ?: "stereo: bass guard".takeIf { stereoDownmix }
         return listOfNotNull(
@@ -96,16 +96,34 @@ data class ToneLayers(
         const val DIALOGUE_DB = 2.0
 
         /**
-         * Stereo speakers' speech lift. Android folds 5.1 to two channels with
-         * audio_utils' ChannelMix: each front at 1.0, the centre at 0.707
-         * (−3 dB) into both sides, each surround at 0.707 into its own side and
-         * the LFE at 0.5 (−6 dB) into both. Dialogue lives in the centre, so the
-         * fold leaves it 3 dB under the effects and music it used to sit above.
-         * This puts those 3 dB back in the speech band, on the same box as
-         * [DIALOGUE_DB]. It cannot separate the centre from the rest: Android
-         * gives apps no mid/side stage, so music in that band rises too.
+         * Stereo speakers' speech-band lift, and the numbers it rests on.
+         *
+         * Android folds 5.1 to two channels with audio_utils' `ChannelMix`
+         * (`platform/system/media`): each front at 1.0, the centre at 0.707 into
+         * both sides, each surround at 0.707 into its own side, and the LFE at 0.5
+         * into both, because AOSP's own comment says 0.5 rather than the
+         * power-preserving 0.707 for the LFE is deliberate, to keep overload down.
+         *
+         * The centre is therefore mixed into each channel 3.01 dB below a front, and
+         * that is where the useful arithmetic stops. A centred voice arrives in
+         * *both* channels, so what reaches the listener is not that 3 dB deficit: on
+         * axis the two copies sum coherently to +3.01 dB against the same signal from
+         * one speaker, and in a diffuse field to 0.00 dB. The fold is level-neutral;
+         * it does not bury dialogue 3 dB under the effects. Level is not what is
+         * wrong with it.
+         *
+         * What is wrong is the image and the drivers. Two spaced sources form a
+         * phantom centre: comb-filtered, narrow, collapsing the moment the listener
+         * leaves the axis. And the small drivers of a 2.0 bar or a bookshelf pair are
+         * weakest exactly where intelligibility lives, 1 to 4 kHz. This is a presence
+         * lift for that phantom centre, not the restoration of a measured deficit,
+         * which is why it is a fixed 3 dB rather than something derived from the room:
+         * a little more than [DIALOGUE_DB], because the fold costs image as well as
+         * the drivers' headroom. It sits in the same box and never stacks with
+         * [DIALOGUE_DB], and Android gives apps no mid/side stage, so music in that
+         * band rises with the speech.
          */
-        const val CENTRE_RESTORE_DB = 3.0
+        const val STEREO_PRESENCE_DB = 3.0
 
         /**
          * Stereo speakers' cut below what the speaker can play. The folded LFE
