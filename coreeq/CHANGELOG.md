@@ -6,6 +6,49 @@ Core EQ (`tv.corebuilds.eq`) keeps its own changelog. The repository-root
 must never land there. Releases are `coreeq-v<version>` tags (see
 `PUBLISHING.md`).
 
+## [1.11.0] — 2026-10-31
+
+**Nothing below was checked on a TV, a soundbar or a speaker pair.** Every rule
+is new in the Android-free Kotlin harness and covered there, and lint passes. No
+sweep has been taken through a remote that reports its response, no refinement
+has been offered and refused on a real check, and no music app has been watched
+with Stereo speakers on.
+
+- **The microphone's own response now comes out of the measurement.** Android
+  reports each active microphone's frequency response
+  (`activeMicrophones[].frequencyResponse`), and Core EQ has stored those points
+  on the profile as provenance since 1.6.1 — but never used them, so a remote
+  that reads 4 dB low at 3 kHz made the room look 4 dB down there and the
+  correction followed it. `SweepAnalysis` now subtracts the reported curve from
+  the band data before nulls, roll-off and the correction read it, deliberately
+  conservatively: at least four valid in-band points or the list is ignored
+  whole; no extrapolation past the reported span; and at most ±6 dB per band, so
+  a wrong or stale report cannot move the correction further than that. Flat
+  metadata is an exact no-op, signal-to-noise still comes from the raw capture
+  (the response scales signal and noise alike), and text exports now say
+  plainly whether the points were applied or kept as metadata.
+- **A check refinement has to prove itself before it earns the button.** The
+  check's figures are read twice: as evidence on screen, and as a gate on the
+  offer. A proposed step is withheld — with the numbers still on screen, and the
+  correction unchanged — when the residual would not drop by at least 0.3 dB RMS
+  (one capture of the same room disagrees by more than that), and the worst band
+  may not grow by more than 0.5 dB on the strength of one capture's average.
+  From +0.8 dB the offer is labelled clearly better.
+- **Stereo speakers listens to what is playing.** The +3 dB speech lift exists
+  for speech inside a folded 5.1 mix; on Music that speech is not there to
+  recover, and the lift would raise the programme with nothing to show for it.
+  With Content type's auto-detect (or manual pick) on, Music folds with the bass
+  guard alone and the service line says so; every other content type — including
+  the fallback when nothing is recognised — keeps the lift whole. Dialogue boost
+  is the user asking for speech by name and is never overruled by the guess.
+- **The Stereo speakers status line says what is true, not what to ask for.**
+  With the "Modify system settings" permission already granted, the setting
+  still showed the permission-ask panel (#413, finding 5). The decision is now
+  one pure, unit-tested table: with the permission in hand and Surround sound
+  still not Never, the line says how to finish by hand — the TV's own menu, the
+  ADB line, or switching the feature off and on to retry — instead of asking for
+  a permission the user already gave.
+
 ## [1.10.1] — 2026-10-31
 
 **Nothing below was checked on a TV, a soundbar or a speaker pair.** The route query

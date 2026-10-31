@@ -121,6 +121,53 @@ object SurroundOutput {
     }
 
     /**
+     * What the Stereo speakers status line should say (1.11.0): the same world
+     * [onAction] reads when the switch is pressed, plus the two states only the
+     * line reports — off (hidden, or a restore that failed) and the setting that
+     * is still not Never *with the permission already in hand*, which used to ask
+     * for a permission the user had granted (#413, finding 5). Pure, so the whole
+     * matrix is unit-tested without a device.
+     */
+    enum class Status {
+        /** Off with nothing owed: the line stays hidden. */
+        HIDDEN,
+        /** Off, and a mode Core EQ could not put back: say so, and how. */
+        OFF_RESTORE_STUCK,
+        /** On, and this output only takes PCM: Android folds 5.1 itself whatever the setting says. */
+        PCM_ONLY,
+        /** On and Surround sound is Never: the fold is covered. */
+        SETTLED,
+        /** On and Android does not report the setting: point at the TV's own menu. */
+        UNREADABLE,
+        /** On, it may bypass, and Core EQ is not yet allowed to change it: ask. */
+        ASK_PERMISSION,
+        /** On, Core EQ may change it, and it still is not Never: by hand, over ADB, or by re-toggling. */
+        NEEDS_MANUAL,
+        /** Android 11: read-only from apps, so the TV's menu or ADB are the only routes. */
+        MANUAL_ONLY
+    }
+
+    fun status(
+        stereoOn: Boolean,
+        restoreOwed: Boolean,
+        mode: Int?,
+        sdk: Int,
+        canWrite: Boolean,
+        bitstreamOutput: Boolean
+    ): Status = when {
+        !stereoOn -> if (restoreOwed) Status.OFF_RESTORE_STUCK else Status.HIDDEN
+        !bitstreamOutput -> Status.PCM_ONLY
+        mode == NEVER -> Status.SETTLED
+        mode == null -> Status.UNREADABLE
+        sdk < PUBLIC_API_SDK -> Status.MANUAL_ONLY
+        // Permission in hand and the setting still not Never: Android either kept the
+        // old value on the write or somebody changed it back. Asking for the permission
+        // again would be a lie; say how to finish the job by hand.
+        canWrite -> Status.NEEDS_MANUAL
+        else -> Status.ASK_PERMISSION
+    }
+
+    /**
      * Puts the saved mode back when Stereo speakers is switched off, and returns what is still
      * owed: null when the mode is back or is no longer Core EQ's to restore, otherwise the saved
      * mode again, so the caller keeps it and retries.

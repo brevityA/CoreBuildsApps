@@ -111,4 +111,48 @@ class SurroundOutputTest {
         assertEquals("Manual", SurroundOutput.label(SurroundOutput.MANUAL))
         assertEquals("unknown", SurroundOutput.label(null))
     }
+
+    @Test
+    fun `the status line tells granted-and-kept-old apart from not-yet-asked`() {
+        val api = SurroundOutput.PUBLIC_API_SDK
+        // #413 finding 5: the write permission is in hand, and the setting is still
+        // not Never — asking for the permission again would be a lie.
+        assertEquals(
+            SurroundOutput.Status.NEEDS_MANUAL,
+            SurroundOutput.status(
+                stereoOn = true, restoreOwed = false, mode = SurroundOutput.AUTO,
+                sdk = api, canWrite = true, bitstreamOutput = true
+            )
+        )
+        // Permission not yet granted: the ask is still the truth.
+        assertEquals(
+            SurroundOutput.Status.ASK_PERMISSION,
+            SurroundOutput.status(
+                stereoOn = true, restoreOwed = false, mode = SurroundOutput.ALWAYS,
+                sdk = api, canWrite = false, bitstreamOutput = true
+            )
+        )
+    }
+
+    @Test
+    fun `the status line covers the rest of the matrix`() {
+        val api = SurroundOutput.PUBLIC_API_SDK
+        fun decide(
+            stereoOn: Boolean,
+            restoreOwed: Boolean,
+            mode: Int?,
+            sdk: Int = api,
+            canWrite: Boolean = true,
+            bitstream: Boolean = true
+        ) = SurroundOutput.status(stereoOn, restoreOwed, mode, sdk, canWrite, bitstream)
+
+        assertEquals(SurroundOutput.Status.HIDDEN, decide(false, false, SurroundOutput.AUTO))
+        assertEquals(SurroundOutput.Status.OFF_RESTORE_STUCK, decide(false, true, SurroundOutput.AUTO))
+        assertEquals(SurroundOutput.Status.PCM_ONLY, decide(true, false, SurroundOutput.AUTO, bitstream = false))
+        // An owed restore note while on is the activity's wording job, not a different state.
+        assertEquals(SurroundOutput.Status.SETTLED, decide(true, true, SurroundOutput.NEVER))
+        assertEquals(SurroundOutput.Status.UNREADABLE, decide(true, false, null))
+        assertEquals(SurroundOutput.Status.MANUAL_ONLY, decide(true, false, SurroundOutput.AUTO, sdk = 30))
+        assertEquals(SurroundOutput.Status.NEEDS_MANUAL, decide(true, false, SurroundOutput.MANUAL))
+    }
 }

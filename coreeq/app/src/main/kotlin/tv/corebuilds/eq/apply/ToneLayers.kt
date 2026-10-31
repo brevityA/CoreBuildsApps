@@ -4,6 +4,7 @@ import tv.corebuilds.eq.dsp.EqualLoudness
 import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.dsp.Targets
 import tv.corebuilds.eq.export.Profile
+import tv.corebuilds.eq.mode.ContentType
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.floor
@@ -40,7 +41,17 @@ data class ToneLayers(
      * centres (1.11.0), applied at low volume. All zeros when off.
      * Aligned with [ManualEq.BAND_CENTRES_HZ].
      */
-    val loudnessBandGains: DoubleArray = DoubleArray(10) { 0.0 }
+    val loudnessBandGains: DoubleArray = DoubleArray(10) { 0.0 },
+    /**
+     * What is playing *now* (1.11.0), from Content type's auto-detect or manual
+     * pick — the same resolution ExtraPlan gets. Only the stereo speech lift
+     * listens to it ([presenceScale]): on Music there is no speech-in-the-fold
+     * to recover, so the lift is the documented cost with nothing to show, and
+     * the content type says so instead of the room having to argue. Everything
+     * else — including [ContentType.GENERAL], the default when nothing is
+     * recognised, and the user's explicit Dialogue boost — keeps the full lift.
+     */
+    val contentType: ContentType = ContentType.GENERAL
 ) {
     val isEmpty: Boolean get() =
         !dialogue && lowVolumeBassDb <= 0.0 && !stereoDownmix && loudnessBandGains.all { it <= 0.0 }
@@ -55,14 +66,16 @@ data class ToneLayers(
 
     /**
      * The speech-band lift this profile gets, in dB: the larger of Dialogue
-     * boost's +2 and Stereo speakers' +3, less the presence a Dialogue or House
-     * target already carries. The two never stack: both answer the same
-     * complaint, quiet speech.
+     * boost's +2 and Stereo speakers' [STEREO_PRESENCE_DB] × [presenceScale] for
+     * the content type, less the presence a Dialogue or House target already
+     * carries. The two never stack: both answer the same complaint, quiet speech.
+     * Only the stereo term is content-aware — Dialogue boost is the user asking
+     * for speech by name, and a content-type guess never overrules that.
      */
     fun presenceGainDb(profile: Profile): Double {
         val wanted = max(
             if (dialogue) DIALOGUE_DB else 0.0,
-            if (stereoDownmix) STEREO_PRESENCE_DB else 0.0
+            if (stereoDownmix) STEREO_PRESENCE_DB * presenceScale(contentType) else 0.0
         )
         val carried = if (!profile.manualOnly && profile.target in PRESENCE_TARGETS) DIALOGUE_DB else 0.0
         return max(0.0, wanted - carried)
@@ -172,6 +185,22 @@ data class ToneLayers(
         const val STEP_DB = 0.5
 
         val PRESENCE_TARGETS = setOf("dialogue", "house")
+
+        /**
+         * The stereo speech lift, scaled by what is playing (1.11.0).
+         *
+         * The +3 dB lift exists for speech inside a folded 5.1 mix on small
+         * stereo drivers ([STEREO_PRESENCE_DB]'s note). On Music that speech is
+         * not there to recover: the lift raises the programme as well, and the
+     * cost has no compensation — so it goes to zero and the service line
+     * says "bass guard" instead. Everything else keeps the lift whole,
+     * including [ContentType.GENERAL] — what is playing is not recognised —
+     * which is the old behaviour, and the one a detection miss must fall back to.
+         */
+        fun presenceScale(contentType: ContentType): Double = when (contentType) {
+            ContentType.MUSIC -> 0.0
+            else -> 1.0
+        }
 
         private val ISO_63_HZ = EqualLoudness.FREQUENCIES_HZ.indexOfFirst { it == 63.0 }
 

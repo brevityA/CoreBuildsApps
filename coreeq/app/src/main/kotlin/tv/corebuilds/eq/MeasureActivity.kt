@@ -31,6 +31,7 @@ import tv.corebuilds.eq.dsp.MeasurementQuality
 import tv.corebuilds.eq.dsp.MeasurementException
 import tv.corebuilds.eq.dsp.CorrectionRefinement
 import tv.corebuilds.eq.dsp.PostCorrectionCheck
+import tv.corebuilds.eq.dsp.RefinementTrust
 import tv.corebuilds.eq.dsp.RepeatabilityAnalysis
 import tv.corebuilds.eq.dsp.RepeatabilityComparison
 import tv.corebuilds.eq.dsp.RewImport
@@ -293,7 +294,10 @@ class MeasureActivity : TvActivity() {
                     if (seatCaptures.size >= 2) {
                         val again = seatCaptures.map {
                             it.copy(
-                                result = SweepAnalysis.analyze(it.samples, it.rate, target, volume, ceilingHz = ceiling),
+                                result = SweepAnalysis.analyze(
+                                    it.samples, it.rate, target, volume, ceilingHz = ceiling,
+                                    micResponse = it.captureInfo?.microphoneResponse ?: emptyList()
+                                ),
                                 targetIndex = selectedTargetIndex,
                                 roomIndex = selectedRoomIndex
                             )
@@ -302,7 +306,11 @@ class MeasureActivity : TvActivity() {
                         Triple(averaged.result, again, averaged)
                     } else {
                         Triple(
-                            SweepAnalysis.analyze(capture, lastRate, target, volume, ceilingHz = ceiling),
+                            SweepAnalysis.analyze(
+                                capture, lastRate, target, volume, ceilingHz = ceiling,
+                                micResponse = seatCaptures.firstOrNull()?.captureInfo?.microphoneResponse
+                                    ?: emptyList()
+                            ),
                             emptyList(), null
                         )
                     }
@@ -723,7 +731,11 @@ class MeasureActivity : TvActivity() {
             } else {
                 try {
                     Result.success(
-                        SweepAnalysis.analyze(samples, rate, plan.target, plan.volumeM3, ceilingHz = plan.ceilingHz)
+                        SweepAnalysis.analyze(
+                            samples, rate, plan.target, plan.volumeM3,
+                            ceilingHz = plan.ceilingHz,
+                            micResponse = info.microphoneResponse
+                        )
                     )
                 } catch (e: MeasurementException) {
                     Result.failure(e)
@@ -899,6 +911,12 @@ class MeasureActivity : TvActivity() {
             correctionCheckNote != null ->
                 getString(R.string.measure_refine_unavailable, correctionCheckNote!!)
             refinement == null -> getString(R.string.measure_refine_nothing)
+            !RefinementTrust.verdict(refinement).worthwhile -> {
+                // The check proposed a step the figures do not prove (1.11.0): it may
+                // not be an improvement, or the worst band would get worse. The check's
+                // numbers stay on screen as evidence; the button does not appear.
+                getString(R.string.measure_refine_withheld)
+            }
             else -> {
                 pendingRefinement = refinement
                 null
