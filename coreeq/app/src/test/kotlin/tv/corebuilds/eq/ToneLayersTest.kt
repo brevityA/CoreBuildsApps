@@ -9,6 +9,7 @@ import tv.corebuilds.eq.apply.LowVolumeBass
 import tv.corebuilds.eq.apply.ToneLayers
 import tv.corebuilds.eq.export.CurvePoint
 import tv.corebuilds.eq.export.Profile
+import tv.corebuilds.eq.mode.ContentType
 
 /**
  * 1.3.0's Dialogue boost and Low-volume bass: the shapes the research set,
@@ -219,5 +220,39 @@ class ToneLayersTest {
         assertEquals("stereo: speech +3 dB, bass guard", ToneLayers(stereoDownmix = true).label(profile()))
         assertEquals("stereo: speech +3 dB, bass guard", ToneLayers(dialogue = true, stereoDownmix = true).label(profile()))
         assertEquals("stereo: speech +1 dB, bass guard", ToneLayers(stereoDownmix = true).label(profile("house")))
+    }
+
+    @Test
+    fun `music folds without the speech lift — there is no speech in the fold to recover`() {
+        val music = ToneLayers(stereoDownmix = true, contentType = ContentType.MUSIC)
+        assertEquals(0.0, ToneLayers.presenceScale(ContentType.MUSIC), 0.0)
+        assertEquals(0.0, music.presenceGainDb(profile()), 0.0)
+        for (hz in listOf(2200.0, 3000.0, 4500.0)) assertEquals(0.0, music.responseDb(profile(), hz), 0.0)
+        // The bass guard is protection, not presence: it stays under music.
+        assertEquals(ToneLayers.BASS_GUARD_DB, music.responseDb(profile(rolloffHz = 80.0), 40.0), 1e-9)
+        assertEquals("stereo: bass guard", music.label(profile()))
+    }
+
+    @Test
+    fun `everything else keeps the lift, and a detection miss falls back to it`() {
+        val keepLift = listOf(
+            ContentType.MOVIE, ContentType.ANIME, ContentType.TV_SHOW, ContentType.SITCOM,
+            ContentType.DOCUMENTARY, ContentType.NEWS, ContentType.PODCAST, ContentType.GAMING,
+            ContentType.GENERAL
+        )
+        for (type in keepLift) {
+            assertEquals("$type must keep the lift", 1.0, ToneLayers.presenceScale(type), 0.0)
+            val layers = ToneLayers(stereoDownmix = true, contentType = type)
+            assertEquals(3.0, layers.presenceGainDb(profile()), 0.0)
+            assertEquals("stereo: speech +3 dB, bass guard", layers.label(profile()))
+        }
+    }
+
+    @Test
+    fun `dialogue boost is the user asking for speech by name — content type never overrules it`() {
+        val music = ToneLayers(dialogue = true, stereoDownmix = true, contentType = ContentType.MUSIC)
+        assertEquals(2.0, music.presenceGainDb(profile()), 0.0)
+        for (hz in listOf(2200.0, 3000.0, 4500.0)) assertEquals(2.0, music.responseDb(profile(), hz), 1e-9)
+        assertEquals("stereo: speech +2 dB, bass guard", music.label(profile()))
     }
 }
