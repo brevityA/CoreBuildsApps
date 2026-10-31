@@ -64,7 +64,7 @@ All notable changes to the Core Builds Icon Pack. Format follows
   register their own source, so one TV can hold several without a clash.
   Settings → Troubleshooting and FAQ has a card on it. Not yet seen inside
   Projectivy: no build of this has run on a TV.
-- **Core Premium free for 24 hours, once per TV.** Beside the price, the
+- **Core Premium free for 24 hours, once per TV (Google Play build only).** Beside the price, the
   Premium card offers *Try free for 24 hours*. It switches on loop rotation,
   the night loop, Projectivy walls, My requests, Spectra and Aurum, and
   Settings shows the time left on the Core Premium row. Priority requests,
@@ -74,12 +74,12 @@ All notable changes to the Core Builds Icon Pack. Format follows
   back ends it instead of restarting it. It is not a Play offer, since Play
   has trials for subscriptions only, so clearing the app's data offers it
   again. Like the purchase, it appears once the request service is live.
-- **Night loop, a Core Premium extra.** During night hours (20–07,
+- **Night loop, a Core Premium extra (Google Play build only).** During night hours (20–07,
   21–07, 22–06 or 19–07, by the TV's clock) the live wallpaper plays a second
   loop, then hands back to the one picked in the preview. A home screen left
   on changes over at the hour. Only loops already on the TV are offered, and
   nothing downloads. Settings → Night loop and Night hours.
-- **Request all, a Core Premium extra.** Missing icons gains a Request
+- **Request all, a Core Premium extra (Google Play build only).** Missing icons gains a Request
   all button. Pressed twice, it files up to 10 of the listed apps this TV has
   not requested yet as priority requests in one send, and My requests lists
   each. The request service takes it only when Google confirms the Premium
@@ -87,13 +87,13 @@ All notable changes to the Core Builds Icon Pack. Format follows
   route. Each app is filed, or +1ed, exactly as one press would file it.
   The privacy policy, the Data safety answer and Console step 8 say so. The
   request service must be redeployed for it to work.
-- **Projectivy walls, a Core Premium extra.** Two Settings rows choose
+- **Projectivy walls, a Core Premium extra (Google Play build only).** Two Settings rows choose
   what Projectivy rotates from the pack, by day and during night hours: all
   walls (with Spectra and Aurum), favourites, or one of 13 series. A choice
   that matches no wall falls back to the day choice, then to everything, so
   the rotation is never empty. A change reaches Projectivy at once; night
   hours begin within the hour Projectivy keeps its list.
-- **Aurum, a second Core Premium wallpaper series.** 12 4K walls, 169–180, in
+- **Aurum, a second Core Premium wallpaper series (Google Play build only).** 12 4K walls, 169–180, in
   gold on a warm black: Art Deco geometry (a sunburst, scallop fans, a
   stepped spire, chevrons, ziggurat arches, a lattice), a guilloche rosette,
   and gold as a material (kintsugi seams, crumpled leaf, molten ribbons, an
