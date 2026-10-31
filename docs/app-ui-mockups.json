@@ -9,8 +9,8 @@
       "structure": "c456ff789cf43768b95a56b5d6e1fb2fcda7b624cfcfce8889b07020eb073d05"
     },
     "app-ui-catalogue-update.png": {
-      "bytes": 169708,
-      "structure": "cffd5f5eaad05206b583478f72e84f870aa434dce2b9348842e19fe87612f924"
+      "bytes": 168420,
+      "structure": "96252ef4b901c6154b36f97df0981dc7d428533c2114b2d5588e8b07939a3c50"
     },
     "app-ui-catalogue.png": {
       "bytes": 178300,
@@ -53,7 +53,7 @@
   "inputs": {
     "app/src/main/assets/appfilter.xml": "9a2b4aea12925b1a227f998426ba56dfc6b178a0ebe770832a8c9295dc4747ec",
     "app/src/main/assets/manifest/wallpapers.json": "0bc4f85d2ff7d2e2c646088cd450957c5e7a58c0519be85923207356dafb3490",
-    "app/src/main/assets/version.json": "1c9747c1df34b7157f623b41f8e1cb1fd44f8c1346e78df57593aa3a5c7fd563",
+    "app/src/main/assets/version.json": "699d8a74aec36d4fd2cdd482c57df21c0596c368ba2f9660febdfe36c56af842",
     "app/src/main/res/layout/activity_about.xml": "a9a88f81b9d0c5b748475eb81e7c45dcee5261b87fb35ce83cdad36b0e0bd703",
     "app/src/main/res/layout/activity_auditor.xml": "240b6450f7bba9418e3d031f9504029567f22cff6db01498b14d28e1c10912dd",
     "app/src/main/res/layout/activity_export_progress.xml": "3c388eb2b74cc0b5e362069cff6adfe219a4948eed7220f36a9a2d2d06d48210",
@@ -102,7 +102,7 @@
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "9bc50d9d0e282368fc69d1cea3851a209d18cceef7ef9c62852102db5dc3a5cc",
+  "inputs_digest": "9a2fda560e17b912c511db1f38919f02e2fd70aa9a8a6dc1f5d7fbe094ceb23c",
   "metrics": {
     "mono-bold@24": 448.0,
     "mono-bold@32": 608.0,
@@ -122,5 +122,5 @@
     "count": 19,
     "digest": "d9dc5c6e30087f7db5ef4958804d07e73799bb56d056a4b3f0e8ae688efef922"
   },
-  "renderer": "python 3.11.17, freetype 2.13.2, layout raqm, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
+  "renderer": "python 3.11.2, freetype 2.13.2, layout basic, PIL 10.4.0, qrcode installed, fontTools 4.59.0, resvg_py 0.4.0"
 }

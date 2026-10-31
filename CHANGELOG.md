@@ -6,6 +6,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.5.3] — 2026-10-31
+
 ### Added
 
 - **Core Builds Wu Pack.** A monochrome style variant of the pack after the
