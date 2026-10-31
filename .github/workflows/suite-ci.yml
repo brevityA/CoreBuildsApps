@@ -353,6 +353,7 @@ jobs:
           python tests/test_update_manifest_gate.py
           python tests/test_core_eq_update_contract.py
           python tests/test_support_links.py
+          python tests/test_wu_pack.py
           # Meta-gate, last: it reads the workflows above and fails if any
           # tests/test_*.py or tools/check_*.py has stopped being invoked. This
           # job has no path filter, so it is the one place a new test can be

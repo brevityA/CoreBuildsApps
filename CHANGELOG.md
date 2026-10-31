@@ -6,8 +6,60 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **Core Premium is on sale in the Google Play build.** That build now
+  carries the request service's address, so a missing-icon press files the
+  request in one step, Core Premium's card offers the purchase and the
+  24-hour trial, and a buyer's requests are labelled priority. The
+  GitHub / Downloader build is unchanged: it keeps the QR panel and sells
+  nothing. The Play listing's description, Data safety and content rating
+  answers are regenerated to match (`docs/play/listing.json`), and
+  `docs/privacy.html` (effective 30 October 2026) says which build sends a
+  request straight away and how long the Request all count is kept. Nothing
+  has been bought on a TV yet; `docs/PLAY-CONSOLE.md` §8 lists the Console
+  steps and the test.
+
+## [2.5.4] — 2026-10-31
+
 ### Added
 
+- **Aurora Player and Blackout.** Two new icons, each mapped to the exact
+  component in the scanner photo attached to its request: Aurora Player
+  (#392), an A with no crossbar and a play wedge in its opening, running
+  orchid to cyan as its icon does; Blackout (#394), the power symbol, amber
+  at the stem fading to light ink at the base of the ring, its icon's two
+  colours. Original Core monoline redraws in gradient, each stop sampled
+  from the app's own icon as the scanner showed it, with the reference crop
+  kept, hash-pinned, under `tools/reference/`; no vendor image ships.
+  1026 -> 1028 icons.
+
+### Fixed
+
+- **Kayo applies again.** Current Kayo builds launch
+  `com.dazn.MainActivity` inside `au.com.kayosports.tv`, as the scanner
+  reported on a Smart TV Pro running Android 14 (#409). That component now
+  maps to the existing Kayo icon in every pack; the older ones stay.
+- **`tests/test_mapping_hygiene.py` and `tests/test_icon_identity.py` cover the 31 October requests.**
+  Kayo's DAZN component joins the pinned launcher reports; Aurora Player
+  and Blackout join the new-app mappings, with their reference crops
+  hash-pinned and their accents reproduced from the recorded pixel samples.
+
+## [2.5.3] — 2026-10-31
+
+### Added
+
+- **Core Builds Wu Pack.** A monochrome style variant of the pack after the
+  WuPlay mark: one white disc per icon with the glyph cut out as negative
+  space, no accent hues, bolder constant weight. It is generated from the
+  same catalog by `tools/build_wu_pack.py` — 1022 SVG masters, lossless
+  WebP tiles with the Classic night keyline, the shipped glyph companion's
+  component mappings and a full contact sheet under `wu-pack/`. Banners
+  follow in the WuPlay lockup via `tools/build_wu_banners.py` — coin,
+  light tracked wordmark, category kicker in each brand's accent, the same
+  1950 entries as the shipped banner appfilter. The Classic pack's art,
+  validators and shipped app are untouched; `tests/test_wu_pack.py`
+  pins the style constants, monochrome masters and mapping parity.
 - **WuPlay's own logo as an alternative icon.** It sits straight after WuPlay
   wherever you pick an icon by hand: the grid that Projectivy's per-app
   *choose icon* opens, and both packs' icon browsers, as a banner in this pack
@@ -26,7 +78,7 @@ All notable changes to the Core Builds Icon Pack. Format follows
   register their own source, so one TV can hold several without a clash.
   Settings → Troubleshooting and FAQ has a card on it. Not yet seen inside
   Projectivy: no build of this has run on a TV.
-- **Core Premium free for 24 hours, once per TV.** Beside the price, the
+- **Core Premium free for 24 hours, once per TV (Google Play build only).** Beside the price, the
   Premium card offers *Try free for 24 hours*. It switches on loop rotation,
   the night loop, Projectivy walls, My requests, Spectra and Aurum, and
   Settings shows the time left on the Core Premium row. Priority requests,
@@ -36,12 +88,12 @@ All notable changes to the Core Builds Icon Pack. Format follows
   back ends it instead of restarting it. It is not a Play offer, since Play
   has trials for subscriptions only, so clearing the app's data offers it
   again. Like the purchase, it appears once the request service is live.
-- **Night loop, a Core Premium extra.** During night hours (20–07,
+- **Night loop, a Core Premium extra (Google Play build only).** During night hours (20–07,
   21–07, 22–06 or 19–07, by the TV's clock) the live wallpaper plays a second
   loop, then hands back to the one picked in the preview. A home screen left
   on changes over at the hour. Only loops already on the TV are offered, and
   nothing downloads. Settings → Night loop and Night hours.
-- **Request all, a Core Premium extra.** Missing icons gains a Request
+- **Request all, a Core Premium extra (Google Play build only).** Missing icons gains a Request
   all button. Pressed twice, it files up to 10 of the listed apps this TV has
   not requested yet as priority requests in one send, and My requests lists
   each. The request service takes it only when Google confirms the Premium
@@ -49,13 +101,13 @@ All notable changes to the Core Builds Icon Pack. Format follows
   route. Each app is filed, or +1ed, exactly as one press would file it.
   The privacy policy, the Data safety answer and Console step 8 say so. The
   request service must be redeployed for it to work.
-- **Projectivy walls, a Core Premium extra.** Two Settings rows choose
+- **Projectivy walls, a Core Premium extra (Google Play build only).** Two Settings rows choose
   what Projectivy rotates from the pack, by day and during night hours: all
   walls (with Spectra and Aurum), favourites, or one of 13 series. A choice
   that matches no wall falls back to the day choice, then to everything, so
   the rotation is never empty. A change reaches Projectivy at once; night
   hours begin within the hour Projectivy keeps its list.
-- **Aurum, a second Core Premium wallpaper series.** 12 4K walls, 169–180, in
+- **Aurum, a second Core Premium wallpaper series (Google Play build only).** 12 4K walls, 169–180, in
   gold on a warm black: Art Deco geometry (a sunburst, scallop fans, a
   stepped spire, chevrons, ziggurat arches, a lattice), a guilloche rosette,
   and gold as a material (kintsugi seams, crumpled leaf, molten ribbons, an
@@ -79,17 +131,6 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Changed
 
-- **Core Premium is on sale in the Google Play build.** That build now
-  carries the request service's address, so a missing-icon press files the
-  request in one step, Core Premium's card offers the purchase and the
-  24-hour trial, and a buyer's requests are labelled priority. The
-  GitHub / Downloader build is unchanged: it keeps the QR panel and sells
-  nothing. The Play listing's description, Data safety and content rating
-  answers are regenerated to match (`docs/play/listing.json`), and
-  `docs/privacy.html` (effective 30 October 2026) says which build sends a
-  request straight away and how long the Request all count is kept. Nothing
-  has been bought on a TV yet; `docs/PLAY-CONSOLE.md` §8 lists the Console
-  steps and the test.
 - **Core Builds Plus is now Core Premium, with six extras.** Priority
   requests, My requests, loop rotation, the night loop, Projectivy walls and
   Spectra. Every icon, the main collection (in Projectivy's rotation too) and

@@ -1,0 +1,3 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs><mask id="wuDisc-x_tv" maskUnits="userSpaceOnUse" x="0" y="0" width="512" height="512"><rect width="512" height="512" fill="#000000"/><circle cx="256" cy="256" r="211" fill="#FFFFFF"/><g transform="translate(256 256) scale(0.9237) translate(-256 -256)"><path d="M 88.0 191.5 L 173.1 320.5 M 173.1 191.5 L 88.0 320.5 M 212.1 191.5 L 294.7 191.5 M 253.4 191.5 L 253.4 320.5 M 333.7 191.5 L 378.8 320.5 L 424.0 191.5" fill="none" stroke="#000000" stroke-width="35.5" stroke-linecap="round" stroke-linejoin="round"/></g></mask></defs><rect width="512" height="512" fill="#FFFFFF" mask="url(#wuDisc-x_tv)"/>
+</svg>

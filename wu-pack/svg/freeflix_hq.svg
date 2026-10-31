@@ -1,0 +1,3 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs><mask id="wuDisc-freeflix_hq" maskUnits="userSpaceOnUse" x="0" y="0" width="512" height="512"><rect width="512" height="512" fill="#000000"/><circle cx="256" cy="256" r="211" fill="#FFFFFF"/><g transform="translate(256 256) scale(0.7278) translate(-256 -256)"><path d="M 72 176 L 136 176 M 88 256 L 152 256 M 72 336 L 136 336" fill="none" stroke="#000000" stroke-width="45.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M 196 112 L 428 256 L 196 400 Z" fill="none" stroke="#000000" stroke-width="55.0" stroke-linecap="round" stroke-linejoin="round"/></g></mask></defs><rect width="512" height="512" fill="#FFFFFF" mask="url(#wuDisc-freeflix_hq)"/>
+</svg>

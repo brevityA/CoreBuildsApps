@@ -1,19 +1,12 @@
 {
-  "versionCode": 19,
-  "versionName": "1.9.0",
-  "releaseDate": "2026-10-28",
+  "versionCode": 21,
+  "versionName": "1.10.1",
+  "releaseDate": "2026-10-31",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "797201e0478da5fe65ecba95565783412c250acaf1a9e36ce9c4b4c001a8773b",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.9.0",
+  "apkSha256": "4ede9a70ddb43dda99f7cb41d01045962d6e4b1decc75788c91007596fd5e9b9",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.10.1",
   "minSdk": 30,
   "highlights": [
-    "Twelve generic manual presets, each with a sentence saying what it does.",
-    "The TV's own sound equaliser gets real numbers now.",
-    "Three things the mapping refuses to pretend.",
-    "The capability screen's TV export was writing a layout no TV has.",
-    "The calibration guide asks instead of lecturing.",
-    "It also says which faults are not settings.",
-    "The display is described from what Android reports, above the first step.",
-    "Four test patterns were lying, and are fixed."
+    "Bitstream capability is judged by the output in use, not every port plugged in."
   ]
 }

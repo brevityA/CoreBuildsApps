@@ -208,4 +208,45 @@ class OutputRouteTest {
         val generic = profile("generic", 200, HDMI_ARC)
         assertEquals("generic", OutputRoute.pick(listOf(beam, generic), "beam", HDMI_ARC, "Yamaha Receiver").profile?.id)
     }
+
+    @Test
+    fun `HDMI and optical can carry a bitstream, PCM-only outputs cannot`() {
+        assertTrue(OutputRoute.bitstreamCapable(HDMI, emptyList()))
+        assertTrue(OutputRoute.bitstreamCapable(HDMI_ARC, emptyList()))
+        // Optical is filed under WIRED with analogue line outs; it counts when it is on the route.
+        assertTrue(OutputRoute.bitstreamCapable(OutputRoute.WIRED, listOf(AudioDeviceInfo.TYPE_LINE_DIGITAL)))
+        assertFalse(OutputRoute.bitstreamCapable(OutputRoute.WIRED, listOf(AudioDeviceInfo.TYPE_LINE_ANALOG)))
+        assertFalse(OutputRoute.bitstreamCapable(OutputRoute.WIRED, emptyList()))
+        for (kind in listOf(BLUETOOTH, SPEAKER, OutputRoute.USB, null)) {
+            assertFalse(OutputRoute.bitstreamCapable(kind, listOf(AudioDeviceInfo.TYPE_LINE_DIGITAL)))
+        }
+    }
+
+    @Test
+    fun `optical counts only when it is on the active route, not merely connected`() {
+        val headphones = AudioDeviceInfo.TYPE_WIRED_HEADPHONES
+        val optical = AudioDeviceInfo.TYPE_LINE_DIGITAL
+        val connected = listOf(headphones, optical)
+
+        // Android 13+ names the route: headphones are playing, the optical port
+        // is only plugged in. The route wins, and the route cannot carry a bitstream.
+        val active = listOf(headphones)
+        assertEquals(active, OutputRoute.capabilityTypes(active, connected))
+        assertFalse(OutputRoute.bitstreamCapable(OutputRoute.WIRED, OutputRoute.capabilityTypes(active, connected)))
+
+        // The optical port is what the media is on — it counts, whatever else is connected.
+        val opticalActive = listOf(optical)
+        assertTrue(OutputRoute.bitstreamCapable(OutputRoute.WIRED, OutputRoute.capabilityTypes(opticalActive, connected)))
+    }
+
+    @Test
+    fun `with no active route named, the connected estimate stands as before`() {
+        // API 30–32, or a failed/empty route query: 1.10.0's judgement, unchanged.
+        val connected = listOf(AudioDeviceInfo.TYPE_WIRED_HEADPHONES, AudioDeviceInfo.TYPE_LINE_DIGITAL)
+        assertEquals(connected, OutputRoute.capabilityTypes(emptyList(), connected))
+        assertTrue(OutputRoute.bitstreamCapable(OutputRoute.WIRED, OutputRoute.capabilityTypes(emptyList(), connected)))
+
+        val noOptical = listOf(AudioDeviceInfo.TYPE_LINE_ANALOG)
+        assertFalse(OutputRoute.bitstreamCapable(OutputRoute.WIRED, OutputRoute.capabilityTypes(emptyList(), noOptical)))
+    }
 }

@@ -12,6 +12,14 @@
     <uses-permission
         android:name="android.permission.DUMP"
         tools:ignore="ProtectedPermissions" />
+    <!-- 1.10.0, Stereo speakers: on Android 12+, setting Surround sound to
+         Never (AudioManager.setEncodedSurroundMode) so Android decodes Dolby
+         and DTS and folds 5.1 to stereo where Core EQ hears it. A special
+         access the user grants on the TV ("Modify system settings"); without
+         it Core EQ explains how to change the setting by hand. -->
+    <uses-permission
+        android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />

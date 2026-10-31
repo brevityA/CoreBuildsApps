@@ -1,13 +1,14 @@
 {
-  "versionCode": 59,
-  "versionName": "2.5.1",
-  "iconCount": 1020,
-  "componentCount": 1238,
-  "releaseDate": "2026-10-24",
+  "versionCode": 62,
+  "versionName": "2.5.4",
+  "iconCount": 1028,
+  "componentCount": 1256,
+  "releaseDate": "2026-10-31",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Projectivity launcher discovery in release builds"
+    "Aurora Player and Blackout",
+    "Kayo applies again"
   ]
 }
