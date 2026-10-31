@@ -1,19 +1,15 @@
 {
-  "versionCode": 19,
-  "versionName": "1.9.0",
-  "releaseDate": "2026-10-28",
+  "versionCode": 20,
+  "versionName": "1.10.0",
+  "releaseDate": "2026-10-31",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "797201e0478da5fe65ecba95565783412c250acaf1a9e36ce9c4b4c001a8773b",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.9.0",
+  "apkSha256": "3f81a97892dde7fa22a2893f73864b9200bff337cacf3052c538adde88d876e3",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.10.0",
   "minSdk": 30,
   "highlights": [
-    "Twelve generic manual presets, each with a sentence saying what it does.",
-    "The TV's own sound equaliser gets real numbers now.",
-    "Three things the mapping refuses to pretend.",
-    "The capability screen's TV export was writing a layout no TV has.",
-    "The calibration guide asks instead of lecturing.",
-    "It also says which faults are not settings.",
-    "The display is described from what Android reports, above the first step.",
-    "Four test patterns were lying, and are fixed."
+    "Stereo speakers, for 5.1 on two speakers.",
+    "It makes sure Android does the fold.",
+    "The restore is now one tested rule, not two lines in an activity.",
+    "The bitstream warning now covers optical and Android 11."
   ]
 }
