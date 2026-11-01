@@ -42,6 +42,7 @@ import tv.corebuilds.eq.mode.ContentType
 import tv.corebuilds.eq.mode.ContentTypePrefs
 import tv.corebuilds.eq.mode.ContentTypeRegistry
 import tv.corebuilds.eq.ui.EnhancedAudioPrefs
+import tv.corebuilds.eq.dsp.LoudnessCompensation
 import java.util.concurrent.Executors
 import kotlin.math.roundToInt
 
@@ -243,7 +244,9 @@ class EqService : Service() {
 
     /** Reprogram only when the lift actually moves a step; holding the volume key costs a few reapplies. */
     private fun onVolumeChanged() {
-        if (!running || suspended || enhancedPrefs?.lowVolumeBassEnabled != true) return
+        if (!running || suspended) return
+        val prefs = enhancedPrefs ?: return
+        if (!prefs.lowVolumeBassEnabled && !prefs.autoLoudnessEnabled) return
         if (toneLayers() != activeLayers) applyAll()
     }
 
@@ -1184,18 +1187,27 @@ class EqService : Service() {
     private fun limiter(): LimiterSettings = enhancedPrefs?.limiter() ?: LimiterSettings()
 
     /**
-     * Dialogue boost, Low-volume bass and Stereo speakers for this moment. The lift is measured
-     * from the current output's own reference volume, recorded the first time
-     * that output reports one ([LowVolumeBass]); a volume Android does not
-     * report (fixed-volume outputs) adds nothing.
+     * Dialogue boost, Low-volume bass, Stereo speakers and full ISO 226 loudness compensation for this moment.
+     * Low-volume bass measures its lift from the output's own reference volume ([LowVolumeBass]); a volume Android
+     * does not report (fixed-volume outputs) adds nothing. Auto loudness is mutually exclusive with low-volume bass.
      */
     private fun toneLayers(): ToneLayers {
         val prefs = enhancedPrefs ?: return ToneLayers.NONE
-        val bass = if (prefs.lowVolumeBassEnabled) LowVolumeBass.read(this, prefs).liftDb else 0.0
+        val bass = if (prefs.lowVolumeBassEnabled && !prefs.autoLoudnessEnabled) LowVolumeBass.read(this, prefs).liftDb else 0.0
+        val loudness = if (prefs.autoLoudnessEnabled) {
+            val route = OutputRoute.current(this)?.let { "${it.kind}|${it.name}" } ?: OutputRoute.UNKNOWN
+            val now = VolumeLevel.mediaDb(this)
+            val reference = prefs.lowVolumeReferenceDb(route) ?: now
+            val dbBelowRef = if (reference != null && now != null) reference - now else 0.0
+            LoudnessCompensation.bandGains(dbBelowRef, strength = 1.0)
+        } else {
+            DoubleArray(10) { 0.0 }
+        }
         return ToneLayers(
             dialogue = prefs.dialogueBoostEnabled,
             lowVolumeBassDb = bass,
-            stereoDownmix = prefs.stereoSpeakersEnabled
+            stereoDownmix = prefs.stereoSpeakersEnabled,
+            loudnessBandGains = loudness
         )
     }
 

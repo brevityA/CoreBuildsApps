@@ -1,6 +1,7 @@
 package tv.corebuilds.eq.apply
 
 import tv.corebuilds.eq.dsp.EqualLoudness
+import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.dsp.Targets
 import tv.corebuilds.eq.export.Profile
 import kotlin.math.PI
@@ -33,9 +34,16 @@ data class ToneLayers(
      * [STEREO_PRESENCE_DB] and cuts what the speaker cannot play by
      * [BASS_GUARD_DB]. See [presenceGainDb] and [bassGuardDb].
      */
-    val stereoDownmix: Boolean = false
+    val stereoDownmix: Boolean = false,
+    /**
+     * Full ISO 226 loudness compensation gains at the ten manual EQ band
+     * centres (1.11.0), applied at low volume. All zeros when off.
+     * Aligned with [ManualEq.BAND_CENTRES_HZ].
+     */
+    val loudnessBandGains: DoubleArray = DoubleArray(10) { 0.0 }
 ) {
-    val isEmpty: Boolean get() = !dialogue && lowVolumeBassDb <= 0.0 && !stereoDownmix
+    val isEmpty: Boolean get() =
+        !dialogue && lowVolumeBassDb <= 0.0 && !stereoDownmix && loudnessBandGains.all { it <= 0.0 }
 
     /**
      * Dialogue and House targets already carry the same +2 dB presence box
@@ -68,6 +76,9 @@ data class ToneLayers(
         if (lowVolumeBassDb > 0.0) db += lowVolumeBassDb * lowShelf(hz) * rolloffFade(hz, profile.rolloffHz)
         // A manual profile measured nothing: its rolloffHz is Profile's 40 Hz default, not a speaker's.
         if (stereoDownmix) db += bassGuardDb(hz, if (profile.manualOnly) 0.0 else profile.rolloffHz)
+        // Full ISO 226 loudness compensation: the nearest manual band's gain.
+        val bandIdx = ManualEq.BAND_CENTRES_HZ.indices.minByOrNull { kotlin.math.abs(it - hz) }
+        if (bandIdx != null && loudnessBandGains.size > bandIdx) db += loudnessBandGains[bandIdx]
         return db
     }
 
@@ -81,7 +92,8 @@ data class ToneLayers(
         } ?: "stereo: bass guard".takeIf { stereoDownmix }
         return listOfNotNull(
             speech,
-            "low-volume bass +%.1f dB".format(java.util.Locale.US, lowVolumeBassDb).takeIf { lowVolumeBassDb > 0.0 }
+            "low-volume bass +%.1f dB".format(java.util.Locale.US, lowVolumeBassDb).takeIf { lowVolumeBassDb > 0.0 },
+            "loudness compensation".takeIf { loudnessBandGains.any { it > 0.0 } }
         ).joinToString(" + ")
     }
 
