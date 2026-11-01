@@ -103,6 +103,11 @@
                     android:id="@+id/btn_extras_night"
                     style="@style/CoreEQ.SwitchRow"
                     tools:text="Night mode: Off" />
+
+                <Button
+                    android:id="@+id/btn_extras_auto_loudness"
+                    style="@style/CoreEQ.SwitchRow"
+                    tools:text="Auto loudness: Off" />
             </LinearLayout>
 
             <!-- What the focused switch does; follows focus -->

@@ -258,9 +258,8 @@ class EqService : Service() {
      * suggested — the user turns it on from Home.
      */
     private fun onOutputsChanged() {
-        val output = OutputRoute.current(this)
+        val output = OutputRoute.current(this) ?: return
         if (output == lastOutput) return
-        lastOutput = output
         val key = "${output.kind}|${output.name}"
         val applied = deviceKeyStore.appliedKeys()
         if (AutoApplyPolicy.decide(key, applied) == AutoApplyPolicy.Action.SUGGEST_ONLY) {
@@ -268,6 +267,7 @@ class EqService : Service() {
             // The user turns it on from Home when they want it.
             return
         }
+        lastOutput = output
         applyAll()
         if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
     }
@@ -1226,11 +1226,17 @@ class EqService : Service() {
         val loudness = if (prefs.autoLoudnessEnabled) {
             val route = OutputRoute.current(this)?.let { "${it.kind}|${it.name}" } ?: OutputRoute.UNKNOWN
             val now = VolumeLevel.mediaDb(this)
-            val reference = prefs.lowVolumeReferenceDb(route) ?: now
+            val storedReference = prefs.lowVolumeReferenceDb(route)
+            // Capture the reference on first read, like LowVolumeBass does,
+            // so the compensation has a baseline to measure from.
+            if (storedReference == null && now != null) {
+                prefs.setLowVolumeReferenceDb(route, now)
+            }
+            val reference = storedReference ?: now
             val dbBelowRef = if (reference != null && now != null) reference - now else 0.0
             LoudnessCompensation.bandGains(dbBelowRef, strength = 1.0)
         } else {
-            DoubleArray(10) { 0.0 }
+            ZERO_GAINS
         }
         return ToneLayers(
             dialogue = prefs.dialogueBoostEnabled,
@@ -1360,6 +1366,9 @@ class EqService : Service() {
         private const val DISCOVERY_DEBOUNCE_MS = 2000L
         /** Keep the overlay through brief pauses between tracks. */
         private const val PLAYBACK_HUD_STOP_GRACE_MS = 5000L
+
+        /** Zero-gain band array, reused when auto loudness is off to avoid reallocating on every apply. */
+        val ZERO_GAINS = DoubleArray(10) { 0.0 }
 
         @Volatile
         var running = false

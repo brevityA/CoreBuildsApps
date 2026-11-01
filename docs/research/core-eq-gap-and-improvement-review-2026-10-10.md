@@ -121,7 +121,9 @@ Two runs, both in a sandbox without Android SDK access.
 | 2.2 Passthrough | Setup check shows an info row on HDMI outputs (earlier this session). |
 | 2.3 Spatializer | Built as a **read-only** status row in the setup check, not a settings switch. Android has no on/off call for the spatializer, so a switch could not work. Gated to API 32. Tests written. |
 | 2.4 Model-level presets | Research note written: `docs/research/core-eq-device-models-research-2026-10-10.md`. No model presets added; no source gives a measured response. Needs the user's device list. |
-| 2.5 Model-string matching, 2.6 auto-apply, 2.7 on-TV ADB | Still deferred. |
+| 2.5 Model-string matching | Still deferred (`Build.MODEL` not used in `DeviceIdentity`). |
+| 2.6 Auto-apply per device | Built: `DeviceKeyStore.kt` + `AutoApplyPolicy.decide()` wired in `EqService.onOutputsChanged()`; first apply per output auto-applies, later suggests only. |
+| 2.7 On-TV ADB | Still deferred. |
 | I1 Accessibility | Withdrawn (see row above). |
 
 Decided (maintainer, 2026-10-10): Core EQ is Android TV only. Samsung and LG

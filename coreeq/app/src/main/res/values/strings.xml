@@ -290,6 +290,13 @@
     <string name="extras_loudness_note">Android\'s LoudnessEnhancer. Raises quiet content by up to +4 dB (podcasts, news); none for music.</string>
     <string name="extras_night_on">Night mode: On</string>
     <string name="extras_night_off">Night mode: Off</string>
+    <string name=\"extras_name_auto_loudness\">Auto loudness</string>
+    <string name=\"extras_auto_loudness_on\">Auto loudness: On</string>
+    <string name=\"extras_auto_loudness_off\">Auto loudness: Off</string>
+    <string name=\"extras_auto_loudness_note\" formatted=\"false\">Restores the bass and treble your ears lose at low volume (ISO 226), mapped to the ten EQ bands. Off at reference volume; never above +6 dB per band. Mutually exclusive with Low-volume bass.</string>
+    <string name="extras_auto_loudness_unknown\">Android does not report this output\\'s volume in dB, so there is nothing to compensate.</string>
+    <string name="extras_auto_loudness_flat\">Nothing added at or above the reference.</string>
+    <string name="extras_auto_loudness_status\">This output: reference %1$.0f dB, now %2$.0f dB, %3$.1f dB below reference.</string>
     <!-- Stereo speakers (1.10.0): 5.1 films on two speakers. -->
     <string name="extras_stereo_on">Stereo speakers: On</string>
     <string name="extras_stereo_off">Stereo speakers: Off</string>
@@ -346,6 +353,11 @@
     <string name="profiles_card_allow">Allow on-screen indicators…</string>
     <string name="profiles_card_test">Show a test card</string>
     <string name="profiles_card_test_off">Correction is off, so there is nothing to show. Switch it on from Home, then try again.</string>
+    <string name="profiles_learned_prefs">Learned preferences</string>
+    <string name="profiles_learned_prefs_none">Core EQ has no learned preferences yet. Choose a profile on an output and Core EQ will remember it.</string>
+    <string name="profiles_learned_prefs_title">Learned per-output preferences</string>
+    <string name="profiles_learned_prefs_clear_all">Clear all</string>
+
     <string name="card_test_waiting">Core EQ is waiting for a player: nothing is applied yet, so there is no card to show.</string>
     <string name="profiles_card_no_settings">This TV has no screen for that permission. From a computer with ADB: adb shell appops set %1$s SYSTEM_ALERT_WINDOW allow</string>
     <string name="home_card_permission">On-screen indicators need “Display over other apps”. The Home badge remains available; the notification also depends on notification permission.</string>

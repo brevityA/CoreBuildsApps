@@ -152,6 +152,19 @@
                 android:textSize="@dimen/cb_text_data"
                 android:focusable="true" />
 
+            <!-- What Core EQ has learned: the profile it prefers for each output,
+                 based on the user's own choices. Can be cleared here. -->
+            <Button
+                android:id="@+id/btn_learned_prefs"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cb_target_min"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:background="@drawable/bg_ghost"
+                android:text="@string/profiles_learned_prefs"
+                android:textColor="@color/ghost_text"
+                android:textSize="@dimen/cb_text_data"
+                android:focusable="true" />
+
         </LinearLayout>
 
         <!-- Right pane: Curve preview + Export chips + Preamp + Actions -->
