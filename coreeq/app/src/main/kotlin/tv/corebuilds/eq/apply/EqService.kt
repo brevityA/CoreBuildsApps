@@ -110,6 +110,7 @@ class EqService : Service() {
 
     private lateinit var store: ProfileStore
     private lateinit var modeStore: ContentModeStore
+    private lateinit var deviceKeyStore: DeviceKeyStore
     
     // The Extra effects screen's switches (all off by default since 1.2.1).
     private var enhancedPrefs: EnhancedAudioPrefs? = null
@@ -250,10 +251,22 @@ class EqService : Service() {
         if (toneLayers() != activeLayers) applyAll()
     }
 
+    /**
+     * An output changed. The first time a device is seen, correction may be
+     * applied automatically ([AutoApplyPolicy]); later times it is only
+     * suggested — the user turns it on from Home.
+     */
     private fun onOutputsChanged() {
         val output = OutputRoute.current(this)
         if (output == lastOutput) return
         lastOutput = output
+        val key = "${output.kind}|${output.name}"
+        val applied = deviceKeyStore.appliedKeys()
+        if (AutoApplyPolicy.decide(key, applied) == AutoApplyPolicy.Action.SUGGEST_ONLY) {
+            // A device we have seen before: do not auto-apply correction here.
+            // The user turns it on from Home when they want it.
+            return
+        }
         applyAll()
         if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
     }
@@ -262,6 +275,7 @@ class EqService : Service() {
         super.onCreate()
         store = ProfileStore(this)
         modeStore = ContentModeStore(this)
+        deviceKeyStore = DeviceKeyStore.of(this)
         
         enhancedPrefs = EnhancedAudioPrefs(this)
         
@@ -492,6 +506,8 @@ class EqService : Service() {
                 val configured = if (createdGlobalNow) global else configureOrReplace(global, 0, profile)
                 globalEffect = configured
                 syncRuntimeBands()
+                // First successful apply for this output: record it so later enables only suggest.
+                recordAutoApplied(this)
                 report(
                     "Output-mix effect configured · $modeName · ${configured.engine} · ${profile.name}$via · ${configured.bands.size} bands${fitNote(listOf(configured))}${extrasNote(listOf(configured), profile)} · coverage depends on TV routing${where(output)}",
                     isError = false
@@ -1350,6 +1366,13 @@ class EqService : Service() {
             } catch (e: Exception) {
                 Log.e(TAG, "startForegroundService refused", e)
                 "Android would not start the correction service: ${e.message ?: e.javaClass.simpleName}"
+            }
+        }
+
+        /** Record that correction has been applied for the current output, so later enables only suggest. */
+        fun recordAutoApplied(context: Context) {
+            DeviceKeyStore.of(context).currentDeviceKey(context)?.let { key ->
+                DeviceKeyStore.of(context).recordApplied(key)
             }
         }
 
