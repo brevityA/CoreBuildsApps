@@ -291,13 +291,13 @@
     <string name="extras_loudness_note">Android\'s LoudnessEnhancer. Raises quiet content by up to +4 dB (podcasts, news); none for music.</string>
     <string name="extras_night_on">Night mode: On</string>
     <string name="extras_night_off">Night mode: Off</string>
-    <string name=\"extras_name_auto_loudness\">Auto loudness</string>
-    <string name=\"extras_auto_loudness_on\">Auto loudness: On</string>
-    <string name=\"extras_auto_loudness_off\">Auto loudness: Off</string>
-    <string name=\"extras_auto_loudness_note\" formatted=\"false\">Restores the bass and treble your ears lose at low volume (ISO 226), mapped to the ten EQ bands. Off at reference volume; never above +6 dB per band. Mutually exclusive with Low-volume bass.</string>
-    <string name="extras_auto_loudness_unknown\">Android does not report this output\\'s volume in dB, so there is nothing to compensate.</string>
-    <string name="extras_auto_loudness_flat\">Nothing added at or above the reference.</string>
-    <string name="extras_auto_loudness_status\">This output: reference %1$.0f dB, now %2$.0f dB, %3$.1f dB below reference.</string>
+    <string name="extras_name_auto_loudness">Auto loudness</string>
+    <string name="extras_auto_loudness_on">Auto loudness: On</string>
+    <string name="extras_auto_loudness_off">Auto loudness: Off</string>
+    <string name="extras_auto_loudness_note" formatted="false">Restores the bass and treble your ears lose at low volume (ISO 226), mapped to the ten EQ bands. Off at reference volume; never above +6 dB per band. Mutually exclusive with Low-volume bass.</string>
+    <string name="extras_auto_loudness_unknown">Android does not report this output\\'s volume in dB, so there is nothing to compensate.</string>
+    <string name="extras_auto_loudness_flat">Nothing added at or above the reference.</string>
+    <string name="extras_auto_loudness_status">This output: reference %1$.0f dB, now %2$.0f dB, %3$.1f dB below reference.</string>
     <!-- Stereo speakers (1.10.0): 5.1 films on two speakers. -->
     <string name="extras_stereo_on">Stereo speakers: On</string>
     <string name="extras_stereo_off">Stereo speakers: Off</string>
