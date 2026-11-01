@@ -16,7 +16,7 @@ class DeviceKeyStore(private val prefs: SharedPreferences) {
 
     /** The keys of every output that has had correction auto-applied. */
     fun appliedKeys(): Set<String> =
-        prefs.getStringSet(KEY_APPLIED, emptySet()).toSet()
+        prefs.getStringSet(KEY_APPLIED, emptySet())?.toSet() ?: emptySet()
 
     /** Record that [deviceKey] has had correction applied. */
     fun recordApplied(deviceKey: String) {
@@ -29,7 +29,7 @@ class DeviceKeyStore(private val prefs: SharedPreferences) {
 
     /** The output currently in use, as a stable device key. */
     fun currentDeviceKey(context: Context): String? =
-        OutputRoute.current(context)?.let { "${it.kind}|${it.name}" }.takeIf { it.isNotBlank() }
+        OutputRoute.current(context)?.let { "${it.kind}|${it.name}" }?.takeIf { it.isNotBlank() }
 
     companion object {
         private const val PREFS_NAME = "device_key_store"

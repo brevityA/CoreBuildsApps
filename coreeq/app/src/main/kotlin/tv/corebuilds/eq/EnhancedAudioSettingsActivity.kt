@@ -21,6 +21,7 @@ import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.LowVolumeBass
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.apply.SurroundOutput
+import tv.corebuilds.eq.apply.VolumeLevel
 import tv.corebuilds.eq.dsp.TimeBasedSuggestions
 import tv.corebuilds.eq.ui.EnhancedAudioPrefs
 import tv.corebuilds.eq.ui.showSwitch
