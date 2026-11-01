@@ -42,6 +42,7 @@ import tv.corebuilds.eq.mode.ContentType
 import tv.corebuilds.eq.mode.ContentTypePrefs
 import tv.corebuilds.eq.mode.ContentTypeRegistry
 import tv.corebuilds.eq.ui.EnhancedAudioPrefs
+import tv.corebuilds.eq.dsp.LoudnessCompensation
 import java.util.concurrent.Executors
 import kotlin.math.roundToInt
 
@@ -109,6 +110,8 @@ class EqService : Service() {
 
     private lateinit var store: ProfileStore
     private lateinit var modeStore: ContentModeStore
+    private lateinit var deviceKeyStore: DeviceKeyStore
+    private lateinit var routeStore: ProfileRouteStore
     
     // The Extra effects screen's switches (all off by default since 1.2.1).
     private var enhancedPrefs: EnhancedAudioPrefs? = null
@@ -243,14 +246,28 @@ class EqService : Service() {
 
     /** Reprogram only when the lift actually moves a step; holding the volume key costs a few reapplies. */
     private fun onVolumeChanged() {
-        if (!running || suspended || enhancedPrefs?.lowVolumeBassEnabled != true) return
+        if (!running || suspended) return
+        val prefs = enhancedPrefs ?: return
+        if (!prefs.lowVolumeBassEnabled && !prefs.autoLoudnessEnabled) return
         if (toneLayers() != activeLayers) applyAll()
     }
 
+    /**
+     * An output changed. The first time a device is seen, correction may be
+     * applied automatically ([AutoApplyPolicy]); later times it is only
+     * suggested — the user turns it on from Home.
+     */
     private fun onOutputsChanged() {
         val output = OutputRoute.current(this)
         if (output == lastOutput) return
         lastOutput = output
+        val key = "${output.kind}|${output.name}"
+        val applied = deviceKeyStore.appliedKeys()
+        if (AutoApplyPolicy.decide(key, applied) == AutoApplyPolicy.Action.SUGGEST_ONLY) {
+            // A device we have seen before: do not auto-apply correction here.
+            // The user turns it on from Home when they want it.
+            return
+        }
         applyAll()
         if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
     }
@@ -259,6 +276,8 @@ class EqService : Service() {
         super.onCreate()
         store = ProfileStore(this)
         modeStore = ContentModeStore(this)
+        deviceKeyStore = DeviceKeyStore.of(this)
+        routeStore = ProfileRouteStore.of(this)
         
         enhancedPrefs = EnhancedAudioPrefs(this)
         
@@ -411,12 +430,23 @@ class EqService : Service() {
     /** The route-matched room base plus its current content-mode overlay. */
     private fun resolve(): Triple<Profile?, OutputRoute.Output?, Boolean> {
         val output = OutputRoute.current(this)
-        val pick = OutputRoute.pick(
-            store.getAllProfiles(),
-            store.chosenId(),
-            output?.kind,
-            output?.name
-        )
+        val profiles = store.getAllProfiles()
+        val chosen = store.chosenId()
+        // The user's explicit choice always wins over learned preferences.
+        val pick = if (chosen != null && profiles.any { it.id == chosen }) {
+            OutputRoute.pick(profiles, chosen, output?.kind, output?.name)
+        } else {
+            // No explicit choice: use the learned preference for this output,
+            // falling back to output-kind-based picking.
+            val key = output?.let { "${it.kind}|${it.name}" } ?: null
+            val preferredId = key?.let { routeStore.preferredProfile(it) }
+            val preferred = preferredId?.let { profiles.firstOrNull { it.id == preferredId } }
+            if (preferred != null) {
+                OutputRoute.Pick(preferred, switched = chosen != null && chosen != preferred.id)
+            } else {
+                OutputRoute.pick(profiles, null, output?.kind, output?.name)
+            }
+        }
         val hasPlayerSnapshot = discoveryInitialized || mediaSessionSnapshotInitialized
         val mode = when {
             !playerDiscoveryAvailable() ->
@@ -489,6 +519,8 @@ class EqService : Service() {
                 val configured = if (createdGlobalNow) global else configureOrReplace(global, 0, profile)
                 globalEffect = configured
                 syncRuntimeBands()
+                // First successful apply for this output: record it so later enables only suggest.
+                recordAutoApplied(this)
                 report(
                     "Output-mix effect configured · $modeName · ${configured.engine} · ${profile.name}$via · ${configured.bands.size} bands${fitNote(listOf(configured))}${extrasNote(listOf(configured), profile)} · coverage depends on TV routing${where(output)}",
                     isError = false
@@ -1184,18 +1216,27 @@ class EqService : Service() {
     private fun limiter(): LimiterSettings = enhancedPrefs?.limiter() ?: LimiterSettings()
 
     /**
-     * Dialogue boost, Low-volume bass and Stereo speakers for this moment. The lift is measured
-     * from the current output's own reference volume, recorded the first time
-     * that output reports one ([LowVolumeBass]); a volume Android does not
-     * report (fixed-volume outputs) adds nothing.
+     * Dialogue boost, Low-volume bass, Stereo speakers and full ISO 226 loudness compensation for this moment.
+     * Low-volume bass measures its lift from the output's own reference volume ([LowVolumeBass]); a volume Android
+     * does not report (fixed-volume outputs) adds nothing. Auto loudness is mutually exclusive with low-volume bass.
      */
     private fun toneLayers(): ToneLayers {
         val prefs = enhancedPrefs ?: return ToneLayers.NONE
-        val bass = if (prefs.lowVolumeBassEnabled) LowVolumeBass.read(this, prefs).liftDb else 0.0
+        val bass = if (prefs.lowVolumeBassEnabled && !prefs.autoLoudnessEnabled) LowVolumeBass.read(this, prefs).liftDb else 0.0
+        val loudness = if (prefs.autoLoudnessEnabled) {
+            val route = OutputRoute.current(this)?.let { "${it.kind}|${it.name}" } ?: OutputRoute.UNKNOWN
+            val now = VolumeLevel.mediaDb(this)
+            val reference = prefs.lowVolumeReferenceDb(route) ?: now
+            val dbBelowRef = if (reference != null && now != null) reference - now else 0.0
+            LoudnessCompensation.bandGains(dbBelowRef, strength = 1.0)
+        } else {
+            DoubleArray(10) { 0.0 }
+        }
         return ToneLayers(
             dialogue = prefs.dialogueBoostEnabled,
             lowVolumeBassDb = bass,
-            stereoDownmix = prefs.stereoSpeakersEnabled
+            stereoDownmix = prefs.stereoSpeakersEnabled,
+            loudnessBandGains = loudness
         )
     }
 
@@ -1338,6 +1379,13 @@ class EqService : Service() {
             } catch (e: Exception) {
                 Log.e(TAG, "startForegroundService refused", e)
                 "Android would not start the correction service: ${e.message ?: e.javaClass.simpleName}"
+            }
+        }
+
+        /** Record that correction has been applied for the current output, so later enables only suggest. */
+        fun recordAutoApplied(context: Context) {
+            DeviceKeyStore.of(context).currentDeviceKey(context)?.let { key ->
+                DeviceKeyStore.of(context).recordApplied(key)
             }
         }
 

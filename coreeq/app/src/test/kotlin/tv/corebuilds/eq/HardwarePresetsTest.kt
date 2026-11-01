@@ -6,6 +6,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import kotlin.math.abs
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.dsp.HardwarePresets
 import tv.corebuilds.eq.dsp.ManualEq
@@ -194,5 +195,115 @@ class HardwarePresetsTest {
         val lg = model("lg-s80tr")
         assertTrue(ManualEq.gainAtBand(lg.presets.single { it.id == "lg-s80tr-movie" }.filters, 1) > 0.0)
         assertTrue(ManualEq.gainAtBand(lg.presets.single { it.id == "lg-s80tr-dialogue" }.filters, 1) == 0.0)
+    }
+
+    private val sonosArc = HardwarePresets.MODELS.single { it.id == "sonos-arc" }
+    private val sonosBeam = HardwarePresets.MODELS.single { it.id == "sonos-beam-gen-2" }
+    private val sonosRay = HardwarePresets.MODELS.single { it.id == "sonos-ray" }
+    private val sonosArcUltra = HardwarePresets.MODELS.single { it.id == "sonos-arc-ultra" }
+    private val bose900 = HardwarePresets.MODELS.single { it.id == "bose-smart-soundbar-900" }
+    private val samsungQ990c = HardwarePresets.MODELS.single { it.id == "samsung-hw-q990c" }
+
+    @Test
+    fun eachSonosModelIsFoundUnderTheNamesAndroidMightReport() {
+        val cases = mapOf(
+            sonosArc to listOf("Sonos Arc", "SONOS ARC", "sonos_arc", "SonosArc"),
+            sonosBeam to listOf("Sonos Beam (Gen 2)", "BEAM GEN 2", "sonos_beam_gen_2", "Beam Gen2"),
+            sonosRay to listOf("Sonos Ray", "SONOS RAY", "sonos_ray")
+        )
+        for ((model, names) in cases) {
+            for (name in names) {
+                assertEquals("name: $name", model, HardwarePresets.matchAny(listOf(name)))
+            }
+        }
+    }
+
+    @Test
+    fun arcAndArcUltraAreDistinctModels() {
+        // "Sonos Arc Ultra" now matches the Arc Ultra model, not the original Arc.
+        assertEquals(sonosArcUltra, HardwarePresets.matchAny(listOf("Sonos Arc Ultra")))
+        assertEquals(sonosArcUltra, HardwarePresets.matchAny(listOf("SONOS ARC ULTRA")))
+        // The original Arc still matches plain "Sonos Arc" and does not inherit
+        // Arc Ultra's overlays.
+        assertEquals(sonosArc, HardwarePresets.matchAny(listOf("Sonos Arc")))
+    }
+
+    @Test
+    fun theOriginalBeamIsStillNotMatchedByGenerationlessNames() {
+        assertNull(HardwarePresets.matchAny(listOf("Sonos Beam")))
+        assertNull(HardwarePresets.matchAny(listOf("BEAM GEN 1")))
+        assertNull(HardwarePresets.matchAny(listOf("Sonos Beam Gen 3")))
+    }
+
+    @Test
+    fun aSonosNameIsOnlyEvidenceOnOutputsThatCanCarryOne() {
+        assertEquals(sonosArc, HardwarePresets.detect(OutputRoute.HDMI_ARC, "Sonos Arc", emptyList()))
+        assertEquals(sonosBeam, HardwarePresets.detect(OutputRoute.BLUETOOTH, "Sonos Beam (Gen 2)", emptyList()))
+        assertEquals(sonosRay, HardwarePresets.detect(OutputRoute.HDMI, "HDMI", listOf("TV", "Sonos Ray")))
+
+        // The TV's own speakers are never a soundbar, even if a name claims otherwise.
+        assertNull(HardwarePresets.detect(OutputRoute.SPEAKER, "Sonos Arc", listOf("Sonos Arc")))
+        assertNull(HardwarePresets.detect(OutputRoute.UNKNOWN, "Sonos Ray", emptyList()))
+        assertNull(HardwarePresets.detect(null, "Sonos Beam (Gen 2)", emptyList()))
+    }
+
+    @Test
+    fun eachSonosModelShipsFourPresetsWithinTheManualEqRules() {
+        for (id in listOf("sonos-arc", "sonos-beam-gen-2", "sonos-ray")) {
+            val presets = model(id).presets
+            assertEquals(id, 4, presets.size)
+            assertTrue(presets.all { it.name.length <= 32 })
+        }
+    }
+
+    @Test
+    fun theSonosPresetsKeepEachModelsCharacterDistinct() {
+        // The Arc's powerful bass gets cut in its movie preset; the compact Beam
+        // keeps its cut gentler; the tiny Ray asks for no sub bass at all.
+        assertTrue(ManualEq.gainAtBand(sonosArc.presets.single { it.id == "sonos-arc-movie" }.filters, 1) < 0.0)
+        assertTrue(ManualEq.gainAtBand(sonosBeam.presets.single { it.id == "sonos-beam-gen-2-movie" }.filters, 1) < 0.0)
+        assertFalse("ray movie has no 63 Hz band",
+            sonosRay.presets.single { it.id == "sonos-ray-movie" }.filters.any { abs(it.fc - 63.0) < 0.01 })
+    }
+
+    @Test
+    fun eachNewModelIsFoundUnderTheNamesAndroidMightReport() {
+        val cases = mapOf(
+            sonosArcUltra to listOf("Sonos Arc Ultra", "ARC ULTRA", "sonos_arc_ultra", "ArcUltra"),
+            bose900 to listOf("Bose Smart Soundbar 900", "BOSE SMART SOUNDBAR 900", "bose_smart_soundbar_900", "Smart Soundbar 900"),
+            samsungQ990c to listOf("Samsung HW-Q990C", "HW-Q990C", "Q990C", "samsung_hw_q990c")
+        )
+        for ((model, names) in cases) {
+            for (name in names) {
+                assertEquals("name: $name", model, HardwarePresets.matchAny(listOf(name)))
+            }
+        }
+    }
+
+    @Test
+    fun newModelNamesAreNotMatchedByNearMisses() {
+        for (name in listOf("Sonos Arc", "Bose Smart Soundbar 700", "Samsung HW-Q990D", "HW-Q9900C", "Bose Soundbar 900")) {
+            assertNull("name: '$name'", HardwarePresets.matchAny(listOf(name)))
+        }
+    }
+
+    @Test
+    fun aNewModelNameIsOnlyEvidenceOnOutputsThatCanCarryOne() {
+        assertEquals(sonosArcUltra, HardwarePresets.detect(OutputRoute.HDMI_ARC, "Sonos Arc Ultra", emptyList()))
+        assertEquals(bose900, HardwarePresets.detect(OutputRoute.BLUETOOTH, "Bose Smart Soundbar 900", emptyList()))
+        assertEquals(samsungQ990c, HardwarePresets.detect(OutputRoute.HDMI, "HDMI", listOf("TV", "Samsung HW-Q990C")))
+        // The TV's own speakers are never a soundbar, even if a name claims otherwise.
+        assertNull(HardwarePresets.detect(OutputRoute.SPEAKER, "Sonos Arc Ultra", listOf("Sonos Arc Ultra")))
+        assertNull(HardwarePresets.detect(OutputRoute.UNKNOWN, "Bose Smart Soundbar 900", emptyList()))
+        assertNull(HardwarePresets.detect(null, "Samsung HW-Q990C", emptyList()))
+    }
+
+    @Test
+    fun eachNewModelShipsFourPresetsWithinTheManualEqRules() {
+        for (id in listOf("sonos-arc-ultra", "bose-smart-soundbar-900", "samsung-hw-q990c")) {
+            val presets = model(id).presets
+            assertEquals(id, 4, presets.size)
+            assertTrue(presets.all { it.name.length <= 32 })
+        }
     }
 }

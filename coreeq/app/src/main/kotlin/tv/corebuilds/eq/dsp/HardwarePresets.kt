@@ -419,8 +419,329 @@ object HardwarePresets {
             "No measured response from Core EQ."
     )
 
+
+    /** Sonos Arc (5.0.2 Dolby Atmos, 11 drivers: eight elliptical woofers, three silk-dome tweeters). */
+    private val SONOS_ARC = Model(
+        id = "sonos-arc",
+        brand = "Sonos",
+        name = "Sonos Arc",
+        kind = Kind.SOUNDBAR,
+        nameMatch = Regex("""(?<![a-z0-9])(?:sonos[\s_-]*)?arc(?![a-z0-9])""", RegexOption.IGNORE_CASE),
+        // The Arc Ultra is a different revision with more drivers and more bass;
+        // its name still contains "Arc", so exclude it explicitly.
+        nameExclude = Regex("""ultra""", RegexOption.IGNORE_CASE),
+        presets = listOf(
+            ManualEqPreset(
+                id = "sonos-arc-movie",
+                name = "Sonos Arc · Movie",
+                filters = listOf(
+                    bell(63.0, -1.5),    // reviews: the rich bass can dominate effects
+                    bell(250.0, -0.5),
+                    bell(2_000.0, 1.0),  // dialogue presence
+                    bell(4_000.0, 0.5)
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-arc-dialogue",
+                name = "Sonos Arc · Dialogue",
+                filters = listOf(
+                    bell(250.0, -1.0),
+                    bell(1_000.0, 1.0),
+                    bell(2_000.0, 1.5),
+                    bell(4_000.0, 1.0)
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-arc-music",
+                name = "Sonos Arc · Music",
+                filters = listOf(
+                    bell(63.0, -1.0),
+                    bell(250.0, -0.5),
+                    bell(8_000.0, 1.0)   // restores the air a warm-leaning tilt takes away
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-arc-late-night",
+                name = "Sonos Arc · Late night",
+                filters = listOf(
+                    bell(40.0, -2.5),    // less sub rumble for neighbours and sleep
+                    bell(63.0, -1.5),
+                    bell(125.0, -1.0),
+                    bell(2_000.0, 1.0)   // keeps speech readable at low volume
+                )
+            )
+        ),
+        basis = "Specification: Sonos Arc (5.0.2 channel Dolby Atmos, 11 drivers – 8 elliptical woofers " +
+            "and 3 silk-dome tweeters, 11 Class-D amplifiers, Trueplay room tuning). " +
+            "Character: reviews find a balanced midrange with clear dialogue that can read bright, " +
+            "powerful rich bass, and some lack of very low bass without a sub. " +
+            "Not measured by Core EQ."
+    )
+
+    /** Sonos Beam (Gen 2) (Dolby Atmos via virtual height, 4 elliptical mid-woofers, centre tweeter, 3 passive radiators). */
+    private val SONOS_BEAM_GEN_2 = Model(
+        id = "sonos-beam-gen-2",
+        brand = "Sonos",
+        name = "Sonos Beam Gen 2",
+        kind = Kind.SOUNDBAR,
+        nameMatch = Regex("""(?<![a-z0-9])(?:sonos[\s_-]*)?beam[\s_-]*(?:\(?gen[\s_-]*2\)?|g2)(?![a-z0-9])""", RegexOption.IGNORE_CASE),
+        // The original Beam is a different product; its name lacks the generation.
+        nameExclude = null,
+        presets = listOf(
+            ManualEqPreset(
+                id = "sonos-beam-gen-2-movie",
+                name = "Sonos Beam Gen 2 · Movie",
+                filters = listOf(
+                    bell(63.0, -1.0),    // modest bass for a compact bar; keep effects clear
+                    bell(2_000.0, 1.0),  // dialogue presence
+                    bell(4_000.0, 0.5)
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-beam-gen-2-dialogue",
+                name = "Sonos Beam Gen 2 · Dialogue",
+                filters = listOf(
+                    bell(250.0, -0.5),
+                    bell(1_000.0, 1.0),
+                    bell(2_000.0, 1.5)   // reviews: the centre tweeter targets clear dialogue
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-beam-gen-2-music",
+                name = "Sonos Beam Gen 2 · Music",
+                filters = listOf(
+                    bell(63.0, -1.0),
+                    bell(8_000.0, 1.0)   // a little air for a small driver set
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-beam-gen-2-late-night",
+                name = "Sonos Beam Gen 2 · Late night",
+                filters = listOf(
+                    bell(40.0, -2.0),    // less low-end at low volume
+                    bell(125.0, -1.0),
+                    bell(2_000.0, 1.0)   // keeps speech readable when quiet
+                )
+            )
+        ),
+        basis = "Specification: Sonos Beam (Gen 2) (Dolby Atmos, 4 elliptical mid-woofers, 1 centre tweeter, " +
+            "3 passive radiators, HDMI eARC, Trueplay). Character: reviews find focused dialogue " +
+            "clarity and modest bass output for a compact bar, with Trueplay making an audible difference. " +
+            "Not measured by Core EQ."
+    )
+
+    /** Sonos Ray (2.0 stereo, optical, 2 woofers, 2 tweeters; bass rolls off near 65 Hz). */
+    private val SONOS_RAY = Model(
+        id = "sonos-ray",
+        brand = "Sonos",
+        name = "Sonos Ray",
+        kind = Kind.SOUNDBAR,
+        nameMatch = Regex("""(?<![a-z0-9])(?:sonos[\s_-]*)?ray(?![a-z0-9])""", RegexOption.IGNORE_CASE),
+        nameExclude = null,
+        presets = listOf(
+            ManualEqPreset(
+                id = "sonos-ray-movie",
+                name = "Sonos Ray · Movie",
+                filters = listOf(
+                    bell(250.0, -0.5),
+                    bell(2_000.0, 1.0),  // dialogue presence
+                    bell(4_000.0, 0.5)
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-ray-dialogue",
+                name = "Sonos Ray · Dialogue",
+                filters = listOf(
+                    bell(1_000.0, 1.0),
+                    bell(2_000.0, 1.5),  // mirrors the Ray's Speech Enhancement 1–4 kHz lift
+                    bell(4_000.0, 1.0)
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-ray-music",
+                name = "Sonos Ray · Music",
+                filters = listOf(
+                    bell(125.0, 1.0),    // the body band the small woofers can still produce
+                    bell(250.0, 0.5),
+                    bell(8_000.0, 0.5)
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-ray-late-night",
+                name = "Sonos Ray · Late night",
+                filters = listOf(
+                    bell(63.0, -1.5),    // tight, not booming bass down low
+                    bell(125.0, -1.0),
+                    bell(2_000.0, 1.0)   // keeps speech readable when quiet
+                )
+            )
+        ),
+        basis = "Specification: Sonos Ray (2.0 stereo, 2 woofers, 2 tweeters, optical input, " +
+            "bass+treble EQ and Speech Enhancement in the Sonos app). Character: reviews find " +
+            "best-in-class dialogue clarity, tight rather than booming bass, and output rolling " +
+            "off near 65 Hz. Not measured by Core EQ."
+    )
+
+
+    /** Sonos Arc Ultra (9.1.4 Dolby Atmos, 14 drivers incl. a Sound Motion woofer; double the Arc's bass at 50 Hz). */
+    private val SONOS_ARC_ULTRA = Model(
+        id = "sonos-arc-ultra",
+        brand = "Sonos",
+        name = "Sonos Arc Ultra",
+        kind = Kind.SOUNDBAR,
+        nameMatch = Regex("""(?<![a-z0-9])(?:sonos[\s_-]*)?arc[\s_-]*ultra(?![a-z0-9])""", RegexOption.IGNORE_CASE),
+        nameExclude = null,
+        presets = listOf(
+            ManualEqPreset(
+                id = "sonos-arc-ultra-movie",
+                name = "Sonos Arc Ultra · Movie",
+                filters = listOf(
+                    bell(63.0, -1.0),
+                    bell(2_000.0, 1.0),
+                    bell(4_000.0, 0.5)
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-arc-ultra-dialogue",
+                name = "Sonos Arc Ultra · Dialogue",
+                filters = listOf(
+                    bell(250.0, -0.5),
+                    bell(1_000.0, 1.0),
+                    bell(2_000.0, 1.5),
+                    bell(4_000.0, 1.0)
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-arc-ultra-music",
+                name = "Sonos Arc Ultra · Music",
+                filters = listOf(
+                    bell(63.0, -1.0),
+                    bell(8_000.0, 1.0)
+                )
+            ),
+            ManualEqPreset(
+                id = "sonos-arc-ultra-late-night",
+                name = "Sonos Arc Ultra · Late night",
+                filters = listOf(
+                    bell(40.0, -2.5),
+                    bell(63.0, -1.5),
+                    bell(125.0, -1.0),
+                    bell(2_000.0, 1.0)
+                )
+            )
+        ),
+        basis = "Specification: Sonos Arc Ultra (9.1.4 channel Dolby Atmos, 14 drivers including a Sound Motion " +
+            "woofer, 15 Class-D amplifiers, Bluetooth 5.3, Trueplay). Character: reviews find deeper, more " +
+            "controlled bass than the original Arc and exceptional dialogue clarity, with Speech Enhancement " +
+            "adjustable in three levels. Not measured by Core EQ."
+    )
+
+    /** Bose Smart Soundbar 900 (5.0.2 Dolby Atmos, 9 transducers, ADAPTiQ room calibration). */
+    private val BOSE_SMART_SOUNDBAR_900 = Model(
+        id = "bose-smart-soundbar-900",
+        brand = "Bose",
+        name = "Bose Smart Soundbar 900",
+        kind = Kind.SOUNDBAR,
+        nameMatch = Regex("""(?<![a-z0-9])(?:bose[\s_-]*)?smart[\s_-]*soundbar[\s_-]*900(?![0-9])""", RegexOption.IGNORE_CASE),
+        nameExclude = null,
+        presets = listOf(
+            ManualEqPreset(
+                id = "bose-smart-soundbar-900-movie",
+                name = "Bose Smart Soundbar 900 · Movie",
+                filters = listOf(
+                    bell(63.0, -0.5),
+                    bell(2_000.0, 1.0),
+                    bell(4_000.0, 0.5)
+                )
+            ),
+            ManualEqPreset(
+                id = "bose-smart-soundbar-900-dialogue",
+                name = "Bose Smart Soundbar 900 · Dialogue",
+                filters = listOf(
+                    bell(250.0, -0.5),
+                    bell(1_000.0, 1.0),
+                    bell(2_000.0, 1.5)
+                )
+            ),
+            ManualEqPreset(
+                id = "bose-smart-soundbar-900-music",
+                name = "Bose Smart Soundbar 900 · Music",
+                filters = listOf(
+                    bell(63.0, -0.5),
+                    bell(8_000.0, -0.5)
+                )
+            ),
+            ManualEqPreset(
+                id = "bose-smart-soundbar-900-late-night",
+                name = "Bose Smart Soundbar 900 · Late night",
+                filters = listOf(
+                    bell(40.0, -2.0),
+                    bell(63.0, -1.0),
+                    bell(125.0, -0.5),
+                    bell(2_000.0, 1.0)
+                )
+            )
+        ),
+        basis = "Specification: Bose Smart Soundbar 900 (5.0.2 channel Dolby Atmos, 9 transducers, " +
+            "ADAPTiQ room calibration, HDMI eARC/optical, subwoofer output). Character: reviews find a " +
+            "balanced signature with clear dialogue and powerful bass that lacks deep low-bass without a " +
+            "sub, with treble that can read bright at high volume. Not measured by Core EQ."
+    )
+
+    /** Samsung HW-Q990C (11.1.4 Dolby Atmos/DTS:X, 22 speakers, 8-inch wireless subwoofer, SpaceFit Sound Pro). */
+    private val SAMSUNG_HW_Q990C = Model(
+        id = "samsung-hw-q990c",
+        brand = "Samsung",
+        name = "Samsung HW-Q990C",
+        kind = Kind.SOUNDBAR,
+        nameMatch = Regex("""(?<![a-z0-9])(?:samsung[\s_-]*)?(?:hw[\s_-]*)?q990c(?![a-z0-9])""", RegexOption.IGNORE_CASE),
+        nameExclude = null,
+        presets = listOf(
+            ManualEqPreset(
+                id = "samsung-hw-q990c-movie",
+                name = "Samsung HW-Q990C · Movie",
+                filters = listOf(
+                    bell(63.0, -1.0),
+                    bell(2_000.0, 1.0),
+                    bell(4_000.0, 0.5)
+                )
+            ),
+            ManualEqPreset(
+                id = "samsung-hw-q990c-dialogue",
+                name = "Samsung HW-Q990C · Dialogue",
+                filters = listOf(
+                    bell(1_000.0, 1.0),
+                    bell(2_000.0, 1.5),
+                    bell(4_000.0, 0.5)
+                )
+            ),
+            ManualEqPreset(
+                id = "samsung-hw-q990c-music",
+                name = "Samsung HW-Q990C · Music",
+                filters = listOf(
+                    bell(63.0, -0.5),
+                    bell(8_000.0, -0.5)
+                )
+            ),
+            ManualEqPreset(
+                id = "samsung-hw-q990c-late-night",
+                name = "Samsung HW-Q990C · Late night",
+                filters = listOf(
+                    bell(40.0, -2.0),
+                    bell(63.0, -1.0),
+                    bell(125.0, -0.5),
+                    bell(2_000.0, 1.0)
+                )
+            )
+        ),
+        basis = "Specification: Samsung HW-Q990C (11.1.4 channel Dolby Atmos/DTS:X, 22 speakers, " +
+            "8-inch wireless subwoofer, SpaceFit Sound Pro room calibration, HDMI eARC). Character: " +
+            "reviews find deep but controlled bass, a clean midrange and clear dialogue, with treble " +
+            "that can read slightly bright. Not measured by Core EQ."
+    )
+
     /** Every shipped hardware model, in the order the picker lists them. */
-    val MODELS: List<Model> = listOf(JBL_BAR_800, JBL_BAR_2_0, SAMSUNG_Q800H, SONY_BAR_6, LG_S80TR, JBL_BAR_1000_MK2)
+    val MODELS: List<Model> = listOf(JBL_BAR_800, JBL_BAR_2_0, SAMSUNG_Q800H, SONY_BAR_6, LG_S80TR, JBL_BAR_1000_MK2, SONOS_ARC, SONOS_ARC_ULTRA, BOSE_SMART_SOUNDBAR_900, SAMSUNG_HW_Q990C, SONOS_BEAM_GEN_2, SONOS_RAY)
 
     /** Every shipped hardware preset, flat across models. */
     val PRESETS: List<ManualEqPreset> = MODELS.flatMap { it.presets }

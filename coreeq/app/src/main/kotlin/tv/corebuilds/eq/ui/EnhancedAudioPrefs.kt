@@ -43,6 +43,16 @@ class EnhancedAudioPrefs(context: Context) {
         set(value) = prefs.edit().putBoolean(KEY_LOW_VOLUME_BASS, value).apply()
 
     /**
+     * Full ISO 226 loudness compensation at low volume (1.11.0): restores the
+     * bass and treble the ear loses when the output is turned down, mapped to
+     * the ten manual EQ bands. Off until switched on; low-volume bass and
+     * auto loudness are mutually exclusive — auto loudness wins.
+     */
+    var autoLoudnessEnabled: Boolean
+        get() = prefs.getBoolean(KEY_AUTO_LOUDNESS, false)
+        set(value) = prefs.edit().putBoolean(KEY_AUTO_LOUDNESS, value).apply()
+
+    /**
      * The everyday volume of one output, in dB from that output's own volume
      * curve, that Low-volume bass measures from: nothing is added at or above
      * it. Null until recorded ([tv.corebuilds.eq.apply.LowVolumeBass]).
@@ -93,6 +103,7 @@ class EnhancedAudioPrefs(context: Context) {
         private const val KEY_NIGHT_MODE = "night_mode_v121"
         private const val KEY_DIALOGUE = "dialogue_boost_v130"
         private const val KEY_LOW_VOLUME_BASS = "low_volume_bass_v130"
+        private const val KEY_AUTO_LOUDNESS = "auto_loudness_v1110"
         private const val KEY_STEREO_SPEAKERS = "stereo_speakers_v1100"
         private const val KEY_SURROUND_RESTORE = "surround_restore_mode_v1100"
         private const val KEY_SURROUND_PENDING = "surround_pending_v1100"
