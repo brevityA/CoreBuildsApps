@@ -5,21 +5,21 @@
 
 # Coverage and mapping reliability
 
-Generated: 2026-10-25 · pack v2.5.1 · tracker live since 2026-09-21
+Generated: 2026-11-01 · pack v2.5.4 · tracker live since 2026-09-21
 
 ## Headline
 
-- **87** distinct apps reported since the tracker went live; **70** are in the pack now
-- **15/17** closed not-applying reports have the **exact reported component** shipped now (first-fix rate)
-- Median resolution: **1.0 days** on icon requests, **1.0 days** on not-applying (worst 6.1 days)
-- Open backlog: **1** requests, **4** not-applying
+- **100** distinct apps reported since the tracker went live; **80** are in the pack now
+- **24/26** closed not-applying reports have the **exact reported component** shipped now (first-fix rate)
+- Median resolution: **1.1 days** on icon requests, **1.8 days** on not-applying (worst 11.7 days)
+- Open backlog: **2** requests, **0** not-applying
 
 ## Icon requests
 
 | Closed | Count |
 | --- | --- |
-| MAPPED | 62 |
-| NOT-MAPPED | 15 |
+| MAPPED | 69 |
+| NOT-MAPPED | 17 |
 
 A request counts as MAPPED only when its package (from the component, or a Play store link's `id=`) is in the bundled appfilter; a label hit is reported as NAME-MATCH and never counted.
 
@@ -44,22 +44,28 @@ A request counts as MAPPED only when its package (from the component, or a Play 
 | [337](https://github.com/brevityA/CoreBuildsApps/issues/337) | Plex | `com.plexapp.android/tv.plex.app.MainActivity` | EXACT | 0.7 |
 | [346](https://github.com/brevityA/CoreBuildsApps/issues/346) | Trakt | `tv.trakt.trakt/tv.trakt.trakt.app.TvSplashActivity` | EXACT | 3.3 |
 | [354](https://github.com/brevityA/CoreBuildsApps/issues/354) | Hi Browser | `com.hisense.odinbrowser/com.vt.hibrowser.activity.home.HomeActivity` | EXACT | 2.8 |
+| [377](https://github.com/brevityA/CoreBuildsApps/issues/377) | F-Droid | `org.fdroid.fdroid/org.fdroid.MainActivity` | EXACT | 6.4 |
+| [378](https://github.com/brevityA/CoreBuildsApps/issues/378) | Voltra TV | `com.amhkor.voltratv/com.voltra.voltratv.tv.SplashActivity` | EXACT | 6.4 |
+| [379](https://github.com/brevityA/CoreBuildsApps/issues/379) | Poweramp Equalizer | `com.maxmpz.equalizer/com.maxmpz.audioplayer.standard_adaptive` | EXACT | 6.2 |
+| [380](https://github.com/brevityA/CoreBuildsApps/issues/380) | ABC iview | `au.net.abc.iview/au.net.abc.iview.ui.router.TvLauncherActivity` | EXACT | 5.8 |
+| [383](https://github.com/brevityA/CoreBuildsApps/issues/383) | Moonfin | `org.moonfin.androidtv/org.moonfin.androidtv.MainActivity` | EXACT | 5.4 |
+| [402](https://github.com/brevityA/CoreBuildsApps/issues/402) | PBS | `com.pbs.video/com.pbs.video.startup.StartupActivity` | EXACT | 2.5 |
+| [403](https://github.com/brevityA/CoreBuildsApps/issues/403) | YouTube TV | `com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.ChrobaltMainActivity` | EXACT | 2.5 |
+| [406](https://github.com/brevityA/CoreBuildsApps/issues/406) | ABC iview | `au.net.abc.iview/au.net.abc.iview.ui.router.TvLauncherActivity` | EXACT | 1.9 |
+| [409](https://github.com/brevityA/CoreBuildsApps/issues/409) | Kayo Sports | `au.com.kayosports.tv/com.dazn.MainActivity` | EXACT | 1.1 |
 
 By launcher (the form's Launcher field, device-line fallback):
 
 | Launcher | Closed | Exact component fixed |
 | --- | --- | --- |
-| Monet | 3 | 3 |
+| Monet | 5 | 5 |
 | Other | 5 | 5 |
-| Projectivy | 7 | 7 |
+| Projectivy | 14 | 14 |
 | Unstated | 2 | 0 |
 
 ## Open backlog
 
 | # | App | Kind | Age (days) | Component |
 | --- | --- | --- | --- | --- |
-| [352](https://github.com/brevityA/CoreBuildsApps/issues/352) | TvLok | request | 5 | `docs/IconPackList.md` |
-| [377](https://github.com/brevityA/CoreBuildsApps/issues/377) | F-Droid | not applying | 0 | `org.fdroid.fdroid/org.fdroid.MainActivity` |
-| [378](https://github.com/brevityA/CoreBuildsApps/issues/378) | Voltra TV | not applying | 0 | `com.amhkor.voltratv/com.voltra.voltratv.tv.SplashActivity` |
-| [379](https://github.com/brevityA/CoreBuildsApps/issues/379) | Poweramp Equalizer | not applying | 0 | `com.maxmpz.equalizer/com.maxmpz.audioplayer.standard_adaptive` |
-| [380](https://github.com/brevityA/CoreBuildsApps/issues/380) | ABC iview | not applying | 0 | `au.net.abc.iview/au.net.abc.iview.ui.router.TvLauncherActivity` |
+| [420](https://github.com/brevityA/CoreBuildsApps/issues/420) | MAXtv | request | 0 | `` |
+| [421](https://github.com/brevityA/CoreBuildsApps/issues/421) | Xplore TV HR | request | 0 | `` |
