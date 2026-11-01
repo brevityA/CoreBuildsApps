@@ -35,7 +35,7 @@
     <string name="mode_rule_remove">Remove app rule</string>
     <string name="mode_apps_empty">No launchable TV apps or recently detected players were found.</string>
     <string name="mode_rules_heading">How automatic switching works</string>
-    <string name="mode_app_rules_hint">• Automatic app rules run only while Correction is on.\n• Core EQ can identify players through optional DUMP discovery, or Android media sessions when you grant Notification access below. Media sessions reveal an app and playback state, not the sound route or effect coverage.\n• Other apps' playback notices only trigger a fresh check; they are not trusted as app identity. Players with no visible media session or DUMP identity use Everyday.\n• Conflicting app rules use Everyday. A temporary manual choice lasts until the detected playing-app set changes; a sticky one stays until you choose again.</string>
+    <string name="mode_app_rules_hint">• Automatic app rules run only while Correction is on.\n• Core EQ can identify players through optional DUMP discovery, or Android media sessions when you grant Notification access below. Media sessions reveal an app and playback state, not the sound route or effect coverage.\n• Other apps&apos; playback notices only trigger a fresh check; they are not trusted as app identity. Players with no visible media session or DUMP identity use Everyday.\n• Conflicting app rules use Everyday. A temporary manual choice lasts until the detected playing-app set changes; a sticky one stays until you choose again.</string>
     <string name="mode_rules_app_rules">App rules</string>
     <string name="mode_rules_conflict">These rules disagree, so Everyday is used:</string>
     <string name="mode_rules_playing">Playing now</string>
@@ -70,7 +70,7 @@
     <string name="manual_eq_save_hint">Preset name</string>
     <string name="manual_eq_import_file">Import EQ preset or correction file…</string>
     <string name="manual_eq_tv_values">Show these as TV settings…</string>
-    <string name="manual_eq_tv_values_title">Your TV's own equaliser</string>
+    <string name="manual_eq_tv_values_title">Your TV&apos;s own equaliser</string>
     <string name="manual_eq_tv_values_empty">This preset is Flat, so there is nothing to type in. Choose a preset or move a band first.</string>
     <string name="manual_eq_tv_values_export">Export as a text file</string>
     <string name="manual_eq_tv_values_close">Close</string>
@@ -99,7 +99,7 @@
     <string name="measure_heading">Keep the room quiet for 14 seconds</string>
     <string name="measure_sub">The TV plays a sine sweep. The remote microphone listens. Nothing leaves this device.</string>
     <string name="measure_step1_title">Tell Core EQ about the room</string>
-    <string name="measure_step1_sub">Room size sets where full correction stops. Turn off the TV's own sound effects first (AI sound, bass boost, virtual surround): they would be measured too. If your AVR or soundbar already calibrates the room, do not stack Core EQ on it: measure and export the profile instead.</string>
+    <string name="measure_step1_sub">Room size sets where full correction stops. Turn off the TV&apos;s own sound effects first (AI sound, bass boost, virtual surround): they would be measured too. If your AVR or soundbar already calibrates the room, do not stack Core EQ on it: measure and export the profile instead.</string>
     <string name="measure_step2_title">Point the remote at your seat</string>
     <string name="measure_step2_sub">Hold it where your head is, microphone end up, and keep it still until the bar fills.</string>
     <string name="measure_step3_title">Keep the room quiet while the bar fills</string>
@@ -128,7 +128,7 @@
     <string name="measure_start_new">New sweep</string>
     <string name="measure_refine_kicker">BEFORE YOU SAVE</string>
     <string name="measure_refine_title">More seats, then a check</string>
-    <string name="measure_refine_sub">Add a seat: move the remote to another place a head goes and sweep again. Up to three seats are averaged, so a peak only one chair hears is cut less and the room's own are cut in full. Check: the sweep plays again through this correction and shows how close it lands to the target. Neither one saves.</string>
+    <string name="measure_refine_sub">Add a seat: move the remote to another place a head goes and sweep again. Up to three seats are averaged, so a peak only one chair hears is cut less and the room&apos;s own are cut in full. Check: the sweep plays again through this correction and shows how close it lands to the target. Neither one saves.</string>
     <string name="measure_add_seat_button">Add a seat (%1$d of %2$d)</string>
     <string name="measure_check_button">Check correction</string>
     <string name="measure_seats_summary">%1$d-seat energy average · bass lift capped at %2$.0f dB below the transition, up from the single-seat cap</string>
@@ -202,7 +202,7 @@
     <string name="capability_sub">Android has no global equaliser API. Each row is a path we probe, and the verdict is the truth.</string>
     <string name="capability_verdict_title">Verdict on this set</string>
     <string name="capability_fallback_title">If nothing applies, the curve still travels</string>
-    <string name="capability_fallback_desc">Export the profile and set the numbers in the TV's own sound settings, or in the player's built-in equaliser. It is the same curve.</string>
+    <string name="capability_fallback_desc">Export the profile and set the numbers in the TV&apos;s own sound settings, or in the player&apos;s built-in equaliser. It is the same curve.</string>
     <string name="capability_discovery_title">DUMP discovery (optional)</string>
     <string name="capability_discovery_granted">Granted · Core EQ will try to inspect active media/game sessions. Dump formats, UID visibility and effect support vary; this is not a coverage guarantee.</string>
     <string name="capability_discovery_denied">Not granted · Android documents DUMP as not for third-party apps, so a grant may be refused on a stock or release build. If your TV allows it, try once from a computer with ADB:</string>
@@ -231,7 +231,7 @@
     <string name="update_auto_on">Check for updates on open: On</string>
     <string name="update_auto_off">Check for updates on open: Off</string>
     <string name="update_no_feed">This test build has no update feed · release builds install from the coreeq-v* tags</string>
-    <string name="update_note">Checks the same release feed the other Core apps use (Latestrelease/coreeq-version.json on main). A download is offered only when the release APK matches this app's package, is newer than this build, and is signed by the certificate that signed it — otherwise the file is deleted and nothing is installed.</string>
+    <string name="update_note">Checks the same release feed the other Core apps use (Latestrelease/coreeq-version.json on main). A download is offered only when the release APK matches this app&apos;s package, is newer than this build, and is signed by the certificate that signed it — otherwise the file is deleted and nothing is installed.</string>
 
     <!-- Display calibration -->
     <string name="calibration_title">Core Display · Calibration</string>
@@ -243,7 +243,7 @@
     <string name="calibration_finish">Finish</string>
 
     <!-- Home: HDMI bitstream caveat (1.3.0) -->
-    <string name="passthrough_warning">⚠ HDMI or optical audio may carry Dolby or DTS as a bitstream here, which skips all on-device EQ, Core EQ included. To correct it, set the TV's Surround sound (or Audio format) to Never or PCM. On stereo speakers, Stereo speakers in Extra effects can set it for you on Android 12 and later.</string>
+    <string name="passthrough_warning">⚠ HDMI or optical audio may carry Dolby or DTS as a bitstream here, which skips all on-device EQ, Core EQ included. To correct it, set the TV&apos;s Surround sound (or Audio format) to Never or PCM. On stereo speakers, Stereo speakers in Extra effects can set it for you on Android 12 and later.</string>
 
     <!-- Recording score (1.3.2: the recording only; the room is reported, not scored) -->
     <string name="quality_excellent">excellent</string>
@@ -285,31 +285,31 @@
     <string name="extras_subtitle">Optional layers on top of room correction. All off by default; each change applies at once. Your measured correction is never changed here.</string>
     <string name="extras_bass_on">Bass boost: On</string>
     <string name="extras_bass_off">Bass boost: Off</string>
-    <string name="extras_bass_note" formatted="false">Android's BassBoost effect. Strength follows the Content type screen: 60% for movies, 30% general, none for news and podcasts.</string>
+    <string name="extras_bass_note" formatted="false">Android&apos;s BassBoost effect. Strength follows the Content type screen: 60% for movies, 30% general, none for news and podcasts.</string>
     <string name="extras_loudness_on">Loudness enhancer: On</string>
     <string name="extras_loudness_off">Loudness enhancer: Off</string>
-    <string name="extras_loudness_note">Android's LoudnessEnhancer. Raises quiet content by up to +4 dB (podcasts, news); none for music.</string>
+    <string name="extras_loudness_note">Android&apos;s LoudnessEnhancer. Raises quiet content by up to +4 dB (podcasts, news); none for music.</string>
     <string name="extras_night_on">Night mode: On</string>
     <string name="extras_night_off">Night mode: Off</string>
     <string name="extras_name_auto_loudness">Auto loudness</string>
     <string name="extras_auto_loudness_on">Auto loudness: On</string>
     <string name="extras_auto_loudness_off">Auto loudness: Off</string>
     <string name="extras_auto_loudness_note" formatted="false">Restores the bass and treble your ears lose at low volume (ISO 226), mapped to the ten EQ bands. Off at reference volume; never above +6 dB per band. Mutually exclusive with Low-volume bass.</string>
-    <string name="extras_auto_loudness_unknown">Android does not report this output's volume in dB, so there is nothing to compensate.</string>
+    <string name="extras_auto_loudness_unknown">Android does not report this output&apos;s volume in dB, so there is nothing to compensate.</string>
     <string name="extras_auto_loudness_flat">Nothing added at or above the reference.</string>
     <string name="extras_auto_loudness_status">This output: reference %1$.0f dB, now %2$.0f dB, %3$.1f dB below reference.</string>
     <!-- Stereo speakers (1.10.0): 5.1 films on two speakers. -->
     <string name="extras_stereo_on">Stereo speakers: On</string>
     <string name="extras_stereo_off">Stereo speakers: Off</string>
-    <string name="extras_stereo_note">For 5.1 films and shows on two speakers, such as a 2.0 soundbar or a speaker pair. Folding 5.1 to stereo spreads the centre channel, where the dialogue is, over two spaced speakers: the level survives the fold but the image does not, and it also adds a bass channel your speakers cannot play. This lifts speech by 3 dB (Dialogue boost's 2 dB is not added on top) and cuts bass below your speakers' range, so explosions stop pulling the dialogue down. Core EQ only hears the fold when Android does it, which on HDMI and optical needs Surround sound set to Never or PCM: on Android 12 and later, once allowed, this switch sets it; otherwise the line below says how.</string>
+    <string name="extras_stereo_note">For 5.1 films and shows on two speakers, such as a 2.0 soundbar or a speaker pair. Folding 5.1 to stereo spreads the centre channel, where the dialogue is, over two spaced speakers: the level survives the fold but the image does not, and it also adds a bass channel your speakers cannot play. This lifts speech by 3 dB (Dialogue boost&apos;s 2 dB is not added on top) and cuts bass below your speakers&apos; range, so explosions stop pulling the dialogue down. Core EQ only hears the fold when Android does it, which on HDMI and optical needs Surround sound set to Never or PCM: on Android 12 and later, once allowed, this switch sets it; otherwise the line below says how.</string>
     <string name="extras_stereo_pcm_only">This output only takes PCM (Bluetooth, USB or analogue), so Android always mixes 5.1 to stereo before Core EQ. Nothing else to set.</string>
     <string name="extras_stereo_never">Surround sound is Never: Android decodes Dolby and DTS and mixes them to stereo before Core EQ, so every film is covered.</string>
     <string name="extras_stereo_restore">Core EQ changed Surround sound from %1$s to Never, and puts %1$s back when you switch this off.</string>
     <string name="extras_stereo_ask">Surround sound is %1$s, so Dolby and DTS can reach your speakers undecoded and skip Core EQ. Allow Core EQ to modify system settings and it sets Never for you (switch this off and on to be asked again), or set Surround sound to Never yourself under Advanced sound settings. Over ADB: %2$s</string>
-    <string name="extras_stereo_needs_manual">Surround sound is %1$s even though Core EQ is allowed to change it — Android kept the old setting. Set it to Never yourself under the TV's Advanced sound settings, or switch this off and on to have Core EQ try once more. Over ADB: %2$s</string>
-    <string name="extras_stereo_manual">Surround sound is %1$s, and this Android version gives apps no switch for it. Set it to Never (or PCM) under the TV's Advanced sound settings, so Dolby and DTS are mixed to stereo where Core EQ hears them. Over ADB: %2$s</string>
-    <string name="extras_stereo_restore_failed">Android would not let Core EQ put Surround sound back to %1$s. It tries again next time this screen opens; or set it under the TV's Advanced sound settings.</string>
-    <string name="extras_stereo_unknown">Android does not report the Surround sound setting here. If films still sound thin in some apps, set Surround sound (or Audio format) to Never or PCM in the TV's sound settings. Over ADB: %1$s</string>
+    <string name="extras_stereo_needs_manual">Surround sound is %1$s even though Core EQ is allowed to change it — Android kept the old setting. Set it to Never yourself under the TV&apos;s Advanced sound settings, or switch this off and on to have Core EQ try once more. Over ADB: %2$s</string>
+    <string name="extras_stereo_manual">Surround sound is %1$s, and this Android version gives apps no switch for it. Set it to Never (or PCM) under the TV&apos;s Advanced sound settings, so Dolby and DTS are mixed to stereo where Core EQ hears them. Over ADB: %2$s</string>
+    <string name="extras_stereo_restore_failed">Android would not let Core EQ put Surround sound back to %1$s. It tries again next time this screen opens; or set it under the TV&apos;s Advanced sound settings.</string>
+    <string name="extras_stereo_unknown">Android does not report the Surround sound setting here. If films still sound thin in some apps, set Surround sound (or Audio format) to Never or PCM in the TV&apos;s sound settings. Over ADB: %1$s</string>
     <string name="extras_dialogue_on">Dialogue boost: On</string>
     <string name="extras_dialogue_off">Dialogue boost: Off</string>
     <string name="extras_dialogue_note">+2 dB across 2.2–4.5 kHz, where most of speech intelligibility sits, back to neutral by 6.5 kHz so sibilance is not lifted. Profiles measured with the Dialogue or House target already include it, so it adds nothing there. With Stereo speakers on, its +3 dB is used instead.</string>
@@ -319,7 +319,7 @@
     <string name="extras_low_bass_status">This output: reference %1$.0f dB, now %2$.0f dB, %3$s. Each output keeps its own reference, recorded the first time it is used; switch off and on again to record new ones.</string>
     <string name="extras_low_bass_lift">+%1$.1f dB under 100 Hz</string>
     <string name="extras_low_bass_flat">nothing added at or above the reference</string>
-    <string name="extras_low_bass_unknown">Android does not report this output's volume in dB (a fixed-volume output, such as a soundbar that keeps its own volume over HDMI-CEC), so there is nothing to follow and nothing is added.</string>
+    <string name="extras_low_bass_unknown">Android does not report this output&apos;s volume in dB (a fixed-volume output, such as a soundbar that keeps its own volume over HDMI-CEC), so there is nothing to follow and nothing is added.</string>
     <string name="extras_night_note">Pulls loud passages down: limiter from -12 dB at 4:1. Needs the DynamicsProcessing engine; Home names the engine in use, and says when night mode cannot run.</string>
     <string name="content_type_auto_on">Auto-detect: On · %1$d known apps · switches when a recognized app starts playing</string>
     <string name="content_type_auto_off">Auto-detect: Off · using your manual selection</string>
@@ -441,7 +441,7 @@
     <string name="cap_global_title">Global output mix (session 0)</string>
     <string name="cap_signals_title">Playback and session signals</string>
     <string name="cap_signals_note">They request a fresh DUMP scan; broadcast extras are not trusted as app or session identity.</string>
-    <string name="cap_own_title">This app's own playback</string>
+    <string name="cap_own_title">This app&apos;s own playback</string>
     <string name="cap_own_note">Always works. The correction applies to what Core EQ plays.</string>
     <string name="cap_dp_title">DynamicsProcessing (API 28+)</string>
     <string name="cap_eq_title">Platform Equalizer</string>
@@ -564,7 +564,7 @@
     <string name="phone_unpaired">Phone pairing revoked on the TV.</string>
     <string name="phone_unpair_failed">Could not revoke pairing: %1$s</string>
     <string name="phone_forget_button">Forget TV on this phone</string>
-    <string name="phone_forget_note">Forget only removes this phone's saved token. To revoke it on the TV, use the unpair button here or the TV companion screen.</string>
+    <string name="phone_forget_note">Forget only removes this phone&apos;s saved token. To revoke it on the TV, use the unpair button here or the TV companion screen.</string>
     <string name="phone_forgotten">Saved TV token removed from this phone.</string>
     <string name="phone_local_network_denied">Local-network access was denied. Core EQ cannot connect to the TV.</string>
     <string name="phone_microphone_denied">Microphone access was denied. No measurement was started.</string>
