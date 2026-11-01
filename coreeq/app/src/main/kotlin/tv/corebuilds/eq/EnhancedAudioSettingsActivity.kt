@@ -21,6 +21,7 @@ import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.LowVolumeBass
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.apply.SurroundOutput
+import tv.corebuilds.eq.dsp.TimeBasedSuggestions
 import tv.corebuilds.eq.ui.EnhancedAudioPrefs
 import tv.corebuilds.eq.ui.showSwitch
 
@@ -53,6 +54,7 @@ class EnhancedAudioSettingsActivity : TvActivity() {
     private lateinit var btnBass: Button
     private lateinit var btnLoudness: Button
     private lateinit var btnNight: Button
+    private lateinit var btnAutoLoudness: Button
     private lateinit var textDetailTitle: TextView
     private lateinit var textDetailBody: TextView
     private lateinit var textDetailStatus: TextView
@@ -64,7 +66,8 @@ class EnhancedAudioSettingsActivity : TvActivity() {
         LOW_BASS(R.string.extras_name_low_bass, R.string.extras_low_bass_note),
         BASS(R.string.extras_name_bass, R.string.extras_bass_note),
         LOUDNESS(R.string.extras_name_loudness, R.string.extras_loudness_note),
-        NIGHT(R.string.extras_name_night, R.string.extras_night_note)
+        NIGHT(R.string.extras_name_night, R.string.extras_night_note),
+        AUTO_LOUDNESS(R.string.extras_name_auto_loudness, R.string.extras_auto_loudness_note)
     }
 
     private var shown = Row.STEREO
@@ -90,6 +93,7 @@ class EnhancedAudioSettingsActivity : TvActivity() {
         btnBass = findViewById(R.id.btn_extras_bass)
         btnLoudness = findViewById(R.id.btn_extras_loudness)
         btnNight = findViewById(R.id.btn_extras_night)
+        btnAutoLoudness = findViewById(R.id.btn_extras_auto_loudness)
         textDetailTitle = findViewById(R.id.text_extras_detail_title)
         textDetailBody = findViewById(R.id.text_extras_detail_body)
         textDetailStatus = findViewById(R.id.text_extras_detail_status)
@@ -100,7 +104,8 @@ class EnhancedAudioSettingsActivity : TvActivity() {
             btnLowBass to Row.LOW_BASS,
             btnBass to Row.BASS,
             btnLoudness to Row.LOUDNESS,
-            btnNight to Row.NIGHT
+            btnNight to Row.NIGHT,
+            btnAutoLoudness to Row.AUTO_LOUDNESS
         )) {
             button.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
@@ -137,6 +142,12 @@ class EnhancedAudioSettingsActivity : TvActivity() {
         }
         btnNight.setOnClickListener {
             prefs.nightModeEnabled = !prefs.nightModeEnabled
+            changed()
+        }
+        btnAutoLoudness.setOnClickListener {
+            prefs.autoLoudnessEnabled = !prefs.autoLoudnessEnabled
+            // Auto loudness is mutually exclusive with low-volume bass.
+            if (prefs.autoLoudnessEnabled) prefs.lowVolumeBassEnabled = false
             changed()
         }
         refresh()
@@ -243,6 +254,7 @@ class EnhancedAudioSettingsActivity : TvActivity() {
         btnBass.showSwitch(prefs.bassBoostEnabled, R.string.extras_bass_on, R.string.extras_bass_off)
         btnLoudness.showSwitch(prefs.loudnessEnhancerEnabled, R.string.extras_loudness_on, R.string.extras_loudness_off)
         btnNight.showSwitch(prefs.nightModeEnabled, R.string.extras_night_on, R.string.extras_night_off)
+        btnAutoLoudness.showSwitch(prefs.autoLoudnessEnabled, R.string.extras_auto_loudness_on, R.string.extras_auto_loudness_off)
         renderDetail()
     }
 
@@ -253,6 +265,8 @@ class EnhancedAudioSettingsActivity : TvActivity() {
         val status = when (shown) {
             Row.LOW_BASS -> lowBassStatus()
             Row.STEREO -> stereoStatus()
+            Row.AUTO_LOUDNESS -> autoLoudnessStatus()
+            Row.NIGHT -> nightStatus()
             else -> null
         }
         textDetailStatus.text = status.orEmpty()
@@ -272,6 +286,24 @@ class EnhancedAudioSettingsActivity : TvActivity() {
             getString(R.string.extras_low_bass_flat)
         }
         return getString(R.string.extras_low_bass_status, reference, now, effect)
+    }
+
+    /** While Night mode is focused: time-based suggestion if it is evening or night; null otherwise. */
+    private fun nightStatus(): String? {
+        val suggestion = TimeBasedSuggestions.suggestionAt()
+        return if (suggestion != null) suggestion.message else null
+    }
+
+    /** While Auto loudness is on: where this output's reference sits and what it adds right now; null while off. */
+    private fun autoLoudnessStatus(): String? {
+        if (!prefs.autoLoudnessEnabled) return null
+        val route = OutputRoute.current(this)?.let { "${it.kind}|${it.name}" } ?: OutputRoute.UNKNOWN
+        val reference = prefs.lowVolumeReferenceDb(route)
+        val now = VolumeLevel.mediaDb(this)
+        if (reference == null || now == null) return getString(R.string.extras_auto_loudness_unknown)
+        val dbBelowRef = reference - now
+        if (dbBelowRef <= 0.0) return getString(R.string.extras_auto_loudness_flat)
+        return getString(R.string.extras_auto_loudness_status, reference, now, dbBelowRef)
     }
 
     /**

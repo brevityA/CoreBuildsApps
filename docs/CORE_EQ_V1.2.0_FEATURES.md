@@ -300,26 +300,31 @@ pm grant tv.corebuilds.eq android.permission.DUMP
 
 ## Roadmap
 
-### v1.3.0 (Q1 2027)
-- [ ] Spatial Audio (Virtualizer effect)
-- [ ] Environmental Reverb
-- [ ] Voice Enhancement mode
-- [ ] Adaptive EQ (volume-dependent)
-- [ ] Multi-device profile sync
+> **Historical:** v1.3.0 shipped (Core EQ 1.3.x, late 2026). The items below are
+> carried forward from the v1.2.0 plan; some are implemented in later versions,
+> others superseded by the smart-feature work (see
+> `docs/research/core-eq-smart-feature-candidates-2026-11-01.md`).
 
-### v1.4.0 (Q2 2027)
-- [ ] Real-time spectrum analyzer
-- [ ] THD measurement
-- [ ] Audio format detection (Dolby/DTS)
-- [ ] Automatic lip-sync correction
-- [ ] Cloud profile backup
+### v1.3.0 (released)
+- Spatial Audio (Virtualizer effect) — read-only status row only (API 32+); no on/off switch (Android provides none)
+- Environmental Reverb — not implemented
+- Voice Enhancement mode — superseded by Dialogue boost (1.3.0) and SmartSuggestion (1.11.0)
+- Adaptive EQ (volume-dependent) — implemented as full ISO 226 loudness compensation (1.11.0)
+- Multi-device profile sync — not implemented
 
-### v2.0.0 (Q4 2027)
-- [ ] Machine Learning room correction
-- [ ] Binaural 3D audio (HRTF)
-- [ ] Audio upscaling (like DSEE)
-- [ ] Multi-room audio sync
-- [ ] Professional measurement tools
+### v1.4.0
+- Real-time spectrum analyzer — not implemented
+- THD measurement — not implemented
+- Audio format detection (Dolby/DTS) — passthrough warning only (no stream-format detection)
+- Automatic lip-sync correction — not implemented
+- Cloud profile backup — not implemented
+
+### v2.0.0
+- Machine Learning room correction — not implemented
+- Binaural 3D audio (HRTF) — not implemented
+- Audio upscaling (like DSEE) — not implemented
+- Multi-room audio sync — not implemented
+- Professional measurement tools — not implemented
 
 ---
 

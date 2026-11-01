@@ -37,8 +37,8 @@ object LoudnessCompensation {
     ): DoubleArray {
         val gains = DoubleArray(ManualEq.BAND_CENTRES_HZ.size)
         if (!dbBelowReference.isFinite() || dbBelowReference <= 0.0) return gains
+        if (!strength.isFinite() || strength <= 0.0) return gains
         val s = strength.coerceIn(0.0, 1.0)
-        if (s <= 0.0) return gains
 
         // Sample the ISO 226 compensation curve at the manual band centres by
         // log interpolation between the ISO frequencies.

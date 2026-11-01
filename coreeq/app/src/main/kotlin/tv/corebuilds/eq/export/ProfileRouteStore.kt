@@ -29,6 +29,22 @@ class ProfileRouteStore(private val prefs: SharedPreferences) {
         prefs.edit().remove(KEY_PREFERRED + outputKey).apply()
     }
 
+    /** Forget every learned preference (testing / reset). */
+    fun clear() {
+        val editor = prefs.edit()
+        for (key in prefs.all.keys) {
+            if (key.startsWith(KEY_PREFERRED)) editor.remove(key)
+        }
+        editor.apply()
+    }
+
+    /** Every learned preference: output key -> profile id. */
+    fun allPreferences(): Map<String, String> =
+        prefs.all.keys
+            .filter { it.startsWith(KEY_PREFERRED) }
+            .associateWith { prefs.getString(it, "")!! }
+            .mapKeys { it.first.removePrefix(KEY_PREFERRED) }
+
     /** The current output as a stable key, or null. */
     fun currentOutputKey(context: Context): String? =
         OutputRoute.current(context)?.let { "${it.kind}|${it.name}" }.takeIf { it.isNotBlank() }
