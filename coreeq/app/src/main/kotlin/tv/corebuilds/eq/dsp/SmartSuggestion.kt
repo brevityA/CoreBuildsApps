@@ -105,6 +105,10 @@ object SmartSuggestion {
 
             else -> null
         }
+
+        // Unreachable: every branch returns or produces null, but the
+        // compiler needs an explicit return after the when expression.
+        return null
     }
 
     /** Content types where speech intelligibility is the main complaint. */
