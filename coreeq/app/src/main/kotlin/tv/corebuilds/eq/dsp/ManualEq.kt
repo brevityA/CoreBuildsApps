@@ -197,10 +197,9 @@ object ManualEq {
             "The classic equal-loudness contour: at low volume the ear loses both ends first, " +
                 "so this lifts them. Sounds right quietly and too bright loud — that is the " +
                 "point, so use it only while the volume is down."
-        )
-
-    ManualEqPreset(
-        "smooth-mids",
+        ),
+        ManualEqPreset(
+            "smooth-mids",
         "Smooth mids · reduce harshness",
         listOf(
             PeakingFilter(2_000.0, 0.9, -1.0),
