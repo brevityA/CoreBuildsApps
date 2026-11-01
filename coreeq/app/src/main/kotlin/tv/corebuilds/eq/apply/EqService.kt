@@ -111,6 +111,7 @@ class EqService : Service() {
     private lateinit var store: ProfileStore
     private lateinit var modeStore: ContentModeStore
     private lateinit var deviceKeyStore: DeviceKeyStore
+    private lateinit var routeStore: ProfileRouteStore
     
     // The Extra effects screen's switches (all off by default since 1.2.1).
     private var enhancedPrefs: EnhancedAudioPrefs? = null
@@ -276,6 +277,7 @@ class EqService : Service() {
         store = ProfileStore(this)
         modeStore = ContentModeStore(this)
         deviceKeyStore = DeviceKeyStore.of(this)
+        routeStore = ProfileRouteStore.of(this)
         
         enhancedPrefs = EnhancedAudioPrefs(this)
         
@@ -428,12 +430,23 @@ class EqService : Service() {
     /** The route-matched room base plus its current content-mode overlay. */
     private fun resolve(): Triple<Profile?, OutputRoute.Output?, Boolean> {
         val output = OutputRoute.current(this)
-        val pick = OutputRoute.pick(
-            store.getAllProfiles(),
-            store.chosenId(),
-            output?.kind,
-            output?.name
-        )
+        val profiles = store.getAllProfiles()
+        val chosen = store.chosenId()
+        // The user's explicit choice always wins over learned preferences.
+        val pick = if (chosen != null && profiles.any { it.id == chosen }) {
+            OutputRoute.pick(profiles, chosen, output?.kind, output?.name)
+        } else {
+            // No explicit choice: use the learned preference for this output,
+            // falling back to output-kind-based picking.
+            val key = output?.let { "${it.kind}|${it.name}" } ?: null
+            val preferredId = key?.let { routeStore.preferredProfile(it) }
+            val preferred = preferredId?.let { profiles.firstOrNull { it.id == preferredId } }
+            if (preferred != null) {
+                OutputRoute.Pick(preferred, switched = chosen != null && chosen != preferred.id)
+            } else {
+                OutputRoute.pick(profiles, null, output?.kind, output?.name)
+            }
+        }
         val hasPlayerSnapshot = discoveryInitialized || mediaSessionSnapshotInitialized
         val mode = when {
             !playerDiscoveryAvailable() ->

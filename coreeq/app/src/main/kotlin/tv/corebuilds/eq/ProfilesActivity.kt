@@ -18,6 +18,7 @@ import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.export.Profile
+import tv.corebuilds.eq.export.ProfileRouteStore
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.export.ProfileExchange
 import tv.corebuilds.eq.mode.ContentMode
@@ -260,7 +261,12 @@ class ProfilesActivity : TvActivity() {
                 btnExport.isEnabled = true
                 btnDelete.isEnabled = true
                 profileStore.setActiveProfile(profile.id)
+                // Remember this profile as the user's preference for the current output.
                 val currentOutput = OutputRoute.current(this)
+                currentOutput?.let {
+                    ProfileRouteStore.of(this@ProfilesActivity)
+                        .rememberPreference("${it.kind}|${it.name}", profile.id)
+                }
                 val routeMatch = OutputRoute.pick(
                     profilesList,
                     profileStore.chosenId(),
