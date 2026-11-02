@@ -64,7 +64,7 @@ jobs:
     env:
       KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check suite truth
         run: python tools/check_suite_truth.py
