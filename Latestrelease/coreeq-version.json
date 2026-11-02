@@ -1,12 +1,18 @@
 {
-  "versionCode": 21,
-  "versionName": "1.10.1",
-  "releaseDate": "2026-10-31",
+  "versionCode": 24,
+  "versionName": "1.11.1",
+  "releaseDate": "2026-11-02",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "4ede9a70ddb43dda99f7cb41d01045962d6e4b1decc75788c91007596fd5e9b9",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.10.1",
+  "apkSha256": "b0f01cd7adacb3fee46509d17ed9bfa0fbf6df8b3e2e0c028761167afe899d9a",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.11.1",
   "minSdk": 30,
   "highlights": [
-    "Bitstream capability is judged by the output in use, not every port plugged in."
+    "Auto loudness, off by default.",
+    "A measured correction turns itself on once per output.",
+    "Core EQ remembers the profile you choose on each output",
+    "Night mode mentions the time.",
+    "Six more soundbars get manual-EQ presets.",
+    "Fixed before release.",
+    "CI."
   ]
 }
