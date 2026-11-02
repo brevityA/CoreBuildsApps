@@ -66,7 +66,7 @@ object LoudnessCompensation {
         while (i < freqs.size - 1 && freqs[i + 1] < hz) i++
         val fLo = freqs[i]
         val fHi = freqs[minOf(i + 1, freqs.size - 1)]
-        val t = if (fHi > fLo) kotlin.math.log(hz / fLo) / kotlin.math.log(fHi / fLo) else 0.0
+        val t = if (fHi > fLo) Math.log(hz / fLo) / Math.log(fHi / fLo) else 0.0
         return iso[i] + t * (iso[minOf(i + 1, freqs.size - 1)] - iso[i])
     }
 }

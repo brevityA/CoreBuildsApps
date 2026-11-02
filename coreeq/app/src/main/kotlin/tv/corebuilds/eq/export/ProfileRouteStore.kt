@@ -43,11 +43,11 @@ class ProfileRouteStore(private val prefs: SharedPreferences) {
         prefs.all.keys
             .filter { it.startsWith(KEY_PREFERRED) }
             .associateWith { prefs.getString(it, "")!! }
-            .mapKeys { it.first.removePrefix(KEY_PREFERRED) }
+            .mapKeys { it.key.removePrefix(KEY_PREFERRED) }
 
     /** The current output as a stable key, or null. */
     fun currentOutputKey(context: Context): String? =
-        OutputRoute.current(context)?.let { "${it.kind}|${it.name}" }.takeIf { it.isNotBlank() }
+        OutputRoute.current(context)?.let { "${it.kind}|${it.name}" }?.takeIf { it.isNotBlank() }
 
     companion object {
         private const val PREFS_NAME = "profile_route_store"

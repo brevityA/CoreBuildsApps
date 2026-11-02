@@ -72,10 +72,9 @@ object TimeBasedSuggestions {
     }
 
     private fun hourOf(nowMs: Long): Int {
-        // Local time via the system default time zone; offset in ms from UTC.
-        val offsetMs = java.util.TimeZone.default.rawOffset.toLong() +
-            (if (java.util.Calendar.getInstance(java.util.TimeZone.default)
-                .inDaylightTime(java.util.Date(nowMs))) java.util.TimeZone.default.dstSavings else 0L)
+        // Local time via the system default time zone; offset in ms from UTC,
+        // including any DST adjustment for the given instant.
+        val offsetMs = java.util.TimeZone.getDefault().getOffset(nowMs).toLong()
         val localMs = nowMs + offsetMs
         val localSec = localMs / 1000L
         val hour = ((localSec % 86400L + 86400L) % 86400L) / 3600L
