@@ -705,7 +705,7 @@ object HardwarePresets {
                 filters = listOf(
                     bell(63.0, -1.0),
                     bell(2_000.0, 1.0),
-                    bell(4_000.0, 0.5)
+                    bell(4_000.0, 0.3)  // Samsung treble can read bright; gentler lift
                 )
             ),
             ManualEqPreset(
