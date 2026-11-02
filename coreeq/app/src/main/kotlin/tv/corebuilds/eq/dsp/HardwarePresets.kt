@@ -464,10 +464,11 @@ object HardwarePresets {
                 id = "sonos-arc-late-night",
                 name = "Sonos Arc · Late night",
                 filters = listOf(
-                    bell(40.0, -2.0),    // Arc has less bass than Ultra; cut less
+                    bell(40.0, -1.5),    // Arc has less bass than Ultra; gentler cut
                     bell(63.0, -1.0),
                     bell(125.0, -0.5),
-                    bell(2_000.0, 1.0)   // keeps speech readable at low volume
+                    bell(2_000.0, 1.2),   // keeps speech readable at low volume
+                    bell(4_000.0, 0.5)    // presence for dialogue clarity
                 )
             )
         ),
