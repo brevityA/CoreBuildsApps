@@ -493,9 +493,9 @@ object HardwarePresets {
                 id = "sonos-beam-gen-2-movie",
                 name = "Sonos Beam Gen 2 · Movie",
                 filters = listOf(
-                    bell(63.0, -1.0),    // modest bass for a compact bar; keep effects clear
+                    bell(63.0, -0.5),    // compact bar; modest bass cut
                     bell(2_000.0, 1.0),  // dialogue presence
-                    bell(4_000.0, 0.5)
+                    bell(4_000.0, 0.3)   // gentle treble lift, not harsh
                 )
             ),
             ManualEqPreset(
