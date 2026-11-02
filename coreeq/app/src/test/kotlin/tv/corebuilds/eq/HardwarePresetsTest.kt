@@ -139,9 +139,12 @@ class HardwarePresetsTest {
     @Test
     fun noTwoShippedPresetsHaveTheSameToneSoTheNameIsNeverAmbiguous() {
         val all = ManualEq.BUILT_IN_PRESETS + HardwarePresets.PRESETS
+        // Collect every pair, so one run names all the collisions to fix.
+        val same = mutableListOf<String>()
         for (i in all.indices) for (j in i + 1 until all.size) {
-            assertFalse("${all[i].name} = ${all[j].name}", ManualEq.sameFilters(all[i].filters, all[j].filters))
+            if (ManualEq.sameFilters(all[i].filters, all[j].filters)) same += "${all[i].name} = ${all[j].name}"
         }
+        assertTrue(same.joinToString("; "), same.isEmpty())
     }
 
     private fun model(id: String) = HardwarePresets.MODELS.single { it.id == id }
@@ -282,7 +285,10 @@ class HardwarePresetsTest {
 
     @Test
     fun newModelNamesAreNotMatchedByNearMisses() {
-        for (name in listOf("Sonos Arc", "Bose Smart Soundbar 700", "Samsung HW-Q990D", "HW-Q9900C", "Bose Soundbar 900")) {
+        // "Sonos Arc" is a model of its own (sonos-arc), so it is a near miss for
+        // the Arc Ultra only: it must find the Arc, never the Ultra.
+        assertEquals(sonosArc, HardwarePresets.matchAny(listOf("Sonos Arc")))
+        for (name in listOf("Bose Smart Soundbar 700", "Samsung HW-Q990D", "HW-Q9900C", "Bose Soundbar 900")) {
             assertNull("name: '$name'", HardwarePresets.matchAny(listOf(name)))
         }
     }

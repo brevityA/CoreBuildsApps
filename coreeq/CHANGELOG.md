@@ -6,6 +6,54 @@ Core EQ (`tv.corebuilds.eq`) keeps its own changelog. The repository-root
 must never land there. Releases are `coreeq-v<version>` tags (see
 `PUBLISHING.md`).
 
+## [1.11.1] — 2026-11-02
+
+**Nothing below was checked on a TV, a soundbar or a speaker pair.** 1.11.0 was
+never released: its tag build, and every Core EQ build after it until this one,
+stopped in the unit tests, because the 1 November features arrived with tests
+that did not compile. This APK is the first to carry 1.11.0's four measurement
+rules (below) as well as everything here. The Android-free Kotlin harness passes
+(647 tests) and lint reports 0 errors.
+
+- **Auto loudness, off by default.** Enhanced audio → Auto loudness restores the
+  bass and treble your ears lose at low volume, using the full ISO 226:2003
+  equal-loudness curves mapped to the ten EQ bands. It adds nothing at or above
+  the output's reference volume, never more than +6 dB per band, and it replaces
+  Low-volume bass while it is on. It needs an output whose volume Android reports
+  in dB; on any other output the status line says there is nothing to compensate.
+- **A measured correction turns itself on once per output.** The first time Core
+  EQ sees an output with a correction, it applies it; after that it only
+  suggests it, and you turn it on from Home.
+- **Core EQ remembers the profile you choose on each output** and prefers it
+  the next time that output is in use. Profiles → Learned preferences lists what
+  it has learned and clears it.
+- **Night mode mentions the time.** With Night mode focused in Enhanced audio,
+  the status line says when it is evening (19:00–22:00) or night (22:00–07:00),
+  in the TV's own time zone.
+- **Six more soundbars get manual-EQ presets.** Sonos Arc, Arc Ultra, Beam
+  (Gen 2) and Ray, Bose Smart Soundbar 900 and Samsung HW-Q990C each get Movie,
+  Dialogue, Music and Late night: 24 presets. They are drawn from published
+  specifications and reviews, and none has been measured by Core EQ. There are
+  also two new built-in presets: Smooth mids and Air.
+- **Fixed before release.** The tests the new features shipped with had never
+  run. Once they did, they found:
+  - **Nine pairs of identical presets.** They had the same curve under two names,
+    for example Sonos Arc Ultra · Movie, Samsung HW-Q990C · Movie and Sonos Beam
+    Gen 2 · Movie. Each one now follows its own model's reviews, so a preset name
+    always means a distinct sound.
+  - **Bose preset names too long.** They are now `Bose Smart 900 · …` to fit the
+    editor's 32-character name limit.
+  - **Auto loudness strength (internal).** The +6 dB cap now applies before the
+    strength scales the curve; before, half strength gave full compensation once
+    the volume was 30 dB down. The app always uses full strength, so nothing
+    audible changes.
+  - **Room-aware guidance and volume-aware suggestions (internal).** These are
+    not yet on any screen. The guidance read the correction's sign backwards,
+    calling a 5 dB lift a cut. The suggestion now counts exactly −30 dB as low
+    volume.
+- **CI.** The workflow is back to the one that built 1.10.1. The debug step and
+  full-history checkouts added while the build was red are gone.
+
 ## [1.11.0] — 2026-10-31
 
 **Nothing below was checked on a TV, a soundbar or a speaker pair.** Every rule

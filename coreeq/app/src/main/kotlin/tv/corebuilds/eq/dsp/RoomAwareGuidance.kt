@@ -48,7 +48,10 @@ object RoomAwareGuidance {
         val manualByCentre = manualFilters.associateBy { it.fc }
         val guidance = mutableListOf<Guidance>()
 
-        // Interpolate the correction at each manual band centre.
+        // Interpolate the correction at each manual band centre. A correction is
+        // added to what was measured (CorrectionRefinement predicts
+        // measured + correction), so a negative value is a cut where the room
+        // is loud and a positive value is a lift where it is weak.
         for (fc in MANUAL_BANDS) {
             val db = correctionAt(curve, fc)
             if (manualByCentre.containsKey(fc)) continue
@@ -56,14 +59,14 @@ object RoomAwareGuidance {
             // Below the transition the room is modal: corrections there are
             // the least trusted, so warn rather than suggest.
             if (fc < profile.transitionHz) {
-                if (db > 3.0) {
+                if (db < -3.0) {
                     guidance += Guidance(
                         fc, Guidance.Kind.WARN_AVOID,
                         "Room peak at ${fc.toInt()} Hz is in the modal band — " +
                             "cutting here may move with listener position",
                         "⚠️"
                     )
-                } else if (db < -3.0) {
+                } else if (db > 3.0) {
                     guidance += Guidance(
                         fc, Guidance.Kind.WARN_AVOID,
                         "Room dip at ${fc.toInt()} Hz is in the modal band — " +
@@ -76,17 +79,17 @@ object RoomAwareGuidance {
 
             // Above the transition, large corrections are the room's tonal
             // signature. Suggest a manual trim if the viewer wants to adjust.
-            if (db > 4.0) {
+            if (db < -4.0) {
                 guidance += Guidance(
                     fc, Guidance.Kind.SUGGEST_CUT,
-                    "Correction cuts ${db.toInt()} dB at ${fc.toInt()} Hz — " +
+                    "Correction cuts ${(-db).toInt()} dB at ${fc.toInt()} Hz — " +
                         "the room is strong there; a manual trim can soften it",
                     "➖"
                 )
-            } else if (db < -4.0) {
+            } else if (db > 4.0) {
                 guidance += Guidance(
                     fc, Guidance.Kind.SUGGEST_BOOST,
-                    "Correction lifts ${(-db).toInt()} dB at ${fc.toInt()} Hz — " +
+                    "Correction lifts ${db.toInt()} dB at ${fc.toInt()} Hz — " +
                         "the room is weak there; a manual boost can reinforce it",
                     "➕"
                 )

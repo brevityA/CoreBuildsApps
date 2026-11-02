@@ -73,7 +73,7 @@ class RoomAwareGuidanceTest {
     }
 
     @Test
-    fn alreadyManualFilteredBandIsSkipped() {
+    fun alreadyManualFilteredBandIsSkipped() {
         val p = profile(transitionHz = 400.0, 4000.0 to -5.0)
         val manual = listOf(PeakingFilter(4000.0, 1.0, -2.0))
         val g = RoomAwareGuidance.guide(p, manual)
@@ -81,7 +81,7 @@ class RoomAwareGuidanceTest {
     }
 
     @Test
-    fn highTransitionAddsInfo() {
+    fun highTransitionAddsInfo() {
         val p = profile(transitionHz = 800.0, 4000.0 to -5.0)
         val g = RoomAwareGuidance.guide(p, emptyList())
         assertTrue(g.any { it.kind == RoomAwareGuidance.Guidance.Kind.INFO && it.message.contains("800") })
@@ -97,11 +97,33 @@ class RoomAwareGuidanceTest {
         val g = RoomAwareGuidance.guide(p, emptyList())
         assertTrue(g.size >= 2)
         // First should be the higher-weight suggestion (SUGGEST_CUT at 4000)
-        assertEquals(4000.0, g[0].fc)
+        assertEquals(4000.0, g[0].fc, 0.0)
         assertEquals(RoomAwareGuidance.Guidance.Kind.SUGGEST_CUT, g[0].kind)
         // Second should be the warning at 125 Hz
-        assertEquals(125.0, g[1].fc)
+        assertEquals(125.0, g[1].fc, 0.0)
         assertEquals(RoomAwareGuidance.Guidance.Kind.WARN_AVOID, g[1].kind)
+    }
+
+    @Test
+    fun theWordingFollowsTheSignOfTheCorrection() {
+        // correctionDb is added to the measurement: negative is a cut where the
+        // room is loud, positive a lift where it is weak. 1.11.0 read it the
+        // other way round and called a 5 dB lift a cut.
+        val g = RoomAwareGuidance.guide(
+            profile(
+                transitionHz = 400.0,
+                125.0 to -5.0,   // modal peak, corrected by a cut
+                250.0 to 5.0,    // modal dip, corrected by a lift
+                2000.0 to 5.0,   // lift above the transition
+                4000.0 to -6.0   // cut above the transition
+            ),
+            emptyList()
+        )
+        fun at(hz: Double) = g.single { it.fc == hz }.message
+        assertTrue(at(125.0), at(125.0).startsWith("Room peak at 125 Hz"))
+        assertTrue(at(250.0), at(250.0).startsWith("Room dip at 250 Hz"))
+        assertTrue(at(2000.0), at(2000.0).startsWith("Correction lifts 5 dB at 2000 Hz"))
+        assertTrue(at(4000.0), at(4000.0).startsWith("Correction cuts 6 dB at 4000 Hz"))
     }
 
     private fun assertNotNull(obj: Any?) {

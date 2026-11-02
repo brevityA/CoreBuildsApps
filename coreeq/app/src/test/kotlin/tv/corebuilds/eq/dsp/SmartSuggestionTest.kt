@@ -80,12 +80,15 @@ class SmartSuggestionTest {
     }
 
     @Test
-    fn fixedVolumeOutputsSuggestNothing() {
+    fun fixedVolumeOutputsGetNoVolumeBasedSuggestion() {
         // volumeDb is null for fixed-volume routes (HDMI-CEC, most soundbars):
         // no low-volume intelligence is possible.
         assertNull(suggest(ContentType.MOVIE, null, activePreset = "bass-lift"))
         assertNull(suggest(ContentType.ANIME, null, activePreset = "flat"))
-        assertNull(suggest(ContentType.GAMING, null, activePreset = "bass-lift"))
+        // Gaming and Music suggest Flat from the content alone, which holds on a
+        // soundbar too, so an unknown volume does not withdraw it.
+        assertEquals("flat", suggest(ContentType.GAMING, null, activePreset = "bass-lift")?.presetId)
+        assertEquals("flat", suggest(ContentType.MUSIC, null, activePreset = "warm")?.presetId)
     }
 
     @Test

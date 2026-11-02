@@ -543,7 +543,9 @@ object HardwarePresets {
                 id = "sonos-ray-movie",
                 name = "Sonos Ray · Movie",
                 filters = listOf(
-                    bell(250.0, -0.5),
+                    // No sub bass to ask for (it rolls off near 65 Hz); a little weight
+                    // in the lowest band the two woofers still reproduce instead.
+                    bell(125.0, 0.5),
                     bell(2_000.0, 1.0),  // dialogue presence
                     bell(4_000.0, 0.5)
                 )
@@ -552,7 +554,9 @@ object HardwarePresets {
                 id = "sonos-ray-dialogue",
                 name = "Sonos Ray · Dialogue",
                 filters = listOf(
-                    bell(1_000.0, 1.0),
+                    // Reviews already rate the Ray's dialogue best in class, so it needs
+                    // less lower-mid push than a bar that has to dig speech out (Q800H: +1 dB).
+                    bell(1_000.0, 0.5),
                     bell(2_000.0, 1.5),  // mirrors the Ray's Speech Enhancement 1–4 kHz lift
                     bell(4_000.0, 1.0)
                 )
@@ -597,7 +601,7 @@ object HardwarePresets {
                 name = "Sonos Arc Ultra · Movie",
                 filters = listOf(
                     bell(63.0, -1.0),
-                    bell(2_000.0, 1.0),
+                    bell(2_000.0, 0.5),  // reviews: exceptional dialogue clarity, so half the presence lift
                     bell(4_000.0, 0.5)
                 )
             ),
@@ -615,7 +619,7 @@ object HardwarePresets {
                 id = "sonos-arc-ultra-music",
                 name = "Sonos Arc Ultra · Music",
                 filters = listOf(
-                    bell(63.0, -1.0),
+                    bell(63.0, -0.5),    // its bass is controlled: less to tame than the Beam's
                     bell(8_000.0, 1.0)
                 )
             ),
@@ -623,7 +627,7 @@ object HardwarePresets {
                 id = "sonos-arc-ultra-late-night",
                 name = "Sonos Arc Ultra · Late night",
                 filters = listOf(
-                    bell(40.0, -2.5),
+                    bell(40.0, -3.0),    // about twice the Arc's output at 50 Hz, so more to turn down
                     bell(63.0, -1.5),
                     bell(125.0, -1.0),
                     bell(2_000.0, 1.0)
@@ -647,7 +651,7 @@ object HardwarePresets {
         presets = listOf(
             ManualEqPreset(
                 id = "bose-smart-soundbar-900-movie",
-                name = "Bose Smart Soundbar 900 · Movie",
+                name = "Bose Smart 900 · Movie",
                 filters = listOf(
                     bell(63.0, -0.5),
                     bell(2_000.0, 1.0),
@@ -656,28 +660,29 @@ object HardwarePresets {
             ),
             ManualEqPreset(
                 id = "bose-smart-soundbar-900-dialogue",
-                name = "Bose Smart Soundbar 900 · Dialogue",
+                name = "Bose Smart 900 · Dialogue",
                 filters = listOf(
                     bell(250.0, -0.5),
                     bell(1_000.0, 1.0),
-                    bell(2_000.0, 1.5)
+                    bell(2_000.0, 1.0)   // reviews already find its dialogue clear: a smaller presence lift
                 )
             ),
             ManualEqPreset(
                 id = "bose-smart-soundbar-900-music",
-                name = "Bose Smart Soundbar 900 · Music",
+                name = "Bose Smart 900 · Music",
                 filters = listOf(
-                    bell(63.0, -0.5),
-                    bell(8_000.0, -0.5)
+                    bell(125.0, -0.5),   // its powerful bass sits above the deep low bass it lacks without a sub
+                    bell(8_000.0, -0.5)  // treble can read bright at high volume
                 )
             ),
             ManualEqPreset(
                 id = "bose-smart-soundbar-900-late-night",
-                name = "Bose Smart Soundbar 900 · Late night",
+                name = "Bose Smart 900 · Late night",
                 filters = listOf(
-                    bell(40.0, -2.0),
+                    // Without a sub there is little below 50 Hz to turn down; the bass
+                    // reviews call powerful sits at 63–125 Hz.
                     bell(63.0, -1.0),
-                    bell(125.0, -0.5),
+                    bell(125.0, -1.0),
                     bell(2_000.0, 1.0)
                 )
             )
@@ -702,8 +707,7 @@ object HardwarePresets {
                 name = "Samsung HW-Q990C · Movie",
                 filters = listOf(
                     bell(63.0, -1.0),
-                    bell(2_000.0, 1.0),
-                    bell(4_000.0, 0.5)
+                    bell(2_000.0, 1.0)   // no 4 kHz lift: reviews find its treble slightly bright already
                 )
             ),
             ManualEqPreset(
