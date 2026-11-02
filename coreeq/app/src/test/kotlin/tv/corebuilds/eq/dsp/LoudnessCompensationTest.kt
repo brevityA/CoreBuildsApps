@@ -1,6 +1,7 @@
 package tv.corebuilds.eq.dsp
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /** Full ISO 226 loudness compensation mapped to the ten manual EQ bands. */

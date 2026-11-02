@@ -40,11 +40,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-
-      - name: Debug checkout
-        run: echo "REF=$GITHUB_REF SHA=$(git rev-parse --short HEAD)" && python3 -c "d=open('coreeq/app/src/main/res/values/strings.xml','rb').read(); print('BS:',d.count(92),'APOS:',d.count(39),'AMPOS:',d.count(b'&apos;'),'LEN:',len(d))"
 
       - name: Check suite truth
         run: python tools/check_suite_truth.py
@@ -144,8 +139,6 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
 
       - name: Refuse to build a tag that is not on main
         if: startsWith(github.ref, 'refs/tags/coreeq-v')
@@ -359,8 +352,6 @@ jobs:
               -no-boot-anim -partition-size 8192
     steps:
       - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
 
       - uses: actions/download-artifact@v7
         with:
@@ -443,8 +434,6 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
 
       - name: Download verified artifact
         uses: actions/download-artifact@v7

@@ -26,7 +26,7 @@ object SmartSuggestion {
 
     /** Volume bands, in dB below full scale from [tv.corebuilds.eq.apply.VolumeLevel]. */
     private const val LOUD_DB = -20.0   // at or above: normal listening
-    private const val QUIET_DB = -30.0  // below: low volume
+    private const val QUIET_DB = -30.0  // at or below: low volume
 
     /**
      * Suggest a manual-EQ preset for the current situation, or null when none
@@ -44,7 +44,7 @@ object SmartSuggestion {
         currentMode: ContentMode,
         activePreset: String?
     ): Suggestion? {
-        val low = volumeDb != null && volumeDb < QUIET_DB
+        val low = volumeDb != null && volumeDb <= QUIET_DB
 
         when {
             // Gaming: do not process. Flat keeps the game's own mix untouched
