@@ -43,18 +43,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Debug: show checkout info
-        run: |
-          echo "=== GIT REF ==="
-          echo "GITHUB_REF=$GITHUB_REF"
-          echo "GITHUB_SHA=$GITHUB_SHA"
-          git rev-parse HEAD
-          git log --oneline -3
-          echo "=== STRINGS.XML CHECK ==="
-          sha256sum coreeq/app/src/main/res/values/strings.xml
-          grep -c '\\\\' coreeq/app/src/main/res/values/strings.xml || echo "0 backslashes"
-          grep -c "&apos;" coreeq/app/src/main/res/values/strings.xml || echo "0 &apos; entities"
-
       - name: Check suite truth
         run: python tools/check_suite_truth.py
 
