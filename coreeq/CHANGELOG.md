@@ -6,6 +6,24 @@ Core EQ (`tv.corebuilds.eq`) keeps its own changelog. The repository-root
 must never land there. Releases are `coreeq-v<version>` tags (see
 `PUBLISHING.md`).
 
+## [1.11.1] — 2026-11-02
+
+**CI build fixes for the 1.11.1 release.**
+
+- Fix `ManualEq` missing comma between built-in presets (compile error)
+- Fix `EqService`, `EnhancedAudioSettingsActivity`, `DeviceKeyStore` missing imports and null safety (compile errors)
+- Fix `LoudnessCompensation` using `kotlin.math.log` instead of `Math.log` (compile error)
+- Fix `TimeBasedSuggestions` using `Calendar.inDaylightTime()` instead of `TimeZone.getOffset()` (compile error)
+- Fix `SmartSuggestion` missing explicit `return null` (compile error)
+- Fix `ProfileRouteStore` using `it.first` instead of `it.key` and missing `?.` before `takeIf` (compile error)
+- Fix string resource apostrophes: escape as `\'` instead of `&apos;` (aapt2 does not expand XML entities in string resources)
+- Fix test compilation: `assertTrue` import, `fn` → `fun`, `assertNotNull` smart-cast
+- Fix `RoomAwareGuidance` cut/boost inversion (positive correction = boost, not cut)
+- Fix `LoudnessCompensation` strength: apply strength after clamping the full curve
+- Fix `SmartSuggestion` quiet-volume boundary: `<=` instead of `<` at QUIET_DB
+- Fix hardware preset name lengths (>32 chars) and duplicate curves (Sonos Ray · Dialogue vs Samsung Q800H · Dialogue)
+- Remove debug checkout step and `fetch-depth: 0` from workflow (restore 1.10.1 shallow checkouts)
+
 ## [1.11.0] — 2026-10-31
 
 **Nothing below was checked on a TV, a soundbar or a speaker pair.** Every rule

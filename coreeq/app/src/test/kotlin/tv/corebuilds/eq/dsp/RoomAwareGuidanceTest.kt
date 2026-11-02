@@ -73,7 +73,7 @@ class RoomAwareGuidanceTest {
     }
 
     @Test
-    fn alreadyManualFilteredBandIsSkipped() {
+    fun alreadyManualFilteredBandIsSkipped() {
         val p = profile(transitionHz = 400.0, 4000.0 to -5.0)
         val manual = listOf(PeakingFilter(4000.0, 1.0, -2.0))
         val g = RoomAwareGuidance.guide(p, manual)
@@ -81,7 +81,7 @@ class RoomAwareGuidanceTest {
     }
 
     @Test
-    fn highTransitionAddsInfo() {
+    fun highTransitionAddsInfo() {
         val p = profile(transitionHz = 800.0, 4000.0 to -5.0)
         val g = RoomAwareGuidance.guide(p, emptyList())
         assertTrue(g.any { it.kind == RoomAwareGuidance.Guidance.Kind.INFO && it.message.contains("800") })

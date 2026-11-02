@@ -59,15 +59,15 @@ object RoomAwareGuidance {
                 if (db > 3.0) {
                     guidance += Guidance(
                         fc, Guidance.Kind.WARN_AVOID,
-                        "Room peak at ${fc.toInt()} Hz is in the modal band — " +
-                            "cutting here may move with listener position",
+                        "Room dip at ${fc.toInt()} Hz is in the modal band — " +
+                            "boosting here may not hold across seats",
                         "⚠️"
                     )
                 } else if (db < -3.0) {
                     guidance += Guidance(
                         fc, Guidance.Kind.WARN_AVOID,
-                        "Room dip at ${fc.toInt()} Hz is in the modal band — " +
-                            "boosting here may not hold across seats",
+                        "Room peak at ${fc.toInt()} Hz is in the modal band — " +
+                            "cutting here may move with listener position",
                         "⚠️"
                     )
                 }
@@ -78,17 +78,17 @@ object RoomAwareGuidance {
             // signature. Suggest a manual trim if the viewer wants to adjust.
             if (db > 4.0) {
                 guidance += Guidance(
-                    fc, Guidance.Kind.SUGGEST_CUT,
-                    "Correction cuts ${db.toInt()} dB at ${fc.toInt()} Hz — " +
-                        "the room is strong there; a manual trim can soften it",
-                    "➖"
+                    fc, Guidance.Kind.SUGGEST_BOOST,
+                    "Correction lifts ${db.toInt()} dB at ${fc.toInt()} Hz — " +
+                        "the room is weak there; a manual boost can reinforce it",
+                    "➕"
                 )
             } else if (db < -4.0) {
                 guidance += Guidance(
-                    fc, Guidance.Kind.SUGGEST_BOOST,
-                    "Correction lifts ${(-db).toInt()} dB at ${fc.toInt()} Hz — " +
-                        "the room is weak there; a manual boost can reinforce it",
-                    "➕"
+                    fc, Guidance.Kind.SUGGEST_CUT,
+                    "Correction cuts ${(-db).toInt()} dB at ${fc.toInt()} Hz — " +
+                        "the room is strong there; a manual trim can soften it",
+                    "➖"
                 )
             }
         }

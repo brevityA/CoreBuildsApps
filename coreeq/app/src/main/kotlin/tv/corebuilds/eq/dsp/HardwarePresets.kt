@@ -552,6 +552,7 @@ object HardwarePresets {
                 id = "sonos-ray-dialogue",
                 name = "Sonos Ray · Dialogue",
                 filters = listOf(
+                    bell(63.0, -0.5),   // tight bass, not booming
                     bell(1_000.0, 1.0),
                     bell(2_000.0, 1.5),  // mirrors the Ray's Speech Enhancement 1–4 kHz lift
                     bell(4_000.0, 1.0)
@@ -647,7 +648,7 @@ object HardwarePresets {
         presets = listOf(
             ManualEqPreset(
                 id = "bose-smart-soundbar-900-movie",
-                name = "Bose Smart Soundbar 900 · Movie",
+                name = "Bose Smart 900 · Movie",
                 filters = listOf(
                     bell(63.0, -0.5),
                     bell(2_000.0, 1.0),
@@ -656,7 +657,7 @@ object HardwarePresets {
             ),
             ManualEqPreset(
                 id = "bose-smart-soundbar-900-dialogue",
-                name = "Bose Smart Soundbar 900 · Dialogue",
+                name = "Bose Smart 900 · Dialogue",
                 filters = listOf(
                     bell(250.0, -0.5),
                     bell(1_000.0, 1.0),
@@ -665,7 +666,7 @@ object HardwarePresets {
             ),
             ManualEqPreset(
                 id = "bose-smart-soundbar-900-music",
-                name = "Bose Smart Soundbar 900 · Music",
+                name = "Bose Smart 900 · Music",
                 filters = listOf(
                     bell(63.0, -0.5),
                     bell(8_000.0, -0.5)
@@ -673,7 +674,7 @@ object HardwarePresets {
             ),
             ManualEqPreset(
                 id = "bose-smart-soundbar-900-late-night",
-                name = "Bose Smart Soundbar 900 · Late night",
+                name = "Bose Smart 900 · Late night",
                 filters = listOf(
                     bell(40.0, -2.0),
                     bell(63.0, -1.0),

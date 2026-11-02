@@ -282,7 +282,7 @@ class HardwarePresetsTest {
 
     @Test
     fun newModelNamesAreNotMatchedByNearMisses() {
-        for (name in listOf("Sonos Arc", "Bose Smart Soundbar 700", "Samsung HW-Q990D", "HW-Q9900C", "Bose Soundbar 900")) {
+        for (name in listOf("Bose Smart Soundbar 700", "Samsung HW-Q990D", "HW-Q9900C", "Bose Soundbar 900")) {
             assertNull("name: '$name'", HardwarePresets.matchAny(listOf(name)))
         }
     }

@@ -20,8 +20,7 @@ class TimeBasedSuggestionsTest {
 
     @Test
     fun `evening window returns an evening suggestion`() {
-        val s = TimeBasedSuggestions.suggestionAt(msAtUtcHour(20), 19, 22, 22, 7)
-        assertNotNull(s)
+        val s = requireNotNull(TimeBasedSuggestions.suggestionAt(msAtUtcHour(20), 19, 22, 22, 7))
         assertEquals(TimeBasedSuggestions.Suggestion.Kind.EVENING, s.kind)
         assertEquals(19, s.startHour)
         assertEquals(22, s.endHour)
@@ -29,8 +28,7 @@ class TimeBasedSuggestionsTest {
 
     @Test
     fun `night window returns a night suggestion`() {
-        val s = TimeBasedSuggestions.suggestionAt(msAtUtcHour(23), 19, 22, 22, 7)
-        assertNotNull(s)
+        val s = requireNotNull(TimeBasedSuggestions.suggestionAt(msAtUtcHour(23), 19, 22, 22, 7))
         assertEquals(TimeBasedSuggestions.Suggestion.Kind.NIGHT, s.kind)
         assertEquals(22, s.startHour)
         assertEquals(7, s.endHour)
@@ -38,8 +36,7 @@ class TimeBasedSuggestionsTest {
 
     @Test
     fun `night window wraps past midnight`() {
-        val s = TimeBasedSuggestions.suggestionAt(msAtUtcHour(3), 19, 22, 22, 7)
-        assertNotNull(s)
+        val s = requireNotNull(TimeBasedSuggestions.suggestionAt(msAtUtcHour(3), 19, 22, 22, 7))
         assertEquals(TimeBasedSuggestions.Suggestion.Kind.NIGHT, s.kind)
     }
 
@@ -53,8 +50,7 @@ class TimeBasedSuggestionsTest {
         // 19:00 is evening start (included)
         assertNotNull(TimeBasedSuggestions.suggestionAt(msAtUtcHour(19), 19, 22, 22, 7))
         // 22:00 is evening end (excluded) but night start (included)
-        val at22 = TimeBasedSuggestions.suggestionAt(msAtUtcHour(22), 19, 22, 22, 7)
-        assertNotNull(at22)
+        val at22 = requireNotNull(TimeBasedSuggestions.suggestionAt(msAtUtcHour(22), 19, 22, 22, 7))
         assertEquals(TimeBasedSuggestions.Suggestion.Kind.NIGHT, at22.kind)
         // 7:00 is night end (excluded)
         assertNull(TimeBasedSuggestions.suggestionAt(msAtUtcHour(7), 19, 22, 22, 7))

@@ -40,12 +40,13 @@ object LoudnessCompensation {
         if (!strength.isFinite() || strength <= 0.0) return gains
         val s = strength.coerceIn(0.0, 1.0)
 
-        // Sample the ISO 226 compensation curve at the manual band centres by
-        // log interpolation between the ISO frequencies.
-        val iso = EqualLoudness.compensationDb(REFERENCE_PHON, REFERENCE_PHON - dbBelowReference, s)
+        // Sample the full-strength ISO 226 compensation curve at the manual
+        // band centres, clamp it, then scale by strength so low-volume settings
+        // keep their effect instead of being lost in the clamp.
+        val iso = EqualLoudness.compensationDb(REFERENCE_PHON, REFERENCE_PHON - dbBelowReference, 1.0)
         for (i in ManualEq.BAND_CENTRES_HZ.indices) {
             gains[i] = interpolateDb(ManualEq.BAND_CENTRES_HZ[i], iso)
-                .coerceIn(-MAX_COMPENSATION_DB, MAX_COMPENSATION_DB)
+                .coerceIn(-MAX_COMPENSATION_DB, MAX_COMPENSATION_DB) * s
         }
         return gains
     }

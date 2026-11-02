@@ -44,7 +44,7 @@ object SmartSuggestion {
         currentMode: ContentMode,
         activePreset: String?
     ): Suggestion? {
-        val low = volumeDb != null && volumeDb < QUIET_DB
+        val low = volumeDb != null && volumeDb <= QUIET_DB
 
         when {
             // Gaming: do not process. Flat keeps the game's own mix untouched
