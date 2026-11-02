@@ -76,7 +76,7 @@ jobs:
         run: |
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.0" "build-tools;36.0.0" \
             || bash tools/install_android_platform.sh 37 36.0.0
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
       - uses: gradle/actions/setup-gradle@v6
