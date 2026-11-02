@@ -43,6 +43,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Debug checkout
+        run: echo "REF=$GITHUB_REF SHA=$(git rev-parse --short HEAD)" && python3 -c "d=open('coreeq/app/src/main/res/values/strings.xml','rb').read(); print('BS:',d.count(92),'APOS:',d.count(39),'AMPOS:',d.count(b'&apos;'),'LEN:',len(d))"
+
       - name: Check suite truth
         run: python tools/check_suite_truth.py
 
