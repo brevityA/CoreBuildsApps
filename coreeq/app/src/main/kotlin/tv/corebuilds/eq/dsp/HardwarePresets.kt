@@ -355,7 +355,7 @@ object HardwarePresets {
                 filters = listOf(
                     bell(250.0, -0.5),
                     bell(2_000.0, 1.0),
-                    bell(4_000.0, 0.5)
+                    bell(4_000.0, 0.3)  // LG's dialogue is already clear; gentler treble lift
                 )
             ),
             ManualEqPreset(

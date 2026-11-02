@@ -97,10 +97,10 @@ class RoomAwareGuidanceTest {
         val g = RoomAwareGuidance.guide(p, emptyList())
         assertTrue(g.size >= 2)
         // First should be the higher-weight suggestion (SUGGEST_CUT at 4000)
-        assertEquals(4000.0, g[0].fc)
+        assertEquals(4000.0, g[0].fc, 0.0)
         assertEquals(RoomAwareGuidance.Guidance.Kind.SUGGEST_CUT, g[0].kind)
         // Second should be the warning at 125 Hz
-        assertEquals(125.0, g[1].fc)
+        assertEquals(125.0, g[1].fc, 0.0)
         assertEquals(RoomAwareGuidance.Guidance.Kind.WARN_AVOID, g[1].kind)
     }
 
