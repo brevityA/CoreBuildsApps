@@ -570,4 +570,3 @@
     <string name="phone_microphone_denied">Microphone access was denied. No measurement was started.</string>
 </resources>
 
-# CI debug: force fresh checkout
