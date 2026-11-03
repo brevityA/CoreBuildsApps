@@ -42,10 +42,13 @@ interface CaptureListener {
  * converted to the analysis rate with a correctly band-limited resampler.
  *
  * The actual input route, sample rate, active-microphone metadata and effect
- * state travel with the saved profile. Any platform microphone-response data
- * is retained as provenance only; it is not silently used to alter the EQ.
- * There is no simulation fallback: a capture that cannot happen is an error,
- * never a made-up spectrum.
+ * state travel with the saved profile. Microphone-response data reported by
+ * the platform is retained there AND consumed: [MicResponse.flatten] applies
+ * it at analysis time when [MicResponse.MIN_POINTS] or more usable points
+ * arrive, within the reported span only; [CaptureInfo.summary] states which
+ * of those cases happened, per capture, in the log line and on the result
+ * notes. There is no simulation fallback: a capture that cannot happen is an
+ * error, never a made-up spectrum.
  */
 class CaptureEngine(private val context: Context) {
 

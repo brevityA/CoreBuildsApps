@@ -51,9 +51,15 @@ data class MicrophoneResponsePoint(
 /**
  * What Android exposed about the actual input path for a sweep. Device support
  * varies; missing fields mean "not reported", not "none". Microphone response
- * points are preserved for audit/research and are explicitly not applied to
- * the room curve. The input rate is the rate Android reports for the
- * AudioRecord stream; it is not a measurement of the microphone ADC clock.
+ * points are preserved as provenance AND applied to the room curve when usable:
+ * [MicResponse.flatten] subtracts them at analysis time whenever at least
+ * [MicResponse.MIN_POINTS] finite, in-band points exist, capped per band at
+ * [MicResponse.MAX_APPLIED_DB] and never extrapolated beyond the reported span
+ * — otherwise the measurement is left untouched, explicitly, in the summary.
+ * Each point carries the reporting microphone's label; grouping is not yet
+ * used at interpolation time (a known, documented limitation). The input rate
+ * is the rate Android reports for the AudioRecord stream; it is not a
+ * measurement of the microphone ADC clock.
  */
 data class CaptureInfo(
     val requestedSampleRateHz: Int? = null,
@@ -98,7 +104,12 @@ data class CaptureInfo(
                 " · Android reported ${microphoneResponse.size} mic-response points (applied, ±${MicResponse.MAX_APPLIED_DB.toInt()} dB cap)"
             microphoneResponse.isNotEmpty() ->
                 " · Android reported ${microphoneResponse.size} mic-response points (too few to apply)"
-            else -> ""
+            else ->
+                // Zero reported points is its own answer: a legitimate no-op
+                // on most TVs, and the first thing a "mic correction does not
+                // seem to work" report must rule out. Silence here read as
+                // "feature missing" for exactly that reason.
+                " · no mic-response reported by Android - correction is room-only"
         }
         return "Capture: $input · $rates$source$recorder$mic$unprocessed$effectState$calibration"
     }
