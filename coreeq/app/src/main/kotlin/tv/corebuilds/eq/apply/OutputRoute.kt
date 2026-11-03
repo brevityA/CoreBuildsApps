@@ -286,10 +286,17 @@ object OutputRoute {
         }
         val cached = probeCache
         if (cached != null && SystemClock.elapsedRealtime() - cached.first < PROBE_CACHE_MS) {
-            // Fresh probe within its window: trust it. A null result means the
-            // probe could not open a track at all — the only condition the
-            // estimate fallback is allowed for — so answer from the estimate
-            // now without re-triggering a probe on every read.
+            // Fresh probe within its window: trust it. A null result (no track
+            // could be opened at all) falls through to the estimate, and that
+            // is a decision, not an oversight: if this ROM cannot open the
+            // probe track, seeding UNCONFIRMED would make the hard stop
+            // permanent — the "play a test tone" recovery is itself a track
+            // open — and estimateOutput is already fail-closed against the
+            // dangerous shape (several candidates -> AMBIGUOUS -> pause). The
+            // residual risk knowingly kept: one external candidate that is
+            // wrong gets its profile applied on a device where nothing can
+            // confirm it. Reachable only with no hold set; a give-up hold
+            // short-circuits above this branch.
             return cached.second?.output ?: estimateOutput(context)
         }
         if (isOnMainThread()) {

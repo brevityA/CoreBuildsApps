@@ -247,8 +247,16 @@ class EqService : Service() {
     private var lastOutput: OutputRoute.Output? = null
     /** Re-probes owed after a device change raced the last one (see onRouteConfirmed). */
     private var routeConfirmRetries = 0
-    /** When the retry cap last gave up; device events inside the cooldown defer to one timer. */
-    private var lastRouteGiveUpAtMs = 0L
+    /**
+     * When the retry cap last gave up; device events inside the cooldown defer
+     * to one timer. Seeded far negative on purpose: initializing to 0 would
+     * put a device event within the first 5 s of boot (elapsedRealtime starts
+     * there) inside "cooldown since a give-up that never happened" and silently
+     * defer the very first probe. Large-negative keeps the subtraction
+     * overflow-free for any realistic uptime.
+     */
+    private var lastRouteGiveUpAtMs = Long.MIN_VALUE / 2
+    /** Written and read on main only; reset only by the deferred runnable it gates. A second caller from off main needs confining (or an AtomicBoolean). */
     private var routeRetryScheduled = false
 
     /** Reprogram only when the lift actually moves a step; holding the volume key costs a few reapplies. */
@@ -1412,7 +1420,15 @@ class EqService : Service() {
     companion object {
         const val ACTION_START = "tv.corebuilds.eq.action.START"
         const val ACTION_STOP = "tv.corebuilds.eq.action.STOP"
-        /** Extra probes per device event before an unruly churn gets an explicit UNCONFIRMED. */
+        /**
+         * Re-probes after a raced confirmation before the churn gets an
+         * explicit UNCONFIRMED. Load math for the whole burst: each
+         * refreshProbeAsync can open up to 2 tracks (probe + in-executor
+         * re-probe when a device change races it), and re-probes fire on
+         * nearly every call under the churn this cap exists for — so worst
+         * case is (1 initial + 3 retries) × 2 = 8 opens per burst, bounded
+         * across events by the cooldown, not just within a burst.
+         */
         private const val MAX_ROUTE_CONFIRM_RETRIES = 3
         /** Quiet time before device events may run another retry burst after a give-up. */
         private const val ROUTE_GIVEUP_COOLDOWN_MS = 5_000L
