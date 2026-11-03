@@ -1,9 +1,11 @@
 package tv.corebuilds.launcher
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -20,6 +22,8 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import android.window.OnBackInvokedCallback
+import android.window.OnBackInvokedDispatcher
 import java.text.DateFormat
 import java.util.Date
 import java.util.concurrent.Executors
@@ -81,6 +85,7 @@ class LauncherActivity : Activity() {
         super.onCreate(savedInstanceState)
         enterImmersiveMode()
         setContentView(createHomeScreen())
+        registerHomeBackHandler()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -88,10 +93,21 @@ class LauncherActivity : Activity() {
         if (hasFocus) enterImmersiveMode()
     }
 
+    private fun registerHomeBackHandler() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+        onBackInvokedDispatcher.registerOnBackInvokedCallback(
+            OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+            OnBackInvokedCallback {
+                // Keep the HOME surface active when Android dispatches a back gesture.
+            },
+        )
+    }
+
+    @SuppressLint("GestureBackNavigation")
     @Suppress("DEPRECATION")
     override fun onBackPressed() {
-        // A HOME surface should remain on the launcher instead of exposing a
-        // previous task. Back still works normally in child screens/apps.
+        // Android 12 and earlier still use this fallback. On newer Android,
+        // registerHomeBackHandler handles predictive gestures on the HOME surface.
     }
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {

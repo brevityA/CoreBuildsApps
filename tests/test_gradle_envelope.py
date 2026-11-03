@@ -773,6 +773,8 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertLess(refresh.index("LauncherPreferences.recentPackages"), refresh.index("runOnUiThread"))
         self.assertNotIn("LauncherPreferences.pinnedPackages", render)
         self.assertIn("accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE", activity)
+        self.assertIn("registerOnBackInvokedCallback", activity)
+        self.assertIn('@SuppressLint("GestureBackNavigation")', activity)
         for clear in ("appTiles.clear()", "favoritesRow.removeAllViews()",
                       "recentRow.removeAllViews()", "appGrid.removeAllViews()"):
             self.assertIn(clear, render)
