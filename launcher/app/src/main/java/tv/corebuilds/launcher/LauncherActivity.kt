@@ -140,7 +140,10 @@ class LauncherActivity : Activity() {
             setPadding(dp(PAGE_HORIZONTAL_PADDING_DP), dp(28), dp(PAGE_HORIZONTAL_PADDING_DP), dp(44))
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
         }
-        scroll.addView(pageContent, ScrollView.LayoutParams(ScrollView.LayoutParams.MATCH_PARENT, ScrollView.LayoutParams.WRAP_CONTENT))
+        scroll.addView(
+            pageContent,
+            FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT),
+        )
         frame.addView(scroll, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
 
         pageContent.addView(createHeader())
@@ -164,7 +167,7 @@ class LauncherActivity : Activity() {
             clipChildren = false
             clipToPadding = false
             setPadding(dp(4), 0, dp(4), 0)
-            addView(favoritesRow, HorizontalScrollView.LayoutParams(HorizontalScrollView.LayoutParams.WRAP_CONTENT, dp(122)))
+            addView(favoritesRow, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, dp(122)))
         }
         pageContent.addView(favoritesScroller, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(130)))
         emptyFavorites = actionButton(getString(R.string.choose_favourites)) { openManageFavorites() }.apply {
@@ -194,7 +197,7 @@ class LauncherActivity : Activity() {
             clipChildren = false
             clipToPadding = false
             setPadding(dp(4), 0, dp(4), 0)
-            addView(recentRow, HorizontalScrollView.LayoutParams(HorizontalScrollView.LayoutParams.WRAP_CONTENT, dp(122)))
+            addView(recentRow, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, dp(122)))
         }
         recentSection.addView(recentScroller, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(130)))
         pageContent.addView(recentSection, marginLayout(bottom = dp(8)))
@@ -216,7 +219,7 @@ class LauncherActivity : Activity() {
         scanStatus = label(getString(R.string.scanning_this_tv), 12f, getColor(R.color.cb_muted), mono = true).apply {
             gravity = Gravity.CENTER_VERTICAL
             minHeight = dp(52)
-            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_LIVE_REGION_POLITE
+            accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE
         }
         pageContent.addView(scanStatus)
 

@@ -771,6 +771,7 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertLess(refresh.index("LauncherPreferences.pinnedPackages"), refresh.index("runOnUiThread"))
         self.assertLess(refresh.index("LauncherPreferences.recentPackages"), refresh.index("runOnUiThread"))
         self.assertNotIn("LauncherPreferences.pinnedPackages", render)
+        self.assertIn("accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE", activity)
         for clear in ("appTiles.clear()", "favoritesRow.removeAllViews()",
                       "recentRow.removeAllViews()", "appGrid.removeAllViews()"):
             self.assertIn(clear, render)
@@ -780,6 +781,7 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertIn("R.string.open_tv_app_description", ui)
 
         manage = (ROOT / "launcher/app/src/main/java/tv/corebuilds/launcher/ManageFavoritesActivity.kt").read_text(encoding="utf-8")
+        self.assertIn("accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE", manage)
         load = manage[manage.index("private fun loadApps()"):manage.index("private fun renderRows()")]
         render_rows = manage[manage.index("private fun renderRows()"):manage.index("private fun togglePin(")]
         self.assertLess(load.index("LauncherPreferences.pinnedPackages"), load.index("runOnUiThread"))

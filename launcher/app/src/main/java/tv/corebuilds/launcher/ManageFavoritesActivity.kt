@@ -55,7 +55,10 @@ class ManageFavoritesActivity : Activity() {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(54), dp(30), dp(54), dp(46))
         }
-        scroll.addView(content, ScrollView.LayoutParams(ScrollView.LayoutParams.MATCH_PARENT, ScrollView.LayoutParams.WRAP_CONTENT))
+        scroll.addView(
+            content,
+            FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT),
+        )
         frame.addView(scroll, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
 
         val top = LinearLayout(this).apply {
@@ -84,7 +87,7 @@ class ManageFavoritesActivity : Activity() {
         ))
         summary = label(getString(R.string.loading_apps), 10f, getColor(R.color.cb_cyan), bold = true, mono = true).apply {
             setPadding(0, dp(18), 0, dp(12))
-            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_LIVE_REGION_POLITE
+            accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE
         }
         content.addView(summary)
 
