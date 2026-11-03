@@ -846,18 +846,25 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertIn("API level", readme)
         self.assertIn("single source of truth", readme)
         self.assertIn("Validation owner:** Not assigned", readme)
-        self.assertIn("Target completion date:** Not scheduled", readme)
+        self.assertIn("Target completion date:** Before the next prototype review", readme)
+        self.assertIn("30–45 minutes per device", readme)
         self.assertIn("full commit SHA or APK SHA-256", readme)
+        self.assertIn("| # | Procedure | PASS criterion | Status | Evidence / result |", readme)
         self.assertEqual(readme.count("| NOT RUN |"), 8)
         for check in ("D-pad", "HOME role", "Back", "TalkBack"):
             self.assertIn(check, readme)
 
-    def test_private_debug_package_and_build_only_workflow(self):
+    def test_private_debug_package_and_validation_artifact_workflow(self):
         build = (ROOT / "launcher/app/build.gradle.kts").read_text(encoding="utf-8")
         workflow = (ROOT / ".github/workflows/core-launcher-prototype-ci.yml").read_text(encoding="utf-8")
         self.assertIn('applicationId = "tv.corebuilds.launcher.prototype"', build)
         self.assertIn('applicationIdSuffix = ".debug"', build)
         self.assertIn(":app:assembleDebug", workflow)
+        self.assertIn("github.event.pull_request.head.sha || github.sha", workflow)
+        self.assertIn("actions/upload-artifact@v4", workflow)
+        self.assertIn("core-builds-launcher-debug-${{ steps.revision.outputs.sha }}", workflow)
+        self.assertIn("BUILD_COMMIT.txt", workflow)
+        self.assertIn("retention-days: 14", workflow)
         self.assertIn("extract_launcher_gradle_diagnostics.py build_out.txt", workflow)
         self.assertNotIn("assembleRelease", workflow)
         self.assertNotRegex(workflow, r"(?m)^\s*tags:")

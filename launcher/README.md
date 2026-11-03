@@ -40,6 +40,10 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 
 The debug APK installs as `tv.corebuilds.launcher.prototype.debug`, so it can sit beside a future non-debug build. Open **Core Builds Launcher · Private** from the TV app list.
 
+## Obtain the exact debug APK for hardware validation
+
+For the PR head, open a successful [Build and lint private launcher Actions run](https://github.com/brevityA/CoreBuildsApps/actions/workflows/core-launcher-prototype-ci.yml) and download its `core-builds-launcher-debug-<full-commit-SHA>` artifact. It contains `app-debug.apk` and `BUILD_COMMIT.txt`; the workflow checks out the PR head SHA and records that exact commit. Confirm the marker matches the SHA entered in the target-device record. Artifacts are retained for 14 days and are debug/test builds only, not a release or redistribution channel. If an artifact has expired, check out the exact recorded commit and build it with the commands above.
+
 To try it as HOME, select **SET AS HOME**, choose the prototype in Android's Home-app settings, then press the remote's Home button. To revert, use the device's **Settings → Apps → Default apps → Home app** screen (wording varies by vendor) and select the previous launcher.
 
 Some televisions restrict third-party HOME selection. This prototype intentionally does not use ADB, `WRITE_SECURE_SETTINGS`, root, or an accessibility service to bypass those restrictions; if the system does not offer it, keep the app as a manually launched dashboard.
@@ -50,7 +54,9 @@ Some televisions restrict third-party HOME selection. This prototype intentional
 
 **Validation owner:** Not assigned; maintainer nomination required.
 
-**Target completion date:** Not scheduled.
+**Target completion date:** Before the next prototype review (soft target; exact calendar date not scheduled).
+
+**Estimated effort:** About 30–45 minutes per device after the APK and device are set up.
 
 Record the actual target, exact installed build, owner, date, and results below; do not merge until every required check passes on the target device(s).
 
@@ -64,18 +70,18 @@ Record the exact APK installed, preferably its version and full source commit SH
 
 ### Results
 
-Use **NOT RUN**, **PASS**, **FAIL**, or **BLOCKED** in the status column and add concise evidence/notes. All rows are currently **NOT RUN**.
+Use **NOT RUN**, **PASS**, **FAIL**, or **BLOCKED** in the status column. Run the procedure and judge it against the explicit PASS criterion for every row; attach concise observations, screenshots where useful, and any failure reproduction. All eight rows are currently **NOT RUN**.
 
-| Check | Status | Result / evidence |
-|---|---|---|
-| D-pad reachability and focus order across the Home spotlight, Favourites shelf, conditional Recents shelf, and on-Home All Apps grid; every action is reachable and the focused item remains visibly outlined. | NOT RUN | |
-| D-pad movement between rows/sections; focused items remain visible and focus does not get trapped or lost. | NOT RUN | |
-| App launch and Back behavior: launch several installed TV apps; Back returns as expected; Back on the launcher does not unexpectedly exit or crash. | NOT RUN | |
-| HOME role: **SET AS HOME** opens Android's default-Home settings; selecting the prototype and pressing Home repeatedly relaunches it; the previous Home app can be restored. | NOT RUN | |
-| TalkBack: each app tile announces its app label and launch action as one useful description, with no duplicate label announcements; the focus indicator remains visible. | NOT RUN | |
-| Favourites and Recents: add/remove pins; launch a non-favourite app; verify newest-first Recents, five-item limit, and no pinned duplicates; force-stop/reopen and verify local choices persist. | NOT RUN | |
-| Catalog refresh and focus: install/uninstall a launchable app while away, return, verify the catalog updates and unavailable Recent entries disappear; focus returns to the same package where it remains available. | NOT RUN | |
-| Banner/icon fallback, crop, safe-area placement, and text legibility from the normal viewing distance. | NOT RUN | |
+| # | Procedure | PASS criterion | Status | Evidence / result |
+|---|---|---|---|---|
+| 1 | From Home, use only the remote D-pad to focus and activate the spotlight, each visible action, Favourites, conditional Recents, and the on-Home All Apps grid. | Every actionable item can be reached and activated; the focused item has a clearly visible outline and is not clipped; focus never gets trapped or lost. | NOT RUN | |
+| 2 | Move Left/Right within each row and Up/Down between the spotlight, Favourites, Recents when visible, app grid, and Edit Favourites; test both ends of each row. | Focus follows the adjacent item/section predictably, stays visible after scrolling, and does not jump to an unrelated control or disappear at row edges. | NOT RUN | |
+| 3 | Open at least three installed TV apps. Exercise an in-app Back stack if available, then back out to the launcher; also press Back on Home and in Edit Favourites. | Back first unwinds an app's own screen; exiting the app returns to the launcher; Back on Home leaves Home usable without a crash; Back from Edit Favourites returns to Home. | NOT RUN | |
+| 4 | HOME role: choose **SET AS HOME**, inspect the system's default-Home settings, select the prototype, press the remote's Home button repeatedly (including after opening another app), then restore the previous Home app. | The settings handoff opens the system Home-app chooser/settings; Home consistently opens the selected prototype; the previous Home app can be restored. | NOT RUN | |
+| 5 | Enable TalkBack, navigate app tiles and Edit Favourites controls, and focus/activate representative items. | Each tile announces its app label and launch action once as a useful combined description; pin controls announce their action/state without duplicate labels; the visual focus indicator remains visible. | NOT RUN | |
+| 6 | Add and remove several favourites; launch more than five distinct non-favourite apps; force-stop and relaunch the launcher. | Favourite choices persist; Recents are unique, newest-first, capped at five, and omit favourites; saved local state remains after relaunch. | NOT RUN | |
+| 7 | Focus a package, leave the launcher, install a launchable app and uninstall another, then return to Home. | The new app appears, the uninstalled app and stale Recent entry disappear, saved favourites are retained, and focus returns to the same package if it remains launchable. | NOT RUN | |
+| 8 | Focus an app with a TV banner and another without one; inspect the spotlight and shelf cards from the normal viewing distance. | Banner art is legible and safely cropped; missing banners fall back to a visible, undistorted app icon; no art cell is blank and focus styling remains obvious. | NOT RUN | |
 
 Favourites/Recent persistence and package-based focus restoration after a catalog refresh are v0.1 checks. Persisting the exact focused item across process recreation is **not currently promised** by v0.1; if required, add it to scope and record it as a separate check.
 

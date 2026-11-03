@@ -31,6 +31,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          # Build the exact PR head so the validation artifact has an immutable,
+          # directly recordable commit SHA rather than a synthetic merge SHA.
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - uses: actions/setup-java@v6
         with:
@@ -46,9 +51,29 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
 
       - id: build
-        name: Build and lint debug APK (no release artifact)
+        name: Build and lint debug APK (no release lane)
         working-directory: launcher
         run: ./gradlew :app:lintDebug :app:assembleDebug --no-daemon --stacktrace
+
+      - id: revision
+        name: Record exact source commit for validation artifact
+        if: success() && steps.build.outcome == 'success'
+        shell: bash
+        run: |
+          sha="$(git rev-parse HEAD)"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$sha" > launcher/app/build/outputs/apk/debug/BUILD_COMMIT.txt
+
+      - name: Upload debug APK for physical validation
+        if: success() && steps.build.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-builds-launcher-debug-${{ steps.revision.outputs.sha }}
+          path: |
+            launcher/app/build/outputs/apk/debug/app-debug.apk
+            launcher/app/build/outputs/apk/debug/BUILD_COMMIT.txt
+          if-no-files-found: error
+          retention-days: 14
 
       # Keep the cause visible in check annotations as well as the job log.
       # This private-launcher job is a required merge gate, and the signed log
