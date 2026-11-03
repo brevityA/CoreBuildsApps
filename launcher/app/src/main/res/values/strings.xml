@@ -2,6 +2,56 @@
 <resources>
     <string name="app_name">Core Builds Launcher · Private</string>
     <string name="manage_favorites_title">Edit favourites</string>
+
+    <string name="brand_name">CORE BUILDS</string>
+    <string name="brand_tagline">YOUR TV  ·  YOUR APPS</string>
+    <string name="home_favourites_title">FAVOURITES</string>
+    <string name="home_favourites_subtitle">Quick access to the apps you choose.</string>
+    <string name="choose_favourites">CHOOSE YOUR FAVOURITES</string>
+    <string name="choose_favourites_description">Choose which apps appear in favourites</string>
+    <string name="edit_favourites">EDIT FAVOURITES</string>
+    <string name="set_as_home">SET AS HOME</string>
+    <string name="recent_title">RECENTLY OPENED</string>
+    <string name="recent_subtitle">Fast access · saved on this TV only.</string>
+    <string name="all_apps_title">ALL APPS</string>
+    <string name="all_apps_subtitle">Select a tile to launch it.</string>
+    <string name="scanning_this_tv">SCANNING THIS TV…</string>
+    <string name="no_apps_found">No apps found. Install an app or check your TV&apos;s app visibility settings.</string>
+    <string name="private_history_disclosure">PRIVATE  ·  No ads or account; app history stays on this TV.</string>
+
+    <string name="hero_eyebrow">CORE BUILDS HOME</string>
+    <string name="hero_no_apps">NO APPS FOUND</string>
+    <string name="hero_title_empty">Your apps.\nYour space.</string>
+    <string name="hero_title_no_apps">Start with an app.</string>
+    <string name="hero_subtitle_empty">Move with the remote to explore.</string>
+    <string name="hero_subtitle_no_apps">Install an app to get started.</string>
+    <string name="hero_tv_ready">TV APP · READY TO OPEN</string>
+    <string name="hero_app_ready">APP · READY TO OPEN</string>
+    <string name="hero_press_ok">Press OK to open.</string>
+
+    <string name="app_count_zero">0 APPS</string>
+    <string name="app_count">%1$d APPS</string>
+    <string name="app_no_longer_available">%1$s is no longer available. Refreshing apps…</string>
+    <string name="app_launch_blocked">Android did not allow %1$s to open.</string>
+    <string name="open_home_settings_hint">Open Settings and choose the default Home app.</string>
+
+    <string name="manage_header">CORE BUILDS  /  PERSONALISE</string>
+    <string name="done">DONE</string>
+    <string name="manage_title">Choose your favourites.</string>
+    <string name="manage_description">Your favourites appear in the first row. Press OK to add or remove an app.</string>
+    <string name="loading_apps">LOADING APPS…</string>
+    <string name="local_choices_disclosure">YOUR CHOICES STAY ON THIS DEVICE.</string>
+    <string name="manage_empty">No apps found yet. Install an app, then come back.</string>
+    <string name="manage_summary">%1$d FAVOURITES  ·  %2$d APPS FOUND</string>
+    <string name="favourite_added">Added to favourites</string>
+    <string name="favourite_removed">Removed from favourites</string>
+
+    <string name="tv_app_label">TV APP</string>
+    <string name="app_label">APP</string>
+    <string name="pin_action_remove">IN FAVOURITES · REMOVE</string>
+    <string name="pin_action_add">ADD TO FAVOURITES</string>
+    <string name="pin_accessibility_pinned">%1$s. In favourites. Select to remove it.</string>
+    <string name="pin_accessibility_unpinned">%1$s. Not in favourites. Select to add it.</string>
     <string name="open_app_description">Open %1$s</string>
     <string name="open_tv_app_description">Open %1$s (TV app)</string>
 </resources>

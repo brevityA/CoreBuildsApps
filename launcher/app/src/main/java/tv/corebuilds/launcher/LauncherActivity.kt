@@ -26,6 +26,19 @@ import java.util.concurrent.Executors
 
 /** Main screen and HOME entry point for the private Core Builds launcher prototype. */
 class LauncherActivity : Activity() {
+    private companion object {
+        // Each page margin is 54dp. The 420dp content floor preserves three
+        // ~132dp tiles (after margins) on narrow landscape viewports; wider
+        // layouts add a column per 152dp of content, clamped to 3–6 columns.
+        const val PAGE_HORIZONTAL_PADDING_DP = 54
+        const val GRID_MIN_CONTENT_WIDTH_DP = 420
+        const val GRID_COLUMN_WIDTH_THRESHOLD_DP = 152
+        const val GRID_MIN_COLUMNS = 3
+        const val GRID_MAX_COLUMNS = 6
+        const val GRID_CELL_MARGIN_DP = 4
+        const val GRID_CELL_HEIGHT_DP = 118
+    }
+
     private val mainHandler = Handler(Looper.getMainLooper())
     private val appLoader = Executors.newSingleThreadExecutor()
     private val clockTick = object : Runnable {
@@ -101,7 +114,8 @@ class LauncherActivity : Activity() {
 
     override fun onDestroy() {
         mainHandler.removeCallbacksAndMessages(null)
-        appLoader.shutdownNow()
+        // Let any just-recorded launch history finish its local preferences write.
+        appLoader.shutdown()
         super.onDestroy()
     }
 
@@ -123,7 +137,7 @@ class LauncherActivity : Activity() {
         }
         pageContent = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(dp(54), dp(28), dp(54), dp(44))
+            setPadding(dp(PAGE_HORIZONTAL_PADDING_DP), dp(28), dp(PAGE_HORIZONTAL_PADDING_DP), dp(44))
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
         }
         scroll.addView(pageContent, ScrollView.LayoutParams(ScrollView.LayoutParams.MATCH_PARENT, ScrollView.LayoutParams.WRAP_CONTENT))
@@ -132,7 +146,10 @@ class LauncherActivity : Activity() {
         pageContent.addView(createHeader())
         pageContent.addView(createHero(), marginLayout(height = dp(196), top = dp(20), bottom = dp(18)))
 
-        pageContent.addView(sectionHeader("FAVOURITES", "Quick access to the apps you choose."))
+        pageContent.addView(sectionHeader(
+            getString(R.string.home_favourites_title),
+            getString(R.string.home_favourites_subtitle),
+        ))
         favoritesRow = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
@@ -150,8 +167,8 @@ class LauncherActivity : Activity() {
             addView(favoritesRow, HorizontalScrollView.LayoutParams(HorizontalScrollView.LayoutParams.WRAP_CONTENT, dp(122)))
         }
         pageContent.addView(favoritesScroller, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(130)))
-        emptyFavorites = actionButton("CHOOSE YOUR FAVOURITES") { openManageFavorites() }.apply {
-            contentDescription = "Choose which apps appear in favourites"
+        emptyFavorites = actionButton(getString(R.string.choose_favourites)) { openManageFavorites() }.apply {
+            contentDescription = getString(R.string.choose_favourites_description)
         }
         pageContent.addView(emptyFavorites, marginLayout(height = dp(48), bottom = dp(10)))
 
@@ -159,7 +176,10 @@ class LauncherActivity : Activity() {
             orientation = LinearLayout.VERTICAL
             visibility = View.GONE
         }
-        recentSection.addView(sectionHeader("RECENTLY OPENED", "Fast access · saved on this TV only."))
+        recentSection.addView(sectionHeader(
+            getString(R.string.recent_title),
+            getString(R.string.recent_subtitle),
+        ))
         recentRow = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
@@ -184,8 +204,8 @@ class LauncherActivity : Activity() {
             gravity = Gravity.CENTER_VERTICAL
         }
         val allAppsTitleColumn = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        allAppsTitleColumn.addView(label("ALL APPS", 17f, getColor(R.color.cb_text), bold = true))
-        allAppsTitleColumn.addView(label("Select a tile to launch it.", 11f, getColor(R.color.cb_muted)).apply {
+        allAppsTitleColumn.addView(label(getString(R.string.all_apps_title), 17f, getColor(R.color.cb_text), bold = true))
+        allAppsTitleColumn.addView(label(getString(R.string.all_apps_subtitle), 11f, getColor(R.color.cb_muted)).apply {
             setPadding(0, dp(4), 0, 0)
         })
         allAppsHeader.addView(allAppsTitleColumn, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
@@ -193,7 +213,7 @@ class LauncherActivity : Activity() {
         allAppsHeader.addView(appCount)
         pageContent.addView(allAppsHeader, marginLayout(top = dp(10), bottom = dp(10)))
 
-        scanStatus = label("SCANNING THIS TV…", 12f, getColor(R.color.cb_muted), mono = true).apply {
+        scanStatus = label(getString(R.string.scanning_this_tv), 12f, getColor(R.color.cb_muted), mono = true).apply {
             gravity = Gravity.CENTER_VERTICAL
             minHeight = dp(52)
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_LIVE_REGION_POLITE
@@ -210,7 +230,7 @@ class LauncherActivity : Activity() {
         pageContent.addView(appGrid, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
 
         pageContent.addView(label(
-            "PRIVATE  ·  No ads or account; app history stays on this TV.",
+            getString(R.string.private_history_disclosure),
             10f,
             getColor(R.color.cb_muted),
             mono = true,
@@ -234,8 +254,8 @@ class LauncherActivity : Activity() {
             marginEnd = dp(12)
         })
         val brand = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        brand.addView(label("CORE BUILDS", 18f, getColor(R.color.cb_text), bold = true))
-        brand.addView(label("YOUR TV  ·  YOUR APPS", 9f, getColor(R.color.cb_cyan), bold = true, mono = true).apply {
+        brand.addView(label(getString(R.string.brand_name), 18f, getColor(R.color.cb_text), bold = true))
+        brand.addView(label(getString(R.string.brand_tagline), 9f, getColor(R.color.cb_cyan), bold = true, mono = true).apply {
             setPadding(0, dp(5), 0, 0)
         })
         row.addView(brand)
@@ -255,11 +275,11 @@ class LauncherActivity : Activity() {
         dateTime.addView(dateText)
         row.addView(dateTime)
 
-        manageButton = actionButton("EDIT FAVOURITES") { openManageFavorites() }
+        manageButton = actionButton(getString(R.string.edit_favourites)) { openManageFavorites() }
         row.addView(manageButton, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dp(46)).apply {
             marginStart = dp(8)
         })
-        val homeButton = actionButton("SET AS HOME") { openHomeSettings() }
+        val homeButton = actionButton(getString(R.string.set_as_home)) { openHomeSettings() }
         row.addView(homeButton, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dp(46)).apply {
             marginStart = dp(8)
         })
@@ -303,15 +323,15 @@ class LauncherActivity : Activity() {
             }
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
         }
-        heroEyebrow = label("CORE BUILDS HOME", 10f, getColor(R.color.cb_cyan), bold = true, mono = true)
+        heroEyebrow = label(getString(R.string.hero_eyebrow), 10f, getColor(R.color.cb_cyan), bold = true, mono = true)
         copy.addView(heroEyebrow)
-        heroTitle = label("Your apps.\nYour space.", 30f, getColor(R.color.cb_text), bold = true).apply {
+        heroTitle = label(getString(R.string.hero_title_empty), 30f, getColor(R.color.cb_text), bold = true).apply {
             maxLines = 2
             ellipsize = android.text.TextUtils.TruncateAt.END
             setPadding(0, dp(8), 0, dp(7))
         }
         copy.addView(heroTitle)
-        heroSubtitle = label("Move with the remote to explore.", 13f, getColor(R.color.cb_muted)).apply {
+        heroSubtitle = label(getString(R.string.hero_subtitle_empty), 13f, getColor(R.color.cb_muted)).apply {
             maxLines = 1
             ellipsize = android.text.TextUtils.TruncateAt.END
         }
@@ -347,21 +367,21 @@ class LauncherActivity : Activity() {
     private fun refreshApps() {
         if (scanning || isFinishing) return
         scanning = true
-        if (renderedAppKeys == null) scanStatus.text = "SCANNING THIS TV…"
+        if (renderedAppKeys == null) scanStatus.text = getString(R.string.scanning_this_tv)
         val focusToRestore = focusedPackage() ?: lastFocusedPackage
 
         appLoader.execute {
             val loaded = LauncherAppCatalog.load(applicationContext)
+            val installed = loaded.mapTo(linkedSetOf()) { it.packageName }
+            val pins = LauncherPreferences.pinnedPackages(applicationContext, installed)
+            val recentPackages = LauncherPreferences.recentPackages(applicationContext, installed)
+                .filterNot { it in pins }
             runOnUiThread {
                 scanning = false
                 if (isFinishing || isDestroyed) return@runOnUiThread
                 val keys = loaded.map {
                     "${it.packageName}/${it.activityName}:${it.label}:${it.tvOptimized}:${it.lastUpdateTime}"
                 }
-                val installed = loaded.mapTo(linkedSetOf()) { it.packageName }
-                val pins = LauncherPreferences.pinnedPackages(this, installed)
-                val recentPackages = LauncherPreferences.recentPackages(this, installed)
-                    .filterNot { it in pins }
                 val appListChanged = keys != renderedAppKeys
                 val pinsChanged = pins != renderedPins
                 val recentsChanged = recentPackages != renderedRecentPackages
@@ -371,7 +391,7 @@ class LauncherActivity : Activity() {
                     renderedAppKeys = keys
                     renderedPins = pins
                     renderedRecentPackages = recentPackages
-                    renderApps(focusToRestore, installed, recentPackages, firstRender)
+                    renderApps(focusToRestore, pins, recentPackages, firstRender)
                     hasRenderedApps = true
                 }
             }
@@ -380,7 +400,7 @@ class LauncherActivity : Activity() {
 
     private fun renderApps(
         focusToRestore: String?,
-        installed: Set<String>,
+        pins: Set<String>,
         recentPackages: List<String>,
         firstRender: Boolean,
     ) {
@@ -392,7 +412,6 @@ class LauncherActivity : Activity() {
         recentSection.visibility = View.GONE
         appGrid.removeAllViews()
 
-        val pins = LauncherPreferences.pinnedPackages(this, installed)
         val favorites = apps.filter { it.packageName in pins }
         if (favorites.isEmpty()) {
             favoritesScroller.visibility = View.GONE
@@ -425,19 +444,21 @@ class LauncherActivity : Activity() {
             }
         }
 
-        appCount.text = if (apps.isEmpty()) "0 APPS" else "${apps.size} APPS"
-        scanStatus.visibility = if (apps.isEmpty()) View.VISIBLE else View.GONE
-        scanStatus.text = if (apps.isEmpty()) {
-            "No apps found. Install an app or check your TV's app visibility settings."
+        appCount.text = if (apps.isEmpty()) {
+            getString(R.string.app_count_zero)
         } else {
-            ""
+            getString(R.string.app_count, apps.size)
         }
+        scanStatus.visibility = if (apps.isEmpty()) View.VISIBLE else View.GONE
+        scanStatus.text = if (apps.isEmpty()) getString(R.string.no_apps_found) else ""
 
         if (apps.isNotEmpty()) {
-            val usableWidthDp = (resources.configuration.screenWidthDp - 108).coerceAtLeast(420)
-            val columns = (usableWidthDp / 152).coerceIn(3, 6)
+            val usableWidthDp = (resources.configuration.screenWidthDp - PAGE_HORIZONTAL_PADDING_DP * 2)
+                .coerceAtLeast(GRID_MIN_CONTENT_WIDTH_DP)
+            val columns = (usableWidthDp / GRID_COLUMN_WIDTH_THRESHOLD_DP)
+                .coerceIn(GRID_MIN_COLUMNS, GRID_MAX_COLUMNS)
             appGrid.columnCount = columns
-            val cellWidth = dp(usableWidthDp / columns) - dp(8)
+            val cellWidth = dp(usableWidthDp / columns) - dp(GRID_CELL_MARGIN_DP * 2)
             apps.forEachIndexed { index, app ->
                 val tile = AppTileView(this, app, ::onAppFocused)
                 tile.setOnClickListener { launchApp(app) }
@@ -448,8 +469,13 @@ class LauncherActivity : Activity() {
                     GridLayout.spec(column),
                 ).apply {
                     width = cellWidth
-                    height = dp(118)
-                    setMargins(dp(4), dp(4), dp(4), dp(4))
+                    height = dp(GRID_CELL_HEIGHT_DP)
+                    setMargins(
+                        dp(GRID_CELL_MARGIN_DP),
+                        dp(GRID_CELL_MARGIN_DP),
+                        dp(GRID_CELL_MARGIN_DP),
+                        dp(GRID_CELL_MARGIN_DP),
+                    )
                 }
                 appGrid.addView(tile, params)
                 appTiles.putIfAbsent(app.packageName, tile)
@@ -494,9 +520,21 @@ class LauncherActivity : Activity() {
             heroIcon.setImageResource(R.drawable.core_builds_mark)
             heroIcon.scaleType = ImageView.ScaleType.FIT_CENTER
             heroIcon.setPadding(0, 0, 0, 0)
-            heroEyebrow.text = if (apps.isEmpty()) "NO APPS FOUND" else "CORE BUILDS HOME"
-            heroTitle.text = if (apps.isEmpty()) "Start with an app." else "Your apps.\nYour space."
-            heroSubtitle.text = if (apps.isEmpty()) "Install an app to get started." else "Move with the remote to explore."
+            heroEyebrow.text = if (apps.isEmpty()) {
+                getString(R.string.hero_no_apps)
+            } else {
+                getString(R.string.hero_eyebrow)
+            }
+            heroTitle.text = if (apps.isEmpty()) {
+                getString(R.string.hero_title_no_apps)
+            } else {
+                getString(R.string.hero_title_empty)
+            }
+            heroSubtitle.text = if (apps.isEmpty()) {
+                getString(R.string.hero_subtitle_no_apps)
+            } else {
+                getString(R.string.hero_subtitle_empty)
+            }
             return
         }
         heroIcon.setImageDrawable((app.banner ?: app.icon).copyForDisplay())
@@ -507,9 +545,11 @@ class LauncherActivity : Activity() {
             heroIcon.scaleType = ImageView.ScaleType.FIT_CENTER
             heroIcon.setPadding(dp(56), 0, dp(56), 0)
         }
-        heroEyebrow.text = if (app.tvOptimized) "TV APP · READY TO OPEN" else "APP · READY TO OPEN"
+        heroEyebrow.text = getString(
+            if (app.tvOptimized) R.string.hero_tv_ready else R.string.hero_app_ready,
+        )
         heroTitle.text = app.label
-        heroSubtitle.text = "Press OK to open."
+        heroSubtitle.text = getString(R.string.hero_press_ok)
     }
 
     private fun focusedPackage(): String? = currentFocus?.tag as? String
@@ -526,12 +566,22 @@ class LauncherActivity : Activity() {
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         try {
             startActivity(intent)
-            LauncherPreferences.recordLaunch(this, app.packageName)
+            appLoader.execute {
+                LauncherPreferences.recordLaunch(applicationContext, app.packageName)
+            }
         } catch (_: ActivityNotFoundException) {
-            Toast.makeText(this, "${app.label} is no longer available. Refreshing apps…", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                getString(R.string.app_no_longer_available, app.label),
+                Toast.LENGTH_SHORT,
+            ).show()
             refreshApps()
         } catch (_: SecurityException) {
-            Toast.makeText(this, "Android did not allow ${app.label} to open.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                getString(R.string.app_launch_blocked, app.label),
+                Toast.LENGTH_SHORT,
+            ).show()
         }
     }
 
@@ -546,7 +596,11 @@ class LauncherActivity : Activity() {
             try {
                 startActivity(Intent(Settings.ACTION_SETTINGS))
             } catch (_: ActivityNotFoundException) {
-                Toast.makeText(this, "Open Settings and choose the default Home app.", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this,
+                    getString(R.string.open_home_settings_hint),
+                    Toast.LENGTH_LONG,
+                ).show()
             }
         }
     }

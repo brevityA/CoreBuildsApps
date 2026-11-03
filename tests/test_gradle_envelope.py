@@ -705,7 +705,10 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertIn("resolved.loadIcon(pm)", apps)
         self.assertIn("val banner: Drawable?", apps)
         self.assertIn("app.banner ?: app.icon", activity)
-        self.assertIn('heroTitle = label("Your apps.\\nYour space.", 30f', activity)
+        self.assertIn("heroTitle = label(getString(R.string.hero_title_empty), 30f", activity)
+        strings_root = ET.parse(ROOT / "launcher/app/src/main/res/values/strings.xml").getroot()
+        strings = {node.get("name"): node.text for node in strings_root.findall("string")}
+        self.assertEqual(strings["hero_title_empty"], "Your apps.\\nYour space.")
         self.assertIn("wideCard = true", activity)
         self.assertIn("onFocused(app)", ui)
 
@@ -756,10 +759,31 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertIn("private const val RECENTS_LIMIT = 5", preferences)
         self.assertIn("fun recordLaunch(context: Context, packageName: String)", preferences)
         self.assertIn("take(RECENTS_LIMIT)", preferences)
-        self.assertIn("LauncherPreferences.recordLaunch(this, app.packageName)", activity)
+        self.assertIn("LauncherPreferences.recordLaunch(applicationContext, app.packageName)", activity)
         self.assertIn(".filterNot { it in pins }", activity)
         self.assertIn("recentSection.visibility = View.GONE", activity)
         self.assertIn("recentSection.visibility = View.VISIBLE", activity)
+
+    def test_home_rebuild_clears_stale_tiles_and_reads_preferences_off_main_thread(self):
+        activity = self.ACTIVITY.read_text(encoding="utf-8")
+        refresh = activity[activity.index("private fun refreshApps()"):activity.index("private fun renderApps(")]
+        render = activity[activity.index("private fun renderApps("):activity.index("private fun onAppFocused(")]
+        self.assertLess(refresh.index("LauncherPreferences.pinnedPackages"), refresh.index("runOnUiThread"))
+        self.assertLess(refresh.index("LauncherPreferences.recentPackages"), refresh.index("runOnUiThread"))
+        self.assertNotIn("LauncherPreferences.pinnedPackages", render)
+        for clear in ("appTiles.clear()", "favoritesRow.removeAllViews()",
+                      "recentRow.removeAllViews()", "appGrid.removeAllViews()"):
+            self.assertIn(clear, render)
+
+        ui = self.UI.read_text(encoding="utf-8")
+        self.assertIn("R.string.open_app_description", ui)
+        self.assertIn("R.string.open_tv_app_description", ui)
+
+        manage = (ROOT / "launcher/app/src/main/java/tv/corebuilds/launcher/ManageFavoritesActivity.kt").read_text(encoding="utf-8")
+        load = manage[manage.index("private fun loadApps()"):manage.index("private fun renderRows()")]
+        render_rows = manage[manage.index("private fun renderRows()"):manage.index("private fun togglePin(")]
+        self.assertLess(load.index("LauncherPreferences.pinnedPackages"), load.index("runOnUiThread"))
+        self.assertNotIn("LauncherPreferences.pinnedPackages", render_rows)
 
     def test_offline_html_preview_is_self_contained_and_disclosed(self):
         preview = (ROOT / "docs/mockups/core-launcher-offline.html").read_text(encoding="utf-8")

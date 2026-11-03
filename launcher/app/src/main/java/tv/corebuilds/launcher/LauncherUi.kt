@@ -190,7 +190,7 @@ internal class AppTileView(
                 importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_NO
             }
             textColumn.addView(context.label(
-                if (app.tvOptimized) "TV APP" else "APP",
+                context.getString(if (app.tvOptimized) R.string.tv_app_label else R.string.app_label),
                 sizeSp = 9f,
                 color = context.getColor(R.color.cb_cyan),
                 bold = true,
@@ -282,7 +282,7 @@ internal class PinnedAppRowView(
             bold = true,
         ))
         textColumn.addView(context.label(
-            if (app.tvOptimized) "TV APP" else "APP",
+            context.getString(if (app.tvOptimized) R.string.tv_app_label else R.string.app_label),
             sizeSp = 10f,
             color = context.getColor(R.color.cb_muted),
             mono = true,
@@ -314,11 +314,12 @@ internal class PinnedAppRowView(
 
     fun updatePinned(value: Boolean) {
         pinned = value
-        action.text = if (pinned) "IN FAVOURITES · REMOVE" else "ADD TO FAVOURITES"
-        contentDescription = if (pinned) {
-            "${app.label}. In favourites. Select to remove it."
-        } else {
-            "${app.label}. Not in favourites. Select to add it."
-        }
+        action.text = context.getString(
+            if (pinned) R.string.pin_action_remove else R.string.pin_action_add,
+        )
+        contentDescription = context.getString(
+            if (pinned) R.string.pin_accessibility_pinned else R.string.pin_accessibility_unpinned,
+            app.label,
+        )
     }
 }
