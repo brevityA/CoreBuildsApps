@@ -701,7 +701,7 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         activity = self.ACTIVITY.read_text(encoding="utf-8")
         apps = self.APPS.read_text(encoding="utf-8")
         ui = self.UI.read_text(encoding="utf-8")
-        self.assertIn("resolved.loadBanner(pm)", apps)
+        self.assertIn("activity.loadBanner(pm)", apps)
         self.assertIn("resolved.loadIcon(pm)", apps)
         self.assertIn("val banner: Drawable?", apps)
         self.assertIn("app.banner ?: app.icon", activity)
@@ -743,7 +743,8 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
     def test_package_updates_refresh_labels_and_banner_art(self):
         activity = self.ACTIVITY.read_text(encoding="utf-8")
         apps = self.APPS.read_text(encoding="utf-8")
-        self.assertIn("lastUpdateTime = activity.applicationInfo.lastUpdateTime", apps)
+        self.assertIn("lastUpdateTime = packageLastUpdateTime(pm, packageName)", apps)
+        self.assertIn("PackageManager.PackageInfoFlags.of(0L)", apps)
         self.assertIn("${it.label}:${it.tvOptimized}:${it.lastUpdateTime}", activity)
 
     def test_favourites_hide_uninstalled_apps_without_forgetting_the_choice(self):

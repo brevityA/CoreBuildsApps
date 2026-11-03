@@ -16,7 +16,7 @@
     <string name="all_apps_title">ALL APPS</string>
     <string name="all_apps_subtitle">Select a tile to launch it.</string>
     <string name="scanning_this_tv">SCANNING THIS TV…</string>
-    <string name="no_apps_found">No apps found. Install an app or check your TV&apos;s app visibility settings.</string>
+    <string name="no_apps_found">No apps found. Install an app or check your TV\'s app visibility settings.</string>
     <string name="private_history_disclosure">PRIVATE  ·  No ads or account; app history stays on this TV.</string>
 
     <string name="hero_eyebrow">CORE BUILDS HOME</string>

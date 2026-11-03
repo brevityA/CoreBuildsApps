@@ -50,7 +50,7 @@ internal object LauncherAppCatalog {
                     // to the package icon when no banner is supplied.
                     val banner = if (tvOptimized) {
                         try {
-                            resolved.loadBanner(pm)
+                            activity.loadBanner(pm)
                         } catch (_: RuntimeException) {
                             null
                         }
@@ -64,7 +64,7 @@ internal object LauncherAppCatalog {
                         icon = icon,
                         banner = banner,
                         tvOptimized = tvOptimized,
-                        lastUpdateTime = activity.applicationInfo.lastUpdateTime,
+                        lastUpdateTime = packageLastUpdateTime(pm, packageName),
                     )
                 }
             }
@@ -74,6 +74,17 @@ internal object LauncherAppCatalog {
             compareBy<LaunchableApp, String>(String.CASE_INSENSITIVE_ORDER) { it.label }
                 .thenBy { it.packageName },
         )
+    }
+
+    @Suppress("DEPRECATION")
+    private fun packageLastUpdateTime(pm: PackageManager, packageName: String): Long = try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            pm.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0L)).lastUpdateTime
+        } else {
+            pm.getPackageInfo(packageName, 0).lastUpdateTime
+        }
+    } catch (_: PackageManager.NameNotFoundException) {
+        0L
     }
 
     private fun queryActivities(pm: PackageManager, intent: Intent): List<ResolveInfo> {
