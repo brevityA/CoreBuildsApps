@@ -827,6 +827,9 @@ class EqService : Service() {
         val all = listOfNotNull(globalEffect) + sessionEqs.values.map { it.applied }
         for (applied in all) {
             applied.extras?.setEnabled(on)
+            // safeSetEnabled catches internally (false = engine dead): one dead
+            // effect logs and moves on - a failure here can never skip the
+            // remaining effects the way a throwing per-band loop would.
             if (!EnhancedEffectChain.safeSetEnabled(applied.effect, on)) {
                 Log.w(TAG, "${applied.engine} no longer valid for enable=$on")
             }
