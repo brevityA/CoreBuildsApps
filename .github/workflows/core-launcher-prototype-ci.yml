@@ -10,6 +10,7 @@ on:
       - '.github/workflows/core-launcher-prototype-ci.yml'
       - 'tools/gradle_envelope.json'
       - 'tools/check_gradle_envelope.py'
+      - 'tools/extract_launcher_gradle_diagnostics.py'
   push:
     branches: [main]
     paths:
@@ -18,6 +19,7 @@ on:
       - '.github/workflows/core-launcher-prototype-ci.yml'
       - 'tools/gradle_envelope.json'
       - 'tools/check_gradle_envelope.py'
+      - 'tools/extract_launcher_gradle_diagnostics.py'
   workflow_dispatch:
 
 permissions:
@@ -57,40 +59,4 @@ jobs:
         shell: bash
         run: |
           ./gradlew :app:lintDebug :app:assembleDebug --no-daemon --stacktrace --console=plain > build_out.txt 2>&1 || true
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-
-          lines = Path("build_out.txt").read_text(errors="replace").splitlines()
-          selected = []
-          capture_cause = 0
-          marker = re.compile(
-              r"^(?:e: |w: |FAILURE: |\* What went wrong:|Execution failed for task |"
-              r"> Task .* FAILED|BUILD FAILED|.*\.kt:\d+(?::\d+)?: error:|"
-              r".*: error: .+|.*: Error: .+)"
-          )
-          for line in lines:
-              stripped = line.strip()
-              if marker.search(stripped):
-                  if stripped not in selected:
-                      selected.append(stripped)
-                  capture_cause = 8 if (
-                      "What went wrong:" in stripped
-                      or stripped.startswith("Execution failed for task ")
-                  ) else 0
-              elif capture_cause and stripped.startswith("> "):
-                  if stripped not in selected:
-                      selected.append(stripped)
-                  capture_cause -= 1
-              elif capture_cause and not stripped:
-                  capture_cause -= 1
-
-          if not selected:
-              selected = [line.strip() for line in lines
-                          if re.search(r"FAILED|error|exception|BUILD FAILED", line, re.I)][-12:]
-          if not selected:
-              selected = ["Gradle failed; inspect the full job log for details."]
-          for line in selected[:16]:
-              escaped = line.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
-              print(f"::error title=Gradle diagnostic::{escaped}")
-          PY
+          python3 ../tools/extract_launcher_gradle_diagnostics.py build_out.txt

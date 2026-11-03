@@ -28,6 +28,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 import check_gradle_envelope as gate  # noqa: E402
+import extract_launcher_gradle_diagnostics as launcher_diagnostics  # noqa: E402
 
 # What the scratch repo needs: enough of the tree for the gate to walk it, and
 # none of the ~50k icon assets it does not look at.
@@ -391,6 +392,11 @@ class EnvelopeTable(unittest.TestCase):
         self.assertEqual(agp["max"], "9.4.0")
         self.assertEqual(self.table["envelope"]["minGradleForAgp9"], "9.6.0")
         self.assertEqual(self.table["envelope"]["builtinKotlinVersionByAgp"]["9.4.0"], "2.2.10")
+        self.assertIn("next suite-wide Android toolchain migration", agp["reason"])
+        self.assertIn(
+            "next suite-wide Android toolchain migration",
+            agp["reasonByDirectory"]["/launcher"],
+        )
         for root in self.roots:
             self.assertEqual(root.agp, "9.4.0", root.label)
             self.assertGreaterEqual(
@@ -636,6 +642,28 @@ class Mutants(unittest.TestCase):
             repo.assert_blocked("installs only", "doctor workflow platform mismatch")
 
 
+class LauncherGradleDiagnosticExtraction(unittest.TestCase):
+    def test_kotlin_warnings_do_not_mask_actual_build_errors(self):
+        warning = "w: src/Main.kt:17: this warning mentions error: only as prose"
+        selected = launcher_diagnostics.select_diagnostics([
+            warning,
+            "e: src/Main.kt:24: unresolved reference: missingSymbol",
+            "FAILURE: Build failed with an exception.",
+            "* What went wrong:",
+            "> Task :app:compileDebugKotlin FAILED",
+        ])
+        self.assertNotIn(warning, selected)
+        self.assertIn("e: src/Main.kt:24: unresolved reference: missingSymbol", selected)
+        self.assertIn("FAILURE: Build failed with an exception.", selected)
+
+    def test_warning_only_log_falls_back_without_emitting_a_warning_annotation(self):
+        warning = "w: src/Main.kt:17: this warning mentions error: only as prose"
+        self.assertEqual(
+            launcher_diagnostics.select_diagnostics([warning]),
+            [launcher_diagnostics.GENERIC_FAILURE],
+        )
+
+
 class PrivateLauncherPrototypeContract(unittest.TestCase):
     ANDROID = "http://schemas.android.com/apk/res/android"
     MANIFEST = ROOT / "launcher/app/src/main/AndroidManifest.xml"
@@ -803,12 +831,29 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertNotIn("https://", preview)
         self.assertNotIn("fetch(", preview)
 
+    def test_documentation_links_implementation_and_hardware_signoff_record(self):
+        readme = (ROOT / "launcher/README.md").read_text(encoding="utf-8")
+        for source in (
+            "LauncherActivity.kt",
+            "LauncherApps.kt",
+            "LauncherPreferences.kt",
+            "LauncherUi.kt",
+            "ManageFavoritesActivity.kt",
+        ):
+            self.assertIn(source, readme)
+        self.assertIn("test_gradle_envelope.py", readme)
+        self.assertIn("**Current sign-off: NOT RUN.**", readme)
+        self.assertIn("API level", readme)
+        for check in ("D-pad", "HOME role", "Back", "TalkBack"):
+            self.assertIn(check, readme)
+
     def test_private_debug_package_and_build_only_workflow(self):
         build = (ROOT / "launcher/app/build.gradle.kts").read_text(encoding="utf-8")
         workflow = (ROOT / ".github/workflows/core-launcher-prototype-ci.yml").read_text(encoding="utf-8")
         self.assertIn('applicationId = "tv.corebuilds.launcher.prototype"', build)
         self.assertIn('applicationIdSuffix = ".debug"', build)
         self.assertIn(":app:assembleDebug", workflow)
+        self.assertIn("extract_launcher_gradle_diagnostics.py build_out.txt", workflow)
         self.assertNotIn("assembleRelease", workflow)
         self.assertNotRegex(workflow, r"(?m)^\s*tags:")
 

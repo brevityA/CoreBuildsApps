@@ -1,7 +1,7 @@
 # Core Builds Launcher — prototype research and scope
 
 **Research date:** 2026-11-03
-**Status:** Core Builds visual pass, conditional local Recent shelf, self-contained offline HTML illustration, and a comparative lightweight-launcher audit are documented; Android build and hardware validation remain pending because this sandbox has no JDK/Android SDK or attached TV. The permission surface remains deliberately minimal pending the target-device definition.
+**Status:** The private launcher prototype and its Kotlin/XML source are included in this PR; CI is configured for the debug build/lint, while physical-device validation is **NOT RUN**. This sandbox has no local JDK/Android SDK or attached TV. The permission surface remains deliberately minimal pending the target-device definition.
 
 ## Recommendation
 
@@ -137,13 +137,15 @@ This direction follows Android's [TV focus system](https://developer.android.com
 - App launch, local favourites and a conditional last-five local Recent shelf, default-home settings handoff, clock/date, Core Builds icon-pack branding and a focus-driven app spotlight with installed-banner/icon fallback.
 - Private debug application ID `tv.corebuilds.launcher.prototype.debug`; no public release or suite registry update.
 
+The implementation is in [`LauncherActivity.kt`](../launcher/app/src/main/java/tv/corebuilds/launcher/LauncherActivity.kt), [`LauncherApps.kt`](../launcher/app/src/main/java/tv/corebuilds/launcher/LauncherApps.kt), [`LauncherPreferences.kt`](../launcher/app/src/main/java/tv/corebuilds/launcher/LauncherPreferences.kt), [`LauncherUi.kt`](../launcher/app/src/main/java/tv/corebuilds/launcher/LauncherUi.kt), [`ManageFavoritesActivity.kt`](../launcher/app/src/main/java/tv/corebuilds/launcher/ManageFavoritesActivity.kt), and [`AndroidManifest.xml`](../launcher/app/src/main/AndroidManifest.xml). [`tests/test_gradle_envelope.py`](../tests/test_gradle_envelope.py) has source/manifest contract assertions; those checks are not Android UI automation or physical-device evidence. The launcher README contains the [required hardware-validation record](../launcher/README.md#required-physical-device-validation-merge-gate).
+
 Not included: recommendation channels, media playback, custom system wallpaper, search, account/cloud sync, weather, sports feeds, key remapping, accessibility-based Home interception, vendor-specific setup, or a public distribution path.
 
-## Validation gate before wider use
+## Validation gate before merge and wider use
 
-1. Build and install the debug APK on physical hardware.
-2. Verify default-HOME selection and recovery on each target device family.
-3. Run the D-pad, Back, TalkBack, install/uninstall and pin-persistence checklist in [`launcher/README.md`](../launcher/README.md).
+1. Require a green CI debug build/lint; it is separate from UX sign-off.
+2. Install the debug APK on the declared physical target device(s) and record vendor/model, Android/Google TV version, API level, build/PR commit, tester, and date.
+3. Complete every D-pad, HOME-role, Back, TalkBack, persistence/focus, and artwork check in the [launcher README validation record](../launcher/README.md#required-physical-device-validation-merge-gate). No physical-device result is claimed until that table is filled with PASS/FAIL evidence.
 4. Only expand scope if private testers keep it selected as HOME and can complete the core actions without setup help.
 
-No physical device was available here, and the sandbox also lacks a JDK/Android SDK. The app's Android build and all hardware behaviors must be verified on a machine with the required toolchain before installation.
+This environment has no attached physical TV and no local JDK/Android SDK. The configured CI build/lint can verify compilation; it cannot validate device-specific HOME selection, remote focus, or TalkBack. The physical-device gate remains outstanding.

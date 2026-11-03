@@ -50,7 +50,7 @@
         "version-update:semver-minor",
         "version-update:semver-major"
       ],
-      "reason": "AGP 9.4.0 is the highest version proven green in the suite and supports API 37. All six suite roots plus the private launcher prototype use AGP 9.4.0 / Gradle 9.7.0; a future AGP bump remains a separate migration.",
+      "reason": "AGP 9.4.0 is the highest version proven green in the suite and supports API 37. All six suite roots plus the private launcher prototype use AGP 9.4.0 / Gradle 9.7.0; keep this as a shared temporary ceiling and revisit it at the next suite-wide Android toolchain migration, or earlier if a security fix or required compatibility change demands it.",
       "evidence": [
         "https://developer.android.com/build/releases/agp-9-4-0-release-notes",
         "https://developer.android.com/build/migrate-to-built-in-kotlin"
@@ -71,7 +71,7 @@
         "/shift": "Suite-wide API 37 toolchain: AGP 9.4.0 / Gradle 9.7.0 / built-in Kotlin.",
         "/motion-plugin": "Suite-wide API 37 toolchain: AGP 9.4.0 / Gradle 9.7.0 / KGP 2.4.10; built-in Kotlin is opted out for frozen Parcelize compatibility.",
         "/doctor": "Suite-wide API 37 toolchain: AGP 9.4.0 / Gradle 9.7.0 / built-in Kotlin.",
-        "/launcher": "Private-use Core Builds Launcher prototype; same API 37 / AGP 9.4.0 / Gradle 9.7.0 toolchain."
+        "/launcher": "Private-use Core Builds Launcher prototype; follows the shared API 37 / AGP 9.4.0 / Gradle 9.7.0 ceiling. Revisit with the next suite-wide Android toolchain migration, not independently."
       }
     },
     {
