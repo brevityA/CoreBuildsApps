@@ -1,18 +1,17 @@
 {
-  "versionCode": 24,
-  "versionName": "1.11.1",
-  "releaseDate": "2026-11-02",
+  "versionCode": 25,
+  "versionName": "1.11.2",
+  "releaseDate": "2026-11-03",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "b0f01cd7adacb3fee46509d17ed9bfa0fbf6df8b3e2e0c028761167afe899d9a",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.11.1",
+  "apkSha256": "b1f31ff90ffeb6920d247964e854cabe74e86a3b58b43f1805293a9c8dcf46fa",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.11.2",
   "minSdk": 30,
   "highlights": [
-    "Auto loudness, off by default.",
-    "A measured correction turns itself on once per output.",
-    "Core EQ remembers the profile you choose on each output",
-    "Night mode mentions the time.",
-    "Six more soundbars get manual-EQ presets.",
-    "Fixed before release.",
-    "CI."
+    "Every AudioEffect write is bounds-checked before the framework sees it.",
+    "Output route is probed the way Google documents, not guessed.",
+    "The reference DSP flattens the microphone before correcting the room.",
+    "The reference DSP can export a hybrid IIR + FIR correction.",
+    "New export: `coreeq_autoeq.csv`",
+    "The route probe never runs on the main thread."
   ]
 }
