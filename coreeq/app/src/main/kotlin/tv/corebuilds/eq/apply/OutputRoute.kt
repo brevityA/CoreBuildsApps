@@ -200,7 +200,12 @@ object OutputRoute {
             try {
                 track.stop()
             } catch (_: Exception) {}
-            track.release()
+            // Same swallow as stop(): a throw from finally would skip past the
+            // catch that already decided the result and turn a confirmed probe
+            // into an inconclusive one; a track that cannot release is gone.
+            try {
+                track.release()
+            } catch (_: Exception) {}
         }
     }
 

@@ -8,6 +8,14 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+- **A response reported by two microphones at once is refused, not blended.**
+  Android gives each active microphone its own response curve and the capture
+  path keeps up to four of them in one list; interpolating that composite
+  produced a curve belonging to no real capsule. The list is applied only when
+  every usable point carries the same microphone label — otherwise the
+  measurement passes through untouched and the capture summary says
+  "N mics reported mic response; composite not applied", the same fail-closed
+  doctrine as the route probe's UNCONFIRMED.
 - **The capture summary now says so when Android reports no mic response.**
   The result notes, the profile screen and the `CoreEqCapture` log line already
   distinguished "applied" from "too few to apply"; zero reported points — the

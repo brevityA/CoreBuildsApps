@@ -28,6 +28,12 @@ import kotlin.math.ln
  * 4. **Signal-to-noise and bandwidth are read from the raw capture still** — the
  *    response scales signal and noise alike, so SNR is already response-free, and the
  *    capture's bandwidth edge stays the capture's, not the metadata's idea of it.
+ * 5. **One capsule, or nothing.** Points labelled to more than one microphone are a
+ *    blend, and blending two unknown responses yields a third curve that matches
+ *    neither; spatial averaging is legitimate for one measurement mic at several
+ *    positions, not for different capsules in fixed positions. A multi-label list
+ *    is refused whole — [microphoneCount] — in favour of leaving the measurement
+ *    alone.
  *
  * Pure Kotlin so the whole rule is unit-tested without Android ([MicResponseTest]).
  */
@@ -83,10 +89,21 @@ object MicResponse {
     }
 
     /**
+     * How many distinct microphones the valid points come from. Zero or one means
+     * the list is one capsule's curve and can be read as such; two or more means
+     * Android reported several capsules and the concatenation describes none of them.
+     */
+    fun microphoneCount(points: List<MicrophoneResponsePoint>): Int =
+        points.valid().map { it.microphone }.distinct().size
+
+    /**
      * [measuredDb] with the microphone's reported response subtracted, per band:
      * the deconvolution. Every band outside the reported span, every non-finite band,
-     * and the whole array when [points] are not [applicable], come back unchanged.
-     * The correction, the nulls and the roll-off that follow read this curve.
+     * and the whole array when [points] are not [applicable] or span more than one
+     * microphone, come back unchanged: a blended two-capsule curve is not a third,
+     * averaging-friendly curve — it matches neither capsule, so it is refused whole,
+     * exactly like thin data is. The correction, the nulls and the roll-off that
+     * follow read this curve.
      */
     fun flatten(
         centresHz: DoubleArray,
@@ -94,7 +111,7 @@ object MicResponse {
         points: List<MicrophoneResponsePoint>
     ): DoubleArray {
         require(centresHz.size == measuredDb.size) { "centres and measured must be the same length" }
-        if (!applicable(points)) return measuredDb.copyOf()
+        if (!applicable(points) || microphoneCount(points) > 1) return measuredDb.copyOf()
         return DoubleArray(measuredDb.size) { k ->
             val m = measuredDb[k]
             if (!m.isFinite()) return@DoubleArray m

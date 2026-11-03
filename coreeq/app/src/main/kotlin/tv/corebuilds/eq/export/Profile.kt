@@ -41,7 +41,7 @@ data class RepeatabilityCheck(
     val note: String? = null
 )
 
-/** A microphone response point reported by Android; it is metadata, not a correction applied by Core EQ. */
+/** A microphone response point reported by Android; vendor metadata that Core EQ applies via [MicResponse.flatten] only when usable and single-capsule, and always keeps as provenance. */
 data class MicrophoneResponsePoint(
     val microphone: String,
     val frequencyHz: Double,
@@ -56,8 +56,8 @@ data class MicrophoneResponsePoint(
  * [MicResponse.MIN_POINTS] finite, in-band points exist, capped per band at
  * [MicResponse.MAX_APPLIED_DB] and never extrapolated beyond the reported span
  * — otherwise the measurement is left untouched, explicitly, in the summary.
- * Each point carries the reporting microphone's label; grouping is not yet
- * used at interpolation time (a known, documented limitation). The input rate
+ * Each point carries the reporting microphone's label, and more than one label
+ * on the list refuses the whole composite rather than blending capsules. The input rate
  * is the rate Android reports for the AudioRecord stream; it is not a
  * measurement of the microphone ADC clock.
  */
@@ -100,8 +100,12 @@ data class CaptureInfo(
             ?.take(110)
             ?.let { " · $it" }.orEmpty()
         val calibration = when {
-            MicResponse.applicable(microphoneResponse) ->
+            MicResponse.applicable(microphoneResponse) && MicResponse.microphoneCount(microphoneResponse) <= 1 ->
                 " · Android reported ${microphoneResponse.size} mic-response points (applied, ±${MicResponse.MAX_APPLIED_DB.toInt()} dB cap)"
+            MicResponse.microphoneCount(microphoneResponse) > 1 ->
+                // Labels, not points, are the unit here: N mics each reporting a
+                // real curve still yield a composite that describes no capsule.
+                " · ${MicResponse.microphoneCount(microphoneResponse)} mics reported mic response; composite not applied"
             microphoneResponse.isNotEmpty() ->
                 " · Android reported ${microphoneResponse.size} mic-response points (too few to apply)"
             else ->
@@ -128,11 +132,17 @@ data class CaptureInfo(
             val os = captureOsVersion?.takeIf { it.isNotBlank() }?.let { " · Android $it" }.orEmpty()
             add("Recording device: $model$os.")
         }
-        if (MicResponse.applicable(microphoneResponse)) {
+        if (MicResponse.applicable(microphoneResponse) && MicResponse.microphoneCount(microphoneResponse) <= 1) {
             add(
                 "Android reported ${microphoneResponse.size} microphone frequency-response points; applied to " +
                     "the measurement (capped at ±${MicResponse.MAX_APPLIED_DB.toInt()} dB per band, and never " +
                     "extrapolated beyond the reported span)."
+            )
+        } else if (MicResponse.microphoneCount(microphoneResponse) > 1) {
+            add(
+                "Android reported ${microphoneResponse.size} microphone frequency-response points from " +
+                    "${MicResponse.microphoneCount(microphoneResponse)} microphones; a composite of capsule " +
+                    "curves belongs to none of them, so none was applied."
             )
         } else if (microphoneResponse.isNotEmpty()) {
             add(

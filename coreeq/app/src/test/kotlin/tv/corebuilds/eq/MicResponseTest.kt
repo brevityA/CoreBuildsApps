@@ -34,6 +34,22 @@ class MicResponseTest {
     }
 
     @Test
+    fun blendingTwoMicrophoneReportsRefusesTheWholeComposite() {
+        val tv = report.map { MicrophoneResponsePoint("tv-array", it.frequencyHz, it.responseDb) }
+        val blend = report + tv
+        assertTrue(MicResponse.applicable(blend)) // sufficiency alone still passes...
+        assertEquals(2, MicResponse.microphoneCount(blend))
+        val measured = DoubleArray(centres.size) { 5.0 }
+        // ...but flatten refuses: a composite of two unknown capsules matches
+        // neither, so nothing is applied rather than something fictional.
+        assertEquals(measured.toList(), MicResponse.flatten(centres, measured, blend).toList())
+        // The single capsule does apply: the reported +1 dB at 100 Hz comes off.
+        assertEquals(4.0, MicResponse.flatten(centres, measured, report)[0], 1e-9)
+        assertEquals(1, MicResponse.microphoneCount(report))
+        assertEquals(0, MicResponse.microphoneCount(emptyList()))
+    }
+
+    @Test
     fun invalidAndOutOfRangePointsDoNotCount() {
         val junk = listOf(
             MicrophoneResponsePoint("remote", Double.NaN, 1.0),
