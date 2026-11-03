@@ -195,22 +195,24 @@ object OutputRoute {
         }
     }
 
-    /** API 33+: does [devices] take this PCM format directly, or is it a passthrough path? */
-    private fun directPlaybackSupport(
-        am: AudioManager,
-        devices: List<AudioDeviceInfo>,
-        format: AudioFormat
-    ): Boolean? {
+    /**
+     * API 33+: can this PCM format be direct-played at all — i.e. is the
+     * route a path that may bypass the mixer and strip an on-device effect?
+     * [AudioManager.getDirectPlaybackSupport] is *static* and takes the
+     * format plus the intended attributes; its result is a bitfield of
+     * DIRECT_PLAYBACK_OFFLOAD/BITSTREAM/GAPLESS support, not a single value,
+     * so test the bits rather than compare equality. Below API 33 there is
+     * no answer (null), not "no".
+     */
+    private fun directPlaybackSupport(format: AudioFormat): Boolean? {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return null
-        if (devices.isEmpty()) return null
         return try {
-            devices.all { device ->
-                am.getDirectPlaybackSupport(device, mediaAttributes(), format) ==
-                    AudioManager.DIRECT_PLAYBACK_SUPPORT_WITH_ENCAPSULATION ||
-                am.getDirectPlaybackSupport(device, mediaAttributes(), format) ==
-                    AudioManager.DIRECT_PLAYBACK_SUPPORT_STREAMING
-            }
-        } catch (e: Exception) {
+            val support = AudioManager.getDirectPlaybackSupport(format, mediaAttributes())
+            support and (
+                AudioManager.DIRECT_PLAYBACK_OFFLOAD_SUPPORTED or
+                    AudioManager.DIRECT_PLAYBACK_BITSTREAM_SUPPORTED
+                ) != 0
+        } catch (e: RuntimeException) {
             null
         }
     }
