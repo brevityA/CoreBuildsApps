@@ -6,7 +6,7 @@ Core EQ (`tv.corebuilds.eq`) keeps its own changelog. The repository-root
 must never land there. Releases are `coreeq-v<version>` tags (see
 `PUBLISHING.md`).
 
-## [Unreleased]
+## [1.11.2] — 2026-11-04
 
 - **Every AudioEffect write is bounds-checked before the framework sees it.** Band
   indices are validated against the device's own `numberOfBands` and gains clamped to
