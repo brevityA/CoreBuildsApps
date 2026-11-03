@@ -38,6 +38,7 @@ object OutputRoute {
         Evidence.ANTICIPATED -> "anticipated media route"
         Evidence.CONNECTED_ESTIMATE -> "connected-output estimate"
         Evidence.TRACK_REPORTED -> "route reported for the sweep track"
+        Evidence.TRACK_PROBE -> "route reported for the silent probe track"
         Evidence.AMBIGUOUS -> "ambiguous route"
     }
 
@@ -57,8 +58,15 @@ object OutputRoute {
     const val UNKNOWN = "unknown"
     /** More than one plausible output was reported; no single-output profile is safe. */
     const val AMBIGUOUS = "ambiguous"
+    /**
+     * A silent probe track played and Android still named no routed device.
+     * Unlike UNKNOWN (a real, unrecognized device), this is not a route at
+     * all — correction pauses on it, and no profile (legacy included) may be
+     * applied through it.
+     */
+    const val UNCONFIRMED = "unconfirmed"
 
-    enum class Evidence { ANTICIPATED, CONNECTED_ESTIMATE, TRACK_REPORTED, AMBIGUOUS }
+    enum class Evidence { ANTICIPATED, CONNECTED_ESTIMATE, TRACK_REPORTED, TRACK_PROBE, AMBIGUOUS }
     data class Output(
         val kind: String,
         val name: String,
@@ -295,6 +303,8 @@ object OutputRoute {
         val generation = probeGeneration
         val probed = probeWithSilentTrack(context)
         // Only publish if no invalidation landed while the track played.
+        // Same check-then-write race (and same accepted-mitigation) as
+        // refreshProbeAsync's publish path — see the comment there.
         if (probeGeneration == generation) {
             probeCache = SystemClock.elapsedRealtime() to probed
         }
@@ -585,16 +595,16 @@ object OutputRoute {
      * holds until something new is actually known.
      */
     @Volatile
-    private var unconfirmedHoldUntil = 0L
+    private var heldUnconfirmed = false
 
     /** True while the [publishUnconfirmedProbe] hold is active (see EqService's re-apply path). */
-    internal fun isHeldUnconfirmed(): Boolean = SystemClock.elapsedRealtime() < unconfirmedHoldUntil
+    internal fun isHeldUnconfirmed(): Boolean = heldUnconfirmed
 
     /** Drop the cached probe and release any unconfirmed hold: a device arrived or left. */
     fun invalidateProbeCache() {
         probeGeneration++
         probeCache = null
-        unconfirmedHoldUntil = 0L
+        heldUnconfirmed = false
     }
 
     /** True when the cache holds a probe result younger than [PROBE_CACHE_MS]. */
@@ -617,7 +627,7 @@ object OutputRoute {
         probeGeneration++
         probeCache = SystemClock.elapsedRealtime() to
             ProbeResult(Output(UNCONFIRMED, label(UNCONFIRMED), Evidence.TRACK_PROBE), null)
-        unconfirmedHoldUntil = Long.MAX_VALUE
+        heldUnconfirmed = true
     }
 
     /** One daemon thread: probes are cheap to hold but must never run on the caller's thread. */
@@ -660,13 +670,22 @@ object OutputRoute {
                     Log.w("OutputRoute", "Re-probe after device change failed", e)
                 }
             }
+            // Known, accepted race: the generation check and this write are
+            // two volatile operations, not one atomic section. An
+            // invalidateProbeCache() landing between them republishes a stale
+            // result over the just-nulled cache (and can clear a hold the
+            // event just set) for up to the PROBE_CACHE_MS window. Nothing
+            // decided in that window is unsafe — the next real device event
+            // re-arms fresh — but if a "stale route applied" report ever
+            // appears, the fix is a synchronized check-and-write here and in
+            // current()'s synchronous publish, not a bigger rework.
             if (probeGeneration == generation) {
                 probeCache = SystemClock.elapsedRealtime() to result
                 if (result != null && result.output.kind != UNCONFIRMED) {
                     // Real knowledge released the pause: a confirmed route is
                     // allowed back through current(). A null result (no track)
                     // or an UNCONFIRMED one leaves any hold exactly as it was.
-                    unconfirmedHoldUntil = 0L
+                    heldUnconfirmed = false
                 }
             }
             probeInFlight.set(false)
