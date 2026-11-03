@@ -1,0 +1,48 @@
+name: Core Builds Launcher prototype CI
+
+# Build/lint guard only. This private prototype has no tag, release, store, or
+# public APK distribution lane.
+on:
+  pull_request:
+    paths:
+      - 'launcher/**'
+      - 'docs/CORE_LAUNCHER_PROTOTYPE_RESEARCH.md'
+      - '.github/workflows/core-launcher-prototype-ci.yml'
+      - 'tools/gradle_envelope.json'
+      - 'tools/check_gradle_envelope.py'
+  push:
+    branches: [main]
+    paths:
+      - 'launcher/**'
+      - 'docs/CORE_LAUNCHER_PROTOTYPE_RESEARCH.md'
+      - '.github/workflows/core-launcher-prototype-ci.yml'
+      - 'tools/gradle_envelope.json'
+      - 'tools/check_gradle_envelope.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  private-prototype:
+    name: Build and lint private launcher
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Android platform 37
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-37.0" "build-tools;36.0.0" \
+            || bash tools/install_android_platform.sh 37.0 36.0.0
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      - name: Build and lint debug APK (no release artifact)
+        working-directory: launcher
+        run: ./gradlew :app:lintDebug :app:assembleDebug --no-daemon --stacktrace

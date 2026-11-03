@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+      A launcher needs visibility only for activities that can actually be
+      launched. Keep these intent queries narrow; do not request
+      QUERY_ALL_PACKAGES for the app grid.
+    -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
+
+    <application
+        android:allowBackup="false"
+        android:banner="@drawable/core_builds_banner"
+        android:icon="@drawable/core_builds_mark"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/core_builds_mark"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.CoreBuildsLauncher">
+
+        <activity
+            android:name=".LauncherActivity"
+            android:banner="@drawable/core_builds_banner"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape">
+
+            <!-- System HOME selection. Never force default-home state. -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <!-- Visible in Android TV / Google TV app lists. -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+
+            <!-- Also openable from standard Android app drawers. -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ManageFavoritesActivity"
+            android:exported="false"
+            android:label="@string/manage_favorites_title"
+            android:screenOrientation="landscape" />
+    </application>
+</manifest>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Core Builds Launcher · Private</string>
+    <string name="manage_favorites_title">Edit favourites</string>
+    <string name="open_app_description">Open %1$s</string>
+    <string name="open_tv_app_description">Open %1$s (TV app)</string>
+</resources>

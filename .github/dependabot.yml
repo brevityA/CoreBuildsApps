@@ -224,6 +224,25 @@ updates:
       core-eq:
         patterns: ["*"]
 
+  # launcher — launcher/
+  - package-ecosystem: "gradle"
+    directory: "/launcher"
+    schedule:
+      interval: "weekly"
+    ignore:
+      # Carried over from #121 — read the note in the header before trusting it.
+      - dependency-name: "gradle-wrapper"
+        versions: [">=9.6"]
+      # The same wrapper under the other name Dependabot sometimes reports.
+      - dependency-name: "org.gradle"
+        versions: [">=9.6"]
+      # com.android.application <= 9.4.0
+      - dependency-name: "com.android.application"
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
+    groups:
+      launcher:
+        patterns: ["*"]
+
   - package-ecosystem: "npm"
     directory: "/ticker"
     schedule:

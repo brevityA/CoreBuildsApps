@@ -17,9 +17,11 @@ import contextlib
 import io
 import json
 import shutil
+import struct
 import sys
 import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -181,10 +183,10 @@ class GradleParsing(unittest.TestCase):
     def setUp(self):
         self.roots = {r.rel: r for r in gate.discover_roots()}
 
-    def test_finds_every_gradle_root_in_the_suite(self):
+    def test_finds_every_gradle_root_in_the_repository(self):
         self.assertEqual(
             set(self.roots),
-            {"", "ticker/android", "shift", "motion-plugin", "doctor", "coreeq"},
+            {"", "ticker/android", "shift", "motion-plugin", "doctor", "coreeq", "launcher"},
         )
 
     def test_root_build_file_maps_to_two_modules(self):
@@ -201,6 +203,7 @@ class GradleParsing(unittest.TestCase):
                 self.assertEqual(module.target_sdk, 37, module.path)
         self.assertEqual(self.roots[""].modules[0].min_sdk, 21)
         self.assertEqual(self.roots["coreeq"].modules[0].min_sdk, 30)
+        self.assertEqual(self.roots["launcher"].modules[0].min_sdk, 26)
 
     def test_reads_the_toolchain_versions(self):
         for rel, root in self.roots.items():
@@ -287,7 +290,7 @@ class DependabotParsing(unittest.TestCase):
     def test_reads_every_directory(self):
         self.assertEqual(
             set(self.gradle),
-            {"/", "/ticker/android", "/shift", "/motion-plugin", "/doctor", "/coreeq"},
+            {"/", "/ticker/android", "/shift", "/motion-plugin", "/doctor", "/coreeq", "/launcher"},
         )
 
     def test_non_gradle_ecosystems_survive(self):
@@ -631,6 +634,154 @@ class Mutants(unittest.TestCase):
                 everywhere=True,
             )
             repo.assert_blocked("installs only", "doctor workflow platform mismatch")
+
+
+class PrivateLauncherPrototypeContract(unittest.TestCase):
+    ANDROID = "http://schemas.android.com/apk/res/android"
+    MANIFEST = ROOT / "launcher/app/src/main/AndroidManifest.xml"
+    ACTIVITY = ROOT / "launcher/app/src/main/java/tv/corebuilds/launcher/LauncherActivity.kt"
+    APPS = ROOT / "launcher/app/src/main/java/tv/corebuilds/launcher/LauncherApps.kt"
+    PREFERENCES = ROOT / "launcher/app/src/main/java/tv/corebuilds/launcher/LauncherPreferences.kt"
+    UI = ROOT / "launcher/app/src/main/java/tv/corebuilds/launcher/LauncherUi.kt"
+
+    def setUp(self):
+        self.manifest = ET.parse(self.MANIFEST).getroot()
+
+    def test_registers_home_tv_and_standard_launcher_entry_points(self):
+        activity = next(
+            node for node in self.manifest.findall("./application/activity")
+            if node.get(f"{{{self.ANDROID}}}name") == ".LauncherActivity"
+        )
+        filters = []
+        for node in activity.findall("intent-filter"):
+            values = {
+                child.get(f"{{{self.ANDROID}}}name")
+                for child in list(node)
+                if child.tag in {"action", "category"}
+            }
+            filters.append(values)
+        self.assertIn(
+            {
+                "android.intent.action.MAIN",
+                "android.intent.category.HOME",
+                "android.intent.category.DEFAULT",
+            },
+            filters,
+        )
+        self.assertIn(
+            {"android.intent.action.MAIN", "android.intent.category.LEANBACK_LAUNCHER"},
+            filters,
+        )
+        self.assertIn(
+            {"android.intent.action.MAIN", "android.intent.category.LAUNCHER"},
+            filters,
+        )
+
+    def test_app_visibility_is_narrow_and_offline(self):
+        query_pairs = set()
+        for node in self.manifest.findall("queries/intent"):
+            action = node.find("action")
+            category = node.find("category")
+            query_pairs.add((
+                action.get(f"{{{self.ANDROID}}}name") if action is not None else None,
+                category.get(f"{{{self.ANDROID}}}name") if category is not None else None,
+            ))
+        self.assertEqual(query_pairs, {
+            ("android.intent.action.MAIN", "android.intent.category.LEANBACK_LAUNCHER"),
+            ("android.intent.action.MAIN", "android.intent.category.LAUNCHER"),
+        })
+        permissions = {
+            node.get(f"{{{self.ANDROID}}}name")
+            for node in self.manifest.findall("uses-permission")
+        }
+        self.assertNotIn("android.permission.QUERY_ALL_PACKAGES", permissions)
+        self.assertNotIn("android.permission.INTERNET", permissions)
+
+    def test_focus_spotlight_uses_installed_art_and_a_distance_readable_name(self):
+        activity = self.ACTIVITY.read_text(encoding="utf-8")
+        apps = self.APPS.read_text(encoding="utf-8")
+        ui = self.UI.read_text(encoding="utf-8")
+        self.assertIn("resolved.loadBanner(pm)", apps)
+        self.assertIn("resolved.loadIcon(pm)", apps)
+        self.assertIn("val banner: Drawable?", apps)
+        self.assertIn("app.banner ?: app.icon", activity)
+        self.assertIn('heroTitle = label("Your apps.\\nYour space.", 30f', activity)
+        self.assertIn("wideCard = true", activity)
+        self.assertIn("onFocused(app)", ui)
+
+    def test_launcher_branding_starts_from_core_builds_icon_pack_assets(self):
+        application = self.manifest.find("application")
+        self.assertEqual(application.get(f"{{{self.ANDROID}}}icon"), "@drawable/core_builds_mark")
+        self.assertEqual(application.get(f"{{{self.ANDROID}}}banner"), "@drawable/core_builds_banner")
+        self.assertTrue((ROOT / "launcher/app/src/main/res/drawable-nodpi/core_builds_mark.webp").is_file())
+        self.assertTrue((ROOT / "launcher/app/src/main/res/drawable-nodpi/core_builds_banner.webp").is_file())
+
+        colors = ET.parse(ROOT / "launcher/app/src/main/res/values/colors.xml").getroot()
+        palette = {node.get("name"): node.text for node in colors.findall("color")}
+        self.assertEqual(palette["cb_background"], "#04070F")
+        self.assertEqual(palette["cb_night"], "#0D1117")
+        self.assertEqual(palette["cb_panel"], "#151923")
+        self.assertEqual(palette["cb_cyan"], "#00D4FF")
+
+        ui = self.UI.read_text(encoding="utf-8")
+        self.assertIn("shape(R.color.cb_night, R.color.cb_cyan, 2)", ui)
+        self.assertIn("app.icon.copyForDisplay()", ui)
+
+    def test_mockups_are_disclosed_design_illustrations_not_device_captures(self):
+        note = (ROOT / "docs/mockups/README.md").read_text(encoding="utf-8")
+        self.assertIn("NOT A SCREENSHOT", note)
+        self.assertIn("not screenshots from an APK or Android TV device", note)
+        self.assertIn("vendor logos or invented substitutes", note)
+        for filename in ("core-launcher-home.png", "core-launcher-all-apps.png"):
+            image = (ROOT / "docs/mockups" / filename).read_bytes()
+            self.assertEqual(image[:8], b"\x89PNG\r\n\x1a\n")
+            self.assertEqual(struct.unpack(">II", image[16:24]), (1920, 1080))
+
+    def test_package_updates_refresh_labels_and_banner_art(self):
+        activity = self.ACTIVITY.read_text(encoding="utf-8")
+        apps = self.APPS.read_text(encoding="utf-8")
+        self.assertIn("lastUpdateTime = activity.applicationInfo.lastUpdateTime", apps)
+        self.assertIn("${it.label}:${it.tvOptimized}:${it.lastUpdateTime}", activity)
+
+    def test_favourites_hide_uninstalled_apps_without_forgetting_the_choice(self):
+        preferences = self.PREFERENCES.read_text(encoding="utf-8")
+        self.assertIn("Keep a user's preference if an app is temporarily uninstalled", preferences)
+        self.assertIn(".filterTo(linkedSetOf()) { it in installedPackages }", preferences)
+        self.assertIn("Preserve temporarily unavailable packages when another favourite is edited", preferences)
+
+    def test_recent_history_is_bounded_local_and_hidden_for_pinned_apps(self):
+        preferences = self.PREFERENCES.read_text(encoding="utf-8")
+        activity = self.ACTIVITY.read_text(encoding="utf-8")
+        self.assertIn('private const val KEY_RECENTS = "recent_packages"', preferences)
+        self.assertIn("private const val RECENTS_LIMIT = 5", preferences)
+        self.assertIn("fun recordLaunch(context: Context, packageName: String)", preferences)
+        self.assertIn("take(RECENTS_LIMIT)", preferences)
+        self.assertIn("LauncherPreferences.recordLaunch(this, app.packageName)", activity)
+        self.assertIn(".filterNot { it in pins }", activity)
+        self.assertIn("recentSection.visibility = View.GONE", activity)
+        self.assertIn("recentSection.visibility = View.VISIBLE", activity)
+
+    def test_offline_html_preview_is_self_contained_and_disclosed(self):
+        preview = (ROOT / "docs/mockups/core-launcher-offline.html").read_text(encoding="utf-8")
+        self.assertIn("DESIGN ILLUSTRATION · NOT A SCREENSHOT", preview)
+        self.assertIn("data:image/webp;base64,", preview)
+        self.assertIn("no network requests", preview)
+        self.assertIn("connect-src 'none'", preview)
+        self.assertNotRegex(preview.lower(), r"<script[^>]+src\s*=")
+        self.assertNotRegex(preview.lower(), r"<link[^>]+href\s*=")
+        self.assertNotIn("fonts.googleapis.com", preview)
+        self.assertNotIn("http://", preview)
+        self.assertNotIn("https://", preview)
+        self.assertNotIn("fetch(", preview)
+
+    def test_private_debug_package_and_build_only_workflow(self):
+        build = (ROOT / "launcher/app/build.gradle.kts").read_text(encoding="utf-8")
+        workflow = (ROOT / ".github/workflows/core-launcher-prototype-ci.yml").read_text(encoding="utf-8")
+        self.assertIn('applicationId = "tv.corebuilds.launcher.prototype"', build)
+        self.assertIn('applicationIdSuffix = ".debug"', build)
+        self.assertIn(":app:assembleDebug", workflow)
+        self.assertNotIn("assembleRelease", workflow)
+        self.assertNotRegex(workflow, r"(?m)^\s*tags:")
 
 
 if __name__ == "__main__":
