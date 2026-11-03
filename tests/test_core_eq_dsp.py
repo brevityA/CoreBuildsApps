@@ -1024,6 +1024,41 @@ class TestMicCalibration:
         allowed, _ = dsp.auto_apply_gate(quality_ok=False, mic_calibrated=True)
         assert not allowed
 
+    def test_a_paired_capture_recovers_the_known_capsule_offset(self):
+        # mic = room + offset, reference = room: the room term must cancel and
+        # the tabulated difference must return the offset at its own points.
+        f = np.geomspace(20.0, 20000.0, 4000)
+        room = 3.0 * np.exp(-((np.log2(f / 150.0)) ** 2) / (2 * 0.3 ** 2))
+        table_hz = np.array([100.0, 1000.0, 10000.0])
+        table_db = np.array([2.0, -1.0, 3.0])
+        offset = np.interp(np.log10(f), np.log10(table_hz), table_db)
+        derived_hz, derived_db = dsp.derive_mic_offset(f, room + offset, room)
+        recovered = np.interp(np.log10(table_hz), np.log10(derived_hz), derived_db)
+        assert np.max(np.abs(recovered - table_db)) < 0.35
+
+    def test_the_derived_table_flattens_the_mic_through_the_subtractor(self):
+        f = np.geomspace(20.0, 20000.0, 4000)
+        room = 3.0 * np.exp(-((np.log2(f / 150.0)) ** 2) / (2 * 0.3 ** 2))
+        table_hz = np.array([100.0, 1000.0, 10000.0])
+        table_db = np.array([2.0, -1.0, 3.0])
+        offset = np.interp(np.log10(f), np.log10(table_hz), table_db)
+        derived_hz, derived_db = dsp.derive_mic_offset(f, room + offset, room)
+        flattened = dsp.subtract_mic_offset(f, room + offset, derived_hz, derived_db)
+        inside = (f >= derived_hz[0]) & (f <= derived_hz[-1])
+        assert np.max(np.abs(flattened[inside] - room[inside])) < 0.35
+
+    def test_derivation_clips_a_placement_artifact_to_the_cap(self):
+        f = np.geomspace(20.0, 20000.0, 4000)
+        mic = np.full_like(f, 15.0)   # more than any capsule offset should claim
+        derived_hz, derived_db = dsp.derive_mic_offset(f, mic, np.zeros_like(f))
+        assert derived_db.size > 0
+        assert float(np.max(np.abs(derived_db))) <= dsp.MIC_OFFSET_MAX_DB + 1e-9
+
+    def test_derivation_of_a_too_short_capture_yields_no_table(self):
+        f = np.array([100.0, 200.0, 400.0])
+        empty_hz, empty_db = dsp.derive_mic_offset(f, np.zeros(3), np.zeros(3))
+        assert empty_hz.size == 0 and empty_db.size == 0
+
 
 class TestHybridIirFir:
     def test_room_modes_become_limited_biquads(self, correction):

@@ -1,7 +1,9 @@
 package tv.corebuilds.eq
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import tv.corebuilds.eq.apply.EnhancedEffectChain
 
@@ -54,5 +56,75 @@ class EnhancedEffectChainTest {
         assertNull(EnhancedEffectChain.clampBandLevel(0, 0, 5, shortArrayOf(-1500)))
         assertNull(EnhancedEffectChain.clampBandLevel(0, 0, 0, range))
         assertNull(EnhancedEffectChain.clampBandLevel(0, 0, 5, shortArrayOf(1500, -1500)))
+    }
+
+    @Test
+    fun a_capability_read_that_throws_is_caught_and_the_write_never_happens() {
+        // A corrupted effect instance can throw from numberOfBands before any
+        // write: the guard must catch that read too, and set() must not run.
+        var wrote = false
+        val ok = EnhancedEffectChain.safeSetBandLevel(
+            band = 0,
+            levelMb = 0,
+            readBands = { throw RuntimeException("corrupted effect state") },
+            readRange = { range },
+            set = { _, _ -> wrote = true }
+        )
+        assertFalse(ok)
+        assertFalse(wrote)
+    }
+
+    @Test
+    fun a_range_read_that_throws_is_caught_too() {
+        var wrote = false
+        val ok = EnhancedEffectChain.safeSetBandLevel(
+            band = 0,
+            levelMb = 0,
+            readBands = { 5 },
+            readRange = { throw RuntimeException("corrupted effect state") },
+            set = { _, _ -> wrote = true }
+        )
+        assertFalse(ok)
+        assertFalse(wrote)
+    }
+
+    @Test
+    fun the_set_call_itself_throwing_unsupported_operation_is_caught() {
+        val ok = EnhancedEffectChain.safeSetBandLevel(
+            band = 0,
+            levelMb = 0,
+            readBands = { 5 },
+            readRange = { range },
+            set = { _, _ -> throw UnsupportedOperationException("engine unavailable") }
+        )
+        assertFalse(ok)
+    }
+
+    @Test
+    fun the_set_call_itself_throwing_runtime_is_caught_and_not_retried() {
+        var calls = 0
+        val ok = EnhancedEffectChain.safeSetBandLevel(
+            band = 0,
+            levelMb = 0,
+            readBands = { 5 },
+            readRange = { range },
+            set = { _, _ -> calls++; throw RuntimeException("error state") }
+        )
+        assertFalse(ok)
+        assertEquals(1, calls) // exactly one attempt: a retry would hit the same state
+    }
+
+    @Test
+    fun a_good_write_reports_the_clamped_level() {
+        var written: Short? = null
+        val ok = EnhancedEffectChain.safeSetBandLevel(
+            band = 2,
+            levelMb = Short.MAX_VALUE,
+            readBands = { 5 },
+            readRange = { range },
+            set = { _, level -> written = level }
+        )
+        assertTrue(ok)
+        assertEquals(1500.toShort(), written)
     }
 }

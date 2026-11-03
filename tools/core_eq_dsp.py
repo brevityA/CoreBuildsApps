@@ -1774,6 +1774,53 @@ def subtract_mic_offset(
     return out
 
 
+def derive_mic_offset(
+    freqs: np.ndarray,
+    mic_db: np.ndarray,
+    reference_db: np.ndarray,
+    *,
+    max_db: float = MIC_OFFSET_MAX_DB,
+    f_min: float | None = None,
+    f_max: float | None = None,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Derive a per-model mic offset table from a paired capture.
+
+    The self-serve half of mic calibration: play the same pink-noise run
+    through the remote while the remote's mic *and* a calibrated reference mic
+    record side by side, and the room term cancels — what survives the
+    subtraction is the remote capsule's deviation from the reference. The
+    difference is reduced to 1/3-octave bands on both spectra first (in-band
+    power averaging, the same rule the measurement path uses) so a few dB of
+    positional room-mode mismatch between two capsules centimetres apart does
+    not burn into a table that outlives the capture.
+
+    Returns ``(offset_hz, offset_db)`` at the band centres, clipped to ±max_db
+    — beyond that the "offset" is more likely a placement artifact than a
+    capsule trait, and a table nobody can trust is worse than no table. Feed
+    the result straight into [subtract_mic_offset]; outside the returned span
+    (bands with no energy, or beyond [f_min]/[f_max]) the measurement is left
+    as measured, which is exactly what an empty correction means there.
+    """
+    # Resolved here, not as default args: the AutoEQ band limits are declared
+    # below this function, and defaults bind at def time.
+    if f_min is None:
+        f_min = AUTOEQ_FREQ_MIN_HZ
+    if f_max is None:
+        f_max = AUTOEQ_FREQ_MAX_HZ
+    f = np.asarray(freqs, dtype=float)
+    if f.size < 8:
+        return np.empty(0), np.empty(0)
+    mic_bands, mic_avg = octave_bands(f, np.asarray(mic_db, dtype=float), 3.0, f_min, f_max)
+    ref_bands, ref_avg = octave_bands(f, np.asarray(reference_db, dtype=float), 3.0, f_min, f_max)
+    if mic_bands.size == 0 or not np.array_equal(mic_bands, ref_bands):
+        return np.empty(0), np.empty(0)
+    delta = mic_avg - ref_avg
+    ok = np.isfinite(delta)
+    centres = mic_bands[ok]
+    values = np.clip(delta[ok], -max_db, max_db)
+    return centres, values
+
+
 def mic_limitation_warning(freqs: np.ndarray, measured_db: np.ndarray) -> str | None:
     """A warning when the measurement carries a MEMS-mic signature.
 
@@ -1981,9 +2028,11 @@ def export_autoeq_csv(
     """`frequency,gain` CSV in AutoEQ's native format — no proprietary blob.
 
     Rows are the correction sampled at the 1/3-octave centres inside
-    [f_min, f_max], clamped to the AutoEQ gain limits. Note for Poweramp
-    users: importing an AutoEQ *graphic* preset adds +6 dB to these gains;
-    the parametric JSON export does not.
+    [f_min, f_max], clamped to the AutoEQ gain limits. Gains are written to
+    0.001 dB so a fine correction survives a round-trip without sub-0.01 dB
+    rounding; Poweramp and AutoEQ both accept the extra digits. Note for
+    Poweramp users: importing an AutoEQ *graphic* preset adds +6 dB to these
+    gains; the parametric JSON export does not.
     """
     f = np.asarray(freqs, dtype=float)
     corr = np.asarray(correction_db, dtype=float)
@@ -1994,7 +2043,7 @@ def export_autoeq_csv(
         "frequency,gain",
     ]
     for hz, db in zip(f[band], corr[band]):
-        lines.append(f"{hz:.1f},{float(np.clip(db, AUTOEQ_GAIN_MIN_DB, AUTOEQ_GAIN_MAX_DB)):.2f}")
+        lines.append(f"{hz:.1f},{float(np.clip(db, AUTOEQ_GAIN_MIN_DB, AUTOEQ_GAIN_MAX_DB)):.3f}")
     return "\n".join(lines) + "\n"
 
 
@@ -2529,6 +2578,32 @@ def _selftest() -> int:
     allowed, message = auto_apply_gate(quality_ok=True, mic_calibrated=False)
     check("uncalibrated mic gates auto-apply behind confirmation",
           not allowed and "mic calibration is unavailable" in message)
+    # Deriving a table from a paired capture: a known per-model offset, fed as
+    # (mic = room + offset) against (reference = room), must recover that
+    # offset within the band grid and then undo it via subtract_mic_offset.
+    known_offset_hz = np.array([100.0, 1000.0, 10000.0])
+    known_offset_db = np.array([2.0, -1.0, 3.0])
+    fine = np.geomspace(20.0, 20000.0, 4000)
+    room = np.zeros_like(fine)
+    known = np.interp(np.log10(fine), np.log10(known_offset_hz), known_offset_db)
+    mic = room + known  # the remote's capture sits off flat by its capsule offset
+    derived_hz, derived_db = derive_mic_offset(fine, mic, room)
+    recovered = np.interp(np.log10(known_offset_hz), np.log10(derived_hz), derived_db)
+    check("derived mic table is flat where the two spectra match",
+          derived_hz.size == 0 or bool(np.all(np.abs(recovered - known_offset_db) < 0.35)),
+          f"max {0.0 if derived_hz.size == 0 else float(np.max(np.abs(recovered - known_offset_db))):.2f} dB from known")
+    # Inside the tabulated span only: outside it subtract_mic_offset is
+    # specified to leave the measurement alone, and the synthetic mic curve
+    # does not flatten to zero there.
+    if derived_hz.size >= 2:
+        flattened = subtract_mic_offset(fine, mic, derived_hz, derived_db)
+        inside = (fine >= derived_hz[0]) & (fine <= derived_hz[-1])
+        residual = float(np.max(np.abs(flattened[inside] - room[inside])))
+        check("a derived table is accepted straight back by subtract_mic_offset",
+              residual <= 0.35, f"{residual:.2f} dB residual inside the span")
+    else:
+        check("a derived table is accepted straight back by subtract_mic_offset",
+              False, "derive produced no table to feed back")
     check("calibrated, good-quality measurement auto-applies",
           auto_apply_gate(quality_ok=True, mic_calibrated=True) == (True, ""))
     check("a MEMS-style LF roll-off raises the limitation warning",

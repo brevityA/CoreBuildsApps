@@ -178,7 +178,9 @@ object Formats {
     /**
      * AutoEQ-native CSV: exactly two columns, `frequency,gain` (Hz, dB) — the
      * format AutoEQ writes and Poweramp Equalizer imports, with no proprietary
-     * blob. Gains are clamped to the AutoEQ safety limits (-12..+3 dB).
+     * blob. Gains are clamped to the AutoEQ safety limits (-12..+3 dB) and
+     * written to 0.001 dB so a fine correction survives a round-trip without
+     * sub-0.01 dB rounding.
      *
      * Note for Poweramp users: Poweramp adds +6 dB to AutoEQ *graphic* gains
      * on import. This CSV carries the true dB values; [exportPowerampJson]
@@ -199,7 +201,7 @@ object Formats {
             if (hz < AUTOEQ_CSV_MIN_HZ || hz > AUTOEQ_CSV_MAX_HZ) continue
             val gain = (profile.correctionAt(hz) + ManualEq.responseDb(manualFilters, hz))
                 .coerceIn(AUTOEQ_CSV_GAIN_MIN_DB, AUTOEQ_CSV_GAIN_MAX_DB)
-            sb.append(String.format(Locale.US, "%.1f,%.2f\n", hz, gain))
+            sb.append(String.format(Locale.US, "%.1f,%.3f\n", hz, gain))
         }
         return sb.toString()
     }

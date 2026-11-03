@@ -27,14 +27,24 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   measurement (capped at ±6 dB per band, never extrapolated past the tabulated span),
   warns when the curve carries a MEMS-mic signature (low-frequency roll-off,
   high-frequency peak), and gates auto-apply behind an explicit "mic calibration is
-  unavailable — apply anyway?" confirmation.
+  unavailable — apply anyway?" confirmation. `derive_mic_offset` makes the table
+  self-serve: feed it one pink-noise capture taken by the remote mic beside a
+  calibrated reference, and it reduces the (mic − reference) difference to 1/3-octave
+  bands so the room term cancels, leaving the capsule offset to subtract.
 - **The reference DSP can export a hybrid IIR + FIR correction.** 2–4 low-Q IIR
   biquads for room modes below 300 Hz plus FIR taps for the 300 Hz–16 kHz band, all
   inside AutoEQ's safety limits (60–16,000 Hz, −12..+3 dB, Q 1–3).
 - **New export: `coreeq_autoeq.csv`** — AutoEQ's native two-column
   `frequency,gain` format, importable by AutoEQ-compatible tools and Poweramp
   Equalizer. The export notes that Poweramp adds +6 dB to AutoEQ graphic gains on
-  import. The Poweramp parametric JSON export is unchanged.
+  import. Gains are written to 0.001 dB so fine corrections survive a round-trip.
+  The Poweramp parametric JSON export is unchanged.
+- **The route probe never runs on the main thread.** The silent-track probe
+  opens and stops a real `AudioTrack` and waits ~50 ms for it to settle, so
+  `OutputRoute.current()` on main now answers from the cached probe (or the
+  estimate, before any probe has run) while the track plays on a background
+  executor; auto-apply waits for the confirmed answer instead of blocking or
+  guessing. A device change mid-probe is re-probed, not published stale.
 
 ## [1.11.1] — 2026-11-02
 

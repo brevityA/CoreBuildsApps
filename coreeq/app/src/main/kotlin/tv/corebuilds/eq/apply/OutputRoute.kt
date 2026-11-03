@@ -9,6 +9,7 @@ import android.media.AudioTrack
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import tv.corebuilds.eq.export.Profile
 
 /**
@@ -248,19 +249,48 @@ object OutputRoute {
      * fall back to the API 33+ anticipated route and then the connected-output
      * estimate — and a probe that reported no route is [UNCONFIRMED], which
      * pauses correction rather than guessing.
+     *
+     * The probe opens a real AudioTrack and waits for it to settle, so this
+     * never blocks the main thread: on main, a cold cache answers from the
+     * last (even if expired) probe result while [refreshProbeAsync] re-probes
+     * in the background, or from the estimate when no probe has run yet. UI
+     * reads are display-only and self-correct on the next read; the
+     * auto-apply path ([refreshProbeAsync] with a callback) acts only on the
+     * confirmed answer, so applying never runs on an estimate.
      */
     fun current(context: Context): Output? {
         // The probe starts and stops a real AudioTrack, and current() is called
         // several times per apply: cache the answer briefly so one apply does
-        // not open the track repeatedly. Device callbacks still force a fresh
-        // read because they run onOutputsChanged -> applyAll -> resolve.
-        val now = android.os.SystemClock.elapsedRealtime()
-        probeCache?.let { (at, result) ->
-            if (now - at < PROBE_CACHE_MS) return result?.output
+        // not open the track repeatedly. Device hot-plug forces a fresh read:
+        // onOutputsChanged -> refreshProbeAsync -> onRouteConfirmed -> applyAll,
+        // all confirming off-thread before anything acts on the route.
+        val cached = probeCache
+        if (cached != null && android.os.SystemClock.elapsedRealtime() - cached.first < PROBE_CACHE_MS) {
+            // Fresh probe within its window: trust it. A null result means the
+            // probe could not open a track at all — the only condition the
+            // estimate fallback is allowed for — so answer from the estimate
+            // now without re-triggering a probe on every read.
+            return cached.second?.output ?: estimateOutput(context)
         }
+        if (isOnMainThread()) {
+            // Never block the UI on a track open + settle. Refresh in the
+            // background and answer now from the stalest-usable thing we
+            // have: a prior probe result beats the estimate. UI reads
+            // self-correct on the next read once the background probe lands.
+            refreshProbeAsync(context)
+            return cached?.second?.output ?: estimateOutput(context)
+        }
+        val generation = probeGeneration
         val probed = probeWithSilentTrack(context)
-        probeCache = now to probed
-        if (probed != null) return probed.output
+        // Only publish if no invalidation landed while the track played.
+        if (probeGeneration == generation) {
+            probeCache = android.os.SystemClock.elapsedRealtime() to probed
+        }
+        return probed?.output ?: estimateOutput(context)
+    }
+
+    /** The non-authoritative route reads: anticipated (API 33+) then connected estimate. */
+    private fun estimateOutput(context: Context): Output? {
         val am = context.getSystemService(AudioManager::class.java) ?: return null
         val mediaRoute = activeMediaRoute(am)
         if (mediaRoute.isNotEmpty()) {
@@ -523,8 +553,79 @@ object OutputRoute {
     @Volatile
     private var probeCache: Pair<Long, ProbeResult?>? = null
 
+    /**
+     * Bumped on every invalidation. A background probe whose generation no
+     * longer matches was overtaken by a device change and must not publish a
+     * route computed for the old device set.
+     */
+    @Volatile
+    private var probeGeneration = 0L
+
     /** Drop the cached probe so the next [current] starts a fresh track (device hot-plug). */
     fun invalidateProbeCache() {
+        probeGeneration++
         probeCache = null
     }
+
+    /** True when the cache holds a probe result younger than [PROBE_CACHE_MS]. */
+    internal fun hasFreshProbe(): Boolean {
+        val cached = probeCache ?: return false
+        return android.os.SystemClock.elapsedRealtime() - cached.first < PROBE_CACHE_MS
+    }
+
+    /** One daemon thread: probes are cheap to hold but must never run on the caller's thread. */
+    private val probeExecutor = java.util.concurrent.Executors.newSingleThreadExecutor { r ->
+        Thread(r, "coreeq-route-probe").apply { isDaemon = true }
+    }
+
+    /** Coalescing flag: callers racing on a cold cache queue one probe, not N track opens. */
+    private val probeInFlight = java.util.concurrent.atomic.AtomicBoolean(false)
+
+    /** Callbacks owed the completion of the in-flight (or next) probe. */
+    private val pendingProbeCallbacks = java.util.concurrent.ConcurrentLinkedQueue<() -> Unit>()
+
+    /**
+     * Run a silent-track probe off-thread, refresh the cache with its result,
+     * then run [onDone] on the main thread. [current] fires this whenever a
+     * main-thread read would otherwise block; the auto-apply path calls it
+     * directly when it must act on the confirmed answer rather than the
+     * estimate. Concurrent calls coalesce onto the in-flight probe: [onDone]
+     * joins its completion queue instead of opening another track.
+     */
+    fun refreshProbeAsync(context: Context, onDone: () -> Unit = {}) {
+        val app = context.applicationContext
+        pendingProbeCallbacks.add(onDone)
+        if (!probeInFlight.compareAndSet(false, true)) return
+        probeExecutor.execute {
+            var generation = probeGeneration
+            var result: ProbeResult? = null
+            try {
+                result = probeWithSilentTrack(app)
+            } catch (e: RuntimeException) {
+                Log.w("OutputRoute", "Background route probe failed", e)
+            }
+            if (probeGeneration != generation) {
+                // A device changed mid-probe: the answer is about the old set.
+                generation = probeGeneration
+                try {
+                    result = probeWithSilentTrack(app)
+                } catch (e: RuntimeException) {
+                    Log.w("OutputRoute", "Re-probe after device change failed", e)
+                }
+            }
+            if (probeGeneration == generation) {
+                probeCache = android.os.SystemClock.elapsedRealtime() to result
+            }
+            probeInFlight.set(false)
+            Handler(Looper.getMainLooper()).post {
+                var callback = pendingProbeCallbacks.poll()
+                while (callback != null) {
+                    callback()
+                    callback = pendingProbeCallbacks.poll()
+                }
+            }
+        }
+    }
+
+    private fun isOnMainThread(): Boolean = Looper.myLooper() == Looper.getMainLooper()
 }

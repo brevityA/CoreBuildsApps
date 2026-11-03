@@ -261,6 +261,20 @@ class EqService : Service() {
      */
     private fun onOutputsChanged() {
         OutputRoute.invalidateProbeCache() // a device arrived or left: probe fresh
+        // The auto-apply decision must run on the probed route, never on the
+        // estimate, and the probe must never block main: confirm off-thread
+        // first, then act on the confirmed answer on main with a fresh cache.
+        OutputRoute.refreshProbeAsync(this) { onRouteConfirmed() }
+    }
+
+    private fun onRouteConfirmed() {
+        if (!OutputRoute.hasFreshProbe()) {
+            // A device arrived while the last probe played, so no answer was
+            // publishable. Re-arm on the fresh probe rather than deciding on
+            // the estimate; this settles once the device churn stops.
+            OutputRoute.refreshProbeAsync(this) { onRouteConfirmed() }
+            return
+        }
         val output = OutputRoute.current(this) ?: return
         if (output == lastOutput) return
         val key = "${output.kind}|${output.name}"

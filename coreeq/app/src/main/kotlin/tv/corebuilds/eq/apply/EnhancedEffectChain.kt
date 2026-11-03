@@ -59,19 +59,44 @@ object EnhancedEffectChain {
      * could not be clamped, or the effect threw — in every false case the app
      * keeps running and the band is simply left at its previous level.
      */
-    fun safeSetBandLevel(eq: Equalizer, band: Int, levelMb: Short): Boolean {
-        val clamped = try {
-            clampBandLevel(band, levelMb, eq.numberOfBands.toInt(), eq.bandLevelRange)
+    fun safeSetBandLevel(eq: Equalizer, band: Int, levelMb: Short): Boolean =
+        safeSetBandLevel(
+            band = band,
+            levelMb = levelMb,
+            readBands = { eq.numberOfBands.toInt() },
+            readRange = { eq.bandLevelRange },
+            set = { b, level -> eq.setBandLevel(b, level) }
+        )
+
+    /**
+     * The guard with the Android reads behind lambdas, so the failure mode
+     * where reading the capabilities *itself* throws (a corrupted effect
+     * instance can throw from [Equalizer.getNumberOfBands] before any write)
+     * is unit-tested without a device.
+     */
+    internal fun safeSetBandLevel(
+        band: Int,
+        levelMb: Short,
+        readBands: () -> Int,
+        readRange: () -> ShortArray?,
+        set: (Short, Short) -> Unit
+    ): Boolean {
+        val numBands: Int
+        val range: ShortArray?
+        try {
+            numBands = readBands()
+            range = readRange()
         } catch (e: RuntimeException) {
             Log.e(TAG, "Could not read Equalizer capabilities", e)
             return false
         }
+        val clamped = clampBandLevel(band, levelMb, numBands, range)
         if (clamped == null) {
-            Log.e(TAG, "Invalid band index $band (device has ${eq.numberOfBands} bands)")
+            Log.e(TAG, "Invalid band index $band (device has $numBands bands)")
             return false
         }
         return try {
-            eq.setBandLevel(band.toShort(), clamped)
+            set(band.toShort(), clamped)
             true
         } catch (e: UnsupportedOperationException) {
             Log.e(TAG, "Band $band not supported on this device", e)
