@@ -842,8 +842,9 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         ):
             self.assertIn(source, readme)
         self.assertIn("test_gradle_envelope.py", readme)
-        self.assertIn("**Current sign-off: NOT RUN.**", readme)
+        self.assertIn("**Current sign-off: BLOCKED — 0/8 hardware checks run.**", readme)
         self.assertIn("API level", readme)
+        self.assertEqual(readme.count("| NOT RUN |"), 8)
         for check in ("D-pad", "HOME role", "Back", "TalkBack"):
             self.assertIn(check, readme)
 

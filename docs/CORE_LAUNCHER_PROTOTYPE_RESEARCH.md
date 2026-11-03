@@ -1,7 +1,7 @@
 # Core Builds Launcher — prototype research and scope
 
 **Research date:** 2026-11-03
-**Status:** The private launcher prototype and its Kotlin/XML source are included in this PR; CI is configured for the debug build/lint, while physical-device validation is **NOT RUN**. This sandbox has no local JDK/Android SDK or attached TV. The permission surface remains deliberately minimal pending the target-device definition.
+**Status:** The private launcher prototype and its Kotlin/XML source are included in this PR; CI is configured for the debug build/lint, while physical-device sign-off is **BLOCKED — 0/8 hardware checks run**. This sandbox has no local JDK/Android SDK or attached TV. The permission surface remains deliberately minimal pending the target-device definition.
 
 ## Recommendation
 

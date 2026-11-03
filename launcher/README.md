@@ -46,7 +46,7 @@ Some televisions restrict third-party HOME selection. This prototype intentional
 
 ## Required physical-device validation: merge gate
 
-**Current sign-off: NOT RUN.** This environment has no attached physical Android TV / Google TV device. Passing build, lint, and source-level checks does not sign off remote behavior. Record the actual target and results below; do not merge until every required check passes on the target device(s).
+**Current sign-off: BLOCKED — 0/8 hardware checks run.** Every result below remains NOT RUN because this environment has no attached physical Android TV / Google TV device. Passing build, lint, and source-level checks does not sign off remote behavior. Record the actual target and results below; do not merge until every required check passes on the target device(s).
 
 ### Target-device record
 
