@@ -247,6 +247,9 @@ class EqService : Service() {
     private var lastOutput: OutputRoute.Output? = null
     /** Re-probes owed after a device change raced the last one (see onRouteConfirmed). */
     private var routeConfirmRetries = 0
+    /** When the retry cap last gave up; device events inside the cooldown defer to one timer. */
+    private var lastRouteGiveUpAtMs = 0L
+    private var routeRetryScheduled = false
 
     /** Reprogram only when the lift actually moves a step; holding the volume key costs a few reapplies. */
     private fun onVolumeChanged() {
@@ -262,6 +265,24 @@ class EqService : Service() {
      * suggested — the user turns it on from Home.
      */
     private fun onOutputsChanged() {
+        val now = android.os.SystemClock.elapsedRealtime()
+        val sinceGiveUp = now - lastRouteGiveUpAtMs
+        if (sinceGiveUp < ROUTE_GIVEUP_COOLDOWN_MS) {
+            // A give-up just pinned the pause; a sink still flapping gets one
+            // retry burst per cooldown window, not one per event. Skipping the
+            // invalidation keeps the hold (and its UNCONFIRMED answer) intact,
+            // so this only delays a retry — it can never apply something wrong.
+            if (!routeRetryScheduled) {
+                // One deferred re-check per window: a flapper that STOPS must
+                // still get its hold lifted without waiting for a user action.
+                routeRetryScheduled = true
+                mainHandler.postDelayed({
+                    routeRetryScheduled = false
+                    if (running) onOutputsChanged() // onDestroy does not scrub handler posts
+                }, ROUTE_GIVEUP_COOLDOWN_MS - sinceGiveUp)
+            }
+            return
+        }
         OutputRoute.invalidateProbeCache() // a device arrived or left: probe fresh
         // The auto-apply decision must run on the probed route, never on the
         // estimate, and the probe must never block main: confirm off-thread
@@ -281,10 +302,13 @@ class EqService : Service() {
                 OutputRoute.refreshProbeAsync(this) { onRouteConfirmed() }
             } else {
                 // Churn outlasted the retries: surface the unconfirmed route
-                // explicitly — the cache is seeded with UNCONFIRMED so apply
-                // pauses with the hard-stop message — and stop re-probing.
-                // The next real device event resets the budget.
+                // explicitly — the cache is seeded with UNCONFIRMED *and held*,
+                // so apply pauses with the hard-stop message and stays paused
+                // (no probe, no estimate decay) until a device event or a
+                // confirmed re-apply says otherwise. The cooldown rate-limits
+                // how fast the next burst may run.
                 routeConfirmRetries = 0
+                lastRouteGiveUpAtMs = android.os.SystemClock.elapsedRealtime()
                 OutputRoute.publishUnconfirmedProbe()
                 applyAll()
             }
@@ -436,7 +460,19 @@ class EqService : Service() {
                 if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
                 else applyMediaSessionSnapshot(MediaSessionSnapshot(emptySet(), complete = false, available = false))
             }
-            else -> applyAll() // ACTION_START, ACTION_REAPPLY, or a sticky restart
+            else -> {
+                // ACTION_START, ACTION_REAPPLY, or a sticky restart. While the
+                // unconfirmed hold is up, an immediate applyAll would only read
+                // the held UNCONFIRMED and re-pause — so run the one fresh
+                // probe the hold forbids, and act on its answer. A confirmed
+                // route lands the correction; a failed probe keeps the pause.
+                // This is what makes "play a test tone to continue" true.
+                if (OutputRoute.isHeldUnconfirmed()) {
+                    OutputRoute.refreshProbeAsync(this) { applyAll() }
+                } else {
+                    applyAll()
+                }
+            }
         }
         return START_STICKY
     }
@@ -1378,6 +1414,8 @@ class EqService : Service() {
         const val ACTION_STOP = "tv.corebuilds.eq.action.STOP"
         /** Extra probes per device event before an unruly churn gets an explicit UNCONFIRMED. */
         private const val MAX_ROUTE_CONFIRM_RETRIES = 3
+        /** Quiet time before device events may run another retry burst after a give-up. */
+        private const val ROUTE_GIVEUP_COOLDOWN_MS = 5_000L
         const val ACTION_REAPPLY = "tv.corebuilds.eq.action.REAPPLY"
         const val ACTION_SUSPEND = "tv.corebuilds.eq.action.SUSPEND"
         const val ACTION_RESUME = "tv.corebuilds.eq.action.RESUME"

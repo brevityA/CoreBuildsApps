@@ -9,6 +9,7 @@ import android.media.AudioTrack
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.util.Log
 import tv.corebuilds.eq.export.Profile
 
@@ -208,10 +209,9 @@ object OutputRoute {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return null
         return try {
             val support = AudioManager.getDirectPlaybackSupport(format, mediaAttributes())
-            support and (
-                AudioManager.DIRECT_PLAYBACK_OFFLOAD_SUPPORTED or
-                    AudioManager.DIRECT_PLAYBACK_BITSTREAM_SUPPORTED
-                ) != 0
+            val mask = AudioManager.DIRECT_PLAYBACK_OFFLOAD_SUPPORTED or
+                AudioManager.DIRECT_PLAYBACK_BITSTREAM_SUPPORTED
+            (support and mask) != 0
         } catch (e: RuntimeException) {
             null
         }
@@ -258,7 +258,10 @@ object OutputRoute {
      * in the background, or from the estimate when no probe has run yet. UI
      * reads are display-only and self-correct on the next read; the
      * auto-apply path ([refreshProbeAsync] with a callback) acts only on the
-     * confirmed answer, so applying never runs on an estimate.
+     * confirmed answer, so applying never runs on an estimate. After a
+     * retry-cap give-up the hold pins this answer to [UNCONFIRMED] outright —
+     * no probe, no estimate decay — until a device event or a confirmed
+     * background probe says something new.
      */
     fun current(context: Context): Output? {
         // The probe starts and stops a real AudioTrack, and current() is called
@@ -266,8 +269,15 @@ object OutputRoute {
         // not open the track repeatedly. Device hot-plug forces a fresh read:
         // onOutputsChanged -> refreshProbeAsync -> onRouteConfirmed -> applyAll,
         // all confirming off-thread before anything acts on the route.
+        if (isHeldUnconfirmed()) {
+            // Held after a give-up: answer the hard stop directly. No probe is
+            // scheduled, so a failed track open can never decay to the
+            // estimate, and a flapping sink earns no more track opens from UI
+            // reads — only from device events and explicit re-applies.
+            return Output(UNCONFIRMED, label(UNCONFIRMED), Evidence.TRACK_PROBE)
+        }
         val cached = probeCache
-        if (cached != null && android.os.SystemClock.elapsedRealtime() - cached.first < PROBE_CACHE_MS) {
+        if (cached != null && SystemClock.elapsedRealtime() - cached.first < PROBE_CACHE_MS) {
             // Fresh probe within its window: trust it. A null result means the
             // probe could not open a track at all — the only condition the
             // estimate fallback is allowed for — so answer from the estimate
@@ -286,7 +296,7 @@ object OutputRoute {
         val probed = probeWithSilentTrack(context)
         // Only publish if no invalidation landed while the track played.
         if (probeGeneration == generation) {
-            probeCache = android.os.SystemClock.elapsedRealtime() to probed
+            probeCache = SystemClock.elapsedRealtime() to probed
         }
         return probed?.output ?: estimateOutput(context)
     }
@@ -567,29 +577,47 @@ object OutputRoute {
     @Volatile
     private var probeGeneration = 0L
 
-    /** Drop the cached probe so the next [current] starts a fresh track (device hot-plug). */
+    /**
+     * While set, [current] answers UNCONFIRMED without probing — a hard stop
+     * that survives the cache window so no null-probe can decay into the
+     * estimate. Cleared only by a device event ([invalidateProbeCache]) or a
+     * background probe that confirms a real route, never by expiry: the pause
+     * holds until something new is actually known.
+     */
+    @Volatile
+    private var unconfirmedHoldUntil = 0L
+
+    /** True while the [publishUnconfirmedProbe] hold is active (see EqService's re-apply path). */
+    internal fun isHeldUnconfirmed(): Boolean = SystemClock.elapsedRealtime() < unconfirmedHoldUntil
+
+    /** Drop the cached probe and release any unconfirmed hold: a device arrived or left. */
     fun invalidateProbeCache() {
         probeGeneration++
         probeCache = null
+        unconfirmedHoldUntil = 0L
     }
 
     /** True when the cache holds a probe result younger than [PROBE_CACHE_MS]. */
     internal fun hasFreshProbe(): Boolean {
         val cached = probeCache ?: return false
-        return android.os.SystemClock.elapsedRealtime() - cached.first < PROBE_CACHE_MS
+        return SystemClock.elapsedRealtime() - cached.first < PROBE_CACHE_MS
     }
 
     /**
-     * Publish an [UNCONFIRMED] route into the probe cache without opening a
-     * track, so [current] hard-stops instead of falling to the estimate. The
-     * caller reaches this only after retrying a fresh probe too many times —
-     * device churn the probe cannot get a clean read through — and it
-     * self-clears on the next real device change or when the cache window
-     * expires, so a settled route is re-probed normally.
+     * Seed an [UNCONFIRMED] route into the probe cache and pin the hold,
+     * without opening a track. The caller reaches this after retrying a fresh
+     * probe too many times — device churn the probe cannot get a clean read
+     * through. The generation bump first (same as [invalidateProbeCache]) so
+     * any in-flight probe is discarded rather than completing over the seed:
+     * without it, a racing probe publish would erase the hold and refund the
+     * retry budget. Release paths are real knowledge, not time: a device
+     * event, or a background probe that confirms a route.
      */
     internal fun publishUnconfirmedProbe() {
-        probeCache = android.os.SystemClock.elapsedRealtime() to
+        probeGeneration++
+        probeCache = SystemClock.elapsedRealtime() to
             ProbeResult(Output(UNCONFIRMED, label(UNCONFIRMED), Evidence.TRACK_PROBE), null)
+        unconfirmedHoldUntil = Long.MAX_VALUE
     }
 
     /** One daemon thread: probes are cheap to hold but must never run on the caller's thread. */
@@ -633,7 +661,13 @@ object OutputRoute {
                 }
             }
             if (probeGeneration == generation) {
-                probeCache = android.os.SystemClock.elapsedRealtime() to result
+                probeCache = SystemClock.elapsedRealtime() to result
+                if (result != null && result.output.kind != UNCONFIRMED) {
+                    // Real knowledge released the pause: a confirmed route is
+                    // allowed back through current(). A null result (no track)
+                    // or an UNCONFIRMED one leaves any hold exactly as it was.
+                    unconfirmedHoldUntil = 0L
+                }
             }
             probeInFlight.set(false)
             Handler(Looper.getMainLooper()).post {

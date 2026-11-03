@@ -21,7 +21,10 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   changes mid-probe and `getDirectPlaybackSupport()` (API 33+) reporting whether the
   route is a passthrough path that would strip the effect. A probe that reports no
   route is a hard stop — "Could not confirm output route — correction paused. Play a
-  test tone to continue." — never a silent fallback.
+  test tone to continue." — never a silent fallback. A pause caused by a flapping output is
+  held: while the route stays unconfirmable the app keeps answering "unconfirmed" (no repeated
+  track opens, no decay to the estimate), and it resumes only when a device event or a
+  test-tone re-apply lets a fresh probe confirm a route.
 - **The reference DSP flattens the microphone before correcting the room.**
   `tools/core_eq_dsp.py` subtracts a per-remote-model offset table from the raw
   measurement (capped at ±6 dB per band, never extrapolated past the tabulated span),
