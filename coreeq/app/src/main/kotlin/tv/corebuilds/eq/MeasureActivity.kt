@@ -1054,7 +1054,9 @@ class MeasureActivity : TvActivity() {
             else ->
                 String.format(Locale.US, "MEASURED vs TARGET · FULL CORRECTION BELOW %.0f HZ", r.transitionHz)
         }
-        graphMeasure.setData(r.centresHz, graphSeries, title, 20.0, r.transitionHz)
+        // The ceiling line is the dashed red rule: measured (grey) and proposed
+        // correction (blue) on one graph, with the band the correction stops at visible.
+        graphMeasure.setData(r.centresHz, graphSeries, title, 20.0, r.transitionHz, r.fMaxHz)
         val rt = r.rt60Seconds?.let { String.format(Locale.US, "RT60 %.2f s", it) } ?: "RT60 not measurable (noisy decay)"
         val nulls = r.nullMask.count { it }
         val gated = r.centresHz.indices.count { !r.minPhaseOk[it] && r.centresHz[it] >= r.floorHz }

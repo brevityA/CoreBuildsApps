@@ -25,6 +25,12 @@ object Formats {
 
     private const val PREAMP_ROUNDING_EPSILON_DB = 1e-9
 
+    /** AutoEQ safety limits enforced on the CSV export (60-16,000 Hz, -12..+3 dB). */
+    private const val AUTOEQ_CSV_MIN_HZ = 60.0
+    private const val AUTOEQ_CSV_MAX_HZ = 16000.0
+    private const val AUTOEQ_CSV_GAIN_MIN_DB = -12.0
+    private const val AUTOEQ_CSV_GAIN_MAX_DB = 3.0
+
     /** Exported metadata is comment-only; strip control characters so a device name cannot add a filter line. */
     private fun safeComment(note: String): String = note.filter {
         it == '\t' || (!it.isISOControl() && it != '\u2028' && it != '\u2029')
@@ -167,6 +173,37 @@ object Formats {
             .put("parametric", true)
             .put("bands", bands)
         return JSONArray().put(preset).toString(2) + "\n"
+    }
+
+    /**
+     * AutoEQ-native CSV: exactly two columns, `frequency,gain` (Hz, dB) — the
+     * format AutoEQ writes and Poweramp Equalizer imports, with no proprietary
+     * blob. Gains are clamped to the AutoEQ safety limits (-12..+3 dB) and
+     * written to 0.001 dB so a fine correction survives a round-trip without
+     * sub-0.01 dB rounding.
+     *
+     * Note for Poweramp users: Poweramp adds +6 dB to AutoEQ *graphic* gains
+     * on import. This CSV carries the true dB values; [exportPowerampJson]
+     * carries its own and is unaffected by that offset.
+     */
+    fun exportAutoeqCsv(profile: Profile): String {
+        val frequencies = if (profile.curve.isNotEmpty()) {
+            profile.curve.map { it.hz }
+        } else {
+            DspConstants.ISO_CENTRES_HZ.filter { it in DspConstants.F_MIN..DspConstants.F_MAX }
+        }
+        val manualFilters = ManualEq.sanitize(profile.manualFilters)
+        val sb = StringBuilder()
+        sb.append("# CoreEQ_Export.csv — AutoEQ-compatible (frequency Hz, gain dB)\n")
+        sb.append("# Note: Poweramp adds +6 dB to AutoEQ graphic gains on import.\n")
+        sb.append("frequency,gain\n")
+        for (hz in frequencies) {
+            if (hz < AUTOEQ_CSV_MIN_HZ || hz > AUTOEQ_CSV_MAX_HZ) continue
+            val gain = (profile.correctionAt(hz) + ManualEq.responseDb(manualFilters, hz))
+                .coerceIn(AUTOEQ_CSV_GAIN_MIN_DB, AUTOEQ_CSV_GAIN_MAX_DB)
+            sb.append(String.format(Locale.US, "%.1f,%.3f\n", hz, gain))
+        }
+        return sb.toString()
     }
 
     fun exportProfileJson(profile: Profile): String = exportProfileJson(profile, emptyMap(), selectedMode = null)

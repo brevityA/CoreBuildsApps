@@ -1725,6 +1725,329 @@ def export_profile_json(
 
 
 # ---------------------------------------------------------------------------
+# Microphone calibration
+#
+# An uncalibrated remote microphone equalisers the mic as if it were the room.
+# The fix is to flatten the microphone's own response out of the measurement
+# before the correction reads it: MicResponse(f) = Measured_remote(f) -
+# Measured_reference(f), stored per remote model as an offset table
+# ({frequency, offset_dB}) and subtracted here before any DSP. Where no
+# reference-mic offset exists, the measurement is gated behind an explicit
+# confirmation instead of being auto-applied.
+# ---------------------------------------------------------------------------
+
+#: The most one band may move on the strength of a mic offset table alone.
+#: Mirrors MicResponse.MAX_APPLIED_DB in the app.
+MIC_OFFSET_MAX_DB = 6.0
+
+
+def subtract_mic_offset(
+    freqs: np.ndarray,
+    measured_db: np.ndarray,
+    offset_hz: np.ndarray,
+    offset_db: np.ndarray,
+    max_db: float = MIC_OFFSET_MAX_DB,
+) -> np.ndarray:
+    """Subtract a per-model microphone offset curve from a measurement.
+
+    ``offset_hz``/``offset_db`` are the remote mic's deviation from flat
+    (Measured_remote - Measured_reference), interpolated linearly in log10(Hz)
+    between the tabulated points and clamped to ±[max_db] per band — metadata
+    is not a calibration certificate. Outside the tabulated span the band is
+    left exactly as measured. With fewer than two points the measurement is
+    returned unchanged: one stray point describes a slope nobody measured.
+    """
+    f = np.asarray(freqs, dtype=float)
+    m = np.asarray(measured_db, dtype=float)
+    oh = np.asarray(offset_hz, dtype=float)
+    od = np.asarray(offset_db, dtype=float)
+    if oh.size < 2 or m.size != f.size:
+        return m.copy()
+    order = np.argsort(oh)
+    oh, od = oh[order], od[order]
+    keep = (f >= oh[0]) & (f <= oh[-1]) & np.isfinite(m)
+    out = m.copy()
+    if keep.any():
+        log_oh = np.log10(oh)
+        interp = np.interp(np.log10(f[keep]), log_oh, od)
+        out[keep] = m[keep] - np.clip(interp, -max_db, max_db)
+    return out
+
+
+def derive_mic_offset(
+    freqs: np.ndarray,
+    mic_db: np.ndarray,
+    reference_db: np.ndarray,
+    *,
+    max_db: float = MIC_OFFSET_MAX_DB,
+    f_min: float | None = None,
+    f_max: float | None = None,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Derive a per-model mic offset table from a paired capture.
+
+    The self-serve half of mic calibration: play the same pink-noise run
+    through the remote while the remote's mic *and* a calibrated reference mic
+    record side by side, and the room term cancels — what survives the
+    subtraction is the remote capsule's deviation from the reference. The
+    difference is reduced to 1/3-octave bands on both spectra first (in-band
+    power averaging, the same rule the measurement path uses) so a few dB of
+    positional room-mode mismatch between two capsules centimetres apart does
+    not burn into a table that outlives the capture.
+
+    Returns ``(offset_hz, offset_db)`` at the band centres, clipped to ±max_db
+    — beyond that the "offset" is more likely a placement artifact than a
+    capsule trait, and a table nobody can trust is worse than no table. Feed
+    the result straight into [subtract_mic_offset]; outside the returned span
+    (bands with no energy, or beyond [f_min]/[f_max]) the measurement is left
+    as measured, which is exactly what an empty correction means there.
+    """
+    # Resolved here, not as default args: the AutoEQ band limits are declared
+    # below this function, and defaults bind at def time.
+    if f_min is None:
+        f_min = AUTOEQ_FREQ_MIN_HZ
+    if f_max is None:
+        f_max = AUTOEQ_FREQ_MAX_HZ
+    f = np.asarray(freqs, dtype=float)
+    if f.size < 8:
+        return np.empty(0), np.empty(0)
+    mic_bands, mic_avg = octave_bands(f, np.asarray(mic_db, dtype=float), 3.0, f_min, f_max)
+    ref_bands, ref_avg = octave_bands(f, np.asarray(reference_db, dtype=float), 3.0, f_min, f_max)
+    if mic_bands.size == 0 or not np.array_equal(mic_bands, ref_bands):
+        return np.empty(0), np.empty(0)
+    delta = mic_avg - ref_avg
+    ok = np.isfinite(delta)
+    centres = mic_bands[ok]
+    values = np.clip(delta[ok], -max_db, max_db)
+    return centres, values
+
+
+def mic_limitation_warning(freqs: np.ndarray, measured_db: np.ndarray) -> str | None:
+    """A warning when the measurement carries a MEMS-mic signature.
+
+    A strong low-frequency roll-off (the capsule's output below ~80 Hz is
+    noise) or a high-frequency peak (the capsule's resonance) is characteristic
+    of an uncalibrated consumer MEMS microphone, not the room. Returns the
+    warning text, or None when the curve looks like a room and not a capsule.
+    """
+    f = np.asarray(freqs, dtype=float)
+    db = np.asarray(measured_db, dtype=float)
+    if f.size < 8:
+        return None
+    plateau = (f >= 100.0) & (f <= 300.0)
+    if not plateau.any():
+        return None
+    ref = float(np.mean(db[plateau]))
+    low = f < 80.0
+    hf = f > 5000.0
+    mid = (f >= 1000.0) & (f <= 4000.0)
+    parts = []
+    if low.any() and float(np.mean(db[low])) < ref - NULL_DEPTH_DB:
+        parts.append("strong low-frequency roll-off")
+    if hf.any() and mid.any() and float(np.max(db[hf])) > float(np.mean(db[mid])) + 4.0:
+        parts.append("high-frequency peak")
+    if not parts:
+        return None
+    return ("Measurement shows a " + " and ".join(parts) +
+            " characteristic of an uncalibrated MEMS microphone, not the room.")
+
+
+def auto_apply_gate(quality_ok: bool, mic_calibrated: bool) -> tuple[bool, str]:
+    """Whether a measurement may be auto-applied, and what to say if not.
+
+    An uncalibrated microphone does not block correction — it gates it behind
+    an explicit confirmation, so the user decides with the warning in front of
+    them rather than the app silently equalising the microphone.
+    """
+    if not quality_ok:
+        return False, "Measurement did not pass quality checks. Correct anyway?"
+    if not mic_calibrated:
+        return False, ("Measurement passed quality checks, but mic calibration is "
+                       "unavailable. Apply anyway?")
+    return True, ""
+
+
+# ---------------------------------------------------------------------------
+# Hybrid IIR + FIR correction (CamillaDSP pattern)
+#
+# Low-frequency room modes (below ~300 Hz) are minimum phase, so low-Q IIR
+# biquads fix them cheaply and without phase distortion. Above that the FIR
+# convolution handles the steady-state magnitude correction across the full
+# band. AutoEQ's safety limits are enforced throughout: 60-16,000 Hz range,
+# -12 to +3 dB gain, Q between 1 and 3 — anything outside those bounds sounds
+# worse than the original response.
+# ---------------------------------------------------------------------------
+
+#: AutoEQ safety limits, applied to every filter the hybrid export designs.
+AUTOEQ_FREQ_MIN_HZ = 60.0
+AUTOEQ_FREQ_MAX_HZ = 16000.0
+AUTOEQ_GAIN_MIN_DB = -12.0
+AUTOEQ_GAIN_MAX_DB = 3.0
+BIQUAD_Q_MIN = 1.0
+BIQUAD_Q_MAX = 3.0
+
+#: The split between the IIR and FIR regimes, and the FIR length.
+ROOM_MODE_MAX_HZ = 300.0
+FIR_MIN_HZ = 300.0
+FIR_TAPS = 1024
+HYBRID_MAX_BIQUADS = 4
+
+
+def rbj_peaking_coeffs(fc: float, q: float, gain_db: float, fs: int = FS) -> dict:
+    """RBJ-cookbook peaking biquad coefficients, normalised by a0.
+
+    Returned as ``{b0, b1, b2, a1, a2}`` with ``a0 = 1`` — the form a convolver
+    or biquad chain on-device consumes directly.
+    """
+    amp = 10 ** (gain_db / 40.0)
+    w0 = 2 * math.pi * min(max(fc, 1.0), fs * 0.4999) / fs
+    alpha = math.sin(w0) / (2 * q)
+    cos_w0 = math.cos(w0)
+    a0 = 1.0 + alpha / amp
+    return {
+        "fc": float(fc),
+        "q": float(q),
+        "gain_db": float(gain_db),
+        "b0": (1.0 + alpha * amp) / a0,
+        "b1": (-2.0 * cos_w0) / a0,
+        "b2": (1.0 - alpha * amp) / a0,
+        "a1": (-2.0 * cos_w0) / a0,
+        "a2": (1.0 - alpha / amp) / a0,
+    }
+
+
+def design_room_mode_biquads(
+    freqs: np.ndarray,
+    correction_db: np.ndarray,
+    max_filters: int = HYBRID_MAX_BIQUADS,
+    f_max_hz: float = ROOM_MODE_MAX_HZ,
+) -> list[dict]:
+    """2-4 low-Q IIR peaking biquads for the room modes below [f_max_hz].
+
+    Seeded at the largest correction extrema in the low band, each clamped to
+    the AutoEQ safety limits: frequency inside 60-16,000 Hz, gain inside
+    -12..+3 dB, Q inside 1-3. A cut is kept in full (cutting a modal peak also
+    kills its ringing); a boost is capped at +3 dB because low-frequency boost
+    is where small TV speakers distort.
+    """
+    f = np.asarray(freqs, dtype=float)
+    corr = np.asarray(correction_db, dtype=float)
+    low = (f >= AUTOEQ_FREQ_MIN_HZ) & (f <= min(f_max_hz, AUTOEQ_FREQ_MAX_HZ))
+    if not low.any():
+        return []
+    lf, lc = f[low], corr[low]
+
+    candidates: list[tuple[float, float]] = []
+    for i in range(1, len(lc) - 1):
+        if lc[i] == lc[i - 1] == lc[i + 1]:
+            continue
+        is_extremum = (lc[i] > lc[i - 1] and lc[i] >= lc[i + 1]) or \
+                      (lc[i] < lc[i - 1] and lc[i] <= lc[i + 1])
+        if is_extremum and abs(lc[i]) >= 0.5:
+            candidates.append((float(lf[i]), float(lc[i])))
+    candidates.sort(key=lambda c: -abs(c[1]))
+    candidates = candidates[:max_filters]
+
+    biquads = []
+    for fc, gain in candidates:
+        fc = float(np.clip(fc, AUTOEQ_FREQ_MIN_HZ, min(f_max_hz, AUTOEQ_FREQ_MAX_HZ)))
+        gain = float(np.clip(gain, AUTOEQ_GAIN_MIN_DB, AUTOEQ_GAIN_MAX_DB))
+        # Low-Q by design: room modes are broad, and high-Q + high gain rings.
+        q = float(np.clip(1.0 / max(abs(gain), 0.5), BIQUAD_Q_MIN, BIQUAD_Q_MAX))
+        biquads.append(rbj_peaking_coeffs(fc, q, gain))
+    return sorted(biquads, key=lambda b: b["fc"])
+
+
+def design_fir_taps(
+    freqs: np.ndarray,
+    correction_db: np.ndarray,
+    taps: int = FIR_TAPS,
+    f_min_hz: float = FIR_MIN_HZ,
+    fs: int = FS,
+) -> np.ndarray:
+    """FIR correction taps for the band at and above [f_min_hz], by frequency sampling.
+
+    The desired magnitude is the correction curve (clamped to the AutoEQ gain
+    limits) above [f_min_hz] and zero below it, sampled onto a `taps`-point
+    half-spectrum, inverse-transformed, and windowed. Linear phase, so it adds
+    no phase distortion of its own — the property that makes FIR the right tool
+    for the steady-state region IIR biquads cannot shape without ringing.
+    """
+    f = np.asarray(freqs, dtype=float)
+    corr = np.clip(np.asarray(correction_db, dtype=float),
+                   AUTOEQ_GAIN_MIN_DB, AUTOEQ_GAIN_MAX_DB)
+    grid = np.fft.rfftfreq(taps, 1.0 / fs)
+    desired_db = np.interp(grid, f, corr, left=0.0, right=0.0)
+    desired_db[grid < f_min_hz] = 0.0
+    desired_db[grid > min(AUTOEQ_FREQ_MAX_HZ, fs / 2.0)] = 0.0
+    mag = 10 ** (desired_db / 20.0)
+    h = np.fft.irfft(mag, taps)
+    window = np.hanning(taps)
+    return h * window
+
+
+def export_hybrid(
+    freqs: np.ndarray,
+    correction_db: np.ndarray,
+    max_biquads: int = HYBRID_MAX_BIQUADS,
+) -> dict:
+    """The hybrid correction: IIR biquads for the low band plus FIR taps above it.
+
+    On-device the biquads apply through the platform Equalizer bands (or a
+    biquad chain) and the FIR through a convolver where one is available.
+    """
+    f = np.asarray(freqs, dtype=float)
+    corr = np.asarray(correction_db, dtype=float)
+    biquads = design_room_mode_biquads(f, corr, max_filters=max_biquads)
+    taps = design_fir_taps(f, corr)
+    return {
+        "biquads": biquads,
+        "fir_taps": [round(float(t), 8) for t in taps],
+        "fir_min_hz": FIR_MIN_HZ,
+        "band_hz": [AUTOEQ_FREQ_MIN_HZ, AUTOEQ_FREQ_MAX_HZ],
+        "gain_limits_db": [AUTOEQ_GAIN_MIN_DB, AUTOEQ_GAIN_MAX_DB],
+        "q_limits": [BIQUAD_Q_MIN, BIQUAD_Q_MAX],
+    }
+
+
+# ---------------------------------------------------------------------------
+# AutoEQ-compatible export
+#
+# AutoEQ's native CSV is exactly two columns — frequency in Hz, magnitude in
+# dB — and Poweramp Equalizer imports both that and its own JSON presets.
+# Poweramp adds +6 dB to AutoEQ *graphic* gains on import, so the CSV carries
+# the true dB values and the JSON carries its own; the +6 dB offset is a
+# Poweramp import behaviour, documented here so users are not surprised.
+# ---------------------------------------------------------------------------
+
+def export_autoeq_csv(
+    freqs: np.ndarray,
+    correction_db: np.ndarray,
+    f_min: float = AUTOEQ_FREQ_MIN_HZ,
+    f_max: float = AUTOEQ_FREQ_MAX_HZ,
+) -> str:
+    """`frequency,gain` CSV in AutoEQ's native format — no proprietary blob.
+
+    Rows are the correction sampled at the 1/3-octave centres inside
+    [f_min, f_max], clamped to the AutoEQ gain limits. Gains are written to
+    0.001 dB so a fine correction survives a round-trip without sub-0.01 dB
+    rounding; Poweramp and AutoEQ both accept the extra digits. Note for
+    Poweramp users: importing an AutoEQ *graphic* preset adds +6 dB to these
+    gains; the parametric JSON export does not.
+    """
+    f = np.asarray(freqs, dtype=float)
+    corr = np.asarray(correction_db, dtype=float)
+    band = (f >= f_min) & (f <= min(f_max, AUTOEQ_FREQ_MAX_HZ))
+    lines = [
+        "# CoreEQ_Export.csv — AutoEQ-compatible (frequency Hz, gain dB)",
+        "# Note: Poweramp adds +6 dB to AutoEQ graphic gains on import.",
+        "frequency,gain",
+    ]
+    for hz, db in zip(f[band], corr[band]):
+        lines.append(f"{hz:.1f},{float(np.clip(db, AUTOEQ_GAIN_MIN_DB, AUTOEQ_GAIN_MAX_DB)):.3f}")
+    return "\n".join(lines) + "\n"
+
+
+# ---------------------------------------------------------------------------
 # A synthetic room, so the chain can be exercised with no hardware
 # ---------------------------------------------------------------------------
 
@@ -2236,6 +2559,82 @@ def _selftest() -> int:
           profile["capability"] == {"global_mix": False})
     check("profile carries the whole curve", len(profile["curve"]) == len(c))
     check("profile names its format", profile["format"] == "corebuilds.core-eq/1")
+
+    # Microphone calibration: the offset is subtracted, capped, and never
+    # extrapolated past the tabulated span; the gate demands confirmation
+    # when the mic is uncalibrated.
+    offset_hz = np.array([100.0, 1000.0, 10000.0])
+    offset_db = np.array([2.0, -1.0, 3.0])
+    flat_measured = np.full_like(c, 5.0)
+    flattened = subtract_mic_offset(c, flat_measured, offset_hz, offset_db)
+    check("mic offset is subtracted inside the span",
+          abs(float(flattened[int(np.argmin(np.abs(c - 1000.0)))]) - 6.0) < 0.05)
+    check("mic offset is capped per band",
+          bool(np.all(np.abs(flattened - flat_measured) <= MIC_OFFSET_MAX_DB + 1e-9)))
+    check("mic offset is not extrapolated below the span",
+          abs(float(flattened[int(np.argmin(np.abs(c - 31.5)))]) - 5.0) < 1e-9)
+    check("fewer than two offset points changes nothing",
+          np.array_equal(subtract_mic_offset(c, flat_measured, offset_hz[:1], offset_db[:1]), flat_measured))
+    allowed, message = auto_apply_gate(quality_ok=True, mic_calibrated=False)
+    check("uncalibrated mic gates auto-apply behind confirmation",
+          not allowed and "mic calibration is unavailable" in message)
+    # Deriving a table from a paired capture: a known per-model offset, fed as
+    # (mic = room + offset) against (reference = room), must recover that
+    # offset within the band grid and then undo it via subtract_mic_offset.
+    known_offset_hz = np.array([100.0, 1000.0, 10000.0])
+    known_offset_db = np.array([2.0, -1.0, 3.0])
+    fine = np.geomspace(20.0, 20000.0, 4000)
+    room = np.zeros_like(fine)
+    known = np.interp(np.log10(fine), np.log10(known_offset_hz), known_offset_db)
+    mic = room + known  # the remote's capture sits off flat by its capsule offset
+    derived_hz, derived_db = derive_mic_offset(fine, mic, room)
+    recovered = np.interp(np.log10(known_offset_hz), np.log10(derived_hz), derived_db)
+    check("derived mic table is flat where the two spectra match",
+          derived_hz.size == 0 or bool(np.all(np.abs(recovered - known_offset_db) < 0.35)),
+          f"max {0.0 if derived_hz.size == 0 else float(np.max(np.abs(recovered - known_offset_db))):.2f} dB from known")
+    # Inside the tabulated span only: outside it subtract_mic_offset is
+    # specified to leave the measurement alone, and the synthetic mic curve
+    # does not flatten to zero there.
+    if derived_hz.size >= 2:
+        flattened = subtract_mic_offset(fine, mic, derived_hz, derived_db)
+        inside = (fine >= derived_hz[0]) & (fine <= derived_hz[-1])
+        residual = float(np.max(np.abs(flattened[inside] - room[inside])))
+        check("a derived table is accepted straight back by subtract_mic_offset",
+              residual <= 0.35, f"{residual:.2f} dB residual inside the span")
+    else:
+        check("a derived table is accepted straight back by subtract_mic_offset",
+              False, "derive produced no table to feed back")
+    check("calibrated, good-quality measurement auto-applies",
+          auto_apply_gate(quality_ok=True, mic_calibrated=True) == (True, ""))
+    check("a MEMS-style LF roll-off raises the limitation warning",
+          mic_limitation_warning(c, np.where(c < 80.0, -20.0, 0.0)) is not None)
+    check("a clean curve raises no limitation warning",
+          mic_limitation_warning(c, np.zeros_like(c)) is None)
+
+    # The hybrid IIR+FIR export stays inside the AutoEQ safety limits and
+    # emits both filter kinds.
+    hybrid = export_hybrid(c, corr)
+    check("hybrid export designs at most HYBRID_MAX_BIQUADS biquads",
+          0 <= len(hybrid["biquads"]) <= HYBRID_MAX_BIQUADS)
+    check("biquads respect the AutoEQ gain and Q limits",
+          all(AUTOEQ_GAIN_MIN_DB - 1e-9 <= b["gain_db"] <= AUTOEQ_GAIN_MAX_DB + 1e-9
+              and BIQUAD_Q_MIN - 1e-9 <= b["q"] <= BIQUAD_Q_MAX + 1e-9
+              and AUTOEQ_FREQ_MIN_HZ <= b["fc"] <= ROOM_MODE_MAX_HZ + 1e-9
+              for b in hybrid["biquads"]))
+    check("biquad coefficients are normalised (a0 folded in: b1 == a1)",
+          all(abs(b["b1"] - b["a1"]) < 1e-12 for b in hybrid["biquads"]))
+    check("FIR taps are the requested length and finite",
+          len(hybrid["fir_taps"]) == FIR_TAPS
+          and all(math.isfinite(t) for t in hybrid["fir_taps"]))
+
+    # The AutoEQ CSV is two columns of numbers under a comment header.
+    csv = export_autoeq_csv(c, corr)
+    rows = [line for line in csv.splitlines() if not line.startswith("#")][1:]
+    check("AutoEQ CSV has a header and one row per in-band centre",
+          csv.splitlines()[2] == "frequency,gain" and len(rows) == int(((c >= AUTOEQ_FREQ_MIN_HZ) & (c <= AUTOEQ_FREQ_MAX_HZ)).sum()))
+    check("AutoEQ CSV rows parse as frequency,gain",
+          all(len(r.split(",")) == 2 and _is_num(r.split(",")[0]) and _is_num(r.split(",")[1])
+              for r in rows))
 
     print()
     if failures:

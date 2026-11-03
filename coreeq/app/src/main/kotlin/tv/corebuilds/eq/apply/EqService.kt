@@ -245,6 +245,19 @@ class EqService : Service() {
         override fun onAudioDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>) = onOutputsChanged()
     }
     private var lastOutput: OutputRoute.Output? = null
+    /** Re-probes owed after a device change raced the last one (see onRouteConfirmed). */
+    private var routeConfirmRetries = 0
+    /**
+     * When the retry cap last gave up; device events inside the cooldown defer
+     * to one timer. Seeded far negative on purpose: initializing to 0 would
+     * put a device event within the first 5 s of boot (elapsedRealtime starts
+     * there) inside "cooldown since a give-up that never happened" and silently
+     * defer the very first probe. Large-negative keeps the subtraction
+     * overflow-free for any realistic uptime.
+     */
+    private var lastRouteGiveUpAtMs = Long.MIN_VALUE / 2
+    /** Written and read on main only; reset only by the deferred runnable it gates. A second caller from off main needs confining (or an AtomicBoolean). */
+    private var routeRetryScheduled = false
 
     /** Reprogram only when the lift actually moves a step; holding the volume key costs a few reapplies. */
     private fun onVolumeChanged() {
@@ -260,6 +273,56 @@ class EqService : Service() {
      * suggested — the user turns it on from Home.
      */
     private fun onOutputsChanged() {
+        val now = android.os.SystemClock.elapsedRealtime()
+        val sinceGiveUp = now - lastRouteGiveUpAtMs
+        if (sinceGiveUp < ROUTE_GIVEUP_COOLDOWN_MS) {
+            // A give-up just pinned the pause; a sink still flapping gets one
+            // retry burst per cooldown window, not one per event. Skipping the
+            // invalidation keeps the hold (and its UNCONFIRMED answer) intact,
+            // so this only delays a retry — it can never apply something wrong.
+            if (!routeRetryScheduled) {
+                // One deferred re-check per window: a flapper that STOPS must
+                // still get its hold lifted without waiting for a user action.
+                routeRetryScheduled = true
+                mainHandler.postDelayed({
+                    routeRetryScheduled = false
+                    if (running) onOutputsChanged() // onDestroy does not scrub handler posts
+                }, ROUTE_GIVEUP_COOLDOWN_MS - sinceGiveUp)
+            }
+            return
+        }
+        OutputRoute.invalidateProbeCache() // a device arrived or left: probe fresh
+        // The auto-apply decision must run on the probed route, never on the
+        // estimate, and the probe must never block main: confirm off-thread
+        // first, then act on the confirmed answer on main with a fresh cache.
+        OutputRoute.refreshProbeAsync(this) { onRouteConfirmed() }
+    }
+
+    private fun onRouteConfirmed() {
+        if (!OutputRoute.hasFreshProbe()) {
+            if (routeConfirmRetries < MAX_ROUTE_CONFIRM_RETRIES) {
+                // A device arrived while the last probe played, so no answer
+                // was publishable. Re-arm on the fresh probe rather than
+                // deciding on the estimate; the counter bounds the worst case:
+                // a sink flapping faster than a probe settles gets a capped
+                // number of extra track opens per burst, not an endless one.
+                routeConfirmRetries++
+                OutputRoute.refreshProbeAsync(this) { onRouteConfirmed() }
+            } else {
+                // Churn outlasted the retries: surface the unconfirmed route
+                // explicitly — the cache is seeded with UNCONFIRMED *and held*,
+                // so apply pauses with the hard-stop message and stays paused
+                // (no probe, no estimate decay) until a device event or a
+                // confirmed re-apply says otherwise. The cooldown rate-limits
+                // how fast the next burst may run.
+                routeConfirmRetries = 0
+                lastRouteGiveUpAtMs = android.os.SystemClock.elapsedRealtime()
+                OutputRoute.publishUnconfirmedProbe()
+                applyAll()
+            }
+            return
+        }
+        routeConfirmRetries = 0
         val output = OutputRoute.current(this) ?: return
         if (output == lastOutput) return
         val key = "${output.kind}|${output.name}"
@@ -405,7 +468,19 @@ class EqService : Service() {
                 if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
                 else applyMediaSessionSnapshot(MediaSessionSnapshot(emptySet(), complete = false, available = false))
             }
-            else -> applyAll() // ACTION_START, ACTION_REAPPLY, or a sticky restart
+            else -> {
+                // ACTION_START, ACTION_REAPPLY, or a sticky restart. While the
+                // unconfirmed hold is up, an immediate applyAll would only read
+                // the held UNCONFIRMED and re-pause — so run the one fresh
+                // probe the hold forbids, and act on its answer. A confirmed
+                // route lands the correction; a failed probe keeps the pause.
+                // This is what makes "play a test tone to continue" true.
+                if (OutputRoute.isHeldUnconfirmed()) {
+                    OutputRoute.refreshProbeAsync(this) { applyAll() }
+                } else {
+                    applyAll()
+                }
+            }
         }
         return START_STICKY
     }
@@ -491,7 +566,11 @@ class EqService : Service() {
             setAllEnabled(false)
             announcePaused(output)
             val routeName = output?.name ?: "the output Android could not identify"
-            val pauseMessage = if (output?.kind == OutputRoute.AMBIGUOUS) {
+            val pauseMessage = if (output?.kind == OutputRoute.UNCONFIRMED) {
+                // A silent playback track was started and Android still named no
+                // routed device: a hard stop, never a silent fallback.
+                "Could not confirm output route — correction paused. Play a test tone to continue."
+            } else if (output?.kind == OutputRoute.AMBIGUOUS) {
                 "Android reports multiple possible audio outputs. Correction is paused because one profile cannot safely represent all of them. Select one output and measure it again."
             } else {
                 "Nothing measured on $routeName yet, so correction is paused there. " +
@@ -630,14 +709,15 @@ class EqService : Service() {
 
         var eq: Equalizer? = null
         try {
-            eq = Equalizer(PRIORITY, session)
+            // createEqualizerSafely returns null instead of throwing when the
+            // native engine refuses (UnsupportedOperationException) or the
+            // effect state is corrupted (RuntimeException, e.g. a leaked
+            // previous instance) — the CVE-2019-9382 class of failure.
+            eq = EnhancedEffectChain.createEqualizerSafely(session, PRIORITY)
+                ?: throw UnsupportedOperationException("Effect engine unavailable on session $session")
             return configureEqualizer(eq, profile)
         } catch (e: Exception) {
-            try {
-                eq?.release()
-            } catch (_: Exception) {
-                // Preserve the Equalizer refusal below.
-            }
+            EnhancedEffectChain.safeRelease(eq) // preserve the Equalizer refusal below
             throw IllegalStateException(
                 "DynamicsProcessing ($dpFailure) and Equalizer (${e.message ?: e.javaClass.simpleName}) both refused",
                 e
@@ -700,11 +780,22 @@ class EqService : Service() {
             side = currentSide
         )
         val mbs = BandMapping.millibels(fit.targetDb, rangeMb)
-        for (i in 0 until n) eq.setBandLevel(i.toShort(), mbs[i])
-        eq.enabled = true
+        // Every band write goes through the bounds-checked, exception-guarded
+        // wrapper: the band index and the millibel value are validated and
+        // clamped against this device's own capabilities before the native
+        // effect engine ever sees them.
+        for (i in 0 until n) {
+            EnhancedEffectChain.safeSetBandLevel(eq, i, mbs[i])
+        }
+        check(EnhancedEffectChain.safeSetEnabled(eq, true)) { "Equalizer refused to enable" }
         check(eq.hasControl()) { "another equaliser app has priority over this audio" }
         val actual = List(n) { index ->
-            val millibels = eq.getBandLevel(index.toShort()).toInt()
+            val millibels = try {
+                eq.getBandLevel(index.toShort()).toInt()
+            } catch (e: RuntimeException) {
+                Log.w(TAG, "Could not read back band $index; keeping the requested value", e)
+                mbs[index].toInt()
+            }
             PlatformBand(centres[index], millibels)
         }
         val readBackDb = DoubleArray(n) { actual[it].millibels / 100.0 }
@@ -719,16 +810,10 @@ class EqService : Service() {
 
     private fun releaseApplied(applied: AppliedEffect) {
         applied.extras?.release()
-        try {
-            applied.effect.setEnabled(false)
-        } catch (e: Exception) {
-            Log.w(TAG, "Could not disable ${applied.engine} during teardown", e)
-        }
-        try {
-            applied.effect.release()
-        } catch (e: Exception) {
-            Log.w(TAG, "Could not release ${applied.engine} during teardown", e)
-        }
+        // Disable then release, both guarded: a leaked effect is what makes
+        // the NEXT construction throw RuntimeException.
+        EnhancedEffectChain.safeSetEnabled(applied.effect, false)
+        EnhancedEffectChain.safeRelease(applied.effect)
     }
 
     /** The Home band rail follows the layout of the effect that is actually live. */
@@ -742,12 +827,11 @@ class EqService : Service() {
         val all = listOfNotNull(globalEffect) + sessionEqs.values.map { it.applied }
         for (applied in all) {
             applied.extras?.setEnabled(on)
-            try {
-                check(applied.effect.setEnabled(on) == AudioEffect.SUCCESS) {
-                    "${applied.engine} refused enable=$on"
-                }
-            } catch (e: Exception) {
-                Log.w(TAG, "${applied.engine} no longer valid", e)
+            // safeSetEnabled catches internally (false = engine dead): one dead
+            // effect logs and moves on - a failure here can never skip the
+            // remaining effects the way a throwing per-band loop would.
+            if (!EnhancedEffectChain.safeSetEnabled(applied.effect, on)) {
+                Log.w(TAG, "${applied.engine} no longer valid for enable=$on")
             }
         }
     }
@@ -1339,6 +1423,18 @@ class EqService : Service() {
     companion object {
         const val ACTION_START = "tv.corebuilds.eq.action.START"
         const val ACTION_STOP = "tv.corebuilds.eq.action.STOP"
+        /**
+         * Re-probes after a raced confirmation before the churn gets an
+         * explicit UNCONFIRMED. Load math for the whole burst: each
+         * refreshProbeAsync can open up to 2 tracks (probe + in-executor
+         * re-probe when a device change races it), and re-probes fire on
+         * nearly every call under the churn this cap exists for — so worst
+         * case is (1 initial + 3 retries) × 2 = 8 opens per burst, bounded
+         * across events by the cooldown, not just within a burst.
+         */
+        private const val MAX_ROUTE_CONFIRM_RETRIES = 3
+        /** Quiet time before device events may run another retry burst after a give-up. */
+        private const val ROUTE_GIVEUP_COOLDOWN_MS = 5_000L
         const val ACTION_REAPPLY = "tv.corebuilds.eq.action.REAPPLY"
         const val ACTION_SUSPEND = "tv.corebuilds.eq.action.SUSPEND"
         const val ACTION_RESUME = "tv.corebuilds.eq.action.RESUME"

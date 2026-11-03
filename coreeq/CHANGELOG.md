@@ -6,6 +6,49 @@ Core EQ (`tv.corebuilds.eq`) keeps its own changelog. The repository-root
 must never land there. Releases are `coreeq-v<version>` tags (see
 `PUBLISHING.md`).
 
+## [Unreleased]
+
+- **Every AudioEffect write is bounds-checked before the framework sees it.** Band
+  indices are validated against the device's own `numberOfBands` and gains clamped to
+  its own `bandLevelRange` before `setBandLevel` is called, and the
+  `UnsupportedOperationException` (engine unavailable) and `RuntimeException`
+  (corrupted state from a leaked instance) that actually occur are caught and logged
+  instead of crashing — the CVE-2019-9382 class of bug, closed at application level.
+  Every created effect is released exactly once through a guarded release path.
+- **Output route is probed the way Google documents, not guessed.** A silent PCM
+  `AudioTrack` is started and `getRoutedDevice()` read while it plays, with an
+  `OnRoutingChangedListener` (API 24+) watching for HDMI hot-plug or Bluetooth
+  changes mid-probe and `getDirectPlaybackSupport()` (API 33+) reporting whether the
+  route is a passthrough path that would strip the effect. A probe that reports no
+  route is a hard stop — "Could not confirm output route — correction paused. Play a
+  test tone to continue." — never a silent fallback. A pause caused by a flapping output is
+  held: while the route stays unconfirmable the app keeps answering "unconfirmed" (no repeated
+  track opens, no decay to the estimate), and it resumes only when a device event or a
+  test-tone re-apply lets a fresh probe confirm a route.
+- **The reference DSP flattens the microphone before correcting the room.**
+  `tools/core_eq_dsp.py` subtracts a per-remote-model offset table from the raw
+  measurement (capped at ±6 dB per band, never extrapolated past the tabulated span),
+  warns when the curve carries a MEMS-mic signature (low-frequency roll-off,
+  high-frequency peak), and gates auto-apply behind an explicit "mic calibration is
+  unavailable — apply anyway?" confirmation. `derive_mic_offset` makes the table
+  self-serve: feed it one pink-noise capture taken by the remote mic beside a
+  calibrated reference, and it reduces the (mic − reference) difference to 1/3-octave
+  bands so the room term cancels, leaving the capsule offset to subtract.
+- **The reference DSP can export a hybrid IIR + FIR correction.** 2–4 low-Q IIR
+  biquads for room modes below 300 Hz plus FIR taps for the 300 Hz–16 kHz band, all
+  inside AutoEQ's safety limits (60–16,000 Hz, −12..+3 dB, Q 1–3).
+- **New export: `coreeq_autoeq.csv`** — AutoEQ's native two-column
+  `frequency,gain` format, importable by AutoEQ-compatible tools and Poweramp
+  Equalizer. The export notes that Poweramp adds +6 dB to AutoEQ graphic gains on
+  import. Gains are written to 0.001 dB so fine corrections survive a round-trip.
+  The Poweramp parametric JSON export is unchanged.
+- **The route probe never runs on the main thread.** The silent-track probe
+  opens and stops a real `AudioTrack` and waits ~50 ms for it to settle, so
+  `OutputRoute.current()` on main now answers from the cached probe (or the
+  estimate, before any probe has run) while the track plays on a background
+  executor; auto-apply waits for the confirmed answer instead of blocking or
+  guessing. A device change mid-probe is re-probed, not published stale.
+
 ## [1.11.1] — 2026-11-02
 
 **Nothing below was checked on a TV, a soundbar or a speaker pair.** 1.11.0 was
