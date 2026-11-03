@@ -245,6 +245,8 @@ class EqService : Service() {
         override fun onAudioDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>) = onOutputsChanged()
     }
     private var lastOutput: OutputRoute.Output? = null
+    /** Re-probes owed after a device change raced the last one (see onRouteConfirmed). */
+    private var routeConfirmRetries = 0
 
     /** Reprogram only when the lift actually moves a step; holding the volume key costs a few reapplies. */
     private fun onVolumeChanged() {
@@ -269,12 +271,26 @@ class EqService : Service() {
 
     private fun onRouteConfirmed() {
         if (!OutputRoute.hasFreshProbe()) {
-            // A device arrived while the last probe played, so no answer was
-            // publishable. Re-arm on the fresh probe rather than deciding on
-            // the estimate; this settles once the device churn stops.
-            OutputRoute.refreshProbeAsync(this) { onRouteConfirmed() }
+            if (routeConfirmRetries < MAX_ROUTE_CONFIRM_RETRIES) {
+                // A device arrived while the last probe played, so no answer
+                // was publishable. Re-arm on the fresh probe rather than
+                // deciding on the estimate; the counter bounds the worst case:
+                // a sink flapping faster than a probe settles gets a capped
+                // number of extra track opens per burst, not an endless one.
+                routeConfirmRetries++
+                OutputRoute.refreshProbeAsync(this) { onRouteConfirmed() }
+            } else {
+                // Churn outlasted the retries: surface the unconfirmed route
+                // explicitly — the cache is seeded with UNCONFIRMED so apply
+                // pauses with the hard-stop message — and stop re-probing.
+                // The next real device event resets the budget.
+                routeConfirmRetries = 0
+                OutputRoute.publishUnconfirmedProbe()
+                applyAll()
+            }
             return
         }
+        routeConfirmRetries = 0
         val output = OutputRoute.current(this) ?: return
         if (output == lastOutput) return
         val key = "${output.kind}|${output.name}"
@@ -1360,6 +1376,8 @@ class EqService : Service() {
     companion object {
         const val ACTION_START = "tv.corebuilds.eq.action.START"
         const val ACTION_STOP = "tv.corebuilds.eq.action.STOP"
+        /** Extra probes per device event before an unruly churn gets an explicit UNCONFIRMED. */
+        private const val MAX_ROUTE_CONFIRM_RETRIES = 3
         const val ACTION_REAPPLY = "tv.corebuilds.eq.action.REAPPLY"
         const val ACTION_SUSPEND = "tv.corebuilds.eq.action.SUSPEND"
         const val ACTION_RESUME = "tv.corebuilds.eq.action.RESUME"

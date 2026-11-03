@@ -418,7 +418,11 @@ object OutputRoute {
      */
     fun pick(profiles: List<Profile>, chosenId: String?, kind: String?, outputName: String? = null): Pick {
         val chosen = profiles.firstOrNull { it.id == chosenId } ?: profiles.maxByOrNull { it.timestampMs }
-        if (kind == AMBIGUOUS) return Pick(null, switched = chosen != null)
+        // UNCONFIRMED blocks like AMBIGUOUS — and just as absolutely: the
+        // legacy "untagged applies everywhere" allowance must not become a
+        // side door past the hard stop. If Android will not say where audio
+        // goes, nothing is safe to apply there, even a pre-output profile.
+        if (kind == AMBIGUOUS || kind == UNCONFIRMED) return Pick(null, switched = chosen != null)
         if (kind == null) {
             if (chosen == null || chosen.outputKind == null || chosen.outputKind == UNKNOWN) {
                 return Pick(chosen, switched = false)
@@ -573,6 +577,19 @@ object OutputRoute {
     internal fun hasFreshProbe(): Boolean {
         val cached = probeCache ?: return false
         return android.os.SystemClock.elapsedRealtime() - cached.first < PROBE_CACHE_MS
+    }
+
+    /**
+     * Publish an [UNCONFIRMED] route into the probe cache without opening a
+     * track, so [current] hard-stops instead of falling to the estimate. The
+     * caller reaches this only after retrying a fresh probe too many times —
+     * device churn the probe cannot get a clean read through — and it
+     * self-clears on the next real device change or when the cache window
+     * expires, so a settled route is re-probed normally.
+     */
+    internal fun publishUnconfirmedProbe() {
+        probeCache = android.os.SystemClock.elapsedRealtime() to
+            ProbeResult(Output(UNCONFIRMED, label(UNCONFIRMED), Evidence.TRACK_PROBE), null)
     }
 
     /** One daemon thread: probes are cheap to hold but must never run on the caller's thread. */
