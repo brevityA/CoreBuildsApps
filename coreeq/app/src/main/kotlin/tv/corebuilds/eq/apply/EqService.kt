@@ -260,6 +260,7 @@ class EqService : Service() {
      * suggested — the user turns it on from Home.
      */
     private fun onOutputsChanged() {
+        OutputRoute.invalidateProbeCache() // a device arrived or left: probe fresh
         val output = OutputRoute.current(this) ?: return
         if (output == lastOutput) return
         val key = "${output.kind}|${output.name}"
@@ -491,7 +492,11 @@ class EqService : Service() {
             setAllEnabled(false)
             announcePaused(output)
             val routeName = output?.name ?: "the output Android could not identify"
-            val pauseMessage = if (output?.kind == OutputRoute.AMBIGUOUS) {
+            val pauseMessage = if (output?.kind == OutputRoute.UNCONFIRMED) {
+                // A silent playback track was started and Android still named no
+                // routed device: a hard stop, never a silent fallback.
+                "Could not confirm output route — correction paused. Play a test tone to continue."
+            } else if (output?.kind == OutputRoute.AMBIGUOUS) {
                 "Android reports multiple possible audio outputs. Correction is paused because one profile cannot safely represent all of them. Select one output and measure it again."
             } else {
                 "Nothing measured on $routeName yet, so correction is paused there. " +
@@ -630,14 +635,15 @@ class EqService : Service() {
 
         var eq: Equalizer? = null
         try {
-            eq = Equalizer(PRIORITY, session)
+            // createEqualizerSafely returns null instead of throwing when the
+            // native engine refuses (UnsupportedOperationException) or the
+            // effect state is corrupted (RuntimeException, e.g. a leaked
+            // previous instance) — the CVE-2019-9382 class of failure.
+            eq = EnhancedEffectChain.createEqualizerSafely(session, PRIORITY)
+                ?: throw UnsupportedOperationException("Effect engine unavailable on session $session")
             return configureEqualizer(eq, profile)
         } catch (e: Exception) {
-            try {
-                eq?.release()
-            } catch (_: Exception) {
-                // Preserve the Equalizer refusal below.
-            }
+            EnhancedEffectChain.safeRelease(eq) // preserve the Equalizer refusal below
             throw IllegalStateException(
                 "DynamicsProcessing ($dpFailure) and Equalizer (${e.message ?: e.javaClass.simpleName}) both refused",
                 e
@@ -700,11 +706,22 @@ class EqService : Service() {
             side = currentSide
         )
         val mbs = BandMapping.millibels(fit.targetDb, rangeMb)
-        for (i in 0 until n) eq.setBandLevel(i.toShort(), mbs[i])
-        eq.enabled = true
+        // Every band write goes through the bounds-checked, exception-guarded
+        // wrapper: the band index and the millibel value are validated and
+        // clamped against this device's own capabilities before the native
+        // effect engine ever sees them.
+        for (i in 0 until n) {
+            EnhancedEffectChain.safeSetBandLevel(eq, i, mbs[i])
+        }
+        check(EnhancedEffectChain.safeSetEnabled(eq, true)) { "Equalizer refused to enable" }
         check(eq.hasControl()) { "another equaliser app has priority over this audio" }
         val actual = List(n) { index ->
-            val millibels = eq.getBandLevel(index.toShort()).toInt()
+            val millibels = try {
+                eq.getBandLevel(index.toShort()).toInt()
+            } catch (e: RuntimeException) {
+                Log.w(TAG, "Could not read back band $index; keeping the requested value", e)
+                mbs[index].toInt()
+            }
             PlatformBand(centres[index], millibels)
         }
         val readBackDb = DoubleArray(n) { actual[it].millibels / 100.0 }
@@ -719,16 +736,10 @@ class EqService : Service() {
 
     private fun releaseApplied(applied: AppliedEffect) {
         applied.extras?.release()
-        try {
-            applied.effect.setEnabled(false)
-        } catch (e: Exception) {
-            Log.w(TAG, "Could not disable ${applied.engine} during teardown", e)
-        }
-        try {
-            applied.effect.release()
-        } catch (e: Exception) {
-            Log.w(TAG, "Could not release ${applied.engine} during teardown", e)
-        }
+        // Disable then release, both guarded: a leaked effect is what makes
+        // the NEXT construction throw RuntimeException.
+        EnhancedEffectChain.safeSetEnabled(applied.effect, false)
+        EnhancedEffectChain.safeRelease(applied.effect)
     }
 
     /** The Home band rail follows the layout of the effect that is actually live. */
@@ -742,12 +753,8 @@ class EqService : Service() {
         val all = listOfNotNull(globalEffect) + sessionEqs.values.map { it.applied }
         for (applied in all) {
             applied.extras?.setEnabled(on)
-            try {
-                check(applied.effect.setEnabled(on) == AudioEffect.SUCCESS) {
-                    "${applied.engine} refused enable=$on"
-                }
-            } catch (e: Exception) {
-                Log.w(TAG, "${applied.engine} no longer valid", e)
+            if (!EnhancedEffectChain.safeSetEnabled(applied.effect, on)) {
+                Log.w(TAG, "${applied.engine} no longer valid for enable=$on")
             }
         }
     }

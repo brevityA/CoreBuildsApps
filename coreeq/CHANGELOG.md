@@ -6,6 +6,36 @@ Core EQ (`tv.corebuilds.eq`) keeps its own changelog. The repository-root
 must never land there. Releases are `coreeq-v<version>` tags (see
 `PUBLISHING.md`).
 
+## [Unreleased]
+
+- **Every AudioEffect write is bounds-checked before the framework sees it.** Band
+  indices are validated against the device's own `numberOfBands` and gains clamped to
+  its own `bandLevelRange` before `setBandLevel` is called, and the
+  `UnsupportedOperationException` (engine unavailable) and `RuntimeException`
+  (corrupted state from a leaked instance) that actually occur are caught and logged
+  instead of crashing — the CVE-2019-9382 class of bug, closed at application level.
+  Every created effect is released exactly once through a guarded release path.
+- **Output route is probed the way Google documents, not guessed.** A silent PCM
+  `AudioTrack` is started and `getRoutedDevice()` read while it plays, with an
+  `OnRoutingChangedListener` (API 24+) watching for HDMI hot-plug or Bluetooth
+  changes mid-probe and `getDirectPlaybackSupport()` (API 33+) reporting whether the
+  route is a passthrough path that would strip the effect. A probe that reports no
+  route is a hard stop — "Could not confirm output route — correction paused. Play a
+  test tone to continue." — never a silent fallback.
+- **The reference DSP flattens the microphone before correcting the room.**
+  `tools/core_eq_dsp.py` subtracts a per-remote-model offset table from the raw
+  measurement (capped at ±6 dB per band, never extrapolated past the tabulated span),
+  warns when the curve carries a MEMS-mic signature (low-frequency roll-off,
+  high-frequency peak), and gates auto-apply behind an explicit "mic calibration is
+  unavailable — apply anyway?" confirmation.
+- **The reference DSP can export a hybrid IIR + FIR correction.** 2–4 low-Q IIR
+  biquads for room modes below 300 Hz plus FIR taps for the 300 Hz–16 kHz band, all
+  inside AutoEQ's safety limits (60–16,000 Hz, −12..+3 dB, Q 1–3).
+- **New export: `coreeq_autoeq.csv`** — AutoEQ's native two-column
+  `frequency,gain` format, importable by AutoEQ-compatible tools and Poweramp
+  Equalizer. The export notes that Poweramp adds +6 dB to AutoEQ graphic gains on
+  import. The Poweramp parametric JSON export is unchanged.
+
 ## [1.11.1] — 2026-11-02
 
 **Nothing below was checked on a TV, a soundbar or a speaker pair.** 1.11.0 was

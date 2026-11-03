@@ -39,12 +39,19 @@ object EffectLadder {
         var minMb = -1500
         var maxMb = 1500
 
-        // Test platform Equalizer on session 0
+        // Test platform Equalizer on session 0. Creation goes through the
+        // guarded factory: UnsupportedOperationException (engine unavailable)
+        // and RuntimeException (corrupted state from a leaked instance) both
+        // mean "no session-0 EQ", never a crash.
         var eq: Equalizer? = null
         try {
-            eq = Equalizer(0, 0)
-            eqSupported = eq.hasControl()
-            equalizerSession0Ok = eqSupported
+            eq = EnhancedEffectChain.createEqualizerSafely(0, 0)
+            if (eq != null) {
+                eqSupported = eq.hasControl()
+                equalizerSession0Ok = eqSupported
+            } else {
+                equalizerSession0Ok = false
+            }
             val count = if (eqSupported) eq.numberOfBands.toInt() else 0
             if (count > 0) {
                 bands = count
@@ -61,9 +68,7 @@ object EffectLadder {
         } catch (e: Exception) {
             equalizerSession0Ok = false
         } finally {
-            try {
-                eq?.release()
-            } catch (ignored: Exception) {}
+            EnhancedEffectChain.safeRelease(eq)
         }
 
         if (centres.isEmpty()) {
@@ -84,9 +89,7 @@ object EffectLadder {
                 dpOk = false
                 dynamicsProcessingSession0Ok = false
             } finally {
-                try {
-                    dp?.release()
-                } catch (ignored: Exception) {}
+                EnhancedEffectChain.safeRelease(dp)
             }
         }
         val session0Ok = equalizerSession0Ok || dynamicsProcessingSession0Ok

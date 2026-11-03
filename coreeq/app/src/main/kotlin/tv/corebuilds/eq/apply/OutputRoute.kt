@@ -3,8 +3,12 @@ package tv.corebuilds.eq.apply
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioDeviceInfo
+import android.media.AudioFormat
 import android.media.AudioManager
+import android.media.AudioTrack
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import tv.corebuilds.eq.export.Profile
 
 /**
@@ -69,6 +73,7 @@ object OutputRoute {
         WIRED -> "Wired headphones or line out"
         UNKNOWN -> "an output Android did not name"
         AMBIGUOUS -> "multiple or ambiguous audio outputs"
+        UNCONFIRMED -> "an output route Android could not confirm"
         null -> "any output"
         else -> kind
     }
@@ -94,12 +99,168 @@ object OutputRoute {
     }
 
     /**
-     * Best available media route indication. API 33+ asks for the anticipated
-     * route for media attributes; earlier releases use a connected-output
-     * estimate only when one external candidate is present. Neither proves
-     * where another app's current stream is routed.
+     * The result of probing the route with a silent playback track: the route
+     * Android actually reported for a playing [AudioTrack], plus — on API 33+
+     * — whether that route supports direct playback of the format correction
+     * would be applied to (a passthrough bitstream path strips any effect, so
+     * correction must not be assumed to reach it).
+     */
+    data class ProbeResult(
+        val output: Output,
+        /** API 33+: true when this PCM format can be direct-played, i.e. the route may bypass the mixer and strip an on-device effect. Null below API 33. */
+        val directPlaybackSupported: Boolean?
+    )
+
+    /**
+     * Google's documented pattern for asking where audio actually goes: start
+     * a silent PCM [AudioTrack] and read [AudioTrack.getRoutedDevice] while it
+     * is playing. A connected-device list is a guess; this is the hardware
+     * route. The track is released in [finally] no matter what.
+     *
+     * On API 24+ an [AudioTrack.OnRoutingChangedListener] watches for the route
+     * changing mid-probe (HDMI hot-plug, Bluetooth connect); on API 33+
+     * [AudioManager.getDirectPlaybackSupport] reports whether the probed route
+     * takes the PCM format directly or is a passthrough path.
+     *
+     * Returns null when no track could be opened at all (then the caller falls
+     * back to the connected-output estimate). A track that played but reported
+     * no routed device yields [UNCONFIRMED] — a hard stop, never a silent
+     * fallback to "Everyday".
+     */
+    fun probeWithSilentTrack(context: Context): ProbeResult? {
+        val am = context.getSystemService(AudioManager::class.java) ?: return null
+        val format = AudioFormat.Builder()
+            .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+            .setSampleRate(PROBE_SAMPLE_RATE_HZ)
+            .setChannelMask(AudioFormat.CHANNEL_OUT_STEREO)
+            .build()
+        val track = try {
+            AudioTrack.Builder()
+                .setAudioFormat(format)
+                .setBufferSizeInBytes(PROBE_BUFFER_BYTES)
+                .setTransferMode(AudioTrack.MODE_STREAM)
+                .build()
+        } catch (e: Exception) {
+            return null
+        }
+
+        var routeChanged = false
+        val listener = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            AudioTrack.OnRoutingChangedListener { routeChanged = true }
+        } else null
+        if (listener != null) {
+            try {
+                track.addOnRoutingChangedListener(listener, Handler(Looper.getMainLooper()))
+            } catch (e: Exception) {
+                // Observation is best-effort; the static read below still runs.
+            }
+        }
+
+        return try {
+            track.play() // getRoutedDevice() is only meaningful while playing
+            Thread.sleep(PROBE_SETTLE_MS)
+            val devices = readRoutedDevices(track)
+            val output = if (devices.isEmpty()) {
+                Output(UNCONFIRMED, label(UNCONFIRMED), Evidence.TRACK_PROBE)
+            } else {
+                resolveCandidates(devices.map { device ->
+                    val kind = kindOf(device.type) ?: UNKNOWN
+                    Output(
+                        kind,
+                        if (kind == UNKNOWN) label(UNKNOWN)
+                        else displayName(kind, device.productName?.toString()),
+                        Evidence.TRACK_PROBE
+                    )
+                }) ?: Output(UNCONFIRMED, label(UNCONFIRMED), Evidence.TRACK_PROBE)
+            }
+            // A route that moved while the probe was listening is ambiguous
+            // evidence, not a confirmed one.
+            val confirmed = if (routeChanged && output.kind != UNCONFIRMED) {
+                Output(AMBIGUOUS, label(AMBIGUOUS), Evidence.AMBIGUOUS)
+            } else output
+            ProbeResult(confirmed, directPlaybackSupport(format))
+        } catch (e: RuntimeException) {
+            null
+        } finally {
+            if (listener != null) {
+                try {
+                    track.removeOnRoutingChangedListener(listener)
+                } catch (_: Exception) {}
+            }
+            try {
+                track.stop()
+            } catch (_: Exception) {}
+            track.release()
+        }
+    }
+
+    /** API 33+: does [devices] take this PCM format directly, or is it a passthrough path? */
+    private fun directPlaybackSupport(
+        am: AudioManager,
+        devices: List<AudioDeviceInfo>,
+        format: AudioFormat
+    ): Boolean? {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return null
+        if (devices.isEmpty()) return null
+        return try {
+            devices.all { device ->
+                am.getDirectPlaybackSupport(device, mediaAttributes(), format) ==
+                    AudioManager.DIRECT_PLAYBACK_SUPPORT_WITH_ENCAPSULATION ||
+                am.getDirectPlaybackSupport(device, mediaAttributes(), format) ==
+                    AudioManager.DIRECT_PLAYBACK_SUPPORT_STREAMING
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun readRoutedDevices(track: AudioTrack): List<AudioDeviceInfo> = try {
+        if (Build.VERSION.SDK_INT >= 36) {
+            track.routedDevices.toList()
+        } else {
+            listOfNotNull(track.routedDevice)
+        }
+    } catch (e: RuntimeException) {
+        emptyList()
+    }
+
+    /**
+     * Tag a route from a silent-track probe. Pure, so the rule is unit-tested:
+     * a null device is [UNCONFIRMED] (hard stop), an unrecognized device stays
+     * [UNKNOWN], and the estimate is never silently substituted.
+     */
+    fun tagProbed(ranked: Output?, routedType: Int?, routedProduct: String?, model: String = Build.MODEL): Output? {
+        if (routedType == null) {
+            return Output(UNCONFIRMED, label(UNCONFIRMED), Evidence.TRACK_PROBE)
+        }
+        val kind = kindOf(routedType) ?: UNKNOWN
+        return Output(
+            kind,
+            if (kind == UNKNOWN) label(UNKNOWN) else displayName(kind, routedProduct, model),
+            Evidence.TRACK_PROBE
+        )
+    }
+
+    /**
+     * Best available media route indication. The authoritative answer comes
+     * first: a silent playback track started and [AudioTrack.getRoutedDevice]
+     * read while it plays. Only when no track can be opened at all does this
+     * fall back to the API 33+ anticipated route and then the connected-output
+     * estimate — and a probe that reported no route is [UNCONFIRMED], which
+     * pauses correction rather than guessing.
      */
     fun current(context: Context): Output? {
+        // The probe starts and stops a real AudioTrack, and current() is called
+        // several times per apply: cache the answer briefly so one apply does
+        // not open the track repeatedly. Device callbacks still force a fresh
+        // read because they run onOutputsChanged -> applyAll -> resolve.
+        val now = android.os.SystemClock.elapsedRealtime()
+        probeCache?.let { (at, result) ->
+            if (now - at < PROBE_CACHE_MS) return result?.output
+        }
+        val probed = probeWithSilentTrack(context)
+        probeCache = now to probed
+        if (probed != null) return probed.output
         val am = context.getSystemService(AudioManager::class.java) ?: return null
         val mediaRoute = activeMediaRoute(am)
         if (mediaRoute.isNotEmpty()) {
@@ -351,4 +512,19 @@ object OutputRoute {
     private const val TYPE_HDMI_EARC = 29 // AudioDeviceInfo.TYPE_HDMI_EARC, API 31
     private const val TYPE_BLE_HEADSET = 26 // API 31
     private const val TYPE_BLE_SPEAKER = 27 // API 31
+
+    /** Silent-track route probe: 48 kHz stereo PCM, a small buffer, a short settle. */
+    private const val PROBE_SAMPLE_RATE_HZ = 48000
+    private const val PROBE_BUFFER_BYTES = 4096
+    private const val PROBE_SETTLE_MS = 50L
+    /** How long a probe result is reused, so one apply does not reopen the track. */
+    private const val PROBE_CACHE_MS = 2000L
+
+    @Volatile
+    private var probeCache: Pair<Long, ProbeResult?>? = null
+
+    /** Drop the cached probe so the next [current] starts a fresh track (device hot-plug). */
+    fun invalidateProbeCache() {
+        probeCache = null
+    }
 }

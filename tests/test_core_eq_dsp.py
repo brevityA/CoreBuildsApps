@@ -946,6 +946,138 @@ class TestCorrectionRefinement:
 
 
 # ---------------------------------------------------------------------------
+# Known-curve inversion, microphone calibration, hybrid IIR+FIR, AutoEQ CSV
+# ---------------------------------------------------------------------------
+
+class TestKnownCurveInversion:
+    """A sweep through a known response must come back inverted (±0.5 dB).
+
+    The injected response is a +6 dB peak at 90 Hz and a -4 dB dip at 300 Hz —
+    both below the transition, where the corrector inverts in full. (A dip
+    above the transition is shaping-only by design, and a dip deeper than
+    NULL_DEPTH_DB is a cancellation that must never be boosted.)
+    """
+
+    def _injected(self, f):
+        room = np.zeros_like(f)
+        room += 6.0 * np.exp(-((np.log2(f / 90.0)) ** 2) / (2 * 0.4 ** 2))
+        room += -4.0 * np.exp(-((np.log2(f / 300.0)) ** 2) / (2 * 0.4 ** 2))
+        return room
+
+    def test_the_correction_inverts_a_known_response(self, third_octave):
+        f = third_octave
+        injected = self._injected(f)
+        target = np.zeros_like(f)
+        corr = dsp.correction_curve(f, injected, target)
+        residual = injected + corr - target
+        for fc in (90.0, 300.0):
+            i = int(np.argmin(np.abs(f - fc)))
+            assert abs(float(residual[i])) <= 0.5, f"residual {residual[i]:+.2f} dB at {f[i]:.1f} Hz"
+
+    def test_the_correction_cuts_where_the_room_peaks_and_lifts_where_it_dips(self, third_octave):
+        f = third_octave
+        corr = dsp.correction_curve(f, self._injected(f), np.zeros_like(f))
+        i_peak = int(np.argmin(np.abs(f - 90.0)))
+        i_dip = int(np.argmin(np.abs(f - 300.0)))
+        assert corr[i_peak] < -4.0  # a +6 dB peak is cut hard
+        assert corr[i_dip] > 2.0    # a -4 dB dip is lifted, but never fully filled
+
+
+class TestMicCalibration:
+    def test_offset_table_is_subtracted_before_the_dsp_reads_the_curve(self, third_octave):
+        f = third_octave
+        measured = np.full_like(f, 5.0)
+        offset_hz = np.array([100.0, 1000.0, 10000.0])
+        offset_db = np.array([2.0, -1.0, 3.0])
+        flat = dsp.subtract_mic_offset(f, measured, offset_hz, offset_db)
+        i1k = int(np.argmin(np.abs(f - 1000.0)))
+        assert abs(float(flat[i1k]) - 6.0) < 0.05  # 5 - (-1)
+
+    def test_offset_is_capped_and_never_extrapolated(self, third_octave):
+        f = third_octave
+        measured = np.full_like(f, 5.0)
+        offset_hz = np.array([100.0, 1000.0])
+        offset_db = np.array([30.0, -30.0])  # absurd values must clamp
+        flat = dsp.subtract_mic_offset(f, measured, offset_hz, offset_db)
+        assert np.all(np.abs(flat - measured) <= dsp.MIC_OFFSET_MAX_DB + 1e-9)
+        i_low = int(np.argmin(np.abs(f - 31.5)))
+        assert flat[i_low] == measured[i_low]  # below the span: untouched
+
+    def test_a_single_offset_point_is_ignored(self, third_octave):
+        f = third_octave
+        measured = np.full_like(f, 5.0)
+        assert np.array_equal(
+            dsp.subtract_mic_offset(f, measured, np.array([1000.0]), np.array([-1.0])),
+            measured)
+
+    def test_memes_signature_raises_a_warning_a_clean_curve_does_not(self, third_octave):
+        f = third_octave
+        mems = np.where(f < 80.0, -20.0, 0.0)
+        assert dsp.mic_limitation_warning(f, mems) is not None
+        assert dsp.mic_limitation_warning(f, np.zeros_like(f)) is None
+
+    def test_uncalibrated_mic_gates_auto_apply_behind_a_confirmation(self):
+        allowed, message = dsp.auto_apply_gate(quality_ok=True, mic_calibrated=False)
+        assert not allowed
+        assert "mic calibration is unavailable" in message
+        assert dsp.auto_apply_gate(quality_ok=True, mic_calibrated=True) == (True, "")
+        allowed, _ = dsp.auto_apply_gate(quality_ok=False, mic_calibrated=True)
+        assert not allowed
+
+
+class TestHybridIirFir:
+    def test_room_modes_become_limited_biquads(self, correction):
+        f, _, corr = correction
+        biquads = dsp.design_room_mode_biquads(f, corr)
+        assert 0 < len(biquads) <= dsp.HYBRID_MAX_BIQUADS
+        for b in biquads:
+            assert dsp.AUTOEQ_FREQ_MIN_HZ <= b["fc"] <= dsp.ROOM_MODE_MAX_HZ + 1e-9
+            assert dsp.AUTOEQ_GAIN_MIN_DB - 1e-9 <= b["gain_db"] <= dsp.AUTOEQ_GAIN_MAX_DB + 1e-9
+            assert dsp.BIQUAD_Q_MIN - 1e-9 <= b["q"] <= dsp.BIQUAD_Q_MAX + 1e-9
+            assert abs(b["b1"] - b["a1"]) < 1e-12  # RBJ peaking, a0 normalised
+
+    def test_biquad_response_peaks_at_its_gain(self):
+        grid = np.linspace(20, 20000, 40000)
+        b = dsp.rbj_peaking_coeffs(120.0, 1.5, 3.0)
+        w = 2 * math.pi * grid / dsp.FS
+        z = np.exp(-1j * w)
+        num = b["b0"] + b["b1"] * z + b["b2"] * z ** 2
+        den = 1.0 + b["a1"] * z + b["a2"] * z ** 2
+        resp = 20.0 * np.log10(np.maximum(np.abs(num / den), 1e-12))
+        assert abs(float(resp.max()) - 3.0) < 0.05
+        assert abs(float(grid[int(np.argmax(resp))]) - 120.0) < 2.0
+
+    def test_fir_is_zero_below_the_split_and_full_length(self, correction):
+        f, _, corr = correction
+        taps = dsp.design_fir_taps(f, corr, taps=512)
+        assert taps.shape == (512,)
+        assert np.all(np.isfinite(taps))
+        hybrid = dsp.export_hybrid(f, corr)
+        assert len(hybrid["fir_taps"]) == dsp.FIR_TAPS
+        assert hybrid["band_hz"] == [dsp.AUTOEQ_FREQ_MIN_HZ, dsp.AUTOEQ_FREQ_MAX_HZ]
+
+
+class TestAutoEqCsvExport:
+    def test_csv_is_two_columns_under_a_comment_header(self, correction):
+        f, _, corr = correction
+        csv = dsp.export_autoeq_csv(f, corr)
+        lines = csv.splitlines()
+        assert lines[0].startswith("#")
+        assert "frequency,gain" in lines
+        rows = [ln for ln in lines if not ln.startswith("#")][1:]
+        assert len(rows) == int(((f >= dsp.AUTOEQ_FREQ_MIN_HZ) & (f <= dsp.AUTOEQ_FREQ_MAX_HZ)).sum())
+        for row in rows:
+            hz_s, gain_s = row.split(",")
+            hz, gain = float(hz_s), float(gain_s)
+            assert dsp.AUTOEQ_FREQ_MIN_HZ <= hz <= dsp.AUTOEQ_FREQ_MAX_HZ
+            assert dsp.AUTOEQ_GAIN_MIN_DB - 1e-9 <= gain <= dsp.AUTOEQ_GAIN_MAX_DB + 1e-9
+
+    def test_csv_documents_the_poweramp_graphic_offset(self, correction):
+        f, _, corr = correction
+        assert "+6 dB" in dsp.export_autoeq_csv(f, corr)
+
+
+# ---------------------------------------------------------------------------
 # The built-in receipt
 # ---------------------------------------------------------------------------
 

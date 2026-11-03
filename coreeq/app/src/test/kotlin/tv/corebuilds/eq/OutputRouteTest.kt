@@ -149,6 +149,28 @@ class OutputRouteTest {
     }
 
     @Test
+    fun aSilentTrackProbeTagsTheRouteItActuallyPlayedTo() {
+        val tagged = OutputRoute.tagProbed(null, AudioDeviceInfo.TYPE_HDMI_ARC, "Sonos Beam", model = "MiTV")
+        assertEquals(HDMI_ARC, tagged?.kind)
+        assertEquals("Sonos Beam", tagged?.name)
+        assertEquals(OutputRoute.Evidence.TRACK_PROBE, tagged?.evidence)
+    }
+
+    @Test
+    fun aProbeThatReportsNoRouteIsAHardStopNotAFallback() {
+        // getRoutedDevice() null while playing: UNCONFIRMED, never a silent
+        // fall back to the connected-output estimate or an Everyday profile.
+        val probed = OutputRoute.tagProbed(null, null, null, model = "MiTV")
+        assertEquals(OutputRoute.UNCONFIRMED, probed?.kind)
+        assertEquals(OutputRoute.Evidence.TRACK_PROBE, probed?.evidence)
+        // An unconfirmed output matches no measured profile, so correction pauses.
+        assertNull(OutputRoute.pick(listOf(speakers, soundbar), null, OutputRoute.UNCONFIRMED).profile)
+        // An unrecognized probed device stays unknown, not a convenient guess.
+        assertEquals(OutputRoute.UNKNOWN,
+            OutputRoute.tagProbed(null, AudioDeviceInfo.TYPE_REMOTE_SUBMIX, null, model = "MiTV")?.kind)
+    }
+
+    @Test
     fun whenAndroidDoesNotSayTheRankedGuessStands() {
         val ranked = OutputRoute.Output(HDMI_ARC, "Sonos Beam")
         assertEquals(ranked, OutputRoute.tag(ranked, null, null, model = "MiTV"))
