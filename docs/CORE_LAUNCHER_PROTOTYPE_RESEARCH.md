@@ -1,7 +1,7 @@
 # Core Builds Launcher — prototype research and scope
 
 **Research date:** 2026-11-03
-**Status:** The private launcher prototype and its Kotlin/XML source are included in this PR; CI is configured for the debug build/lint, while physical-device sign-off is **BLOCKED — 0/8 hardware checks run**. This sandbox has no local JDK/Android SDK or attached TV. The permission surface remains deliberately minimal pending the target-device definition.
+**Status:** The private launcher prototype and its Kotlin/XML source are included in this PR; CI is configured for the debug build/lint. The [launcher README](../launcher/README.md#required-physical-device-validation-merge-gate) is the single source of truth for hardware-validation status, owner/date, and results. This sandbox has no local JDK/Android SDK or attached TV. The permission surface remains deliberately minimal pending the target-device definition.
 
 ## Recommendation
 
@@ -148,4 +148,4 @@ Not included: recommendation channels, media playback, custom system wallpaper, 
 3. Complete every D-pad, HOME-role, Back, TalkBack, persistence/focus, and artwork check in the [launcher README validation record](../launcher/README.md#required-physical-device-validation-merge-gate). No physical-device result is claimed until that table is filled with PASS/FAIL evidence.
 4. Only expand scope if private testers keep it selected as HOME and can complete the core actions without setup help.
 
-This environment has no attached physical TV and no local JDK/Android SDK. The configured CI build/lint can verify compilation; it cannot validate device-specific HOME selection, remote focus, or TalkBack. The physical-device gate remains outstanding.
+This environment has no attached physical TV and no local JDK/Android SDK. The configured CI build/lint can verify compilation; it cannot validate device-specific HOME selection, remote focus, or TalkBack. See the launcher README for the authoritative hardware-validation status and sign-off record.

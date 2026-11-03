@@ -46,15 +46,21 @@ Some televisions restrict third-party HOME selection. This prototype intentional
 
 ## Required physical-device validation: merge gate
 
-**Current sign-off: BLOCKED — 0/8 hardware checks run.** Every result below remains NOT RUN because this environment has no attached physical Android TV / Google TV device. Passing build, lint, and source-level checks does not sign off remote behavior. Record the actual target and results below; do not merge until every required check passes on the target device(s).
+**Current sign-off: BLOCKED — 0/8 hardware checks run.** Every result below remains NOT RUN because this environment has no attached physical Android TV / Google TV device. Passing build, lint, and source-level checks does not sign off remote behavior. This README section is the single source of truth for hardware-validation status and results; the PR description links here rather than copying the live count or outcomes.
+
+**Validation owner:** Not assigned; maintainer nomination required.
+
+**Target completion date:** Not scheduled.
+
+Record the actual target, exact installed build, owner, date, and results below; do not merge until every required check passes on the target device(s).
 
 ### Target-device record
 
-| Vendor / family | Manufacturer and model | Android / Google TV version | API level | Remote | APK / PR commit | Tester and date |
+| Vendor / family | Manufacturer and model | Android / Google TV version | API level | Remote | Exact build under test (version + full commit SHA or APK SHA-256) | Tester and test date |
 |---|---|---|---|---|---|---|
-| Pending physical run | Not recorded | Not recorded | Not recorded | Not recorded | Record at test time | Not recorded |
+| Pending physical run | Not recorded | Not recorded | Not recorded | Not recorded | Record the actual artifact at test time; do not write “latest” | Not recorded |
 
-Add one row per target device. If Fire TV or another vendor is an intended v0.1 target, test and record it separately; otherwise do not claim compatibility for it.
+Record the exact APK installed, preferably its version and full source commit SHA or APK SHA-256; the current PR head is not evidence that a device was tested. Add one row per target device. If Fire TV or another vendor is an intended v0.1 target, test and record it separately; otherwise do not claim compatibility for it.
 
 ### Results
 
