@@ -166,4 +166,98 @@ class MicResponseTest {
         assertEquals(10_000.0, MicResponse.spanHz(report)!!.second, 0.0)
         assertNull(MicResponse.spanHz(report.take(1)))
     }
+
+    @Test
+    fun spanTextNeverReadsZeroKilohertz() {
+        assertEquals("100 Hz-10.0 kHz", MicResponse.spanText(report))
+        val low = listOf(20.0, 25.0, 31.5, 40.0).map { MicrophoneResponsePoint("remote", it, 0.0) }
+        assertEquals("20 Hz-40 Hz", MicResponse.spanText(low))
+        assertNull(MicResponse.spanText(report.take(1)))
+    }
+
+    // --- collecting a capture's reports ---------------------------------------------
+
+    private fun curve(n: Int): List<Pair<Double, Double>> =
+        (0 until n).map { 20.0 * Math.pow(1_000.0, it / n.toDouble()) to 1.0 }
+
+    @Test
+    fun aLongFirstListCannotCrowdTheNextMicOutOfTheGuard() {
+        // 300 points from the first mic used to fill the whole 256-point budget,
+        // leave the second mic nothing, and make the capture read as one capsule.
+        val points = MicResponse.collect(
+            listOf(MicResponse.Report("Front mic", curve(300)), MicResponse.Report("Rear mic", curve(10))),
+            fallbackName = "active mic", maxMicrophones = 4, maxPoints = 256
+        )
+        assertTrue(points.size <= 256)
+        assertEquals(2, MicResponse.microphoneCount(points))
+        val measured = doubleArrayOf(10.0, 10.0, 10.0, 10.0, 10.0, 10.0)
+        val flat = MicResponse.flatten(centres, measured, points)
+        for (k in measured.indices) assertEquals("band $k must be left alone", measured[k], flat[k], 0.0)
+    }
+
+    @Test
+    fun micsSharingADescriptionStayTwoCapsules() {
+        val points = MicResponse.collect(
+            listOf(MicResponse.Report("Built-in microphone", curve(8)), MicResponse.Report("Built-in microphone", curve(8))),
+            fallbackName = "phone mic", maxMicrophones = 4, maxPoints = 256
+        )
+        assertEquals(2, MicResponse.microphoneCount(points))
+        assertEquals(setOf("Built-in microphone #1", "Built-in microphone #2"), points.map { it.microphone }.toSet())
+    }
+
+    @Test
+    fun aLongSharedDescriptionKeepsItsSuffixInsideTheExportField() {
+        val long = "x".repeat(200)
+        val labels = MicResponse.collect(
+            listOf(MicResponse.Report(long, curve(4)), MicResponse.Report(long, curve(4))),
+            fallbackName = "phone mic", maxMicrophones = 4, maxPoints = 256
+        ).map { it.microphone }.toSet()
+        assertEquals(2, labels.size)
+        assertTrue(labels.all { it.length <= 80 })
+        assertEquals(2, labels.map { it.take(80) }.toSet().size)
+    }
+
+    @Test
+    fun oneMicKeepsTheWholeBudgetAndAPlainLabel() {
+        val points = MicResponse.collect(
+            listOf(MicResponse.Report(null, curve(300))),
+            fallbackName = "active mic", maxMicrophones = 4, maxPoints = 256
+        )
+        assertEquals(256, points.size)
+        assertEquals(setOf("active mic 1"), points.map { it.microphone }.toSet())
+    }
+
+    @Test
+    fun invalidPointsDoNotSpendTheBudget() {
+        val noisy = listOf(Double.NaN to 1.0, -5.0 to 1.0, 100.0 to Double.POSITIVE_INFINITY) + curve(6)
+        val points = MicResponse.collect(
+            listOf(MicResponse.Report("remote", noisy)),
+            fallbackName = "active mic", maxMicrophones = 4, maxPoints = 256
+        )
+        assertEquals(6, points.size)
+    }
+
+    // --- what the capture line says ----------------------------------------------------
+
+    @Test
+    fun theSummaryNamesTheFirstGateTheDataFellAt() {
+        // Two mics, but too few points to apply even from one capsule: both the
+        // summary and the export notes say "too few", not "composite".
+        val thin = listOf(MicrophoneResponsePoint("a #1", 100.0, 1.0), MicrophoneResponsePoint("b #2", 1_000.0, 1.0))
+        val info = tv.corebuilds.eq.export.CaptureInfo(microphoneResponse = thin)
+        assertTrue(info.summary(), info.summary().contains("too few to apply"))
+        assertFalse(info.summary(), info.summary().contains("composite"))
+        assertTrue(info.exportNotes().any { it.contains("too few") })
+    }
+
+    @Test
+    fun aMultiMicLineDescribesTheRuleNotTheSavedProfilesHistory() {
+        // 1.11.2 and earlier subtracted the composite, and a saved profile does not
+        // say which version measured it, so the line must not claim "not applied".
+        val blend = report + report.map { MicrophoneResponsePoint("tv-array", it.frequencyHz, it.responseDb) }
+        val info = tv.corebuilds.eq.export.CaptureInfo(microphoneResponse = blend)
+        assertTrue(info.summary(), info.summary().contains("this version applies no composite"))
+        assertFalse(info.summary(), info.summary().contains("composite not applied"))
+        assertTrue(info.exportNotes().any { it.contains("1.11.2 and earlier did") })
+    }
 }

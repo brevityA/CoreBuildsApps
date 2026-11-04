@@ -14,9 +14,9 @@ import android.media.audiofx.NoiseSuppressor
 import android.util.Log
 import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.audioDeviceTypeLabel
+import tv.corebuilds.eq.dsp.MicResponse
 import tv.corebuilds.eq.dsp.Resample
 import tv.corebuilds.eq.export.CaptureInfo
-import tv.corebuilds.eq.export.MicrophoneResponsePoint
 import kotlin.concurrent.thread
 import kotlin.math.abs
 import kotlin.math.log10
@@ -345,32 +345,31 @@ class CaptureEngine(private val context: Context) {
             emptyList()
         }
         val descriptions = activeMicrophones.mapNotNull { it.description?.trim()?.takeIf(String::isNotEmpty) }.distinct()
-        val response = mutableListOf<MicrophoneResponsePoint>()
-        activeMicrophones.take(MAX_RESPONSE_MICROPHONES).forEachIndexed { index, microphone ->
-            // The label is the capsule identity MicResponse.microphoneCount
-            // reads, so it must be unique per reporting mic: two mics sharing
-            // a description ("Built-in microphone") would otherwise smuggle
-            // a blended list through the single-capsule guard as clean data.
-            val description = microphone.description?.trim()?.takeIf(String::isNotEmpty)
-            val label = if (activeMicrophones.size > 1)
-                "${description ?: "active mic"} #${index + 1}"
-            else
-                description ?: "active mic ${index + 1}"
-            val points = try {
-                microphone.frequencyResponse
-            } catch (e: RuntimeException) {
-                Log.w(TAG, "Frequency response for $label was not reported", e)
-                emptyList()
-            }
-            for (point in points.take(MAX_RESPONSE_POINTS - response.size)) {
-                val hz = point.first?.toDouble() ?: continue
-                val db = point.second?.toDouble() ?: continue
-                if (hz > 0.0 && hz.isFinite() && db.isFinite()) {
-                    response += MicrophoneResponsePoint(label, hz, db)
+        // MicResponse.collect labels each mic uniquely and shares the point
+        // budget between them: the labels are the capsule identity the
+        // single-capsule guard counts, so neither a shared description nor a
+        // long first list may make several mics read as one.
+        val response = MicResponse.collect(
+            activeMicrophones.mapIndexed { index, microphone ->
+                val points = try {
+                    microphone.frequencyResponse
+                } catch (e: RuntimeException) {
+                    Log.w(TAG, "Frequency response for active mic ${index + 1} was not reported", e)
+                    emptyList()
                 }
-            }
-            if (response.size >= MAX_RESPONSE_POINTS) return@forEachIndexed
-        }
+                MicResponse.Report(
+                    microphone.description,
+                    points.mapNotNull { p ->
+                        val hz = p.first?.toDouble() ?: return@mapNotNull null
+                        val db = p.second?.toDouble() ?: return@mapNotNull null
+                        hz to db
+                    }
+                )
+            },
+            fallbackName = "active mic",
+            maxMicrophones = MAX_RESPONSE_MICROPHONES,
+            maxPoints = MAX_RESPONSE_POINTS
+        )
         val inputType = route?.let { audioDeviceTypeLabel(it.type) }
         val inputName = route?.productName?.toString()?.trim()?.takeIf(String::isNotEmpty)
         val info = CaptureInfo(

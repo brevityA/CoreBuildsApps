@@ -16,6 +16,7 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import org.json.JSONArray
 import tv.corebuilds.eq.audioDeviceTypeLabel
+import tv.corebuilds.eq.dsp.MicResponse
 import org.json.JSONObject
 import kotlin.math.max
 
@@ -221,19 +222,30 @@ internal class PhoneCaptureEngine(private val context: Context) {
         val route = try { record.routedDevice } catch (_: RuntimeException) { null }
         val microphones = try { record.activeMicrophones.toList() } catch (_: Exception) { emptyList() }
         val descriptions = microphones.mapNotNull { it.description?.trim()?.takeIf(String::isNotEmpty) }.distinct()
+        // Same rule as the TV's own capture (MicResponse.collect): unique labels
+        // and a shared point budget, so the TV's single-capsule guard counts
+        // a phone's several mics as several, not as one blended capsule.
         val response = JSONArray()
-        var responseCount = 0
-        microphones.take(MAX_RESPONSE_MICROPHONES).forEachIndexed { index, microphone ->
-            val label = microphone.description?.trim()?.takeIf(String::isNotEmpty) ?: "phone mic ${index + 1}"
-            val points = try { microphone.frequencyResponse } catch (_: RuntimeException) { emptyList() }
-            for (point in points.take(MAX_RESPONSE_POINTS - responseCount)) {
-                val hz = point.first?.toDouble() ?: continue
-                val db = point.second?.toDouble() ?: continue
-                if (hz > 0.0 && hz.isFinite() && db.isFinite()) {
-                    response.put(JSONObject().put("microphone", label.take(80)).put("frequency_hz", hz).put("response_db", db))
-                    responseCount++
-                }
-            }
+        MicResponse.collect(
+            microphones.map { microphone ->
+                val points = try { microphone.frequencyResponse } catch (_: RuntimeException) { emptyList() }
+                MicResponse.Report(
+                    microphone.description,
+                    points.mapNotNull { p ->
+                        val hz = p.first?.toDouble() ?: return@mapNotNull null
+                        val db = p.second?.toDouble() ?: return@mapNotNull null
+                        hz to db
+                    }
+                )
+            },
+            fallbackName = "phone mic",
+            maxMicrophones = MAX_RESPONSE_MICROPHONES,
+            maxPoints = MAX_RESPONSE_POINTS
+        ).forEach { point ->
+            response.put(
+                JSONObject().put("microphone", point.microphone.take(80))
+                    .put("frequency_hz", point.frequencyHz).put("response_db", point.responseDb)
+            )
         }
         return JSONObject()
             .put("requested_sample_rate_hz", requestedRate)
