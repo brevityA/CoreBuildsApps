@@ -237,6 +237,24 @@ class MicResponseTest {
         assertEquals(6, points.size)
     }
 
+    @Test
+    fun outOfBandPointsCannotSpendASecondMicsShare() {
+        // Two mics, so each gets 128 of 256. The second mic's list opens with 200
+        // points below 20 Hz, which valid() later drops; before the fix they used
+        // its whole share, it kept no usable point, and the capture read as one
+        // capsule, so flatten applied the first mic's curve.
+        val subsonic = (0 until 200).map { 1.0 + it * 0.05 to 3.0 }
+        val points = MicResponse.collect(
+            listOf(MicResponse.Report("Front mic", curve(8)), MicResponse.Report("Rear mic", subsonic + curve(8))),
+            fallbackName = "active mic", maxMicrophones = 4, maxPoints = 256
+        )
+        assertEquals(2, MicResponse.microphoneCount(points))
+        assertTrue(points.all { it.frequencyHz in 20.0..20_000.0 })
+        val measured = doubleArrayOf(10.0, 10.0, 10.0, 10.0, 10.0, 10.0)
+        val flat = MicResponse.flatten(centres, measured, points)
+        for (k in measured.indices) assertEquals("band $k must be left alone", measured[k], flat[k], 0.0)
+    }
+
     // --- what the capture line says ----------------------------------------------------
 
     @Test

@@ -172,8 +172,12 @@ object MicResponse {
             val description = report.description?.trim()?.takeIf(String::isNotEmpty)?.take(MAX_DESCRIPTION)
             val label = if (reports.size > 1) "${description ?: fallbackName} #${index + 1}"
             else description ?: "$fallbackName 1"
+            // Same band as valid(), applied before the share is taken: points
+            // valid() would drop must not spend a mic's share, or a second mic
+            // whose list opens out of band keeps nothing and the capture reads
+            // as one capsule again.
             report.points.asSequence()
-                .filter { (hz, db) -> hz > 0.0 && hz.isFinite() && db.isFinite() }
+                .filter { (hz, db) -> hz in SUPPORTED_HZ && db.isFinite() }
                 .take(share)
                 .forEach { (hz, db) -> out += MicrophoneResponsePoint(label, hz, db) }
         }
