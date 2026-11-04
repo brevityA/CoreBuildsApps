@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Build envelope gate for all suite Android roots.
+"""Build envelope gate for every Android Gradle root in the repository.
 
-Every module is held to the suite-wide compileSdk/targetSdk 37 baseline, the
+The six shipped apps and any private prototype roots are held to the same
+compileSdk/targetSdk 37 baseline, the
 AGP 9.4.0 / Gradle 9.7.0 toolchain, Kotlin version per root (2.2.10 built-in; Motion KGP 2.4.10), and its minSdk and
 per-dependency ceilings. Roots use AGP built-in Kotlin except Motion, whose
 vendored Parcelize model currently requires the aligned external Kotlin plugin.

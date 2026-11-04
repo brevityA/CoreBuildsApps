@@ -12,12 +12,12 @@
     "old platform block, but it does not imply that untested library upgrades",
     "are part of this toolchain migration."
   ],
-  "asOf": "2026-10-24",
+  "asOf": "2026-11-03",
   "envelope": {
     "agpMaxExclusive": "10",
     "minGradleForAgp8": "8.7",
     "_comment": [
-      "All six Gradle roots use AGP 9.4.0 / Gradle 9.7.0 / API 37.",
+      "All six suite roots plus the private launcher prototype use AGP 9.4.0 / Gradle 9.7.0 / API 37.",
       "Built-in Kotlin is used everywhere except motion-plugin, whose frozen",
       "upstream Parcelable model needs compiler generation from KGP 2.4.10.",
       "That root uses the documented Kotlin and legacy-DSL opt-outs; its plugins match KGP 2.4.10."
@@ -50,7 +50,7 @@
         "version-update:semver-minor",
         "version-update:semver-major"
       ],
-      "reason": "AGP 9.4.0 is the highest version proven green in the suite and supports API 37. All six suite roots are now on AGP 9.4.0 / Gradle 9.7.0; a future AGP bump remains a separate migration.",
+      "reason": "AGP 9.4.0 is the highest version proven green in the suite and supports API 37. All six suite roots plus the private launcher prototype use AGP 9.4.0 / Gradle 9.7.0; keep this as a shared temporary ceiling and revisit it at the next suite-wide Android toolchain migration, or earlier if a security fix or required compatibility change demands it.",
       "evidence": [
         "https://developer.android.com/build/releases/agp-9-4-0-release-notes",
         "https://developer.android.com/build/migrate-to-built-in-kotlin"
@@ -61,7 +61,8 @@
         "/ticker/android": "9.4.0",
         "/shift": "9.4.0",
         "/motion-plugin": "9.4.0",
-        "/doctor": "9.4.0"
+        "/doctor": "9.4.0",
+        "/launcher": "9.4.0"
       },
       "reasonByDirectory": {
         "/": "Suite-wide API 37 toolchain: AGP 9.4.0 / Gradle 9.7.0 / built-in Kotlin.",
@@ -69,7 +70,8 @@
         "/ticker/android": "Suite-wide API 37 toolchain: AGP 9.4.0 / Gradle 9.7.0 / built-in Kotlin.",
         "/shift": "Suite-wide API 37 toolchain: AGP 9.4.0 / Gradle 9.7.0 / built-in Kotlin.",
         "/motion-plugin": "Suite-wide API 37 toolchain: AGP 9.4.0 / Gradle 9.7.0 / KGP 2.4.10; built-in Kotlin is opted out for frozen Parcelize compatibility.",
-        "/doctor": "Suite-wide API 37 toolchain: AGP 9.4.0 / Gradle 9.7.0 / built-in Kotlin."
+        "/doctor": "Suite-wide API 37 toolchain: AGP 9.4.0 / Gradle 9.7.0 / built-in Kotlin.",
+        "/launcher": "Private-use Core Builds Launcher prototype; follows the shared API 37 / AGP 9.4.0 / Gradle 9.7.0 ceiling. Revisit with the next suite-wide Android toolchain migration, not independently."
       }
     },
     {

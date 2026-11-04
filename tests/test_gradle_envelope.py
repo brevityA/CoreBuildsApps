@@ -16,16 +16,20 @@ from __future__ import annotations
 import contextlib
 import io
 import json
+import re
 import shutil
+import struct
 import sys
 import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 import check_gradle_envelope as gate  # noqa: E402
+import extract_launcher_gradle_diagnostics as launcher_diagnostics  # noqa: E402
 
 # What the scratch repo needs: enough of the tree for the gate to walk it, and
 # none of the ~50k icon assets it does not look at.
@@ -181,10 +185,10 @@ class GradleParsing(unittest.TestCase):
     def setUp(self):
         self.roots = {r.rel: r for r in gate.discover_roots()}
 
-    def test_finds_every_gradle_root_in_the_suite(self):
+    def test_finds_every_gradle_root_in_the_repository(self):
         self.assertEqual(
             set(self.roots),
-            {"", "ticker/android", "shift", "motion-plugin", "doctor", "coreeq"},
+            {"", "ticker/android", "shift", "motion-plugin", "doctor", "coreeq", "launcher"},
         )
 
     def test_root_build_file_maps_to_two_modules(self):
@@ -201,6 +205,7 @@ class GradleParsing(unittest.TestCase):
                 self.assertEqual(module.target_sdk, 37, module.path)
         self.assertEqual(self.roots[""].modules[0].min_sdk, 21)
         self.assertEqual(self.roots["coreeq"].modules[0].min_sdk, 30)
+        self.assertEqual(self.roots["launcher"].modules[0].min_sdk, 26)
 
     def test_reads_the_toolchain_versions(self):
         for rel, root in self.roots.items():
@@ -287,7 +292,7 @@ class DependabotParsing(unittest.TestCase):
     def test_reads_every_directory(self):
         self.assertEqual(
             set(self.gradle),
-            {"/", "/ticker/android", "/shift", "/motion-plugin", "/doctor", "/coreeq"},
+            {"/", "/ticker/android", "/shift", "/motion-plugin", "/doctor", "/coreeq", "/launcher"},
         )
 
     def test_non_gradle_ecosystems_survive(self):
@@ -388,6 +393,11 @@ class EnvelopeTable(unittest.TestCase):
         self.assertEqual(agp["max"], "9.4.0")
         self.assertEqual(self.table["envelope"]["minGradleForAgp9"], "9.6.0")
         self.assertEqual(self.table["envelope"]["builtinKotlinVersionByAgp"]["9.4.0"], "2.2.10")
+        self.assertIn("next suite-wide Android toolchain migration", agp["reason"])
+        self.assertIn(
+            "next suite-wide Android toolchain migration",
+            agp["reasonByDirectory"]["/launcher"],
+        )
         for root in self.roots:
             self.assertEqual(root.agp, "9.4.0", root.label)
             self.assertGreaterEqual(
@@ -631,6 +641,374 @@ class Mutants(unittest.TestCase):
                 everywhere=True,
             )
             repo.assert_blocked("installs only", "doctor workflow platform mismatch")
+
+
+class LauncherGradleDiagnosticExtraction(unittest.TestCase):
+    def test_kotlin_warnings_do_not_mask_actual_build_errors(self):
+        warning = "w: src/Main.kt:17: this warning mentions error: only as prose"
+        selected = launcher_diagnostics.select_diagnostics([
+            warning,
+            "e: src/Main.kt:24: unresolved reference: missingSymbol",
+            "FAILURE: Build failed with an exception.",
+            "* What went wrong:",
+            "> Task :app:compileDebugKotlin FAILED",
+        ])
+        self.assertNotIn(warning, selected)
+        self.assertIn("e: src/Main.kt:24: unresolved reference: missingSymbol", selected)
+        self.assertIn("FAILURE: Build failed with an exception.", selected)
+
+    def test_warning_only_log_falls_back_without_emitting_a_warning_annotation(self):
+        warning = "w: src/Main.kt:17: this warning mentions error: only as prose"
+        self.assertEqual(
+            launcher_diagnostics.select_diagnostics([warning]),
+            [launcher_diagnostics.GENERIC_FAILURE],
+        )
+
+
+class PrivateLauncherPrototypeContract(unittest.TestCase):
+    ANDROID = "http://schemas.android.com/apk/res/android"
+    MANIFEST = ROOT / "launcher/app/src/main/AndroidManifest.xml"
+    ACTIVITY = ROOT / "launcher/app/src/main/java/tv/corebuilds/launcher/LauncherActivity.kt"
+    APPS = ROOT / "launcher/app/src/main/java/tv/corebuilds/launcher/LauncherApps.kt"
+    PREFERENCES = ROOT / "launcher/app/src/main/java/tv/corebuilds/launcher/LauncherPreferences.kt"
+    UI = ROOT / "launcher/app/src/main/java/tv/corebuilds/launcher/LauncherUi.kt"
+
+    def setUp(self):
+        self.manifest = ET.parse(self.MANIFEST).getroot()
+
+    def test_registers_home_tv_and_standard_launcher_entry_points(self):
+        activity = next(
+            node for node in self.manifest.findall("./application/activity")
+            if node.get(f"{{{self.ANDROID}}}name") == ".LauncherActivity"
+        )
+        filters = []
+        for node in activity.findall("intent-filter"):
+            values = {
+                child.get(f"{{{self.ANDROID}}}name")
+                for child in list(node)
+                if child.tag in {"action", "category"}
+            }
+            filters.append(values)
+        self.assertIn(
+            {
+                "android.intent.action.MAIN",
+                "android.intent.category.HOME",
+                "android.intent.category.DEFAULT",
+            },
+            filters,
+        )
+        self.assertIn(
+            {"android.intent.action.MAIN", "android.intent.category.LEANBACK_LAUNCHER"},
+            filters,
+        )
+        self.assertIn(
+            {"android.intent.action.MAIN", "android.intent.category.LAUNCHER"},
+            filters,
+        )
+
+    def test_app_visibility_is_narrow_and_offline(self):
+        query_pairs = set()
+        for node in self.manifest.findall("queries/intent"):
+            action = node.find("action")
+            category = node.find("category")
+            query_pairs.add((
+                action.get(f"{{{self.ANDROID}}}name") if action is not None else None,
+                category.get(f"{{{self.ANDROID}}}name") if category is not None else None,
+            ))
+        self.assertEqual(query_pairs, {
+            ("android.intent.action.MAIN", "android.intent.category.LEANBACK_LAUNCHER"),
+            ("android.intent.action.MAIN", "android.intent.category.LAUNCHER"),
+        })
+        permissions = {
+            node.get(f"{{{self.ANDROID}}}name")
+            for node in self.manifest.findall("uses-permission")
+        }
+        self.assertNotIn("android.permission.QUERY_ALL_PACKAGES", permissions)
+        self.assertNotIn("android.permission.INTERNET", permissions)
+
+    def test_focus_spotlight_uses_installed_art_and_a_distance_readable_name(self):
+        activity = self.ACTIVITY.read_text(encoding="utf-8")
+        apps = self.APPS.read_text(encoding="utf-8")
+        ui = self.UI.read_text(encoding="utf-8")
+        self.assertIn("activity.loadBanner(pm)", apps)
+        self.assertIn("resolved.loadIcon(pm)", apps)
+        self.assertIn("val banner: Drawable?", apps)
+        self.assertIn("app.banner ?: app.icon", activity)
+        self.assertIn("heroTitle = label(getString(R.string.hero_title_empty), 30f", activity)
+        strings_root = ET.parse(ROOT / "launcher/app/src/main/res/values/strings.xml").getroot()
+        strings = {node.get("name"): node.text for node in strings_root.findall("string")}
+        self.assertEqual(strings["hero_title_empty"], "Your apps.\\nYour space.")
+        self.assertIn("wideCard = true", activity)
+        self.assertIn("onFocused(app)", ui)
+
+    def test_launcher_branding_starts_from_core_builds_icon_pack_assets(self):
+        application = self.manifest.find("application")
+        self.assertEqual(application.get(f"{{{self.ANDROID}}}icon"), "@drawable/core_builds_mark")
+        self.assertEqual(application.get(f"{{{self.ANDROID}}}banner"), "@drawable/core_builds_banner")
+        self.assertTrue((ROOT / "launcher/app/src/main/res/drawable-nodpi/core_builds_mark.webp").is_file())
+        self.assertTrue((ROOT / "launcher/app/src/main/res/drawable-nodpi/core_builds_banner.webp").is_file())
+
+        colors = ET.parse(ROOT / "launcher/app/src/main/res/values/colors.xml").getroot()
+        palette = {node.get("name"): node.text for node in colors.findall("color")}
+        self.assertEqual(palette["cb_background"], "#04070F")
+        self.assertEqual(palette["cb_night"], "#0D1117")
+        self.assertEqual(palette["cb_panel"], "#151923")
+        self.assertEqual(palette["cb_cyan"], "#00D4FF")
+
+        ui = self.UI.read_text(encoding="utf-8")
+        self.assertIn("shape(R.color.cb_night, R.color.cb_cyan, 2)", ui)
+        self.assertIn("app.icon.copyForDisplay()", ui)
+
+    def test_mockups_are_disclosed_design_illustrations_not_device_captures(self):
+        note = (ROOT / "docs/mockups/README.md").read_text(encoding="utf-8")
+        self.assertIn("NOT A SCREENSHOT", note)
+        self.assertIn("not screenshots from an APK or Android TV device", note)
+        self.assertIn("vendor logos or invented substitutes", note)
+        for filename in ("core-launcher-home.png", "core-launcher-all-apps.png"):
+            image = (ROOT / "docs/mockups" / filename).read_bytes()
+            self.assertEqual(image[:8], b"\x89PNG\r\n\x1a\n")
+            self.assertEqual(struct.unpack(">II", image[16:24]), (1920, 1080))
+
+    def test_app_tiles_offer_long_press_app_info_and_local_favourite_actions(self):
+        activity = self.ACTIVITY.read_text(encoding="utf-8")
+        strings = (ROOT / "launcher/app/src/main/res/values/strings.xml").read_text(encoding="utf-8")
+        manifest = self.MANIFEST.read_text(encoding="utf-8")
+        tile_factory = activity[activity.index("private fun appTile("):activity.index("private fun onAppFocused(")]
+        actions = activity[activity.index("private fun showAppActions("):activity.index("private fun openManageFavorites(")]
+
+        self.assertIn("setOnLongClickListener", tile_factory)
+        self.assertIn("showAppActions(app)", tile_factory)
+        self.assertEqual(activity.count("appTile(app, wideCard = true)"), 2)
+        self.assertIn("val tile = appTile(app)", activity)
+        self.assertIn("setItems(", actions)
+        self.assertIn("setFavouriteFromHome(app, pinned = !isPinned)", actions)
+        self.assertIn("openAppInfo(app)", actions)
+        self.assertIn("LauncherPreferences.setPinned(", actions)
+        # The menu writes the state it offered, so a stale render cannot invert it.
+        self.assertNotIn("togglePinned(", actions)
+        self.assertIn("app.activityName == previous.activityName", activity)
+        self.assertIn("Settings.ACTION_APPLICATION_DETAILS_SETTINGS", actions)
+        self.assertIn('Uri.fromParts("package", app.packageName, null)', actions)
+        self.assertIn("Long-press for app actions", strings)
+        self.assertIn("Hold OK for app actions", strings)
+        self.assertIn("App info", strings)
+        self.assertNotIn("android.permission.QUERY_ALL_PACKAGES", manifest)
+        self.assertNotIn("android.permission.REQUEST_DELETE_PACKAGES", manifest)
+        self.assertNotIn("Intent.ACTION_DELETE", activity)
+
+    def test_private_release_lane_is_dispatch_only_debug_only_and_prerelease(self):
+        workflow = (ROOT / ".github/workflows/core-launcher-release.yml").read_text(encoding="utf-8")
+        readme = (ROOT / "launcher/README.md").read_text(encoding="utf-8")
+        suite = (ROOT / "suite.json").read_text(encoding="utf-8")
+
+        # suite.json owns every tag trigger in the repo (check_suite_truth.py),
+        # and the launcher is deliberately not a suite app.
+        self.assertIn("workflow_dispatch:", workflow)
+        self.assertNotRegex(workflow, r"(?m)^\s*tags:")
+        self.assertNotIn("tv.corebuilds.launcher", suite)
+        # Nothing publishes unless a human asks for it, and only as a pre-release.
+        self.assertIn("publish:", workflow)
+        self.assertIn("default: false", workflow)
+        self.assertIn("--prerelease", workflow)
+        self.assertIn("--verify-tag", workflow)
+        self.assertIn("launcher-v[0-9]*", workflow)
+        # Debug-only: no release build, no signing credentials, no suite secrets.
+        self.assertIn(":app:assembleDebug", workflow)
+        self.assertNotIn("assembleRelease", workflow)
+        self.assertNotIn("release.jks", workflow)
+        self.assertNotRegex(workflow, r"secrets\.(KEYSTORE|KEY)_")
+        # The gates run before a tag can ship anything.
+        self.assertIn("tools/check_suite_truth.py", workflow)
+        self.assertIn("tools/check_gradle_envelope.py", workflow)
+        self.assertIn("tests/test_gradle_envelope.py", workflow)
+        self.assertIn("BUILD_COMMIT.txt", workflow)
+        self.assertIn("Private pre-release lane", readme)
+        self.assertIn("gh workflow run core-launcher-release.yml", readme)
+
+    def test_package_updates_refresh_labels_and_banner_art(self):
+        activity = self.ACTIVITY.read_text(encoding="utf-8")
+        apps = self.APPS.read_text(encoding="utf-8")
+        self.assertIn("lastUpdateTime = packageLastUpdateTime(pm, packageName)", apps)
+        self.assertIn("PackageManager.PackageInfoFlags.of(0L)", apps)
+        self.assertIn("${it.label}:${it.tvOptimized}:${it.lastUpdateTime}", activity)
+
+    def test_favourites_hide_uninstalled_apps_without_forgetting_the_choice(self):
+        preferences = self.PREFERENCES.read_text(encoding="utf-8")
+        self.assertIn("Keep a user's preference if an app is temporarily uninstalled", preferences)
+        self.assertIn(".filterTo(linkedSetOf()) { it in installedPackages }", preferences)
+        self.assertIn("Preserve temporarily unavailable packages when another favourite is edited", preferences)
+
+    def test_recent_history_is_bounded_local_and_hidden_for_pinned_apps(self):
+        preferences = self.PREFERENCES.read_text(encoding="utf-8")
+        activity = self.ACTIVITY.read_text(encoding="utf-8")
+        self.assertIn('private const val KEY_RECENTS = "recent_packages"', preferences)
+        self.assertIn("private const val RECENTS_LIMIT = 5", preferences)
+        self.assertIn("fun recordLaunch(context: Context, packageName: String)", preferences)
+        self.assertIn("take(RECENTS_LIMIT)", preferences)
+        self.assertIn("LauncherPreferences.recordLaunch(applicationContext, app.packageName)", activity)
+        self.assertIn(".filterNot { it in pins }", activity)
+        self.assertIn("recentSection.visibility = View.GONE", activity)
+        self.assertIn("recentSection.visibility = View.VISIBLE", activity)
+
+    def test_home_rebuild_clears_stale_tiles_and_reads_preferences_off_main_thread(self):
+        activity = self.ACTIVITY.read_text(encoding="utf-8")
+        refresh = activity[activity.index("private fun refreshApps()"):activity.index("private fun renderApps(")]
+        render = activity[activity.index("private fun renderApps("):activity.index("private fun onAppFocused(")]
+        self.assertLess(refresh.index("LauncherPreferences.pinnedPackages"), refresh.index("runOnUiThread"))
+        self.assertLess(refresh.index("LauncherPreferences.recentPackages"), refresh.index("runOnUiThread"))
+        self.assertNotIn("LauncherPreferences.pinnedPackages", render)
+        self.assertIn("accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE", activity)
+        self.assertIn("registerOnBackInvokedCallback", activity)
+        self.assertIn('@SuppressLint("GestureBackNavigation")', activity)
+        for clear in ("appTiles.clear()", "favoritesRow.removeAllViews()",
+                      "recentRow.removeAllViews()", "appGrid.removeAllViews()"):
+            self.assertIn(clear, render)
+
+        ui = self.UI.read_text(encoding="utf-8")
+        self.assertIn("R.string.open_app_description", ui)
+        self.assertIn("R.string.open_tv_app_description", ui)
+
+        manage = (ROOT / "launcher/app/src/main/java/tv/corebuilds/launcher/ManageFavoritesActivity.kt").read_text(encoding="utf-8")
+        self.assertIn("accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE", manage)
+        load = manage[manage.index("private fun loadApps()"):manage.index("private fun renderRows()")]
+        render_rows = manage[manage.index("private fun renderRows()"):manage.index("private fun togglePin(")]
+        self.assertLess(load.index("LauncherPreferences.pinnedPackages"), load.index("runOnUiThread"))
+        self.assertNotIn("LauncherPreferences.pinnedPackages", render_rows)
+
+    def test_favourites_editor_reloads_on_return_and_keeps_focus_on_the_same_app(self):
+        manage = (ROOT / "launcher/app/src/main/java/tv/corebuilds/launcher/ManageFavoritesActivity.kt").read_text(encoding="utf-8")
+        create = manage[manage.index("override fun onCreate("):manage.index("override fun onResume(")]
+        resume = manage[manage.index("override fun onResume("):manage.index("override fun onWindowFocusChanged(")]
+        render_rows = manage[manage.index("private fun renderRows()"):manage.index("private fun togglePin(")]
+        # Loaded on every return, not once: an app installed or removed meanwhile
+        # must not leave stale rows and counts.
+        self.assertNotIn("loadApps()", create)
+        self.assertIn("loadApps()", resume)
+        # The rebuild puts focus back on the app that had it, else the first row,
+        # and never takes it off a control outside the rows (the Done button).
+        self.assertLess(render_rows.index("val focusedPackage"), render_rows.index("rows.removeAllViews()"))
+        self.assertIn("restoredRow ?: firstRow", render_rows)
+        self.assertIn("current.parent === rows", render_rows)
+        self.assertNotIn("requestedFirstFocus", manage)
+
+    def test_catalog_skips_entries_this_launcher_has_no_permission_to_start(self):
+        apps = self.APPS.read_text(encoding="utf-8")
+        load = apps[apps.index("fun load(context: Context)"):apps.index("internal fun canStart(")]
+        # The guard runs before an entry can be kept, so a guarded LEANBACK entry
+        # gives way to the package's startable LAUNCHER entry.
+        self.assertLess(load.index("canStart(pm, context.packageName, activity.permission)"),
+                        load.index("val previous = byPackage[packageName]"))
+        self.assertIn("pm.checkPermission(permission, ownPackage) == PackageManager.PERMISSION_GRANTED", apps)
+
+    def test_home_refresh_coalesces_mid_scan_requests_and_stops_safely_on_destroy(self):
+        activity = self.ACTIVITY.read_text(encoding="utf-8")
+        refresh = activity[activity.index("private fun refreshApps()"):activity.index("private fun renderApps(")]
+        callback = refresh[refresh.index("runOnUiThread {"):]
+        destroy = activity[activity.index("override fun onDestroy()"):activity.index("private fun createHomeScreen(")]
+
+        self.assertIn("private var rescanRequested = false", activity)
+        self.assertIn("if (scanning) {", refresh)
+        self.assertIn("rescanRequested = true", refresh)
+        self.assertLess(callback.index("if (isFinishing || isDestroyed)"), callback.index("if (rescanRequested)"))
+        self.assertLess(callback.index("renderApps("), callback.index("if (rescanRequested)"))
+        pending_rescan = callback[callback.index("if (rescanRequested)"):]
+        self.assertLess(pending_rescan.index("rescanRequested = false"), pending_rescan.index("refreshApps()"))
+        self.assertIn("if (!isFinishing && !isDestroyed) refreshApps()", pending_rescan)
+        self.assertIn("catch (_: RejectedExecutionException)", refresh)
+        self.assertLess(destroy.index("rescanRequested = false"), destroy.index("appLoader.shutdown()"))
+
+    def test_render_refreshes_selected_spotlight_from_current_catalog(self):
+        activity = self.ACTIVITY.read_text(encoding="utf-8")
+        render = activity[activity.index("private fun renderApps("):activity.index("private fun onAppFocused(")]
+        self.assertIn("val focusedApp = focusPackage?.let", render)
+        self.assertIn("val currentSelectedApp = selectedApp?.packageName?.let", render)
+        self.assertIn("apps.firstOrNull { it.packageName == selectedPackage }", render)
+        self.assertIn("updateHero(focusedApp ?: currentSelectedApp ?: apps.firstOrNull())", render)
+
+    def test_offline_preview_dpad_uses_rendered_columns_and_crosses_up_from_first_row(self):
+        generator = (ROOT / "tools/build_launcher_offline_preview.py").read_text(encoding="utf-8")
+        preview = (ROOT / "docs/mockups/core-launcher-offline.html").read_text(encoding="utf-8")
+        expected = (
+            "const columns = items.filter(item => item.offsetTop === items[0].offsetTop).length || 1;",
+            'const next = index + (direction === "up" ? -columns : columns);',
+            'if (direction === "down") return;',
+            'const nextGroupIndex = groupIndex + (direction === "up" ? -1 : 1);',
+        )
+        move = preview[preview.index("function move(direction)"):preview.index("function focusSelected()")]
+        for snippet in expected:
+            self.assertIn(snippet, generator)
+            self.assertIn(snippet, move)
+        self.assertNotIn('direction === "up" ? -6 : 6', move)
+
+    def test_offline_html_preview_is_self_contained_and_disclosed(self):
+        preview = (ROOT / "docs/mockups/core-launcher-offline.html").read_text(encoding="utf-8")
+        self.assertIn("DESIGN ILLUSTRATION · NOT A SCREENSHOT", preview)
+        self.assertIn("data:image/webp;base64,", preview)
+        self.assertIn("no network requests", preview)
+        self.assertIn("connect-src 'none'", preview)
+        self.assertNotRegex(preview.lower(), r"<script[^>]+src\s*=")
+        self.assertNotRegex(preview.lower(), r"<link[^>]+href\s*=")
+        self.assertNotIn("fonts.googleapis.com", preview)
+        self.assertNotIn("http://", preview)
+        self.assertNotIn("https://", preview)
+        self.assertNotIn("fetch(", preview)
+        preview_readme = (ROOT / "docs/mockups/README.md").read_text(encoding="utf-8")
+        self.assertIn("rendered column count", preview_readme)
+        self.assertIn("not evidence of Android remote behavior", preview_readme)
+
+    def test_documentation_links_implementation_and_hardware_signoff_record(self):
+        readme = (ROOT / "launcher/README.md").read_text(encoding="utf-8")
+        for source in (
+            "LauncherActivity.kt",
+            "LauncherApps.kt",
+            "LauncherPreferences.kt",
+            "LauncherUi.kt",
+            "ManageFavoritesActivity.kt",
+        ):
+            self.assertIn(source, readme)
+        self.assertIn("test_gradle_envelope.py", readme)
+        self.assertIn("API level", readme)
+        self.assertIn("single source of truth", readme)
+        self.assertIn("**Validation owner:**", readme)
+        self.assertIn("**Target completion date:**", readme)
+        self.assertIn("30–45 minutes per device", readme)
+        self.assertIn("full commit SHA or APK SHA-256", readme)
+        self.assertIn("| # | Procedure | PASS criterion | Status | Evidence / result |", readme)
+
+        # The record's shape is the contract; its results belong to whoever runs the
+        # checks, so recording PASS must not fail this test.
+        sign_off = next(
+            line for line in readme.splitlines() if line.startswith("**Current sign-off:")
+        )
+        status = sign_off.split("**Current sign-off:")[1].split("—")[0].strip(" .*")
+        self.assertIn(status, {"BLOCKED", "PASS", "FAIL"})
+        rows = [line for line in readme.splitlines() if re.match(r"\|\s*[1-8]\s*\|", line)]
+        self.assertEqual(len(rows), 8, "the record must keep eight numbered checks")
+        results = [line.split("|")[4].strip() for line in rows]
+        for result in results:
+            self.assertIn(result, {"NOT RUN", "PASS", "FAIL", "BLOCKED"})
+        if status == "PASS":
+            self.assertEqual(results, ["PASS"] * 8, "a PASS sign-off needs eight PASS rows")
+        for check in ("D-pad", "HOME role", "Back", "TalkBack"):
+            self.assertIn(check, readme)
+        research = (ROOT / "docs/CORE_LAUNCHER_PROTOTYPE_RESEARCH.md").read_text(encoding="utf-8")
+        self.assertIn("80% function-level KDoc threshold", research)
+        self.assertIn("This documentation waiver does not waive the required physical-device validation gate", research)
+
+    def test_private_debug_package_and_validation_artifact_workflow(self):
+        build = (ROOT / "launcher/app/build.gradle.kts").read_text(encoding="utf-8")
+        workflow = (ROOT / ".github/workflows/core-launcher-prototype-ci.yml").read_text(encoding="utf-8")
+        self.assertIn('applicationId = "tv.corebuilds.launcher.prototype"', build)
+        self.assertIn('applicationIdSuffix = ".debug"', build)
+        self.assertIn(":app:assembleDebug", workflow)
+        self.assertIn("github.event.pull_request.head.sha || github.sha", workflow)
+        self.assertIn("actions/upload-artifact@v4", workflow)
+        self.assertIn("core-builds-launcher-debug-${{ steps.revision.outputs.sha }}", workflow)
+        self.assertIn("BUILD_COMMIT.txt", workflow)
+        self.assertIn("retention-days: 14", workflow)
+        self.assertIn("extract_launcher_gradle_diagnostics.py build_out.txt", workflow)
+        self.assertNotIn("assembleRelease", workflow)
+        self.assertNotRegex(workflow, r"(?m)^\s*tags:")
 
 
 if __name__ == "__main__":

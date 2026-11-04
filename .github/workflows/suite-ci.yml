@@ -295,6 +295,10 @@ jobs:
       # sources in the tree, not against PNG bytes.
       - name: Check the committed Core EQ frames depict the source
         run: python tools/build_core_eq_mockups.py --check
+      # The launcher's offline illustration is generated from its sources and
+      # the pack's artwork; without this, a stale page passes CI.
+      - name: Check the launcher offline preview is current
+        run: python tools/build_launcher_offline_preview.py --check
       # test_core_eq_dsp.py is the pytest half of this; the self-test is the
       # half a maintainer can run with no test runner at all.
       - name: Core EQ DSP invariants

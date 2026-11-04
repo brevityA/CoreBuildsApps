@@ -1,0 +1,87 @@
+name: Core Builds Launcher prototype CI
+
+# Build/lint guard only. Tag publishing lives in core-launcher-release.yml
+# (dispatch-only, pre-release); this workflow never builds or publishes a release.
+on:
+  pull_request:
+    paths:
+      - 'launcher/**'
+      - 'docs/CORE_LAUNCHER_PROTOTYPE_RESEARCH.md'
+      - '.github/workflows/core-launcher-prototype-ci.yml'
+      - 'tools/gradle_envelope.json'
+      - 'tools/check_gradle_envelope.py'
+      - 'tools/extract_launcher_gradle_diagnostics.py'
+  push:
+    branches: [main]
+    paths:
+      - 'launcher/**'
+      - 'docs/CORE_LAUNCHER_PROTOTYPE_RESEARCH.md'
+      - '.github/workflows/core-launcher-prototype-ci.yml'
+      - 'tools/gradle_envelope.json'
+      - 'tools/check_gradle_envelope.py'
+      - 'tools/extract_launcher_gradle_diagnostics.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  private-prototype:
+    name: Build and lint private launcher
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # Build the exact PR head so the validation artifact has an immutable,
+          # directly recordable commit SHA rather than a synthetic merge SHA.
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Android platform 37
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-37.0" "build-tools;36.0.0" \
+            || bash tools/install_android_platform.sh 37.0 36.0.0
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      - id: build
+        name: Build and lint debug APK
+        working-directory: launcher
+        run: ./gradlew :app:lintDebug :app:assembleDebug --no-daemon --stacktrace
+
+      - id: revision
+        name: Record exact source commit for validation artifact
+        if: success() && steps.build.outcome == 'success'
+        shell: bash
+        run: |
+          sha="$(git rev-parse HEAD)"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$sha" > launcher/app/build/outputs/apk/debug/BUILD_COMMIT.txt
+
+      - name: Upload debug APK for physical validation
+        if: success() && steps.build.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-builds-launcher-debug-${{ steps.revision.outputs.sha }}
+          path: |
+            launcher/app/build/outputs/apk/debug/app-debug.apk
+            launcher/app/build/outputs/apk/debug/BUILD_COMMIT.txt
+          if-no-files-found: error
+          retention-days: 14
+
+      # Keep the cause visible in check annotations as well as the job log.
+      # This private-launcher job is a required merge gate, and the signed log
+      # download is not always available to reviewers through the PR UI.
+      - name: Surface Gradle failure details
+        if: failure() && steps.build.outcome == 'failure'
+        working-directory: launcher
+        shell: bash
+        run: |
+          ./gradlew :app:lintDebug :app:assembleDebug --no-daemon --stacktrace --console=plain > build_out.txt 2>&1 || true
+          python3 ../tools/extract_launcher_gradle_diagnostics.py build_out.txt

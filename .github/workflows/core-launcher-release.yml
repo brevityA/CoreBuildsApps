@@ -1,0 +1,127 @@
+name: Core Launcher private pre-release
+
+# Publishes the private launcher prototype's debug APK as a GitHub pre-release.
+#
+# No tag trigger on purpose: tools/check_suite_truth.py requires every `tags:`
+# glob in any workflow to be a `tagPrefix` declared in suite.json, and the
+# launcher is deliberately not a suite app (no suite.json entry, no store
+# listing, no Downloader channel, no update feed). Push the `launcher-v*` tag
+# yourself, then dispatch this workflow with that tag and publish=true.
+#
+# The launcher is a debug-only private prototype: there is no release signing
+# here, no secrets, and no artifact that claims to be a suite release.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing launcher-v* tag to build and publish'
+        type: string
+        required: true
+      publish:
+        description: 'Create the GitHub pre-release and attach the debug APK'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build launcher debug APK for a tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate the requested tag
+        shell: bash
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          case "$TAG" in
+            launcher-v[0-9]*) ;;
+            *)
+              echo "::error::'$TAG' is not a launcher-v* tag; refusing to build"
+              exit 1
+              ;;
+          esac
+
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+
+      - name: Check suite truth
+        run: python3 tools/check_suite_truth.py
+
+      - name: Check Gradle envelope
+        run: python3 tools/check_gradle_envelope.py
+
+      - name: Launcher source contract
+        run: python3 tests/test_gradle_envelope.py
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Android platform 37
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-37.0" "build-tools;36.0.0" \
+            || bash tools/install_android_platform.sh 37.0 36.0.0
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      - name: Assemble debug APK
+        working-directory: launcher
+        run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
+
+      - id: revision
+        name: Record the exact source commit
+        shell: bash
+        run: |
+          sha="$(git rev-parse HEAD)"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "$sha" > launcher/app/build/outputs/apk/debug/BUILD_COMMIT.txt
+          cat launcher/app/build/outputs/apk/debug/BUILD_COMMIT.txt
+
+      - name: Upload the build for inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-builds-launcher-debug-${{ steps.revision.outputs.sha }}
+          path: |
+            launcher/app/build/outputs/apk/debug/app-debug.apk
+            launcher/app/build/outputs/apk/debug/BUILD_COMMIT.txt
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Publish the private pre-release
+        if: ${{ inputs.publish == true }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          SHA: ${{ steps.revision.outputs.sha }}
+        run: |
+          notes="$(mktemp)"
+          cat > "$notes" <<EOF
+          Private debug build of the Core Builds launcher prototype, cut from
+          \`$SHA\`. Not a suite release.
+
+          - Install package: \`tv.corebuilds.launcher.prototype.debug\` (version 0.1.0-private).
+          - Debug-signed, minSdk 26, targetSdk 37. Sideload only: there is no store
+            listing, Downloader channel, or update feed.
+          - The APK is built by this workflow from the tagged commit; \`BUILD_COMMIT.txt\`
+            records that commit next to it.
+          - It keeps favourites and up to five recent packages on the device only, has
+            no network permission, and does not take over HOME unless you choose it in
+            Android's Home-app settings.
+
+          Physical-validation status is tracked in \`launcher/README.md\`, not here.
+          EOF
+          gh release create "$TAG" \
+            "launcher/app/build/outputs/apk/debug/app-debug.apk#core-builds-launcher-$TAG-debug.apk" \
+            "launcher/app/build/outputs/apk/debug/BUILD_COMMIT.txt" \
+            --prerelease \
+            --title "Core Builds Launcher ${TAG#launcher-} (private debug)" \
+            --notes-file "$notes" \
+            --verify-tag
