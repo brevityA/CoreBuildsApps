@@ -829,7 +829,18 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         # The asset is named for the version, not the tag, and a re-run repairs
         # an existing release instead of failing on it.
         self.assertIn('version="${TAG#launcher-v}"', workflow)
-        self.assertIn('core-builds-launcher-$version-debug.apk', workflow)
+        # gh names an asset from the file itself (`path#label` only sets the
+        # display label), so the APK is copied to the version-named file, and the
+        # release body records that exact file's hash.
+        self.assertIn(
+            'apk="launcher/app/build/outputs/apk/debug/core-builds-launcher-$version-debug.apk"',
+            workflow,
+        )
+        self.assertIn('cp launcher/app/build/outputs/apk/debug/app-debug.apk "$apk"', workflow)
+        self.assertIn('apk_sha="$(sha256sum "$apk"', workflow)
+        self.assertIn('"$apk"', workflow)
+        self.assertNotIn("app-debug.apk#core-builds-launcher", workflow)
+        # A re-run repairs an existing release instead of failing on it.
         self.assertIn('if gh release view "$TAG"', workflow)
         self.assertIn("--clobber", workflow)
         self.assertIn("Private pre-release lane", readme)

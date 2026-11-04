@@ -56,7 +56,7 @@ gh workflow run core-launcher-release.yml \
   -f tag=launcher-v0.1.0 -f publish=true
 ```
 
-The workflow rebuilds the debug APK from that tag, re-runs the suite-truth, Gradle-envelope and launcher contract gates, writes `BUILD_COMMIT.txt`, and creates a **pre-release** whose assets are `core-builds-launcher-<version>-debug.apk` plus `BUILD_COMMIT.txt`. Re-running the job repairs an existing release with `gh release upload --clobber` rather than failing on it.
+The workflow rebuilds the debug APK from that tag, re-runs the suite-truth, Gradle-envelope and launcher contract gates, writes `BUILD_COMMIT.txt`, and creates a **pre-release** whose assets are the APK copied to `core-builds-launcher-<version>-debug.apk` (a release asset takes its name from the file, not from a `path#label` suffix) plus `BUILD_COMMIT.txt`; the release body also records that APK's SHA-256. Re-running the job repairs an existing release with `gh release upload --clobber` rather than failing on it.
 
 A client that holds `contents: write` but not `actions: write` can start the same job through `repository_dispatch`:
 

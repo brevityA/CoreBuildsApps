@@ -116,6 +116,11 @@ jobs:
           SHA: ${{ steps.revision.outputs.sha }}
         run: |
           version="${TAG#launcher-v}"
+          # gh sets an asset's *label* from `path#label`, never its filename, so the
+          # upload has to be a file that already carries the name we want.
+          apk="launcher/app/build/outputs/apk/debug/core-builds-launcher-$version-debug.apk"
+          cp launcher/app/build/outputs/apk/debug/app-debug.apk "$apk"
+          apk_sha="$(sha256sum "$apk" | cut -d' ' -f1)"
           notes="$(mktemp)"
           cat > "$notes" <<EOF
           Private debug build of the Core Builds launcher prototype, cut from
@@ -125,7 +130,7 @@ jobs:
           - Debug-signed, minSdk 26, targetSdk 37. Sideload only: there is no store
             listing, Downloader channel, or update feed.
           - The APK is built by this workflow from the tagged commit; \`BUILD_COMMIT.txt\`
-            records that commit next to it.
+            records that commit next to it, and its SHA-256 is \`$apk_sha\`.
           - It keeps favourites and up to five recent packages on the device only, has
             no network permission, and does not take over HOME unless you choose it in
             Android's Home-app settings.
@@ -133,7 +138,7 @@ jobs:
           Physical-validation status is tracked in \`launcher/README.md\`, not here.
           EOF
           assets=(
-            "launcher/app/build/outputs/apk/debug/app-debug.apk#core-builds-launcher-$version-debug.apk"
+            "$apk"
             "launcher/app/build/outputs/apk/debug/BUILD_COMMIT.txt"
           )
           # Re-running the job must repair the release, not fail on an existing one.
