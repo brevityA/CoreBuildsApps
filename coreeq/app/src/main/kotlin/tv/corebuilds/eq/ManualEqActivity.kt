@@ -81,11 +81,27 @@ class ManualEqActivity : TvActivity() {
     /** Set when Room hints sent a manual-only profile to Measure. */
     private var reloadProfileOnResume = false
 
+    /** The undo belongs to one profile and one mode: it is never put back anywhere else. */
     private data class SuggestionUndo(
+        val profileId: String,
+        val mode: ContentMode,
         val presetId: String,
         val previousName: String,
         val previousFilters: List<PeakingFilter>
     )
+
+    /**
+     * The undo, if it belongs to the profile and mode on screen now. A restored undo
+     * can outlive its context (playback may switch the mode, or the output the profile,
+     * before the screen comes back); writing its curve into another mode would replace
+     * a curve nobody asked to change, so it is dropped instead.
+     */
+    private fun currentUndo(): SuggestionUndo? {
+        val undo = suggestionUndo ?: return null
+        if (undo.profileId == profile?.id && undo.mode == editingMode) return undo
+        suggestionUndo = null
+        return null
+    }
 
     private val statusReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -310,7 +326,7 @@ class ManualEqActivity : TvActivity() {
             else -> getString(R.string.manual_eq_hints_count, hints.size)
         }
 
-        val undo = suggestionUndo
+        val undo = currentUndo()
         suggestion = if (undo == null) currentSuggestion() else null
         val pick = suggestion
         when {
@@ -379,6 +395,8 @@ class ManualEqActivity : TvActivity() {
         super.onSaveInstanceState(outState)
         outState.putStringArrayList(STATE_DECLINED, ArrayList(declinedSuggestions))
         suggestionUndo?.let { undo ->
+            outState.putString(STATE_UNDO_PROFILE, undo.profileId)
+            outState.putString(STATE_UNDO_MODE, undo.mode.name)
             outState.putString(STATE_UNDO_PRESET, undo.presetId)
             outState.putString(STATE_UNDO_NAME, undo.previousName)
             outState.putDoubleArray(
@@ -393,7 +411,12 @@ class ManualEqActivity : TvActivity() {
         state.getStringArrayList(STATE_DECLINED)?.let { declinedSuggestions += it }
         val presetId = state.getString(STATE_UNDO_PRESET) ?: return
         val values = state.getDoubleArray(STATE_UNDO_FILTERS) ?: return
+        val profileId = state.getString(STATE_UNDO_PROFILE) ?: return
+        val mode = state.getString(STATE_UNDO_MODE)?.let { name -> ContentMode.entries.firstOrNull { it.name == name } } ?: return
+        // Kept as saved; currentUndo() drops it if the profile or mode on screen differs.
         suggestionUndo = SuggestionUndo(
+            profileId = profileId,
+            mode = mode,
             presetId = presetId,
             previousName = state.getString(STATE_UNDO_NAME).orEmpty(),
             previousFilters = values.toList().chunked(3).filter { it.size == 3 }.map { PeakingFilter(it[0], it[1], it[2]) }
@@ -403,7 +426,7 @@ class ManualEqActivity : TvActivity() {
     /** Apply the suggested preset, or put back what it replaced when the row reads Undo. */
     private fun onSuggestionPressed() {
         val active = profile ?: return
-        val undo = suggestionUndo
+        val undo = currentUndo()
         if (undo != null) {
             modeStore.saveModeFilters(active.id, editingMode, undo.previousFilters)
             declinedSuggestions += undo.presetId
@@ -425,13 +448,13 @@ class ManualEqActivity : TvActivity() {
         val preset = presets.firstOrNull { it.id == pick.presetId } ?: return
         val previous = currentManualFilters()
         val previousName = ManualEq.matchingPreset(previous, presets)?.name ?: "Custom"
-        suggestionUndo = SuggestionUndo(pick.presetId, previousName, previous)
+        suggestionUndo = SuggestionUndo(active.id, editingMode, pick.presetId, previousName, previous)
         applyPreset(preset, fromSuggestion = true)
         textStatus.text = getString(R.string.manual_eq_suggestion_applied, preset.name, editingMode.title)
     }
 
     private fun describeSuggestionRow() {
-        val undo = suggestionUndo
+        val undo = currentUndo()
         val pick = suggestion
         textStatus.text = when {
             undo != null -> getString(R.string.manual_eq_suggestion_undo_focus, undo.previousName)
@@ -798,6 +821,8 @@ class ManualEqActivity : TvActivity() {
         const val APPLY_DEBOUNCE_MS = 160L
         const val REQ_IMPORT_EQ = 4101
         const val STATE_DECLINED = "manual_eq.declined_suggestions"
+        const val STATE_UNDO_PROFILE = "manual_eq.undo_profile"
+        const val STATE_UNDO_MODE = "manual_eq.undo_mode"
         const val STATE_UNDO_PRESET = "manual_eq.undo_preset"
         const val STATE_UNDO_NAME = "manual_eq.undo_name"
         const val STATE_UNDO_FILTERS = "manual_eq.undo_filters"

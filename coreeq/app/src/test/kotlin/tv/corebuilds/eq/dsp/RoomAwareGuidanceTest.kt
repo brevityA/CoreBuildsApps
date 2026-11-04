@@ -165,4 +165,19 @@ class RoomAwareGuidanceTest {
         val far = listOf(PeakingFilter(60.0, 1.4, -3.0))
         assertTrue(RoomAwareGuidance.guide(room, far).any { it.kind == Kind.EASE_CUT && it.bandIndex == band(2_000.0) })
     }
+
+    @Test
+    fun aStackFromAnOffCentreFilterIsAdviceNotAReset() {
+        // +6 dB correction at 2 kHz, and an imported +4 dB filter at 2.2 kHz reaching it.
+        // A band reset would leave that filter in place, so the hint offers no action.
+        val room = profile(corrections = mapOf(2_000.0 to 6.0), transitionHz = 300.0)
+        val imported = listOf(PeakingFilter(2_200.0, 1.4, 4.0))
+        val stacked = RoomAwareGuidance.guide(room, imported).single { it.kind == Kind.STACKED }
+        assertEquals(band(2_000.0), stacked.bandIndex)
+        assertFalse(stacked.actionable)
+        // The band's own slider alone still gets the reset.
+        val own = RoomAwareGuidance.guide(room, manual(2_000.0 to 4.0)).single { it.kind == Kind.STACKED }
+        assertTrue(own.actionable)
+        assertEquals(0.0, own.applyGainDb!!, 0.0)
+    }
 }
