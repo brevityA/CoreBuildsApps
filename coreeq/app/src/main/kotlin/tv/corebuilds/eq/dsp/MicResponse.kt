@@ -33,7 +33,10 @@ import kotlin.math.ln
  *    neither; spatial averaging is legitimate for one measurement mic at several
  *    positions, not for different capsules in fixed positions. A multi-label list
  *    is refused whole — [microphoneCount] — in favour of leaving the measurement
- *    alone.
+ *    alone. So is a one-label list from a capture Android says several microphones
+ *    made: the mics that reported nothing still shaped the recording, so one
+ *    capsule's curve does not describe it. [verdict] is the single rule; [flatten]
+ *    and the capture's summary and export notes all read it.
  *
  * Pure Kotlin so the whole rule is unit-tested without Android ([MicResponseTest]).
  */
@@ -100,22 +103,51 @@ object MicResponse {
     fun microphoneCount(points: List<MicrophoneResponsePoint>): Int =
         points.valid().map { it.microphone }.distinct().size
 
+    /** The first gate a capture's response falls at, in the order [flatten] checks them. */
+    enum class Verdict {
+        /** Enough points, one capsule, no more than one active microphone: subtracted. */
+        APPLIED,
+        /** Enough points, but several microphones made the capture: refused whole. */
+        SEVERAL_MICS,
+        /** Points reported, but fewer than [MIN_POINTS] usable ones: kept as metadata. */
+        TOO_FEW,
+        /** Nothing reported: the correction is room-only. */
+        NONE
+    }
+
+    /**
+     * Whether [points] may be applied to the capture they came with. Sufficiency is
+     * checked first, so a thin multi-mic list reads [Verdict.TOO_FEW] (it would be
+     * refused even from one capsule). Then the capsule count: more than one label,
+     * or [activeMicrophones] above one, is [Verdict.SEVERAL_MICS]. Two active mics
+     * where only one reported points is still a two-mic recording, and the labels
+     * cannot see the mic that reported nothing. Null [activeMicrophones] means
+     * Android did not say, and the labels decide alone.
+     */
+    fun verdict(points: List<MicrophoneResponsePoint>, activeMicrophones: Int? = null): Verdict = when {
+        !applicable(points) -> if (points.isEmpty()) Verdict.NONE else Verdict.TOO_FEW
+        microphoneCount(points) > 1 || (activeMicrophones ?: 0) > 1 -> Verdict.SEVERAL_MICS
+        else -> Verdict.APPLIED
+    }
+
     /**
      * [measuredDb] with the microphone's reported response subtracted, per band:
      * the deconvolution. Every band outside the reported span, every non-finite band,
-     * and the whole array when [points] are not [applicable] or span more than one
-     * microphone, come back unchanged: a blended two-capsule curve is not a third,
-     * averaging-friendly curve — it matches neither capsule, so it is refused whole,
-     * exactly like thin data is. The correction, the nulls and the roll-off that
-     * follow read this curve.
+     * and the whole array unless [verdict] is [Verdict.APPLIED], come back unchanged:
+     * a blended two-capsule curve is not a third, averaging-friendly curve — it
+     * matches neither capsule, so it is refused whole, exactly like thin data is.
+     * [activeMicrophones] is the capture's count from Android
+     * ([tv.corebuilds.eq.export.CaptureInfo.activeMicrophoneCount]). The correction,
+     * the nulls and the roll-off that follow read this curve.
      */
     fun flatten(
         centresHz: DoubleArray,
         measuredDb: DoubleArray,
-        points: List<MicrophoneResponsePoint>
+        points: List<MicrophoneResponsePoint>,
+        activeMicrophones: Int? = null
     ): DoubleArray {
         require(centresHz.size == measuredDb.size) { "centres and measured must be the same length" }
-        if (!applicable(points) || microphoneCount(points) > 1) return measuredDb.copyOf()
+        if (verdict(points, activeMicrophones) != Verdict.APPLIED) return measuredDb.copyOf()
         return DoubleArray(measuredDb.size) { k ->
             val m = measuredDb[k]
             if (!m.isFinite()) return@DoubleArray m

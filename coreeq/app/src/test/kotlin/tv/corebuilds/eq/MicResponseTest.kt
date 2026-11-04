@@ -255,7 +255,51 @@ class MicResponseTest {
         for (k in measured.indices) assertEquals("band $k must be left alone", measured[k], flat[k], 0.0)
     }
 
+    // --- active microphones -------------------------------------------------------------
+
+    @Test
+    fun oneReportingMicOfSeveralActiveIsStillABlend() {
+        // Two mics recorded and only the first gave Android a curve. The labels
+        // show one capsule, so before the active count was read, flatten applied
+        // that capsule's curve to a recording two mics made.
+        val points = MicResponse.collect(
+            listOf(MicResponse.Report("Front mic", curve(8)), MicResponse.Report("Rear mic", emptyList())),
+            fallbackName = "active mic", maxMicrophones = 4, maxPoints = 256
+        )
+        assertEquals(1, MicResponse.microphoneCount(points))
+        assertEquals(MicResponse.Verdict.SEVERAL_MICS, MicResponse.verdict(points, activeMicrophones = 2))
+        val measured = doubleArrayOf(10.0, 10.0, 10.0, 10.0, 10.0, 10.0)
+        val flat = MicResponse.flatten(centres, measured, points, activeMicrophones = 2)
+        for (k in measured.indices) assertEquals("band $k must be left alone", measured[k], flat[k], 0.0)
+        // The same list from a one-mic capture is applied: 1 dB comes off in span.
+        assertEquals(9.0, MicResponse.flatten(centres, measured, points, activeMicrophones = 1)[0], 1e-9)
+    }
+
+    @Test
+    fun theActiveCountOnlyRefusesAboveOne() {
+        val measured = DoubleArray(centres.size) { 5.0 }
+        // One active mic, or a count Android did not report: the labels decide.
+        for (active in listOf(null, 0, 1)) {
+            assertEquals("active=$active", MicResponse.Verdict.APPLIED, MicResponse.verdict(report, active))
+            assertEquals("active=$active", 4.0, MicResponse.flatten(centres, measured, report, active)[0], 1e-9)
+        }
+        // Sufficiency stays the first gate at any count.
+        assertEquals(MicResponse.Verdict.TOO_FEW, MicResponse.verdict(report.take(3), activeMicrophones = 3))
+        assertEquals(MicResponse.Verdict.NONE, MicResponse.verdict(emptyList(), activeMicrophones = 3))
+    }
+
     // --- what the capture line says ----------------------------------------------------
+
+    @Test
+    fun theLineNamesTheMicsThatReportedNothing() {
+        val two = tv.corebuilds.eq.export.CaptureInfo(activeMicrophoneCount = 2, microphoneResponse = report)
+        assertTrue(two.summary(), two.summary().contains("1 of 2 active mics reported mic response; this version applies none"))
+        assertFalse(two.summary(), two.summary().contains("applied over"))
+        assertTrue(two.exportNotes().any { it.contains("one of 2 active microphones") && it.contains("1.11.2 and earlier did") })
+        val one = tv.corebuilds.eq.export.CaptureInfo(activeMicrophoneCount = 1, microphoneResponse = report)
+        assertTrue(one.summary(), one.summary().contains("applied over"))
+        assertTrue(one.exportNotes().any { it.contains("from one capsule; applied") })
+    }
 
     @Test
     fun theSummaryNamesTheFirstGateTheDataFellAt() {

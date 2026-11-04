@@ -56,6 +56,27 @@ class SweepAnalysisTest {
     }
 
     @Test
+    fun aOneCapsuleCurveIsRefusedWhenSeveralMicsRecorded() {
+        // analyze must honour Android's active-mic count: the labels of a two-mic
+        // capture where only one mic reported a curve show one capsule, so without
+        // the count the curve was subtracted from a recording two mics made.
+        val samples = capture(room = doubleArrayOf(1.0))
+        val mic = listOf(100.0 to 0.0, 1_000.0 to 4.0, 2_000.0 to 4.0, 5_000.0 to 0.0)
+            .map { (hz, db) -> tv.corebuilds.eq.export.MicrophoneResponsePoint("remote", hz, db) }
+        val plain = SweepAnalysis.analyze(samples, capFs, "flat", 54.0)
+        val one = SweepAnalysis.analyze(samples, capFs, "flat", 54.0, micResponse = mic, activeMicrophones = 1)
+        val two = SweepAnalysis.analyze(samples, capFs, "flat", 54.0, micResponse = mic, activeMicrophones = 2)
+        val i100 = plain.centresHz.toList().indexOf(100.0)
+        val i1k = plain.centresHz.toList().indexOf(1000.0)
+        // One active mic: the reported +4 dB at 1 kHz comes off, relative to 100 Hz
+        // where the mic reads flat (relative, because the curve is re-aligned).
+        val taken = (one.measuredDb[i1k] - plain.measuredDb[i1k]) - (one.measuredDb[i100] - plain.measuredDb[i100])
+        assertEquals(-4.0, taken, 0.5)
+        // Two active mics: nothing is applied, band for band.
+        assertEquals(plain.measuredDb.toList(), two.measuredDb.toList())
+    }
+
+    @Test
     fun latencyIsRecovered() {
         val result = SweepAnalysis.analyze(capture(room = doubleArrayOf(1.0), latencyS = 0.35), capFs, "flat", 54.0)
         assertEquals(350.0, result.latencyMs, 3.0)

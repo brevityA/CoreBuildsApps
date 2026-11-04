@@ -57,7 +57,8 @@ data class MicrophoneResponsePoint(
  * [MicResponse.MAX_APPLIED_DB] and never extrapolated beyond the reported span
  * — otherwise the measurement is left untouched, explicitly, in the summary.
  * Each point carries the reporting microphone's label, and more than one label
- * on the list refuses the whole composite rather than blending capsules. The input rate
+ * on the list, or an [activeMicrophoneCount] above one, refuses the whole list
+ * rather than blending capsules ([MicResponse.verdict]). The input rate
  * is the rate Android reports for the AudioRecord stream; it is not a
  * measurement of the microphone ADC clock.
  */
@@ -99,24 +100,26 @@ data class CaptureInfo(
             ?.joinToString(", ")
             ?.take(110)
             ?.let { " · $it" }.orEmpty()
-        // State priority mirrors flatten's gates - sufficiency, then
-        // single-capsule, then emptiness - so the line names the FIRST gate the
-        // data fell at: a short multi-mic list reports "too few" (it would be
-        // refused even from one capsule), and "composite" only claims a list
-        // that sufficed on its own. Labels, not points, are the composite unit.
+        // The line names the FIRST gate the data fell at, read from the same
+        // MicResponse.verdict that flatten applies: a short multi-mic list
+        // reports "too few" (it would be refused even from one capsule), and
+        // "several mics" only claims a list that sufficed on its own.
         val micCount = MicResponse.microphoneCount(microphoneResponse)
         val micSpan = MicResponse.spanText(microphoneResponse)
-        val calibration = when {
-            MicResponse.applicable(microphoneResponse) && micCount <= 1 ->
+        val calibration = when (MicResponse.verdict(microphoneResponse, activeMicrophoneCount)) {
+            MicResponse.Verdict.APPLIED ->
                 " · Android reported ${microphoneResponse.size} mic-response points (applied${micSpan?.let { " over $it" } ?: ""}, ±${MicResponse.MAX_APPLIED_DB.toInt()} dB cap)"
             // States the current rule, not this profile's history: 1.11.2 and
-            // earlier did subtract a multi-mic composite, and a saved profile
-            // carries no record of which version measured it.
-            MicResponse.applicable(microphoneResponse) && micCount > 1 ->
+            // earlier did subtract these, and a saved profile carries no record
+            // of which version measured it.
+            MicResponse.Verdict.SEVERAL_MICS -> if (micCount > 1) {
                 " · $micCount mics reported mic response; this version applies no composite"
-            microphoneResponse.isNotEmpty() ->
+            } else {
+                " · 1 of $activeMicrophoneCount active mics reported mic response; this version applies none"
+            }
+            MicResponse.Verdict.TOO_FEW ->
                 " · Android reported ${microphoneResponse.size} mic-response points (too few to apply)"
-            else ->
+            MicResponse.Verdict.NONE ->
                 // Zero reported points is its own answer: a legitimate no-op
                 // on most TVs, and the first thing a "mic correction does not
                 // seem to work" report must rule out. Silence here read as
@@ -142,27 +145,31 @@ data class CaptureInfo(
         }
         val micCount = MicResponse.microphoneCount(microphoneResponse)
         val micSpan = MicResponse.spanText(microphoneResponse)
-        // Same first-gate priority as summary().
-        if (MicResponse.applicable(microphoneResponse) && micCount <= 1) {
-            add(
+        // Same verdict, and so the same first-gate priority, as summary().
+        when (MicResponse.verdict(microphoneResponse, activeMicrophoneCount)) {
+            MicResponse.Verdict.APPLIED -> add(
                 "Android reported ${microphoneResponse.size} microphone frequency-response points from one " +
                     "capsule; applied to the measurement over ${micSpan ?: "the reported span"} (capped at " +
                     "±${MicResponse.MAX_APPLIED_DB.toInt()} dB per band, never extrapolated beyond the span)."
             )
-        } else if (MicResponse.applicable(microphoneResponse) && micCount > 1) {
-            add(
-                "Android reported ${microphoneResponse.size} microphone frequency-response points from " +
-                    "$micCount microphones; a composite of capsule curves belongs to none of them, " +
-                    "so this version applies none (Core EQ 1.11.2 and earlier did, so a profile measured " +
-                    "with those may include one)."
+            MicResponse.Verdict.SEVERAL_MICS -> add(
+                if (micCount > 1) {
+                    "Android reported ${microphoneResponse.size} microphone frequency-response points from " +
+                        "$micCount microphones; a composite of capsule curves belongs to none of them, " +
+                        "so this version applies none (Core EQ 1.11.2 and earlier did, so a profile measured " +
+                        "with those may include one)."
+                } else {
+                    "Android reported ${microphoneResponse.size} microphone frequency-response points from " +
+                        "one of $activeMicrophoneCount active microphones; one capsule's curve does not describe " +
+                        "a recording several made, so this version applies none (Core EQ 1.11.2 and earlier " +
+                        "did, so a profile measured with those may include it)."
+                }
             )
-        } else if (microphoneResponse.isNotEmpty()) {
-            add(
+            MicResponse.Verdict.TOO_FEW -> add(
                 "Android reported ${microphoneResponse.size} microphone frequency-response points; too few " +
                     "in band to apply, kept as metadata."
             )
-        } else {
-            add(
+            MicResponse.Verdict.NONE -> add(
                 "Android reported no microphone frequency-response data for this capture; the room curve " +
                     "carries no capsule correction."
             )

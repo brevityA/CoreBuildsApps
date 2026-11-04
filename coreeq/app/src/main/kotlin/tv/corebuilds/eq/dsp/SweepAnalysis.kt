@@ -193,7 +193,14 @@ object SweepAnalysis {
          * changes nothing. Signal-to-noise and the bandwidth edge still come from
          * the raw capture, which the response scales equally on both sides.
          */
-        micResponse: List<MicrophoneResponsePoint> = emptyList()
+        micResponse: List<MicrophoneResponsePoint> = emptyList(),
+        /**
+         * How many microphones Android says made the capture
+         * ([tv.corebuilds.eq.export.CaptureInfo.activeMicrophoneCount]). Above one,
+         * [micResponse] is refused even when it names a single capsule
+         * ([MicResponse.verdict]). Null means not reported.
+         */
+        activeMicrophones: Int? = null
     ): SweepResult {
         // Reject an unusable request before any DSP: an empty or non-finite
         // capture, a broken sample rate or a blank target would otherwise
@@ -270,7 +277,7 @@ object SweepAnalysis {
         // room gets corrected for ([MicResponse]'s cap and span rules apply).
         val measured = alignTo(
             centres,
-            MicResponse.flatten(centres, allDb.copyOf(keep), micResponse),
+            MicResponse.flatten(centres, allDb.copyOf(keep), micResponse, activeMicrophones),
             targetDb
         )
 
