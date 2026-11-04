@@ -72,21 +72,34 @@ internal object LauncherPreferences {
         packageName: String,
         installedPackages: Set<String>,
     ): Boolean {
-        val preferences = context.getSharedPreferences(FILE, Context.MODE_PRIVATE)
-        val updated = if (preferences.contains(KEY_PINS)) {
-            // Preserve temporarily unavailable packages when another favourite is edited.
-            preferences.getStringSet(KEY_PINS, emptySet()).orEmpty().toMutableSet()
-        } else {
-            pinnedPackages(context, installedPackages).toMutableSet()
-        }
-        val isNowPinned = if (updated.contains(packageName)) {
-            updated.remove(packageName)
-            false
-        } else {
-            updated.add(packageName)
-            true
-        }
+        val current = storedPins(context, installedPackages)
+        return setPinned(context, packageName, packageName !in current, installedPackages)
+    }
+
+    /**
+     * Applies an explicit favourite state instead of flipping the stored one, so a
+     * dialog opened before the last render still does what its label says.
+     */
+    fun setPinned(
+        context: Context,
+        packageName: String,
+        pinned: Boolean,
+        installedPackages: Set<String>,
+    ): Boolean {
+        val updated = storedPins(context, installedPackages).toMutableSet()
+        if (pinned) updated.add(packageName) else updated.remove(packageName)
         setPinnedPackages(context, updated)
-        return isNowPinned
+        return packageName in updated
+    }
+
+    /** The saved set, or the first-run Core Builds default before the user edits it. */
+    private fun storedPins(context: Context, installedPackages: Set<String>): Set<String> {
+        val preferences = context.getSharedPreferences(FILE, Context.MODE_PRIVATE)
+        // Preserve temporarily unavailable packages when another favourite is edited.
+        return if (preferences.contains(KEY_PINS)) {
+            preferences.getStringSet(KEY_PINS, emptySet()).orEmpty()
+        } else {
+            pinnedPackages(context, installedPackages)
+        }
     }
 }

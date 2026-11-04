@@ -565,6 +565,7 @@ class LauncherActivity : Activity() {
         val previous = selectedApp
         if (app != null && previous != null &&
             app.packageName == previous.packageName &&
+            app.activityName == previous.activityName &&
             app.label == previous.label &&
             app.tvOptimized == previous.tvOptimized &&
             app.lastUpdateTime == previous.lastUpdateTime
@@ -651,7 +652,7 @@ class LauncherActivity : Activity() {
                 arrayOf(favouriteAction, getString(R.string.app_action_app_info)),
             ) { _, index ->
                 when (index) {
-                    0 -> toggleFavouriteFromHome(app)
+                    0 -> setFavouriteFromHome(app, pinned = !isPinned)
                     1 -> openAppInfo(app)
                 }
             }
@@ -659,7 +660,11 @@ class LauncherActivity : Activity() {
             .show()
     }
 
-    private fun toggleFavouriteFromHome(app: LaunchableApp) {
+    /**
+     * Writes the state the menu offered rather than toggling, so a state change made
+     * between opening the dialog and choosing keeps the label and the result aligned.
+     */
+    private fun setFavouriteFromHome(app: LaunchableApp, pinned: Boolean) {
         val installedPackages = apps.mapTo(linkedSetOf()) { it.packageName }
         if (app.packageName !in installedPackages) {
             refreshApps()
@@ -667,9 +672,10 @@ class LauncherActivity : Activity() {
         }
         try {
             appLoader.execute {
-                val nowPinned = LauncherPreferences.togglePinned(
+                val nowPinned = LauncherPreferences.setPinned(
                     applicationContext,
                     app.packageName,
+                    pinned,
                     installedPackages,
                 )
                 runOnUiThread {

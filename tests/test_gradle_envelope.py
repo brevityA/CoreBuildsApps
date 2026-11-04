@@ -16,6 +16,7 @@ from __future__ import annotations
 import contextlib
 import io
 import json
+import re
 import shutil
 import struct
 import sys
@@ -780,9 +781,12 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertEqual(activity.count("appTile(app, wideCard = true)"), 2)
         self.assertIn("val tile = appTile(app)", activity)
         self.assertIn("setItems(", actions)
-        self.assertIn("toggleFavouriteFromHome(app)", actions)
+        self.assertIn("setFavouriteFromHome(app, pinned = !isPinned)", actions)
         self.assertIn("openAppInfo(app)", actions)
-        self.assertIn("LauncherPreferences.togglePinned(", actions)
+        self.assertIn("LauncherPreferences.setPinned(", actions)
+        # The menu writes the state it offered, so a stale render cannot invert it.
+        self.assertNotIn("togglePinned(", actions)
+        self.assertIn("app.activityName == previous.activityName", activity)
         self.assertIn("Settings.ACTION_APPLICATION_DETAILS_SETTINGS", actions)
         self.assertIn('Uri.fromParts("package", app.packageName, null)', actions)
         self.assertIn("Long-press for app actions", strings)
@@ -909,15 +913,28 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         ):
             self.assertIn(source, readme)
         self.assertIn("test_gradle_envelope.py", readme)
-        self.assertIn("**Current sign-off: BLOCKED — 0/8 hardware checks run.**", readme)
         self.assertIn("API level", readme)
         self.assertIn("single source of truth", readme)
-        self.assertIn("Validation owner:** Not assigned", readme)
-        self.assertIn("Target completion date:** Before the next prototype review", readme)
+        self.assertIn("**Validation owner:**", readme)
+        self.assertIn("**Target completion date:**", readme)
         self.assertIn("30–45 minutes per device", readme)
         self.assertIn("full commit SHA or APK SHA-256", readme)
         self.assertIn("| # | Procedure | PASS criterion | Status | Evidence / result |", readme)
-        self.assertEqual(readme.count("| NOT RUN |"), 8)
+
+        # The record's shape is the contract; its results belong to whoever runs the
+        # checks, so recording PASS must not fail this test.
+        sign_off = next(
+            line for line in readme.splitlines() if line.startswith("**Current sign-off:")
+        )
+        status = sign_off.split("**Current sign-off:")[1].split("—")[0].strip(" .*")
+        self.assertIn(status, {"BLOCKED", "PASS", "FAIL"})
+        rows = [line for line in readme.splitlines() if re.match(r"\|\s*[1-8]\s*\|", line)]
+        self.assertEqual(len(rows), 8, "the record must keep eight numbered checks")
+        results = [line.split("|")[4].strip() for line in rows]
+        for result in results:
+            self.assertIn(result, {"NOT RUN", "PASS", "FAIL", "BLOCKED"})
+        if status == "PASS":
+            self.assertEqual(results, ["PASS"] * 8, "a PASS sign-off needs eight PASS rows")
         for check in ("D-pad", "HOME role", "Back", "TalkBack"):
             self.assertIn(check, readme)
         research = (ROOT / "docs/CORE_LAUNCHER_PROTOTYPE_RESEARCH.md").read_text(encoding="utf-8")
