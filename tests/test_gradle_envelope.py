@@ -796,6 +796,35 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertNotIn("android.permission.REQUEST_DELETE_PACKAGES", manifest)
         self.assertNotIn("Intent.ACTION_DELETE", activity)
 
+    def test_private_release_lane_is_dispatch_only_debug_only_and_prerelease(self):
+        workflow = (ROOT / ".github/workflows/core-launcher-release.yml").read_text(encoding="utf-8")
+        readme = (ROOT / "launcher/README.md").read_text(encoding="utf-8")
+        suite = (ROOT / "suite.json").read_text(encoding="utf-8")
+
+        # suite.json owns every tag trigger in the repo (check_suite_truth.py),
+        # and the launcher is deliberately not a suite app.
+        self.assertIn("workflow_dispatch:", workflow)
+        self.assertNotRegex(workflow, r"(?m)^\s*tags:")
+        self.assertNotIn("tv.corebuilds.launcher", suite)
+        # Nothing publishes unless a human asks for it, and only as a pre-release.
+        self.assertIn("publish:", workflow)
+        self.assertIn("default: false", workflow)
+        self.assertIn("--prerelease", workflow)
+        self.assertIn("--verify-tag", workflow)
+        self.assertIn("launcher-v[0-9]*", workflow)
+        # Debug-only: no release build, no signing credentials, no suite secrets.
+        self.assertIn(":app:assembleDebug", workflow)
+        self.assertNotIn("assembleRelease", workflow)
+        self.assertNotIn("release.jks", workflow)
+        self.assertNotRegex(workflow, r"secrets\.(KEYSTORE|KEY)_")
+        # The gates run before a tag can ship anything.
+        self.assertIn("tools/check_suite_truth.py", workflow)
+        self.assertIn("tools/check_gradle_envelope.py", workflow)
+        self.assertIn("tests/test_gradle_envelope.py", workflow)
+        self.assertIn("BUILD_COMMIT.txt", workflow)
+        self.assertIn("Private pre-release lane", readme)
+        self.assertIn("gh workflow run core-launcher-release.yml", readme)
+
     def test_package_updates_refresh_labels_and_banner_art(self):
         activity = self.ACTIVITY.read_text(encoding="utf-8")
         apps = self.APPS.read_text(encoding="utf-8")

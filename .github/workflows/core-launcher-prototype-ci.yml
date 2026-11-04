@@ -1,7 +1,7 @@
 name: Core Builds Launcher prototype CI
 
-# Build/lint guard only. This private prototype has no tag, release, store, or
-# public APK distribution lane.
+# Build/lint guard only. Tag publishing lives in core-launcher-release.yml
+# (dispatch-only, pre-release); this workflow never builds or publishes a release.
 on:
   pull_request:
     paths:
@@ -51,7 +51,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
 
       - id: build
-        name: Build and lint debug APK (no release lane)
+        name: Build and lint debug APK
         working-directory: launcher
         run: ./gradlew :app:lintDebug :app:assembleDebug --no-daemon --stacktrace
 

@@ -7,7 +7,9 @@
 
 Prototype a narrow Core Builds home surface, not a full Google TV replacement. A generic app grid and favourites shelf are already common; the plausible differentiator is a fast, low-noise, local-first Core Builds home that complements the suite's icon pack, wallpapers, Core Line and Core Shift / Core Motion work.
 
-The current deliverable is deliberately a private, side-loadable experiment. It is not in `suite.json` and has only a build/lint CI check—no release lane, store listing, or public APK distribution. It makes no promise that every manufacturer permits a third-party default launcher.
+The current deliverable is deliberately a private, side-loadable experiment. It is not in `suite.json`; it has a build/lint CI check plus a dispatch-only pre-release lane that attaches the debug APK for a `launcher-v*` tag (no store listing, no Downloader channel, no update feed, no release signing). It makes no promise that every manufacturer permits a third-party default launcher.
+
+**First device result (2026-11-04):** all eight physical checks were reported PASS by the repository owner on a Chromecast with Google TV against the `f01b519` debug build. That attestation, its gaps (OS build, remote model, APK hash not captured) and the exact scope are recorded in the [launcher README](../launcher/README.md#required-physical-device-validation-merge-gate); it is one device, not a compatibility claim.
 
 ## Findings
 
@@ -162,7 +164,7 @@ This direction follows Android's [TV focus system](https://developer.android.com
 
 The implementation is in [`LauncherActivity.kt`](../launcher/app/src/main/java/tv/corebuilds/launcher/LauncherActivity.kt), [`LauncherApps.kt`](../launcher/app/src/main/java/tv/corebuilds/launcher/LauncherApps.kt), [`LauncherPreferences.kt`](../launcher/app/src/main/java/tv/corebuilds/launcher/LauncherPreferences.kt), [`LauncherUi.kt`](../launcher/app/src/main/java/tv/corebuilds/launcher/LauncherUi.kt), [`ManageFavoritesActivity.kt`](../launcher/app/src/main/java/tv/corebuilds/launcher/ManageFavoritesActivity.kt), and [`AndroidManifest.xml`](../launcher/app/src/main/AndroidManifest.xml). [`tests/test_gradle_envelope.py`](../tests/test_gradle_envelope.py) has source/manifest contract assertions; those checks are not Android UI automation or physical-device evidence. The launcher README contains the [required hardware-validation record](../launcher/README.md#required-physical-device-validation-merge-gate).
 
-Not included: recommendation channels, media playback, custom system wallpaper, search, account/cloud sync, weather, sports feeds, key remapping, accessibility-based Home interception, vendor-specific setup, or a public distribution path.
+Not included: recommendation channels, media playback, custom system wallpaper, search, account/cloud sync, weather, sports feeds, key remapping, accessibility-based Home interception, vendor-specific setup, or any public distribution path — the only artifact lane is a dispatch-only private pre-release of the debug APK.
 
 ### KDoc coverage for the private prototype
 
