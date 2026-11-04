@@ -28,6 +28,15 @@ import kotlin.math.ln
  * 4. **Signal-to-noise and bandwidth are read from the raw capture still** — the
  *    response scales signal and noise alike, so SNR is already response-free, and the
  *    capture's bandwidth edge stays the capture's, not the metadata's idea of it.
+ * 5. **One capsule, or nothing.** Points labelled to more than one microphone are a
+ *    blend, and blending two unknown responses yields a third curve that matches
+ *    neither; spatial averaging is legitimate for one measurement mic at several
+ *    positions, not for different capsules in fixed positions. A multi-label list
+ *    is refused whole — [microphoneCount] — in favour of leaving the measurement
+ *    alone. So is a one-label list from a capture Android says several microphones
+ *    made: the mics that reported nothing still shaped the recording, so one
+ *    capsule's curve does not describe it. [verdict] is the single rule; [flatten]
+ *    and the capture's summary and export notes all read it.
  *
  * Pure Kotlin so the whole rule is unit-tested without Android ([MicResponseTest]).
  */
@@ -83,18 +92,62 @@ object MicResponse {
     }
 
     /**
+     * How many distinct microphones the valid points come from. Zero or one means
+     * the list is one capsule's curve and can be read as such; two or more means
+     * Android reported several capsules and the concatenation describes none of them.
+     * The count is only as good as the labels, so CaptureEngine makes them unique
+     * per mic at capture time (description, " #index"-suffixed when several mics
+     * report). Profiles saved before that suffix exist, but nothing re-flattens a
+     * saved list, so the collision can no longer reach a live measurement.
+     */
+    fun microphoneCount(points: List<MicrophoneResponsePoint>): Int =
+        points.valid().map { it.microphone }.distinct().size
+
+    /** The first gate a capture's response falls at, in the order [flatten] checks them. */
+    enum class Verdict {
+        /** Enough points, one capsule, no more than one active microphone: subtracted. */
+        APPLIED,
+        /** Enough points, but several microphones made the capture: refused whole. */
+        SEVERAL_MICS,
+        /** Points reported, but fewer than [MIN_POINTS] usable ones: kept as metadata. */
+        TOO_FEW,
+        /** Nothing reported: the correction is room-only. */
+        NONE
+    }
+
+    /**
+     * Whether [points] may be applied to the capture they came with. Sufficiency is
+     * checked first, so a thin multi-mic list reads [Verdict.TOO_FEW] (it would be
+     * refused even from one capsule). Then the capsule count: more than one label,
+     * or [activeMicrophones] above one, is [Verdict.SEVERAL_MICS]. Two active mics
+     * where only one reported points is still a two-mic recording, and the labels
+     * cannot see the mic that reported nothing. Null [activeMicrophones] means
+     * Android did not say, and the labels decide alone.
+     */
+    fun verdict(points: List<MicrophoneResponsePoint>, activeMicrophones: Int? = null): Verdict = when {
+        !applicable(points) -> if (points.isEmpty()) Verdict.NONE else Verdict.TOO_FEW
+        microphoneCount(points) > 1 || (activeMicrophones ?: 0) > 1 -> Verdict.SEVERAL_MICS
+        else -> Verdict.APPLIED
+    }
+
+    /**
      * [measuredDb] with the microphone's reported response subtracted, per band:
      * the deconvolution. Every band outside the reported span, every non-finite band,
-     * and the whole array when [points] are not [applicable], come back unchanged.
-     * The correction, the nulls and the roll-off that follow read this curve.
+     * and the whole array unless [verdict] is [Verdict.APPLIED], come back unchanged:
+     * a blended two-capsule curve is not a third, averaging-friendly curve — it
+     * matches neither capsule, so it is refused whole, exactly like thin data is.
+     * [activeMicrophones] is the capture's count from Android
+     * ([tv.corebuilds.eq.export.CaptureInfo.activeMicrophoneCount]). The correction,
+     * the nulls and the roll-off that follow read this curve.
      */
     fun flatten(
         centresHz: DoubleArray,
         measuredDb: DoubleArray,
-        points: List<MicrophoneResponsePoint>
+        points: List<MicrophoneResponsePoint>,
+        activeMicrophones: Int? = null
     ): DoubleArray {
         require(centresHz.size == measuredDb.size) { "centres and measured must be the same length" }
-        if (!applicable(points)) return measuredDb.copyOf()
+        if (verdict(points, activeMicrophones) != Verdict.APPLIED) return measuredDb.copyOf()
         return DoubleArray(measuredDb.size) { k ->
             val m = measuredDb[k]
             if (!m.isFinite()) return@DoubleArray m
@@ -108,5 +161,58 @@ object MicResponse {
         val ps = points.valid().distinctBy { it.frequencyHz }
         if (ps.size < 2) return null
         return ps.first().frequencyHz to ps.last().frequencyHz
+    }
+
+    /** [spanHz] as text: whole Hz below 1 kHz, tenths of a kHz above, so a low span never reads "0.0 kHz". */
+    fun spanText(points: List<MicrophoneResponsePoint>): String? =
+        spanHz(points)?.let { (low, high) -> "${hzText(low)}-${hzText(high)}" }
+
+    private fun hzText(hz: Double): String =
+        if (hz < 1_000.0) String.format(java.util.Locale.US, "%.0f Hz", hz)
+        else String.format(java.util.Locale.US, "%.1f kHz", hz / 1_000.0)
+
+    /** One active microphone's report as Android gave it: its description and (Hz, dB) points. */
+    class Report(val description: String?, val points: List<Pair<Double, Double>>)
+
+    /** Longest description kept, so a label plus its " #n" suffix fits the 80-character export field. */
+    private const val MAX_DESCRIPTION = 72
+
+    /**
+     * One capture's reports as labelled points, at most [maxPoints] in all, from the
+     * first [maxMicrophones] mics. Both capture paths (the TV's own, and the phone
+     * companion's) build their list here, so the single-capsule guard reads the same
+     * thing from each.
+     *
+     * - **Each mic gets an equal share of [maxPoints].** A first mic with a long list
+     *   could otherwise take the whole budget, leave the next mic no points, and make a
+     *   multi-mic capture look like one capsule to [microphoneCount], so [flatten] would
+     *   apply the first mic's curve to a capture several mics made.
+     * - **With more than one mic, every label carries its position** ("#1", "#2"), so two
+     *   mics sharing a description ("Built-in microphone") stay two capsules.
+     */
+    fun collect(
+        reports: List<Report>,
+        fallbackName: String,
+        maxMicrophones: Int,
+        maxPoints: Int
+    ): List<MicrophoneResponsePoint> {
+        val used = reports.take(maxMicrophones)
+        if (used.isEmpty() || maxPoints <= 0) return emptyList()
+        val share = maxPoints / used.size
+        val out = mutableListOf<MicrophoneResponsePoint>()
+        used.forEachIndexed { index, report ->
+            val description = report.description?.trim()?.takeIf(String::isNotEmpty)?.take(MAX_DESCRIPTION)
+            val label = if (reports.size > 1) "${description ?: fallbackName} #${index + 1}"
+            else description ?: "$fallbackName 1"
+            // Same band as valid(), applied before the share is taken: points
+            // valid() would drop must not spend a mic's share, or a second mic
+            // whose list opens out of band keeps nothing and the capture reads
+            // as one capsule again.
+            report.points.asSequence()
+                .filter { (hz, db) -> hz in SUPPORTED_HZ && db.isFinite() }
+                .take(share)
+                .forEach { (hz, db) -> out += MicrophoneResponsePoint(label, hz, db) }
+        }
+        return out
     }
 }

@@ -14,9 +14,9 @@ import android.media.audiofx.NoiseSuppressor
 import android.util.Log
 import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.audioDeviceTypeLabel
+import tv.corebuilds.eq.dsp.MicResponse
 import tv.corebuilds.eq.dsp.Resample
 import tv.corebuilds.eq.export.CaptureInfo
-import tv.corebuilds.eq.export.MicrophoneResponsePoint
 import kotlin.concurrent.thread
 import kotlin.math.abs
 import kotlin.math.log10
@@ -42,10 +42,13 @@ interface CaptureListener {
  * converted to the analysis rate with a correctly band-limited resampler.
  *
  * The actual input route, sample rate, active-microphone metadata and effect
- * state travel with the saved profile. Any platform microphone-response data
- * is retained as provenance only; it is not silently used to alter the EQ.
- * There is no simulation fallback: a capture that cannot happen is an error,
- * never a made-up spectrum.
+ * state travel with the saved profile. Microphone-response data reported by
+ * the platform is retained there AND consumed: [MicResponse.flatten] applies
+ * it at analysis time when [MicResponse.MIN_POINTS] or more usable points
+ * arrive, within the reported span only; [CaptureInfo.summary] states which
+ * of those cases happened, per capture, in the log line and on the result
+ * notes. There is no simulation fallback: a capture that cannot happen is an
+ * error, never a made-up spectrum.
  */
 class CaptureEngine(private val context: Context) {
 
@@ -342,24 +345,31 @@ class CaptureEngine(private val context: Context) {
             emptyList()
         }
         val descriptions = activeMicrophones.mapNotNull { it.description?.trim()?.takeIf(String::isNotEmpty) }.distinct()
-        val response = mutableListOf<MicrophoneResponsePoint>()
-        activeMicrophones.take(MAX_RESPONSE_MICROPHONES).forEachIndexed { index, microphone ->
-            val label = microphone.description?.trim()?.takeIf(String::isNotEmpty) ?: "active mic ${index + 1}"
-            val points = try {
-                microphone.frequencyResponse
-            } catch (e: RuntimeException) {
-                Log.w(TAG, "Frequency response for $label was not reported", e)
-                emptyList()
-            }
-            for (point in points.take(MAX_RESPONSE_POINTS - response.size)) {
-                val hz = point.first?.toDouble() ?: continue
-                val db = point.second?.toDouble() ?: continue
-                if (hz > 0.0 && hz.isFinite() && db.isFinite()) {
-                    response += MicrophoneResponsePoint(label, hz, db)
+        // MicResponse.collect labels each mic uniquely and shares the point
+        // budget between them: the labels are the capsule identity the
+        // single-capsule guard counts, so neither a shared description nor a
+        // long first list may make several mics read as one.
+        val response = MicResponse.collect(
+            activeMicrophones.mapIndexed { index, microphone ->
+                val points = try {
+                    microphone.frequencyResponse
+                } catch (e: RuntimeException) {
+                    Log.w(TAG, "Frequency response for active mic ${index + 1} was not reported", e)
+                    emptyList()
                 }
-            }
-            if (response.size >= MAX_RESPONSE_POINTS) return@forEachIndexed
-        }
+                MicResponse.Report(
+                    microphone.description,
+                    points.mapNotNull { p ->
+                        val hz = p.first?.toDouble() ?: return@mapNotNull null
+                        val db = p.second?.toDouble() ?: return@mapNotNull null
+                        hz to db
+                    }
+                )
+            },
+            fallbackName = "active mic",
+            maxMicrophones = MAX_RESPONSE_MICROPHONES,
+            maxPoints = MAX_RESPONSE_POINTS
+        )
         val inputType = route?.let { audioDeviceTypeLabel(it.type) }
         val inputName = route?.productName?.toString()?.trim()?.takeIf(String::isNotEmpty)
         val info = CaptureInfo(
