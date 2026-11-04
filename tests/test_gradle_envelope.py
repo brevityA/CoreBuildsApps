@@ -845,6 +845,12 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertIn("--clobber", workflow)
         self.assertIn("Private pre-release lane", readme)
         self.assertIn("gh workflow run core-launcher-release.yml", readme)
+        # The record must name the published artifact and admit which build the
+        # device pass actually covered; a tag cut after the test cannot inherit it.
+        self.assertIn("Tested build vs shipped tag", readme)
+        self.assertIn("releases/tag/launcher-v", readme)
+        self.assertRegex(readme, r"APK SHA-256 `[0-9a-f]{64}`")
+        self.assertIn("not covered by the Google TV pass", readme)
 
     def test_package_updates_refresh_labels_and_banner_art(self):
         activity = self.ACTIVITY.read_text(encoding="utf-8")
