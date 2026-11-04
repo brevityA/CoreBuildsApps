@@ -32,6 +32,11 @@ internal object LauncherAppCatalog {
                 val activity = resolved.activityInfo ?: return@activityLoop
                 val packageName = activity.packageName
                 if (packageName == context.packageName) return@activityLoop
+                // An entry guarded by a permission this launcher does not hold
+                // throws SecurityException on launch. Skip it, so the package's
+                // other launchable entry (often its LAUNCHER one) is kept instead
+                // of a tile that can only show the "denied" toast.
+                if (!canStart(pm, context.packageName, activity.permission)) return@activityLoop
 
                 val previous = byPackage[packageName]
                 // A package can expose both mobile and TV activities. Keep the
@@ -75,6 +80,10 @@ internal object LauncherAppCatalog {
                 .thenBy { it.packageName },
         )
     }
+
+    /** True when [ownPackage] may start an activity guarded by [permission] (null means unguarded). */
+    internal fun canStart(pm: PackageManager, ownPackage: String, permission: String?): Boolean =
+        permission.isNullOrEmpty() || pm.checkPermission(permission, ownPackage) == PackageManager.PERMISSION_GRANTED
 
     @Suppress("DEPRECATION")
     private fun packageLastUpdateTime(pm: PackageManager, packageName: String): Long = try {
