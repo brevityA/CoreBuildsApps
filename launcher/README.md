@@ -75,7 +75,9 @@ Some televisions restrict third-party HOME selection. This prototype intentional
 
 **Current sign-off: PASS — 8/8 hardware checks run on Google TV.** The repository owner reported all eight checks as PASS on a **Chromecast with Google TV** on 2026-11-04, during PR #435 review, against the `f01b519` debug artifact. No logs, screenshots, or per-check notes were supplied, and the exact Google TV OS build, remote model, and APK SHA-256 were not captured; those gaps are marked in the record below rather than filled in. This README section is the single source of truth for hardware-validation status and results.
 
-**Attestation scope:** the sign-off covers the single Google TV device recorded below. It is not a claim about Fire TV, other vendors, other Android TV OS versions, or the unbuilt release variant, which do not exist. Build, lint, and source-level checks never substitute for this record.
+**Attestation scope:** the sign-off covers the single Google TV device recorded below. It is not a claim about Fire TV, other vendors, or other Android TV OS versions. Build, lint, and source-level checks never substitute for this record.
+
+**Tested build vs shipped tag.** The eight PASS results attest to the `f01b5194bc71c3fd917b79ce5e6b02e19150d4e6` debug artifact. The [launcher-v0.1.0 pre-release](https://github.com/brevityA/CoreBuildsApps/releases/tag/launcher-v0.1.0) was cut later from `7c017a5e7e5728e01f19cd46a34d5a42230ab761` (APK SHA-256 `6cdfbc4cd18da4ddad116e15b6d4494331e374ccf42cd03b255ef2f4fa308e9f`), which adds three review fixes made after that test: package entries this launcher may not start are skipped before they are kept, the favourites editor reloads on return and restores focus to the same app, and the offline preview joined the CI mockup checks. Those three paths are therefore **not covered by the Google TV pass**; re-run this checklist against the pre-release APK before treating v0.1.0 as device-verified.
 
 **Validation owner:** Repository owner (reported PASS in PR #435 review, 2026-11-04).
 
