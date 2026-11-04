@@ -750,7 +750,8 @@ internal class CompanionServer(
         val result = try {
             SweepAnalysis.analyze(
                 samples, rate, session.target, session.volumeM3,
-                micResponse = captureInfo.microphoneResponse
+                micResponse = captureInfo.microphoneResponse,
+                activeMicrophones = captureInfo.activeMicrophoneCount
             )
         } catch (e: MeasurementException) {
             throw e
