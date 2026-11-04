@@ -326,5 +326,15 @@ data class ContentTypePrefs(
         const val KEY_MANUAL_TYPE = "manual_type"
         const val KEY_SHOW_NOTIFICATION = "show_notification"
         const val KEY_STICKY_OVERRIDE = "sticky_override"
+
+        /**
+         * The content type the Content type screen's choice resolves to: the app
+         * detected playing while auto-detect is on (Everyday when it is not
+         * recognised), the manual pick otherwise. The playback service and Manual
+         * EQ's suggestion both read it here, so they cannot disagree about it.
+         */
+        fun pick(autoSwitch: Boolean, manualKey: String?, activePackages: Set<String>): ContentType =
+            if (autoSwitch) ContentTypeRegistry.resolve(activePackages) ?: ContentType.GENERAL
+            else ContentType.fromKey(manualKey)
     }
 }

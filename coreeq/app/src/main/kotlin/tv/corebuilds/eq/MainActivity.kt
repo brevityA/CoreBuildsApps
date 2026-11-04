@@ -109,31 +109,9 @@ class MainActivity : TvActivity() {
         btnToggle.setOnClickListener { toggleCorrection() }
         btnAbBypass = findViewById(R.id.btn_ab_bypass)
         btnAbBypass.setOnClickListener { toggleBypass() }
-        findViewById<Button>(R.id.btn_nav_manual_eq).setOnClickListener {
-            startActivity(Intent(this, ManualEqActivity::class.java))
-        }
+        // The screens Home used to list are in the rail now; RailNav (wired by
+        // TvActivity.onContentChanged) opens them, the same screens as before.
         btnModes.setOnClickListener { startActivity(Intent(this, ModeActivity::class.java)) }
-        findViewById<Button>(R.id.btn_nav_profiles).setOnClickListener {
-            startActivity(Intent(this, ProfilesActivity::class.java))
-        }
-        findViewById<Button>(R.id.btn_nav_capability).setOnClickListener {
-            startActivity(Intent(this, CapabilityActivity::class.java))
-        }
-        findViewById<Button>(R.id.btn_nav_setup).setOnClickListener {
-            startActivity(Intent(this, SetupActivity::class.java))
-        }
-        findViewById<Button>(R.id.btn_nav_companion).setOnClickListener {
-            startActivity(Intent(this, CompanionActivity::class.java))
-        }
-        findViewById<Button>(R.id.btn_nav_display_calibration).setOnClickListener {
-            startActivity(Intent(this, tv.corebuilds.eq.display.DisplayCalibrationActivity::class.java))
-        }
-        findViewById<Button>(R.id.btn_nav_content_type).setOnClickListener {
-            startActivity(Intent(this, ContentTypeActivity::class.java))
-        }
-        findViewById<Button>(R.id.btn_nav_extras).setOnClickListener {
-            startActivity(Intent(this, EnhancedAudioSettingsActivity::class.java))
-        }
         updateBarInstall.setOnClickListener { startPendingUpdate() }
         findViewById<Button>(R.id.update_bar_later).setOnClickListener {
             pendingUpdate?.let { updatePrefs.dismiss(it.versionCode) }
@@ -147,7 +125,7 @@ class MainActivity : TvActivity() {
             cardPermissionBar.visibility = View.GONE
         }
 
-        findViewById<Button>(R.id.btn_remeasure).requestFocus()
+        focusOnOpen(findViewById<Button>(R.id.btn_remeasure))
         maybeShowFirstRunGuide()
     }
 
@@ -460,7 +438,7 @@ class MainActivity : TvActivity() {
         if (profile.manualOnly) {
             textProfileSub.text = "Manual EQ · no room measurement · ${profile.manualFilters.size} tone bands · $outputLabel"
         } else {
-            val targetName = profile.target.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString() }
+            val targetName = "${tv.corebuilds.eq.dsp.Targets.label(profile.target)} target"
             val rt = profile.rt60Seconds?.let { String.format(Locale.US, "RT60 %.2f s", it) } ?: "RT60 unknown"
             val measurementLimit = if (profile.measurementNotes.isNotEmpty()) " · magnitude-only; phase unverified" else ""
             val manual = if (profile.manualFilters.isNotEmpty()) " · ${profile.manualFilters.size} tone bands" else ""

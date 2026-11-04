@@ -474,7 +474,7 @@ class ProfilesActivity : TvActivity() {
         override fun onBindViewHolder(holder: ProfileViewHolder, position: Int) {
             val item = items[position]
             holder.textName.text = item.name
-            val targetTitle = item.target.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString() }
+            val targetTitle = "${tv.corebuilds.eq.dsp.Targets.label(item.target)} target"
             val rt = item.rt60Seconds?.let { String.format(Locale.US, "RT60 %.2f s", it) } ?: "RT60 unknown"
             val measurementLimit = if (item.measurementNotes.isNotEmpty()) " · magnitude-only; phase unverified" else ""
             val overlays = ContentMode.entries

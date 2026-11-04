@@ -89,7 +89,7 @@ class DisplayCalibrationActivity : TvActivity() {
         btnToggleOverlay.setOnClickListener { toggleOverlay() }
 
         showStep(0)
-        btnNext.requestFocus()
+        focusOnOpen(btnNext)
     }
 
     /** What Android says this display is. Read once: a TV does not change mode mid-calibration. */
@@ -207,6 +207,10 @@ class DisplayCalibrationActivity : TvActivity() {
                 gravity = android.view.Gravity.START or android.view.Gravity.CENTER_VERTICAL
                 background = getDrawable(R.drawable.bg_ghost)
                 setTextColor(getColor(R.color.ghost_text))
+                // Full width: rise under focus, do not scale past the panel's edge.
+                stateListAnimator = android.animation.AnimatorInflater.loadStateListAnimator(
+                    this@DisplayCalibrationActivity, R.animator.focus_raise
+                )
                 minHeight = resources.getDimensionPixelSize(R.dimen.cb_target_min)
                 isFocusable = true
                 isFocusableInTouchMode = false

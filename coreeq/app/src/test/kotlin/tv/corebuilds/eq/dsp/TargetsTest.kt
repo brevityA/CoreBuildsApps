@@ -132,4 +132,20 @@ class TargetsTest {
         }
     }
 
+    @Test
+    fun everyTargetKeyHasOneNameOnEveryScreen() {
+        // Home and Profiles capitalised the key ("Bk", "Custom") and the phone called
+        // `house` "Harman", the name `room` replaced because it overclaimed.
+        assertEquals("B&K 1974", Targets.label("bk"))
+        assertEquals("Imported file", Targets.label(CustomTarget.KEY))
+        assertEquals("House", Targets.label("house"))
+        assertEquals("Olive 2013", Targets.label("olive"))
+        assertEquals("Room", Targets.label("harman")) // the pre-rename key for the same curve
+        assertEquals("Dialogue", Targets.label(" Dialogue "))
+        assertEquals("Flat", Targets.label("flat"))
+        assertEquals("Newcurve", Targets.label("newcurve"))
+        for (key in listOf("flat", "room", "olive", "dialogue", "house", "bk", "harman", CustomTarget.KEY)) {
+            assertTrue(key, Targets.label(key).isNotBlank() && Targets.label(key) != key)
+        }
+    }
 }

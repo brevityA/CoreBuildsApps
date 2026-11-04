@@ -32,6 +32,9 @@ object ManualEq {
     const val STEP_DB = 0.5
     const val DEFAULT_Q = 1.0
 
+    /** Every preset a person saves gets an id with this prefix; shipped ones never do. */
+    const val USER_PRESET_ID_PREFIX = "custom-"
+
     val BAND_CENTRES_HZ = listOf(
         40.0, 63.0, 125.0, 250.0, 500.0,
         1_000.0, 2_000.0, 4_000.0, 6_300.0, 8_000.0

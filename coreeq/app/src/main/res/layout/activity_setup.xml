@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- One-tap setup check (rail and stage since 1.12.0). The rows are built in
+     code (SetupActivity.rowFor) and re-read from Android on every resume. -->
+<tv.corebuilds.eq.ui.RailStageLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="@color/cb_night">
+
+<include layout="@layout/view_rail" />
+
+<LinearLayout
+    android:id="@+id/stage"
+    android:layout_width="0dp"
+    android:layout_weight="1"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/cb_night"
-    android:paddingLeft="@dimen/cb_gutter_side"
-    android:paddingRight="@dimen/cb_gutter_side"
-    android:paddingTop="@dimen/cb_gutter_top"
-    android:paddingBottom="@dimen/cb_gutter_bottom">
+    android:paddingStart="@dimen/cb_stage_start"
+    android:paddingEnd="@dimen/cb_stage_end"
+    android:paddingTop="@dimen/cb_stage_top"
+    android:paddingBottom="@dimen/cb_stage_bottom"
+    android:clipToPadding="false"
+    android:clipChildren="false">
+
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/setup_title"
-        android:textColor="@color/cb_slate"
-        android:textSize="@dimen/cb_text_kicker"
-        android:fontFamily="monospace"
-        android:textAllCaps="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/setup_heading"
-        android:textColor="@color/cb_ink"
-        android:textSize="@dimen/cb_text_title"
-        android:textStyle="bold"
-        android:layout_marginTop="4dp" />
+        style="@style/CoreEQ.Title"
+        android:text="@string/setup_heading" />
 
     <TextView
         android:id="@+id/text_setup_status"
@@ -33,13 +34,18 @@
         android:layout_height="wrap_content"
         android:textColor="@color/cb_slate"
         android:textSize="@dimen/cb_text_data"
-        android:layout_marginTop="2dp" />
+        android:layout_marginTop="4dp" />
 
     <ScrollView
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginTop="@dimen/cb_space_md"
+        android:requiresFadingEdge="vertical"
+        android:fadingEdgeLength="@dimen/cb_space_xl"
+        android:clipToPadding="true"
         android:scrollbars="none">
 
         <LinearLayout
@@ -53,32 +59,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:clipChildren="false"
         android:layout_marginTop="@dimen/cb_space_sm">
 
         <Button
             android:id="@+id/btn_setup_check"
-            style="@style/CoreEQ.ActionRow"
-            android:layout_width="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
+            style="@style/Widget.CoreEQ.Pill"
             android:text="@string/setup_check_again" />
 
         <Button
             android:id="@+id/btn_setup_copy_report"
-            style="@style/CoreEQ.ActionRow"
-            android:layout_width="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
+            style="@style/Widget.CoreEQ.Pill.Ghost"
+            android:layout_marginStart="@dimen/cb_space_xs"
             android:text="@string/setup_copy_report" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <Button
             android:id="@+id/btn_setup_done"
-            style="@style/CoreEQ.ActionRow"
-            android:layout_width="wrap_content"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
+            style="@style/Widget.CoreEQ.Pill.Cta"
+            android:minWidth="128dp"
             android:text="@string/manual_eq_done" />
     </LinearLayout>
 </LinearLayout>
+</tv.corebuilds.eq.ui.RailStageLayout>

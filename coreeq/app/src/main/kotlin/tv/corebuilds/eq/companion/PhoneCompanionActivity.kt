@@ -92,14 +92,10 @@ class PhoneCompanionActivity : AppCompatActivity() {
     @Volatile private var repeatFallbackSessionId: String? = null
     @Volatile private var operationInProgress = false
 
-    private val targets = listOf(
-        "dialogue" to "Dialogue",
-        "room" to "Room",
-        "bk" to "B&K",
-        "flat" to "Flat",
-        "olive" to "Olive",
-        "house" to "Harman"
-    )
+    // Labels come from Targets.label so the phone and the TV name a profile's target
+    // the same way; `house` was shown here as "Harman", the name `room` replaced.
+    private val targets = listOf("dialogue", "room", "bk", "flat", "olive", "house")
+        .map { it to tv.corebuilds.eq.dsp.Targets.label(it) }
     private val rooms = listOf(
         RoomChoice("Not provided", null),
         RoomChoice("20 m³", 20.0),

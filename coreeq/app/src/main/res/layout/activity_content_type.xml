@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Fits 960 x 540dp without scrolling at the default text size. The
-     ScrollView is for a TV whose system text size is turned up: the chips
-     and Done then scroll into view as the D-pad reaches them, instead of
-     sitting below the screen with no way to reach them. -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Content type (rail and stage since 1.12.0). Fits the stage without
+     scrolling at the default text size. The ScrollView is for a TV whose
+     system text size is turned up: the chips and Done then scroll into view
+     as the D-pad reaches them, instead of sitting below the screen with no
+     way to reach them. -->
+<tv.corebuilds.eq.ui.RailStageLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/cb_night"
+    android:orientation="horizontal"
+    android:background="@color/cb_night">
+
+<include layout="@layout/view_rail" />
+
+<ScrollView
+    android:id="@+id/stage"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
     android:fillViewport="true"
+    android:clipToPadding="false"
     android:requiresFadingEdge="vertical"
     android:fadingEdgeLength="@dimen/cb_space_xl"
     android:scrollbars="none">
@@ -17,45 +28,32 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/cb_gutter_side"
-    android:paddingRight="@dimen/cb_gutter_side"
-    android:paddingTop="@dimen/cb_gutter_top"
-    android:paddingBottom="@dimen/cb_gutter_bottom">
-
-    <!-- Header -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/content_type_kicker"
-        android:textColor="@color/cb_slate"
-        android:textSize="@dimen/cb_text_kicker"
-        android:fontFamily="monospace"
-        android:textAllCaps="true" />
+    android:paddingStart="@dimen/cb_stage_start"
+    android:paddingEnd="@dimen/cb_stage_end"
+    android:paddingTop="@dimen/cb_stage_top"
+    android:paddingBottom="@dimen/cb_stage_bottom"
+    android:clipToPadding="false"
+    android:clipChildren="false">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/content_type_heading"
-        android:textColor="@color/cb_ink"
-        android:textSize="@dimen/cb_text_title"
-        android:textStyle="bold"
-        android:layout_marginTop="4dp" />
+        style="@style/CoreEQ.Title"
+        android:text="@string/content_type_heading" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/CoreEQ.Lede"
         android:text="@string/content_type_subtitle"
-        android:textColor="@color/cb_slate"
-        android:textSize="@dimen/cb_text_data"
-        android:layout_marginTop="2dp" />
+        android:layout_marginTop="4dp" />
 
     <!-- Current selection -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/bg_card"
-        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_section"
+        android:paddingStart="@dimen/cb_space_md"
+        android:paddingEnd="@dimen/cb_space_md"
+        android:paddingTop="@dimen/cb_space_sm"
+        android:paddingBottom="@dimen/cb_space_sm"
         android:layout_marginTop="@dimen/cb_space_md">
 
         <TextView
@@ -64,7 +62,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/cb_signal_cyan"
             android:textSize="@dimen/cb_text_section"
-            android:textStyle="bold" />
+            android:textFontWeight="600" />
 
         <TextView
             android:id="@+id/text_content_type_description"
@@ -91,6 +89,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:baselineAligned="false"
+        android:clipChildren="false"
         android:layout_marginTop="@dimen/cb_space_md">
 
         <Button
@@ -128,6 +127,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:baselineAligned="false"
+        android:clipChildren="false"
         android:layout_marginTop="@dimen/cb_space_xs">
 
         <Button
@@ -165,36 +165,25 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:baselineAligned="false"
+        android:clipChildren="false"
         android:layout_marginTop="@dimen/cb_space_md">
 
         <Button
             android:id="@+id/btn_content_auto"
+            style="@style/Widget.CoreEQ.Pill.Switch"
             android:layout_width="0dp"
-            android:layout_height="@dimen/cb_target_min"
             android:layout_weight="1"
-            android:background="@drawable/bg_toggle"
-            android:drawableEnd="@drawable/ic_switch"
-            android:drawablePadding="@dimen/cb_space_sm"
-            android:textColor="@color/cb_ink"
-            android:textSize="@dimen/cb_text_data"
             android:gravity="start|center_vertical"
-            android:paddingStart="@dimen/cb_card_padding"
-            android:paddingEnd="@dimen/cb_card_padding"
-            android:focusable="true"
+            android:stateListAnimator="@animator/focus_raise"
             tools:text="Auto-detect: On" />
 
         <Button
             android:id="@+id/btn_content_done"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/cb_target_min"
-            android:minWidth="@dimen/cb_button_min_width"
-            android:background="@drawable/bg_cta"
+            style="@style/Widget.CoreEQ.Pill.Cta"
+            android:minWidth="160dp"
             android:text="@string/mode_done"
-            android:textColor="@color/cta_text"
-            android:textSize="@dimen/cb_text_label"
-            android:textStyle="bold"
-            android:focusable="true"
             android:layout_marginStart="@dimen/cb_space_sm" />
     </LinearLayout>
 </LinearLayout>
 </ScrollView>
+</tv.corebuilds.eq.ui.RailStageLayout>

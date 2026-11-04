@@ -9,7 +9,6 @@
     <dimen name="cb_gutter_top">40dp</dimen>
     <dimen name="cb_gutter_bottom">24dp</dimen>
     <dimen name="cb_gutter_side_narrow">32dp</dimen>
-    <dimen name="cb_rail_width">300dp</dimen>
 
     <!-- Spacing rhythm -->
     <dimen name="cb_space_xs">8dp</dimen>
@@ -36,16 +35,13 @@
 
     <!-- Minimum touch / D-pad target -->
     <dimen name="cb_target_min">48dp</dimen>
-    <!-- Home menu rows: six of them, two headings and the profile card must
-         share 540dp with the header, so these sit a little under cb_target_min.
-         Focus is by D-pad, and every row keeps the full focus ring. -->
+    <!-- A row in a list of rows (CoreEQ.MenuRow), a little under cb_target_min;
+         focus is by D-pad, and every row keeps the full focus ring. -->
     <dimen name="cb_menu_row">44dp</dimen>
-    <!-- Extra effects: the switch list; the explanation panel takes the rest. -->
-    <dimen name="cb_extras_list">400dp</dimen>
-    <dimen name="cb_button_min_width">220dp</dimen>
-    <!-- Support: two codes side by side. Their URLs encode at 29 modules,
-         about 6dp a module at this size. -->
-    <dimen name="cb_support_qr">220dp</dimen>
+    <!-- Support: two codes side by side beside the rail (1.12.0). Their URLs
+         encode at 29 modules plus the quiet zone, about 5dp a module at this
+         size: 6mm on a 55-inch panel, well inside a phone camera's reach. -->
+    <dimen name="cb_support_qr">184dp</dimen>
 
     <!-- The on-screen card over other apps (1.3.0). Placed top right, inset
          by the screen gutters; text stops at 360dp so a long profile name ends
@@ -57,8 +53,26 @@
     <dimen name="cb_text_kicker">12sp</dimen>
     <dimen name="cb_text_data">14sp</dimen>
     <dimen name="cb_text_label">16sp</dimen>
-    <dimen name="cb_text_body">17sp</dimen>
     <dimen name="cb_text_section">19sp</dimen>
-    <dimen name="cb_text_title">32sp</dimen>
     <dimen name="cb_text_display">34sp</dimen>
+
+    <!-- Rail and stage (1.12.0). The rail is the left navigation column on
+         every screen that has one; the stage is the rest of the 960dp box. -->
+    <dimen name="cb_nav_rail_width">208dp</dimen>
+    <dimen name="cb_rail_item">40dp</dimen>
+    <dimen name="cb_rail_icon">18dp</dimen>
+    <dimen name="cb_stage_start">32dp</dimen>
+    <dimen name="cb_stage_end">40dp</dimen>
+    <dimen name="cb_stage_top">28dp</dimen>
+    <dimen name="cb_stage_bottom">20dp</dimen>
+    <!-- Pills: the standard control is 48dp, the dense one 40dp. -->
+    <dimen name="cb_pill">48dp</dimen>
+    <dimen name="cb_pill_compact">40dp</dimen>
+    <dimen name="cb_pill_padding">18dp</dimen>
+    <dimen name="cb_radius_section">16dp</dimen>
+    <dimen name="cb_radius_rail_item">12dp</dimen>
+    <!-- How far a focused control rises (its shadow is tinted cyan). -->
+    <dimen name="cb_lift_z">6dp</dimen>
+    <dimen name="cb_text_button">15sp</dimen>
+    <dimen name="cb_text_stage_title">28sp</dimen>
 </resources>

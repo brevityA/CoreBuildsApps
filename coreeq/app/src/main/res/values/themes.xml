@@ -1,34 +1,198 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Core EQ's look (1.12.0, "rail and stage"): Outfit throughout, monospace only
+  for numbers and commands; pills for controls, sections for groups, a rail
+  for navigation. Every focusable control keeps the Brand Guide §05 3dp cyan
+  ring; compact controls also lift (scale 1.04, 6dp) and wide ones only rise.
+-->
 <resources>
     <style name="Theme.CoreEQ" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@color/cb_night</item>
         <item name="android:textColor">@color/cb_ink</item>
         <item name="android:colorBackground">@color/cb_night</item>
+        <!-- Platform attribute only: AppCompat's app:fontFamily, set on a theme,
+             overrides android:fontFamily="monospace" on every view that asks
+             for it, so numbers and commands would lose their monospace face. -->
+        <item name="android:fontFamily">@font/outfit</item>
+        <item name="colorAccent">@color/cb_signal_cyan</item>
+        <item name="colorControlActivated">@color/cb_signal_cyan</item>
+        <item name="colorControlHighlight">@color/cb_ripple</item>
         <item name="buttonStyle">@style/Widget.CoreEQ.Button</item>
         <item name="android:buttonStyle">@style/Widget.CoreEQ.Button</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.CoreEQ.Dialog</item>
+        <item name="android:alertDialogTheme">@style/ThemeOverlay.CoreEQ.Dialog</item>
     </style>
 
-    <!-- Sentence case on every button (1.3.0). AppCompat's default capitalises
-         button text, which made labels such as "Low-volume bass: Off" wrap
-         onto two lines and read as shouting. -->
+    <!-- Dialogs: a rounded panel in Outfit, buttons that show the focus ring. -->
+    <style name="ThemeOverlay.CoreEQ.Dialog" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/bg_dialog</item>
+        <item name="android:fontFamily">@font/outfit</item>
+        <item name="android:textColorPrimary">@color/cb_ink</item>
+        <item name="android:textColorSecondary">@color/cb_slate</item>
+        <item name="colorAccent">@color/cb_signal_cyan</item>
+        <item name="colorControlActivated">@color/cb_signal_cyan</item>
+        <item name="colorControlHighlight">@color/cb_ripple</item>
+        <item name="buttonBarButtonStyle">@style/Widget.CoreEQ.DialogButton</item>
+        <item name="android:buttonBarButtonStyle">@style/Widget.CoreEQ.DialogButton</item>
+    </style>
+
+    <style name="Widget.CoreEQ.DialogButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:background">@drawable/bg_dialog_button</item>
+        <item name="android:textColor">@color/cb_signal_cyan</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textSize">@dimen/cb_text_button</item>
+        <item name="android:textFontWeight">600</item>
+        <item name="android:minHeight">44dp</item>
+        <item name="android:paddingStart">18dp</item>
+        <item name="android:paddingEnd">18dp</item>
+    </style>
+
+    <!--
+      Every Button, including the ones built in code (Setup's row actions, the
+      TV companion's pairing buttons): a pill in sentence case. AppCompat's
+      default capitalises button text, which made labels such as "Low-volume
+      bass: Off" wrap onto two lines and read as shouting (1.3.0).
+    -->
     <style name="Widget.CoreEQ.Button" parent="Widget.AppCompat.Button">
         <item name="android:textAllCaps">false</item>
         <item name="textAllCaps">false</item>
+        <item name="android:background">@drawable/bg_pill</item>
+        <item name="android:textColor">@color/ghost_text</item>
+        <item name="android:textSize">@dimen/cb_text_button</item>
+        <item name="android:fontFamily">@font/outfit</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:minHeight">@dimen/cb_target_min</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:paddingStart">@dimen/cb_pill_padding</item>
+        <item name="android:paddingEnd">@dimen/cb_pill_padding</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:stateListAnimator">@animator/focus_lift</item>
+        <item name="android:outlineSpotShadowColor">@color/cb_signal_cyan</item>
+        <item name="android:outlineAmbientShadowColor">@color/cb_signal_cyan</item>
+        <item name="android:focusable">true</item>
     </style>
 
-    <!-- Home menu: a group heading, then one row per screen. -->
+    <!-- A pill at the standard 48dp height. -->
+    <style name="Widget.CoreEQ.Pill" parent="Widget.CoreEQ.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/cb_pill</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">@color/ghost_text</item>
+    </style>
+
+    <!-- Secondary: a cyan edge and label, no body. -->
+    <style name="Widget.CoreEQ.Pill.Ghost">
+        <item name="android:background">@drawable/bg_pill_ghost</item>
+        <item name="android:textColor">@color/pill_ghost_text</item>
+    </style>
+
+    <!-- The one primary action on a screen. -->
+    <style name="Widget.CoreEQ.Pill.Cta">
+        <item name="android:background">@drawable/bg_pill_cta</item>
+        <item name="android:textColor">@color/cta_text</item>
+        <item name="android:textFontWeight">700</item>
+    </style>
+
+    <!-- On/off as a pill: the label says the state, the switch and the cyan body show it (activated). -->
+    <style name="Widget.CoreEQ.Pill.Switch">
+        <item name="android:drawableEnd">@drawable/ic_switch</item>
+        <item name="android:drawablePadding">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+    </style>
+
+
+    <!-- One option in a segmented control (bg_segment_track around a row of these). -->
+    <style name="Widget.CoreEQ.Segment" parent="Widget.CoreEQ.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+        <item name="android:background">@drawable/bg_segment</item>
+        <item name="android:textColor">@color/segment_text</item>
+        <item name="android:textSize">@dimen/cb_text_data</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- Left navigation: one row per screen, icon then name. -->
+    <style name="Widget.CoreEQ.RailItem" parent="Widget.CoreEQ.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/cb_rail_item</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:background">@drawable/bg_rail_item</item>
+        <item name="android:textColor">@color/cb_ink</item>
+        <item name="android:textSize">@dimen/cb_text_data</item>
+        <item name="android:drawablePadding">12dp</item>
+        <item name="android:drawableTint">@color/rail_icon</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <!-- The rail's first row: the brand, which is also the way Home. -->
+    <style name="Widget.CoreEQ.RailItem.Home">
+        <item name="android:layout_height">44dp</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:textSize">@dimen/cb_text_section</item>
+        <item name="android:textFontWeight">600</item>
+    </style>
+
+    <!-- A group heading: in the rail, and above groups on the stage. -->
     <style name="CoreEQ.MenuHeading" parent="android:Widget.TextView">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/cb_signal_cyan</item>
+        <item name="android:textColor">@color/cb_slate</item>
         <item name="android:textSize">@dimen/cb_text_kicker</item>
-        <item name="android:fontFamily">monospace</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/outfit</item>
+        <item name="android:textFontWeight">600</item>
+        <item name="android:letterSpacing">0.12</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:importantForAccessibility">yes</item>
         <item name="android:accessibilityHeading">true</item>
     </style>
 
+    <!-- The small line above a stage title. -->
+    <style name="CoreEQ.Eyebrow" parent="CoreEQ.MenuHeading">
+        <item name="android:accessibilityHeading">false</item>
+    </style>
+
+    <!-- A stage title. -->
+    <style name="CoreEQ.Title" parent="android:Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/cb_ink</item>
+        <item name="android:textSize">@dimen/cb_text_stage_title</item>
+        <item name="android:fontFamily">@font/outfit</item>
+        <item name="android:textFontWeight">600</item>
+        <item name="android:accessibilityHeading">true</item>
+    </style>
+
+    <!-- The sentence under a title. -->
+    <style name="CoreEQ.Lede" parent="android:Widget.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/cb_slate</item>
+        <item name="android:textSize">@dimen/cb_text_data</item>
+        <item name="android:lineSpacingExtra">2dp</item>
+    </style>
+
+    <!--
+      A full-width row (menus, action lists): rises under focus but does not
+      scale, so it is never cut off at its container's edge.
+    -->
     <style name="CoreEQ.MenuRow" parent="Widget.CoreEQ.Button">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/cb_menu_row</item>
@@ -39,18 +203,23 @@
         <item name="android:gravity">start|center_vertical</item>
         <item name="android:paddingStart">@dimen/cb_card_padding</item>
         <item name="android:paddingEnd">@dimen/cb_card_padding</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
         <item name="android:minHeight">0dp</item>
-        <item name="android:focusable">true</item>
+        <item name="android:stateListAnimator">@animator/focus_raise</item>
     </style>
 
-    <!-- A full-width action row on a card (Manual EQ): the Home menu row at full target height. -->
+    <!-- An action in a column of actions (Manual EQ, First run): a full-width
+         pill at target height. Rises under focus; does not scale. -->
     <style name="CoreEQ.ActionRow" parent="CoreEQ.MenuRow">
         <item name="android:layout_height">@dimen/cb_target_min</item>
         <item name="android:layout_marginTop">@dimen/cb_space_xs</item>
+        <item name="android:background">@drawable/bg_pill</item>
+        <item name="android:paddingStart">@dimen/cb_pill_padding</item>
+        <item name="android:paddingEnd">@dimen/cb_pill_padding</item>
     </style>
 
-    <!-- An on/off row (Extra effects): the label says the state, the knob and
-         the cyan tint show it (bg_toggle / ic_switch, keyed on activated). -->
+    <!-- An on/off row: the label says the state, the knob and the cyan tint show it (bg_toggle / ic_switch, keyed on activated). -->
     <style name="CoreEQ.SwitchRow" parent="CoreEQ.MenuRow">
         <item name="android:layout_height">@dimen/cb_target_min</item>
         <item name="android:layout_marginTop">@dimen/cb_space_xs</item>
@@ -71,6 +240,9 @@
         <item name="android:gravity">center</item>
         <item name="android:singleLine">true</item>
         <item name="android:minWidth">0dp</item>
-        <item name="android:focusable">true</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
     </style>
 </resources>

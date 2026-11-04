@@ -96,6 +96,10 @@ class ResourceReferencesTest {
                 }
             }
             idPattern.findAll(text).forEach { add("id", it.groupValues[1]) }
+            // res/values/ids.xml: ids for views built in code, `<item name=".." type="id" />`.
+            itemIdPattern.findAll(text).filter { "type=\"id\"" in it.value }.forEach { match ->
+                Regex("""\bname="([^"]+)"""").find(match.value)?.let { add("id", it.groupValues[1]) }
+            }
             // res/color/*.xml are colour state lists; they answer @color/name.
             if (file.parentFile.name == "color") add("color", file.nameWithoutExtension)
         }
@@ -125,10 +129,11 @@ class ResourceReferencesTest {
 
     private companion object {
         const val ANDROID_R = """android\.R\.[a-z]+(\.[A-Za-z0-9_]+)?"""
-        val referencePattern = Regex("""@(\+?)(color|string|dimen|drawable|style|layout|bool|integer|string-array|integer-array|array|fraction|plurals|xml|mipmap|anim|raw|font|menu)/([A-Za-z0-9_.]+)""")
+        val referencePattern = Regex("""@(\+?)(color|string|dimen|drawable|style|layout|bool|integer|string-array|integer-array|array|fraction|plurals|xml|mipmap|anim|raw|font|menu|animator)/([A-Za-z0-9_.]+)""")
         val idPattern = Regex("""@\+id/([A-Za-z0-9_]+)""")
+        val itemIdPattern = Regex("""<item\b[^>]*>""")
         val kotlinReferencePattern = Regex("""(?<![\w.])R\.([a-z]+)\.([A-Za-z0-9_]+)""")
         val VALUE_KINDS = listOf("color", "string", "dimen", "style", "bool", "integer", "string-array", "integer-array", "array", "fraction", "plurals", "attr")
-        val FILE_KINDS = listOf("drawable", "layout", "xml", "mipmap", "anim", "raw", "font", "menu")
+        val FILE_KINDS = listOf("drawable", "layout", "xml", "mipmap", "anim", "animator", "raw", "font", "menu")
     }
 }

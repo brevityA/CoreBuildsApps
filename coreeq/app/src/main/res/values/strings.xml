@@ -45,7 +45,6 @@
     <string name="manual_eq_heading">Manual equaliser</string>
     <string name="manual_eq_edit_mode">Editing mode: %1$s</string>
     <string name="manual_eq_mode_picker_title">Choose the mode overlay to edit</string>
-    <string name="manual_eq_subtitle">Ten editable bands from 40 Hz to 8 kHz. Manual tone layers over room correction; positive peaks reserve digital headroom.</string>
     <string name="manual_eq_loading_profile">Preparing an output profile…</string>
     <string name="manual_profile_room">Room profile</string>
     <string name="manual_profile_manual_only">Manual EQ only</string>
@@ -62,13 +61,29 @@
     <string name="manual_eq_running_hint">Correction is on: changes apply at once.</string>
     <string name="manual_eq_resume_hint">Correction is set on and resumes when Core EQ is opened.</string>
     <string name="manual_eq_dpad_help">Left/right choose a band · Up/down adjust by 0.5 dB. Touch and drag also works.</string>
-    <string name="manual_eq_band_caption">MANUAL EQ · dB PER BAND · RANGE ±6 dB</string>
+    <string name="manual_eq_band_caption">Left/Right picks a band · Up/Down 0.5 dB · ±6 dB</string>
+    <string name="manual_eq_hints_count">Room hints · %1$d</string>
+    <string name="manual_eq_hints_none">Room hints · none</string>
+    <string name="manual_eq_hints_measure">Room hints · measure first</string>
+    <string name="manual_eq_hints_title">Room hints · %1$s</string>
+    <string name="manual_eq_hints_none_title">Nothing to flag</string>
+    <string name="manual_eq_hints_none_message">Above this room\'s %1$s transition the correction stays under %2$.1f dB at every band you have left alone, nothing below it moves more than %3$.1f dB, and no band you moved %4$.1f dB or more reaches %5$.1f dB together with it.</string>
+    <string name="manual_eq_hints_focus">Room hints read what the measured correction does at each band. Press to see them.</string>
+    <string name="manual_eq_hints_measure_focus">This profile has no room measurement, so there is nothing to read. Press to measure.</string>
+    <string name="manual_eq_hint_applied">Room hint applied: %1$s set to %2$s. Move the band to change it.</string>
+    <string name="manual_eq_hint_advice">That one is advice: nothing to apply.</string>
+    <string name="manual_eq_suggestion">Try %1$s</string>
+    <string name="manual_eq_suggestion_undo">Undo: back to %1$s</string>
+    <string name="manual_eq_suggestion_focus">%1$s. Press to apply %2$s to %3$s; press again to undo.</string>
+    <string name="manual_eq_suggestion_undo_focus">Press to put %1$s back.</string>
+    <string name="manual_eq_suggestion_applied">%1$s applied to %2$s. The same row undoes it.</string>
+    <string name="manual_eq_suggestion_undone">Back to %1$s. Not suggested again until you reopen Manual EQ.</string>
     <string name="manual_eq_presets_title">Choose an EQ preset</string>
     <string name="manual_eq_presets_detected">Choose an EQ preset · detected %1$s</string>
     <string name="manual_eq_save_title">Save manual EQ preset</string>
     <string name="manual_eq_save">Save</string>
     <string name="manual_eq_save_hint">Preset name</string>
-    <string name="manual_eq_import_file">Import EQ preset or correction file…</string>
+    <string name="manual_eq_import_file">Import preset or file…</string>
     <string name="manual_eq_tv_values">Show these as TV settings…</string>
     <string name="manual_eq_tv_values_title">Your TV\'s own equaliser</string>
     <string name="manual_eq_tv_values_empty">This preset is Flat, so there is nothing to type in. Choose a preset or move a band first.</string>
@@ -180,6 +195,8 @@
     <string name="profiles_heading">Saved corrections</string>
     <string name="profiles_sub">Room correction is tied to the output it was measured on. The chosen profile is a fallback; Core EQ prefers a matching output profile and switches modes on top.</string>
     <string name="profile_selected_badge">CHOSEN</string>
+    <string name="profiles_list_heading">Saved</string>
+    <string name="profiles_notice_heading">When a profile is applied</string>
     <string name="export_title">Export</string>
     <string name="export_chip_parametric">Parametric .txt</string>
     <string name="export_chip_graphiceq">GraphicEQ</string>
@@ -272,7 +289,7 @@
     <string name="content_type_heading">Content type optimization</string>
     <string name="content_type_subtitle">Choose what you watch most. This sets how strong the optional Extra effects are (bass boost, loudness); with both off it changes nothing. Room correction is the same for every type. Auto-detect recognizes 40+ streaming apps.</string>
     <string name="action_extras">Extra effects</string>
-    <string name="extras_kicker">Core EQ · Extra effects</string>
+    <string name="extras_detail_more">Right to read the rest · Left to go back</string>
     <string name="extras_heading">Extra effects</string>
     <string name="extras_group_tone">Tone</string>
     <string name="extras_group_level">Level</string>
@@ -366,19 +383,24 @@
     <string name="home_card_allow">Allow</string>
 
     <!-- Screen labels moved out of layouts (1.3.0) -->
-    <string name="home_kicker">Core EQ · Equaliser built from this room</string>
+    <string name="home_kicker">Active profile</string>
+    <!-- Rail (1.12.0): the left navigation on every screen that has one. -->
+    <string name="rail_home">Core EQ</string>
+    <string name="rail_home_description">Core EQ home</string>
+    <string name="rail_setup">Setup and ADB</string>
+    <string name="rail_navigation">Core EQ screens</string>
     <string name="menu_sound">Sound</string>
     <string name="menu_setup">Set up</string>
     <string name="action_profiles">Profiles</string>
     <string name="action_capability">Capability</string>
     <string name="action_setup">Setup check and ADB</string>
     <string name="action_companion">Phone companion</string>
-    <string name="companion_tv_title">Core EQ · Phone companion</string>
+    <string name="companion_tv_title">Phone companion</string>
     <string name="companion_tv_subtitle">Local-only link for controlling profiles and taking a phone-microphone measurement. The listener runs only while this screen is open.</string>
     <string name="companion_finding_address">TV address: finding a local IPv4 address…</string>
     <string name="companion_tv_address">TV address: %1$s</string>
     <string name="companion_tv_port">Port: %1$d</string>
-    <string name="companion_tv_pair_instructions">On the Android phone, open Core EQ and choose Scan TV QR, then point the camera at the code below. Or enter this TV address, port and the one-time code. Keep both devices on the same trusted Wi-Fi network. Pairing replaces any previous phone.</string>
+    <string name="companion_tv_pair_instructions">On the Android phone, open Core EQ and choose Scan TV QR, then point the camera at the code on this screen. Or enter this TV address, port and the one-time code. Keep both devices on the same trusted Wi-Fi network. Pairing replaces any previous phone.</string>
     <string name="companion_tv_qr_accessibility">QR code for pairing this TV with the Core EQ phone app. Shown only while pairing is open.</string>
     <string name="companion_pairing_closed">Pairing code is not active</string>
     <string name="companion_pairing_stopped">Pairing is stopped.</string>
@@ -428,13 +450,17 @@
     <string name="setup_open_overlay">Open overlay setting</string>
     <string name="setup_no_overlay_screen">This TV has no such screen. Use the ADB command instead.</string>
     <string name="setup_check_again">Check again</string>
+    <string name="setup_checked_at">Checked again at %1$s: %2$s</string>
+    <string name="setup_checked_nothing_changed">nothing changed.</string>
+    <plurals name="setup_checked_changed">
+        <item quantity="one">%d step changed.</item>
+        <item quantity="other">%d steps changed.</item>
+    </plurals>
     <string name="setup_copy_report">Copy report</string>
     <string name="setup_report_copied">Report copied.</string>
     <string name="setup_no_clipboard">This TV has no clipboard. Select the text to copy it by hand.</string>
     <string name="action_display_calibration">Display calibration</string>
     <string name="action_content_type">Content type</string>
-    <string name="manual_kicker">Core EQ · Manual tone</string>
-    <string name="content_type_kicker">Core EQ · Content type</string>
     <string name="measure_step_1">STEP 1</string>
     <string name="measure_step_2">STEP 2</string>
     <string name="measure_step_3">STEP 3</string>
@@ -453,7 +479,6 @@
     <string name="support_card_title">Support</string>
     <string name="support_card_note">Every Core Builds app is free. Two QR codes, GitHub Sponsors and Ko-fi, for your phone.</string>
     <string name="action_support">Support Core Builds</string>
-    <string name="support_title">Core EQ · Support</string>
     <string name="support_heading">Support Core Builds</string>
     <string name="support_body">Every Core Builds app is free. If one has earned a place on your TV, you can chip in from your phone: point its camera at either code.</string>
     <string name="support_mode">Optional. Every app ships every feature whether you give or not.</string>

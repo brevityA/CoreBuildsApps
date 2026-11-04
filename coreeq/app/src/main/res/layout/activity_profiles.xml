@@ -1,320 +1,293 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+  Profiles (rail and stage since 1.12.0). Left: the saved profiles, then what
+  happens when one is applied, in one column that scrolls. Until 1.12.0 the
+  list shared a fixed-height column with eight controls; at 540dp the
+  controls took all of it, the list got no height at all and the last button
+  sat below the screen. Right: the chosen profile's curve and its export.
+-->
+<tv.corebuilds.eq.ui.RailStageLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/cb_night"
-    android:paddingLeft="@dimen/cb_gutter_side"
-    android:paddingRight="@dimen/cb_gutter_side"
-    android:paddingTop="@dimen/cb_gutter_top"
-    android:paddingBottom="@dimen/cb_gutter_bottom">
+    android:orientation="horizontal"
+    android:background="@color/cb_night">
 
-    <!-- Header -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/profiles_title"
-        android:textColor="@color/cb_slate"
-        android:textSize="@dimen/cb_text_kicker"
-        android:fontFamily="monospace"
-        android:textAllCaps="true" />
+    <include layout="@layout/view_rail" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/profiles_heading"
-        android:textColor="@color/cb_ink"
-        android:textSize="@dimen/cb_text_title"
-        android:textStyle="bold"
-        android:layout_marginTop="4dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/profiles_sub"
-        android:textColor="@color/cb_slate"
-        android:textSize="@dimen/cb_text_data"
-        android:layout_marginTop="2dp" />
-
-    <!-- Two-pane content -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:id="@+id/stage"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/cb_space_md">
+        android:orientation="vertical"
+        android:paddingStart="@dimen/cb_stage_start"
+        android:paddingEnd="@dimen/cb_stage_end"
+        android:paddingTop="@dimen/cb_stage_top"
+        android:paddingBottom="@dimen/cb_stage_bottom"
+        android:clipToPadding="false"
+        android:clipChildren="false">
 
-        <!-- Left rail: saved profiles list -->
+        <TextView
+            style="@style/CoreEQ.Title"
+            android:text="@string/profiles_heading" />
+
+        <TextView
+            style="@style/CoreEQ.Lede"
+            android:text="@string/profiles_sub"
+            android:layout_marginTop="4dp" />
+
         <LinearLayout
-            android:layout_width="340dp"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycler_profiles"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <!-- 1.3.0: the on-screen card (or, without the overlay permission,
-                 a toast) the service shows when a profile is applied. -->
-            <Button
-                android:id="@+id/btn_announce_applied"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/cb_target_min"
-                android:layout_marginTop="@dimen/cb_space_sm"
-                android:background="@drawable/bg_toggle"
-                android:drawableEnd="@drawable/ic_switch"
-                android:drawablePadding="@dimen/cb_space_sm"
-                android:gravity="start|center_vertical"
-                android:paddingStart="@dimen/cb_card_padding"
-                android:paddingEnd="@dimen/cb_card_padding"
-                android:text="@string/profiles_announce_on"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_data"
-                android:focusable="true" />
-
-            <!-- How long the card stays up: 1 to 10 seconds, cycled on each press. -->
-            <Button
-                android:id="@+id/btn_card_seconds"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/cb_target_min"
-                android:layout_marginTop="@dimen/cb_space_xs"
-                android:background="@drawable/bg_toggle"
-                android:gravity="start|center_vertical"
-                android:paddingStart="@dimen/cb_card_padding"
-                android:paddingEnd="@dimen/cb_card_padding"
-                android:text="@string/profiles_card_seconds"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_data"
-                android:focusable="true" />
-
-            <!-- How the notice shows on this TV, and the way to the card when
-                 "Display over other apps" is not allowed yet. -->
-            <TextView
-                android:id="@+id/text_announce_card"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/cb_space_xs"
-                android:textColor="@color/cb_slate"
-                android:textSize="@dimen/cb_text_kicker"
-                tools:text="Shown as a card at the top right for 4 seconds, over whatever is playing." />
-
-            <!-- Optional persistent playback status, independent of the one-shot applied notice. -->
-            <Button
-                android:id="@+id/btn_playback_hud"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/cb_target_min"
-                android:layout_marginTop="@dimen/cb_space_sm"
-                android:background="@drawable/bg_toggle"
-                android:drawableEnd="@drawable/ic_switch"
-                android:drawablePadding="@dimen/cb_space_sm"
-                android:gravity="start|center_vertical"
-                android:paddingStart="@dimen/cb_card_padding"
-                android:paddingEnd="@dimen/cb_card_padding"
-                android:text="@string/profiles_playback_hud_off"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_data"
-                android:focusable="true" />
-
-            <TextView
-                android:id="@+id/text_playback_hud"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/cb_space_xs"
-                android:textColor="@color/cb_slate"
-                android:textSize="@dimen/cb_text_kicker"
-                tools:text="A touch-through chip stays up while Android reports playback; it does not prove the audio route." />
-
-            <Button
-                android:id="@+id/btn_allow_overlay"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/cb_target_min"
-                android:layout_marginTop="@dimen/cb_space_xs"
-                android:background="@drawable/bg_ghost"
-                android:text="@string/profiles_card_allow"
-                android:textColor="@color/ghost_text"
-                android:textSize="@dimen/cb_text_data"
-                android:focusable="true"
-                android:visibility="gone" />
-
-            <!-- Preview the card on this TV: the service shows it for what is
-                 applied now, without switching correction off and on. -->
-            <Button
-                android:id="@+id/btn_test_card"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/cb_target_min"
-                android:layout_marginTop="@dimen/cb_space_xs"
-                android:background="@drawable/bg_ghost"
-                android:text="@string/profiles_card_test"
-                android:textColor="@color/ghost_text"
-                android:textSize="@dimen/cb_text_data"
-                android:focusable="true" />
-
-            <!-- What Core EQ has learned: the profile it prefers for each output,
-                 based on the user's own choices. Can be cleared here. -->
-            <Button
-                android:id="@+id/btn_learned_prefs"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/cb_target_min"
-                android:layout_marginTop="@dimen/cb_space_xs"
-                android:background="@drawable/bg_ghost"
-                android:text="@string/profiles_learned_prefs"
-                android:textColor="@color/ghost_text"
-                android:textSize="@dimen/cb_text_data"
-                android:focusable="true" />
-
-        </LinearLayout>
-
-        <!-- Right pane: Curve preview + Export chips + Preamp + Actions -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginStart="@dimen/cb_space_lg">
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            android:clipChildren="false"
+            android:layout_marginTop="@dimen/cb_space_md">
 
-            <!-- Takes the height the export controls leave, so Export and
-                 Delete are always on screen (they sat below it at 1080p). -->
-            <tv.corebuilds.eq.ui.CurveGraphView
-                android:id="@+id/graph_profile"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+            <ScrollView
+                android:requiresFadingEdge="vertical"
+                android:fadingEdgeLength="@dimen/cb_space_xl"
+                android:layout_width="284dp"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:clipToPadding="true"
+                android:paddingTop="2dp"
+                android:paddingBottom="8dp"
+                android:scrollbars="none">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/export_title"
-                android:textColor="@color/cb_slate"
-                android:textSize="@dimen/cb_text_kicker"
-                android:fontFamily="monospace"
-                android:layout_marginTop="@dimen/cb_space_sm" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            <!-- Export format chips -->
+                    <TextView
+                        style="@style/CoreEQ.MenuHeading"
+                        android:paddingStart="4dp"
+                        android:paddingBottom="6dp"
+                        android:text="@string/profiles_list_heading" />
+
+                    <!-- Every saved profile; the column scrolls, the list does not. -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_profiles"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:overScrollMode="never" />
+
+                    <TextView
+                        style="@style/CoreEQ.MenuHeading"
+                        android:paddingStart="4dp"
+                        android:layout_marginTop="@dimen/cb_space_md"
+                        android:text="@string/profiles_notice_heading" />
+
+                    <!-- 1.3.0: the on-screen card (or, without the overlay permission,
+                         a toast) the service shows when a profile is applied. -->
+                    <Button
+                        android:id="@+id/btn_announce_applied"
+                        style="@style/CoreEQ.SwitchRow"
+                        android:textSize="@dimen/cb_text_data"
+                        android:text="@string/profiles_announce_on" />
+
+                    <!-- How long the card stays up: 1 to 10 seconds, cycled on each press. -->
+                    <Button
+                        android:id="@+id/btn_card_seconds"
+                        style="@style/CoreEQ.ActionRow"
+                        android:text="@string/profiles_card_seconds" />
+
+                    <!-- How the notice shows on this TV, and the way to the card when
+                         "Display over other apps" is not allowed yet. -->
+                    <TextView
+                        android:id="@+id/text_announce_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/cb_space_xs"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp"
+                        android:textColor="@color/cb_slate"
+                        android:textSize="@dimen/cb_text_kicker"
+                        tools:text="Shown as a card at the top right for 4 seconds, over whatever is playing." />
+
+                    <!-- Optional persistent playback status, independent of the one-shot applied notice. -->
+                    <Button
+                        android:id="@+id/btn_playback_hud"
+                        style="@style/CoreEQ.SwitchRow"
+                        android:textSize="@dimen/cb_text_data"
+                        android:layout_marginTop="@dimen/cb_space_sm"
+                        android:text="@string/profiles_playback_hud_off" />
+
+                    <TextView
+                        android:id="@+id/text_playback_hud"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/cb_space_xs"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp"
+                        android:textColor="@color/cb_slate"
+                        android:textSize="@dimen/cb_text_kicker"
+                        tools:text="A touch-through chip stays up while Android reports playback; it does not prove the audio route." />
+
+                    <Button
+                        android:id="@+id/btn_allow_overlay"
+                        style="@style/CoreEQ.ActionRow"
+                        android:gravity="center"
+                        android:background="@drawable/bg_pill_ghost"
+                        android:textColor="@color/pill_ghost_text"
+                        android:visibility="gone"
+                        android:text="@string/profiles_card_allow" />
+
+                    <!-- Preview the card on this TV: the service shows it for what is
+                         applied now, without switching correction off and on. -->
+                    <Button
+                        android:id="@+id/btn_test_card"
+                        style="@style/CoreEQ.ActionRow"
+                        android:gravity="center"
+                        android:background="@drawable/bg_pill_ghost"
+                        android:textColor="@color/pill_ghost_text"
+                        android:text="@string/profiles_card_test" />
+
+                    <!-- What Core EQ has learned: the profile it prefers for each output,
+                         based on the user's own choices. Can be cleared here. -->
+                    <Button
+                        android:id="@+id/btn_learned_prefs"
+                        style="@style/CoreEQ.ActionRow"
+                        android:gravity="center"
+                        android:background="@drawable/bg_pill_ghost"
+                        android:textColor="@color/pill_ghost_text"
+                        android:text="@string/profiles_learned_prefs" />
+                </LinearLayout>
+            </ScrollView>
+
+            <!-- The chosen profile: its curve, its export. -->
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:baselineAligned="false"
-                android:layout_marginTop="@dimen/cb_space_xs">
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:clipChildren="false"
+                android:layout_marginStart="@dimen/cb_space_md">
 
-                <Button
-                    android:id="@+id/chip_parametric"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/cb_target_min"
-                    android:background="@drawable/bg_chip_toggle"
-                    android:text="@string/export_chip_parametric"
-                    android:textColor="@color/chip_text"
-                    android:textSize="@dimen/cb_text_data"
-                    android:paddingStart="@dimen/cb_space_md"
-                    android:paddingEnd="@dimen/cb_space_md"
-                    android:focusable="true"
-                    android:layout_marginEnd="@dimen/cb_space_xs" />
+                <!-- Takes the height the export controls leave, so Export and
+                     Delete are always on screen. -->
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_section"
+                    android:padding="6dp">
 
-                <Button
-                    android:id="@+id/chip_graphiceq"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/cb_target_min"
-                    android:background="@drawable/bg_chip_toggle"
-                    android:text="@string/export_chip_graphiceq"
-                    android:textColor="@color/chip_text"
-                    android:textSize="@dimen/cb_text_data"
-                    android:paddingStart="@dimen/cb_space_md"
-                    android:paddingEnd="@dimen/cb_space_md"
-                    android:focusable="true"
-                    android:layout_marginEnd="@dimen/cb_space_xs" />
+                    <tv.corebuilds.eq.ui.CurveGraphView
+                        android:id="@+id/graph_profile"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </FrameLayout>
 
-                <Button
-                    android:id="@+id/chip_json"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/cb_target_min"
-                    android:background="@drawable/bg_chip_toggle"
-                    android:text="@string/export_chip_json"
-                    android:textColor="@color/chip_text"
-                    android:textSize="@dimen/cb_text_data"
-                    android:paddingStart="@dimen/cb_space_md"
-                    android:paddingEnd="@dimen/cb_space_md"
-                    android:focusable="true" />
+                <TextView
+                    style="@style/CoreEQ.MenuHeading"
+                    android:text="@string/export_title"
+                    android:layout_marginTop="@dimen/cb_space_sm" />
 
-                <Button
-                    android:id="@+id/chip_poweramp_json"
+                <!-- Export format chips, two by two -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:baselineAligned="false"
+                    android:clipChildren="false"
+                    android:layout_marginTop="6dp">
+
+                    <Button
+                        android:id="@+id/chip_parametric"
+                        style="@style/CoreEQ.Chip"
+                        android:layout_height="@dimen/cb_pill_compact"
+                        android:text="@string/export_chip_parametric" />
+
+                    <Button
+                        android:id="@+id/chip_graphiceq"
+                        style="@style/CoreEQ.Chip"
+                        android:layout_height="@dimen/cb_pill_compact"
+                        android:layout_marginStart="@dimen/cb_space_xs"
+                        android:text="@string/export_chip_graphiceq" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:baselineAligned="false"
+                    android:clipChildren="false"
+                    android:layout_marginTop="6dp">
+
+                    <Button
+                        android:id="@+id/chip_json"
+                        style="@style/CoreEQ.Chip"
+                        android:layout_height="@dimen/cb_pill_compact"
+                        android:text="@string/export_chip_json" />
+
+                    <Button
+                        android:id="@+id/chip_poweramp_json"
+                        style="@style/CoreEQ.Chip"
+                        android:layout_height="@dimen/cb_pill_compact"
+                        android:layout_marginStart="@dimen/cb_space_xs"
+                        android:text="@string/export_chip_poweramp_json" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/text_preamp_display"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/cb_target_min"
-                    android:layout_marginStart="@dimen/cb_space_xs"
-                    android:background="@drawable/bg_chip_toggle"
-                    android:text="@string/export_chip_poweramp_json"
-                    android:textColor="@color/chip_text"
-                    android:textSize="@dimen/cb_text_data"
-                    android:paddingStart="@dimen/cb_space_md"
-                    android:paddingEnd="@dimen/cb_space_md"
-                    android:focusable="true" />
+                    android:layout_height="wrap_content"
+                    tools:text="Parametric preamp −3.72 dB · Everyday · HDMI"
+                    android:textColor="@color/cb_ink"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:fontFamily="monospace"
+                    android:layout_marginTop="@dimen/cb_space_sm" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/export_preamp_desc"
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_kicker"
+                    android:layout_marginTop="2dp" />
+
+                <!-- Export, Import and Delete -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:clipChildren="false"
+                    android:layout_marginTop="@dimen/cb_space_sm">
+
+                    <Button
+                        android:id="@+id/btn_export_profile"
+                        style="@style/Widget.CoreEQ.Pill.Cta"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="@string/action_export" />
+
+                    <Button
+                        android:id="@+id/btn_import_profile"
+                        style="@style/Widget.CoreEQ.Pill.Ghost"
+                        android:layout_width="0dp"
+                        android:layout_weight="1.2"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:layout_marginStart="@dimen/cb_space_xs"
+                        android:text="@string/action_import_profile" />
+
+                    <Button
+                        android:id="@+id/btn_delete_profile"
+                        style="@style/Widget.CoreEQ.Pill.Ghost"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:layout_marginStart="@dimen/cb_space_xs"
+                        android:textColor="@color/cb_ember"
+                        android:text="@string/action_delete" />
+                </LinearLayout>
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/text_preamp_display"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="Parametric preamp −3.72 dB · Everyday · HDMI"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_data"
-                android:fontFamily="monospace"
-                android:maxLines="2"
-                android:ellipsize="end"
-                android:layout_marginTop="@dimen/cb_space_sm" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/export_preamp_desc"
-                android:textColor="@color/cb_slate"
-                android:textSize="@dimen/cb_text_kicker"
-                android:layout_marginTop="2dp" />
-
-            <!-- Buttons: Export & Delete -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="@dimen/cb_space_md">
-
-                <Button
-                    android:id="@+id/btn_export_profile"
-                    android:layout_width="180dp"
-                    android:layout_height="@dimen/cb_target_min"
-                    android:background="@drawable/bg_cta"
-                    android:text="@string/action_export"
-                    android:textColor="@color/cta_text"
-                    android:textSize="@dimen/cb_text_label"
-                    android:textStyle="bold"
-                    android:focusable="true"
-                    android:layout_marginEnd="@dimen/cb_space_sm" />
-
-                <Button
-                    android:id="@+id/btn_import_profile"
-                    android:layout_width="140dp"
-                    android:layout_height="@dimen/cb_target_min"
-                    android:layout_marginEnd="@dimen/cb_space_sm"
-                    android:background="@drawable/bg_ghost"
-                    android:text="@string/action_import_profile"
-                    android:textColor="@color/cb_signal_cyan"
-                    android:textSize="@dimen/cb_text_label"
-                    android:focusable="true" />
-
-                <Button
-                    android:id="@+id/btn_delete_profile"
-                    android:layout_width="140dp"
-                    android:layout_height="@dimen/cb_target_min"
-                    android:background="@drawable/bg_ghost"
-                    android:text="@string/action_delete"
-                    android:textColor="@color/cb_ember"
-                    android:textSize="@dimen/cb_text_label"
-                    android:focusable="true" />
-            </LinearLayout>
-
         </LinearLayout>
-
     </LinearLayout>
-
-</LinearLayout>
+</tv.corebuilds.eq.ui.RailStageLayout>

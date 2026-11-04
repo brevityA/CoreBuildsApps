@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Phone companion: a phone. Monoline, 24 units, tinted by the view (rail_icon). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/cb_rail_icon" android:height="@dimen/cb_rail_icon"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:pathData="M9.5,2.5L14.5,2.5A2.5,2.5 0,0 1,17,5L17,19A2.5,2.5 0,0 1,14.5,21.5L9.5,21.5A2.5,2.5 0,0 1,7,19L7,5A2.5,2.5 0,0 1,9.5,2.5Z" android:fillColor="#00000000" android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.8" android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:pathData="M11,18.5L13,18.5" android:fillColor="#00000000" android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.8" android:strokeLineCap="round" android:strokeLineJoin="round" />
+</vector>

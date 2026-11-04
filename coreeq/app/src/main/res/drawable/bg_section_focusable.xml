@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- An information panel the remote can enter to scroll its text (1.12.0):
+     a section at rest, the panel colour and the 3dp ring under focus. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/cb_panel" />
+            <stroke android:width="@dimen/cb_focus_ring" android:color="@color/cb_focus_ring" />
+            <corners android:radius="@dimen/cb_radius_section" />
+        </shape>
+    </item>
+    <item android:drawable="@drawable/bg_section" />
+</selector>

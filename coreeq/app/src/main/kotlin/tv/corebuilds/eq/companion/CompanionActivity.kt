@@ -17,7 +17,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ImageView
-import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import tv.corebuilds.eq.R
@@ -69,13 +68,14 @@ class CompanionActivity : TvActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(buildContent())
+        buildContent()
         startPairing.setOnClickListener { openPairing() }
         stopPairing.setOnClickListener { closePairing() }
         revokePairing.setOnClickListener {
             server?.revokePairing()
             refreshPairedState()
         }
+        focusOnOpen(startPairing)
     }
 
     override fun onStart() {
@@ -107,59 +107,96 @@ class CompanionActivity : TvActivity() {
         thread(name = "CoreEqCompanionClose") { closingServer.close() }
     }
 
-    private fun buildContent(): ScrollView {
-        val scroll = ScrollView(this)
-        val column = LinearLayout(this).apply {
+    /**
+     * The stage's content, built in code into the layout's companion_content
+     * (1.12.0: beside the rail, in two columns). The address, the actions and
+     * the status are on the left; the one-time code and its QR on the right.
+     * Nothing here is selectable text any more: on a TV a selectable line is a
+     * D-pad stop that does nothing, and the remote landed on three of them
+     * between the title and Start pairing.
+     */
+    private fun buildContent() {
+        setContentView(R.layout.activity_companion)
+        val column = findViewById<LinearLayout>(R.id.companion_content)
+        column.addView(label(getString(R.string.companion_tv_title), 28f, true, R.color.cb_ink).apply {
+            typeface = android.graphics.Typeface.create(typeface, 600, false)
+            isAccessibilityHeading = true
+        })
+        column.addView(label(getString(R.string.companion_tv_subtitle), 14f, false, R.color.cb_slate))
+
+        val columns = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            clipChildren = false
+        }
+        column.addView(columns, matchWrap(top = 12))
+        val left = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(dp(36), dp(24), dp(36), dp(24))
-            background = getDrawable(R.color.cb_night)
+            clipChildren = false
         }
-        scroll.addView(column)
-        column.addView(label(getString(R.string.companion_tv_title), 26f, true, R.color.cb_ink))
-        column.addView(label(getString(R.string.companion_tv_subtitle), 16f, false, R.color.cb_slate))
-        addressLine = label(getString(R.string.companion_finding_address), 18f, true, R.color.cb_ink).apply {
-            setTextIsSelectable(true)
+        val right = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
         }
-        column.addView(addressLine)
-        portLine = label("", 18f, true, R.color.cb_ink).apply {
-            setTextIsSelectable(true)
+        columns.addView(left, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+        columns.addView(right, LinearLayout.LayoutParams(dp(260), ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+            marginStart = dp(20)
+        })
+
+        addressLine = label(getString(R.string.companion_finding_address), 16f, true, R.color.cb_ink).apply {
+            typeface = android.graphics.Typeface.MONOSPACE
         }
-        column.addView(portLine)
-        column.addView(label(getString(R.string.companion_tv_pair_instructions), 16f, false, R.color.cb_slate))
-        pairingCode = label(getString(R.string.companion_pairing_closed), 24f, true, R.color.cb_signal_cyan).apply {
+        left.addView(addressLine)
+        portLine = label("", 16f, true, R.color.cb_ink).apply {
+            typeface = android.graphics.Typeface.MONOSPACE
+        }
+        left.addView(portLine)
+        left.addView(label(getString(R.string.companion_tv_pair_instructions), 14f, false, R.color.cb_slate))
+        startPairing = actionButton(getString(R.string.companion_start_pairing), primary = true).apply {
+            id = R.id.btn_companion_start
+        }
+        stopPairing = actionButton(getString(R.string.companion_stop_pairing), primary = false).apply {
+            id = R.id.btn_companion_stop
+            isEnabled = false
+        }
+        revokePairing = actionButton(getString(R.string.companion_revoke_pairing), primary = false).apply {
+            id = R.id.btn_companion_revoke
+        }
+        left.addView(startPairing, matchWrap(top = 12))
+        left.addView(stopPairing, matchWrap(top = 8))
+        left.addView(revokePairing, matchWrap(top = 8))
+        pairedLine = label(getString(R.string.companion_not_paired), 14f, false, R.color.cb_slate)
+        left.addView(pairedLine, matchWrap(top = 8))
+        statusLine = label(getString(R.string.companion_starting), 14f, false, R.color.cb_slate)
+        left.addView(statusLine)
+        val close = actionButton(getString(R.string.companion_done), primary = false).apply {
+            id = R.id.btn_companion_done
+            setBackgroundResource(R.drawable.bg_pill)
+            setTextColor(getColorStateList(R.color.ghost_text))
+        }
+        close.setOnClickListener { finish() }
+        left.addView(close, matchWrap(top = 12))
+
+        pairingCode = label(getString(R.string.companion_pairing_closed), 22f, true, R.color.cb_signal_cyan).apply {
             gravity = Gravity.CENTER
-            setTextIsSelectable(true)
             setPadding(dp(14), dp(14), dp(14), dp(14))
-            setBackgroundResource(R.drawable.bg_card)
+            setBackgroundResource(R.drawable.bg_section)
         }
-        column.addView(pairingCode, matchWrap(top = 8))
+        right.addView(pairingCode, matchWrap(top = 4))
         pairingQr = ImageView(this).apply {
             visibility = View.GONE
             scaleType = ImageView.ScaleType.FIT_CENTER
-            setBackgroundResource(R.drawable.bg_card)
+            setBackgroundResource(R.drawable.bg_section)
             setPadding(dp(12), dp(12), dp(12), dp(12))
             contentDescription = getString(R.string.companion_tv_qr_accessibility)
         }
-        column.addView(pairingQr, LinearLayout.LayoutParams(dp(260), dp(260)).apply {
+        right.addView(pairingQr, LinearLayout.LayoutParams(dp(240), dp(240)).apply {
             gravity = Gravity.CENTER_HORIZONTAL
             topMargin = dp(10)
         })
-        pairingExpiry = label(getString(R.string.companion_pairing_stopped), 14f, false, R.color.cb_slate)
-        column.addView(pairingExpiry)
-        startPairing = actionButton(getString(R.string.companion_start_pairing), primary = true)
-        stopPairing = actionButton(getString(R.string.companion_stop_pairing), primary = false).apply { isEnabled = false }
-        revokePairing = actionButton(getString(R.string.companion_revoke_pairing), primary = false)
-        column.addView(startPairing, matchWrap(top = 12))
-        column.addView(stopPairing, matchWrap(top = 6))
-        column.addView(revokePairing, matchWrap(top = 6))
-        pairedLine = label(getString(R.string.companion_not_paired), 14f, false, R.color.cb_slate)
-        column.addView(pairedLine)
-        statusLine = label(getString(R.string.companion_starting), 14f, false, R.color.cb_slate)
-        column.addView(statusLine)
-        val close = actionButton(getString(R.string.companion_done), primary = false)
-        close.setOnClickListener { finish() }
-        column.addView(close, matchWrap(top = 12))
-        return scroll
+        pairingExpiry = label(getString(R.string.companion_pairing_stopped), 14f, false, R.color.cb_slate).apply {
+            gravity = Gravity.CENTER_HORIZONTAL
+        }
+        right.addView(pairingExpiry, matchWrap(top = 4))
     }
 
     private fun startServerWhenPermitted() {
@@ -380,12 +417,19 @@ class CompanionActivity : TvActivity() {
         setPadding(0, dp(4), 0, dp(4))
     }
 
+    /**
+     * A full-width pill (the theme's button style): the primary action in the
+     * brand gradient, the others with a cyan edge. Full width, so it rises
+     * under focus instead of scaling past the column's edge.
+     */
     private fun actionButton(textValue: String, primary: Boolean): Button = Button(this).apply {
         text = textValue
         isAllCaps = false
-        setBackgroundResource(if (primary) R.drawable.bg_cta else R.drawable.bg_ghost)
-        setTextColor(getColor(if (primary) R.color.cta_text else R.color.ghost_text))
-        minHeight = dp(52)
+        setBackgroundResource(if (primary) R.drawable.bg_pill_cta else R.drawable.bg_pill_ghost)
+        setTextColor(getColorStateList(if (primary) R.color.cta_text else R.color.pill_ghost_text))
+        if (primary) typeface = android.graphics.Typeface.create(typeface, 700, false)
+        stateListAnimator = android.animation.AnimatorInflater.loadStateListAnimator(this@CompanionActivity, R.animator.focus_raise)
+        minHeight = dp(48)
         isFocusable = true
     }
 

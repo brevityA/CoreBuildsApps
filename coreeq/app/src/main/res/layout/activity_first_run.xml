@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- First run (restyled 1.12.0; no rail: it is a guide, not a place). The three
+     steps do not fit 540dp, so each is a focusable card with the focus ring:
+     Up from Start walks back through them and the list scrolls to each, where
+     before the only way to scroll was an invisible focus stop. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,22 +14,13 @@
     android:paddingBottom="@dimen/cb_gutter_bottom">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/first_run_kicker"
-        android:textColor="@color/cb_slate"
-        android:textSize="@dimen/cb_text_kicker"
-        android:fontFamily="monospace"
-        android:textAllCaps="true" />
+        style="@style/CoreEQ.Eyebrow"
+        android:text="@string/first_run_kicker" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="@string/first_run_title"
-        android:textColor="@color/cb_ink"
-        android:textSize="@dimen/cb_text_title"
-        android:textStyle="bold" />
+        style="@style/CoreEQ.Title"
+        android:layout_marginTop="2dp"
+        android:text="@string/first_run_title" />
 
     <TextView
         android:layout_width="match_parent"
@@ -36,10 +31,15 @@
         android:textSize="@dimen/cb_text_data" />
 
     <ScrollView
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:clipToPadding="true"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginTop="@dimen/cb_space_md"
+        android:requiresFadingEdge="vertical"
+        android:fadingEdgeLength="@dimen/cb_space_xl"
         android:scrollbars="none">
 
         <LinearLayout
@@ -52,14 +52,16 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/bg_card"
-                android:padding="@dimen/cb_card_padding">
+                android:focusable="true"
+                android:stateListAnimator="@animator/focus_raise"
+                android:padding="@dimen/cb_space_md">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/first_run_step_measure_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_label"
-                    android:textStyle="bold" />
+                    android:textFontWeight="600" />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -74,7 +76,7 @@
                     android:layout_marginTop="6dp"
                     android:textColor="@color/cb_signal_cyan"
                     android:textSize="@dimen/cb_text_data"
-                    android:textStyle="bold" />
+                    android:textFontWeight="600" />
             </LinearLayout>
 
             <LinearLayout
@@ -82,7 +84,9 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/bg_card"
-                android:padding="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:stateListAnimator="@animator/focus_raise"
+                android:padding="@dimen/cb_space_md"
                 android:layout_marginTop="@dimen/cb_space_sm">
                 <TextView
                     android:layout_width="match_parent"
@@ -90,7 +94,7 @@
                     android:text="@string/first_run_step_result_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_label"
-                    android:textStyle="bold" />
+                    android:textFontWeight="600" />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -105,7 +109,9 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/bg_card"
-                android:padding="@dimen/cb_card_padding"
+                android:focusable="true"
+                android:stateListAnimator="@animator/focus_raise"
+                android:padding="@dimen/cb_space_md"
                 android:layout_marginTop="@dimen/cb_space_sm">
                 <TextView
                     android:layout_width="match_parent"
@@ -113,7 +119,7 @@
                     android:text="@string/first_run_adb_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_label"
-                    android:textStyle="bold" />
+                    android:textFontWeight="600" />
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -127,15 +133,11 @@
 
     <Button
         android:id="@+id/btn_first_run_measure"
+        style="@style/Widget.CoreEQ.Pill.Cta"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/cb_target_min"
         android:layout_marginTop="@dimen/cb_space_sm"
-        android:background="@drawable/bg_cta"
-        android:text="@string/first_run_measure_now"
-        android:textColor="@color/cta_text"
-        android:textSize="@dimen/cb_text_label"
-        android:textStyle="bold"
-        android:focusable="true" />
+        android:stateListAnimator="@animator/focus_raise"
+        android:text="@string/first_run_measure_now" />
 
     <LinearLayout
         android:layout_width="match_parent"

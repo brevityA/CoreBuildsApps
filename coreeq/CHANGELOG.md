@@ -6,8 +6,97 @@ Core EQ (`tv.corebuilds.eq`) keeps its own changelog. The repository-root
 must never land there. Releases are `coreeq-v<version>` tags (see
 `PUBLISHING.md`).
 
-## [Unreleased]
+## [1.12.0] — 2026-11-04
 
+**Nothing below was checked on a TV or a phone.** It runs in the Kotlin
+harness (788 tests, including 78 screen checks on the real layouts under
+Robolectric at 1920 x 1080 and 40 rail checks), which passes, and lint
+reports 0 errors; no screen here has been seen on a device.
+
+- **A rail on every screen.** The nine screens Home listed are now a rail down
+  the left of Home, Manual EQ, Extra effects, Content type, Mode, Profiles,
+  Capability, Setup, Phone companion and Support, with the current screen
+  marked. Up and Down walk the rail and stop at its ends; Right goes into the
+  screen, to the control that last had focus; Left from a screen's edge comes
+  back to its rail item. Moving from one screen to another closes the one you
+  leave, so Back always returns Home. First run, Measure and Display
+  calibration stay full screen.
+- **Focus opens where you start.** On a box or projector running a phone-style
+  Android build, the window starts in touch mode, the screen's opening focus
+  was dropped, and the first press of the remote landed on whatever came
+  first in the layout. Each screen now marks its opening control the way
+  Android falls back to, and asks again once the window is attached. A screen
+  never opens on the rail or on a bare scroll area with no ring.
+- **Text fits its box.** Profiles' saved list had no height at 540dp (eight
+  settings took the whole column) and its last button sat below the screen;
+  both are in one scrolling column now. Manual EQ's Room hints, Import and
+  band caption were cut short with an ellipsis. Scrolling columns on Setup,
+  Profiles and Mode drew past their own edges, over the buttons below.
+- **Information panels stay put.** The Extra effects explanation scrolled away
+  from the switch it explains; it is now a fixed panel beside the list, and
+  when its text runs longer than the panel, Right enters it (the ring shows),
+  Up and Down scroll it and Left returns to the switch. Mode's rules panel was
+  a focus stop with no ring; it has one. First run's three steps are focusable
+  cards, where the only way to scroll them was an invisible focus stop.
+- **A new look in the brand's own type.** Outfit (SIL OFL, four weights, licence
+  in the APK) for words, monospace for numbers and commands; pills for
+  controls, sections for groups. Every focusable keeps the 3dp cyan ring;
+  compact controls lift (scale 1.04 over 150 ms) and full-width ones rise
+  without scaling, so focus never moves a neighbour. Dialogs use the same
+  panel and ring.
+- **Setup's Check again says what it did.** It rebuilt identical rows and said
+  nothing, so a press looked dead whenever nothing had changed. It now reads
+  "Checked again at HH:mm:ss: nothing changed." or how many steps changed.
+- **The TV side of the phone companion** has two columns (address and actions
+  on the left, the one-time code and its QR on the right) and no selectable
+  text: on a TV a selectable line is a stop that does nothing, and the remote
+  met three of them before Start pairing.
+- **Manual EQ reads the room.** A new *Room hints* row lists what the measured
+  correction is doing that a hand-set band should know, and one press applies
+  the hints that have something to apply:
+  - **Undo** a manual band of 1 dB or more that pushes the same way as the
+    correction, when the two together move it 8 dB or more: more than the
+    editor's own ±6 dB allows at one band.
+  - **Ease** a correction working near its limit at or above the room's
+    transition (2.5 dB or more, where the correction may only shape ±3 dB): a
+    trim the other way worth about a third of it, 1–2 dB, for at most three
+    bands, the largest first. A correction can be right and still sound thin or
+    forward to one listener; this is the band most likely to want some back.
+  - **Leave** the bands below the transition where the correction moves more
+    than 3 dB to it: one caution row naming them, with nothing to apply, because
+    a room mode moves from seat to seat and only the measurement knows where.
+
+  A profile with no room measurement says so, and the row opens Measure.
+- **The rules behind the hints were rewritten before they reached a screen.**
+  1.11.0's guidance answered a correction's cut with a suggested manual cut and
+  its lift with a manual boost, doubling what the correction already did. Its
+  4 dB rule above the transition could almost never fire, because the
+  correction may only shape ±3 dB there, and its transition note had the two
+  regimes the wrong way round.
+- **One preset suggested for what is playing.** While the correction is running
+  and you edit the mode in effect, Manual EQ offers one preset for the playing
+  app's content type and the volume: Flat for games and music, Speech clarity
+  for quiet dialogue, Low-volume loudness for other quiet listening. Pressing
+  the row applies it; pressing it again puts back what was there. It never
+  replaces a curve you set or saved by hand, never offers the loudness preset
+  while Auto loudness or Low-volume bass already compensate, and never Speech
+  clarity while Dialogue boost is on.
+- **The line under the bands is written for people.** It used to show the
+  screen-reader sentence ("Manual equaliser. Band 5 of 10, 500 hertz, +0.0
+  decibels. Use left and right…"). It now reads
+  `2 kHz · band +1.5 dB · room correction -3.0 dB · together -1.8 dB`, so the
+  band you are moving says what the correction already does there. TalkBack
+  keeps the full sentence; the D-pad help moved into the caption above the
+  bands.
+- **Every target has one name on every screen.** Home and Profiles capitalised
+  the stored key, so a B&K 1974 profile read "Bk" and an imported target
+  "Custom". The phone companion called the House target "Harman", the name
+  Core EQ dropped because it overclaimed. All of them now use the same label
+  (B&K 1974, Imported file, House, Olive 2013), and Home and Profiles add the
+  word "target" after it.
+- **One content-type rule.** The playback service and Manual EQ's suggestion now
+  resolve the playing app's content type through the same function, so the two
+  cannot disagree.
 - **A response reported by two microphones at once is refused, not blended.**
   Android gives each active microphone its own response curve and the capture
   path keeps up to four of them in one list; interpolating that composite

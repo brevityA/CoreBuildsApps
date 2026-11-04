@@ -25,20 +25,26 @@ import tv.corebuilds.eq.apply.BandMapping
 import tv.corebuilds.eq.apply.DpBandLayout
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.OutputRoute
+import tv.corebuilds.eq.apply.VolumeLevel
 import tv.corebuilds.eq.dsp.CorrectionImport
 import tv.corebuilds.eq.dsp.DspConstants
 import tv.corebuilds.eq.dsp.HardwarePresets
 import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.dsp.ManualEqPreset
 import tv.corebuilds.eq.dsp.PeakingFilter
+import tv.corebuilds.eq.dsp.RoomAwareGuidance
+import tv.corebuilds.eq.dsp.SmartSuggestion
 import tv.corebuilds.eq.dsp.TvSoundEq
 import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.mode.ContentMode
 import tv.corebuilds.eq.mode.ContentModeStore
+import tv.corebuilds.eq.mode.ContentTypePrefs
 import tv.corebuilds.eq.ui.CurveGraphView
+import tv.corebuilds.eq.ui.EnhancedAudioPrefs
 import tv.corebuilds.eq.ui.ManualEqBandsView
+import tv.corebuilds.eq.ui.ManualEqReadout
 import tv.corebuilds.eq.ui.Series
 import java.util.Locale
 import kotlin.concurrent.thread
@@ -64,6 +70,39 @@ class ManualEqActivity : TvActivity() {
     private var editingMode: ContentMode = ContentMode.EVERYDAY
     private var statusReceiverRegistered = false
 
+    private lateinit var btnSuggestion: Button
+    private lateinit var btnHints: Button
+    private var hints: List<RoomAwareGuidance.Guidance> = emptyList()
+    private var suggestion: SmartSuggestion.Suggestion? = null
+    /** What the suggestion row replaced, while the same row can still put it back. */
+    private var suggestionUndo: SuggestionUndo? = null
+    /** Suggestions undone on this visit: not offered again until the screen reopens. */
+    private val declinedSuggestions = mutableSetOf<String>()
+    /** Set when Room hints sent a manual-only profile to Measure. */
+    private var reloadProfileOnResume = false
+
+    /** The undo belongs to one profile and one mode: it is never put back anywhere else. */
+    private data class SuggestionUndo(
+        val profileId: String,
+        val mode: ContentMode,
+        val presetId: String,
+        val previousName: String,
+        val previousFilters: List<PeakingFilter>
+    )
+
+    /**
+     * The undo, if it belongs to the profile and mode on screen now. A restored undo
+     * can outlive its context (playback may switch the mode, or the output the profile,
+     * before the screen comes back); writing its curve into another mode would replace
+     * a curve nobody asked to change, so it is dropped instead.
+     */
+    private fun currentUndo(): SuggestionUndo? {
+        val undo = suggestionUndo ?: return null
+        if (undo.profileId == profile?.id && undo.mode == editingMode) return undo
+        suggestionUndo = null
+        return null
+    }
+
     private val statusReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             renderApplyHint()
@@ -78,6 +117,7 @@ class ManualEqActivity : TvActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        restoreSuggestionState(savedInstanceState)
         setContentView(R.layout.activity_manual_eq)
 
         profileStore = ProfileStore(this)
@@ -95,7 +135,13 @@ class ManualEqActivity : TvActivity() {
         textStatus = findViewById(R.id.text_manual_selected_band)
         btnPreset = findViewById(R.id.btn_choose_eq_preset)
         btnEditMode = findViewById(R.id.btn_manual_eq_mode)
+        btnSuggestion = findViewById(R.id.btn_manual_eq_suggestion)
+        btnHints = findViewById(R.id.btn_manual_eq_hints)
 
+        btnSuggestion.setOnClickListener { onSuggestionPressed() }
+        btnSuggestion.setOnFocusChangeListener { _, focused -> if (focused) describeSuggestionRow() }
+        btnHints.setOnClickListener { showRoomHints() }
+        btnHints.setOnFocusChangeListener { _, focused -> if (focused) describeHintsRow() }
         btnEditMode.setOnClickListener { showEditingModePicker() }
         findViewById<Button>(R.id.btn_choose_eq_preset).setOnClickListener { showPresetPicker() }
         findViewById<Button>(R.id.btn_save_eq_preset).setOnClickListener { promptSavePreset() }
@@ -107,19 +153,23 @@ class ManualEqActivity : TvActivity() {
         }
         findViewById<Button>(R.id.btn_manual_eq_done).setOnClickListener { finish() }
 
-        bands.onBandDescriptionChanged = { textStatus.text = it }
+        bands.onBandSelected = { _, _ -> showReadout() }
+        // Rows on the left borrow the readout line to explain themselves; coming
+        // back to the bands puts the selected band's readout back.
+        bands.setOnFocusChangeListener { _, focused -> if (focused) showReadout() }
         bands.onBandGainChanged = { index, gainDb ->
             if (profile != null) {
                 modeStore.saveModeFilters(profile!!.id, editingMode, ManualEq.withBandGain(currentManualFilters(), index, gainDb))
+                // A hand-moved band is a new decision; the suggestion's undo no longer describes it.
+                suggestionUndo = null
                 saveAndApplySoon()
                 renderProfile()
-                textStatus.text = bands.contentDescription
             }
         }
         bands.setManualFilters(currentManualFilters())
         updatePresetLabel()
         renderProfile()
-        bands.requestFocus()
+        focusOnOpen(bands)
 
         if (EqService.running) EqService.send(this, EqService.ACTION_REAPPLY)
         if (profileStore.correctionEnabled && !EqService.running) {
@@ -140,14 +190,18 @@ class ManualEqActivity : TvActivity() {
         )
         statusReceiverRegistered = true
         val currentOutput = OutputRoute.current(this)
-        if (currentOutput != editingOutput) {
+        if (currentOutput != editingOutput || reloadProfileOnResume) {
+            reloadProfileOnResume = false
             saveCurrentModeFilters()
+            suggestionUndo = null
             profile = resolveProfileForCurrentOutput(currentOutput)
             bands.setManualFilters(currentManualFilters())
             renderProfile()
             EqService.send(this, EqService.ACTION_REAPPLY)
         }
         renderApplyHint()
+        // What is playing and how loud may have changed while Core EQ was away.
+        renderSmartRows()
     }
 
     override fun onPause() {
@@ -245,8 +299,236 @@ class ManualEqActivity : TvActivity() {
         btnEditMode.text = getString(R.string.manual_eq_edit_mode, editingMode.title)
         bands.setManualFilters(currentManualFilters())
         renderApplyHint()
-        textStatus.text = bands.contentDescription ?: getString(R.string.manual_eq_dpad_help)
+        showReadout()
         updatePresetLabel()
+        renderSmartRows()
+    }
+
+    /** The selected band in one line: its own gain, and what the room correction does there. */
+    private fun showReadout() {
+        val active = profile ?: return
+        val index = bands.selectedBand
+        val fc = ManualEq.BAND_CENTRES_HZ.getOrNull(index) ?: return
+        val correction = if (active.manualOnly || active.curve.isEmpty()) null else active.correctionAt(fc)
+        val together = ManualEqReadout.together(correction, currentManualFilters(), fc)
+        textStatus.text = ManualEqReadout.line(index, bands.gainAt(index), correction, together)
+    }
+
+    /** The Room hints row and the suggestion row, re-read whenever the bands or the mode change. */
+    private fun renderSmartRows() {
+        if (!::btnHints.isInitialized) return
+        val active = profile ?: return
+        val measured = !active.manualOnly && active.curve.isNotEmpty()
+        hints = if (measured) RoomAwareGuidance.guide(active, currentManualFilters()) else emptyList()
+        btnHints.text = when {
+            !measured -> getString(R.string.manual_eq_hints_measure)
+            hints.isEmpty() -> getString(R.string.manual_eq_hints_none)
+            else -> getString(R.string.manual_eq_hints_count, hints.size)
+        }
+
+        val undo = currentUndo()
+        suggestion = if (undo == null) currentSuggestion() else null
+        val pick = suggestion
+        when {
+            undo != null -> {
+                btnSuggestion.text = getString(R.string.manual_eq_suggestion_undo, undo.previousName)
+                btnSuggestion.visibility = View.VISIBLE
+            }
+            pick != null -> {
+                btnSuggestion.text = getString(R.string.manual_eq_suggestion, pick.name)
+                btnSuggestion.visibility = View.VISIBLE
+            }
+            else -> {
+                // A row vanishing under the D-pad would leave focus nowhere.
+                if (btnSuggestion.hasFocus()) btnHints.requestFocus()
+                btnSuggestion.visibility = View.GONE
+            }
+        }
+    }
+
+    /**
+     * The preset [SmartSuggestion] picks for what is playing now, or null. Only for the
+     * mode in effect now (a suggestion about what is playing means nothing for a mode
+     * that is not playing), only while the correction service is running (it is what
+     * knows which app plays), and only over a shipped preset: a curve someone set or
+     * saved by hand is theirs.
+     */
+    private fun currentSuggestion(): SmartSuggestion.Suggestion? {
+        if (!EqService.running) return null
+        // The A/B bypass plays the correction flat: a preset applied now could not be heard.
+        if (profileStore.bypassEnabled) return null
+        if (editingMode != modeStore.currentDecision().mode) return null
+        val presets = profileStore.manualEqPresets()
+        // A preset saved with a shipped preset's exact filters is still the person's own:
+        // shipped presets come first in the list, so look at every match, not the first.
+        val matches = presets.filter { ManualEq.sameFilters(currentManualFilters(), it.filters) }
+        val shippedId = matches
+            .takeIf { found -> found.none { it.id.startsWith(ManualEq.USER_PRESET_ID_PREFIX) } }
+            ?.firstOrNull()?.id
+            // A custom curve is never offered a preset, so skip the volume and content
+            // reads below: this runs on every band step.
+            ?: return null
+        val typePrefs = getSharedPreferences(ContentTypePrefs.PREFS_NAME, MODE_PRIVATE)
+        val contentType = ContentTypePrefs.pick(
+            typePrefs.getBoolean(ContentTypePrefs.KEY_AUTO_SWITCH, true),
+            typePrefs.getString(ContentTypePrefs.KEY_MANUAL_TYPE, null),
+            modeStore.lastActivePackages()
+        )
+        val enhanced = EnhancedAudioPrefs(this)
+        val layers = SmartSuggestion.Layers(
+            autoLoudness = enhanced.autoLoudnessEnabled,
+            lowVolumeBass = enhanced.lowVolumeBassEnabled,
+            dialogueBoost = enhanced.dialogueBoostEnabled
+        )
+        val pick = SmartSuggestion.suggest(contentType, VolumeLevel.mediaDb(this), shippedId, layers) ?: return null
+        if (pick.presetId in declinedSuggestions) return null
+        return pick.takeIf { candidate -> presets.any { it.id == candidate.presetId } }
+    }
+
+    /**
+     * The suggestion row's state survives the screen being recreated (a configuration
+     * change, or Android reclaiming the process while another app is in front): the
+     * applied preset is saved either way, so losing the undo would lose the way back
+     * to the curve it replaced, and a declined suggestion would come back the same visit.
+     */
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putStringArrayList(STATE_DECLINED, ArrayList(declinedSuggestions))
+        suggestionUndo?.let { undo ->
+            outState.putString(STATE_UNDO_PROFILE, undo.profileId)
+            outState.putString(STATE_UNDO_MODE, undo.mode.name)
+            outState.putString(STATE_UNDO_PRESET, undo.presetId)
+            outState.putString(STATE_UNDO_NAME, undo.previousName)
+            outState.putDoubleArray(
+                STATE_UNDO_FILTERS,
+                undo.previousFilters.flatMap { listOf(it.fc, it.q, it.gain) }.toDoubleArray()
+            )
+        }
+    }
+
+    private fun restoreSuggestionState(state: Bundle?) {
+        state ?: return
+        state.getStringArrayList(STATE_DECLINED)?.let { declinedSuggestions += it }
+        val presetId = state.getString(STATE_UNDO_PRESET) ?: return
+        val values = state.getDoubleArray(STATE_UNDO_FILTERS) ?: return
+        val profileId = state.getString(STATE_UNDO_PROFILE) ?: return
+        val mode = state.getString(STATE_UNDO_MODE)?.let { name -> ContentMode.entries.firstOrNull { it.name == name } } ?: return
+        // Kept as saved; currentUndo() drops it if the profile or mode on screen differs.
+        suggestionUndo = SuggestionUndo(
+            profileId = profileId,
+            mode = mode,
+            presetId = presetId,
+            previousName = state.getString(STATE_UNDO_NAME).orEmpty(),
+            previousFilters = values.toList().chunked(3).filter { it.size == 3 }.map { PeakingFilter(it[0], it[1], it[2]) }
+        )
+    }
+
+    /** Apply the suggested preset, or put back what it replaced when the row reads Undo. */
+    private fun onSuggestionPressed() {
+        val active = profile ?: return
+        val undo = currentUndo()
+        if (undo != null) {
+            modeStore.saveModeFilters(active.id, editingMode, undo.previousFilters)
+            declinedSuggestions += undo.presetId
+            suggestionUndo = null
+            bands.setManualFilters(currentManualFilters())
+            saveAndApplySoon()
+            renderProfile()
+            textStatus.text = getString(R.string.manual_eq_suggestion_undone, undo.previousName)
+            return
+        }
+        val pick = suggestion ?: return
+        // Playback, volume or mode may have moved since the row was drawn: apply only the
+        // suggestion that is current, otherwise show the current one and wait for a press.
+        if (currentSuggestion()?.presetId != pick.presetId) {
+            renderSmartRows()
+            return
+        }
+        val presets = profileStore.manualEqPresets()
+        val preset = presets.firstOrNull { it.id == pick.presetId } ?: return
+        val previous = currentManualFilters()
+        val previousName = ManualEq.matchingPreset(previous, presets)?.name ?: "Custom"
+        suggestionUndo = SuggestionUndo(active.id, editingMode, pick.presetId, previousName, previous)
+        applyPreset(preset, fromSuggestion = true)
+        textStatus.text = getString(R.string.manual_eq_suggestion_applied, preset.name, editingMode.title)
+    }
+
+    private fun describeSuggestionRow() {
+        val undo = currentUndo()
+        val pick = suggestion
+        textStatus.text = when {
+            undo != null -> getString(R.string.manual_eq_suggestion_undo_focus, undo.previousName)
+            pick != null -> getString(R.string.manual_eq_suggestion_focus, pick.reason, pick.name, editingMode.title)
+            else -> return
+        }
+    }
+
+    private fun describeHintsRow() {
+        val active = profile ?: return
+        val measured = !active.manualOnly && active.curve.isNotEmpty()
+        textStatus.text = getString(if (measured) R.string.manual_eq_hints_focus else R.string.manual_eq_hints_measure_focus)
+    }
+
+    /**
+     * The hints, one row each with what it means underneath; pressing an actionable one
+     * sets its band. A profile with no room measurement goes to Measure instead.
+     */
+    private fun showRoomHints() {
+        val active = profile ?: return
+        if (active.manualOnly || active.curve.isEmpty()) {
+            // Coming back, the output may have a measured profile to edit instead.
+            reloadProfileOnResume = true
+            startActivity(Intent(this, MeasureActivity::class.java))
+            return
+        }
+        val list = hints
+        if (list.isEmpty()) {
+            AlertDialog.Builder(this)
+                .setTitle(R.string.manual_eq_hints_none_title)
+                .setMessage(
+                    getString(
+                        R.string.manual_eq_hints_none_message,
+                        RoomAwareGuidance.hz(active.transitionHz),
+                        RoomAwareGuidance.EASE_THRESHOLD_DB,
+                        RoomAwareGuidance.MODAL_THRESHOLD_DB,
+                        RoomAwareGuidance.STACKED_MIN_MANUAL_DB,
+                        RoomAwareGuidance.STACKED_TOTAL_DB
+                    )
+                )
+                .setPositiveButton(android.R.string.ok, null)
+                .show()
+            return
+        }
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.manual_eq_hints_title, active.name))
+            .setAdapter(twoLineRows(list.map { it.title }, list.map { it.detail })) { _, which ->
+                applyHint(list[which])
+            }
+            .setNegativeButton(R.string.manual_eq_tv_values_close, null)
+            .show()
+    }
+
+    private fun applyHint(hint: RoomAwareGuidance.Guidance) {
+        val active = profile ?: return
+        val index = hint.bandIndex
+        val gain = hint.applyGainDb
+        if (index == null || gain == null) {
+            textStatus.text = getString(R.string.manual_eq_hint_advice)
+            return
+        }
+        modeStore.saveModeFilters(active.id, editingMode, ManualEq.withBandGain(currentManualFilters(), index, gain))
+        suggestionUndo = null
+        bands.setManualFilters(currentManualFilters())
+        // Land on the band that moved, so the bars and the readout show what changed.
+        bands.selectBand(index)
+        bands.requestFocus()
+        saveAndApplySoon()
+        renderProfile()
+        textStatus.text = getString(
+            R.string.manual_eq_hint_applied,
+            RoomAwareGuidance.hz(ManualEq.BAND_CENTRES_HZ[index]),
+            String.format(Locale.US, "%+.1f dB", ManualEq.gainAtBand(currentManualFilters(), index))
+        )
     }
 
     private fun renderApplyHint() {
@@ -280,6 +562,7 @@ class ManualEqActivity : TvActivity() {
             .setTitle(R.string.manual_eq_mode_picker_title)
             .setSingleChoiceItems(modes.map { it.title }.toTypedArray(), selected) { dialog, which ->
                 editingMode = modes[which]
+                suggestionUndo = null
                 bands.setManualFilters(currentManualFilters())
                 renderProfile()
                 dialog.dismiss()
@@ -324,18 +607,22 @@ class ManualEqActivity : TvActivity() {
      * blind on a TV ten feet away needs the second line.
      */
     private fun presetRows(presets: List<ManualEqPreset>): ArrayAdapter<String> =
+        twoLineRows(presets.map { it.name }, presets.map { it.description })
+
+    /** A list row with a title and, when there is one, a second line saying what it means. */
+    private fun twoLineRows(titles: List<String>, details: List<String>): ArrayAdapter<String> =
         object : ArrayAdapter<String>(
             this,
             android.R.layout.simple_list_item_2,
             android.R.id.text1,
-            presets.map { it.name }
+            titles
         ) {
             override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val row = super.getView(position, convertView, parent)
                 val second = row.findViewById<TextView>(android.R.id.text2)
-                val description = presets[position].description
-                second.text = description
-                second.visibility = if (description.isBlank()) View.GONE else View.VISIBLE
+                val detail = details.getOrElse(position) { "" }
+                second.text = detail
+                second.visibility = if (detail.isBlank()) View.GONE else View.VISIBLE
                 return row
             }
         }
@@ -513,8 +800,10 @@ class ManualEqActivity : TvActivity() {
             .show()
     }
 
-    private fun applyPreset(preset: ManualEqPreset) {
+    private fun applyPreset(preset: ManualEqPreset, fromSuggestion: Boolean = false) {
         val active = profile ?: return
+        // Any other preset is a new choice; only the suggestion row's own apply keeps its undo.
+        if (!fromSuggestion) suggestionUndo = null
         modeStore.saveModeFilters(active.id, editingMode, ManualEq.sanitize(preset.filters))
         bands.setManualFilters(currentManualFilters())
         saveAndApplySoon()
@@ -531,5 +820,11 @@ class ManualEqActivity : TvActivity() {
     private companion object {
         const val APPLY_DEBOUNCE_MS = 160L
         const val REQ_IMPORT_EQ = 4101
+        const val STATE_DECLINED = "manual_eq.declined_suggestions"
+        const val STATE_UNDO_PROFILE = "manual_eq.undo_profile"
+        const val STATE_UNDO_MODE = "manual_eq.undo_mode"
+        const val STATE_UNDO_PRESET = "manual_eq.undo_preset"
+        const val STATE_UNDO_NAME = "manual_eq.undo_name"
+        const val STATE_UNDO_FILTERS = "manual_eq.undo_filters"
     }
 }

@@ -42,7 +42,6 @@ import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.mode.ContentModeStore
 import tv.corebuilds.eq.mode.ContentType
 import tv.corebuilds.eq.mode.ContentTypePrefs
-import tv.corebuilds.eq.mode.ContentTypeRegistry
 import tv.corebuilds.eq.ui.EnhancedAudioPrefs
 import tv.corebuilds.eq.dsp.LoudnessCompensation
 import java.util.concurrent.Executors
@@ -1224,11 +1223,11 @@ class EqService : Service() {
     /** The Content type screen's choice: its manual pick, or the app detected playing. */
     private fun extrasContentType(): ContentType {
         val prefs = getSharedPreferences(ContentTypePrefs.PREFS_NAME, Context.MODE_PRIVATE)
-        return if (prefs.getBoolean(ContentTypePrefs.KEY_AUTO_SWITCH, true)) {
-            ContentTypeRegistry.resolve(activeAppPackages()) ?: ContentType.GENERAL
-        } else {
-            ContentType.fromKey(prefs.getString(ContentTypePrefs.KEY_MANUAL_TYPE, null))
-        }
+        return ContentTypePrefs.pick(
+            prefs.getBoolean(ContentTypePrefs.KEY_AUTO_SWITCH, true),
+            prefs.getString(ContentTypePrefs.KEY_MANUAL_TYPE, null),
+            activeAppPackages()
+        )
     }
 
     /**

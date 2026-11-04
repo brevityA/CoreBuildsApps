@@ -35,7 +35,7 @@ class FirstRunActivity : TvActivity() {
             complete()
             finish()
         }
-        findViewById<Button>(R.id.btn_first_run_measure).requestFocus()
+        focusOnOpen(findViewById<Button>(R.id.btn_first_run_measure))
     }
 
     private fun complete() {

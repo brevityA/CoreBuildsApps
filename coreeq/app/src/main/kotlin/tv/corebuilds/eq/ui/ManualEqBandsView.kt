@@ -81,7 +81,12 @@ class ManualEqBandsView @JvmOverloads constructor(
     private var dragging = false
 
     var onBandGainChanged: ((index: Int, gainDb: Double) -> Unit)? = null
-    var onBandDescriptionChanged: ((String) -> Unit)? = null
+
+    /** The selected band moved or changed; the screen's visible readout follows it. */
+    var onBandSelected: ((index: Int, gainDb: Double) -> Unit)? = null
+
+    /** The band left/right and touch have selected. */
+    val selectedBand: Int get() = focusedBand
 
     init {
         isFocusable = true
@@ -98,6 +103,14 @@ class ManualEqBandsView @JvmOverloads constructor(
     }
 
     fun gainAt(index: Int): Double = gains.getOrElse(index) { 0.0 }
+
+    /** Select [index] as left/right would, so the screen can land on a band it changed. */
+    fun selectBand(index: Int) {
+        if (index !in gains.indices) return
+        focusedBand = index
+        updateAccessibilityDescription()
+        invalidate()
+    }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (!hasFocus()) return super.onKeyDown(keyCode, event)
@@ -279,7 +292,7 @@ class ManualEqBandsView @JvmOverloads constructor(
             gain
         )
         contentDescription = description
-        onBandDescriptionChanged?.invoke(description)
+        onBandSelected?.invoke(focusedBand, gain)
     }
 
     private fun announceSelectedBand() {

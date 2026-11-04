@@ -71,11 +71,13 @@ class ModeActivity : TvActivity() {
         findViewById<Button>(R.id.btn_mode_manage_apps).setOnClickListener { showAppPicker() }
         findViewById<Button>(R.id.btn_mode_done).setOnClickListener { finish() }
         render()
-        when (modeStore.currentDecision().mode) {
-            ContentMode.MOVIE_TV -> btnMovie.requestFocus()
-            ContentMode.EVERYDAY -> btnEveryday.requestFocus()
-            ContentMode.GAMING -> btnGaming.requestFocus()
-        }
+        focusOnOpen(
+            when (modeStore.currentDecision().mode) {
+                ContentMode.MOVIE_TV -> btnMovie
+                ContentMode.EVERYDAY -> btnEveryday
+                ContentMode.GAMING -> btnGaming
+            }
+        )
     }
 
     override fun onResume() {

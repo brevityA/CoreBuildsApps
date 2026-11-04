@@ -81,7 +81,7 @@ class ContentTypeActivity : TvActivity() {
         btnDone.setOnClickListener { finish() }
 
         refreshUI()
-        chipFor(selectedType).requestFocus()
+        focusOnOpen(chipFor(selectedType))
     }
 
     override fun onPause() {

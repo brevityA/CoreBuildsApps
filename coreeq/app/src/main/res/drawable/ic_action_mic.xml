@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Measure: a microphone. Monoline, 24 units, tinted by the view (rail_icon). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/cb_rail_icon" android:height="@dimen/cb_rail_icon"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:pathData="M12,3A3,3 0,0 1,15,6L15,11A3,3 0,0 1,9,11L9,6A3,3 0,0 1,12,3Z" android:fillColor="#00000000" android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.8" android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:pathData="M5.5,11A6.5,6.5 0,0 0,18.5,11" android:fillColor="#00000000" android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.8" android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:pathData="M12,17.5L12,21" android:fillColor="#00000000" android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.8" android:strokeLineCap="round" android:strokeLineJoin="round" />
+</vector>

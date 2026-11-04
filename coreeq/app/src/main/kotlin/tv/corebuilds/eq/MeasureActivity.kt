@@ -242,7 +242,7 @@ class MeasureActivity : TvActivity() {
 
         refreshChoices()
         textStatus.text = getString(R.string.measure_ready)
-        btnRoom.requestFocus()
+        focusOnOpen(btnRoom)
     }
 
     /**
@@ -1666,11 +1666,7 @@ class MeasureActivity : TvActivity() {
             RoomSize("Open plan (~150 m³)", 150.0),
             RoomSize("Not sure", null)
         )
-        private val TARGETS = listOf(
-            TargetChoice("dialogue", "Dialogue"),
-            TargetChoice("room", "Room"),
-            TargetChoice("bk", "B&K 1974"),
-            TargetChoice("flat", "Flat")
-        )
+        private val TARGETS = listOf("dialogue", "room", "bk", "flat")
+            .map { TargetChoice(it, tv.corebuilds.eq.dsp.Targets.label(it)) }
     }
 }

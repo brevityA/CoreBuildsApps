@@ -15,6 +15,10 @@ Core EQ combines TV-room measurement with a manual 10-band tone EQ. Each measure
 
 A detailed source, permission and precedence map is in [Playback identity and mode overrides](../research/core-eq-playback-identity-and-mode-overrides-2026-10-25.md).
 
+## Getting around
+
+Since 1.12.0 every screen except First run, Measure and Display calibration has a rail down the left: Core EQ (Home), then Manual EQ, Extra effects and Content type under **Sound**, and Profiles, Capability, Setup and ADB, Phone companion and Display calibration under **Set up**. The screen you are on is marked. Up and Down walk the rail and stop at its ends; Right goes into the screen, to the control that last had focus; Left from a screen's edge returns to its rail item. Going from one screen to another closes the one you leave, so Back always returns Home. Every control shows a 3dp cyan ring when it has focus. An information panel whose text runs longer than the panel (Extra effects, Mode's rules) takes focus on Right and scrolls with Up and Down.
+
 ## First install and setup
 
 On a fresh Android TV install, Core EQ opens a short welcome guide. It shows Android's route indication with its evidence type (anticipated route or connected-output estimate), explains the remote-microphone measurement, and warns that the first GREEN capture-quality measurement for an output type may be applied automatically. Green indicates signal-to-noise only, not calibrated microphone response or acoustic accuracy. You can choose **Start room measurement**, open setup help, or skip the guide; upgrades are not interrupted.
@@ -24,6 +28,10 @@ On a fresh Android TV install, Core EQ opens a short welcome guide. It shows And
 ## Measuring
 
 A measurement plays a 10-second sweep between two short timing beeps and records it through the remote's microphone; keep the room quiet for 14 seconds. Choose the output, sound mode and volume you will use; keep processing unchanged, quiet the room and place the mic at the main seat. Measure materially different routes or modes separately. Each sweep gets a 0–100 capture-quality score from signal-to-noise only; it does not grade microphone calibration or acoustic accuracy. At the 16 kHz analysis rate, useful response analysis reaches about 7.8 kHz, not the sweep generator's nominal 20 kHz. What it found about the room is listed beside the score, not scored. Bands the remote could not hear clearly are shown and left uncorrected, and bass dips are lifted by 2 dB at most, because one seat and an uncalibrated microphone cannot tell a room dip from a seat dip.
+
+## Manual EQ
+
+Ten bands from 40 Hz to 8 kHz, ±6 dB in 0.5 dB steps, layered over the room correction for the mode you are editing. The line under the bands names the selected band, what the room correction already does there, and the two together. **Room hints** reads the measured correction: it offers to undo a band of yours that piles onto the correction, to ease a correction working near its limit above the room's transition, and names the bass bands to leave to the correction because they are room modes that move from seat to seat. While the correction is running, one preset may be suggested for what is playing and how loud it is; it is never offered over bands you set or saved yourself, and the same row undoes it. Presets, your saved presets, imports (Poweramp JSON, AutoEq or Equalizer APO text) and the same curve as TV sound-menu values are here too.
 
 ## Backend fit and repeatability
 

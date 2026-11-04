@@ -4,11 +4,14 @@
     android:id="@+id/profile_row_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="64dp"
+    android:minHeight="60dp"
     android:orientation="vertical"
     android:background="@drawable/bg_card"
     android:padding="@dimen/cb_card_padding"
     android:focusable="true"
+    android:stateListAnimator="@animator/focus_raise"
+    android:outlineSpotShadowColor="@color/cb_signal_cyan"
+    android:outlineAmbientShadowColor="@color/cb_signal_cyan"
     android:layout_marginBottom="@dimen/cb_space_xs">
 
     <LinearLayout
@@ -24,7 +27,7 @@
             tools:text="Living room"
             android:textColor="@color/cb_ink"
             android:textSize="@dimen/cb_text_label"
-            android:textStyle="bold"
+            android:textFontWeight="600"
             android:singleLine="true"
             android:ellipsize="end" />
 
@@ -48,8 +51,7 @@
         android:textColor="@color/cb_slate"
         android:textSize="@dimen/cb_text_kicker"
         android:fontFamily="monospace"
-        android:maxLines="1"
-        android:ellipsize="end"
+        android:lineSpacingExtra="2dp"
         android:layout_marginTop="4dp" />
 
 </LinearLayout>

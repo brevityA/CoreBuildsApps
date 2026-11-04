@@ -34,4 +34,13 @@
     <!-- The on-screen card over other apps' pictures: void at 92%, as Core Line's score box -->
     <color name="cb_card_plate">#EB04070F</color>
     <color name="cb_card_plate_edge">#1AFFFFFF</color>
+
+    <!-- Rail and stage (1.12.0). Tints of the locked palette only. -->
+    <!-- A chosen pill or segment: cyan at 16% with a 60% cyan edge. -->
+    <color name="cb_selected_fill">#2900D4FF</color>
+    <color name="cb_selected_edge">#9900D4FF</color>
+    <!-- A secondary pill's resting edge: cyan at 35%. -->
+    <color name="cb_ghost_edge">#5900D4FF</color>
+    <!-- Lines between regions (the rail's edge, section rules): white at 8%. -->
+    <color name="cb_divider">#14FFFFFF</color>
 </resources>

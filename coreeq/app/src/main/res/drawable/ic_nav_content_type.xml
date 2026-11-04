@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Content type: a film frame. Monoline, 24 units, tinted by the view (rail_icon). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/cb_rail_icon" android:height="@dimen/cb_rail_icon"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:pathData="M5,5L19,5A2,2 0,0 1,21,7L21,17A2,2 0,0 1,19,19L5,19A2,2 0,0 1,3,17L3,7A2,2 0,0 1,5,5Z" android:fillColor="#00000000" android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.8" android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:pathData="M7,5L7,19" android:fillColor="#00000000" android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.8" android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:pathData="M17,5L17,19" android:fillColor="#00000000" android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.8" android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:pathData="M3,12L21,12" android:fillColor="#00000000" android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.8" android:strokeLineCap="round" android:strokeLineJoin="round" />
+</vector>
