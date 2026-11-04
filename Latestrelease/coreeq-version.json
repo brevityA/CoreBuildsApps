@@ -1,17 +1,19 @@
 {
-  "versionCode": 25,
-  "versionName": "1.11.2",
-  "releaseDate": "2026-11-03",
+  "versionCode": 26,
+  "versionName": "1.12.0",
+  "releaseDate": "2026-11-04",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "b1f31ff90ffeb6920d247964e854cabe74e86a3b58b43f1805293a9c8dcf46fa",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.11.2",
+  "apkSha256": "75c6a9c31b98f255b3c7ae757b784d819a22ca5041a44a6acd2df3bccd0c27ee",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.12.0",
   "minSdk": 30,
   "highlights": [
-    "Every AudioEffect write is bounds-checked before the framework sees it.",
-    "Output route is probed the way Google documents, not guessed.",
-    "The reference DSP flattens the microphone before correcting the room.",
-    "The reference DSP can export a hybrid IIR + FIR correction.",
-    "New export: `coreeq_autoeq.csv`",
-    "The route probe never runs on the main thread."
+    "A rail on every screen.",
+    "Focus opens where you start.",
+    "Text fits its box.",
+    "Information panels stay put.",
+    "A new look in the brand's own type.",
+    "Setup's Check again says what it did.",
+    "The TV side of the phone companion",
+    "Manual EQ reads the room."
   ]
 }
