@@ -33,6 +33,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.MainActivity
+import tv.corebuilds.eq.dsp.AutoApplyPolicy
+import tv.corebuilds.eq.export.ProfileRouteStore
 import tv.corebuilds.eq.R
 import tv.corebuilds.eq.export.PlatformBand
 import tv.corebuilds.eq.export.Profile
@@ -42,6 +44,7 @@ import tv.corebuilds.eq.mode.ContentType
 import tv.corebuilds.eq.mode.ContentTypePrefs
 import tv.corebuilds.eq.mode.ContentTypeRegistry
 import tv.corebuilds.eq.ui.EnhancedAudioPrefs
+import tv.corebuilds.eq.dsp.LoudnessCompensation
 import java.util.concurrent.Executors
 import kotlin.math.roundToInt
 
@@ -109,6 +112,8 @@ class EqService : Service() {
 
     private lateinit var store: ProfileStore
     private lateinit var modeStore: ContentModeStore
+    private lateinit var deviceKeyStore: DeviceKeyStore
+    private lateinit var routeStore: ProfileRouteStore
     
     // The Extra effects screen's switches (all off by default since 1.2.1).
     private var enhancedPrefs: EnhancedAudioPrefs? = null
@@ -240,16 +245,93 @@ class EqService : Service() {
         override fun onAudioDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>) = onOutputsChanged()
     }
     private var lastOutput: OutputRoute.Output? = null
+    /** Re-probes owed after a device change raced the last one (see onRouteConfirmed). */
+    private var routeConfirmRetries = 0
+    /**
+     * When the retry cap last gave up; device events inside the cooldown defer
+     * to one timer. Seeded far negative on purpose: initializing to 0 would
+     * put a device event within the first 5 s of boot (elapsedRealtime starts
+     * there) inside "cooldown since a give-up that never happened" and silently
+     * defer the very first probe. Large-negative keeps the subtraction
+     * overflow-free for any realistic uptime.
+     */
+    private var lastRouteGiveUpAtMs = Long.MIN_VALUE / 2
+    /** Written and read on main only; reset only by the deferred runnable it gates. A second caller from off main needs confining (or an AtomicBoolean). */
+    private var routeRetryScheduled = false
 
     /** Reprogram only when the lift actually moves a step; holding the volume key costs a few reapplies. */
     private fun onVolumeChanged() {
-        if (!running || suspended || enhancedPrefs?.lowVolumeBassEnabled != true) return
+        if (!running || suspended) return
+        val prefs = enhancedPrefs ?: return
+        if (!prefs.lowVolumeBassEnabled && !prefs.autoLoudnessEnabled) return
         if (toneLayers() != activeLayers) applyAll()
     }
 
+    /**
+     * An output changed. The first time a device is seen, correction may be
+     * applied automatically ([AutoApplyPolicy]); later times it is only
+     * suggested — the user turns it on from Home.
+     */
     private fun onOutputsChanged() {
-        val output = OutputRoute.current(this)
+        val now = android.os.SystemClock.elapsedRealtime()
+        val sinceGiveUp = now - lastRouteGiveUpAtMs
+        if (sinceGiveUp < ROUTE_GIVEUP_COOLDOWN_MS) {
+            // A give-up just pinned the pause; a sink still flapping gets one
+            // retry burst per cooldown window, not one per event. Skipping the
+            // invalidation keeps the hold (and its UNCONFIRMED answer) intact,
+            // so this only delays a retry — it can never apply something wrong.
+            if (!routeRetryScheduled) {
+                // One deferred re-check per window: a flapper that STOPS must
+                // still get its hold lifted without waiting for a user action.
+                routeRetryScheduled = true
+                mainHandler.postDelayed({
+                    routeRetryScheduled = false
+                    if (running) onOutputsChanged() // onDestroy does not scrub handler posts
+                }, ROUTE_GIVEUP_COOLDOWN_MS - sinceGiveUp)
+            }
+            return
+        }
+        OutputRoute.invalidateProbeCache() // a device arrived or left: probe fresh
+        // The auto-apply decision must run on the probed route, never on the
+        // estimate, and the probe must never block main: confirm off-thread
+        // first, then act on the confirmed answer on main with a fresh cache.
+        OutputRoute.refreshProbeAsync(this) { onRouteConfirmed() }
+    }
+
+    private fun onRouteConfirmed() {
+        if (!OutputRoute.hasFreshProbe()) {
+            if (routeConfirmRetries < MAX_ROUTE_CONFIRM_RETRIES) {
+                // A device arrived while the last probe played, so no answer
+                // was publishable. Re-arm on the fresh probe rather than
+                // deciding on the estimate; the counter bounds the worst case:
+                // a sink flapping faster than a probe settles gets a capped
+                // number of extra track opens per burst, not an endless one.
+                routeConfirmRetries++
+                OutputRoute.refreshProbeAsync(this) { onRouteConfirmed() }
+            } else {
+                // Churn outlasted the retries: surface the unconfirmed route
+                // explicitly — the cache is seeded with UNCONFIRMED *and held*,
+                // so apply pauses with the hard-stop message and stays paused
+                // (no probe, no estimate decay) until a device event or a
+                // confirmed re-apply says otherwise. The cooldown rate-limits
+                // how fast the next burst may run.
+                routeConfirmRetries = 0
+                lastRouteGiveUpAtMs = android.os.SystemClock.elapsedRealtime()
+                OutputRoute.publishUnconfirmedProbe()
+                applyAll()
+            }
+            return
+        }
+        routeConfirmRetries = 0
+        val output = OutputRoute.current(this) ?: return
         if (output == lastOutput) return
+        val key = "${output.kind}|${output.name}"
+        val applied = deviceKeyStore.appliedKeys()
+        if (AutoApplyPolicy.decide(key, applied) == AutoApplyPolicy.Action.SUGGEST_ONLY) {
+            // A device we have seen before: do not auto-apply correction here.
+            // The user turns it on from Home when they want it.
+            return
+        }
         lastOutput = output
         applyAll()
         if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
@@ -259,6 +341,8 @@ class EqService : Service() {
         super.onCreate()
         store = ProfileStore(this)
         modeStore = ContentModeStore(this)
+        deviceKeyStore = DeviceKeyStore.of(this)
+        routeStore = ProfileRouteStore.of(this)
         
         enhancedPrefs = EnhancedAudioPrefs(this)
         
@@ -384,7 +468,19 @@ class EqService : Service() {
                 if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
                 else applyMediaSessionSnapshot(MediaSessionSnapshot(emptySet(), complete = false, available = false))
             }
-            else -> applyAll() // ACTION_START, ACTION_REAPPLY, or a sticky restart
+            else -> {
+                // ACTION_START, ACTION_REAPPLY, or a sticky restart. While the
+                // unconfirmed hold is up, an immediate applyAll would only read
+                // the held UNCONFIRMED and re-pause — so run the one fresh
+                // probe the hold forbids, and act on its answer. A confirmed
+                // route lands the correction; a failed probe keeps the pause.
+                // This is what makes "play a test tone to continue" true.
+                if (OutputRoute.isHeldUnconfirmed()) {
+                    OutputRoute.refreshProbeAsync(this) { applyAll() }
+                } else {
+                    applyAll()
+                }
+            }
         }
         return START_STICKY
     }
@@ -411,12 +507,23 @@ class EqService : Service() {
     /** The route-matched room base plus its current content-mode overlay. */
     private fun resolve(): Triple<Profile?, OutputRoute.Output?, Boolean> {
         val output = OutputRoute.current(this)
-        val pick = OutputRoute.pick(
-            store.getAllProfiles(),
-            store.chosenId(),
-            output?.kind,
-            output?.name
-        )
+        val profiles = store.getAllProfiles()
+        val chosen = store.chosenId()
+        // The user's explicit choice always wins over learned preferences.
+        val pick = if (chosen != null && profiles.any { it.id == chosen }) {
+            OutputRoute.pick(profiles, chosen, output?.kind, output?.name)
+        } else {
+            // No explicit choice: use the learned preference for this output,
+            // falling back to output-kind-based picking.
+            val key = output?.let { "${it.kind}|${it.name}" } ?: null
+            val preferredId = key?.let { routeStore.preferredProfile(it) }
+            val preferred = preferredId?.let { profiles.firstOrNull { it.id == preferredId } }
+            if (preferred != null) {
+                OutputRoute.Pick(preferred, switched = chosen != null && chosen != preferred.id)
+            } else {
+                OutputRoute.pick(profiles, null, output?.kind, output?.name)
+            }
+        }
         val hasPlayerSnapshot = discoveryInitialized || mediaSessionSnapshotInitialized
         val mode = when {
             !playerDiscoveryAvailable() ->
@@ -459,7 +566,11 @@ class EqService : Service() {
             setAllEnabled(false)
             announcePaused(output)
             val routeName = output?.name ?: "the output Android could not identify"
-            val pauseMessage = if (output?.kind == OutputRoute.AMBIGUOUS) {
+            val pauseMessage = if (output?.kind == OutputRoute.UNCONFIRMED) {
+                // A silent playback track was started and Android still named no
+                // routed device: a hard stop, never a silent fallback.
+                "Could not confirm output route — correction paused. Play a test tone to continue."
+            } else if (output?.kind == OutputRoute.AMBIGUOUS) {
                 "Android reports multiple possible audio outputs. Correction is paused because one profile cannot safely represent all of them. Select one output and measure it again."
             } else {
                 "Nothing measured on $routeName yet, so correction is paused there. " +
@@ -489,6 +600,8 @@ class EqService : Service() {
                 val configured = if (createdGlobalNow) global else configureOrReplace(global, 0, profile)
                 globalEffect = configured
                 syncRuntimeBands()
+                // First successful apply for this output: record it so later enables only suggest.
+                recordAutoApplied(this)
                 report(
                     "Output-mix effect configured · $modeName · ${configured.engine} · ${profile.name}$via · ${configured.bands.size} bands${fitNote(listOf(configured))}${extrasNote(listOf(configured), profile)} · coverage depends on TV routing${where(output)}",
                     isError = false
@@ -596,14 +709,15 @@ class EqService : Service() {
 
         var eq: Equalizer? = null
         try {
-            eq = Equalizer(PRIORITY, session)
+            // createEqualizerSafely returns null instead of throwing when the
+            // native engine refuses (UnsupportedOperationException) or the
+            // effect state is corrupted (RuntimeException, e.g. a leaked
+            // previous instance) — the CVE-2019-9382 class of failure.
+            eq = EnhancedEffectChain.createEqualizerSafely(session, PRIORITY)
+                ?: throw UnsupportedOperationException("Effect engine unavailable on session $session")
             return configureEqualizer(eq, profile)
         } catch (e: Exception) {
-            try {
-                eq?.release()
-            } catch (_: Exception) {
-                // Preserve the Equalizer refusal below.
-            }
+            EnhancedEffectChain.safeRelease(eq) // preserve the Equalizer refusal below
             throw IllegalStateException(
                 "DynamicsProcessing ($dpFailure) and Equalizer (${e.message ?: e.javaClass.simpleName}) both refused",
                 e
@@ -666,11 +780,22 @@ class EqService : Service() {
             side = currentSide
         )
         val mbs = BandMapping.millibels(fit.targetDb, rangeMb)
-        for (i in 0 until n) eq.setBandLevel(i.toShort(), mbs[i])
-        eq.enabled = true
+        // Every band write goes through the bounds-checked, exception-guarded
+        // wrapper: the band index and the millibel value are validated and
+        // clamped against this device's own capabilities before the native
+        // effect engine ever sees them.
+        for (i in 0 until n) {
+            EnhancedEffectChain.safeSetBandLevel(eq, i, mbs[i])
+        }
+        check(EnhancedEffectChain.safeSetEnabled(eq, true)) { "Equalizer refused to enable" }
         check(eq.hasControl()) { "another equaliser app has priority over this audio" }
         val actual = List(n) { index ->
-            val millibels = eq.getBandLevel(index.toShort()).toInt()
+            val millibels = try {
+                eq.getBandLevel(index.toShort()).toInt()
+            } catch (e: RuntimeException) {
+                Log.w(TAG, "Could not read back band $index; keeping the requested value", e)
+                mbs[index].toInt()
+            }
             PlatformBand(centres[index], millibels)
         }
         val readBackDb = DoubleArray(n) { actual[it].millibels / 100.0 }
@@ -685,16 +810,10 @@ class EqService : Service() {
 
     private fun releaseApplied(applied: AppliedEffect) {
         applied.extras?.release()
-        try {
-            applied.effect.setEnabled(false)
-        } catch (e: Exception) {
-            Log.w(TAG, "Could not disable ${applied.engine} during teardown", e)
-        }
-        try {
-            applied.effect.release()
-        } catch (e: Exception) {
-            Log.w(TAG, "Could not release ${applied.engine} during teardown", e)
-        }
+        // Disable then release, both guarded: a leaked effect is what makes
+        // the NEXT construction throw RuntimeException.
+        EnhancedEffectChain.safeSetEnabled(applied.effect, false)
+        EnhancedEffectChain.safeRelease(applied.effect)
     }
 
     /** The Home band rail follows the layout of the effect that is actually live. */
@@ -708,12 +827,11 @@ class EqService : Service() {
         val all = listOfNotNull(globalEffect) + sessionEqs.values.map { it.applied }
         for (applied in all) {
             applied.extras?.setEnabled(on)
-            try {
-                check(applied.effect.setEnabled(on) == AudioEffect.SUCCESS) {
-                    "${applied.engine} refused enable=$on"
-                }
-            } catch (e: Exception) {
-                Log.w(TAG, "${applied.engine} no longer valid", e)
+            // safeSetEnabled catches internally (false = engine dead): one dead
+            // effect logs and moves on - a failure here can never skip the
+            // remaining effects the way a throwing per-band loop would.
+            if (!EnhancedEffectChain.safeSetEnabled(applied.effect, on)) {
+                Log.w(TAG, "${applied.engine} no longer valid for enable=$on")
             }
         }
     }
@@ -1184,18 +1302,36 @@ class EqService : Service() {
     private fun limiter(): LimiterSettings = enhancedPrefs?.limiter() ?: LimiterSettings()
 
     /**
-     * Dialogue boost, Low-volume bass and Stereo speakers for this moment. The lift is measured
-     * from the current output's own reference volume, recorded the first time
-     * that output reports one ([LowVolumeBass]); a volume Android does not
-     * report (fixed-volume outputs) adds nothing.
+     * Dialogue boost, Low-volume bass, Stereo speakers and full ISO 226 loudness compensation for this moment.
+     * Low-volume bass measures its lift from the output's own reference volume ([LowVolumeBass]); a volume Android
+     * does not report (fixed-volume outputs) adds nothing. Auto loudness is mutually exclusive with low-volume bass.
      */
     private fun toneLayers(): ToneLayers {
         val prefs = enhancedPrefs ?: return ToneLayers.NONE
-        val bass = if (prefs.lowVolumeBassEnabled) LowVolumeBass.read(this, prefs).liftDb else 0.0
+        val bass = if (prefs.lowVolumeBassEnabled && !prefs.autoLoudnessEnabled) LowVolumeBass.read(this, prefs).liftDb else 0.0
+        val loudness = if (prefs.autoLoudnessEnabled) {
+            val route = OutputRoute.current(this)?.let { "${it.kind}|${it.name}" } ?: OutputRoute.UNKNOWN
+            val now = VolumeLevel.mediaDb(this)
+            val storedReference = prefs.lowVolumeReferenceDb(route)
+            // Capture the reference on first read, like LowVolumeBass does,
+            // so the compensation has a baseline to measure from.
+            if (storedReference == null && now != null) {
+                prefs.setLowVolumeReferenceDb(route, now)
+            }
+            val reference = storedReference ?: now
+            val dbBelowRef = if (reference != null && now != null) reference - now else 0.0
+            LoudnessCompensation.bandGains(dbBelowRef, strength = 1.0)
+        } else {
+            ZERO_GAINS
+        }
         return ToneLayers(
             dialogue = prefs.dialogueBoostEnabled,
             lowVolumeBassDb = bass,
-            stereoDownmix = prefs.stereoSpeakersEnabled
+            stereoDownmix = prefs.stereoSpeakersEnabled,
+            loudnessBandGains = loudness,
+            // What is playing right now: only the stereo speech lift listens (1.11.0),
+            // from the same auto-detect/manual pick ExtraPlan already gets.
+            contentType = extrasContentType()
         )
     }
 
@@ -1287,6 +1423,18 @@ class EqService : Service() {
     companion object {
         const val ACTION_START = "tv.corebuilds.eq.action.START"
         const val ACTION_STOP = "tv.corebuilds.eq.action.STOP"
+        /**
+         * Re-probes after a raced confirmation before the churn gets an
+         * explicit UNCONFIRMED. Load math for the whole burst: each
+         * refreshProbeAsync can open up to 2 tracks (probe + in-executor
+         * re-probe when a device change races it), and re-probes fire on
+         * nearly every call under the churn this cap exists for — so worst
+         * case is (1 initial + 3 retries) × 2 = 8 opens per burst, bounded
+         * across events by the cooldown, not just within a burst.
+         */
+        private const val MAX_ROUTE_CONFIRM_RETRIES = 3
+        /** Quiet time before device events may run another retry burst after a give-up. */
+        private const val ROUTE_GIVEUP_COOLDOWN_MS = 5_000L
         const val ACTION_REAPPLY = "tv.corebuilds.eq.action.REAPPLY"
         const val ACTION_SUSPEND = "tv.corebuilds.eq.action.SUSPEND"
         const val ACTION_RESUME = "tv.corebuilds.eq.action.RESUME"
@@ -1320,6 +1468,9 @@ class EqService : Service() {
         /** Keep the overlay through brief pauses between tracks. */
         private const val PLAYBACK_HUD_STOP_GRACE_MS = 5000L
 
+        /** Zero-gain band array, reused when auto loudness is off to avoid reallocating on every apply. */
+        val ZERO_GAINS = DoubleArray(10) { 0.0 }
+
         @Volatile
         var running = false
             private set
@@ -1338,6 +1489,13 @@ class EqService : Service() {
             } catch (e: Exception) {
                 Log.e(TAG, "startForegroundService refused", e)
                 "Android would not start the correction service: ${e.message ?: e.javaClass.simpleName}"
+            }
+        }
+
+        /** Record that correction has been applied for the current output, so later enables only suggest. */
+        fun recordAutoApplied(context: Context) {
+            DeviceKeyStore.of(context).currentDeviceKey(context)?.let { key ->
+                DeviceKeyStore.of(context).recordApplied(key)
             }
         }
 

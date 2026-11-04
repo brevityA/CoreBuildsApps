@@ -62,6 +62,16 @@ class CurveGraphView @JvmOverloads constructor(
         pathEffect = DashPathEffect(floatArrayOf(8f, 6f), 0f)
     }
 
+    // The correction ceiling: the frequency above which the measurement is not
+    // corrected. Drawn as a dashed red rule so the band the graph shows and the
+    // band the correction actually touches cannot be confused.
+    private val ceilingPaint = Paint().apply {
+        style = Paint.Style.STROKE
+        strokeWidth = 2f
+        color = Color.parseColor("#66E5484D")
+        pathEffect = DashPathEffect(floatArrayOf(4f, 6f), 0f)
+    }
+
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         textSize = 22f
         color = ContextCompat.getColor(context, R.color.cb_slate)
@@ -92,13 +102,15 @@ class CurveGraphView @JvmOverloads constructor(
     private var yRangeDb = 20.0
     private var graphTitle = "MEASURED vs CORRECTION"
     private var transitionHz = 384.0
+    private var ceilingHz: Double? = null
 
     fun setData(
         freqs: DoubleArray,
         series: List<Series>,
         title: String = "MEASURED vs CORRECTION",
         yRange: Double = 20.0,
-        tHz: Double = 384.0
+        tHz: Double = 384.0,
+        ceilingHz: Double? = null
     ) {
         frequencies = freqs
         seriesList.clear()
@@ -106,6 +118,7 @@ class CurveGraphView @JvmOverloads constructor(
         graphTitle = title
         yRangeDb = yRange
         transitionHz = tHz
+        this.ceilingHz = ceilingHz
         invalidate()
     }
 
@@ -177,6 +190,14 @@ class CurveGraphView @JvmOverloads constructor(
         if (transitionHz in fLo..fHi) {
             val tx = fx(transitionHz)
             canvas.drawLine(tx, plotT, tx, plotB, transitionPaint)
+        }
+
+        // Draw the correction ceiling as a dashed red rule at the band edge
+        ceilingHz?.let { cHz ->
+            if (cHz in fLo..fHi) {
+                val cx = fx(cHz)
+                canvas.drawLine(cx, plotT, cx, plotB, ceilingPaint)
+            }
         }
 
         // Title, cut to the plot width so a long profile name cannot run off the graph

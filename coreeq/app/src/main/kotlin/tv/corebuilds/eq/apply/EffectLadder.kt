@@ -39,31 +39,40 @@ object EffectLadder {
         var minMb = -1500
         var maxMb = 1500
 
-        // Test platform Equalizer on session 0
+        // Test platform Equalizer on session 0. Creation goes through the
+        // guarded factory: UnsupportedOperationException (engine unavailable)
+        // and RuntimeException (corrupted state from a leaked instance) both
+        // mean "no session-0 EQ", never a crash.
         var eq: Equalizer? = null
         try {
-            eq = Equalizer(0, 0)
-            eqSupported = eq.hasControl()
-            equalizerSession0Ok = eqSupported
-            val count = if (eqSupported) eq.numberOfBands.toInt() else 0
-            if (count > 0) {
-                bands = count
-                centres.clear()
-                for (b in 0 until count) {
-                    centres.add(eq.getCenterFreq(b.toShort()).toDouble() / 1000.0)
+            // Assigned to a local val inside the try: the factory is nullable,
+            // so the old smart-cast from a constructor assignment no longer
+            // covers the reads below. `created` is non-null inside its guard.
+            val created = EnhancedEffectChain.createEqualizerSafely(0, 0)
+            eq = created
+            if (created != null && created.hasControl()) {
+                eqSupported = true
+                equalizerSession0Ok = true
+                val count = created.numberOfBands.toInt()
+                if (count > 0) {
+                    bands = count
+                    centres.clear()
+                    for (b in 0 until count) {
+                        centres.add(created.getCenterFreq(b.toShort()).toDouble() / 1000.0)
+                    }
+                    val range = created.bandLevelRange
+                    if (range != null && range.size >= 2) {
+                        minMb = range[0].toInt()
+                        maxMb = range[1].toInt()
+                    }
                 }
-                val range = eq.bandLevelRange
-                if (range != null && range.size >= 2) {
-                    minMb = range[0].toInt()
-                    maxMb = range[1].toInt()
-                }
+            } else {
+                equalizerSession0Ok = false
             }
         } catch (e: Exception) {
             equalizerSession0Ok = false
         } finally {
-            try {
-                eq?.release()
-            } catch (ignored: Exception) {}
+            EnhancedEffectChain.safeRelease(eq)
         }
 
         if (centres.isEmpty()) {
@@ -84,9 +93,7 @@ object EffectLadder {
                 dpOk = false
                 dynamicsProcessingSession0Ok = false
             } finally {
-                try {
-                    dp?.release()
-                } catch (ignored: Exception) {}
+                EnhancedEffectChain.safeRelease(dp)
             }
         }
         val session0Ok = equalizerSession0Ok || dynamicsProcessingSession0Ok

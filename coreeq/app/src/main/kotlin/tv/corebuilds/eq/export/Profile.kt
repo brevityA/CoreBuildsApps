@@ -1,6 +1,7 @@
 package tv.corebuilds.eq.export
 
 import tv.corebuilds.eq.dsp.CustomTarget
+import tv.corebuilds.eq.dsp.MicResponse
 import tv.corebuilds.eq.dsp.PeakingFilter
 import tv.corebuilds.eq.dsp.TargetCurveImport
 import tv.corebuilds.eq.dsp.Targets
@@ -92,9 +93,13 @@ data class CaptureInfo(
             ?.joinToString(", ")
             ?.take(110)
             ?.let { " · $it" }.orEmpty()
-        val calibration = if (microphoneResponse.isNotEmpty()) {
-            " · Android reported ${microphoneResponse.size} mic-response points (stored, not applied)"
-        } else ""
+        val calibration = when {
+            MicResponse.applicable(microphoneResponse) ->
+                " · Android reported ${microphoneResponse.size} mic-response points (applied, ±${MicResponse.MAX_APPLIED_DB.toInt()} dB cap)"
+            microphoneResponse.isNotEmpty() ->
+                " · Android reported ${microphoneResponse.size} mic-response points (too few to apply)"
+            else -> ""
+        }
         return "Capture: $input · $rates$source$recorder$mic$unprocessed$effectState$calibration"
     }
 
@@ -112,8 +117,17 @@ data class CaptureInfo(
             val os = captureOsVersion?.takeIf { it.isNotBlank() }?.let { " · Android $it" }.orEmpty()
             add("Recording device: $model$os.")
         }
-        if (microphoneResponse.isNotEmpty()) {
-            add("Android reported ${microphoneResponse.size} microphone frequency-response points; metadata only, not applied to the correction.")
+        if (MicResponse.applicable(microphoneResponse)) {
+            add(
+                "Android reported ${microphoneResponse.size} microphone frequency-response points; applied to " +
+                    "the measurement (capped at ±${MicResponse.MAX_APPLIED_DB.toInt()} dB per band, and never " +
+                    "extrapolated beyond the reported span)."
+            )
+        } else if (microphoneResponse.isNotEmpty()) {
+            add(
+                "Android reported ${microphoneResponse.size} microphone frequency-response points; too few " +
+                    "in band to apply, kept as metadata."
+            )
         }
         processing.takeIf { it.isNotEmpty() }?.let { add("Capture processing: ${it.joinToString("; ")}.") }
     }

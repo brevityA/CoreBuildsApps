@@ -8,12 +8,24 @@ android {
     namespace = "tv.corebuilds.eq"
     compileSdk = 37
 
+    testOptions {
+        // The JVM unit harness stubs android.util.Log to THROW ("Method e in
+        // android.util.Log not mocked") unless defaults are returned. The
+        // EnhancedEffectChain guard logs on every failure path it must not
+        // crash on, so its seam tests died in the catch's Log.e, not in the
+        // guard. Log returning 0 in tests is the harness-correct stub; on
+        // device nothing changes, and no existing test asserts on Log.
+        unitTests {
+            isReturnDefaultValues = true
+        }
+    }
+
     defaultConfig {
         applicationId = "tv.corebuilds.eq"
         minSdk = 30
         targetSdk = 37
-        versionCode = 21
-        versionName = "1.10.1"
+        versionCode = 25
+        versionName = "1.11.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Read by the updater: the release feed it polls and the FileProvider

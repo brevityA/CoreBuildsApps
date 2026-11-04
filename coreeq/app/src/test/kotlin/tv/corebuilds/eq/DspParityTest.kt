@@ -117,7 +117,7 @@ class DspParityTest {
     }
 
     @Test
-    fun captureProvenanceIsCommentOnlyAndNeverTreatsMicResponseAsAppliedCalibration() {
+    fun captureProvenanceAppliesMicResponseOnlyWhenUsableAndNeverAsFilter2() {
         val profile = Profile(
             id = "capture-test",
             name = "Capture Test",
@@ -135,7 +135,35 @@ class DspParityTest {
 
         val text = Formats.exportParametricTxt(profile)
         assertTrue(text.contains("44100 Hz input; 16000 Hz analysis"))
-        assertTrue(text.contains("metadata only, not applied"))
+        // One point is metadata, never a calibration: the note says so plainly (1.11.0).
+        assertTrue(text.contains("too few in band to apply"))
+        assertFalse(text.contains("applied to the measurement"))
         assertFalse(text.lines().any { it.startsWith("Filter 2:") })
+    }
+
+    @Test
+    fun captureProvenanceSaysAppliedWhenTheResponseIsUsable() {
+        val profile = Profile(
+            id = "capture-test-usable",
+            name = "Capture Test Usable",
+            timestampMs = 2000L,
+            target = "flat",
+            micType = "remote microphone",
+            filters = emptyList(),
+            captureInfo = CaptureInfo(
+                inputSampleRateHz = 44_100,
+                analysisSampleRateHz = 16_000,
+                microphoneResponse = listOf(
+                    MicrophoneResponsePoint("remote", 100.0, 1.0),
+                    MicrophoneResponsePoint("remote", 1_000.0, 2.0),
+                    MicrophoneResponsePoint("remote", 4_000.0, -1.0),
+                    MicrophoneResponsePoint("remote", 10_000.0, 0.0)
+                )
+            )
+        )
+
+        val text = Formats.exportParametricTxt(profile)
+        assertTrue(text.contains("applied to the measurement"))
+        assertFalse(text.contains("too few in band to apply"))
     }
 }

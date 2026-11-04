@@ -6,6 +6,140 @@ Core EQ (`tv.corebuilds.eq`) keeps its own changelog. The repository-root
 must never land there. Releases are `coreeq-v<version>` tags (see
 `PUBLISHING.md`).
 
+## [1.11.2] — 2026-11-04
+
+- **Every AudioEffect write is bounds-checked before the framework sees it.** Band
+  indices are validated against the device's own `numberOfBands` and gains clamped to
+  its own `bandLevelRange` before `setBandLevel` is called, and the
+  `UnsupportedOperationException` (engine unavailable) and `RuntimeException`
+  (corrupted state from a leaked instance) that actually occur are caught and logged
+  instead of crashing — the CVE-2019-9382 class of bug, closed at application level.
+  Every created effect is released exactly once through a guarded release path.
+- **Output route is probed the way Google documents, not guessed.** A silent PCM
+  `AudioTrack` is started and `getRoutedDevice()` read while it plays, with an
+  `OnRoutingChangedListener` (API 24+) watching for HDMI hot-plug or Bluetooth
+  changes mid-probe and `getDirectPlaybackSupport()` (API 33+) reporting whether the
+  route is a passthrough path that would strip the effect. A probe that reports no
+  route is a hard stop — "Could not confirm output route — correction paused. Play a
+  test tone to continue." — never a silent fallback. A pause caused by a flapping output is
+  held: while the route stays unconfirmable the app keeps answering "unconfirmed" (no repeated
+  track opens, no decay to the estimate), and it resumes only when a device event or a
+  test-tone re-apply lets a fresh probe confirm a route.
+- **The reference DSP flattens the microphone before correcting the room.**
+  `tools/core_eq_dsp.py` subtracts a per-remote-model offset table from the raw
+  measurement (capped at ±6 dB per band, never extrapolated past the tabulated span),
+  warns when the curve carries a MEMS-mic signature (low-frequency roll-off,
+  high-frequency peak), and gates auto-apply behind an explicit "mic calibration is
+  unavailable — apply anyway?" confirmation. `derive_mic_offset` makes the table
+  self-serve: feed it one pink-noise capture taken by the remote mic beside a
+  calibrated reference, and it reduces the (mic − reference) difference to 1/3-octave
+  bands so the room term cancels, leaving the capsule offset to subtract.
+- **The reference DSP can export a hybrid IIR + FIR correction.** 2–4 low-Q IIR
+  biquads for room modes below 300 Hz plus FIR taps for the 300 Hz–16 kHz band, all
+  inside AutoEQ's safety limits (60–16,000 Hz, −12..+3 dB, Q 1–3).
+- **New export: `coreeq_autoeq.csv`** — AutoEQ's native two-column
+  `frequency,gain` format, importable by AutoEQ-compatible tools and Poweramp
+  Equalizer. The export notes that Poweramp adds +6 dB to AutoEQ graphic gains on
+  import. Gains are written to 0.001 dB so fine corrections survive a round-trip.
+  The Poweramp parametric JSON export is unchanged.
+- **The route probe never runs on the main thread.** The silent-track probe
+  opens and stops a real `AudioTrack` and waits ~50 ms for it to settle, so
+  `OutputRoute.current()` on main now answers from the cached probe (or the
+  estimate, before any probe has run) while the track plays on a background
+  executor; auto-apply waits for the confirmed answer instead of blocking or
+  guessing. A device change mid-probe is re-probed, not published stale.
+
+## [1.11.1] — 2026-11-02
+
+**Nothing below was checked on a TV, a soundbar or a speaker pair.** 1.11.0 was
+never released: its tag build, and every Core EQ build after it until this one,
+stopped in the unit tests, because the 1 November features arrived with tests
+that did not compile. This APK is the first to carry 1.11.0's four measurement
+rules (below) as well as everything here. The Android-free Kotlin harness passes
+(647 tests) and lint reports 0 errors.
+
+- **Auto loudness, off by default.** Enhanced audio → Auto loudness restores the
+  bass and treble your ears lose at low volume, using the full ISO 226:2003
+  equal-loudness curves mapped to the ten EQ bands. It adds nothing at or above
+  the output's reference volume, never more than +6 dB per band, and it replaces
+  Low-volume bass while it is on. It needs an output whose volume Android reports
+  in dB; on any other output the status line says there is nothing to compensate.
+- **A measured correction turns itself on once per output.** The first time Core
+  EQ sees an output with a correction, it applies it; after that it only
+  suggests it, and you turn it on from Home.
+- **Core EQ remembers the profile you choose on each output** and prefers it
+  the next time that output is in use. Profiles → Learned preferences lists what
+  it has learned and clears it.
+- **Night mode mentions the time.** With Night mode focused in Enhanced audio,
+  the status line says when it is evening (19:00–22:00) or night (22:00–07:00),
+  in the TV's own time zone.
+- **Six more soundbars get manual-EQ presets.** Sonos Arc, Arc Ultra, Beam
+  (Gen 2) and Ray, Bose Smart Soundbar 900 and Samsung HW-Q990C each get Movie,
+  Dialogue, Music and Late night: 24 presets. They are drawn from published
+  specifications and reviews, and none has been measured by Core EQ. There are
+  also two new built-in presets: Smooth mids and Air.
+- **Fixed before release.** The tests the new features shipped with had never
+  run. Once they did, they found:
+  - **Nine pairs of identical presets.** They had the same curve under two names,
+    for example Sonos Arc Ultra · Movie, Samsung HW-Q990C · Movie and Sonos Beam
+    Gen 2 · Movie. Each one now follows its own model's reviews, so a preset name
+    always means a distinct sound.
+  - **Bose preset names too long.** They are now `Bose Smart 900 · …` to fit the
+    editor's 32-character name limit.
+  - **Auto loudness strength (internal).** The +6 dB cap now applies before the
+    strength scales the curve; before, half strength gave full compensation once
+    the volume was 30 dB down. The app always uses full strength, so nothing
+    audible changes.
+  - **Room-aware guidance and volume-aware suggestions (internal).** These are
+    not yet on any screen. The guidance read the correction's sign backwards,
+    calling a 5 dB lift a cut. The suggestion now counts exactly −30 dB as low
+    volume.
+- **CI.** The workflow is back to the one that built 1.10.1. The debug step and
+  full-history checkouts added while the build was red are gone.
+
+## [1.11.0] — 2026-10-31
+
+**Nothing below was checked on a TV, a soundbar or a speaker pair.** Every rule
+is new in the Android-free Kotlin harness and covered there, and lint passes. No
+sweep has been taken through a remote that reports its response, no refinement
+has been offered and refused on a real check, and no music app has been watched
+with Stereo speakers on.
+
+- **The microphone's own response now comes out of the measurement.** Android
+  reports each active microphone's frequency response
+  (`activeMicrophones[].frequencyResponse`), and Core EQ has stored those points
+  on the profile as provenance since 1.6.1 — but never used them, so a remote
+  that reads 4 dB low at 3 kHz made the room look 4 dB down there and the
+  correction followed it. `SweepAnalysis` now subtracts the reported curve from
+  the band data before nulls, roll-off and the correction read it, deliberately
+  conservatively: at least four valid in-band points or the list is ignored
+  whole; no extrapolation past the reported span; and at most ±6 dB per band, so
+  a wrong or stale report cannot move the correction further than that. Flat
+  metadata is an exact no-op, signal-to-noise still comes from the raw capture
+  (the response scales signal and noise alike), and text exports now say
+  plainly whether the points were applied or kept as metadata.
+- **A check refinement has to prove itself before it earns the button.** The
+  check's figures are read twice: as evidence on screen, and as a gate on the
+  offer. A proposed step is withheld — with the numbers still on screen, and the
+  correction unchanged — when the residual would not drop by at least 0.3 dB RMS
+  (one capture of the same room disagrees by more than that), and the worst band
+  may not grow by more than 0.5 dB on the strength of one capture's average.
+  From +0.8 dB the offer is labelled clearly better.
+- **Stereo speakers listens to what is playing.** The +3 dB speech lift exists
+  for speech inside a folded 5.1 mix; on Music that speech is not there to
+  recover, and the lift would raise the programme with nothing to show for it.
+  With Content type's auto-detect (or manual pick) on, Music folds with the bass
+  guard alone and the service line says so; every other content type — including
+  the fallback when nothing is recognised — keeps the lift whole. Dialogue boost
+  is the user asking for speech by name and is never overruled by the guess.
+- **The Stereo speakers status line says what is true, not what to ask for.**
+  With the "Modify system settings" permission already granted, the setting
+  still showed the permission-ask panel (#413, finding 5). The decision is now
+  one pure, unit-tested table: with the permission in hand and Surround sound
+  still not Never, the line says how to finish by hand — the TV's own menu, the
+  ADB line, or switching the feature off and on to retry — instead of asking for
+  a permission the user already gave.
+
 ## [1.10.1] — 2026-10-31
 
 **Nothing below was checked on a TV, a soundbar or a speaker pair.** The route query

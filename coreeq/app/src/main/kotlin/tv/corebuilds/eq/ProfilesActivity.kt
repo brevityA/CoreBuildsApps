@@ -18,6 +18,7 @@ import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.export.Profile
+import tv.corebuilds.eq.export.ProfileRouteStore
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.export.ProfileExchange
 import tv.corebuilds.eq.mode.ContentMode
@@ -48,6 +49,7 @@ class ProfilesActivity : TvActivity() {
     private lateinit var btnPlaybackHud: Button
     private lateinit var textPlaybackHud: TextView
     private lateinit var btnAllowOverlay: Button
+    private lateinit var btnLearnedPrefs: Button
 
     private var profilesList = mutableListOf<Profile>()
     private var selectedProfile: Profile? = null
@@ -89,6 +91,7 @@ class ProfilesActivity : TvActivity() {
         btnPlaybackHud = findViewById(R.id.btn_playback_hud)
         textPlaybackHud = findViewById(R.id.text_playback_hud)
         btnAllowOverlay = findViewById(R.id.btn_allow_overlay)
+        btnLearnedPrefs = findViewById(R.id.btn_learned_prefs)
 
         recyclerProfiles.layoutManager = LinearLayoutManager(this)
 
@@ -118,6 +121,7 @@ class ProfilesActivity : TvActivity() {
             EqService.send(this, EqService.ACTION_REFRESH_PLAYBACK_HUD)
         }
         btnAllowOverlay.setOnClickListener { openOverlaySettings() }
+        btnLearnedPrefs.setOnClickListener { showLearnedPrefsDialog() }
         findViewById<Button>(R.id.btn_test_card).setOnClickListener { showTestCard() }
         refreshOverlaySettings()
     }
@@ -197,6 +201,38 @@ class ProfilesActivity : TvActivity() {
         EqService.send(this, EqService.ACTION_SHOW_CARD)
     }
 
+    /** Show what Core EQ has learned: the profile it prefers for each output, with an option to clear all. */
+    private fun showLearnedPrefsDialog() {
+        val store = ProfileRouteStore.of(this)
+        val all = store.allPreferences()
+        val profiles = profileStore.getAllProfiles().associateBy { it.id }
+        val lines = all.map { (outputKey, profileId) ->
+            val label = when {
+                outputKey.contains("|") -> {
+                    val parts = outputKey.split("|")
+                    OutputRoute.label(parts.firstOrNull())
+                }
+                else -> outputKey
+            }
+            val profileName = profiles[profileId]?.name ?: profileId
+            "$label: $profileName"
+        }
+        val message = if (lines.isEmpty()) {
+            getString(R.string.profiles_learned_prefs_none)
+        } else {
+            lines.joinToString("\n")
+        }
+        AlertDialog.Builder(this)
+            .setTitle(R.string.profiles_learned_prefs_title)
+            .setMessage(message)
+            .setPositiveButton(R.string.profiles_learned_prefs_clear_all) { _, _ ->
+                store.clear() // ProfileRouteStore.clear() removes all keys
+                Toast.makeText(this, "Learned preferences cleared", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
     /** Android's own "Display over other apps" screen for Core EQ, or the ADB line where a TV has none. */
     private fun openOverlaySettings() {
         if (!OverlayPermission.open(this)) {
@@ -260,7 +296,12 @@ class ProfilesActivity : TvActivity() {
                 btnExport.isEnabled = true
                 btnDelete.isEnabled = true
                 profileStore.setActiveProfile(profile.id)
+                // Remember this profile as the user's preference for the current output.
                 val currentOutput = OutputRoute.current(this)
+                currentOutput?.let {
+                    ProfileRouteStore.of(this@ProfilesActivity)
+                        .rememberPreference("${it.kind}|${it.name}", profile.id)
+                }
                 val routeMatch = OutputRoute.pick(
                     profilesList,
                     profileStore.chosenId(),

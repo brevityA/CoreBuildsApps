@@ -1,6 +1,7 @@
 package tv.corebuilds.eq.dsp
 
 import tv.corebuilds.eq.CorrectionLimits
+import tv.corebuilds.eq.export.MicrophoneResponsePoint
 
 import kotlin.math.PI
 import kotlin.math.abs
@@ -184,7 +185,15 @@ object SweepAnalysis {
          * default. It can only narrow the band: [CorrectionLimits.ceilingHz]
          * caps it at 8 kHz, and the measured bandwidth edge caps it further.
          */
-        ceilingHz: Double? = null
+        ceilingHz: Double? = null,
+        /**
+         * The active microphone's reported frequency response (1.11.0): subtracted
+         * from the band curve before nulls, roll-off and the correction read it,
+         * capped per band by [MicResponse] — empty, sparse or out-of-span metadata
+         * changes nothing. Signal-to-noise and the bandwidth edge still come from
+         * the raw capture, which the response scales equally on both sides.
+         */
+        micResponse: List<MicrophoneResponsePoint> = emptyList()
     ): SweepResult {
         // Reject an unusable request before any DSP: an empty or non-finite
         // capture, a broken sample rate or a blank target would otherwise
@@ -256,7 +265,14 @@ object SweepAnalysis {
         val fMax = CorrectionLimits.effectiveCeilingHz(measuredMax, ceilingHz)
 
         val targetDb = Targets.targetCurve(target, centres)
-        val measured = alignTo(centres, allDb.copyOf(keep), targetDb)
+        // The microphone's own response comes out here — before nulls, roll-off and
+        // the correction read the curve — so a dip the mic added is not a dip the
+        // room gets corrected for ([MicResponse]'s cap and span rules apply).
+        val measured = alignTo(
+            centres,
+            MicResponse.flatten(centres, allDb.copyOf(keep), micResponse),
+            targetDb
+        )
 
         val nulls = Correction.detectNulls(centres, measured)
         val rolloff = Correction.detectLowRolloff(centres, measured)
