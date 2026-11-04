@@ -6,7 +6,16 @@ name: Core Launcher private pre-release
 # glob in any workflow to be a `tagPrefix` declared in suite.json, and the
 # launcher is deliberately not a suite app (no suite.json entry, no store
 # listing, no Downloader channel, no update feed). Push the `launcher-v*` tag
-# yourself, then dispatch this workflow with that tag and publish=true.
+# yourself, then trigger this workflow with that tag and publish=true.
+#
+# Two triggers, same job:
+#   workflow_dispatch    - the Actions UI, or `gh workflow run` (needs actions:write)
+#   repository_dispatch  - `launcher-release`, for clients that only hold
+#                          contents:write:
+#       gh api -X POST repos/OWNER/REPO/dispatches \
+#         -f event_type=launcher-release \
+#         -f 'client_payload[tag]=launcher-v0.1.0' \
+#         -f 'client_payload[publish]=true'
 #
 # The launcher is a debug-only private prototype: there is no release signing
 # here, no secrets, and no artifact that claims to be a suite release.
@@ -22,6 +31,8 @@ on:
         description: 'Create the GitHub pre-release and attach the debug APK'
         type: boolean
         default: false
+  repository_dispatch:
+    types: [launcher-release]
 
 permissions:
   contents: write
@@ -30,11 +41,14 @@ jobs:
   release:
     name: Build launcher debug APK for a tag
     runs-on: ubuntu-latest
+    env:
+      # Same job for both triggers: the UI inputs when present, otherwise the
+      # repository_dispatch payload.
+      TAG: ${{ inputs.tag || github.event.client_payload.tag }}
+      PUBLISH: ${{ inputs.publish || github.event.client_payload.publish }}
     steps:
       - name: Validate the requested tag
         shell: bash
-        env:
-          TAG: ${{ inputs.tag }}
         run: |
           case "$TAG" in
             launcher-v[0-9]*) ;;
@@ -46,7 +60,7 @@ jobs:
 
       - uses: actions/checkout@v7
         with:
-          ref: ${{ inputs.tag }}
+          ref: ${{ inputs.tag || github.event.client_payload.tag }}
           fetch-depth: 0
 
       - name: Check suite truth
@@ -95,13 +109,13 @@ jobs:
           retention-days: 14
 
       - name: Publish the private pre-release
-        if: ${{ inputs.publish == true }}
+        if: env.PUBLISH == 'true'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: ${{ inputs.tag }}
           SHA: ${{ steps.revision.outputs.sha }}
         run: |
+          version="${TAG#launcher-v}"
           notes="$(mktemp)"
           cat > "$notes" <<EOF
           Private debug build of the Core Builds launcher prototype, cut from
@@ -118,10 +132,18 @@ jobs:
 
           Physical-validation status is tracked in \`launcher/README.md\`, not here.
           EOF
-          gh release create "$TAG" \
-            "launcher/app/build/outputs/apk/debug/app-debug.apk#core-builds-launcher-$TAG-debug.apk" \
-            "launcher/app/build/outputs/apk/debug/BUILD_COMMIT.txt" \
-            --prerelease \
-            --title "Core Builds Launcher ${TAG#launcher-} (private debug)" \
-            --notes-file "$notes" \
-            --verify-tag
+          assets=(
+            "launcher/app/build/outputs/apk/debug/app-debug.apk#core-builds-launcher-$version-debug.apk"
+            "launcher/app/build/outputs/apk/debug/BUILD_COMMIT.txt"
+          )
+          # Re-running the job must repair the release, not fail on an existing one.
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "${assets[@]}" --clobber
+          else
+            gh release create "$TAG" "${assets[@]}" \
+              --prerelease \
+              --title "Core Builds Launcher v$version (private debug)" \
+              --notes-file "$notes" \
+              --verify-tag
+          fi
+          gh release view "$TAG" --json url,assets --jq '"\(.url) " + ([.assets[].name] | join(", "))'
