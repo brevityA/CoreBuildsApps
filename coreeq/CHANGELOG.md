@@ -6,12 +6,51 @@ Core EQ (`tv.corebuilds.eq`) keeps its own changelog. The repository-root
 must never land there. Releases are `coreeq-v<version>` tags (see
 `PUBLISHING.md`).
 
-## [Unreleased]
+## [1.12.0] — 2026-11-04
 
-**Nothing below was checked on a TV or a phone.** It runs in the Android-free
-Kotlin harness, which passes, and lint reports 0 errors; no screen here has
-been seen on a device.
+**Nothing below was checked on a TV or a phone.** It runs in the Kotlin
+harness (788 tests, including 78 screen checks on the real layouts under
+Robolectric at 1920 x 1080 and 40 rail checks), which passes, and lint
+reports 0 errors; no screen here has been seen on a device.
 
+- **A rail on every screen.** The nine screens Home listed are now a rail down
+  the left of Home, Manual EQ, Extra effects, Content type, Mode, Profiles,
+  Capability, Setup, Phone companion and Support, with the current screen
+  marked. Up and Down walk the rail and stop at its ends; Right goes into the
+  screen, to the control that last had focus; Left from a screen's edge comes
+  back to its rail item. Moving from one screen to another closes the one you
+  leave, so Back always returns Home. First run, Measure and Display
+  calibration stay full screen.
+- **Focus opens where you start.** On a box or projector running a phone-style
+  Android build, the window starts in touch mode, the screen's opening focus
+  was dropped, and the first press of the remote landed on whatever came
+  first in the layout. Each screen now marks its opening control the way
+  Android falls back to, and asks again once the window is attached. A screen
+  never opens on the rail or on a bare scroll area with no ring.
+- **Text fits its box.** Profiles' saved list had no height at 540dp (eight
+  settings took the whole column) and its last button sat below the screen;
+  both are in one scrolling column now. Manual EQ's Room hints, Import and
+  band caption were cut short with an ellipsis. Scrolling columns on Setup,
+  Profiles and Mode drew past their own edges, over the buttons below.
+- **Information panels stay put.** The Extra effects explanation scrolled away
+  from the switch it explains; it is now a fixed panel beside the list, and
+  when its text runs longer than the panel, Right enters it (the ring shows),
+  Up and Down scroll it and Left returns to the switch. Mode's rules panel was
+  a focus stop with no ring; it has one. First run's three steps are focusable
+  cards, where the only way to scroll them was an invisible focus stop.
+- **A new look in the brand's own type.** Outfit (SIL OFL, four weights, licence
+  in the APK) for words, monospace for numbers and commands; pills for
+  controls, sections for groups. Every focusable keeps the 3dp cyan ring;
+  compact controls lift (scale 1.04 over 150 ms) and full-width ones rise
+  without scaling, so focus never moves a neighbour. Dialogs use the same
+  panel and ring.
+- **Setup's Check again says what it did.** It rebuilt identical rows and said
+  nothing, so a press looked dead whenever nothing had changed. It now reads
+  "Checked again at HH:mm:ss: nothing changed." or how many steps changed.
+- **The TV side of the phone companion** has two columns (address and actions
+  on the left, the one-time code and its QR on the right) and no selectable
+  text: on a TV a selectable line is a stop that does nothing, and the remote
+  met three of them before Start pairing.
 - **Manual EQ reads the room.** A new *Room hints* row lists what the measured
   correction is doing that a hand-set band should know, and one press applies
   the hints that have something to apply:

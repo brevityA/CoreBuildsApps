@@ -15,6 +15,10 @@ Core EQ combines TV-room measurement with a manual 10-band tone EQ. Each measure
 
 A detailed source, permission and precedence map is in [Playback identity and mode overrides](../research/core-eq-playback-identity-and-mode-overrides-2026-10-25.md).
 
+## Getting around
+
+Since 1.12.0 every screen except First run, Measure and Display calibration has a rail down the left: Core EQ (Home), then Manual EQ, Extra effects and Content type under **Sound**, and Profiles, Capability, Setup and ADB, Phone companion and Display calibration under **Set up**. The screen you are on is marked. Up and Down walk the rail and stop at its ends; Right goes into the screen, to the control that last had focus; Left from a screen's edge returns to its rail item. Going from one screen to another closes the one you leave, so Back always returns Home. Every control shows a 3dp cyan ring when it has focus. An information panel whose text runs longer than the panel (Extra effects, Mode's rules) takes focus on Right and scrolls with Up and Down.
+
 ## First install and setup
 
 On a fresh Android TV install, Core EQ opens a short welcome guide. It shows Android's route indication with its evidence type (anticipated route or connected-output estimate), explains the remote-microphone measurement, and warns that the first GREEN capture-quality measurement for an output type may be applied automatically. Green indicates signal-to-noise only, not calibrated microphone response or acoustic accuracy. You can choose **Start room measurement**, open setup help, or skip the guide; upgrades are not interrupted.
