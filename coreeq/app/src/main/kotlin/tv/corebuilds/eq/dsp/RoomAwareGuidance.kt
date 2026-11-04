@@ -107,7 +107,10 @@ object RoomAwareGuidance {
                     val total = manual + correction
                     val sameWay = (manual > 0.0 && correction > 0.0) || (manual < 0.0 && correction < 0.0)
                     if (sameWay && abs(manual) >= STACKED_MIN_MANUAL_DB && abs(total) >= STACKED_TOTAL_DB) {
-                        stacked += abs(total) to stackedHint(index, fc, manual, correction, total)
+                        // Resetting the band undoes the stack only when the band's own slider
+                        // is all of it; a filter between the bands is not moved by a band reset.
+                        val ownOnly = abs(manual - ManualEq.gainAtBand(manualFilters, index)) < 1e-9
+                        stacked += abs(total) to stackedHint(index, fc, manual, correction, total, ownOnly)
                     }
                 }
                 fc < profile.transitionHz -> {
@@ -133,7 +136,14 @@ object RoomAwareGuidance {
         return if (correctionDb < 0.0) size else -size
     }
 
-    private fun stackedHint(index: Int, fc: Double, manual: Double, correction: Double, total: Double): Guidance {
+    private fun stackedHint(
+        index: Int,
+        fc: Double,
+        manual: Double,
+        correction: Double,
+        total: Double,
+        resettable: Boolean
+    ): Guidance {
         val lift = correction > 0.0
         val detail = if (lift) {
             "The correction already lifts ${db(abs(correction))} here; with yours that is " +
@@ -141,6 +151,16 @@ object RoomAwareGuidance {
         } else {
             "The correction already cuts ${db(abs(correction))} here; with yours that is " +
                 "${signed(total)}, more than the room asked for."
+        }
+        if (!resettable) {
+            // Advice only: a reset of this band would leave the filter that stacks in place.
+            return Guidance(
+                Guidance.Kind.STACKED, index,
+                "Your filters add ${signed(manual)} at ${hz(fc)}",
+                "$detail Part of it comes from a filter between the bands, which a band reset " +
+                    "does not move: edit or replace the imported preset instead.",
+                applyGainDb = null
+            )
         }
         return Guidance(
             Guidance.Kind.STACKED, index,
