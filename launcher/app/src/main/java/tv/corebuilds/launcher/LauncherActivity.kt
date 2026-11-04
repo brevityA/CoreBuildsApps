@@ -27,6 +27,7 @@ import android.window.OnBackInvokedDispatcher
 import java.text.DateFormat
 import java.util.Date
 import java.util.concurrent.Executors
+import java.util.concurrent.RejectedExecutionException
 
 /** Main screen and HOME entry point for the private Core Builds launcher prototype. */
 class LauncherActivity : Activity() {
@@ -57,6 +58,7 @@ class LauncherActivity : Activity() {
     private var renderedPins: Set<String>? = null
     private var renderedRecentPackages: List<String>? = null
     private var scanning = false
+    private var rescanRequested = false
     private var selectedApp: LaunchableApp? = null
     private var lastFocusedPackage: String? = null
     private var hasRenderedApps = false
@@ -130,6 +132,7 @@ class LauncherActivity : Activity() {
 
     override fun onDestroy() {
         mainHandler.removeCallbacksAndMessages(null)
+        rescanRequested = false
         // Let any just-recorded launch history finish its local preferences write.
         appLoader.shutdown()
         super.onDestroy()
@@ -383,40 +386,64 @@ class LauncherActivity : Activity() {
         bottomMargin = bottom
     }
 
+    /** Loads one catalog snapshot and coalesces refreshes requested while it is running. */
     private fun refreshApps() {
-        if (scanning || isFinishing) return
+        if (isFinishing || isDestroyed) {
+            rescanRequested = false
+            return
+        }
+        if (scanning) {
+            rescanRequested = true
+            return
+        }
         scanning = true
         if (renderedAppKeys == null) scanStatus.text = getString(R.string.scanning_this_tv)
         val focusToRestore = focusedPackage() ?: lastFocusedPackage
 
-        appLoader.execute {
-            val loaded = LauncherAppCatalog.load(applicationContext)
-            val installed = loaded.mapTo(linkedSetOf()) { it.packageName }
-            val pins = LauncherPreferences.pinnedPackages(applicationContext, installed)
-            val recentPackages = LauncherPreferences.recentPackages(applicationContext, installed)
-                .filterNot { it in pins }
-            runOnUiThread {
-                scanning = false
-                if (isFinishing || isDestroyed) return@runOnUiThread
-                val keys = loaded.map {
-                    "${it.packageName}/${it.activityName}:${it.label}:${it.tvOptimized}:${it.lastUpdateTime}"
-                }
-                val appListChanged = keys != renderedAppKeys
-                val pinsChanged = pins != renderedPins
-                val recentsChanged = recentPackages != renderedRecentPackages
-                apps = loaded
-                if (appListChanged || pinsChanged || recentsChanged || renderedAppKeys == null) {
-                    val firstRender = !hasRenderedApps
-                    renderedAppKeys = keys
-                    renderedPins = pins
-                    renderedRecentPackages = recentPackages
-                    renderApps(focusToRestore, pins, recentPackages, firstRender)
-                    hasRenderedApps = true
+        try {
+            appLoader.execute {
+                val loaded = LauncherAppCatalog.load(applicationContext)
+                val installed = loaded.mapTo(linkedSetOf()) { it.packageName }
+                val pins = LauncherPreferences.pinnedPackages(applicationContext, installed)
+                val recentPackages = LauncherPreferences.recentPackages(applicationContext, installed)
+                    .filterNot { it in pins }
+                runOnUiThread {
+                    scanning = false
+                    if (isFinishing || isDestroyed) {
+                        rescanRequested = false
+                        return@runOnUiThread
+                    }
+                    val keys = loaded.map {
+                        "${it.packageName}/${it.activityName}:${it.label}:${it.tvOptimized}:${it.lastUpdateTime}"
+                    }
+                    val appListChanged = keys != renderedAppKeys
+                    val pinsChanged = pins != renderedPins
+                    val recentsChanged = recentPackages != renderedRecentPackages
+                    apps = loaded
+                    if (appListChanged || pinsChanged || recentsChanged || renderedAppKeys == null) {
+                        val firstRender = !hasRenderedApps
+                        renderedAppKeys = keys
+                        renderedPins = pins
+                        renderedRecentPackages = recentPackages
+                        renderApps(focusToRestore, pins, recentPackages, firstRender)
+                        hasRenderedApps = true
+                    }
+
+                    // Render this snapshot before starting the one coalesced follow-up.
+                    if (rescanRequested) {
+                        rescanRequested = false
+                        if (!isFinishing && !isDestroyed) refreshApps()
+                    }
                 }
             }
+        } catch (_: RejectedExecutionException) {
+            // onDestroy shuts down the executor; never leave a pending refresh behind.
+            scanning = false
+            rescanRequested = false
         }
     }
 
+    /** Rebuilds the app shelves while preserving focus and resolving spotlight data from this scan. */
     private fun renderApps(
         focusToRestore: String?,
         pins: Set<String>,
@@ -502,10 +529,10 @@ class LauncherActivity : Activity() {
         }
 
         val focusedApp = focusPackage?.let { packageName -> apps.firstOrNull { it.packageName == packageName } }
-        if (focusedApp != null) updateHero(focusedApp)
-        else if (selectedApp == null || apps.none { it.packageName == selectedApp?.packageName }) {
-            updateHero(apps.firstOrNull())
+        val currentSelectedApp = selectedApp?.packageName?.let { selectedPackage ->
+            apps.firstOrNull { it.packageName == selectedPackage }
         }
+        updateHero(focusedApp ?: currentSelectedApp ?: apps.firstOrNull())
 
         pageContent.post {
             val target = focusPackage?.let(appTiles::get)
@@ -525,6 +552,7 @@ class LauncherActivity : Activity() {
         updateHero(app)
     }
 
+    /** Updates spotlight text and artwork only when the selected app's current catalog entry changes. */
     private fun updateHero(app: LaunchableApp?) {
         val previous = selectedApp
         if (app != null && previous != null &&

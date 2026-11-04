@@ -585,9 +585,13 @@ HTML_TEMPLATE = r'''<!doctype html>
       const items = groupItems(group);
       if (!items.length) return;
       if (group === "apps" && (direction === "up" || direction === "down")) {
-        const next = index + (direction === "up" ? -6 : 6);
-        if (next >= 0 && next < items.length) focusItem(group, next);
-        return;
+        const columns = items.filter(item => item.offsetTop === items[0].offsetTop).length || 1;
+        const next = index + (direction === "up" ? -columns : columns);
+        if (next >= 0 && next < items.length) {
+          focusItem(group, next);
+          return;
+        }
+        if (direction === "down") return;
       }
       if (direction === "left" || direction === "right") {
         const delta = direction === "left" ? -1 : 1;

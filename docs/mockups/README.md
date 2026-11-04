@@ -10,6 +10,8 @@ On a real device, the launcher reads each installed package's own label, icon, a
 - `core-launcher-all-apps.png` — same design language with remote focus moved into the All Apps grid.
 - `core-launcher-offline.html` — interactive offline home-screen illustration. Use the arrow keys and Enter, click the tiles, press **F** to toggle a favourite, or use **EDIT FAVOURITES**. A simulated launch updates a conditional Recent row; it never opens another app or changes Android settings. Browser preview state is stored only in local browser storage.
 
+The preview's Up/Down app-grid movement follows the rendered column count; Up from the first app row returns to the preceding visible shelf. This browser focus model is an illustration only, not evidence of Android remote behavior; the [physical-device checklist](../../launcher/README.md#required-physical-device-validation-merge-gate) remains authoritative.
+
 The HTML embeds its styles, script, and WebP artwork as data URIs. A restrictive Content Security Policy blocks network connections and allows only the inline code and embedded images; there are no external fonts, stylesheets, scripts, or assets. It can be opened directly from disk. Rebuild it after changing the referenced artwork with:
 
 ```bash

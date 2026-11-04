@@ -141,6 +141,10 @@ The implementation is in [`LauncherActivity.kt`](../launcher/app/src/main/java/t
 
 Not included: recommendation channels, media playback, custom system wallpaper, search, account/cloud sync, weather, sports feeds, key remapping, accessibility-based Home interception, vendor-specific setup, or a public distribution path.
 
+### KDoc coverage for the private prototype
+
+The 80% function-level KDoc threshold reported by CodeRabbit is explicitly waived for v0.1: this is a private application, not a reusable Kotlin library, and it exports no stable library API. Android entry-point classes are manifest components; short private view-building helpers are intentionally named by their UI role, while non-obvious lifecycle and focus behavior is documented at the relevant code and in the launcher README. Repository CI does not enforce a KDoc percentage. Revisit broader function-level documentation before exposing a reusable API or adding a public distribution lane. This documentation waiver does not waive the required physical-device validation gate below.
+
 ## Validation gate before merge and wider use
 
 1. Require a green CI debug build/lint; it is separate from UX sign-off.

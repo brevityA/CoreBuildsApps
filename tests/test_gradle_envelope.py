@@ -818,6 +818,46 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertLess(load.index("LauncherPreferences.pinnedPackages"), load.index("runOnUiThread"))
         self.assertNotIn("LauncherPreferences.pinnedPackages", render_rows)
 
+    def test_home_refresh_coalesces_mid_scan_requests_and_stops_safely_on_destroy(self):
+        activity = self.ACTIVITY.read_text(encoding="utf-8")
+        refresh = activity[activity.index("private fun refreshApps()"):activity.index("private fun renderApps(")]
+        callback = refresh[refresh.index("runOnUiThread {"):]
+        destroy = activity[activity.index("override fun onDestroy()"):activity.index("private fun createHomeScreen(")]
+
+        self.assertIn("private var rescanRequested = false", activity)
+        self.assertIn("if (scanning) {", refresh)
+        self.assertIn("rescanRequested = true", refresh)
+        self.assertLess(callback.index("if (isFinishing || isDestroyed)"), callback.index("if (rescanRequested)"))
+        self.assertLess(callback.index("renderApps("), callback.index("if (rescanRequested)"))
+        pending_rescan = callback[callback.index("if (rescanRequested)"):]
+        self.assertLess(pending_rescan.index("rescanRequested = false"), pending_rescan.index("refreshApps()"))
+        self.assertIn("if (!isFinishing && !isDestroyed) refreshApps()", pending_rescan)
+        self.assertIn("catch (_: RejectedExecutionException)", refresh)
+        self.assertLess(destroy.index("rescanRequested = false"), destroy.index("appLoader.shutdown()"))
+
+    def test_render_refreshes_selected_spotlight_from_current_catalog(self):
+        activity = self.ACTIVITY.read_text(encoding="utf-8")
+        render = activity[activity.index("private fun renderApps("):activity.index("private fun onAppFocused(")]
+        self.assertIn("val focusedApp = focusPackage?.let", render)
+        self.assertIn("val currentSelectedApp = selectedApp?.packageName?.let", render)
+        self.assertIn("apps.firstOrNull { it.packageName == selectedPackage }", render)
+        self.assertIn("updateHero(focusedApp ?: currentSelectedApp ?: apps.firstOrNull())", render)
+
+    def test_offline_preview_dpad_uses_rendered_columns_and_crosses_up_from_first_row(self):
+        generator = (ROOT / "tools/build_launcher_offline_preview.py").read_text(encoding="utf-8")
+        preview = (ROOT / "docs/mockups/core-launcher-offline.html").read_text(encoding="utf-8")
+        expected = (
+            "const columns = items.filter(item => item.offsetTop === items[0].offsetTop).length || 1;",
+            'const next = index + (direction === "up" ? -columns : columns);',
+            'if (direction === "down") return;',
+            'const nextGroupIndex = groupIndex + (direction === "up" ? -1 : 1);',
+        )
+        move = preview[preview.index("function move(direction)"):preview.index("function focusSelected()")]
+        for snippet in expected:
+            self.assertIn(snippet, generator)
+            self.assertIn(snippet, move)
+        self.assertNotIn('direction === "up" ? -6 : 6', move)
+
     def test_offline_html_preview_is_self_contained_and_disclosed(self):
         preview = (ROOT / "docs/mockups/core-launcher-offline.html").read_text(encoding="utf-8")
         self.assertIn("DESIGN ILLUSTRATION · NOT A SCREENSHOT", preview)
@@ -830,6 +870,9 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertNotIn("http://", preview)
         self.assertNotIn("https://", preview)
         self.assertNotIn("fetch(", preview)
+        preview_readme = (ROOT / "docs/mockups/README.md").read_text(encoding="utf-8")
+        self.assertIn("rendered column count", preview_readme)
+        self.assertIn("not evidence of Android remote behavior", preview_readme)
 
     def test_documentation_links_implementation_and_hardware_signoff_record(self):
         readme = (ROOT / "launcher/README.md").read_text(encoding="utf-8")
@@ -853,6 +896,9 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertEqual(readme.count("| NOT RUN |"), 8)
         for check in ("D-pad", "HOME role", "Back", "TalkBack"):
             self.assertIn(check, readme)
+        research = (ROOT / "docs/CORE_LAUNCHER_PROTOTYPE_RESEARCH.md").read_text(encoding="utf-8")
+        self.assertIn("80% function-level KDoc threshold", research)
+        self.assertIn("This documentation waiver does not waive the required physical-device validation gate", research)
 
     def test_private_debug_package_and_validation_artifact_workflow(self):
         build = (ROOT / "launcher/app/build.gradle.kts").read_text(encoding="utf-8")
