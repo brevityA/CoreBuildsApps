@@ -805,6 +805,10 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         # and the launcher is deliberately not a suite app.
         self.assertIn("workflow_dispatch:", workflow)
         self.assertNotRegex(workflow, r"(?m)^\s*tags:")
+        # A client holding only contents:write can start the lane without actions:write.
+        self.assertIn("repository_dispatch:", workflow)
+        self.assertIn("types: [launcher-release]", workflow)
+        self.assertIn("github.event.client_payload.tag", workflow)
         self.assertNotIn("tv.corebuilds.launcher", suite)
         # Nothing publishes unless a human asks for it, and only as a pre-release.
         self.assertIn("publish:", workflow)
@@ -822,6 +826,12 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertIn("tools/check_gradle_envelope.py", workflow)
         self.assertIn("tests/test_gradle_envelope.py", workflow)
         self.assertIn("BUILD_COMMIT.txt", workflow)
+        # The asset is named for the version, not the tag, and a re-run repairs
+        # an existing release instead of failing on it.
+        self.assertIn('version="${TAG#launcher-v}"', workflow)
+        self.assertIn('core-builds-launcher-$version-debug.apk', workflow)
+        self.assertIn('if gh release view "$TAG"', workflow)
+        self.assertIn("--clobber", workflow)
         self.assertIn("Private pre-release lane", readme)
         self.assertIn("gh workflow run core-launcher-release.yml", readme)
 

@@ -56,7 +56,16 @@ gh workflow run core-launcher-release.yml \
   -f tag=launcher-v0.1.0 -f publish=true
 ```
 
-The workflow rebuilds the debug APK from that tag, re-runs the suite-truth, Gradle-envelope and launcher contract gates, writes `BUILD_COMMIT.txt`, and creates a **pre-release** whose assets are `core-builds-launcher-<tag>-debug.apk` plus `BUILD_COMMIT.txt`. There is no release signing key, no `assembleRelease`, no floating "latest" tag, and no update feed; a tag alone publishes nothing until someone dispatches the workflow with `publish=true`. The APK stays debug-signed and sideload-only, and this lane makes no suite-release claim.
+The workflow rebuilds the debug APK from that tag, re-runs the suite-truth, Gradle-envelope and launcher contract gates, writes `BUILD_COMMIT.txt`, and creates a **pre-release** whose assets are `core-builds-launcher-<version>-debug.apk` plus `BUILD_COMMIT.txt`. Re-running the job repairs an existing release with `gh release upload --clobber` rather than failing on it.
+
+A client that holds `contents: write` but not `actions: write` can start the same job through `repository_dispatch`:
+
+```bash
+gh api -X POST repos/brevityA/CoreBuildsApps/dispatches \
+  -f event_type=launcher-release \
+  -f 'client_payload[tag]=launcher-v0.1.0' \
+  -f 'client_payload[publish]=true'
+``` There is no release signing key, no `assembleRelease`, no floating "latest" tag, and no update feed; a tag alone publishes nothing until someone dispatches the workflow with `publish=true`. The APK stays debug-signed and sideload-only, and this lane makes no suite-release claim.
 
 To try it as HOME, select **SET AS HOME**, choose the prototype in Android's Home-app settings, then press the remote's Home button. To revert, use the device's **Settings → Apps → Default apps → Home app** screen (wording varies by vendor) and select the previous launcher.
 
