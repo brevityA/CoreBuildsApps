@@ -347,7 +347,15 @@ class CaptureEngine(private val context: Context) {
         val descriptions = activeMicrophones.mapNotNull { it.description?.trim()?.takeIf(String::isNotEmpty) }.distinct()
         val response = mutableListOf<MicrophoneResponsePoint>()
         activeMicrophones.take(MAX_RESPONSE_MICROPHONES).forEachIndexed { index, microphone ->
-            val label = microphone.description?.trim()?.takeIf(String::isNotEmpty) ?: "active mic ${index + 1}"
+            // The label is the capsule identity MicResponse.microphoneCount
+            // reads, so it must be unique per reporting mic: two mics sharing
+            // a description ("Built-in microphone") would otherwise smuggle
+            // a blended list through the single-capsule guard as clean data.
+            val description = microphone.description?.trim()?.takeIf(String::isNotEmpty)
+            val label = if (activeMicrophones.size > 1)
+                "${description ?: "active mic"} #${index + 1}"
+            else
+                description ?: "active mic ${index + 1}"
             val points = try {
                 microphone.frequencyResponse
             } catch (e: RuntimeException) {

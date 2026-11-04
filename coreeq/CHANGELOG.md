@@ -15,7 +15,12 @@ must never land there. Releases are `coreeq-v<version>` tags (see
   every usable point carries the same microphone label — otherwise the
   measurement passes through untouched and the capture summary says
   "N mics reported mic response; composite not applied", the same fail-closed
-  doctrine as the route probe's UNCONFIRMED.
+  doctrine as the route probe's UNCONFIRMED. Labels get a per-index suffix
+  whenever more than one mic reports, so two mics sharing a description can no
+  longer pass as one.
+- **The applied line states the confidence behind it.** "applied" now carries
+  the point count and the frequency span it covers — applied on four points
+  versus twelve is a different claim, and the bare word hid it.
 - **The capture summary now says so when Android reports no mic response.**
   The result notes, the profile screen and the `CoreEqCapture` log line already
   distinguished "applied" from "too few to apply"; zero reported points — the

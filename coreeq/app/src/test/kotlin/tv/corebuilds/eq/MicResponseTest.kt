@@ -47,6 +47,10 @@ class MicResponseTest {
         assertEquals(4.0, MicResponse.flatten(centres, measured, report)[0], 1e-9)
         assertEquals(1, MicResponse.microphoneCount(report))
         assertEquals(0, MicResponse.microphoneCount(emptyList()))
+        // Same-description mics would collide at this layer - the uniqueness is
+        // CaptureEngine's contract ("Built-in microphone #1"/" #2"); a genuinely
+        // single capsule must never be miscounted:
+        assertEquals(1, MicResponse.microphoneCount(report + report[0]))
     }
 
     @Test

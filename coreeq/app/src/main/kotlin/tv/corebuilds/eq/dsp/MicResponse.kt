@@ -92,6 +92,10 @@ object MicResponse {
      * How many distinct microphones the valid points come from. Zero or one means
      * the list is one capsule's curve and can be read as such; two or more means
      * Android reported several capsules and the concatenation describes none of them.
+     * The count is only as good as the labels, so CaptureEngine makes them unique
+     * per mic at capture time (description, " #index"-suffixed when several mics
+     * report). Profiles saved before that suffix exist, but nothing re-flattens a
+     * saved list, so the collision can no longer reach a live measurement.
      */
     fun microphoneCount(points: List<MicrophoneResponsePoint>): Int =
         points.valid().map { it.microphone }.distinct().size

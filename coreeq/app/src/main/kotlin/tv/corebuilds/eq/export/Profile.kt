@@ -2,6 +2,7 @@ package tv.corebuilds.eq.export
 
 import tv.corebuilds.eq.dsp.CustomTarget
 import tv.corebuilds.eq.dsp.MicResponse
+import java.util.Locale
 import tv.corebuilds.eq.dsp.PeakingFilter
 import tv.corebuilds.eq.dsp.TargetCurveImport
 import tv.corebuilds.eq.dsp.Targets
@@ -99,13 +100,20 @@ data class CaptureInfo(
             ?.joinToString(", ")
             ?.take(110)
             ?.let { " · $it" }.orEmpty()
+        // State priority mirrors flatten's gates - sufficiency, then
+        // single-capsule, then emptiness - so the line names the FIRST gate the
+        // data fell at: a short multi-mic list reports "too few" (it would be
+        // refused even from one capsule), and "composite" only claims a list
+        // that sufficed on its own. Labels, not points, are the composite unit.
+        val micCount = MicResponse.microphoneCount(microphoneResponse)
+        val micSpan = MicResponse.spanHz(microphoneResponse)?.let {
+            String.format(Locale.US, "%.0f Hz-%.1f kHz", it.first, it.second / 1000.0)
+        }
         val calibration = when {
-            MicResponse.applicable(microphoneResponse) && MicResponse.microphoneCount(microphoneResponse) <= 1 ->
-                " · Android reported ${microphoneResponse.size} mic-response points (applied, ±${MicResponse.MAX_APPLIED_DB.toInt()} dB cap)"
-            MicResponse.microphoneCount(microphoneResponse) > 1 ->
-                // Labels, not points, are the unit here: N mics each reporting a
-                // real curve still yield a composite that describes no capsule.
-                " · ${MicResponse.microphoneCount(microphoneResponse)} mics reported mic response; composite not applied"
+            MicResponse.applicable(microphoneResponse) && micCount <= 1 ->
+                " · Android reported ${microphoneResponse.size} mic-response points (applied${micSpan?.let { " over $it" } ?: ""}, ±${MicResponse.MAX_APPLIED_DB.toInt()} dB cap)"
+            micCount > 1 ->
+                " · $micCount mics reported mic response; composite not applied"
             microphoneResponse.isNotEmpty() ->
                 " · Android reported ${microphoneResponse.size} mic-response points (too few to apply)"
             else ->
@@ -132,22 +140,32 @@ data class CaptureInfo(
             val os = captureOsVersion?.takeIf { it.isNotBlank() }?.let { " · Android $it" }.orEmpty()
             add("Recording device: $model$os.")
         }
-        if (MicResponse.applicable(microphoneResponse) && MicResponse.microphoneCount(microphoneResponse) <= 1) {
+        val micCount = MicResponse.microphoneCount(microphoneResponse)
+        val micSpan = MicResponse.spanHz(microphoneResponse)?.let {
+            String.format(Locale.US, "%.0f Hz-%.1f kHz", it.first, it.second / 1000.0)
+        }
+        // Same first-gate priority as summary().
+        if (MicResponse.applicable(microphoneResponse) && micCount <= 1) {
             add(
-                "Android reported ${microphoneResponse.size} microphone frequency-response points; applied to " +
-                    "the measurement (capped at ±${MicResponse.MAX_APPLIED_DB.toInt()} dB per band, and never " +
-                    "extrapolated beyond the reported span)."
+                "Android reported ${microphoneResponse.size} microphone frequency-response points from one " +
+                    "capsule; applied to the measurement over ${micSpan ?: "the reported span"} (capped at " +
+                    "±${MicResponse.MAX_APPLIED_DB.toInt()} dB per band, never extrapolated beyond the span)."
             )
-        } else if (MicResponse.microphoneCount(microphoneResponse) > 1) {
+        } else if (MicResponse.applicable(microphoneResponse) && micCount > 1) {
             add(
                 "Android reported ${microphoneResponse.size} microphone frequency-response points from " +
-                    "${MicResponse.microphoneCount(microphoneResponse)} microphones; a composite of capsule " +
-                    "curves belongs to none of them, so none was applied."
+                    "$micCount microphones; a composite of capsule curves belongs to none of them, " +
+                    "so none was applied."
             )
         } else if (microphoneResponse.isNotEmpty()) {
             add(
                 "Android reported ${microphoneResponse.size} microphone frequency-response points; too few " +
                     "in band to apply, kept as metadata."
+            )
+        } else {
+            add(
+                "Android reported no microphone frequency-response data for this capture; the room curve " +
+                    "carries no capsule correction."
             )
         }
         processing.takeIf { it.isNotEmpty() }?.let { add("Capture processing: ${it.joinToString("; ")}.") }
