@@ -97,7 +97,7 @@ object LiveLoop {
      * preference written by a newer build can never leave the home screen
      * blank.
      */
-    val LOOPS: List<Loop> = listOf(
+    val MOTION_LOOPS: List<Loop> = listOf(
         Loop(
             id = "orbitals",
             title = "Orbitals",
@@ -580,6 +580,18 @@ object LiveLoop {
         )
     )
     // LOOPS-END
+
+    /**
+     * Every loop the engine can play: the Motion line's forty-eight, then the
+     * Core Views season, which is its own generated list
+     * ([CoreViewsLoop.LOOPS], from `tools/build_coreviews_kt.py`).
+     *
+     * One list on purpose. The engine, the rotation, the downloader's cache
+     * sweep and the browser grid all read [LOOPS]; a second list would mean
+     * every one of them learning about a second source of truth, and the
+     * wallpaper engine is the worst place in this repo to keep two.
+     */
+    val LOOPS: List<Loop> = MOTION_LOOPS + CoreViewsLoop.LOOPS
 
     /**
      * The loop [id] names, or the first loop for anything unrecognised.

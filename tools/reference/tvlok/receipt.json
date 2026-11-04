@@ -1,0 +1,54 @@
+{
+  "source_url": "https://downloads.tvlok.com/releases/android/tvlok-1.0.192-1129-A627B2A4F6A3E09CF17549F2407DE3D04B226B44AAB6B3375E53E7760AB47B63.apk",
+  "retrieved_at": "2026-10-26T09:55:53+00:00",
+  "apk_sha256": "a627b2a4f6a3e09cf17549f2407de3d04b226b44aab6b3375e53e7760ab47b63",
+  "apk_bytes": 40205039,
+  "app_name": "TVLok",
+  "package": "com.tvlok.app",
+  "version_name": "1.0.192",
+  "version_code": 1129,
+  "verification": "Static manifest/resource inspection only; not installed or device-tested.",
+  "launchers": [
+    {
+      "component": "com.tvlok.app/com.tvlok.app.ui.MainActivity",
+      "kind": "activity",
+      "categories": [
+        "android.intent.category.LAUNCHER"
+      ]
+    },
+    {
+      "component": "com.tvlok.app/com.tvlok.app.ui.TvLauncherActivity",
+      "kind": "activity-alias",
+      "categories": [
+        "android.intent.category.LEANBACK_LAUNCHER"
+      ],
+      "target_activity": "com.tvlok.app.ui.MainActivity"
+    }
+  ],
+  "application_artwork": {
+    "icon": "@7F080163",
+    "banner": "@7F080164"
+  },
+  "resolved_artwork_values": {
+    "@7F080163": [
+      "res/Jt.png"
+    ],
+    "@7F080164": [
+      "res/E8.png"
+    ]
+  },
+  "resources": [
+    {
+      "path": "res/E8.png",
+      "apk_sha256": "7c3625485b051d23aa7b13beaa4da8483d4d5483be80e5b9eb720e50cf8b591e",
+      "export_sha256": "7c3625485b051d23aa7b13beaa4da8483d4d5483be80e5b9eb720e50cf8b591e",
+      "decoded_binary_xml": false
+    },
+    {
+      "path": "res/Jt.png",
+      "apk_sha256": "228a28520762170723149fdb494bfdf6b17ad80820a35539bf62dfd44ea8b4cb",
+      "export_sha256": "228a28520762170723149fdb494bfdf6b17ad80820a35539bf62dfd44ea8b4cb",
+      "decoded_binary_xml": false
+    }
+  ]
+}

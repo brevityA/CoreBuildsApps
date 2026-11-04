@@ -1,0 +1,40 @@
+{
+  "usage": "reference-only: brand cues and colour sampling for an original Core monoline redraw; never shipped as art",
+  "source": "https://github.com/brevityA/CoreBuildsApps/issues/392",
+  "captured": "2026-10-31",
+  "references": [
+    {
+      "path": "scanner-tile-128.png",
+      "sha256": "3c9fadeb1d7894124b51ac46ab62bceb4a0d06a915c1e5b1f87d65893730358f",
+      "size": [
+        128,
+        128
+      ],
+      "note": "the app's launcher icon as the pack's Missing icons scanner shows it, cropped from the reporter's photo of the TV screen attached to issue #392 and downsized to 128 px for evidence only"
+    }
+  ],
+  "color_samples": [
+    {
+      "part": "apex",
+      "box": [
+        56,
+        16,
+        72,
+        28
+      ],
+      "path": "scanner-tile-128.png",
+      "color": "#C074F0"
+    },
+    {
+      "part": "right foot",
+      "box": [
+        96,
+        96,
+        112,
+        112
+      ],
+      "path": "scanner-tile-128.png",
+      "color": "#30AAF2"
+    }
+  ]
+}

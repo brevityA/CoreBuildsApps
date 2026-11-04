@@ -32,7 +32,7 @@ launcher's icon-pack list mapping square glyphs.
 
 ## What lives here, and what does not
 
-Committed, and all of it hand-written:
+Committed (generated files are marked below):
 
 | Path | What it is |
 |---|---|
@@ -43,6 +43,7 @@ Committed, and all of it hand-written:
 | `src/main/res/xml/appfilter.xml`, `src/main/res/xml/drawable.xml` | **Generated** — see below. |
 | `src/main/assets/appfilter.xml`, `src/main/assets/drawable.xml` | **Generated** copies for launchers that read `assets/` instead of `res/xml/`. |
 | `src/main/res/values/strings.xml` | **Generated** — the `app_name` launchers list. UI strings live in `strings_home.xml`; never add one here. |
+| `src/main/res/mipmap-*/`, `res/drawable-nodpi/cb_banner.png` | **Generated** by `tools/build_glyphs_branding.py` — the companion's own violet launcher icon, adaptive layers and "Glyphs Pack" TV banner. |
 | `build.gradle.kts` | `copyGlyphArt` + the Android config. |
 
 Deliberately absent:
@@ -52,13 +53,13 @@ Deliberately absent:
   `implementation(` appears in `build.gradle.kts` — the front door was added
   without giving up the property that makes this module cheap to build and
   impossible to drift.
-- **No art in git.** The glyphs and fallback furniture are copied from
-  `app/src/main/res/drawable-nodpi` at build time by `copyGlyphArt`, so each
-  art file exists exactly once and the two packages cannot drift. That copy
-  takes the square WebPs only — `*_banner.webp` is excluded, because banners
-  are the icon pack's own art — plus `cb_banner.png`, the `cb_back_*` /
-  `cb_mask` / `cb_upon` fallback furniture its appfilter names, `aliases.xml`
-  (identical glyphs ship once, by alias) and the launcher/TV mipmaps.
+- **No duplicated catalog art in git.** The glyphs and fallback furniture are
+  copied from `app/src/main/res/drawable-nodpi` at build time by `copyGlyphArt`,
+  so each catalog art file exists exactly once and the two packages cannot
+  drift. That copy takes the square WebPs and `cb_back_*` / `cb_mask` /
+  `cb_upon` furniture, plus `aliases.xml` (identical glyphs ship once, by alias).
+  It excludes `*_banner.webp` and does not copy the main pack's `cb_banner.png`
+  or mipmaps: the companion has its own launcher branding, listed above.
 - **No version.** `versionCode` / `versionName` are read out of
   `app/build.gradle.kts`, because the companion is released *with* the icon
   pack and the pack installs exactly its own version: a companion a version
@@ -82,6 +83,16 @@ python tools/build_banners_pack.py
 
 Never hand-edit `appfilter.xml`, `drawable.xml`, `assets/*` or `strings.xml`
 here.
+
+The apps' own entries in that catalog matter too: a launcher's applied
+appfilter overrides an app's native icon. Core Builds Glyphs Pack maps to
+`corebuilds_glyphs_pack`, not the main pack's `corebuilds`; the standalone
+flavor maps to `corebuilds_glyphs`. Both use the existing violet glyph mark
+from `tools/glyphs.py`, with their own names on banners. Launcher branding
+reads the same catalog identity (`python tools/build_glyphs_branding.py`),
+so applying the pack cannot turn either glyph app into the main pack again.
+Play components keep the base Java namespace even though their package IDs
+end in `.play`.
 
 ## Build
 

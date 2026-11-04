@@ -1,7 +1,10 @@
 package tv.corebuilds.eq
 
+import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Intent
+import android.net.Uri
 import android.media.AudioManager
 import android.media.Spatializer
 import android.os.Build
@@ -13,6 +16,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import tv.corebuilds.eq.apply.DumpsysDiscovery
+import tv.corebuilds.eq.apply.MediaSessionDiscovery
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.apply.SetupGuide
 import tv.corebuilds.eq.apply.SpatialStatus
@@ -82,7 +86,7 @@ class SetupActivity : TvActivity() {
             val outputSummary = output?.let {
                 val label = OutputRoute.label(it.kind)
                 val name = it.name.trim().takeIf { value -> value.isNotEmpty() && value != label }
-                "Current output: $label${name?.let { value -> ": $value" }.orEmpty()}"
+                "Android route indication: $label${name?.let { value -> ": $value" }.orEmpty()} (${OutputRoute.evidenceDescription(it.evidence)})"
             } ?: "Current output: not named"
             add(outputSummary)
             picked.profile?.let { profile ->
@@ -99,7 +103,8 @@ class SetupActivity : TvActivity() {
             detection = detection,
             measured = measured,
             passthroughRisk = OutputRoute.mayPassThrough(this, output?.kind),
-            spatialDetail = spatialDetail()
+            spatialDetail = spatialDetail(),
+            mediaSessionAccessGranted = MediaSessionDiscovery.hasAccess(this)
         )
         rows.removeAllViews()
         for (step in lastSteps) rows.addView(rowFor(step))
@@ -157,6 +162,15 @@ class SetupActivity : TvActivity() {
         step.command?.let { command ->
             actions.addView(button(getString(R.string.setup_copy_command)) {
                 copy(command, getString(R.string.setup_command_copied))
+            })
+        }
+        if (step.id == "adb-basics") {
+            actions.addView(button(getString(R.string.setup_open_platform_tools)) {
+                try {
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(SetupGuide.PLATFORM_TOOLS_URL)))
+                } catch (_: ActivityNotFoundException) {
+                    status.text = getString(R.string.setup_no_browser)
+                }
             })
         }
         if (step.id == "overlay" && step.state == SetupGuide.State.NEEDED) {

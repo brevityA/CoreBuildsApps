@@ -17,7 +17,12 @@ import org.json.JSONObject
 class MainActivity : Activity() {
     private lateinit var webView: WebView
     private val pairServer = PairServer()
+    private var pairPermissionRequestPending = false
     val importer by lazy { Importer(filesDir) }
+
+    private companion object {
+        const val REQUEST_LOCAL_NETWORK = 37
+    }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,13 +57,44 @@ class MainActivity : Activity() {
     }
 
     fun startPair(): String = synchronized(pairServer) {
-        return try {
+        if (android.os.Build.VERSION.SDK_INT >= 37 &&
+            checkSelfPermission(android.Manifest.permission.ACCESS_LOCAL_NETWORK) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            synchronized(this) {
+                if (!pairPermissionRequestPending) {
+                    pairPermissionRequestPending = true
+                    runOnUiThread {
+                        requestPermissions(
+                            arrayOf(android.Manifest.permission.ACCESS_LOCAL_NETWORK),
+                            REQUEST_LOCAL_NETWORK,
+                        )
+                    }
+                }
+            }
+            return@synchronized JSONObject()
+                .put("ok", false)
+                .put("error", "Allow local network access, then select Add from phone again.")
+                .toString()
+        }
+        try {
             pairServer.start().toString()
         } catch (err: Exception) {
             JSONObject()
                 .put("ok", false)
                 .put("error", err.message ?: "could not start pair server")
                 .toString()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray,
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_LOCAL_NETWORK) {
+            synchronized(this) { pairPermissionRequestPending = false }
         }
     }
 
@@ -352,6 +388,9 @@ class MainActivity : Activity() {
         return true
     }
 
+    // Framework fallback for pre-33 devices; API 33+ is handled by the
+    // registered OnBackInvokedCallback in onCreate.
+    @SuppressLint("GestureBackNavigation")
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         handleBack()

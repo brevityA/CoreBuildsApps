@@ -6,10 +6,12 @@ import android.util.Log
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import tv.corebuilds.eq.dsp.CustomTarget
 import tv.corebuilds.eq.dsp.HardwarePresets
 import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.dsp.ManualEqPreset
 import tv.corebuilds.eq.dsp.PeakingFilter
+import tv.corebuilds.eq.dsp.TargetCurveImport
 import tv.corebuilds.eq.mode.ContentMode
 import tv.corebuilds.eq.mode.ContentModeStore
 import java.util.UUID
@@ -223,12 +225,49 @@ class ProfileStore(context: Context) {
 
     var correctionEnabled: Boolean
         get() = prefs.getBoolean(KEY_ENABLED, false)
-        set(value) { prefs.edit().putBoolean(KEY_ENABLED, value).apply() }
+        set(value) {
+            prefs.edit()
+                .putBoolean(KEY_ENABLED, value)
+                // Switching correction off clears the A/B switch too; see
+                // CorrectionSwitch for why, and for the test of it.
+                .putBoolean(
+                    KEY_BYPASS,
+                    CorrectionSwitch.storeAfterCorrectionChange(value, prefs.getBoolean(KEY_BYPASS, false))
+                )
+                .apply()
+        }
+
+    /**
+     * The A/B switch: play the correction's level at a flat response instead
+     * of its measured shape.
+     *
+     * Stored rather than held in memory so the Home switch and the effect the
+     * service configures cannot disagree after either is recreated. It is
+     * never left on silently: Home shows it, clearing correction also clears
+     * it, and [set] takes it back off when correction itself is off, where the
+     * flag would mean nothing.
+     */
+    var bypassEnabled: Boolean
+        get() = CorrectionSwitch.active(correctionEnabled, prefs.getBoolean(KEY_BYPASS, false))
+        set(value) {
+            prefs.edit()
+                .putBoolean(KEY_BYPASS, CorrectionSwitch.storeRequest(correctionEnabled, value))
+                .apply()
+        }
 
     /** Show a brief notice when a different profile or mode is applied (1.3.0). On by default. */
     var announceApplied: Boolean
         get() = prefs.getBoolean(KEY_ANNOUNCE_APPLIED, true)
         set(value) { prefs.edit().putBoolean(KEY_ANNOUNCE_APPLIED, value).apply() }
+
+    /**
+     * How long the on-screen card stays up, in seconds: 1 to 10, 4 by default.
+     * Out-of-range or unreadable values fall back to the default rather than
+     * showing a card that vanishes instantly or never leaves.
+     */
+    var cardSeconds: Int
+        get() = prefs.getInt(KEY_CARD_SECONDS, DEFAULT_CARD_SECONDS).takeIf { it in CARD_SECONDS_RANGE } ?: DEFAULT_CARD_SECONDS
+        set(value) { prefs.edit().putInt(KEY_CARD_SECONDS, value.coerceIn(CARD_SECONDS_RANGE)).apply() }
 
     /** Keep a truthful playback-status chip over other apps while playback is reported. Off by default. */
     var playbackHudEnabled: Boolean
@@ -311,6 +350,10 @@ class ProfileStore(context: Context) {
         private const val KEY_ACTIVE_ID = "active_profile_id"
         private const val KEY_ENABLED = "correction_enabled"
         private const val KEY_ANNOUNCE_APPLIED = "announce_applied_v130"
+        private const val KEY_BYPASS = "correction_bypassed"
+        private const val KEY_CARD_SECONDS = "card_seconds_v1_6"
+        const val DEFAULT_CARD_SECONDS = 4
+        val CARD_SECONDS_RANGE = 1..10
         private const val KEY_PLAYBACK_HUD_ENABLED = "playback_hud_enabled_v160"
         private const val KEY_CARD_PROMPT_DISMISSED = "card_prompt_dismissed_v132"
         private const val KEY_STATUS_MSG = "status_message"
@@ -371,6 +414,20 @@ class ProfileStore(context: Context) {
                     val c = a.getJSONObject(i)
                     curveList.add(CurvePoint(c.getDouble("hz"), c.getDouble("measured_db"), c.getDouble("correction_db")))
                 }
+            }
+
+            // Only an imported target carries its curve; a backup's points on any other
+            // target are ignored rather than kept and written back out.
+            val target = obj.optString("target", "dialogue")
+            val targetPoints = if (target != CustomTarget.KEY) emptyList() else {
+                val raw = mutableListOf<Pair<Double, Double>>()
+                obj.optJSONArray("target_points")?.let { a ->
+                    for (i in 0 until minOf(a.length(), 4 * (TargetCurveImport.MAX_POINTS + 1))) {
+                        val p = a.optJSONObject(i) ?: continue
+                        raw += p.optDouble("hz", Double.NaN) to p.optDouble("db", Double.NaN)
+                    }
+                }
+                TargetCurveImport.fromStored(raw)
             }
 
             val capMap = mutableMapOf<String, String>()
@@ -484,7 +541,7 @@ class ProfileStore(context: Context) {
                 id = obj.getString("id"),
                 name = obj.optString("name", "Unnamed room"),
                 timestampMs = obj.optLong("timestamp_ms", 0L),
-                target = obj.optString("target", "dialogue"),
+                target = target,
                 micType = obj.optString("microphone", "microphone"),
                 captureInfo = captureInfo,
                 repeatabilityCheck = repeatabilityCheck,
@@ -496,6 +553,8 @@ class ProfileStore(context: Context) {
                 schroederHz = optNullable(obj, "schroeder_hz"),
                 transitionHz = obj.optDouble("transition_hz", 300.0),
                 rolloffHz = obj.optDouble("rolloff_hz", 40.0),
+                correctionCeilingHz = obj.optJSONArray("correction_range_hz")
+                    ?.optDouble(1)?.takeIf { it.isFinite() && it > 0.0 },
                 snrDb = optNullable(obj, "snr_db"),
                 qualityScore = if (obj.has("quality_score") && !obj.isNull("quality_score"))
                     obj.optInt("quality_score", -1).takeIf { it in 0..100 } else null,
@@ -510,7 +569,8 @@ class ProfileStore(context: Context) {
                 outputName = obj.optJSONObject("output")?.let { o -> if (o.isNull("name")) null else o.optString("name") }
                     ?.takeIf { it.isNotBlank() },
                 manualFilters = ManualEq.sanitize(manualFiltersList),
-                manualOnly = obj.optBoolean("manual_only", false)
+                manualOnly = obj.optBoolean("manual_only", false),
+                targetPoints = targetPoints
             )
         }
     }

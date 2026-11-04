@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The icon-request service, for the Google Play build only.
+
+     Overrides the empty audit_request_endpoint that build_issue_prefills.py
+     generates into main's issue_prefill.xml. With it set, a missing-icon
+     press POSTs to the service, which files the issue (and labels it
+     priority when Google confirms a Core Premium purchase), and
+     Plus.shown goes true, so Core Premium is on sale. Main stays empty,
+     so the GitHub / Downloader build keeps the QR panel and sends nothing.
+
+     tools/build_play_listing.py reads this file for the Play listing's
+     answers (broker_enabled), and BROKER_SHIPPED latches them. -->
+<resources>
+    <string name="audit_request_endpoint" translatable="false">https://corebuilds-icon-request.tlorenzato26.workers.dev/</string>
+</resources>

@@ -4,10 +4,12 @@ import { readFileSync } from "node:fs";
 import { webcrypto } from "node:crypto";
 import {
   validate, issueBody, discordPayload, rateLimitKey, rateLimited, appJwt,
-  readCapped, handle, reportKind, sinkFor,
+  readCapped, handle, reportKind, sinkFor, plusOwned, verifyPlus, plusConfigured,
+  validateBatch, batchKey, batchAllowed,
 } from "./worker.mjs";
 import { TITLE_PREFIX, ISSUE_LABEL, MAPPING_LABEL, MAPPING_TITLE_PREFIX,
-         WORKER_VERSION } from "./constants.mjs";
+         PRIORITY_LABEL, PLAY_PACKAGE, PLUS_PRODUCT_ID, WORKER_VERSION,
+         BATCH_MAX, BATCH_PER_DAY } from "./constants.mjs";
 
 // ------------------------------------------------------------------ grammar
 
@@ -409,6 +411,293 @@ test("a browser POST reads ok with CORS; an OkHttp hit is header-identical", asy
   const plain = await handle(req({ app_name: "x", component: "bad" }, "7.7.7.6"), {});
   assert.equal(plain.headers.get("Access-Control-Allow-Origin"), null);
   assert.equal(plain.headers.get("Vary"), null);
+});
+
+// ---------------------------------------------------------------- Plus
+// The Play build's Core Builds Plus token: checked with Google, never passed on.
+
+const PLUS_TOKEN = "opaque-token-abcdefghijklmnop.AO-J1Oz_example";
+
+test("the Play ids the broker checks are the ones the app ships", () => {
+  const gradle = readFileSync(new URL("../../app/build.gradle.kts", import.meta.url), "utf8");
+  const appId = gradle.match(/applicationId = "([^"]+)"/)[1];
+  assert.equal(PLAY_PACKAGE, `${appId}.play`);
+  const store = readFileSync(new URL(
+    "../../app/src/play/java/tv/corebuilds/iconpack/PlusStore.kt", import.meta.url), "utf8");
+  assert.equal(store.match(/PRODUCT_ID = "([^"]+)"/)[1], PLUS_PRODUCT_ID);
+});
+
+test("validate passes a well-formed plus_token through and rejects anything else", () => {
+  assert.equal(validate({ ...OK, plus_token: PLUS_TOKEN }).value.plusToken, PLUS_TOKEN);
+  assert.equal(validate(OK).value.plusToken, null);
+  for (const bad of [42, "", "short", "has space in it here!", "x".repeat(1025), "a/b".repeat(10)]) {
+    assert.equal(validate({ ...OK, plus_token: bad }).ok, false, JSON.stringify(bad));
+  }
+});
+
+test("Plus is owned only while purchased and not wholly refunded", () => {
+  assert.equal(plusOwned({ purchaseState: 0 }), true);
+  assert.equal(plusOwned({ purchaseState: 0, refundableQuantity: 1, productId: PLUS_PRODUCT_ID }), true);
+  assert.equal(plusOwned({ purchaseState: 0, refundableQuantity: 0 }), false, "refunded");
+  assert.equal(plusOwned({ purchaseState: 1 }), false, "cancelled");
+  assert.equal(plusOwned({ purchaseState: 2 }), false, "pending");
+  assert.equal(plusOwned({ purchaseState: 0, productId: "something_else" }), false);
+  assert.equal(plusOwned(null), false);
+});
+
+async function serviceAccountJson() {
+  const { subtle } = webcrypto;
+  const pair = await subtle.generateKey(
+    { name: "RSASSA-PKCS1-v1_5", modulusLength: 2048,
+      publicExponent: new Uint8Array([1, 0, 1]), hash: "SHA-256" },
+    true, ["sign", "verify"]);
+  const b64 = Buffer.from(await subtle.exportKey("pkcs8", pair.privateKey)).toString("base64");
+  return JSON.stringify({
+    type: "service_account", client_email: "broker@core-builds.iam.gserviceaccount.com",
+    private_key: `-----BEGIN PRIVATE KEY-----\n${b64.match(/.{1,64}/g).join("\n")}\n-----END PRIVATE KEY-----\n`,
+  });
+}
+const SA = await serviceAccountJson();
+
+/** GitHub as githubStub, plus Google's token endpoint and the Play purchase check. */
+function playStub({ purchase = { purchaseState: 0, refundableQuantity: 1 }, status = 200,
+                    duplicate = null } = {}) {
+  const gh = githubStub({ duplicate });
+  const sent = [];
+  const f = async (url, init = {}) => {
+    url = String(url);
+    sent.push([url, init.body ? String(init.body) : ""]);
+    if (url === "https://oauth2.googleapis.com/token") {
+      const form = new URLSearchParams(String(init.body));
+      assert.equal(form.get("grant_type"), "urn:ietf:params:oauth:grant-type:jwt-bearer");
+      const claims = JSON.parse(Buffer.from(form.get("assertion").split(".")[1], "base64url"));
+      assert.equal(claims.scope, "https://www.googleapis.com/auth/androidpublisher");
+      return new Response(JSON.stringify({ access_token: "ya29.x", expires_in: 3599 }), { status: 200 });
+    }
+    if (url.startsWith("https://androidpublisher.googleapis.com/")) {
+      return new Response(JSON.stringify(purchase), { status });
+    }
+    return gh.f(url, init);
+  };
+  return { f, sent, calls: gh.calls };
+}
+
+test("without a service account a token changes nothing and Google is never asked", async () => {
+  assert.equal(plusConfigured({}), false);
+  assert.equal(plusConfigured({ GOOGLE_SERVICE_ACCOUNT_JSON: "{not json" }), false);
+  const stub = playStub();
+  await withFetch(stub.f, async () => {
+    assert.equal(await verifyPlus({ RATE_KV: mapKv() }, PLUS_TOKEN), false);
+  });
+  assert.equal(stub.sent.length, 0);
+});
+
+test("a confirmed purchase is cached under a hash of the token, never the token", async () => {
+  const kv = mapKv();
+  const env = { GOOGLE_SERVICE_ACCOUNT_JSON: SA, RATE_KV: kv };
+  const stub = playStub();
+  await withFetch(stub.f, async () => {
+    assert.equal(await verifyPlus(env, PLUS_TOKEN), true);
+    assert.equal(await verifyPlus(env, PLUS_TOKEN), true);
+  });
+  const checks = stub.sent.filter(([u]) => u.includes("androidpublisher.googleapis.com"));
+  assert.equal(checks.length, 1, "the second press is answered from the cache");
+  assert.ok(checks[0][0].includes(
+    `/applications/${PLAY_PACKAGE}/purchases/products/${PLUS_PRODUCT_ID}/tokens/`));
+  for (const [k, v] of kv.store) {
+    assert.ok(!k.includes(PLUS_TOKEN) && !String(v).includes(PLUS_TOKEN), `KV holds the token: ${k}`);
+  }
+  assert.ok([...kv.store.keys()].some((k) => /^plus:[0-9a-f]{64}$/.test(k)));
+});
+
+test("Google refusing the token is a no; Google failing is a no that is not cached", async () => {
+  for (const [status, cached] of [[404, true], [410, true], [503, false]]) {
+    const kv = mapKv();
+    const stub = playStub({ status, purchase: {} });
+    await withFetch(stub.f, async () => {
+      assert.equal(await verifyPlus({ GOOGLE_SERVICE_ACCOUNT_JSON: SA, RATE_KV: kv }, PLUS_TOKEN), false);
+    });
+    assert.equal([...kv.store.keys()].some((k) => k.startsWith("plus:")), cached, String(status));
+  }
+});
+
+test("a Plus request files with the priority label, and the token reaches no one but Google", async () => {
+  const stub = playStub();
+  const env = { ...ENV, RATE_KV: primed(), GOOGLE_SERVICE_ACCOUNT_JSON: SA };
+  await withFetch(stub.f, async () => {
+    const res = await handle(req({ ...OK, plus_token: PLUS_TOKEN }, "7.7.8.1"), env);
+    assert.equal(res.status, 201);
+    assert.equal((await res.json()).priority, true);
+  });
+  const [, created] = stub.sent.find(([u, b]) => u.endsWith("/issues") && b);
+  const issue = JSON.parse(created);
+  assert.deepEqual(issue.labels, [ISSUE_LABEL, PRIORITY_LABEL]);
+  assert.ok(issue.body.includes("Core Premium"));
+  for (const [url, body] of stub.sent) {
+    if (url.includes("androidpublisher.googleapis.com")) continue;
+    assert.ok(!url.includes(PLUS_TOKEN) && !body.includes(PLUS_TOKEN), `token sent to ${url}`);
+  }
+});
+
+test("a Plus +1 on an open issue adds the priority label to it", async () => {
+  const stub = playStub({ duplicate: 55 });
+  const env = { ...ENV, RATE_KV: primed(), GOOGLE_SERVICE_ACCOUNT_JSON: SA };
+  await withFetch(stub.f, async () => {
+    const res = await handle(req({ ...OK, plus_token: PLUS_TOKEN }, "7.7.8.2"), env);
+    assert.equal(res.status, 200);
+  });
+  const labelled = stub.sent.find(([u]) => u.endsWith("/issues/55/labels"));
+  assert.ok(labelled, "priority label added to the duplicate");
+  assert.deepEqual(JSON.parse(labelled[1]).labels, [PRIORITY_LABEL]);
+});
+
+test("an unconfirmed token still files the request, without priority", async () => {
+  const stub = playStub({ purchase: { purchaseState: 0, refundableQuantity: 0 } });
+  const env = { ...ENV, RATE_KV: primed(), GOOGLE_SERVICE_ACCOUNT_JSON: SA };
+  await withFetch(stub.f, async () => {
+    const res = await handle(req({ ...OK, plus_token: PLUS_TOKEN }, "7.7.8.3"), env);
+    assert.equal(res.status, 201);
+    assert.equal((await res.json()).priority, false);
+  });
+  const [, created] = stub.sent.find(([u, b]) => u.endsWith("/issues") && b);
+  assert.deepEqual(JSON.parse(created).labels, [ISSUE_LABEL]);
+});
+
+test("the Discord card says priority only for a confirmed Plus request", () => {
+  const base = { appName: OK.app_name, component: OK.component, device: OK.device };
+  assert.equal(discordPayload(base).embeds[0].fields.length, 2);
+  assert.equal(discordPayload({ ...base, priority: true }).embeds[0].fields[2].name, "Priority");
+});
+
+test("healthz says whether Plus is checked, never with what", async () => {
+  const res = await handle(new Request("https://x/healthz"), { GOOGLE_SERVICE_ACCOUNT_JSON: SA });
+  const text = await res.text();
+  assert.equal(JSON.parse(text).plus, true);
+  assert.ok(!text.includes("PRIVATE KEY") && !text.includes("iam.gserviceaccount.com"));
+  assert.equal((await (await handle(new Request("https://x/healthz"), {})).json()).plus, false);
+});
+
+// ----------------------------------------------------- Request all (batch)
+
+const APP2 = { app_name: "Second App", component: "com.example.second/.Main" };
+const BATCH = { device: OK.device, plus_token: PLUS_TOKEN,
+                apps: [{ app_name: OK.app_name, component: OK.component }, APP2] };
+
+function batchReq(payload, ip = "6.6.6.1") {
+  return new Request("https://broker.test/v1/batch", {
+    method: "POST", headers: { "CF-Connecting-IP": ip },
+    body: JSON.stringify(payload),
+  });
+}
+
+test("validateBatch accepts up to BATCH_MAX apps under one device note and token", () => {
+  const v = validateBatch(BATCH);
+  assert.equal(v.ok, true);
+  assert.equal(v.value.plusToken, PLUS_TOKEN);
+  assert.equal(v.value.device, OK.device);
+  assert.deepEqual(v.value.apps.map((a) => a.component), [OK.component, APP2.component]);
+  assert.equal(v.value.apps[1].mapped, false);
+  const full = Array.from({ length: BATCH_MAX }, (_, i) =>
+    ({ app_name: `App ${i}`, component: `com.example.a${i}/.Main` }));
+  assert.equal(validateBatch({ ...BATCH, apps: full }).ok, true);
+});
+
+test("validateBatch refuses a batch without Plus, too long, empty, repeated or malformed", () => {
+  const { plus_token, ...noToken } = BATCH;
+  const tooMany = Array.from({ length: BATCH_MAX + 1 }, (_, i) =>
+    ({ app_name: `App ${i}`, component: `com.example.a${i}/.Main` }));
+  for (const [why, bad] of [
+    ["no token", noToken],
+    ["too many", { ...BATCH, apps: tooMany }],
+    ["empty", { ...BATCH, apps: [] }],
+    ["not a list", { ...BATCH, apps: "x" }],
+    ["twice", { ...BATCH, apps: [APP2, APP2] }],
+    ["bad component", { ...BATCH, apps: [{ app_name: "x", component: "nope" }] }],
+    ["extra app field", { ...BATCH, apps: [{ ...APP2, device: "x" }] }],
+    ["extra field", { ...BATCH, priority: true }],
+    ["bad token", { ...BATCH, plus_token: "short" }],
+  ]) {
+    assert.equal(validateBatch(bad).ok, false, why);
+  }
+});
+
+test("Request all files every app as priority, once per label, and the token reaches only Google", async () => {
+  const stub = playStub();
+  const env = { ...ENV, RATE_KV: primed(), GOOGLE_SERVICE_ACCOUNT_JSON: SA };
+  let body;
+  await withFetch(stub.f, async () => {
+    const res = await handle(batchReq(BATCH), env);
+    assert.equal(res.status, 201);
+    body = await res.json();
+  });
+  assert.equal(body.priority, true);
+  assert.deepEqual(body.results.map((r) => r.component), [OK.component, APP2.component]);
+  assert.ok(body.results.every((r) => r.issue === 777 && r.duplicate === false));
+  const created = stub.sent.filter(([u, b]) => u.endsWith("/issues") && b).map(([, b]) => JSON.parse(b));
+  assert.equal(created.length, 2);
+  for (const issue of created) assert.deepEqual(issue.labels, [ISSUE_LABEL, PRIORITY_LABEL]);
+  const labelChecks = stub.calls.filter(([u, m]) => u.includes("/labels/") && m === "GET");
+  assert.equal(labelChecks.length, 2, "each label is ensured once per batch, not once per app");
+  for (const [url, b] of stub.sent) {
+    if (url.includes("androidpublisher.googleapis.com")) continue;
+    assert.ok(!url.includes(PLUS_TOKEN) && !b.includes(PLUS_TOKEN), `token sent to ${url}`);
+  }
+});
+
+test("Request all without a confirmed purchase is refused before GitHub is touched", async () => {
+  const stub = playStub({ purchase: { purchaseState: 0, refundableQuantity: 0 } });
+  const env = { ...ENV, RATE_KV: primed(), GOOGLE_SERVICE_ACCOUNT_JSON: SA };
+  await withFetch(stub.f, async () => {
+    assert.equal((await handle(batchReq(BATCH, "6.6.6.2"), env)).status, 403);
+  });
+  assert.equal(stub.calls.filter(([u]) => u.includes("api.github.com")).length, 0);
+});
+
+test("Request all is limited to BATCH_PER_DAY presses a day per purchase", async () => {
+  const kv = mapKv({ "gh:installation_token": "tok" });
+  const env = { ...ENV, RATE_KV: kv, GOOGLE_SERVICE_ACCOUNT_JSON: SA, RATE_LIMIT_PER_HOUR: 99 };
+  const stub = playStub();
+  const statuses = [];
+  await withFetch(stub.f, async () => {
+    for (let i = 0; i <= BATCH_PER_DAY; i++) {
+      statuses.push((await handle(batchReq(BATCH, "6.6.6.3"), env)).status);
+    }
+  });
+  assert.deepEqual(statuses, [...Array(BATCH_PER_DAY).fill(201), 429]);
+  assert.ok([...kv.store.keys()].some((k) => /^batch:[0-9a-f]{64}:\d+$/.test(k)),
+            "the daily count is kept under a hash of the token");
+  assert.ok(![...kv.store.keys()].some((k) => k.includes(PLUS_TOKEN)));
+});
+
+test("the daily batch key rotates with the UTC day; with no KV only the IP limit applies", async () => {
+  const day = 86_400_000;
+  assert.notEqual(batchKey("h", 5 * day + 1), batchKey("h", 6 * day + 1));
+  assert.equal(batchKey("h", 5 * day + 1), batchKey("h", 6 * day - 1));
+  assert.equal(await batchAllowed({}, "h"), true);
+});
+
+test("one failed issue does not undo the rest of the batch", async () => {
+  const stub = playStub();
+  let creates = 0;
+  const f = async (url, init = {}) => {
+    if (String(url).endsWith("/issues") && init.method === "POST" && ++creates === 1) {
+      return new Response("{}", { status: 502 });
+    }
+    return stub.f(url, init);
+  };
+  const env = { ...ENV, RATE_KV: primed(), GOOGLE_SERVICE_ACCOUNT_JSON: SA };
+  let body;
+  await withFetch(f, async () => { body = await (await handle(batchReq(BATCH, "6.6.6.4"), env)).json(); });
+  assert.ok(body.results[0].error.includes("502"));
+  assert.equal(body.results[1].issue, 777);
+});
+
+test("Request all needs the GitHub sink, and its body cap is the batch's", async () => {
+  const discord = { ICON_REQUEST_DISCORD_WEBHOOK_URL: "https://discord.test/hook", RATE_KV: mapKv() };
+  assert.equal((await handle(batchReq(BATCH, "6.6.6.5"), discord)).status, 501);
+  const big = new Request("https://x/v1/batch", { method: "POST", body: "x".repeat(9000) });
+  assert.equal((await handle(big, ENV)).status, 413);
+  assert.equal((await handle(new Request("https://x/v1/batch"), ENV)).status, 405);
 });
 
 test("entry-module exports are all functions or ExportedHandlers (workerd rule)", async () => {

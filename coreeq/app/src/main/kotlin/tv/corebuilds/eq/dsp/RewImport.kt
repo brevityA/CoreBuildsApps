@@ -1,5 +1,6 @@
 package tv.corebuilds.eq.dsp
 
+import tv.corebuilds.eq.CorrectionLimits
 import kotlin.math.log10
 import kotlin.math.log2
 import kotlin.math.max
@@ -28,7 +29,9 @@ data class ImportResult(
     val floorHz: Double,
     val filters: List<PeakingFilter>,
     val preampDb: Double,
-    val pointsRead: Int
+    val pointsRead: Int,
+    /** The top of the corrected band: the imported data's edge or the user's ceiling, whichever is lower. */
+    val fMaxHz: Double = DspConstants.F_MAX
 )
 
 /**
@@ -130,7 +133,13 @@ object RewImport {
         magnitudesDb: DoubleArray,
         target: String,
         volumeM3: Double?,
-        nFilters: Int = DspConstants.PEAKING_FILTERS
+        nFilters: Int = DspConstants.PEAKING_FILTERS,
+        /**
+         * The user's chosen top of the corrected band. The import always has
+         * data up to [DspConstants.F_MAX], so here the ceiling is the only
+         * thing that can narrow the band.
+         */
+        ceilingHz: Double? = null
     ): ImportResult {
         validateMeasurement(freqs, magnitudesDb)
         val centres = bandCentres(freqs)
@@ -148,9 +157,17 @@ object RewImport {
         // No group-delay data: there is no basis for opening or closing the
         // minimum-phase gate. Leave it unverified and carry that warning in
         // ImportResult/profile metadata instead of claiming an all-clear.
+        val fMax = CorrectionLimits.effectiveCeilingHz(centres.last(), ceilingHz)
+        if (fMax <= floorHz) {
+            throw MeasurementException(
+                "The correction ceiling (${"%.0f".format(fMax)} Hz) is at or below where the " +
+                    "imported measurement rolls off (${"%.0f".format(floorHz)} Hz), so there is nothing to correct."
+            )
+        }
         val correction = Correction.calculateCorrectionCurve(
             centres, measured, targetDb,
             fMin = floorHz,
+            fMax = fMax,
             transitionHz = transition,
             nullMask = nulls
         )
@@ -168,7 +185,8 @@ object RewImport {
             floorHz = floorHz,
             filters = filters,
             preampDb = Peaking.preampDb(filters),
-            pointsRead = freqs.size
+            pointsRead = freqs.size,
+            fMaxHz = fMax
         )
     }
 

@@ -74,8 +74,8 @@ saving. The TV suspends correction during the sweep and resumes it afterwards.
 The workflow records available route, sample-rate, device, and processing
 metadata, but cannot guarantee Android's selected route or processing state.
 Phone microphones are not presumed calibrated; their reported response is
-provenance only. This remains single-position: multi-position averaging is a
-research candidate, not an implemented feature.
+provenance only. Phone captures remain single-position: averaging several
+seats (§3) is on the TV's Measure screen only.
 
 ## 2. The screens
 
@@ -89,7 +89,7 @@ DejaVu Sans Mono, a 12sp type floor.
 | **Manual EQ** | Ten editable peaking bands from 40 Hz to 8 kHz, with separate Movie / TV, Everyday and Gaming overlays, presets, and a graph of the selected layer over room correction. Imports one Poweramp JSON preset or AutoEq / Equalizer APO correction text as an editable, explicitly approximate 10-band preset. Poweramp type codes are versionless and handled only by a narrow best-effort subset; unsupported-only files are refused. | Choose the overlay to edit; left/right selects a band; up/down changes it by 0.5 dB within ±6 dB. A manual-only profile is labelled as not room-measured. Imported stereo-specific filters are averaged; a pre-apply review lists skipped shapes/codes, mapping uncertainty and fit error. |
 | **Modes** | Remote-selectable Movie / TV, Everyday and Gaming; optional app rules; sticky or temporary manual override; current mode/reason and detected players | Single-action mode controls and dialogs are D-pad reachable. Automatic detection is best-effort and runs while correction is on. Conflicts choose Everyday. |
 | **Measure** | Three numbered steps, live capture graph, progress bar, Stop / Start over | Step 1 focused. OK starts the stimulus. Back cancels and restores Home's focus. |
-| **Phone companion** | TV pairing screen starts/stops the local listener and shows the private IPv4 address, temporary port, one-time code, paired-phone state and revoke action; non-Leanback Android launches show phone controls and measurement | TV D-pad pairing; phone touchscreen controls. The phone screen requests local-network access on API 37+ and microphone access only when measuring. |
+| **Phone companion** | TV pairing screen starts/stops the local listener and shows the private IPv4 address, port (29517, or a random one when another app holds it), one-time code, paired-phone state and revoke action; non-Leanback Android launches show phone controls and measurement | TV D-pad pairing; phone touchscreen controls. The phone screen requests local-network access on API 37+ and microphone access only when measuring. |
 | **Profiles** | Saved room bases per output or explicitly marked manual-only profiles; per-mode tone overlays; output-matched preview and selected-mode export | Rows first, then export chips, then Export / Delete. |
 | **Capability** | Every path the app can use to apply an equaliser, probed, with a verdict and a fallback | Rows focusable; the verdict card is read-only but focusable so it can be narrated. |
 
@@ -119,7 +119,12 @@ pink noise (20 s, deterministic) — cross-check and live RTA
               → capture bandwidth edge (from 2 kHz: under 10 dB SNR or 20 dB under the mids)
               → bands under 10 dB SNR are shown, not corrected
   → one capture at the user-selected listening position (head height, remote still)
-  → no multi-position averaging: it remains a research candidate and the saved profile is single-position
+  → optional: up to 3 seats (SeatAverage), each analysed like the first, then
+        energy mean per band (not a dB mean, so a one-chair dip cannot cancel a peak)
+        a seat > 4 dB RMS from the others' mean over 300 Hz–3 kHz is left out (3 seats only)
+        a band is corrected only where every seat measured it cleanly
+        nulls and roll-off re-read from the average; bass lift keeps the 2 dB single-seat cap
+        stops at the narrowest seat's bandwidth edge; phone captures stay single-position
   → measured vs target (Flat / B&K / Room / Olive / Dialogue / House)
   → room model
         transition  = min(2·f_s, 400 Hz), or 300 Hz when the room is unknown
@@ -136,6 +141,19 @@ pink noise (20 s, deterministic) — cross-check and live RTA
         → taper the edges → zero outside floor–8 kHz
   → collapse onto the device's own Equalizer bands (millibel-clamped)
   → fit 8 peaking filters for the parametric export (Q 0.4–4.0, spacing penalty)
+  → optional check sweep before saving (PostCorrectionCheck)
+        the sweep plays through this profile's correction on an audio session of its own
+        (DynamicsProcessing, protection limiter, no tone layers; the service stays suspended)
+        level-aligned over 300 Hz–3 kHz, residual vs target: room alone / predicted / heard
+        bands the correction leaves alone (nulls, gated, noisy, outside floor–edge) not counted
+        descriptive only, no pass/fail; the figures go into the profile's notes on Save
+  → optional closed loop (CorrectionRefinement, 1.8.0)
+        the difference between the predicted and the heard residual, band by band, is the step
+        re-centred so it refines shape and not level; weighted by the weaker sweep's confidence
+        a band moves at most ±3 dB and never changes the direction the first measurement justified
+        a lift needs a deficit the check itself heard and must not sit on a cancellation
+        the correction's own budget (and the seat bass cap) still applies
+        the result replaces the correction only when the user accepts it, and Save keeps it
   → export: parametric .txt (Preamp + band limit + "Bands Overlap = Cascade")
             / GraphicEQ: / profile .json (transition, nulls, room, capability)
 ```
@@ -288,10 +306,10 @@ coreeq/
               PhoneCaptureEngine.kt       # foreground AudioRecord PCM capture + provenance
 ```
 
-Core EQ uses its own Gradle root and is the suite's API 37 exception: AGP
-9.4.0, Gradle 9.7.0 and AGP built-in Kotlin. The other suite roots remain on
-AGP 8.5.2 / Kotlin 1.9.24; `tools/gradle_envelope.json` keeps those ceilings
-root-specific. Core EQ dependencies remain `core-ktx` 1.13.1, `appcompat` 1.7.0
+Core EQ uses its own Gradle root and shares the suite-wide API 37 toolchain: AGP
+9.4.0, Gradle 9.7.0 and AGP built-in Kotlin. All suite roots now use this toolchain;
+`tools/gradle_envelope.json` records the version envelope and keeps independent
+dependency ceilings. Core EQ dependencies remain `core-ktx` 1.13.1, `appcompat` 1.7.0
 and `recyclerview` 1.3.2. No Compose — the icon pack's `Theme.CoreBuilds` note
 applies here too.
 

@@ -5,21 +5,21 @@
 
 # Coverage and mapping reliability
 
-Generated: 2026-10-12 · pack v2.3.3 · tracker live since 2026-09-21
+Generated: 2026-11-01 · pack v2.5.4 · tracker live since 2026-09-21
 
 ## Headline
 
-- **40** distinct apps reported since the tracker went live; **22** are in the pack now
-- **8/9** closed not-applying reports have the **exact reported component** shipped now (first-fix rate)
-- Median resolution: **1.0 days** on icon requests, **0.7 days** on not-applying (worst 6.1 days)
-- Open backlog: **5** requests, **1** not-applying
+- **100** distinct apps reported since the tracker went live; **80** are in the pack now
+- **24/26** closed not-applying reports have the **exact reported component** shipped now (first-fix rate)
+- Median resolution: **1.1 days** on icon requests, **1.8 days** on not-applying (worst 11.7 days)
+- Open backlog: **2** requests, **0** not-applying
 
 ## Icon requests
 
 | Closed | Count |
 | --- | --- |
-| MAPPED | 18 |
-| NOT-MAPPED | 13 |
+| MAPPED | 69 |
+| NOT-MAPPED | 17 |
 
 A request counts as MAPPED only when its package (from the component, or a Play store link's `id=`) is in the bundled appfilter; a label hit is reported as NAME-MATCH and never counted.
 
@@ -36,22 +36,36 @@ A request counts as MAPPED only when its package (from the component, or a Play 
 | [256](https://github.com/brevityA/CoreBuildsApps/issues/256) | HBO Max | `com.wbd.hbomax/com.wbd.beam.BeamActivity` | EXACT | 1.7 |
 | [286](https://github.com/brevityA/CoreBuildsApps/issues/286) | waipu.tv | `de.exaring.waipu/de.exaring.waipu.MainActivity` | EXACT | 0.7 |
 | [288](https://github.com/brevityA/CoreBuildsApps/issues/288) | Nuvio | `com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault` | EXACT | 0.3 |
+| [292](https://github.com/brevityA/CoreBuildsApps/issues/292) | ITVX | `` | NO-COMPONENT | 7.3 |
+| [308](https://github.com/brevityA/CoreBuildsApps/issues/308) | VTM GO | `be.vmma.vtm.zenderapp/be.persgroep.vtmgo.VtmGoMainActivity` | EXACT | 0.5 |
+| [324](https://github.com/brevityA/CoreBuildsApps/issues/324) | ByeByeDPI | `io.github.romanvht.byedpi/io.github.romanvht.byedpi.activities.MainActivity` | EXACT | 2.6 |
+| [327](https://github.com/brevityA/CoreBuildsApps/issues/327) | weyd | `app.weyd.player/app.weyd.player.ui.splashscreen.SplashScreenActivity` | EXACT | 2.5 |
+| [333](https://github.com/brevityA/CoreBuildsApps/issues/333) | ByeByeDPI | `io.github.romanvht.byedpi/io.github.romanvht.byedpi.activities.MainActivity` | EXACT | 1.5 |
+| [337](https://github.com/brevityA/CoreBuildsApps/issues/337) | Plex | `com.plexapp.android/tv.plex.app.MainActivity` | EXACT | 0.7 |
+| [346](https://github.com/brevityA/CoreBuildsApps/issues/346) | Trakt | `tv.trakt.trakt/tv.trakt.trakt.app.TvSplashActivity` | EXACT | 3.3 |
+| [354](https://github.com/brevityA/CoreBuildsApps/issues/354) | Hi Browser | `com.hisense.odinbrowser/com.vt.hibrowser.activity.home.HomeActivity` | EXACT | 2.8 |
+| [377](https://github.com/brevityA/CoreBuildsApps/issues/377) | F-Droid | `org.fdroid.fdroid/org.fdroid.MainActivity` | EXACT | 6.4 |
+| [378](https://github.com/brevityA/CoreBuildsApps/issues/378) | Voltra TV | `com.amhkor.voltratv/com.voltra.voltratv.tv.SplashActivity` | EXACT | 6.4 |
+| [379](https://github.com/brevityA/CoreBuildsApps/issues/379) | Poweramp Equalizer | `com.maxmpz.equalizer/com.maxmpz.audioplayer.standard_adaptive` | EXACT | 6.2 |
+| [380](https://github.com/brevityA/CoreBuildsApps/issues/380) | ABC iview | `au.net.abc.iview/au.net.abc.iview.ui.router.TvLauncherActivity` | EXACT | 5.8 |
+| [383](https://github.com/brevityA/CoreBuildsApps/issues/383) | Moonfin | `org.moonfin.androidtv/org.moonfin.androidtv.MainActivity` | EXACT | 5.4 |
+| [402](https://github.com/brevityA/CoreBuildsApps/issues/402) | PBS | `com.pbs.video/com.pbs.video.startup.StartupActivity` | EXACT | 2.5 |
+| [403](https://github.com/brevityA/CoreBuildsApps/issues/403) | YouTube TV | `com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.ChrobaltMainActivity` | EXACT | 2.5 |
+| [406](https://github.com/brevityA/CoreBuildsApps/issues/406) | ABC iview | `au.net.abc.iview/au.net.abc.iview.ui.router.TvLauncherActivity` | EXACT | 1.9 |
+| [409](https://github.com/brevityA/CoreBuildsApps/issues/409) | Kayo Sports | `au.com.kayosports.tv/com.dazn.MainActivity` | EXACT | 1.1 |
 
 By launcher (the form's Launcher field, device-line fallback):
 
 | Launcher | Closed | Exact component fixed |
 | --- | --- | --- |
-| Other | 4 | 4 |
-| Projectivy | 4 | 4 |
-| Unstated | 1 | 0 |
+| Monet | 5 | 5 |
+| Other | 5 | 5 |
+| Projectivy | 14 | 14 |
+| Unstated | 2 | 0 |
 
 ## Open backlog
 
 | # | App | Kind | Age (days) | Component |
 | --- | --- | --- | --- | --- |
-| [290](https://github.com/brevityA/CoreBuildsApps/issues/290) | AIOStreams | request | 1 | `` |
-| [291](https://github.com/brevityA/CoreBuildsApps/issues/291) | MovieBoxTV | request | 1 | `` |
-| [292](https://github.com/brevityA/CoreBuildsApps/issues/292) | ITVX | not applying | 1 | `` |
-| [293](https://github.com/brevityA/CoreBuildsApps/issues/293) | AIOStreams | request | 1 | `io.github.viren070.aiostreams/io.github.viren070.aiostreams.MainActivity` |
-| [294](https://github.com/brevityA/CoreBuildsApps/issues/294) | MovieBoxTV | request | 1 | `com.community.mbox.tv/com.transsion.subroom.activity.SplashActivity` |
-| [296](https://github.com/brevityA/CoreBuildsApps/issues/296) | Nuyo Device Info | request | 0 | `com.roysolberg.android.deviceinfo/com.roysolberg.android.deviceinfo.ui.MainActivity` |
+| [420](https://github.com/brevityA/CoreBuildsApps/issues/420) | MAXtv | request | 0 | `` |
+| [421](https://github.com/brevityA/CoreBuildsApps/issues/421) | Xplore TV HR | request | 0 | `` |

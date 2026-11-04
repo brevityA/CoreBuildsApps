@@ -1,10 +1,13 @@
 package tv.corebuilds.eq
 
+import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.database.ContentObserver
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,6 +19,10 @@ import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.LowVolumeBass
+import tv.corebuilds.eq.apply.OutputRoute
+import tv.corebuilds.eq.apply.SurroundOutput
+import tv.corebuilds.eq.apply.VolumeLevel
+import tv.corebuilds.eq.dsp.TimeBasedSuggestions
 import tv.corebuilds.eq.ui.EnhancedAudioPrefs
 import tv.corebuilds.eq.ui.showSwitch
 
@@ -30,31 +37,41 @@ import tv.corebuilds.eq.ui.showSwitch
  * screen. Since 1.3.0 the explanation sits in one panel that follows focus
  * ([Row]), so all five switches fit on one screen.
  *
+ * 1.10.0 adds Stereo speakers, for 5.1 on two speakers: a tone layer (the
+ * centre the fold buries, and a guard below the speaker's roll-off) plus the
+ * one system setting it needs, Surround sound set to Never, which Core EQ
+ * changes itself on Android 12+ once allowed and puts back when switched off
+ * ([SurroundOutput]).
+ *
  * Unreachable in 1.2.0 (not in the manifest, no way in), while every one
  * of these effects except night mode ran by default.
  */
 class EnhancedAudioSettingsActivity : TvActivity() {
 
     private lateinit var prefs: EnhancedAudioPrefs
+    private lateinit var btnStereo: Button
     private lateinit var btnDialogue: Button
     private lateinit var btnLowBass: Button
     private lateinit var btnBass: Button
     private lateinit var btnLoudness: Button
     private lateinit var btnNight: Button
+    private lateinit var btnAutoLoudness: Button
     private lateinit var textDetailTitle: TextView
     private lateinit var textDetailBody: TextView
     private lateinit var textDetailStatus: TextView
 
-    /** The five switches, each with the name and note the panel shows while it has focus. */
+    /** The six switches, each with the name and note the panel shows while it has focus. */
     private enum class Row(@StringRes val title: Int, @StringRes val note: Int) {
+        STEREO(R.string.extras_name_stereo, R.string.extras_stereo_note),
         DIALOGUE(R.string.extras_name_dialogue, R.string.extras_dialogue_note),
         LOW_BASS(R.string.extras_name_low_bass, R.string.extras_low_bass_note),
         BASS(R.string.extras_name_bass, R.string.extras_bass_note),
         LOUDNESS(R.string.extras_name_loudness, R.string.extras_loudness_note),
-        NIGHT(R.string.extras_name_night, R.string.extras_night_note)
+        NIGHT(R.string.extras_name_night, R.string.extras_night_note),
+        AUTO_LOUDNESS(R.string.extras_name_auto_loudness, R.string.extras_auto_loudness_note)
     }
 
-    private var shown = Row.DIALOGUE
+    private var shown = Row.STEREO
 
     // While this screen is up, the Low-volume bass line follows the volume
     // keys the same way the service does (Settings.System plus the
@@ -71,21 +88,25 @@ class EnhancedAudioSettingsActivity : TvActivity() {
         setContentView(R.layout.activity_enhanced_audio_settings)
         prefs = EnhancedAudioPrefs(this)
 
+        btnStereo = findViewById(R.id.btn_extras_stereo)
         btnDialogue = findViewById(R.id.btn_extras_dialogue)
         btnLowBass = findViewById(R.id.btn_extras_low_bass)
         btnBass = findViewById(R.id.btn_extras_bass)
         btnLoudness = findViewById(R.id.btn_extras_loudness)
         btnNight = findViewById(R.id.btn_extras_night)
+        btnAutoLoudness = findViewById(R.id.btn_extras_auto_loudness)
         textDetailTitle = findViewById(R.id.text_extras_detail_title)
         textDetailBody = findViewById(R.id.text_extras_detail_body)
         textDetailStatus = findViewById(R.id.text_extras_detail_status)
 
         for ((button, row) in listOf(
+            btnStereo to Row.STEREO,
             btnDialogue to Row.DIALOGUE,
             btnLowBass to Row.LOW_BASS,
             btnBass to Row.BASS,
             btnLoudness to Row.LOUDNESS,
-            btnNight to Row.NIGHT
+            btnNight to Row.NIGHT,
+            btnAutoLoudness to Row.AUTO_LOUDNESS
         )) {
             button.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
@@ -95,6 +116,10 @@ class EnhancedAudioSettingsActivity : TvActivity() {
             }
         }
 
+        btnStereo.setOnClickListener {
+            if (prefs.stereoSpeakersEnabled) stereoOff() else stereoOn()
+            changed()
+        }
         btnDialogue.setOnClickListener {
             prefs.dialogueBoostEnabled = !prefs.dialogueBoostEnabled
             changed()
@@ -120,8 +145,14 @@ class EnhancedAudioSettingsActivity : TvActivity() {
             prefs.nightModeEnabled = !prefs.nightModeEnabled
             changed()
         }
+        btnAutoLoudness.setOnClickListener {
+            prefs.autoLoudnessEnabled = !prefs.autoLoudnessEnabled
+            // Auto loudness is mutually exclusive with low-volume bass.
+            if (prefs.autoLoudnessEnabled) prefs.lowVolumeBassEnabled = false
+            changed()
+        }
         refresh()
-        btnDialogue.requestFocus()
+        btnStereo.requestFocus()
     }
 
     override fun onStart() {
@@ -134,6 +165,15 @@ class EnhancedAudioSettingsActivity : TvActivity() {
 
     override fun onResume() {
         super.onResume()
+        // Back from "Modify system settings": finish what switching Stereo
+        // speakers on asked for, once.
+        if (prefs.stereoSpeakersEnabled && prefs.surroundPending && SurroundOutput.canChange(this)) {
+            prefs.surroundPending = false
+            setSurroundNever()
+            changed()
+        }
+        // Switched off while the old mode could not be put back: try again.
+        if (!prefs.stereoSpeakersEnabled && prefs.surroundRestoreMode != null) restoreSurround()
         refresh() // the volume may have moved while this screen was away
     }
 
@@ -143,17 +183,79 @@ class EnhancedAudioSettingsActivity : TvActivity() {
         super.onStop()
     }
 
+    /**
+     * The tone layer goes on at once; the Surround sound setting changes only
+     * where this output could carry a bitstream, and only to Never.
+     */
+    private fun stereoOn() {
+        prefs.stereoSpeakersEnabled = true
+        val action = SurroundOutput.onAction(
+            SurroundOutput.read(this), Build.VERSION.SDK_INT, SurroundOutput.canChange(this), bitstreamOutput()
+        )
+        when (action) {
+            SurroundOutput.OnAction.SET_NEVER -> setSurroundNever()
+            SurroundOutput.OnAction.ASK_PERMISSION -> {
+                prefs.surroundPending = true
+                askWriteSettings()
+            }
+            else -> Unit
+        }
+    }
+
+    /** Puts back the Surround sound mode Core EQ replaced, if it is still Never. */
+    private fun stereoOff() {
+        prefs.stereoSpeakersEnabled = false
+        prefs.surroundPending = false
+        restoreSurround()
+    }
+
+    /**
+     * The saved mode is forgotten only once it is back, or no longer Core EQ's
+     * to restore. If Android refuses (the permission was taken away), it is
+     * kept, retried on the next visit, and the panel says how to do it by hand.
+     */
+    private fun restoreSurround() {
+        // The saved mode comes back only once Android has accepted it (SurroundOutput.restore);
+        // until then it stays, so a withdrawn permission cannot lose the user's own setting.
+        prefs.surroundRestoreMode = SurroundOutput.restore(
+            prefs.surroundRestoreMode,
+            SurroundOutput.read(this)
+        ) { mode -> SurroundOutput.write(this, mode) }
+    }
+
+    private fun setSurroundNever() {
+        val before = SurroundOutput.read(this)
+        if (!SurroundOutput.mayBypass(before)) return
+        if (SurroundOutput.write(this, SurroundOutput.NEVER)) prefs.surroundRestoreMode = before
+    }
+
+    /** Android's "Modify system settings" page for Core EQ; where a TV has none, the panel gives the ADB line. */
+    private fun askWriteSettings() {
+        try {
+            startActivity(
+                Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, Uri.parse("package:$packageName"))
+            )
+        } catch (_: ActivityNotFoundException) {
+            // Shown in the panel instead: SurroundOutput.adbAllowCommand().
+        }
+    }
+
+    private fun bitstreamOutput(): Boolean =
+        OutputRoute.mayCarryBitstream(this, OutputRoute.current(this)?.kind)
+
     private fun changed() {
         refresh()
         if (EqService.running) EqService.send(this, EqService.ACTION_RELOAD_PREFS)
     }
 
     private fun refresh() {
+        btnStereo.showSwitch(prefs.stereoSpeakersEnabled, R.string.extras_stereo_on, R.string.extras_stereo_off)
         btnDialogue.showSwitch(prefs.dialogueBoostEnabled, R.string.extras_dialogue_on, R.string.extras_dialogue_off)
         btnLowBass.showSwitch(prefs.lowVolumeBassEnabled, R.string.extras_low_bass_on, R.string.extras_low_bass_off)
         btnBass.showSwitch(prefs.bassBoostEnabled, R.string.extras_bass_on, R.string.extras_bass_off)
         btnLoudness.showSwitch(prefs.loudnessEnhancerEnabled, R.string.extras_loudness_on, R.string.extras_loudness_off)
         btnNight.showSwitch(prefs.nightModeEnabled, R.string.extras_night_on, R.string.extras_night_off)
+        btnAutoLoudness.showSwitch(prefs.autoLoudnessEnabled, R.string.extras_auto_loudness_on, R.string.extras_auto_loudness_off)
         renderDetail()
     }
 
@@ -161,7 +263,13 @@ class EnhancedAudioSettingsActivity : TvActivity() {
     private fun renderDetail() {
         textDetailTitle.setText(shown.title)
         textDetailBody.setText(shown.note)
-        val status = if (shown == Row.LOW_BASS) lowBassStatus() else null
+        val status = when (shown) {
+            Row.LOW_BASS -> lowBassStatus()
+            Row.STEREO -> stereoStatus()
+            Row.AUTO_LOUDNESS -> autoLoudnessStatus()
+            Row.NIGHT -> nightStatus()
+            else -> null
+        }
         textDetailStatus.text = status.orEmpty()
         textDetailStatus.visibility = if (status == null) View.GONE else View.VISIBLE
     }
@@ -179,6 +287,68 @@ class EnhancedAudioSettingsActivity : TvActivity() {
             getString(R.string.extras_low_bass_flat)
         }
         return getString(R.string.extras_low_bass_status, reference, now, effect)
+    }
+
+    /** While Night mode is focused: time-based suggestion if it is evening or night; null otherwise. */
+    private fun nightStatus(): String? {
+        val suggestion = TimeBasedSuggestions.suggestionAt()
+        return if (suggestion != null) suggestion.message else null
+    }
+
+    /** While Auto loudness is on: where this output's reference sits and what it adds right now; null while off. */
+    private fun autoLoudnessStatus(): String? {
+        if (!prefs.autoLoudnessEnabled) return null
+        val route = OutputRoute.current(this)?.let { "${it.kind}|${it.name}" } ?: OutputRoute.UNKNOWN
+        val reference = prefs.lowVolumeReferenceDb(route)
+        val now = VolumeLevel.mediaDb(this)
+        if (reference == null || now == null) return getString(R.string.extras_auto_loudness_unknown)
+        val dbBelowRef = reference - now
+        if (dbBelowRef <= 0.0) return getString(R.string.extras_auto_loudness_flat)
+        return getString(R.string.extras_auto_loudness_status, reference, now, dbBelowRef)
+    }
+
+    /**
+     * While Stereo speakers is on: whether Android folds 5.1 before Core EQ on
+     * this output, and if not, what to change; null while off.
+     */
+    private fun stereoStatus(): String? {
+        val mode = SurroundOutput.read(this)
+        // One decision table ([SurroundOutput.status], unit-tested): with the write
+        // permission in hand and the setting still not Never, asking for the
+        // permission again would be a lie (#413 finding 5) — say how to finish.
+        return when (
+            SurroundOutput.status(
+                stereoOn = prefs.stereoSpeakersEnabled,
+                restoreOwed = prefs.surroundRestoreMode != null,
+                mode = mode,
+                sdk = Build.VERSION.SDK_INT,
+                canWrite = SurroundOutput.canChange(this),
+                bitstreamOutput = bitstreamOutput()
+            )
+        ) {
+            SurroundOutput.Status.HIDDEN -> null
+            SurroundOutput.Status.OFF_RESTORE_STUCK -> getString(
+                R.string.extras_stereo_restore_failed, SurroundOutput.label(prefs.surroundRestoreMode)
+            )
+            SurroundOutput.Status.PCM_ONLY -> getString(R.string.extras_stereo_pcm_only)
+            SurroundOutput.Status.SETTLED -> {
+                val never = getString(R.string.extras_stereo_never)
+                val restored = prefs.surroundRestoreMode
+                if (restored == null) never
+                else never + " " + getString(R.string.extras_stereo_restore, SurroundOutput.label(restored))
+            }
+            SurroundOutput.Status.UNREADABLE ->
+                getString(R.string.extras_stereo_unknown, SurroundOutput.ADB_NEVER_COMMAND)
+            SurroundOutput.Status.ASK_PERMISSION -> getString(
+                R.string.extras_stereo_ask, SurroundOutput.label(mode), SurroundOutput.adbAllowCommand(packageName)
+            )
+            SurroundOutput.Status.NEEDS_MANUAL -> getString(
+                R.string.extras_stereo_needs_manual, SurroundOutput.label(mode), SurroundOutput.ADB_NEVER_COMMAND
+            )
+            SurroundOutput.Status.MANUAL_ONLY -> getString(
+                R.string.extras_stereo_manual, SurroundOutput.label(mode), SurroundOutput.ADB_NEVER_COMMAND
+            )
+        }
     }
 
     private companion object {

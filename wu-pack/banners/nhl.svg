@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <g transform="translate(-3.5,0.0)">
+  <g transform="translate(259.87,152.00) scale(0.81250)"><defs><mask id="wuDisc-nhl" maskUnits="userSpaceOnUse" x="0" y="0" width="512" height="512"><rect width="512" height="512" fill="#000000"/><circle cx="256" cy="256" r="211" fill="#FFFFFF"/><g transform="translate(256 256) scale(0.8062) translate(-256 -256)"><ellipse cx="256" cy="288" rx="150" ry="88" fill="none" stroke="#000000" stroke-width="49.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M 256 112 L 300 156 L 256 200 L 212 156 Z" fill="none" stroke="#000000" stroke-width="33.7" stroke-linecap="round" stroke-linejoin="round"/></g></mask></defs><rect width="512" height="512" fill="#FFFFFF" mask="url(#wuDisc-nhl)"/></g>
+  <path d="M 719.3 290.8 L 731.5 256.8 L 743.8 290.8 M 723.7 279.2 L 739.4 279.2 M 764.2 290.8 L 764.2 256.8 L 773.7 256.8 C 783.2 256.8 783.2 275.1 773.7 275.1 L 764.2 275.1 M 801.3 290.8 L 801.3 256.8 L 810.8 256.8 C 820.3 256.8 820.3 275.1 810.8 275.1 L 801.3 275.1" fill="none" stroke="#E6EDF3" stroke-width="9.0" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 719.3 430.3 L 719.3 330.2 L 785.4 430.3 L 785.4 330.2 M 827.4 330.2 L 827.4 430.3 M 891.5 330.2 L 891.5 430.3 M 827.4 380.3 L 891.5 380.3 M 933.5 330.2 L 933.5 430.3 L 983.6 430.3" fill="none" stroke="#E6EDF3" stroke-width="15.0" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

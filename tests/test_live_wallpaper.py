@@ -61,8 +61,11 @@ class LoopCatalogueTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.src = kt("LiveLoop.kt")
+        # The Motion line's list. Since the Core Views season shipped, that
+        # is MOTION_LOOPS; LiveLoop.LOOPS is it plus CoreViewsLoop.LOOPS, and
+        # tests/test_coreviews_wallpapers.py pins the other half.
         cls.loops_body = re.search(
-            r"val LOOPS: List<Loop> = listOf\((.*?)\n    \)", cls.src, re.DOTALL
+            r"val MOTION_LOOPS: List<Loop> = listOf\((.*?)\n    \)", cls.src, re.DOTALL
         ).group(1)
         cls.ids = re.findall(r'id = "([^"]+)"', cls.loops_body)
         cls.titles = re.findall(r'title = "([^"]+)"', cls.loops_body)
@@ -247,7 +250,8 @@ class LoopCatalogueTests(unittest.TestCase):
         self.assertEqual(self.loops_body.count("stillSeries = ICON_ECHO_SERIES"), 12)
         self.assertNotIn("series = CINEMA_SERIES", self.loops_body)
         browser = kt("WallpapersActivity.kt")
-        self.assertIn("all.filter { !it.isLive }.map { it.series }.distinct()", browser)
+        # Plus walls (Google Play) have their own chip too; see test_play_build.
+        self.assertIn("all.filter { !it.isLive && !it.plus }.map { it.series }.distinct()", browser)
         manifest = json.loads(read(ROOT / "Wallpapers" / "manifest.json"))
         series = {w["series"] for w in manifest["wallpapers"]}
         self.assertNotIn("series-live", series, "the Live set is not a stills folder")
@@ -364,9 +368,12 @@ class EngineTests(unittest.TestCase):
         self.assertIn("unlockCanvasAndPost", self.src)
 
     def test_reads_the_choice_on_every_visibility_change(self):
-        # Re-picking a loop re-points wallpaper that is already active.
-        self.assertIn("Prefs.liveLoopId(applicationContext)", self.src)
-        self.assertIn("LiveLoop.byId(", self.src)
+        # Re-picking a loop re-points wallpaper that is already active. Since
+        # the night loop (Core Builds Plus) the choice is read through
+        # DayNight.loopId, which is the preview's pick outside night hours.
+        self.assertIn("LiveLoop.byId(DayNight.loopId(applicationContext))", self.src)
+        night = (ROOT / "app/src/main/java/tv/corebuilds/iconpack/DayNight.kt").read_text(encoding="utf-8")
+        self.assertIn("val day = Prefs.liveLoopId(context)", night.split("fun loopId(", 1)[1])
 
     def test_keeps_the_old_render_until_the_new_one_lands(self):
         # The engine plays the current render or, failing that, an older copy
@@ -459,7 +466,7 @@ class BrowserIntegrationTests(unittest.TestCase):
 
     def test_browser_appends_the_loops_to_the_catalog(self):
         src = kt("WallpapersActivity.kt")
-        self.assertIn("WallpaperCatalog.load(this) + LiveLoop.asWallpapers()", src)
+        self.assertIn("WallpaperCatalog.load(this) + plusWalls + LiveLoop.asWallpapers()", src)
 
     def test_bulk_save_routes_loops_to_movies(self):
         # A loop is saved like a still, but as video into Movies/CoreBuilds
@@ -471,11 +478,12 @@ class BrowserIntegrationTests(unittest.TestCase):
         self.assertIn("WallpaperSetter.copyFileToMovies(context, file, loop.fileName)", src)
         self.assertIn("WallpaperSetter.alreadyExportedVideo(", src)
         act = kt("WallpapersActivity.kt")
-        self.assertIn("startExport(adapter.selectedItems())", act)
+        # Back from the storage prompt, through the same gate as the button.
+        self.assertIn("if (granted) beginExport(adapter.selectedItems())", act)
 
     def test_adapter_badges_and_describes_live_tiles(self):
         src = kt("WallpaperAdapter.kt")
-        self.assertIn("holder.badge.visibility = if (item.isLive)", src)
+        self.assertIn("holder.badge.visibility = if (item.isLive || item.plus)", src)
         self.assertIn("R.string.wp_live_spoken", src)
 
     def test_loops_are_selectable_for_bulk_save(self):

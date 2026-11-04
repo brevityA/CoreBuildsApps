@@ -26,7 +26,7 @@ This is **not** a live wallpaper. TV has no `WallpaperService`. Projectivy still
 https://raw.githubusercontent.com/brevityA/CoreBuildsApps/main/Motion/overflight-feed.json
 ```
 
-19 entries: the 13 live loops plus the 6 series-5 loops (hex glow … zenith), de-duped, https + GitHub hosts only.
+54 entries: the 48 live loops plus the 6 series-5 loops (hex glow … zenith), de-duped, https + GitHub hosts only.
 
 Regenerate:
 
@@ -37,3 +37,29 @@ python tools/build_overflight_feed.py --check
 ```
 
 `live-feed.json` stays the validator source of truth for `Motion/live/`. Do not merge series-5 into it unless those files move under `Motion/live/`.
+
+## Core Views (aerial catalogues)
+
+Core Views is the aerial line: real places, captioned, 20–40 s loops. It rides
+the same rails as Core Motion, from one catalogue:
+
+```
+views/catalog.json              source of truth (place, time of day, scene,
+                                captions, credits)
+views/aerial-entries.json       → Aerial Views → screensaver / Monet
+views/overflight-feed.json      → Projectivy Premium (Overflight)
+python tools/build_views_feed.py --check
+```
+
+Unlike `Motion/aerial-entries.json`, which is night for the whole abstract set
+on purpose, a Core View carries its own `timeOfDay` and `scene` — Aerial Views
+filters on both, so a beach at noon filed as night disappears from a day
+playlist. Captions ride in `pointsOfInterest`; nothing is baked into the frame.
+
+A view that has not been rendered publishes nothing. Add it to the catalogue
+with `"status": "planned"` and it stays out of both feeds until it is ready.
+Season 1 needs no camera: `python tools/render_views.py --all --dry-run` shows
+the plan, `--all` renders it from open imagery and terrain.
+
+Format, licences and the authoring studio: [`views/README.md`](../views/README.md),
+[`docs/research/core-views-aerial-2026-10.md`](research/core-views-aerial-2026-10.md).

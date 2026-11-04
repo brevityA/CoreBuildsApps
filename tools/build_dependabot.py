@@ -1,23 +1,10 @@
 #!/usr/bin/env python3
 """Generate `.github/dependabot.yml` from the suite and its build envelope.
 
-The ignore rules in this file are not decoration — they are the only thing
-standing between Dependabot and a PR that cannot compile. Dependabot reads
-version numbers; it cannot see that five of the seven modules compile against
-API 34, that the icon pack still ships `minSdk 21` for Android 5.x Fire TV
-hardware, or that `doctor/` wires the Compose compiler through a DSL Kotlin 2.0
-deleted. So it proposes AndroidX releases whose AAR metadata demands a newer
-platform, and the PR fails in CI.
-
-They were hand-written once (6434eabd), silently deleted when the file was
-restructured into per-directory groups (9f5d266d), and the four PRs that
-followed — #122 #125 #126 #132 — all failed for the same three libraries.
-Nothing in CI noticed the rules had gone.
-
-So now the file is generated. Every Gradle root gets an entry whether or not
-anyone remembered to add one, and every capped coordinate gets an ignore rule
-in exactly the directories that declare it, derived from
-`tools/gradle_envelope.json`.
+All Gradle modules now compile and target API 37. Their AGP/Kotlin toolchain,
+minSdk values and dependency ceilings are recorded in tools/gradle_envelope.json;
+Dependabot cannot see those constraints, so the generator gives every root an
+entry and pins update proposals at the tested version envelope.
 
     python tools/build_dependabot.py           # write the file
     python tools/build_dependabot.py --check   # fail on drift (CI)
@@ -85,7 +72,7 @@ HEADER = """\
 # gradle_envelope.json is exactly the version the suite declares today, and
 # check_gradle_envelope.py rejects any declared version above its ceiling no
 # matter which digit moved. So a patch above a cap is a PR the gate is
-# guaranteed to reject - Kotlin 1.9.24 -> 1.9.25 is precisely that case, and it
+# guaranteed to reject - Kotlin sub-plugin 2.2.10 -> 2.2.11 is precisely that case, and it
 # is why the six red PRs kept coming back. Ignoring only minor+major left the
 # patch lane wide open. Nothing is lost by closing it: there is no patch the
 # suite could accept today without lifting the ceiling on purpose, which is the
@@ -96,13 +83,11 @@ HEADER = """\
 # steps are at the end of gradle_envelope.json), watch CI go green, then lift
 # the ceiling and regenerate this file.
 #
-# The com.android.application ceiling is root-specific. The icon pack, Core
-# Line, Shift, Motion and Doctor remain on the proven AGP 8.5.2 / Kotlin 1.9.24
-# toolchain: AGP 8.13.2 fails on their Gradle 9.7 wrappers because Gradle 9.6
-# removed org.gradle.api.problems.internal.InternalProblems (see PRs #144-#149).
-# Core EQ is its own Gradle root and has deliberately migrated to AGP 9.4.0,
-# Gradle 9.7, built-in Kotlin and API 37. Do not generalise that exception to
-# the other roots without their own toolchain migration and CI evidence.
+# Every Gradle root is on AGP 9.4.0 / Gradle 9.7.0 and compileSdk/targetSdk
+# 37. Kotlin 2.2.10 is built in everywhere except motion-plugin, which opts out
+# for its frozen Projectivy Parcelize model and uses KGP 2.4.10. Kotlin plugins
+# are ceiling-pinned to their root's tested version. The per-coordinate rules
+# below remain independent dependency update boundaries.
 version: 2
 updates:
 """

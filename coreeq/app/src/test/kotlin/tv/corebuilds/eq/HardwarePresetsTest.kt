@@ -6,6 +6,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import kotlin.math.abs
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.dsp.HardwarePresets
 import tv.corebuilds.eq.dsp.ManualEq
@@ -23,7 +24,7 @@ class HardwarePresetsTest {
 
     @Test
     fun aLongerModelNumberOrAnotherProductIsNotTheBar800() {
-        for (name in listOf("JBL Bar 8000", "BAR 8001", "Samsung HW-Q990D", "Living Room TV", "", "  ")) {
+        for (name in listOf("JBL Bar 8000", "BAR 8001", "JBL BAR 800MK2", "JBL Bar 800 MK2", "Samsung HW-Q990D", "Living Room TV", "", "  ")) {
             assertNull("name: '$name'", HardwarePresets.matchAny(listOf(name)))
         }
         assertNull(HardwarePresets.matchAny(listOf(null)))
@@ -86,10 +87,13 @@ class HardwarePresetsTest {
     private val bar20 = HardwarePresets.MODELS.single { it.id == "jbl-bar-2-0-all-in-one" }
 
     @Test
-    fun theOriginalBar20IsFoundButItsMk2IsNot() {
-        for (name in listOf("JBL BAR 2.0 ALL-IN-ONE", "JBL Bar 2.0", "BAR2.0", "jbl_bar-2-0")) {
+    fun theBar20ModelOnlyMatchesExplicitRevisionNames() {
+        for (name in listOf("JBL BAR 2.0 ALL-IN-ONE", "BAR2.0 ALL-IN-ONE", "jbl_bar-2-0 ALL-IN-ONE")) {
             assertEquals("name: $name", bar20, HardwarePresets.matchAny(listOf(name)))
         }
+        // JBL documents the MK2 Bluetooth pairing name as the same bare model name,
+        // so the generic label must not imply the original revision.
+        assertNull(HardwarePresets.matchAny(listOf("JBL BAR 2.0")))
         assertNull(HardwarePresets.matchAny(listOf("JBL BAR 2.0 ALL-IN-ONE MK2")))
         assertNull(HardwarePresets.matchAny(listOf("JBLBAR20AIOM2BLKAM")))
         assertNull(HardwarePresets.matchAny(listOf("JBL BAR 2.0 AIO M2")))
@@ -107,7 +111,11 @@ class HardwarePresetsTest {
         // A 125 Hz bell's skirt reaches into 40 to 70 Hz, so no positive 125 Hz lift can
         // be exactly zero there. The measured worst case is about 0.8 dB; this guards
         // against a regression beyond that.
-        assertEquals(7, bar20.presets.size)
+        //
+        // Deliberately no assertion on how many presets the bar has: that number was a
+        // tripwire that fired when the Everyday preset was added, and it says nothing
+        // about the property under test. Every preset present is checked instead.
+        assertTrue("the bar must ship presets at all", bar20.presets.isNotEmpty())
         for (preset in bar20.presets) {
             var worst = -99.0
             var hz = 40.0
@@ -124,13 +132,184 @@ class HardwarePresetsTest {
         val ids = bar20.presets.map { it.id }
         assertTrue(ids.containsAll(listOf("jbl-bar-2-0-movie", "jbl-bar-2-0-dialogue", "jbl-bar-2-0-music", "jbl-bar-2-0-late-night")))
         assertTrue(ids.containsAll(listOf("jbl-bar-2-0-open-stage", "jbl-bar-2-0-centred-vocal", "jbl-bar-2-0-bass-forward")))
+        // The everyday curve is the one a name match lands on, so it must be present.
+        assertTrue(ids.contains("jbl-bar-2-0-everyday"))
     }
 
     @Test
     fun noTwoShippedPresetsHaveTheSameToneSoTheNameIsNeverAmbiguous() {
         val all = ManualEq.BUILT_IN_PRESETS + HardwarePresets.PRESETS
+        // Collect every pair, so one run names all the collisions to fix.
+        val same = mutableListOf<String>()
         for (i in all.indices) for (j in i + 1 until all.size) {
-            assertFalse("${all[i].name} = ${all[j].name}", ManualEq.sameFilters(all[i].filters, all[j].filters))
+            if (ManualEq.sameFilters(all[i].filters, all[j].filters)) same += "${all[i].name} = ${all[j].name}"
+        }
+        assertTrue(same.joinToString("; "), same.isEmpty())
+    }
+
+    private fun model(id: String) = HardwarePresets.MODELS.single { it.id == id }
+
+    @Test
+    fun theNewSamsungSonyLgAndJblModelsAreFoundUnderTheNamesTheyReport() {
+        val cases = mapOf(
+            "samsung-hw-q800h" to listOf("Samsung HW-Q800H", "HW-Q800F", "Q800H", "samsung_q800f"),
+            "sony-bravia-theatre-bar-6" to listOf("Sony Bravia Theatre Bar 6", "BRAVIA Theater Bar 6", "theatre-bar-6"),
+            "lg-s80tr" to listOf("LG S80TR", "S80TR", "lg_s80tr"),
+            "jbl-bar-1000-mk2" to listOf("JBL Bar 1000 MK2", "JBL BAR 1000", "BAR1000")
+        )
+        for ((id, names) in cases) {
+            for (name in names) {
+                assertEquals("name: $name", model(id), HardwarePresets.matchAny(listOf(name)))
+            }
+        }
+    }
+
+    @Test
+    fun nearMissModelNumbersAreNotTheNewModels() {
+        val misses = listOf("Samsung Q80", "HW-Q800HX", "HW-Q8000H", "S80TRX", "LG S8OTR", "JBL Bar 10000", "JBL Bar 1300", "Sony Theatre Bar 60")
+        for (name in misses) {
+            assertNull("name: $name", HardwarePresets.matchAny(listOf(name)))
+        }
+    }
+
+    @Test
+    fun eachNewModelHasThreeDistinctPresetsWithinTheManualEqRules() {
+        for (id in listOf("samsung-hw-q800h", "sony-bravia-theatre-bar-6", "lg-s80tr", "jbl-bar-1000-mk2")) {
+            val presets = model(id).presets
+            assertEquals(id, 3, presets.size)
+            assertTrue(presets.all { it.name.length <= 32 })
+        }
+    }
+
+    @Test
+    fun theSonyAndJblPresetsCutTheBassAt63Hz() {
+        // The two reviews that describe bass drowning the mids both ask for a cut at 63 Hz.
+        for (id in listOf("sony-bravia-theatre-bar-6", "jbl-bar-1000-mk2")) {
+            for (preset in model(id).presets) {
+                assertTrue("${preset.id} should cut 63 Hz", ManualEq.gainAtBand(preset.filters, 1) <= 0.0)
+            }
+        }
+    }
+
+    @Test
+    fun theLgBassLiftAppearsOnlyInTheFilmAndMusicPresets() {
+        // HomeTheaterReview: the LG bass rolls off below about 70 Hz, so only the film and music
+        // presets lift it. The dialogue preset must not add bass.
+        val lg = model("lg-s80tr")
+        assertTrue(ManualEq.gainAtBand(lg.presets.single { it.id == "lg-s80tr-movie" }.filters, 1) > 0.0)
+        assertTrue(ManualEq.gainAtBand(lg.presets.single { it.id == "lg-s80tr-dialogue" }.filters, 1) == 0.0)
+    }
+
+    private val sonosArc = HardwarePresets.MODELS.single { it.id == "sonos-arc" }
+    private val sonosBeam = HardwarePresets.MODELS.single { it.id == "sonos-beam-gen-2" }
+    private val sonosRay = HardwarePresets.MODELS.single { it.id == "sonos-ray" }
+    private val sonosArcUltra = HardwarePresets.MODELS.single { it.id == "sonos-arc-ultra" }
+    private val bose900 = HardwarePresets.MODELS.single { it.id == "bose-smart-soundbar-900" }
+    private val samsungQ990c = HardwarePresets.MODELS.single { it.id == "samsung-hw-q990c" }
+
+    @Test
+    fun eachSonosModelIsFoundUnderTheNamesAndroidMightReport() {
+        val cases = mapOf(
+            sonosArc to listOf("Sonos Arc", "SONOS ARC", "sonos_arc", "SonosArc"),
+            sonosBeam to listOf("Sonos Beam (Gen 2)", "BEAM GEN 2", "sonos_beam_gen_2", "Beam Gen2"),
+            sonosRay to listOf("Sonos Ray", "SONOS RAY", "sonos_ray")
+        )
+        for ((model, names) in cases) {
+            for (name in names) {
+                assertEquals("name: $name", model, HardwarePresets.matchAny(listOf(name)))
+            }
+        }
+    }
+
+    @Test
+    fun arcAndArcUltraAreDistinctModels() {
+        // "Sonos Arc Ultra" now matches the Arc Ultra model, not the original Arc.
+        assertEquals(sonosArcUltra, HardwarePresets.matchAny(listOf("Sonos Arc Ultra")))
+        assertEquals(sonosArcUltra, HardwarePresets.matchAny(listOf("SONOS ARC ULTRA")))
+        // The original Arc still matches plain "Sonos Arc" and does not inherit
+        // Arc Ultra's overlays.
+        assertEquals(sonosArc, HardwarePresets.matchAny(listOf("Sonos Arc")))
+    }
+
+    @Test
+    fun theOriginalBeamIsStillNotMatchedByGenerationlessNames() {
+        assertNull(HardwarePresets.matchAny(listOf("Sonos Beam")))
+        assertNull(HardwarePresets.matchAny(listOf("BEAM GEN 1")))
+        assertNull(HardwarePresets.matchAny(listOf("Sonos Beam Gen 3")))
+    }
+
+    @Test
+    fun aSonosNameIsOnlyEvidenceOnOutputsThatCanCarryOne() {
+        assertEquals(sonosArc, HardwarePresets.detect(OutputRoute.HDMI_ARC, "Sonos Arc", emptyList()))
+        assertEquals(sonosBeam, HardwarePresets.detect(OutputRoute.BLUETOOTH, "Sonos Beam (Gen 2)", emptyList()))
+        assertEquals(sonosRay, HardwarePresets.detect(OutputRoute.HDMI, "HDMI", listOf("TV", "Sonos Ray")))
+
+        // The TV's own speakers are never a soundbar, even if a name claims otherwise.
+        assertNull(HardwarePresets.detect(OutputRoute.SPEAKER, "Sonos Arc", listOf("Sonos Arc")))
+        assertNull(HardwarePresets.detect(OutputRoute.UNKNOWN, "Sonos Ray", emptyList()))
+        assertNull(HardwarePresets.detect(null, "Sonos Beam (Gen 2)", emptyList()))
+    }
+
+    @Test
+    fun eachSonosModelShipsFourPresetsWithinTheManualEqRules() {
+        for (id in listOf("sonos-arc", "sonos-beam-gen-2", "sonos-ray")) {
+            val presets = model(id).presets
+            assertEquals(id, 4, presets.size)
+            assertTrue(presets.all { it.name.length <= 32 })
+        }
+    }
+
+    @Test
+    fun theSonosPresetsKeepEachModelsCharacterDistinct() {
+        // The Arc's powerful bass gets cut in its movie preset; the compact Beam
+        // keeps its cut gentler; the tiny Ray asks for no sub bass at all.
+        assertTrue(ManualEq.gainAtBand(sonosArc.presets.single { it.id == "sonos-arc-movie" }.filters, 1) < 0.0)
+        assertTrue(ManualEq.gainAtBand(sonosBeam.presets.single { it.id == "sonos-beam-gen-2-movie" }.filters, 1) < 0.0)
+        assertFalse("ray movie has no 63 Hz band",
+            sonosRay.presets.single { it.id == "sonos-ray-movie" }.filters.any { abs(it.fc - 63.0) < 0.01 })
+    }
+
+    @Test
+    fun eachNewModelIsFoundUnderTheNamesAndroidMightReport() {
+        val cases = mapOf(
+            sonosArcUltra to listOf("Sonos Arc Ultra", "ARC ULTRA", "sonos_arc_ultra", "ArcUltra"),
+            bose900 to listOf("Bose Smart Soundbar 900", "BOSE SMART SOUNDBAR 900", "bose_smart_soundbar_900", "Smart Soundbar 900"),
+            samsungQ990c to listOf("Samsung HW-Q990C", "HW-Q990C", "Q990C", "samsung_hw_q990c")
+        )
+        for ((model, names) in cases) {
+            for (name in names) {
+                assertEquals("name: $name", model, HardwarePresets.matchAny(listOf(name)))
+            }
+        }
+    }
+
+    @Test
+    fun newModelNamesAreNotMatchedByNearMisses() {
+        // "Sonos Arc" is a model of its own (sonos-arc), so it is a near miss for
+        // the Arc Ultra only: it must find the Arc, never the Ultra.
+        assertEquals(sonosArc, HardwarePresets.matchAny(listOf("Sonos Arc")))
+        for (name in listOf("Bose Smart Soundbar 700", "Samsung HW-Q990D", "HW-Q9900C", "Bose Soundbar 900")) {
+            assertNull("name: '$name'", HardwarePresets.matchAny(listOf(name)))
+        }
+    }
+
+    @Test
+    fun aNewModelNameIsOnlyEvidenceOnOutputsThatCanCarryOne() {
+        assertEquals(sonosArcUltra, HardwarePresets.detect(OutputRoute.HDMI_ARC, "Sonos Arc Ultra", emptyList()))
+        assertEquals(bose900, HardwarePresets.detect(OutputRoute.BLUETOOTH, "Bose Smart Soundbar 900", emptyList()))
+        assertEquals(samsungQ990c, HardwarePresets.detect(OutputRoute.HDMI, "HDMI", listOf("TV", "Samsung HW-Q990C")))
+        // The TV's own speakers are never a soundbar, even if a name claims otherwise.
+        assertNull(HardwarePresets.detect(OutputRoute.SPEAKER, "Sonos Arc Ultra", listOf("Sonos Arc Ultra")))
+        assertNull(HardwarePresets.detect(OutputRoute.UNKNOWN, "Bose Smart Soundbar 900", emptyList()))
+        assertNull(HardwarePresets.detect(null, "Samsung HW-Q990C", emptyList()))
+    }
+
+    @Test
+    fun eachNewModelShipsFourPresetsWithinTheManualEqRules() {
+        for (id in listOf("sonos-arc-ultra", "bose-smart-soundbar-900", "samsung-hw-q990c")) {
+            val presets = model(id).presets
+            assertEquals(id, 4, presets.size)
+            assertTrue(presets.all { it.name.length <= 32 })
         }
     }
 }

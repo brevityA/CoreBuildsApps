@@ -17,15 +17,15 @@ package tv.corebuilds.eq.dsp
  * impulse response's peak-to-noise ratio (the `snrDb` the analysis already
  * refuses below 20 dB), mapped linearly from 20 dB (0) to 50 dB (100).
  *
- * Why SNR alone. The #270 review and a synthetic-room audit (pink noise,
- * modes, a strong reflection, 12 seeds per cell) showed what the band levels
- * the correction is built from actually track: the RMS error of the bass
- * bands against the true response was about 0.5 dB at 55 dB SNR, under 1 dB
- * at 45, 1-2.8 dB at 35 and 2-8 dB at 25. So 45 dB scores 83 (Good), 35 dB
- * 50 (Fair) and 25 dB 17 (Remeasure), which is what those errors mean for
- * the EQ. 50 dB is about what a voice remote's codec allows at best (the
- * audit measured 50.5 dB through 8 kHz ADPCM and 53.7 dB at 16 kHz), so
- * Excellent is reachable in a quiet room.
+ * Why SNR alone. Earlier synthetic-room experiments (pink noise, modes, one
+ * strong reflection, 12 seeds per cell) found that, within that simulation,
+ * bass-band RMS error tended to rise as injected noise increased. The values
+ * observed there are not a field accuracy guarantee: those experiments do not
+ * model calibrated microphone response, every remote codec, TV/soundbar DSP,
+ * route changes, or room/listener variability. In particular, a high SNR can
+ * coexist with systematic microphone coloration. The score therefore means
+ * capture signal-to-noise quality only; it does not grade frequency-response
+ * accuracy or microphone calibration.
  *
  * The decay share is gone. Through 1.3.2 drafts it gave 40 points to any
  * RT60 the T20 fit returned, and the fit returned one in 36 of 36 runs at

@@ -345,11 +345,29 @@ def core_mark(c):
             f'<polygon points="256,166 346,256 256,346 166,256" {_s(c, 32)}/>')
 
 
+def core_glyphs_mark(c):
+    """The glyphs apps' existing launcher mark: ring, square, play and hex.
+
+    Shared by the catalog and build_glyphs_branding.py so applying the pack
+    cannot replace their violet identity with the main pack's cyan mark.
+    """
+    s = _s(c, 26.2)
+    return (
+        f'<rect x="72" y="72" width="368" height="368" rx="92" {_s(c, 32)}/>'
+        f'<circle cx="190" cy="190" r="40" {s}/>'
+        f'<rect x="282" y="150" width="80" height="80" rx="16" {s}/>'
+        f'<path d="M 172 300 L 208 322 L 172 344 Z" {s}/>'
+        f'<path d="M 322 282 L 354 300 L 354 344 L 322 362 L 290 344 L 290 300 Z" {s}/>'
+    )
+
+
 def store_bag(c):
-    """App stores — shopping bag with a download arc."""
+    """App stores — shopping bag with a download arrow. Drawn since the
+    2026-10-18 sweep; before it the bag was empty and matched Aptoide's."""
     return (f'<path d="M 118 172 L 394 172 L 372 404 L 140 404 Z" {_s(c, 32)}/>'
             f'<path d="M 196 224 L 196 148 C 196 108 226 84 256 84 '
-            f'C 286 84 316 108 316 148 L 316 224" {_s(c, 30)}/>')
+            f'C 286 84 316 108 316 148 L 316 224" {_s(c, 30)}/>'
+            f'<path d="M 256 236 L 256 344 M 212 300 L 256 344 L 300 300" {_s(c, 26.2)}/>')
 
 
 def install_box(c):
@@ -524,7 +542,7 @@ GLYPHS = {
     "remote": remote, "smile_arrow": smile_arrow, "plus_star": plus_star,
     "apple_tv": apple_tv, "eye": eye, "waves_circle": waves_circle,
     "chat_screen": chat_screen, "gear": gear, "folder": folder,
-    "core_mark": core_mark,
+    "core_mark": core_mark, "core_glyphs_mark": core_glyphs_mark,
     "monogram_9": monogram_9, "monogram_7": monogram_7,
     "monogram_10": monogram_10,
 }
@@ -1040,10 +1058,13 @@ def music_note(c):
 
 
 def bag_play(c):
-    """Aptoide: bag with a play mark."""
+    """Aptoide: bag with a play mark. The play was named here but never
+    drawn, which left Aptoide, Aurora Store and APKPure the same empty bag
+    (sweep 2026-10-18)."""
     return (f'<path d="M 118 172 L 394 172 L 372 404 L 140 404 Z" {_s(c, 32)}/>'
             f'<path d="M 196 224 L 196 148 C 196 108 226 84 256 84 '
-            f'C 286 84 316 108 316 148 L 316 224" {_s(c, 30)}/>')
+            f'C 286 84 316 108 316 148 L 316 224" {_s(c, 30)}/>'
+            f'<path d="M 226 240 L 226 348 L 316 294 Z" {_s(c, 26.2)}/>')
 
 
 def aurora_a(c):
@@ -2503,9 +2524,10 @@ GLYPHS.update({
 # Tier 6 — VPN, browsers, files and gaming marks.
 # ==========================================================================
 def nordvpn_arrow(c):
-    """NordVPN's mountain/dome, not a generic shield; all ink is monoline."""
-    return (f'<path d="M 112 364 A 180 180 0 1 1 400 364" {_s(c, 32)}/>'
-            f'<path d="M 112 364 L 220 202 L 258 266 L 286 166 L 400 364" {_s(c, 32)}/>')
+    """NordVPN's mountain/dome, not a generic shield; all ink is monoline.
+    Moved down 36: the dome sat 7% high on the card (sweep 2026-10-18)."""
+    return _shifted((f'<path d="M 112 364 A 180 180 0 1 1 400 364" {_s(c, 32)}/>'
+            f'<path d="M 112 364 L 220 202 L 258 266 L 286 166 L 400 364" {_s(c, 32)}/>'), 0, 36)
 
 
 def proton_shield(c):
@@ -2749,8 +2771,10 @@ def ted_mark(c):
 
 
 def nasa_mark(c):
-    """NASA: the meatball orbit — a wing over a globe."""
-    return (f'<path d="M 148 210 C 216 140 360 150 396 220" {_s(c, 28)}/>'
+    """NASA: the meatball orbit — a wing over a globe. The wing sits 24 higher
+    than it did: at a 96 px tile the gaps between it and the globe closed
+    (sweep 2026-10-18)."""
+    return (f'<path d="M 148 186 C 216 116 360 126 396 196" {_s(c, 28)}/>'
             f'<circle cx="250" cy="286" r="96" {_s(c, 30)}/>'
             f'<path d="M 250 190 L 250 382" {_s(c, 20)}/>'
             f'<path d="M 154 286 L 346 286" {_s(c, 20)}/>')
@@ -3073,10 +3097,13 @@ def windscribe_mark(c):
 
 
 def apkpure_d(c):
-    """APKPure: the pure bag — a shopping bag with a play."""
+    """APKPure: the pure bag — a shopping bag carrying an A, the app's
+    initial. The play this once named was never drawn, and a play would
+    now repeat Aptoide's (sweep 2026-10-18)."""
     return (f'<path d="M 118 176 L 394 176 L 372 404 L 140 404 Z" {_s(c, 32)}/>'
             f'<path d="M 196 228 L 196 150 C 196 110 226 86 256 86 '
-            f'C 286 86 316 110 316 150 L 316 228" {_s(c, 28)}/>')
+            f'C 286 86 316 110 316 150 L 316 228" {_s(c, 28)}/>'
+            f'<path d="M 210 352 L 256 240 L 302 352 M 228 310 L 284 310" {_s(c, 26.2)}/>')
 
 
 def apkmirror_mark(c):
@@ -3301,8 +3328,10 @@ def moviesanywhere_mark(c):
 
 
 def mxplayer_mark(c):
-    """MX Player: the play arrow — a bold play on a flag."""
-    return (f'<path d="M 170 180 L 170 332 L 292 256 Z" {_s(c, 40)}/>')
+    """MX Player: the play arrow — one bold play triangle, MX Player's own
+    mark. Redrawn at the pack's size in the 2026-10-18 sweep: at 122x152 it
+    rendered at 55% of the canvas even after the classic fit's 1.5x cap."""
+    return (f'<path d="M 150 120 L 150 392 L 386 256 Z" {_s(c, 40)}/>')
 
 
 def boosteroid_mark(c):
@@ -3742,11 +3771,12 @@ def folder_tree(c):
 
 
 def folder_sync_one(c):
-    """FileSynced - a folder under a sync arc."""
-    return (_folder(c)
+    """FileSynced - a folder under a sync arc.
+    Moved up 17, to sit with the pack's other folders (sweep 2026-10-18)."""
+    return _shifted((_folder(c)
             + f'<path d="M 176 320 C 176 276 214 244 258 244 C 296 244 328 '
               f'266 340 298" {_s(c, 24)}/>'
-            + f'<path d="M 300 298 L 344 298 L 344 254" {_s(c, 22)}/>')
+            + f'<path d="M 300 298 L 344 298 L 344 254" {_s(c, 22)}/>'), 0, -17)
 
 
 def folder_sync_two(c):
@@ -3771,10 +3801,11 @@ def ftp_server(c):
 
 
 def folder_grid(c):
-    """Mecool File Manager - a folder full of tiles."""
-    return (_folder(c)
+    """Mecool File Manager - a folder full of tiles.
+    Moved up 17, to sit with the pack's other folders (sweep 2026-10-18)."""
+    return _shifted((_folder(c)
             + f'<rect x="126" y="256" width="112" height="72" rx="18" {_s(c, 22)}/>'
-            + f'<rect x="274" y="256" width="112" height="72" rx="18" {_s(c, 22)}/>')
+            + f'<rect x="274" y="256" width="112" height="72" rx="18" {_s(c, 22)}/>'), 0, -17)
 
 
 def package_find(c):
@@ -3812,11 +3843,12 @@ def cinema_glow(c):
 
 
 def overflight(c):
-    """Projectivy Overflight - the aerial horizon the screensaver flies over."""
-    return (f'<path d="M 64 356 L 176 232 L 262 320 L 340 238 L 448 356 Z" '
+    """Projectivy Overflight - the aerial horizon the screensaver flies over.
+    Moved down 32: the scene sat 6% high (sweep 2026-10-18)."""
+    return _shifted((f'<path d="M 64 356 L 176 232 L 262 320 L 340 238 L 448 356 Z" '
             f'{_s(c, 30)}/>'
             f'<circle cx="358" cy="132" r="44" {_s(c, 26)}/>'
-            f'<path d="M 84 160 C 148 108 236 108 300 160" {_s(c, 22)}/>')
+            f'<path d="M 84 160 C 148 108 236 108 300 160" {_s(c, 22)}/>'), 0, 32)
 
 
 def media_wave_play(c):
@@ -4141,13 +4173,15 @@ def usb_plug(c):
 
     The connector block was 72x60 under a 26 stroke, so its opening shut. A
     larger block and a wider branch keep both ends readable.
+
+    Moved up 28: the long stem sat the box 5% low (sweep 2026-10-18).
     """
-    return (f'<path d="M 256 440 L 256 128" {_s(c, 32)}/>'
+    return _shifted((f'<path d="M 256 440 L 256 128" {_s(c, 32)}/>'
             f'<path d="M 192 192 L 256 128 L 320 192" {_s(c, 32)}/>'
             f'<circle cx="128" cy="330" r="40" {_s(c, 26)}/>'
             f'<path d="M 128 290 L 128 258 L 256 258" {_s(c, 24)}/>'
             f'<rect x="326" y="288" width="94" height="84" rx="20" {_s(c, 26)}/>'
-            f'<path d="M 326 330 L 256 330" {_s(c, 24)}/>')
+            f'<path d="M 326 330 L 256 330" {_s(c, 24)}/>'), 0, -28)
 
 
 def remote_pad(c):
@@ -5741,6 +5775,45 @@ GLYPHS.update({
 
 # --------------------------------------------------------------------------
 # Brand-informed marks, batch 5 (2026-09-26). Same contract as batches 1-4.
+
+def _shifted(markup, dx=0.0, dy=0.0):
+    """Move a glyph's ink by (dx, dy) without a transform, which the
+    core_monoline contract forbids: absolute path coordinates, circle and
+    ellipse centres, and rect corners move; radii, arc flags, stroke weights
+    and every other shape stay as reviewed."""
+    def path(m):
+        toks = re.findall(r"[A-Za-z]|-?\d+(?:\.\d+)?", m.group(1))
+        out, i, cmd = [], 0, None
+        while i < len(toks):
+            t = toks[i]
+            if t.isalpha():
+                if t.islower():
+                    raise ValueError(f"_shifted: relative path command {t!r}")
+                cmd = t
+                out.append(t)
+                i += 1
+                continue
+            if cmd == "A":
+                rx, ry, rot, large, sweep, x, y = toks[i:i + 7]
+                out.append(f"{rx} {ry} {rot} {large} {sweep} {float(x) + dx:g} {float(y) + dy:g}")
+                i += 7
+                continue
+            width = {"M": 2, "L": 2, "T": 2, "C": 6, "S": 4, "Q": 4, "H": 1, "V": 1}[cmd]
+            vals = [float(v) for v in toks[i:i + width]]
+            if cmd == "H":
+                moved = [vals[0] + dx]
+            elif cmd == "V":
+                moved = [vals[0] + dy]
+            else:
+                moved = [v + (dx if k % 2 == 0 else dy) for k, v in enumerate(vals)]
+            out.append(" ".join(f"{v:g}" for v in moved))
+            i += width
+        return f'd="{" ".join(out)}"'
+
+    markup = re.sub(r'\bd="([^"]*)"', path, markup)
+    markup = re.sub(r'\b(cx|x)="(-?[\d.]+)"', lambda m: f'{m.group(1)}="{float(m.group(2)) + dx:g}"', markup)
+    return re.sub(r'\b(cy|y)="(-?[\d.]+)"', lambda m: f'{m.group(1)}="{float(m.group(2)) + dy:g}"', markup)
+
 
 def _scaled(d, s, cx=256, cy=256):
     """Scale a path made only of M/L/C/Z pairs about (cx, cy)."""
@@ -8712,11 +8785,12 @@ def mitv_tvplus(c):
 def maxplayer_m(c):
     """MaxPlayer: the soft-cornered play triangle from its store tile with the
     m that cuts through it - two arcs fanning from the lower-left corner,
-    drawn as Core strokes inside the outline, not traced."""
-    return (f'<path d="M 172 117.8 L 339.8 214.4 A 48 48 0 0 1 339.8 297.6 '
+    drawn as Core strokes inside the outline, not traced.
+    Moved right 24: the box sat 5% left (sweep 2026-10-18)."""
+    return _shifted((f'<path d="M 172 117.8 L 339.8 214.4 A 48 48 0 0 1 339.8 297.6 '
             f'L 172 394.2 A 48 48 0 0 1 100 352.6 L 100 159.4 A 48 48 0 0 1 172 117.8 Z" {_s(c, 32)}/>'
             f'<path d="{_arc_cw(150, 330, 92, 285, 345)}" {_s(c, 26)}/>'
-            f'<path d="{_arc_cw(150, 330, 156, 290, 335)}" {_s(c, 26)}/>')
+            f'<path d="{_arc_cw(150, 330, 156, 290, 335)}" {_s(c, 26)}/>'), 24, 0)
 
 
 # drawable -> (logotype cue, device). Each read off the app's launcher icon in
@@ -8724,7 +8798,7 @@ def maxplayer_m(c):
 # case the logo itself uses, and the one device it carries, if any.
 _WM = {
     "airreceiverlite": ("Air", "play"), "aloulatv": ("AL", "under"),
-    "amazing_classics": ("AC", None), "ant1": ("ANT1", "plus"), "arte": ("a", None),
+    "amazing_classics": ("AC", None), "ant1": ("ANT1", "plus"), "arte": ("arte", None),
     "bet_plus": ("BET", "plus"), "blip": ("blip", None), "byutv": ("byu/tv", None),
     "caixaforum_plus": ("CF", "plus"), "cda_pl": ("cda", None), "chaupal": ("CH", "under"),
     "clone_hero": ("C/H", None), "cosmote_tv": ("CTV", None), "dudeperfect": ("DP", "under"),
@@ -8917,6 +8991,26 @@ _WM3 = {
     "max": ("HBO/max", None),
 }
 GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM3.items()})
+
+# Accuracy sweep 2026-10-18. Each of these drew a bare letter that another
+# brand drew too - TBS and TNT the same T, AMC+, A&E and ABC News the same A,
+# Kayo, Fox News and Kanopy the same K, Sling and Shudder the same S, ZEE5
+# and Zona the same Z - while the brand's own logo is a word. Several
+# glyphs' docstrings named a cue (TNT's crash bar, ABC's wave, ZEE5's play
+# notch) that their geometry never drew. The word is the brand's mark and
+# tells the two apart at a glance. Six-letter words set on two lines:
+# on one, MEGOGO's counters closed at 48 px (check_glyph). A frame costs
+# letter size: FOX NEWS framed set at 66 px and WATCH FREE at 47, under the
+# 96 px floor, so Fox News drops the frame and Watch Free UK keeps it
+# around its initials.
+_WM4 = {
+    "tbs": ("tbs", None), "tnt": ("TNT", None), "amcandroidtv": ("AMC", "plus"),
+    "androidtv_3": ("A&E", None), "abcnews": ("abc", "ring"), "sling_tv": ("sling", None),
+    "graymatrix": ("ZEE5", None), "kocowa": ("KOCO/WA", None), "kayo": ("kayo", None),
+    "foxnews": ("FOX/NEWS", None), "application": ("MEGO/GO", None), "binge": ("BINGE", None),
+    "amcnetworks": ("WF", "frame"),
+}
+GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM4.items()})
 
 
 # --------------------------------------------------------------------------
@@ -9204,3 +9298,303 @@ GLYPHS.update({"rectv_viewfinder": rectv_viewfinder, "vega_star": vega_star,
                "tvcalibration_card": tvcalibration_card,
                "universalmanager_braces": universalmanager_braces,
                "goplay_split": goplay_split})
+
+
+# Issue batch 2026-10-17 (#323, #325, #329-#332, #334, #335): seven requested
+# apps, each drawn from its subject in Core stroke geometry; no vendor art
+# traced.
+def flixed_cat(c):
+    """Flixed: a cat-eared ghost head with two tall oval eyes - the app's
+    mascot reduced to its silhouette."""
+    return (f'<path d="M 256 432 C 148 432 96 388 96 304 C 96 244 108 204 124 176 '
+            f'L 136 84 Q 140 68 154 76 L 214 120 C 240 112 272 112 298 120 '
+            f'L 358 76 Q 372 68 376 84 L 388 176 C 404 204 416 244 416 304 '
+            f'C 416 388 364 432 256 432 Z" {_s(c, 32)}/>'
+            f'<ellipse cx="204" cy="292" rx="26" ry="42" {_f(c)}/>'
+            f'<ellipse cx="308" cy="292" rx="26" ry="42" {_f(c)}/>')
+
+
+def eclipse_vinyl(c):
+    """Eclipse: a record passing in front of a sun - the sun is the solid
+    crescent left showing beside the disc, held off the record's rim by a
+    gap; the record has its label and one groove."""
+    return (f'<path d="M 202.6 116.6 A 140 140 0 0 0 202.6 395.4 '
+            f'A 170 170 0 0 1 202.6 116.6 Z" {_f(c)}/>'
+            f'<circle cx="300" cy="256" r="140" {_s(c, 32)}/>'
+            f'<path d="M 300 164 A 92 92 0 0 1 392 256" {_s(c, 21.8)}/>'
+            f'<circle cx="300" cy="256" r="36" {_s(c, 26.2)}/>')
+
+
+def porter_key(c):
+    """Porter: a key whose bow holds a keyhole - system access, the app's
+    subject, and the keyhole that stands in for a letter in its name."""
+    return (f'<circle cx="168" cy="168" r="84" {_s(c, 32)}/>'
+            f'<circle cx="168" cy="152" r="22" {_f(c)}/>'
+            f'<path d="M 158 166 L 150 208 L 186 208 L 178 166 Z" {_f(c)}/>'
+            f'<path d="M 228 228 L 424 424" {_s(c, 32)}/>'
+            f'<path d="M 344 344 L 300 388 M 392 392 L 356 428" {_s(c, 26.2)}/>')
+
+
+def deltatv_arcs(c):
+    """DELTA TV: a capital D with three signal arcs fanning up and out from
+    its foot - the provider's initial and its broadcast cue."""
+    arcs = "".join(
+        f'<path d="M {264 - r} 360 A {r} {r} 0 0 1 {264 - r / 2:g} {360 - r * 0.866:.0f}" '
+        f'{_s(c, 26.2)}/>' for r in (64, 120, 176))
+    return (f'<path d="M 264 168 L 312 168 A 96 96 0 0 1 312 360 L 264 360 Z" {_s(c, 32)}/>'
+            + arcs)
+
+
+def esetsmarttv_shield(c):
+    """ESET Smart TV Security: a television whose top-right corner gives way
+    to a shield - the screen, protected."""
+    return (f'<path d="M 272 152 L 112 152 A 40 40 0 0 0 72 192 L 72 352 '
+            f'A 40 40 0 0 0 112 392 L 352 392 A 40 40 0 0 0 392 352 L 392 284" {_s(c, 32)}/>'
+            f'<path d="M 368 88 L 432 112 L 432 172 C 432 212 404 236 368 252 '
+            f'C 332 236 304 212 304 172 L 304 112 Z" {_s(c, 26.2)}/>'
+            f'<path d="M 176 432 L 336 432" {_s(c, 26.2)}/>')
+
+
+def bgprocesses_stack(c):
+    """Background Apps & Processes: a card with a gear on it and two shorter
+    cards stacked behind - work running in the background."""
+    pts = []
+    for i in range(8):
+        a = math.radians(i * 45)
+        for da, r in ((-18, 48), (-10, 68), (10, 68), (18, 48)):
+            t = a + math.radians(da)
+            pts.append(f"{256 + r * math.cos(t):.1f} {304 + r * math.sin(t):.1f}")
+    gear = "M " + " L ".join(pts) + " Z"
+    return (f'<path d="M 216 88 L 296 88" {_s(c, 26.2)}/>'
+            f'<path d="M 176 136 L 336 136" {_s(c, 26.2)}/>'
+            f'<rect x="112" y="184" width="288" height="240" rx="36" {_s(c, 32)}/>'
+            f'<path d="{gear}" {_s(c, 21.8)}/>'
+            f'<circle cx="256" cy="304" r="18" {_s(c, 21.8)}/>')
+
+
+def vax_play(c):
+    """VAX Player: an open V with a solid play triangle resting in its crook -
+    the player's initial holding its action. Not a play triangle with a V on
+    it: that outline matched Nuvio's and IPTV3U's at 0.82-0.83 alpha IoU."""
+    return (f'<path d="M 104 112 L 256 408 L 408 112" {_s(c, 32)}/>'
+            f'<path d="M 220 128 L 300 176 L 220 224 Z" {_f(c)}/>')
+
+
+GLYPHS.update({"flixed_cat": flixed_cat, "eclipse_vinyl": eclipse_vinyl,
+               "porter_key": porter_key, "deltatv_arcs": deltatv_arcs,
+               "esetsmarttv_shield": esetsmarttv_shield,
+               "bgprocesses_stack": bgprocesses_stack, "vax_play": vax_play})
+
+
+# Issue batch 2026-10-17 (#338, #341): two more scanner-reported apps, drawn
+# from their subject in Core stroke geometry; no vendor art traced.
+def aquaplay_wave(c):
+    """AquaPlay: a play triangle above a wave - water and play, the two
+    halves of the name."""
+    return (f'<path d="M 184 72 L 384 188 L 184 304 Z" {_s(c, 32)}/>'
+            f'<path d="M 72 400 C 136 344 200 344 256 384 C 312 424 376 424 440 368" '
+            f'{_s(c, 26.2)}/>')
+
+
+def watchbridge_arch(c):
+    """WatchBridge TV: a screen with a play triangle, carried on a bridge - a
+    deck with an arch rising to meet it at mid-span - the app as the link
+    between a recommendation and the streaming app that plays it."""
+    return (f'<rect x="104" y="64" width="304" height="208" rx="32" {_s(c, 32)}/>'
+            f'<path d="M 226 124 L 298 168 L 226 212 Z" {_s(c, 26.2)}/>'
+            f'<path d="M 64 336 L 448 336" {_s(c, 30)}/>'
+            f'<path d="M 96 440 Q 256 232 416 440" {_s(c, 26.2)}/>')
+
+
+GLYPHS.update({"aquaplay_wave": aquaplay_wave, "watchbridge_arch": watchbridge_arch})
+
+
+def uyaniktv_loop(c):
+    """Uyanik TV: an infinity loop with a solid play triangle in its right
+    loop - the app's always-on loop and its action. Kept apart from
+    alldebrid_infinity (a bare loop) by the play cue and the wider, flatter
+    loop."""
+    return (f'<path d="M 256 256 C 312 168 440 168 440 256 C 440 344 312 344 256 256 '
+            f'C 200 168 72 168 72 256 C 72 344 200 344 256 256 Z" {_s(c, 32)}/>'
+            f'<path d="M 340 226 L 390 256 L 340 286 Z" {_f(c)}/>')
+
+
+GLYPHS.update({"uyaniktv_loop": uyaniktv_loop})
+
+
+# Issue batch 2026-10-21 (2.5.0): scanner-reported apps from #347/#350 to #365.
+# Wordmarks redraw each logotype's cue in the pack's stroke letters; the drawn
+# marks take each app's subject in Core stroke geometry. No vendor art traced.
+def euroleague_ball(c):
+    """EuroLeague TV: a basketball over 'TV' in the pack's stroke letters -
+    the pairing on the app's own launcher icon, redrawn and stacked. Side by
+    side it was a full-width band (0.84 x 0.47), the shape the uniformity
+    gate reserves for containers; stacked it stays inside the safe area.
+    The lettering keeps it apart from nba_ball's bare, larger ball."""
+    return (f'<circle cx="256" cy="176" r="100" {_s(c, 28)}/>'
+            f'<path d="M 256 76 L 256 276 M 156 176 L 356 176" {_s(c, 26)}/>'
+            f'<path d="M 192 96 Q 232 176 192 256 M 320 96 Q 280 176 320 256" {_s(c, 26)}/>'
+            + stroke_lockup("TV", c, cap_h=112, max_w=200, cy=376))
+
+
+def airplaytouch_cursor(c):
+    """AirPlay Touch: a screen whose lower-right corner gives way to a cursor
+    arrow - casting a screen you steer by touch. The open corner keeps it
+    apart from airplay_screen (closed screen, cast triangle) and cursor_mark."""
+    return (f'<path d="M 260 328 L 112 328 Q 76 328 76 292 L 76 116 Q 76 80 112 80 '
+            f'L 400 80 Q 436 80 436 116 L 436 220" {_s(c, 32)}/>'
+            f'<path d="M 292 236 L 292 406 L 331 369 L 360 426 L 387 415 L 358 357 '
+            f'L 411 357 Z" {_s(c, 26)}/>')
+
+
+def ampchor_power(c):
+    """Ampchor: an open power ring with a solid bolt rising through its gap -
+    the charge in the app's name. The open ring keeps it apart from the
+    bolt-only marks (debrid_bolt, thunder_bolt) and coreelec_power's stem."""
+    return (f'<path d="M 352.4 134.4 A 168 168 0 1 1 159.6 134.4" {_s(c, 30)}/>'
+            f'<path d="M 290 100 L 194 284 L 252 284 L 226 412 L 324 240 L 266 240 '
+            f'L 298 100 Z" {_f(c)}/>')
+
+
+def eaglecast_star(c):
+    """EagleCast: a five-point star crossed by a wide chevron, inside a ring -
+    the wing laid over the star in the service's round badge, redrawn as an
+    outline. The ring and chevron keep it apart from the plain star marks:
+    without the ring it read as snrt_star at 0.85 alpha IoU."""
+    import math
+    pts = []
+    for k in range(10):
+        r = 140 if k % 2 == 0 else 58
+        a = math.radians(-90 + 36 * k)
+        pts.append(f"{256 + r * math.cos(a):.1f} {268 + r * math.sin(a):.1f}")
+    return (f'<circle cx="256" cy="256" r="200" {_s(c, 26)}/>'
+            f'<path d="M {" L ".join(pts)} Z" {_s(c, 26)}/>'
+            f'<path d="M 100 214 L 256 304 L 412 214" {_s(c, 30)}/>')
+
+
+_WM5 = {
+    "scorebox": ("SB", "under"),      # #347/#350: the 'SB' monogram over its rule
+    "la7": ("LA7", None),             # #365: the channel's 'LA7' lockup
+    "cinobo": ("CINO/BO", None),      # #357: the capitals logotype, on two lines to hold the type band
+    "xuper_tv": ("XTV", "frame"),     # #361: no logo source found; the name's initial and TV,
+                                      # framed: bare 'XTV' is X TV's mark (x_tv), and a rule
+                                      # below pulled the ink 46px off centre
+}
+GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM5.items()})
+GLYPHS.update({"euroleague_ball": euroleague_ball, "airplaytouch_cursor": airplaytouch_cursor,
+               "ampchor_power": ampchor_power, "eaglecast_star": eaglecast_star})
+
+
+# Issue batch 2026-10-26 (2.5.3): a new sports service and a corrected player.
+# These are original Core constructions, not vectorisations of the source art.
+def sportfm_crest(c):
+    """SPORT FM TV: the red crest, its FM lettering and TV tag.
+
+    The vendor's tightly packed Greek lettering does not survive in our
+    32px linework at tile size. Keep the distinctive crest / FM / TV cues,
+    draw the letters in the pack's face, and let the common banner carry the
+    full name. Primitive 1 is the light-ink FM (catalog secondary).
+    """
+    return (f'<path d="M 104 56 L 408 56 L 408 198 Q 408 244 366 266 '
+            f'L 256 310 L 146 266 Q 104 244 104 198 Z" {_s(c, 32)}/>'
+            + stroke_lockup("FM", c, cap_h=128, max_w=208, cy=162)
+            + stroke_lockup("TV", c, cap_h=104, max_w=184, cy=400))
+
+
+def tvlok_play_tiles(c):
+    """TVLok: the offset, tilted rear tile behind a rounded play tile.
+
+    Only the visible rear edge is drawn: a transparent monoline foreground
+    must not reveal a made-up diagonal through its play symbol. Primitive 0
+    takes the rear tile's violet; the front and play keep the shared cyan.
+    """
+    return (f'<path d="M 144 164 L 330 104 Q 374 92 386 136 '
+            f'L 414 246 Q 426 290 396 298" {_s(c, 32)}/>'
+            f'<rect x="76" y="180" width="328" height="236" rx="64" {_s(c, 32)}/>'
+            f'<path d="M 210 244 L 292 298 L 210 352 Z" {_s(c, 26)}/>')
+
+
+GLYPHS.update({"sportfm_crest": sportfm_crest, "tvlok_play_tiles": tvlok_play_tiles})
+
+
+# Issue batch 2026-10-29: three requests from the Missing icons scanner.
+# Original Core constructions after each app's launcher icon, not traces.
+def plezy_play_waves(c):
+    """Plezy: a rounded play triangle holding two waves.
+
+    The launcher icon is a soft coral play shape with a double tilde inside;
+    the tilde is what separates it from every other play mark in the pack.
+    """
+    return (f'<path d="M 152 84 Q 112 62 112 108 L 112 404 Q 112 450 152 428 '
+            f'L 420 280 Q 462 256 420 232 Z" {_s(c, 32)}/>'
+            f'<path d="M 168 222 C 192 196 218 196 238 218 C 258 240 284 240 308 214" {_s(c, 26)}/>'
+            f'<path d="M 168 296 C 192 270 218 270 238 292 C 258 314 284 314 308 288" {_s(c, 26)}/>')
+
+
+def streamfc_ball(c):
+    """StreamFC: the football alone, drawn open: an outlined centre panel
+    sitting low, seams to five rim panels whose edges meet the ball's rim."""
+    import math
+
+    def pt(r, deg, cy=268):
+        return 256 + r * math.cos(math.radians(deg)), cy + r * math.sin(math.radians(deg))
+
+    pent = [pt(62, -90 + 72 * k) for k in range(5)]
+    centre = "M " + " L ".join(f"{x:.1f} {y:.1f}" for x, y in pent) + " Z"
+    seams = []
+    for k in range(5):
+        a = -90 + 72 * k
+        (x0, y0), (x1, y1) = pent[k], pt(120, a)
+        seams.append(f"M {x0:.1f} {y0:.1f} L {x1:.1f} {y1:.1f}")
+        for side in (-28, 28):
+            x2, y2 = pt(172, a + side, cy=262)
+            seams.append(f"M {x1:.1f} {y1:.1f} L {x2:.1f} {y2:.1f}")
+    return (f'<circle cx="256" cy="256" r="192" {_s(c, 32)}/>'
+            f'<path d="{centre}" {_s(c, 26)}/>'
+            f'<path d="{" ".join(seams)}" {_s(c, 21)}/>')
+
+
+def radiofrance_ring(c):
+    """Radio France: two quarter rings offset around one hole, the upper one
+    carrying the stem.
+
+    The launcher icon's ring is cut into an upper-right and a lower-left
+    piece that each run a little past the centre line, so they read as one
+    ring that has slipped; the stem rises from the upper piece's top.
+    """
+    return (f'<path d="M 256 76 L 256 182 A 118 118 0 0 1 370.0 330.5" {_s(c, 32)}/>'
+            f'<path d="M 142.0 269.5 A 118 118 0 0 0 286.5 414.0" {_s(c, 32)}/>')
+
+
+GLYPHS.update({"plezy_play_waves": plezy_play_waves, "streamfc_ball": streamfc_ball,
+               "radiofrance_ring": radiofrance_ring})
+
+
+# Issue batch 2026-10-31: two requests whose scanner photos named the
+# component. Original Core constructions after each app's launcher icon, not
+# traces.
+def aurora_player_a(c):
+    """Aurora Player: an A with no crossbar and a rounded apex, a play wedge
+    standing in its opening.
+
+    The launcher icon's A is two broad legs meeting in a soft peak, with a
+    small play triangle low in the gap; the missing bar and the wedge are what
+    separate it from arvio_a's play-wedge A, which keeps its crossbar.
+    """
+    return (f'<path d="M 120 424 L 214 158 Q 256 52 298 158 L 392 424" {_s(c, 40)}/>'
+            f'<path d="M 236 318 L 236 400 L 306 359 Z" {_s(c, 26)}/>')
+
+
+def blackout_power(c):
+    """Blackout: the power symbol, its ring open wide at the top and the stem
+    standing clear of the gap.
+
+    The launcher icon draws the ring in white and the stem in amber; the
+    catalog's gradient carries both, amber at the stem to light ink at the
+    ring's base. No outer ring, unlike coreelec_power.
+    """
+    return (f'<path d="{_arc_cw(256, 284, 150, 306, 234)}" {_s(c, 34)}/>'
+            f'<path d="M 256 92 L 256 262" {_s(c, 34)}/>')
+
+
+GLYPHS.update({"aurora_player_a": aurora_player_a, "blackout_power": blackout_power})

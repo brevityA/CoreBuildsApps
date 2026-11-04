@@ -28,9 +28,22 @@ class SetupGuideTest {
     @Test
     fun missingPermissionsGiveTheExactCommandForThisPackage() {
         val steps = SetupGuide.steps(false, false, null, null, null)
-        assertEquals(State.NEEDED, step(steps, "dump").state)
+        assertEquals(State.INFO, step(steps, "dump").state)
         assertEquals("adb shell pm grant tv.corebuilds.eq android.permission.DUMP", step(steps, "dump").command)
         assertEquals("adb shell appops set tv.corebuilds.eq SYSTEM_ALERT_WINDOW allow", step(steps, "overlay").command)
+    }
+
+    @Test
+    fun beginnerHelpExplainsOptionalAdbAndLinksOnlyToGooglePlatformTools() {
+        val steps = SetupGuide.steps(false, false, null, null, null)
+        val basics = step(steps, "adb-basics")
+        val troubleshooting = step(steps, "adb-troubleshooting")
+        assertEquals(State.INFO, basics.state)
+        assertTrue(basics.detail.contains("not needed for room measurement"))
+        assertTrue(SetupGuide.PLATFORM_TOOLS_URL.startsWith("https://developer.android.com/"))
+        assertTrue(troubleshooting.detail.contains("unauthorized"))
+        assertTrue(troubleshooting.detail.contains("different pair and connect ports"))
+        assertTrue(troubleshooting.detail.contains("manual mode selection"))
     }
 
     @Test
@@ -77,7 +90,8 @@ class SetupGuideTest {
     fun theReportListsEveryRowAndEveryCommandToCopy() {
         val report = SetupGuide.report(SetupGuide.steps(false, true, null, null, null))
         assertTrue(report.startsWith("Core EQ setup check\n"))
-        assertTrue(report.contains("[needed] Read the playing app (DUMP)"))
+        assertTrue(report.contains("[info] Per-session effects and extra app discovery · DUMP (optional)"))
+        assertTrue(report.contains("[info] App detection · Android media sessions (optional)"))
         assertTrue(report.contains("    adb shell pm grant tv.corebuilds.eq android.permission.DUMP"))
         assertTrue(report.contains("[done] Show the on-screen card"))
         assertTrue(report.contains("pairing code"))
@@ -138,6 +152,22 @@ class SetupGuideTest {
         val row = step(steps, "spatial")
         assertEquals(State.INFO, row.state)
         assertNull(row.command)
+    }
+
+    @Test
+    fun mediaSessionIdentityIsPresentedAsOptionalAndExplicitlyLimited() {
+        val off = step(SetupGuide.steps(false, false, null, null, null), "media-sessions")
+        assertEquals(State.INFO, off.state)
+        assertNull(off.command)
+        assertTrue(off.detail.contains("Manual modes work without it"))
+
+        val on = step(
+            SetupGuide.steps(false, false, null, null, null, mediaSessionAccessGranted = true),
+            "media-sessions"
+        )
+        assertEquals(State.DONE, on.state)
+        assertTrue(on.detail.contains("does not read notification text"))
+        assertTrue(on.detail.contains("audio effect session"))
     }
 
     @Test

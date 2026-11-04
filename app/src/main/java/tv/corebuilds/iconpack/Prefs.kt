@@ -30,8 +30,15 @@ object Prefs {
     const val KEY_AMOLED = "amoled_chrome"
     const val KEY_PICK_BANNERS = "pick_banners"
     const val KEY_LIVE_LOOP = "live_loop"
+    const val KEY_LIVE_LOOP_CHANGED_AT = "live_loop_changed_at"
+    const val KEY_LIVE_ROTATE_HOURS = "live_rotate_hours"
+    const val KEY_NIGHT_LOOP = "night_loop"
+    const val KEY_NIGHT_WINDOW = "night_window"
+    const val KEY_WALLS_SOURCE = "projectivy_walls"
+    const val KEY_WALLS_NIGHT = "projectivy_walls_night"
     const val KEY_WHATS_NEW_SEEN = "whats_new_seen_version"
     const val KEY_WP_NEW_SEEN = "wallpapers_new_seen_since"
+    const val KEY_WP_FAVOURITES = "wallpaper_favourites"
     const val KEY_COMPANION_PENDING_APPLY = "glyphs_pending_apply"
 
     private fun prefs(context: Context): SharedPreferences =
@@ -125,6 +132,25 @@ object Prefs {
     }
 
     /**
+     * Wallpapers starred with the preview's Favourite button, by
+     * [Wallpaper.cacheName]. That is the file name, which a re-render keeps
+     * (only `since`, and with it [Wallpaper.storeName], moves), so a favourite
+     * survives its wall being redrawn. Read by [WallpapersActivity] for the
+     * Favourites chip and the tiles' star. A name that leaves the catalogue
+     * stays stored but is not counted, so a wall that returns comes back
+     * starred.
+     */
+    fun wallpaperFavourites(context: Context): Set<String> =
+        // A copy: the set getStringSet returns must not be modified.
+        prefs(context).getStringSet(KEY_WP_FAVOURITES, null)?.toSet() ?: emptySet()
+
+    fun setWallpaperFavourite(context: Context, cacheName: String, favourite: Boolean) {
+        val next = wallpaperFavourites(context).toMutableSet()
+        if (favourite) next += cacheName else next -= cacheName
+        prefs(context).edit().putStringSet(KEY_WP_FAVOURITES, next).apply()
+    }
+
+    /**
      * The motion loop [LiveWallpaperService] plays ([LiveLoop.Loop.id]).
      * Written by the preview's "Set live" button; read by the engine on
      * every visibility change, so re-picking a loop re-points wallpaper
@@ -135,8 +161,80 @@ object Prefs {
         prefs(context).getString(KEY_LIVE_LOOP, LiveLoop.LOOPS[0].id)
             ?: LiveLoop.LOOPS[0].id
 
-    fun setLiveLoopId(context: Context, loopId: String) {
-        prefs(context).edit().putString(KEY_LIVE_LOOP, loopId).apply()
+    /**
+     * Every change of loop, by hand or by [LoopRotation], restarts the
+     * rotation interval, so a loop someone just picked stays for the whole of
+     * it.
+     */
+    fun setLiveLoopId(context: Context, loopId: String, now: Long = System.currentTimeMillis()) {
+        prefs(context).edit()
+            .putString(KEY_LIVE_LOOP, loopId)
+            .putLong(KEY_LIVE_LOOP_CHANGED_AT, now)
+            .apply()
+    }
+
+    fun liveLoopChangedAt(context: Context): Long =
+        prefs(context).getLong(KEY_LIVE_LOOP_CHANGED_AT, 0L)
+
+    fun setLiveLoopChangedAt(context: Context, at: Long) {
+        prefs(context).edit().putLong(KEY_LIVE_LOOP_CHANGED_AT, at).apply()
+    }
+
+    /** Hours between live loop rotations (Core Builds Plus); 0 is off. */
+    fun liveRotateHours(context: Context): Int =
+        prefs(context).getInt(KEY_LIVE_ROTATE_HOURS, 0)
+
+    /** Switching rotation on starts the interval now rather than at the last pick. */
+    fun setLiveRotateHours(context: Context, hours: Int, now: Long = System.currentTimeMillis()) {
+        val wasOff = liveRotateHours(context) == 0
+        val edit = prefs(context).edit().putInt(KEY_LIVE_ROTATE_HOURS, hours)
+        if (wasOff && hours > 0) edit.putLong(KEY_LIVE_LOOP_CHANGED_AT, now)
+        edit.apply()
+    }
+
+    /**
+     * The loop [LiveWallpaperService] plays during night hours instead of
+     * [liveLoopId] (Core Builds Plus), or null when the schedule is off. Read
+     * through [DayNight.loopId]; written by Settings' night-loop row.
+     */
+    fun nightLoopId(context: Context): String? =
+        prefs(context).getString(KEY_NIGHT_LOOP, null)
+
+    fun setNightLoopId(context: Context, loopId: String?) {
+        prefs(context).edit().apply {
+            if (loopId == null) remove(KEY_NIGHT_LOOP) else putString(KEY_NIGHT_LOOP, loopId)
+        }.apply()
+    }
+
+    /** Index into [DayNight.WINDOWS]; out-of-range values read as the default. */
+    fun nightWindow(context: Context): Int =
+        prefs(context).getInt(KEY_NIGHT_WINDOW, 0).takeIf { it in DayNight.WINDOWS.indices } ?: 0
+
+    fun setNightWindow(context: Context, index: Int) {
+        prefs(context).edit().putInt(KEY_NIGHT_WINDOW, index).apply()
+    }
+
+    /**
+     * What Projectivy's rotation draws from when the pack is its wallpaper
+     * source: [ProjectivyWalls.ALL], [ProjectivyWalls.FAVOURITES] or a series
+     * id. Choosing is Core Builds Plus; without it [ProjectivyWalls.pick]
+     * serves the main collection whatever is stored here.
+     */
+    fun wallsSource(context: Context): String =
+        prefs(context).getString(KEY_WALLS_SOURCE, ProjectivyWalls.ALL) ?: ProjectivyWalls.ALL
+
+    fun setWallsSource(context: Context, source: String) {
+        prefs(context).edit().putString(KEY_WALLS_SOURCE, source).apply()
+    }
+
+    /** What Projectivy's rotation draws from during night hours (Plus), or null for no change. */
+    fun wallsNight(context: Context): String? =
+        prefs(context).getString(KEY_WALLS_NIGHT, null)
+
+    fun setWallsNight(context: Context, source: String?) {
+        prefs(context).edit().apply {
+            if (source == null) remove(KEY_WALLS_NIGHT) else putString(KEY_WALLS_NIGHT, source)
+        }.apply()
     }
 
     fun set(context: Context, key: String, value: Boolean) {
@@ -150,12 +248,16 @@ object Prefs {
      * `@color/cb_night` background for the designed case; this only overrides
      * the window beneath them when the void option is on, so a screen that has
      * not opted in still looks exactly as drawn.
+     *
+     * The system bars are left alone. A TV draws none, and from Android 15 the
+     * window draws behind them anyway, so painting them changed nothing that
+     * anyone sees; Play's pre-launch report flags Window.setStatusBarColor and
+     * setNavigationBarColor as deprecated edge-to-edge APIs, and this was the
+     * app's only call to either.
      */
     fun applyChrome(activity: android.app.Activity) {
         if (!amoled(activity)) return
         val void = androidx.core.content.ContextCompat.getColor(activity, R.color.cb_void)
         activity.window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(void))
-        activity.window.statusBarColor = void
-        activity.window.navigationBarColor = void
     }
 }

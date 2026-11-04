@@ -6,7 +6,628 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
-## [2.4.3] — 2026-10-15
+### Changed
+
+- **Core Premium is on sale in the Google Play build.** That build now
+  carries the request service's address, so a missing-icon press files the
+  request in one step, Core Premium's card offers the purchase and the
+  24-hour trial, and a buyer's requests are labelled priority. The
+  GitHub / Downloader build is unchanged: it keeps the QR panel and sells
+  nothing. The Play listing's description, Data safety and content rating
+  answers are regenerated to match (`docs/play/listing.json`), and
+  `docs/privacy.html` (effective 30 October 2026) says which build sends a
+  request straight away and how long the Request all count is kept. Nothing
+  has been bought on a TV yet; `docs/PLAY-CONSOLE.md` §8 lists the Console
+  steps and the test.
+
+## [2.5.4] — 2026-10-31
+
+### Added
+
+- **Aurora Player and Blackout.** Two new icons, each mapped to the exact
+  component in the scanner photo attached to its request: Aurora Player
+  (#392), an A with no crossbar and a play wedge in its opening, running
+  orchid to cyan as its icon does; Blackout (#394), the power symbol, amber
+  at the stem fading to light ink at the base of the ring, its icon's two
+  colours. Original Core monoline redraws in gradient, each stop sampled
+  from the app's own icon as the scanner showed it, with the reference crop
+  kept, hash-pinned, under `tools/reference/`; no vendor image ships.
+  1026 -> 1028 icons.
+
+### Fixed
+
+- **Kayo applies again.** Current Kayo builds launch
+  `com.dazn.MainActivity` inside `au.com.kayosports.tv`, as the scanner
+  reported on a Smart TV Pro running Android 14 (#409). That component now
+  maps to the existing Kayo icon in every pack; the older ones stay.
+- **`tests/test_mapping_hygiene.py` and `tests/test_icon_identity.py` cover the 31 October requests.**
+  Kayo's DAZN component joins the pinned launcher reports; Aurora Player
+  and Blackout join the new-app mappings, with their reference crops
+  hash-pinned and their accents reproduced from the recorded pixel samples.
+
+## [2.5.3] — 2026-10-31
+
+### Added
+
+- **Core Builds Wu Pack.** A monochrome style variant of the pack after the
+  WuPlay mark: one white disc per icon with the glyph cut out as negative
+  space, no accent hues, bolder constant weight. It is generated from the
+  same catalog by `tools/build_wu_pack.py` — 1022 SVG masters, lossless
+  WebP tiles with the Classic night keyline, the shipped glyph companion's
+  component mappings and a full contact sheet under `wu-pack/`. Banners
+  follow in the WuPlay lockup via `tools/build_wu_banners.py` — coin,
+  light tracked wordmark, category kicker in each brand's accent, the same
+  1950 entries as the shipped banner appfilter. The Classic pack's art,
+  validators and shipped app are untouched; `tests/test_wu_pack.py`
+  pins the style constants, monochrome masters and mapping parity.
+- **WuPlay's own logo as an alternative icon.** It sits straight after WuPlay
+  wherever you pick an icon by hand: the grid that Projectivy's per-app
+  *choose icon* opens, and both packs' icon browsers, as a banner in this pack
+  and a square in Core Builds Glyphs. Nothing applies it on its own, so
+  WuPlay keeps its Core Builds icon until you choose this one. The art is the
+  logo its owner supplied, resampled and otherwise unchanged:
+  `tools/alternates/wuplay.png`, pinned by hash in the catalog's new
+  `alternates` block. Counts stay counts of apps (1026), so the alternate
+  adds a tile, not an app. Not yet seen on a TV.
+- **The walls as a Projectivy wallpaper source.** Projectivy 4.51 or newer
+  lists the pack under its wallpaper settings (wallpaper sources are a
+  Projectivy Premium feature). Chosen there, the main collection, 132 walls,
+  rotates on Projectivy's own interval, in every build. Projectivy downloads
+  each wall from the manifest's public address, as the app's browser does;
+  the app sends nothing. The GitHub, Play, test and Glyphs builds each
+  register their own source, so one TV can hold several without a clash.
+  Settings → Troubleshooting and FAQ has a card on it. Not yet seen inside
+  Projectivy: no build of this has run on a TV.
+- **Core Premium free for 24 hours, once per TV (Google Play build only).** Beside the price, the
+  Premium card offers *Try free for 24 hours*. It switches on loop rotation,
+  the night loop, Projectivy walls, My requests, Spectra and Aurum, and
+  Settings shows the time left on the Core Premium row. Priority requests,
+  Request all and saving a Premium wall to Pictures stay with the purchase: the request
+  service checks the purchase with Google, and a saved copy would outlast the
+  trial. The trial runs on the TV's own clock and sends nothing; a clock set
+  back ends it instead of restarting it. It is not a Play offer, since Play
+  has trials for subscriptions only, so clearing the app's data offers it
+  again. Like the purchase, it appears once the request service is live.
+- **Night loop, a Core Premium extra (Google Play build only).** During night hours (20–07,
+  21–07, 22–06 or 19–07, by the TV's clock) the live wallpaper plays a second
+  loop, then hands back to the one picked in the preview. A home screen left
+  on changes over at the hour. Only loops already on the TV are offered, and
+  nothing downloads. Settings → Night loop and Night hours.
+- **Request all, a Core Premium extra (Google Play build only).** Missing icons gains a Request
+  all button. Pressed twice, it files up to 10 of the listed apps this TV has
+  not requested yet as priority requests in one send, and My requests lists
+  each. The request service takes it only when Google confirms the Premium
+  purchase, at most three times a day per purchase, through a new `/v1/batch`
+  route. Each app is filed, or +1ed, exactly as one press would file it.
+  The privacy policy, the Data safety answer and Console step 8 say so. The
+  request service must be redeployed for it to work.
+- **Projectivy walls, a Core Premium extra (Google Play build only).** Two Settings rows choose
+  what Projectivy rotates from the pack, by day and during night hours: all
+  walls (with Spectra and Aurum), favourites, or one of 13 series. A choice
+  that matches no wall falls back to the day choice, then to everything, so
+  the rotation is never empty. A change reaches Projectivy at once; night
+  hours begin within the hour Projectivy keeps its list.
+- **Aurum, a second Core Premium wallpaper series (Google Play build only).** 12 4K walls, 169–180, in
+  gold on a warm black: Art Deco geometry (a sunburst, scallop fans, a
+  stepped spire, chevrons, ziggurat arches, a lattice), a guilloche rosette,
+  and gold as a material (kintsugi seams, crumpled leaf, molten ribbons, an
+  eclipse corona, a fall of gold glints). It sits under the Premium chip after
+  Spectra, so Core Premium now adds 24 walls. Like Spectra it is listed only by
+  the Google Play build, and procedural and seeded
+  (`tools/build_aurum_wallpapers.py`, `docs/aurum-wallpapers.png`).
+- **SPORT FM TV.** A dedicated red crest with FM/TV stroke lettering, in both
+  square and banner form, maps the exact SHIELD scanner component from #382:
+  `gr.sportfmtv.app/com.yinzcam.connectedtv.MainActivity`. The artwork is an
+  original Core monoline interpretation of the verified brand cues, with
+  sampled colour and reference provenance; no vendor image is bundled.
+- **Plezy, StreamFC and Radio France.** Three new icons, each mapped to the
+  exact component the Missing icons scanner reported: Plezy (#390), a
+  rounded play shape holding two waves, in coral; StreamFC (#404), a
+  football drawn open, in its blue; Radio France (#391), two offset quarter
+  rings and a stem, in the magenta-to-red gradient of its launcher icon.
+  Original Core monoline redraws, with each colour sampled from the app's
+  Google Play icon and the reference kept, hash-pinned, under
+  `tools/reference/`; no vendor image ships.
+
+### Changed
+
+- **Core Builds Plus is now Core Premium, with six extras.** Priority
+  requests, My requests, loop rotation, the night loop, Projectivy walls and
+  Spectra. Every icon, the main collection (in Projectivy's rotation too) and
+  every screen still ship to everyone. The Premium card, the Settings group,
+  the Spectra chip and badge, the Play listing, the request service's issue
+  text, `docs/PLAY-CONSOLE.md` §8 and `docs/privacy.html` (effective 28
+  October 2026) say so. The Play product ID stays `core_builds_plus`: buyers
+  never see it, and Play never renames one.
+- **`tests/test_projectivy_walls.py` holds the Projectivy contract.** 14
+  tests: the AIDL and contract constants are Core Motion's byte for byte,
+  the hand-written parcel keeps Core Motion's field order, the manifest
+  carries what Projectivy reads, each build gets its own id, and the free
+  and Premium tiers split where they should. It runs in `build.yml` and
+  `suite-ci.yml`. The app module's first JUnit tests, `DayNightTest` (5)
+  and `ProjectivyWallsTest` (7), run in CI's existing unit-test task.
+- **`tests/test_play_build.py` holds the trial to its word.** `PlusTrial` (4
+  tests) checks that it lasts what the button says and starts once, that only
+  the on-device extras read it, and that the purchase-only three, the token
+  and the policy stay as stated. JUnit `PlusTrialTest` (4) runs its clock:
+  24 hours, a clock set back ends it, and the time left never reads zero.
+
+### Fixed
+
+- **TVLok now has its real icon and launcher mappings.** The generic TL
+  broadcast shell is replaced by the app's overlapping violet/cyan play-tile
+  cue in Core monoline. Static inspection of the official 1.0.192 APK proves
+  both `com.tvlok.app.ui.MainActivity` and the distinct TV alias
+  `com.tvlok.app.ui.TvLauncherActivity` under `com.tvlok.app`. The two old
+  guesses from #155/#352 are removed; unverified mappings fall from 75 to 73.
+  APK/resource hashes and small, explicitly downsized artwork references are
+  retained, not the APK itself. Physical-device confirmation remains pending.
+- **`tests/test_mapping_hygiene.py` and `tests/test_icon_identity.py` cover the new requests.**
+  Regressions pin SPORT FM TV's YinzCam namespace, TVLok's actual alias and
+  its static APK evidence, reference hashes, sampled accents and two-tone
+  declarations. Both requests retain the normal square/banner rendering
+  pipeline; `tools/build_icon_review.py --requests` shows them at tile size
+  and in actual-size banners beside unchanged neighbours.
+- **Five existing icons now apply to newly reported launch components.**
+  F-Droid (#377), Voltra TV (#378), Poweramp Equalizer (#379), ABC iview
+  (#380) and Moonfin (#383) already had artwork, but their reports named
+  components the pack did not map. Add those exact device-reported names,
+  including Poweramp's `standard_adaptive` alias and the activity namespaces
+  that differ from the installed package. All older mappings and artwork
+  stay unchanged. The fixes reach banners, the standalone glyphs app and the
+  Glyphs Pack companion together.
+- **PBS, YouTube TV and 8K Player VIP+ now apply on the reported devices.**
+  Each already had an icon, but the scanner reported a launch component the
+  pack did not map: PBS's `startup.StartupActivity` (#402), YouTube TV's
+  `ChrobaltMainActivity` (#403) and the 8K Player VIP+ build
+  `shadeed.Player8kVip` (#405), which shares the 8K Player VIP icon. The
+  older mappings stay.
+- **`tests/test_mapping_hygiene.py` guards the five launcher reports.**
+  Pins both the new and legacy components to their existing icons in the
+  catalog and all six generated appfilters (`res/xml` and `assets` for each
+  pack), and requires provenance from the device report rather than claiming
+  the new names came from the older reference pack.
+- **`tests/test_play_build.py` keeps out both pre-launch warnings' causes.**
+  Play's report on 57 (2.4.4) raised two. Neither blocked the release, and
+  only Play's next report can say whether both are gone.
+  - *Deprecated edge-to-edge APIs*: the app no longer paints the system bars.
+    `Prefs.applyChrome` dropped its `Window.setStatusBarColor` and
+    `setNavigationBarColor` calls, and both themes (the pack's and the Glyphs
+    Pack's) dropped their bar colours. A TV draws no bars, and from Android
+    15 the window draws behind them, so nothing anyone sees changes.
+  - *Orientation restriction*: the Play build no longer locks `MainActivity`
+    to landscape. Its listing is TV-only, where every screen is landscape. The
+    sideload build keeps the lock, since it can land on a phone.
+  - Play's report reads the whole bundle, so a library call can still raise
+    the first warning.
+- **`tests/test_play_listing.py` keeps both Console upload fixes.** The
+  first upload hit two refusals on 2026-10-21, and `docs/PLAY-CONSOLE.md`
+  now covers both:
+  - *Automatic protection*: Play's installer check needs `minSdk` 24, and the
+    bundles declare 21. §5 says to switch **Installer check** off before
+    the first upload.
+  - *Dedicated Android TV track*: a bundle that requires
+    `android.software.leanback` is refused on the shared closed track. §4
+    says to opt into the dedicated Android TV track first, which can't be
+    undone, and flags that Google doesn't say whether its testers count
+    toward the 12-tester gate.
+
+  §7 and §9 point at both. A test reads `minSdk` and the Play manifests'
+  leanback requirement, and keeps each fix in the walkthrough while its
+  cause holds.
+- **`tests/test_navigation_graph.py` reads screens, not meta-data keys.** It
+  matched every `android:name` ending in "Activity", so Projectivy's
+  `settingsActivity` key read as a screen with no way in. It now reads
+  `<activity>` elements only.
+- **`tests/test_ui_wiring.py` accepts a zero-padded positional integer.**
+  `%1$02d`, the night hours' "20:00", is valid `String.format` grammar that
+  the gate rejected.
+- **Glyphs apps keep their own icon when the pack is applied.** The catalog
+  mapped Core Builds Glyphs Pack to the main pack's cyan icon, overriding the
+  companion's violet launcher art. It now uses the existing violet glyph mark
+  for both square icons and banners, with its own name. The standalone Core
+  Builds Glyphs app and the Play package IDs are mapped too, using their actual
+  activity namespaces. Launcher branding and catalog art share one glyph
+  definition; the main pack's artwork is unchanged.
+- **`tests/test_glyphs_pack.py` and `tests/test_icon_identity.py` guard self-icons.**
+  Checks cover all three packs' generated mappings, full and shorthand
+  components, distinct banner labels, native launcher layers and resolved
+  square/banner art, so neither an appfilter nor an alias can restore the
+  confusing main-pack icon.
+- **`tests/test_gradle_unit_test_variants.py` follows the suite's AGP 9 migration.**
+  The pre-existing content-CI failure still assumed four roots used AGP 8.
+  Doctor, Motion, Shift and Line now explicitly retain release-variant unit
+  test tasks, as the suite release workflow requires, and the gate covers all
+  migrated roots rather than only the first two.
+
+## [2.5.1] — 2026-10-24
+
+### Added
+
+### Changed
+
+### Fixed
+
+- **Projectivity launcher discovery in release builds.** Keep the launcher-facing
+  `appfilter.xml`, icon picker `drawable.xml` and legacy `iconpack.xml` resources
+  out of resource shrinking; they are resolved by launchers by name, not by app
+  code. The generated keep rules now preserve them for Projectivity and other
+  compatible launchers.
+
+## [2.5.0] — 2026-10-21
+
+The first release since 2.4.4. It also carries what `main` gained since
+then. The Play apps, Core Builds Plus and the store listing change nothing
+in the GitHub/Downloader APK. The API 36 target, single-icon picking
+following Art style, and Core Builds Glyphs' own art do reach it.
+
+### Added
+
+- **Wallpaper favourites.** The preview has a Favourite button between Save
+  and Set. Starred walls wear a ★ in the grid, and once one exists, a
+  Favourites (N) chip after All gathers them. A star is kept on the TV by
+  the wall's file name, so it survives the wall being re-rendered (only the
+  cache name moves). It needs no download and works offline from the first
+  frame. Un-starring the last favourite while it is showing takes the chip
+  away and returns the grid to All.
+- **Themed icons on Android 13 and later.** The pack, the glyphs flavor and
+  Core Builds Glyphs each carry a monochrome launcher layer: the same mark in
+  plain white, inside the same safe zone. A launcher that tints icons from
+  the wallpaper now tints ours too. Older Android ignores the layer.
+- **8 new icons.** ScoreBox (#347, #350), Ampchor (#353), EuroLeague TV
+  (#355), AirPlay Touch (#356), Cinobo (#357), Xuper TV (#361), EagleCast
+  (#351) and La7 (#365), each component reported by a TV.
+  - Colours are sampled from each app's Play listing icon. Two exceptions:
+    EagleCast takes #C12033 from the eaglecast.tv logo, and Xuper TV keeps a
+    palette colour (`color_reviewed` null) because its listing art could not
+    be fetched.
+  - Four new marks: a basketball over "TV", a screen giving way to a cursor,
+    a power ring and a star in a ring. Four wordmarks: SB, LA7, CINO/BO and
+    a framed XTV (a bare XTV is X TV's mark). EagleCast's star first scored
+    0.846 against SNRT Live's; the ring is what separates them.
+    `check_lookalikes` reports none new.
+  - 1012 → 1020 icons, 1228 → 1238 components.
+- **A Play Console walkthrough that cannot drift from the build.**
+  `docs/PLAY-CONSOLE.md` gives each Console screen its answer in order — the
+  forms, the store listing, the TV-only form-factor choice, the bundle secrets
+  and the three tracks — quoting the package, title and asset paths straight
+  from `docs/play/listing.json`. A test holds it to them, because the most
+  expensive thing a walkthrough can do is confidently quote a package name
+  that Play will never let you change.
+- **The Play store listing is generated, and there is a privacy policy.** The
+  store page needed a 512 icon, a 1024x500 feature graphic, a 1280x720 TV
+  banner and 1920x1080 TV screenshots, none of which existed. They are now
+  output from the same sources the app ships, and the copy's counts (icons,
+  walls, series, loops) are substituted from the catalog, so the listing cannot
+  advertise a number the build does not carry. The store banner is the
+  on-device Leanback banner rendered at 1280x720 rather than a second drawing.
+  `docs/privacy.html` replaces the `[USER TO SUPPLY]` gap, and its claims are
+  held to the code by a test. The listing is TV-only: there is no phone UI to
+  photograph yet, and a rendered one would be fiction.
+- **Google Play apps, separate from the sideload ones.** Core Builds Icon
+  Pack (`tv.corebuilds.iconpack.play`) and Core Builds Glyphs Pack
+  (`tv.corebuilds.iconpack.glyphs.play`) are their own apps with their own
+  upload key, so they install next to the GitHub builds and never update
+  them. They drop everything Play forbids a Play app to do: no
+  `REQUEST_INSTALL_PACKAGES`, no update check against GitHub (Play updates
+  them), and the Art style switch opens the Glyphs listing on Play instead
+  of downloading it. A new hand-run workflow, `play.yml`, builds both App
+  Bundles (`core-builds-play-bundles`). The GitHub builds and `build.yml`
+  are unchanged. Both Play apps require Android TV, so Play never offers
+  them to a phone: the listing is TV-only and no phone UI has been tested.
+- **Core Builds Plus, on Google Play only.** A one-time purchase
+  (`core_builds_plus`, $2.99) through Play Billing, in place of the
+  Sponsors and Ko-fi codes Play's Payments policy rules out of a Play app.
+  It adds four things; every icon, the 132-wall collection and every screen
+  still ship to everyone:
+  - **Priority requests.** A Plus owner's one-press request carries the
+    Play purchase token; the broker checks it with Google, labels the issue
+    `priority`, and never logs, files or stores the token.
+  - **My requests** (Settings): every icon requested from this TV and how
+    far it has got (open, priority, drawn, in this pack), read from GitHub
+    by issue number.
+  - **Live loop rotation** (Settings): every hour, 6 hours or day, the live
+    wallpaper moves to the next downloaded loop as the home screen comes
+    back. No background work: the wallpaper engine does it.
+  - **Spectra**, series 15: 12 4K walls of light split into its colours
+    (`tools/build_plus_wallpapers.py`), under their own Plus chip.
+
+  Plus goes on sale only once the request broker is baked in, and is
+  re-read from Play at every app start, so refunds and purchases on another
+  TV settle by themselves. The GitHub builds carry no billing code, keep
+  their codes, and list none of the extras.
+- **About names what Plus sends.** Wherever Plus is on sale or owned,
+  "everything this app sends" gains item 4: the purchase token a Plus
+  owner's request carries, and *My requests*' reads from GitHub by issue
+  number. Plus's door is a CORE BUILDS PLUS row in Settings; the tip doors
+  stay shut on Play.
+- **The store answers follow the broker.** `tools/build_play_listing.py`
+  reads one switch, whether the request broker's URL is baked in, which is
+  also when Plus goes on sale. It moves the content-rating purchases answer,
+  Data safety (two optional types collected, none shared) and a CORE
+  BUILDS PLUS paragraph in the copy, and `--check` fails if the switch moves
+  without a regenerated listing. Today's tree is unchanged: no broker, no
+  purchases, nothing collected. `docs/PLAY-CONSOLE.md` §8 covers the Plus
+  product, license testers, the broker and the internal-test checks, and
+  `docs/privacy.html` covers the token, *My requests* and payments.
+- **Core Builds Glyphs Pack has its own Play listing.** On Play, the Art
+  style switch opens the Glyphs Pack's listing, and there was nothing to put
+  on it. `tools/build_play_listing.py` now also writes `docs/play/glyphs/`:
+  - a 512 icon, a 1024x500 feature graphic and a 1280x720 TV banner;
+  - one 1920x1080 screenshot of its one screen, a new `glyphs-home` frame
+    in `tools/build_app_ui_mockups.py`;
+  - copy whose counts, `1020` icons and `1947` components, are read from
+    `glyphs/`'s own `drawable.xml` and `appfilter.xml`;
+  - fixed answers: no data collected, no purchases.
+
+  `--check` gates it like the pack's listing. Tests hold its component set
+  equal to the pack's, both Glyphs manifests free of permissions, and its art
+  to fresh renders of the companion's own. `docs/PLAY-CONSOLE.md` §9 walks
+  the second app: its package, its forms, and its own closed test with the
+  same testers on the same day.
+
+### Changed
+
+- **`tools/catalog.json` names a source for every mapping.** 521 of 1020
+  icons had no `mapping_source`. Every new source is evidence that can be
+  checked:
+  - 432 icons: every component is verbatim in the decoded Projectivy 1.1.9
+    appfilter. Where 1.1.9 used another drawable name, that name is
+    recorded.
+  - 31 icons mix 1.1.9 components with later ones. The later ones are dated
+    by the first commit on `main` that carried them.
+  - 55 icons with no 1.1.9 component are dated the same way.
+  - Core Shift, Core Line and Core Doctor cite their own manifests.
+  - Ten older citations were wrong and are corrected. Five cited 1.1.9 for
+    components it never had (Launcher Manager, RTVE Play, 7plus, Vewd,
+    Vidio). Five more matched 1.1.9's components but not its drawable name.
+  - `validate.py` now fails an icon with no source, and
+    `test_mapping_hygiene.py` checks each kind of citation.
+- **The icon pack builds against API 36 and targets it.** Play stopped
+  accepting new listings that target below Android 16 unless they are TV-only.
+  The Play listing is TV-only, which would allow 34, but 36 meets both floors
+  and leaves a later phone listing free of a target change. Reaching it meant moving the build onto AGP 9.4.0 with
+  built-in Kotlin, the combination `coreeq/` already runs: on the Gradle 9.7.0
+  wrapper every AGP 8.6 and later fails at plugin apply, which is why 8.5.2
+  was the ceiling before. Kotlin 1.9.24 is gone from this root (the jvmTarget
+  now lives in the built-in `kotlin {}` block); the compiler the app actually
+  builds with is AGP 9's. `minSdk` stays 21 for Fire TV. The suite's other
+  four roots stay on the proven AGP 8.5.2 envelope, and the dependency gate
+  now pins each root separately so this migration cannot drag them along.
+- **Picking one icon follows the Art style switch.** Choosing a single
+  card's icon through Core Builds now returns a banner or a square to match
+  the switch, so one pack can hand out either shape card by card. Picks
+  through Core Builds Glyphs Pack are still always square, and picking never
+  changes what the launcher auto-applies.
+
+### Fixed
+
+- **Five apps that showed the default icon now map.**
+  - Trakt's TV splash (#346).
+  - Hi Browser's home activity (#354).
+  - AnExplorer's free build, which launches the same activity as Pro (#348).
+    The icon is now named AnExplorer.
+  - Nuvio's Live TV launcher alias (#358) and its test build (#362).
+  - Hi Browser's three `MainActivity` components, guessed from its Play
+    listing in 1.8.18, are removed. #354's scan shows the app launches
+    `HomeActivity`, and no device ever showed the guesses.
+  - TVLok's two components are now flagged unverified. They were package
+    guesses (#155) that carried no flag, so the catalog counted them as
+    device-confirmed; #352 reports the icon doesn't apply. It needs the
+    component from a TV.
+  - Unverified mappings: 76 → 75.
+  - #352 (TvLok) stays open until it has a component.
+- **A loop's preview no longer strands the cursor on older TVs.** A loop has
+  no Save button, but the action row's focus chain still named it. On
+  Android 7.1 and older (Fire OS 5 and 6), D-pad right from Back could stop
+  there instead of reaching Set. The row is now relinked through the
+  buttons on screen whenever Save comes or goes. This comes from reading
+  the framework's focus code; it has not been reproduced on a device.
+- **The store description credits square glyphs to the Glyphs Pack.** Its
+  ICONS paragraph said the pack "ships both shapes … so one install covers
+  either". That holds for picking one icon at a time. It doesn't hold for
+  applying the whole pack: the pack's appfilter maps every app to its 16:9
+  banner, and square glyphs auto-apply only from Core Builds Glyphs Pack. The
+  paragraph now says which app applies which shape, and that Art style leads
+  to the Glyphs Pack. The full description is 1549 characters, up from 1449.
+- **The walkthrough says what goes in the phone screenshot slot.**
+  `PLAY-CONSOLE.md` §3 said to leave it empty. Console marks it required on
+  the default listing even for a TV-only app. §3 now says to add Android TV
+  first, and, if the phone section is still required, to upload `tv-1` to
+  `tv-4`: real captures of the app, which the phone section accepts at 16:9.
+  The Play manifest still keeps the app off phones. §4's category is
+  *Personalization*, the one Console offers.
+- **The content-rating walkthrough answers Online Content.** Console's IARC
+  questionnaire (category *All Other App Types*, not *Utility /
+  Productivity*) asks whether the app reaches content that isn't part of
+  the install. `docs/PLAY-CONSOLE.md` §2 never mentioned it. Read as "No to
+  everything", it was wrong for the icon pack, which downloads full-size
+  wallpapers and live loops after install. `listing.json` now carries
+  `category` and `online_content`: Yes for the pack, No for the Glyphs Pack,
+  which has no internet access. A test ties each answer to the
+  `INTERNET` permission and the download URLs.
+- **Core Builds Glyphs Pack wears its own art.** The companion copied the
+  icon pack's launcher icon and Leanback banner into its build, so on a TV
+  row the two apps showed the same banner, and a store banner drawn from the
+  companion's art would not have matched the TV. It now has its own violet
+  glyph icon and a "Glyphs Pack" banner (`tools/build_glyphs_branding.py`),
+  and `copyGlyphArt` copies only the icon drawables and `aliases.xml`. Its
+  home screen also named the wrong app. It said "Core Builds Glyphs", the
+  glyphs-only build of the icon pack, where launchers list "Core Builds
+  Glyphs Pack".
+- **The Play build's Suite screen names no way off Play.** It still listed
+  "Downloader code 5270601" for apps this TV did not have and told users to
+  grab the APK from the GitHub release — the last surviving invitation to
+  install something Play did not, and the kind of steer Play reads as
+  circumvention. On Play the screen now answers only what it can: which
+  companions are on this box, with a line of its own when the answer is none.
+  The sideload builds keep the full registry, because that is how their users
+  install.
+- **The Play build has no route to a tip.** Support is two QR codes for
+  GitHub Sponsors and Ko-fi, and Play's Payments policy forbids a Play app
+  leading users to any payment method but Play Billing (a tip to one
+  developer is not the tax-exempt donation the policy exempts). The Play
+  build now hides every door: the home rail closes up to Settings | About
+  and rewrites the D-pad edges that named the hidden entry, and Settings and
+  About hide their rows. The GitHub/Downloader build keeps Support.
+- **About's "everything this app sends" list names the icon request.** The
+  list had two items and a closing line that said no device model is sent,
+  but reporting a missing icon POSTs a device note with the pack version,
+  the TV's model, its Android version and the detected launcher. It is now
+  item 3, and the closing line no longer denies the model — which also
+  keeps the Play Data safety form from inheriting a false declaration.
+
+## [2.4.4] — 2026-10-18
+
+The first release after 2.4.2. 2.4.3 was never tagged, so this build also
+carries its one fix: the home screen fits the TV's largest text size.
+
+### Added
+
+- **10 new icons.** Flixed (#323), Background Apps & Processes (#325),
+  Eclipse (#329, #331), Porter (#330), DELTA TV (#332), ESET Smart TV
+  Security (#334), VAX Player (#335), AquaPlay (#338), WatchBridge TV (#341)
+  and Uyanik TV. Each is a new original mark, and each component was
+  reported by the pack's Missing icons scanner. Eclipse was reported on two
+  TVs; the others on one. Uyanik TV came from scanner screenshots shared
+  directly, not an issue.
+  - Each takes the colour sampled from its own icon: the Google Play listing
+    (Background Apps & Processes, DELTA TV, ESET, WatchBridge TV), the app's
+    site (Flixed, Eclipse, AquaPlay), its GitHub repository (Porter), the TV
+    banner inside its APK (VAX Player) or the launcher icon in the scanner
+    screenshot (Uyanik TV).
+  - Uyanik TV's mark is an infinity loop with a play triangle in its right
+    loop. AllDebrid's bare infinity loop is not among its four closest
+    matches. Its closest, IP Address and DNS Changer at 0.768 alpha IoU, share
+    only a wide, low silhouette: a pill and a DNS wordmark.
+  - WatchBridge TV maps the sideloaded `com.tunombre.tvbridge` the TV
+    reported. Its Play build, `com.tunombre.tvbridge.play`, has no report
+    yet.
+  - Two names were already in use. Background Apps & Processes
+    (`com.backgroundapps.v1.fm.ut.android`) is a different app from
+    Background Apps And Process List. DELTA TV (`com.nep.delta.tv`) is
+    likewise different from Delta TV (`com.nowcast.deltatv`).
+  - VAX Player maps only `com.vaapp.app.MainActivityAlt`, the alias the
+    reporting TV opened. The APK linked in #335 declares `MainActivity` as
+    its launch activity, but no device has reported it, and the pack's
+    unverified-mapping ceiling only moves down. A TV that opens it will list
+    VAX Player under Missing icons, and one report adds it.
+  - VAX Player's first draft, a play outline with a V inside, matched Nuvio
+    and IPTV3U at 0.82–0.83 alpha IoU. It is now an open V holding a solid
+    play triangle. Its closest match in the built pack is now 0.694 (Voltra
+    TV).
+  - 1002 → 1012 icons and 16 new components.
+
+### Changed
+
+- **28 icons are redrawn, resized or re-centred.** A sweep measured every
+  built icon at tile size, against each other and against its own source.
+  - **13 brands now draw their wordmark.** Nine drew a bare letter that
+    another brand drew too: TBS and TNT a T; AMC+, A&E and ABC News an A;
+    Kayo and Fox News a K, like Kanopy's; Sling an S, like Shudder's; ZEE5 a
+    Z, like Zona's. On a launcher row only colour told them apart, and
+    several glyphs' own notes named a cue they never drew, such as TNT's
+    crash bar or ABC's wave. They now read `tbs`, `TNT`, `AMC+`, `A&E`, `abc`
+    in a ring, `kayo`, `FOX NEWS`, `sling` and `ZEE5`. Four more become
+    words: Kocowa's bare play triangle (the same as MX Player TV's), MEGOGO's
+    play box (the same as Nova Video Player's), Binge's skip mark and Arte's
+    lone `a`. They read `KOCO WA` and `MEGO GO` (on two lines, because on
+    one MEGOGO's counters closed at 48 px), `BINGE` and `arte`.
+  - **Watch Free UK no longer wears AMC's A.** Its Play icon is a boxed
+    *WATCH FREE UK* on purple. It now draws `WF` in a frame in that purple
+    (`#7030F8`), replacing an unsourced red. The full words fit only at
+    47 px, under the pack's 96 px letter floor.
+  - **Aptoide TV, Aurora Store and APKPure were one empty bag.** Their notes
+    promised a play mark, a download arc and a play. The bags now carry a
+    play, a download arrow and an `A`.
+  - **Three apps installed under two packages now draw one icon.** Launcher
+    Manager's Google TV build drew a yellow wrench beside the original's
+    blue gear. OTT Navigator's two packages drew a compass and an `ON`
+    screen. MX Player drew the generic circle-play shared by four other
+    players, while MX Player TV drew MX's own play arrow. Each pair now
+    shares the sourced mark.
+  - **Four marks were too small.** Arte filled 52% of the canvas, MX Player
+    TV 55%, Binge 57% and Kocowa 61%, against a typical 67–84%. The
+    smallest icon in the pack now fills 62%.
+  - **Six marks sat off-centre.** NordVPN and Projectivy Overflight sat 6–7%
+    high, MaxPlayer 5% left, Virtualhere USB Server 5% low, and FileSynced
+    and Mecool File Manager twice as low as the pack's other folders. They
+    are moved, with no stroke or shape changed.
+  - **NASA's wing touched its globe at tile size.** It now sits higher, and
+    the gaps between the two stay open at 96 px.
+- **The component count counts each component once.** 31 icons listed a
+  component twice, once in each name form (`pkg/.Activity` and
+  `pkg/pkg.Activity`). The build writes both forms from one entry, so the
+  copies are folded and every appfilter is byte-identical. Folding takes the
+  count from 1257 to 1226, and the unverified count from 92 to 76: 16 of
+  those copies were unverified components counted twice.
+- **New look-alike icons fail CI.** `tools/check_lookalikes.py` compares
+  every built icon at 64 px and fails on any new pair of brands whose marks
+  match at 0.80 alpha IoU or above. The 70 pairs accepted today, such as
+  NBC's shared peacock and generic shapes, are listed in
+  `tools/lookalike_baseline.json`, which may only shrink.
+
+### Fixed
+
+- **Download on the update bar works with the remote.** Pressing Download
+  greyed the button out while the APK came down, and Android moves the
+  remote's cursor off a greyed-out button. On a TV it jumped to Later, one
+  press from dismissing the update, and did not come back when the button
+  turned into Install. Only a phone touchpad could press it, because touch
+  mode never moves the cursor (reported from a Shield Pro, updating 2.4.1 to
+  2.4.2).
+  - The button now stays live and keeps the cursor. A second press while it
+    downloads does nothing, as About's update row already did.
+  - When the download finishes, the line under the title says to press
+    Install instead of showing the release highlight.
+  - This fixes updates from 2.4.4 on. To install 2.4.4 itself from an older
+    version with the remote, use About → Update.
+- **Setting a wallpaper no longer crashes when you move to the next one.**
+  On a Projectivy home screen, pressing left or right while Set was still
+  applying cleared the wallpaper the apply was using. When it finished, the
+  app crashed on a background thread, or handed Projectivy the next
+  wallpaper instead. Set now keeps the file it started with.
+- **Weyd and ByeByeDPI icons apply on current builds.** Both apps moved
+  their launch activity, so the pack's mapping no longer matched:
+  - Weyd now launches
+    `app.weyd.player.ui.splashscreen.SplashScreenActivity` (#327).
+  - ByeByeDPI now launches
+    `io.github.romanvht.byedpi.activities.MainActivity`, out of the
+    `dovecoteescapee` namespace (#324, #333).
+
+  The old components stay for older builds.
+- **Six more apps share an existing icon.** Four were reported from one
+  SHIELD (Android 11), and two from one Philips Google TV (TA1, Android 14):
+  - Plex: current builds launch `tv.plex.app.MainActivity` (#337). The old
+    `SplashActivity` mapping stays.
+  - Files: SHIELD ships Android's own build, `com.android.documentsui`, which
+    launches `LauncherActivity` (#342, listed in Spanish as *Archivos*). The
+    pack had only Google's build.
+  - OwnTV Fanart, a fork of OwnTV, installs as `tv.own.owntv.glcn` with the
+    same activity, and now shares the OwnTV icon (#340).
+  - Core Builds Glyphs, this pack's own glyphs-only companion
+    (`tv.corebuilds.iconpack.glyphs`), now takes the Core Builds icon, the
+    art it already ships with (#339). It was the one suite app the pack did
+    not map.
+  - Vewd: the browser Philips ships installs as `com.vewd.core.browser`
+    (#344, listed in Spanish as *Navegador Vewd*). The pack had only the
+    `com.vewd.core.integration.dia` build, and both now share the Vewd
+    Internet Browser icon.
+  - Philips' own TV app (`org.droidtv.playtv`, the antenna and cable tuner,
+    labelled *TV*) now takes the Live TV icon, the pack's mark for a TV's
+    built-in tuner app (#345).
+- **Not-applying reports from Monet users are accepted.** The report form
+  offers 12 launchers, but the auto-reply only accepted 5, so a report
+  naming Monet, AT4K, Leanback on Fire, L TV Launcher, ChillHub, Apex or ADW
+  got `needs-info` (#333). The checker now accepts all 12. Its drift test now
+  compares the two lists both ways. The old test only checked that the
+  checker's options appeared in the form.
+
+## [2.4.3] — Unreleased
+
+Prepared as `versionCode 56` and merged to main on 2026-10-15, but never
+tagged; 2.4.4 replaced it, together with the update-bar fix from #326. The fix
+below first reaches devices in 2.4.4.
 
 ### Fixed
 

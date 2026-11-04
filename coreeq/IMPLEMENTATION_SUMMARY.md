@@ -10,8 +10,16 @@
 > capped at +3 dB, no phon guess) and dialogue lift as the Dialogue boost
 > switch (the 2.2–4.5 kHz plateau, not the single 3.2 kHz peak described
 > below). `ImprovedAudioDeviceManager` was never called and is removed.
+>
+> **Note (1.10.x):** full-band ISO 226 loudness compensation (`LoudnessCompensation`,
+> mapped to the 10 manual EQ bands, opt-in via `autoLoudnessEnabled`) replaces
+> the bass-only Low-volume bass shelf. Auto-apply once per device
+> (`DeviceKeyStore` + `AutoApplyPolicy`), profile auto-switching learning
+> (`ProfileRouteStore`), and time-based night-mode suggestions
+> (`TimeBasedSuggestions`) were added in 1.11.0. Hardware presets expanded to
+> 12 models; Manual EQ presets to 14 (including "smooth-mids" and "air").
 
-**Date:** 2026-10-06  
+**Date:** 2026-11-01  
 **Branch:** arena/4c8f6ce7-corebuildsapps
 
 ## Overview

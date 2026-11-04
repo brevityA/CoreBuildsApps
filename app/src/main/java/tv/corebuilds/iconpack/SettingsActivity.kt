@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.SwitchCompat
 import java.io.File
 import java.util.Locale
+import tv.projectivy.plugin.wallpaperprovider.api.WallpaperProviderContract
 
 /**
  * The stored settings that change what the app does, two launcher tools, and
@@ -72,7 +73,10 @@ class SettingsActivity : TvActivity() {
         amoledSwitch.isChecked = Prefs.amoled(this)
         bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
 
-        row(R.id.set_updates_row) {
+        if (Distribution.PLAY) {
+            // Google Play updates the Play build; it has no updater to switch.
+            findViewById<android.view.View>(R.id.set_updates_row).visibility = android.view.View.GONE
+        } else row(R.id.set_updates_row) {
             val next = !updateSwitch.isChecked
             updateSwitch.isChecked = next
             Prefs.set(this, Prefs.KEY_UPDATE_CHECKS, next)
@@ -128,6 +132,71 @@ class SettingsActivity : TvActivity() {
         row(R.id.set_support_row) {
             startActivity(Intent(this, SupportActivity::class.java))
         }
+        // Play's Payments policy: no route to a tip (see MainActivity). The
+        // screen stays in the APK — Settings is the only way in, and this is
+        // the row that would be it — but the Play build never shows the door.
+        if (Distribution.PLAY) {
+            findViewById<View>(R.id.set_support_row).visibility = View.GONE
+        }
+
+        // Core Builds Plus extras: Google Play only, and only once Plus is on
+        // sale or owned. A locked row opens the Plus card (Plus.unlocked).
+        if (Plus.shown(this)) {
+            findViewById<View>(R.id.set_plus_group).visibility = View.VISIBLE
+            // Plus is sold through Play Billing, so this is not the tip door
+            // above: on Play, SupportActivity renders the Plus card only.
+            row(R.id.set_plus_row) {
+                startActivity(Intent(this, SupportActivity::class.java))
+            }
+            row(R.id.set_rotate_row) {
+                if (Plus.unlocked(this)) {
+                    Prefs.setLiveRotateHours(this, LoopRotation.nextHours(Prefs.liveRotateHours(this)))
+                    showPlusRows()
+                }
+            }
+            row(R.id.set_night_row) {
+                if (Plus.unlocked(this)) {
+                    // Only loops already on the TV: the engine never downloads.
+                    val onTv = LiveLoop.LOOPS
+                        .filter { LiveLoopDownloader.playable(this, it) != null }
+                        .map { it.id }
+                    if (onTv.isEmpty()) toast(getString(R.string.settings_night_none))
+                    else Prefs.setNightLoopId(this, DayNight.nextNightLoop(Prefs.nightLoopId(this), onTv))
+                    showPlusRows()
+                }
+            }
+            row(R.id.set_hours_row) {
+                if (Plus.unlocked(this)) {
+                    Prefs.setNightWindow(this, (Prefs.nightWindow(this) + 1) % DayNight.WINDOWS.size)
+                    // The hours also decide Projectivy's night walls.
+                    wallsChanged()
+                }
+            }
+            row(R.id.set_walls_row) {
+                if (Plus.unlocked(this)) {
+                    Prefs.setWallsSource(this, ProjectivyWalls.nextSource(Prefs.wallsSource(this), wallsSources()))
+                    wallsChanged()
+                }
+            }
+            row(R.id.set_walls_night_row) {
+                if (Plus.unlocked(this)) {
+                    // Off, then each source: the night loop row's cycle.
+                    Prefs.setWallsNight(this, DayNight.nextNightLoop(Prefs.wallsNight(this), wallsSources()))
+                    wallsChanged()
+                }
+            }
+            row(R.id.set_requests_row) {
+                if (Plus.unlocked(this)) startActivity(Intent(this, RequestsActivity::class.java))
+            }
+            // Opened from Projectivy's settings button for the wallpaper source.
+            if (intent.component?.className?.endsWith(".WallsProviderSettings") == true &&
+                savedInstanceState == null
+            ) {
+                findViewById<View>(R.id.set_walls_row).post {
+                    findViewById<View>(R.id.set_walls_row).requestFocus()
+                }
+            }
+        }
 
         findViewById<View>(R.id.set_cache_clear).setOnClickListener {
             clearCache()
@@ -146,6 +215,63 @@ class SettingsActivity : TvActivity() {
         // reported by the installer's result, in onActivityResult.
         onCompanionOutcome(GlyphsCompanion.takePendingApply(this))
         bannerSwitch.isChecked = Prefs.pickerPrefersBanners(this)
+        // Back from the Plus card, the rows may have just unlocked.
+        showPlusRows()
+    }
+
+    /** Each Plus row's value: its setting when on (bought or on trial), "Premium" while locked. */
+    private fun showPlusRows() {
+        if (!Plus.shown(this)) return
+        val now = System.currentTimeMillis()
+        val owned = Plus.active(this, now)
+        val trial = Plus.trial(Plus.trialStart(this), now)
+        findViewById<TextView>(R.id.set_plus_value).text = when {
+            Plus.owned(this) -> getString(R.string.settings_plus_owned)
+            trial is Plus.Trial.Running ->
+                getString(R.string.settings_plus_trial_fmt, Plus.trialLeftLabel(this, trial.leftMs))
+            else -> getString(R.string.settings_plus_buy)
+        }
+        findViewById<TextView>(R.id.set_rotate_value).text = when {
+            !owned -> getString(R.string.settings_plus_locked)
+            else -> getString(when (Prefs.liveRotateHours(this)) {
+                1 -> R.string.settings_rotate_hour
+                6 -> R.string.settings_rotate_6h
+                24 -> R.string.settings_rotate_day
+                else -> R.string.settings_rotate_off
+            })
+        }
+        findViewById<TextView>(R.id.set_night_value).text = when {
+            !owned -> getString(R.string.settings_plus_locked)
+            else -> Prefs.nightLoopId(this)?.let { LiveLoop.byId(it).title }
+                ?: getString(R.string.settings_rotate_off)
+        }
+        val (from, to) = DayNight.window(this)
+        findViewById<TextView>(R.id.set_hours_value).text =
+            if (owned) getString(R.string.settings_hours_fmt, from, to)
+            else getString(R.string.settings_plus_locked)
+        val walls = wallsPool()
+        findViewById<TextView>(R.id.set_walls_value).text =
+            if (owned) ProjectivyWalls.label(this, Prefs.wallsSource(this), walls)
+            else getString(R.string.settings_plus_locked)
+        findViewById<TextView>(R.id.set_walls_night_value).text = when {
+            !owned -> getString(R.string.settings_plus_locked)
+            else -> Prefs.wallsNight(this)?.let { ProjectivyWalls.label(this, it, walls) }
+                ?: getString(R.string.settings_rotate_off)
+        }
+        findViewById<TextView>(R.id.set_requests_value).setText(
+            if (owned) R.string.settings_requests_open else R.string.settings_plus_locked)
+    }
+
+    /** Every wall Projectivy's rotation can draw from with Plus: the main collection and the Plus walls. */
+    private fun wallsPool(): List<Wallpaper> =
+        WallpaperCatalog.load(this) + WallpaperCatalog.loadPlus(this)
+
+    private fun wallsSources(): List<String> = ProjectivyWalls.sources(wallsPool())
+
+    /** Show the new values and have Projectivy fetch the list again now. */
+    private fun wallsChanged() {
+        showPlusRows()
+        ProjectivyWalls.notifyProjectivy(this, WallpaperProviderContract.UpdateReason.PREFS_CHANGED)
     }
 
     @Deprecated("Deprecated in AndroidX; the installer result still arrives here")

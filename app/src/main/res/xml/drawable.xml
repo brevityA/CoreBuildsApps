@@ -3,6 +3,8 @@
 <resources>
     <category title="Banners · Core Builds" />
     <item drawable="corebuilds_banner" />
+    <item drawable="corebuilds_glyphs_banner" />
+    <item drawable="corebuilds_glyphs_pack_banner" />
     <item drawable="coredoctor_banner" />
     <item drawable="coreeq_banner" />
     <item drawable="coreline_banner" />
@@ -25,6 +27,7 @@
     <item drawable="filmrise_banner" />
     <item drawable="platform_banner" />
     <item drawable="flix_vision_banner" />
+    <item drawable="flixed_banner" />
     <item drawable="androidtv_4_banner" />
     <item drawable="justwatch_banner" />
     <item drawable="androidtv_5_banner" />
@@ -62,6 +65,7 @@
     <item drawable="weyd_banner" />
     <item drawable="weyd_2_banner" />
     <item drawable="wuplay_banner" />
+    <item drawable="wuplay_alt_banner" />
     <item drawable="yangoplay_banner" />
     <category title="Banners · Media centres" />
     <item drawable="dsvideo_banner" />
@@ -71,6 +75,7 @@
     <item drawable="mediabrowser_banner" />
     <item drawable="pixee_banner" />
     <item drawable="plex_banner" />
+    <item drawable="plezy_banner" />
     <item drawable="silo_banner" />
     <category title="Banners · On demand" />
     <item drawable="tenplay_banner" />
@@ -89,6 +94,7 @@
     <item drawable="binge_banner" />
     <item drawable="beachbody_banner" />
     <item drawable="britbox_banner" />
+    <item drawable="cinobo_banner" />
     <item drawable="crunchyroid_banner" />
     <item drawable="curiositystream_banner" />
     <item drawable="discovery_banner" />
@@ -118,9 +124,12 @@
     <item drawable="visionplus_banner" />
     <category title="Banners · Live TV" />
     <item drawable="xtreamplayeranddownloader_banner" />
+    <item drawable="aquaplay_banner" />
     <item drawable="buzztv6_banner" />
+    <item drawable="deltatv_nl_banner" />
     <item drawable="iptv3u_banner" />
     <item drawable="drama_live_banner" />
+    <item drawable="eaglecast_banner" />
     <item drawable="eternaltviptvbox_banner" />
     <item drawable="fivetviptvbox_banner" />
     <item drawable="screen_banner" />
@@ -135,6 +144,7 @@
     <item drawable="iptv_smarters_plus_banner" />
     <item drawable="kemo_iptv_banner" />
     <item drawable="streamingkemo_banner" />
+    <item drawable="la7_banner" />
     <item drawable="lazyiptvdeluxe_banner" />
     <item drawable="livetv_banner" />
     <item drawable="live_ultra_banner" />
@@ -143,6 +153,7 @@
     <item drawable="myiptv_banner" />
     <item drawable="dcsapp_banner" />
     <item drawable="oktv22_banner" />
+    <item drawable="ott_navigator_banner" />
     <item drawable="ottnavigator_banner" />
     <item drawable="owntv_banner" />
     <item drawable="siptv_banner" />
@@ -158,6 +169,7 @@
     <item drawable="thundertv_banner" />
     <item drawable="tvplayer_banner" />
     <item drawable="tcl_tv_banner" />
+    <item drawable="uyaniktv_banner" />
     <item drawable="wave_iptv_banner" />
     <item drawable="wavetv_banner" />
     <item drawable="nathnetwork_2_banner" />
@@ -165,6 +177,7 @@
     <item drawable="zeniptv_banner" />
     <category title="Banners · Players" />
     <item drawable="a_8k_player_vip_banner" />
+    <item drawable="aurora_player_banner" />
     <item drawable="basis_banner" />
     <item drawable="dream_player_tv_banner" />
     <item drawable="gridstreamr_banner" />
@@ -180,10 +193,12 @@
     <item drawable="nova_video_player_banner" />
     <item drawable="ottplayer_banner" />
     <item drawable="player_banner" />
+    <item drawable="scorebox_banner" />
     <item drawable="tdtchannels_player_banner" />
     <item drawable="tg4_player_banner" />
     <item drawable="tubplayer_banner" />
     <item drawable="tvi_player_banner" />
+    <item drawable="vax_player_banner" />
     <item drawable="vimu_banner" />
     <item drawable="vlc_banner" />
     <item drawable="vstro_player_banner" />
@@ -209,6 +224,7 @@
     <item drawable="launchsounds_banner" />
     <item drawable="deezer_banner" />
     <item drawable="dsaudio_banner" />
+    <item drawable="eclipse_banner" />
     <item drawable="fmradio_banner" />
     <item drawable="clearchannel_banner" />
     <item drawable="kfandroid_banner" />
@@ -219,6 +235,7 @@
     <item drawable="podcastaddict_banner" />
     <item drawable="poweramp_eq_banner" />
     <item drawable="music_banner" />
+    <item drawable="radio_france_banner" />
     <item drawable="radio_on_tv_banner" />
     <item drawable="radioparadisewidget_banner" />
     <item drawable="radio_net_banner" />
@@ -245,6 +262,7 @@
     <item drawable="sportscaster_banner" />
     <item drawable="dazn_banner" />
     <item drawable="score_center_banner" />
+    <item drawable="euroleague_tv_banner" />
     <item drawable="euronews_banner" />
     <item drawable="production_banner" />
     <item drawable="foxsports_2_banner" />
@@ -263,12 +281,14 @@
     <item drawable="rally_tv_banner" />
     <item drawable="americasvoicenews_banner" />
     <item drawable="rugbypass_tv_banner" />
+    <item drawable="sport_fm_tv_banner" />
     <item drawable="sport_tv_banner" />
     <item drawable="sportseverywhere_banner" />
     <item drawable="sportsfire_banner" />
     <item drawable="sportsnet_banner" />
     <item drawable="sportzx_banner" />
     <item drawable="sync_sports_banner" />
+    <item drawable="streamfc_banner" />
     <item drawable="rlcplus_banner" />
     <item drawable="talksport_banner" />
     <item drawable="tennis_channel_banner" />
@@ -344,6 +364,8 @@
     <item drawable="fastest_banner" />
     <item drawable="apktime_banner" />
     <item drawable="atvtools_banner" />
+    <item drawable="background_apps_processes_banner" />
+    <item drawable="blackout_banner" />
     <item drawable="buttonmappertv_banner" />
     <item drawable="developer_tools_banner" />
     <item drawable="download_navi_banner" />
@@ -351,13 +373,13 @@
     <item drawable="dr_nettools_banner" />
     <item drawable="dsfinder_banner" />
     <item drawable="dsget_banner" />
+    <item drawable="eset_smart_tv_security_banner" />
     <item drawable="fasttaskkiller_banner" />
     <item drawable="playstore_2_banner" />
     <item drawable="ip_address_banner" />
     <item drawable="iptools_banner" />
     <item drawable="jtv_go_server_banner" />
     <item drawable="launch_on_boot_banner" />
-    <item drawable="luckymanager_banner" />
     <item drawable="magiconnect_banner" />
     <item drawable="matvt_mouse_for_android_tv_toggle_banner" />
     <item drawable="omnisoft_banner" />
@@ -367,6 +389,7 @@
     <item drawable="nuyowifianalyzer_banner" />
     <item drawable="remote_capture_banner" />
     <item drawable="pmx_banner" />
+    <item drawable="porter_banner" />
     <item drawable="quickbars_for_home_assistant_banner" />
     <item drawable="ram_banner" />
     <item drawable="dinhlap_banner" />
@@ -389,6 +412,7 @@
     <item drawable="universalmanager_banner" />
     <item drawable="virtualhere_usb_server_banner" />
     <item drawable="booster_banner" />
+    <item drawable="watchbridge_tv_banner" />
     <item drawable="zank_remote_banner" />
     <item drawable="goodtoolapps_banner" />
     <category title="Banners · Stores" />
@@ -409,6 +433,7 @@
     <item drawable="launcher_banner" />
     <item drawable="gamelauncher_banner" />
     <item drawable="ltvlauncher_banner" />
+    <item drawable="luckymanager_banner" />
     <item drawable="launcher_manager_banner" />
     <item drawable="leanbackonfire_banner" />
     <item drawable="monet_banner" />
@@ -489,6 +514,7 @@
     <item drawable="aircast_banner" />
     <item drawable="airpin_pro_banner" />
     <item drawable="receiver_banner" />
+    <item drawable="airplay_touch_banner" />
     <item drawable="airreceiverlite_banner" />
     <item drawable="airscreen_banner" />
     <item drawable="al_jazeera_banner" />
@@ -497,6 +523,7 @@
     <item drawable="amazing_classics_banner" />
     <item drawable="amcandroidtv_banner" />
     <item drawable="amnis_banner" />
+    <item drawable="ampchor_banner" />
     <item drawable="angel_banner" />
     <item drawable="anikentv_banner" />
     <item drawable="anilab_banner" />
@@ -792,7 +819,6 @@
     <item drawable="orftvthek_banner" />
     <item drawable="osn_banner" />
     <item drawable="otf_tv_banner" />
-    <item drawable="ott_navigator_banner" />
     <item drawable="ottplay_banner" />
     <item drawable="panda_plus_banner" />
     <item drawable="scrobble_banner" />
@@ -1005,6 +1031,7 @@
     <item drawable="x_tv_banner" />
     <item drawable="xstream_play_banner" />
     <item drawable="xumo_play_banner" />
+    <item drawable="xuper_tv_banner" />
     <item drawable="yacine_tv_banner" />
     <item drawable="selfcare_banner" />
     <item drawable="yettel_tv_banner" />

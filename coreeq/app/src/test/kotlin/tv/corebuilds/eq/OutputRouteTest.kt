@@ -114,10 +114,72 @@ class OutputRouteTest {
     }
 
     @Test
+    fun multipleReportedOutputsAreAmbiguousAndNeverBorrowSingleOutputOrLegacyProfiles() {
+        val simultaneous = OutputRoute.resolveCandidates(
+            listOf(
+                OutputRoute.Output(SPEAKER, "TV speakers", OutputRoute.Evidence.ANTICIPATED),
+                OutputRoute.Output(HDMI_ARC, "Soundbar", OutputRoute.Evidence.ANTICIPATED)
+            )
+        )
+        assertEquals(OutputRoute.AMBIGUOUS, simultaneous?.kind)
+        assertEquals(OutputRoute.Evidence.AMBIGUOUS, simultaneous?.evidence)
+
+        val legacy = profile("legacy", 900, null)
+        val speaker = profile("speaker", 800, SPEAKER)
+        assertNull(OutputRoute.pick(listOf(legacy, speaker), "legacy", OutputRoute.AMBIGUOUS).profile)
+        assertNull(OutputRoute.pick(listOf(legacy), "legacy", OutputRoute.AMBIGUOUS).profile)
+    }
+
+    @Test
+    fun pre33ConnectedEstimateUsesOnlyOneExternalCandidateAndIgnoresBuiltInSpeakerPresence() {
+        val speaker = OutputRoute.Output(SPEAKER, "TV speakers", OutputRoute.Evidence.CONNECTED_ESTIMATE)
+        val arc = OutputRoute.Output(HDMI_ARC, "Soundbar", OutputRoute.Evidence.CONNECTED_ESTIMATE)
+        val bluetooth = OutputRoute.Output(BLUETOOTH, "Headphones", OutputRoute.Evidence.CONNECTED_ESTIMATE)
+        assertEquals(arc, OutputRoute.resolveConnectedCandidates(listOf(arc), speaker))
+        assertEquals(speaker, OutputRoute.resolveConnectedCandidates(emptyList(), speaker))
+        assertEquals(OutputRoute.AMBIGUOUS, OutputRoute.resolveConnectedCandidates(listOf(arc, bluetooth), speaker)?.kind)
+    }
+
+    @Test
+    fun aSingleUnrecognizedReportedTrackDoesNotFallBackToAConnectedGuess() {
+        val estimate = OutputRoute.Output(HDMI_ARC, "Soundbar")
+        val tagged = OutputRoute.tag(estimate, AudioDeviceInfo.TYPE_REMOTE_SUBMIX, null, model = "Test")
+        assertEquals(OutputRoute.UNKNOWN, tagged?.kind)
+        assertEquals(OutputRoute.Evidence.TRACK_REPORTED, tagged?.evidence)
+    }
+
+    @Test
+    fun aSilentTrackProbeTagsTheRouteItActuallyPlayedTo() {
+        val tagged = OutputRoute.tagProbed(null, AudioDeviceInfo.TYPE_HDMI_ARC, "Sonos Beam", model = "MiTV")
+        assertEquals(HDMI_ARC, tagged?.kind)
+        assertEquals("Sonos Beam", tagged?.name)
+        assertEquals(OutputRoute.Evidence.TRACK_PROBE, tagged?.evidence)
+    }
+
+    @Test
+    fun aProbeThatReportsNoRouteIsAHardStopNotAFallback() {
+        // getRoutedDevice() null while playing: UNCONFIRMED, never a silent
+        // fall back to the connected-output estimate or an Everyday profile.
+        val probed = OutputRoute.tagProbed(null, null, null, model = "MiTV")
+        assertEquals(OutputRoute.UNCONFIRMED, probed?.kind)
+        assertEquals(OutputRoute.Evidence.TRACK_PROBE, probed?.evidence)
+        // An unconfirmed output matches no measured profile, so correction pauses.
+        assertNull(OutputRoute.pick(listOf(speakers, soundbar), null, OutputRoute.UNCONFIRMED).profile)
+        // ... and the legacy "untagged applies everywhere" allowance must not
+        // be a side door past the hard stop: even an explicitly chosen legacy
+        // profile stays paused while the route is unconfirmed.
+        val legacy = profile("legacy", 300, null)
+        assertNull(OutputRoute.pick(listOf(speakers, soundbar, legacy), "legacy", OutputRoute.UNCONFIRMED).profile)
+        // An unrecognized probed device stays unknown, not a convenient guess.
+        assertEquals(OutputRoute.UNKNOWN,
+            OutputRoute.tagProbed(null, AudioDeviceInfo.TYPE_REMOTE_SUBMIX, null, model = "MiTV")?.kind)
+    }
+
+    @Test
     fun whenAndroidDoesNotSayTheRankedGuessStands() {
         val ranked = OutputRoute.Output(HDMI_ARC, "Sonos Beam")
         assertEquals(ranked, OutputRoute.tag(ranked, null, null, model = "MiTV"))
-        assertEquals(ranked, OutputRoute.tag(ranked, AudioDeviceInfo.TYPE_REMOTE_SUBMIX, null, model = "MiTV"))
+        assertEquals(OutputRoute.UNKNOWN, OutputRoute.tag(ranked, AudioDeviceInfo.TYPE_REMOTE_SUBMIX, null, model = "MiTV")?.kind)
         assertNull(OutputRoute.tag(null, null, null, model = "MiTV"))
         assertEquals(BLUETOOTH, OutputRoute.tag(null, AudioDeviceInfo.TYPE_BLUETOOTH_A2DP, "Buds", model = "MiTV")?.kind)
     }
@@ -172,5 +234,46 @@ class OutputRouteTest {
         val beam = profile("beam", 300, HDMI_ARC, "Sonos Beam")
         val generic = profile("generic", 200, HDMI_ARC)
         assertEquals("generic", OutputRoute.pick(listOf(beam, generic), "beam", HDMI_ARC, "Yamaha Receiver").profile?.id)
+    }
+
+    @Test
+    fun `HDMI and optical can carry a bitstream, PCM-only outputs cannot`() {
+        assertTrue(OutputRoute.bitstreamCapable(HDMI, emptyList()))
+        assertTrue(OutputRoute.bitstreamCapable(HDMI_ARC, emptyList()))
+        // Optical is filed under WIRED with analogue line outs; it counts when it is on the route.
+        assertTrue(OutputRoute.bitstreamCapable(OutputRoute.WIRED, listOf(AudioDeviceInfo.TYPE_LINE_DIGITAL)))
+        assertFalse(OutputRoute.bitstreamCapable(OutputRoute.WIRED, listOf(AudioDeviceInfo.TYPE_LINE_ANALOG)))
+        assertFalse(OutputRoute.bitstreamCapable(OutputRoute.WIRED, emptyList()))
+        for (kind in listOf(BLUETOOTH, SPEAKER, OutputRoute.USB, null)) {
+            assertFalse(OutputRoute.bitstreamCapable(kind, listOf(AudioDeviceInfo.TYPE_LINE_DIGITAL)))
+        }
+    }
+
+    @Test
+    fun `optical counts only when it is on the active route, not merely connected`() {
+        val headphones = AudioDeviceInfo.TYPE_WIRED_HEADPHONES
+        val optical = AudioDeviceInfo.TYPE_LINE_DIGITAL
+        val connected = listOf(headphones, optical)
+
+        // Android 13+ names the route: headphones are playing, the optical port
+        // is only plugged in. The route wins, and the route cannot carry a bitstream.
+        val active = listOf(headphones)
+        assertEquals(active, OutputRoute.capabilityTypes(active, connected))
+        assertFalse(OutputRoute.bitstreamCapable(OutputRoute.WIRED, OutputRoute.capabilityTypes(active, connected)))
+
+        // The optical port is what the media is on — it counts, whatever else is connected.
+        val opticalActive = listOf(optical)
+        assertTrue(OutputRoute.bitstreamCapable(OutputRoute.WIRED, OutputRoute.capabilityTypes(opticalActive, connected)))
+    }
+
+    @Test
+    fun `with no active route named, the connected estimate stands as before`() {
+        // API 30–32, or a failed/empty route query: 1.10.0's judgement, unchanged.
+        val connected = listOf(AudioDeviceInfo.TYPE_WIRED_HEADPHONES, AudioDeviceInfo.TYPE_LINE_DIGITAL)
+        assertEquals(connected, OutputRoute.capabilityTypes(emptyList(), connected))
+        assertTrue(OutputRoute.bitstreamCapable(OutputRoute.WIRED, OutputRoute.capabilityTypes(emptyList(), connected)))
+
+        val noOptical = listOf(AudioDeviceInfo.TYPE_LINE_ANALOG)
+        assertFalse(OutputRoute.bitstreamCapable(OutputRoute.WIRED, OutputRoute.capabilityTypes(emptyList(), noOptical)))
     }
 }

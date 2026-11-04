@@ -16,4 +16,15 @@ export const TITLE_PREFIX = "[Icon] ";
 // filed the way .github/ISSUE_TEMPLATE/2.icon_not_applying.yml files one.
 export const MAPPING_LABEL = "mapping";
 export const MAPPING_TITLE_PREFIX = "[Not applying] ";
-export const WORKER_VERSION = "2026-09-24-iconreq05";
+// Core Builds Plus (the Google Play build's one-time product): a request that
+// carries a purchase token Google confirms is filed with PRIORITY_LABEL.
+// Both ids are pinned to the app by worker.test.mjs.
+export const PRIORITY_LABEL = "priority";
+export const PLAY_PACKAGE = "tv.corebuilds.iconpack.play";
+export const PLUS_PRODUCT_ID = "core_builds_plus";
+// Core Builds Plus "Request all": one press files up to BATCH_MAX missing apps,
+// at most BATCH_PER_DAY presses a day per purchase. Pinned to the app's
+// BatchRequest by tests/test_batch_requests.py.
+export const BATCH_MAX = 10;
+export const BATCH_PER_DAY = 3;
+export const WORKER_VERSION = "2026-10-28-iconreq07";

@@ -15,8 +15,8 @@ plugins {
 // Deliberately thin:
 //   * No Kotlin, no library dependencies. One Java activity exists only
 //     because launchers discover packs through activity intent filters.
-//   * No art in git. The glyphs and fallback furniture are copied from
-//     :app's generated drawable-nodpi at build time (see copyGlyphArt), so
+//   * No duplicated catalog art in git. Glyphs and fallback furniture come
+//     from :app's generated drawable-nodpi at build time (see copyGlyphArt), so
 //     there is exactly one committed copy of each art file and the two
 //     packages cannot drift apart.
 //   * No version of its own. versionCode/versionName are read from
@@ -36,11 +36,14 @@ val generatedRes = layout.buildDirectory.dir("generated/glyph-art/res")
 
 // The art this package ships, copied rather than committed twice. Glyphs
 // are what the appfilter maps to; cb_back_*/cb_mask/cb_upon are the fallback
-// furniture the appfilter names for apps the catalog does not cover; the
-// launcher/TV branding is the icon pack's own.
+// furniture the appfilter names for apps the catalog does not cover. The
+// launcher icon and TV banner are NOT copied: this app has its own
+// (src/main/res, written by tools/build_glyphs_branding.py). With the pack's,
+// the TV row showed two banners both reading "Core Builds Icon Pack", and a
+// copied cb_banner here would now collide with the committed one.
 val copyGlyphArt = tasks.register<Sync>("copyGlyphArt") {
     from(rootProject.file("app/src/main/res/drawable-nodpi")) {
-        include("*.webp", "cb_banner.png")
+        include("*.webp")
         // The square set only; banners are the icon pack's own art.
         exclude("*_banner.webp")
         into("drawable-nodpi")
@@ -51,25 +54,35 @@ val copyGlyphArt = tasks.register<Sync>("copyGlyphArt") {
         include("aliases.xml")
         into("values")
     }
-    from(rootProject.file("app/src/main/res")) {
-        include("mipmap-*/**")
-    }
     into(generatedRes)
 }
 
 android {
     namespace = "tv.corebuilds.iconpack.glyphs"
-    compileSdk = 34
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "tv.corebuilds.iconpack.glyphs"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 37
         versionCode = packVersionCode
         versionName = packVersionName
+        // The icon pack this twin forwards picks to and opens; GlyphsActivity
+        // derives the same id from its own package name at runtime.
+        manifestPlaceholders["iconPackId"] = "tv.corebuilds.iconpack"
     }
 
     signingConfigs {
+        // The Google Play upload key, as in :app.
+        create("play") {
+            val ksPath = System.getenv("PLAY_KEYSTORE_PATH")
+            if (ksPath != null && file(ksPath).exists()) {
+                storeFile = file(ksPath)
+                storePassword = System.getenv("PLAY_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("PLAY_KEY_ALIAS")
+                keyPassword = System.getenv("PLAY_KEY_PASSWORD")
+            }
+        }
         create("release") {
             // Same keystore as :app. :app refuses to install a companion whose
             // signing certificate differs from its own.
@@ -93,11 +106,30 @@ android {
                 signingConfig = signingConfigs.getByName("release")
             }
         }
+        // The Play twin of the Play icon pack (tv.corebuilds.iconpack.play):
+        // tv.corebuilds.iconpack.glyphs.play, Play upload key, and a TV
+        // launcher entry (src/play/AndroidManifest.xml) because Play only
+        // offers an app on Android TV when it has one.
+        create("play") {
+            initWith(getByName("release"))
+            applicationIdSuffix = ".play"
+            manifestPlaceholders["iconPackId"] = "tv.corebuilds.iconpack.play"
+            val playKs = System.getenv("PLAY_KEYSTORE_PATH")
+            signingConfig = if (playKs != null && file(playKs).exists()) {
+                signingConfigs.getByName("play")
+            } else {
+                null
+            }
+        }
     }
 
     sourceSets {
         getByName("main") {
-            res.srcDir(generatedRes)
+            // AGP 9 refuses a Provider here: "You cannot add Provider instances
+            // to the Android SourceSet API". Resolving it eagerly costs only
+            // the laziness, not correctness - copyGlyphArt already writes this
+            // directory and preBuild depends on it either way.
+            res.srcDir(generatedRes.get().asFile)
         }
     }
 

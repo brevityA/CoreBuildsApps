@@ -77,6 +77,29 @@
         android:textStyle="bold"
         android:visibility="gone" />
 
+    <!-- Favourite star, the opposite corner from LIVE/PLUS so a starred loop
+         carries both. Visibility toggled by the adapter. -->
+    <TextView
+        android:id="@+id/wp_fav_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginEnd="@dimen/cb_space_sm"
+        android:layout_marginTop="@dimen/cb_space_sm"
+        android:background="@drawable/bg_live_badge"
+        android:clickable="false"
+        android:focusable="false"
+        android:importantForAccessibility="no"
+        android:paddingStart="@dimen/cb_space_sm"
+        android:paddingEnd="@dimen/cb_space_sm"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:text="@string/wp_fav_badge"
+        android:textColor="@color/cb_signal_cyan"
+        android:textSize="@dimen/cb_text_kicker"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
     <!-- Selection-mode frame. Drawn on top; visibility toggled by the adapter.
          Inset to the card edge so it never coincides with the focus ring. -->
     <View

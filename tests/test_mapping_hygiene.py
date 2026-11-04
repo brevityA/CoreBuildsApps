@@ -14,7 +14,9 @@ These tests ratchet the outcome:
 2. no `unverified` entry may be corroborated verbatim by the reference pack
    (the clearing is complete — a future catalog edit that re-adds a
    corroborated component as `unverified` fails here);
-3. the total count has a ceiling that may only move down.
+3. the total count has a ceiling that may only move down;
+4. newly reported launch components and their older counterparts keep their
+   existing icon identities in every generated appfilter.
 
 Run: python -m unittest discover -s tests
 """
@@ -52,8 +54,25 @@ REFERENCE = ROOT / "tools" / "reference" / "projectivy-1.1.9-appfilter.xml"
 # package plus indexed APK manifest evidence. The app is present in the
 # official site, but these exact TV launcher components still need a device
 # scan before the flag can be cleared.
+# 92 -> 76 (accuracy sweep 2026-10-18): 16 components were listed twice, once
+# per name form (`pkg/.Act` and `pkg/pkg.Act`), both flagged. The build emits
+# both forms from one entry, so the copies are folded; appfilter.xml is
+# byte-identical and no flag changed hands.
+# 76 -> 73 (2.5.0): Hi Browser's three MainActivity guesses came out. #354, a
+# scanner report from a SHIELD, showed the app launches
+# com.vt.hibrowser.activity.home.HomeActivity, which is now mapped; the guesses
+# were never seen on any device.
+# 73 -> 75 (2.5.0, same release): TVLok's two components were package guesses
+# that carried no flag at all, which the catalog reads as device-confirmed.
+# Its colour note said so ("package candidates unconfirmed", #155), and #352
+# reports the icon does not apply. Flagging them is a correction, not a new
+# guess: the release still ends one below the 76 it started from.
+# 75 -> 73 (2.5.3): TVLok's official APK establishes the .ui.MainActivity
+# phone entry and the distinct .ui.TvLauncherActivity TV alias. Both old
+# guesses are removed, not relabelled as verified. The static inspection
+# receipt and APK hash live in tools/reference/tvlok/.
 # The ceiling may only move back down.
-UNVERIFIED_CEILING = 92
+UNVERIFIED_CEILING = 73
 
 
 def _canonical(component: str) -> str:
@@ -112,6 +131,305 @@ class MappingHygieneTests(unittest.TestCase):
             total, UNVERIFIED_CEILING,
             f"{total} unverified components, above the {UNVERIFIED_CEILING} "
             "ratchet ceiling — the ceiling may only move down")
+
+    def test_no_component_is_listed_in_both_name_forms(self):
+        # build_icons.py writes both spellings (`pkg/.Act`, `pkg/pkg.Act`) from
+        # one entry. Listing both counted 31 components twice in the
+        # published total (1257 for 1226) and 16 unverified ones twice.
+        def full(c):
+            pkg, act = c.split("/", 1)
+            return f"{pkg}/{pkg}{act}" if act.startswith(".") else c
+        twice = [(icon["drawable"], c) for icon in self.icons
+                 for c in {full(c) for c in icon["components"]}
+                 if sum(full(x) == c for x in icon["components"]) > 1]
+        self.assertEqual(twice, [], f"components listed in both name forms: {twice[:5]}")
+
+
+def _reference_drawables() -> dict[str, set[str]]:
+    """Canonical component -> the drawable(s) 1.1.9 maps it to."""
+    out: dict[str, set[str]] = {}
+    for item in ET.parse(REFERENCE).getroot().findall("item"):
+        value = item.get("component", "")
+        if not value.startswith("ComponentInfo{"):
+            value = f"ComponentInfo{{{value.rstrip('}')}}}"
+        out.setdefault(_canonical(value), set()).add(item.get("drawable", ""))
+    return out
+
+
+class ProvenanceTests(unittest.TestCase):
+    """Every mapping says where it came from.
+
+    2.5.0 backfilled the 521 icons that had no `mapping_source`, from evidence
+    that can be checked: the decoded 1.1.9 appfilter, the suite's own
+    manifests, and the commit that first carried a component. These tests
+    check what can be checked offline; a commit hash needs the full history,
+    so only its form is held here.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.icons = json.loads(CATALOG.read_text(encoding="utf-8"))["icons"]
+        cls.reference = _reference_drawables()
+
+    @staticmethod
+    def _canon(component: str) -> str:
+        return _canonical(f"ComponentInfo{{{component}}}")
+
+    def test_every_icon_says_where_its_mapping_came_from(self):
+        missing = [i["drawable"] for i in self.icons
+                   if not (i.get("mapping_source") or "").strip()]
+        self.assertEqual(missing, [], f"{len(missing)} icons with no mapping_source")
+
+    def test_a_whole_1_1_9_citation_covers_every_component(self):
+        # A bare citation, or one that adds only the drawable 1.1.9 used,
+        # claims every component came from the reference. Five such icons had
+        # gained components since and said nothing about them (Launcher
+        # Manager, RTVE Play, 7plus, Vewd, Vidio); 2.5.0 dated the additions.
+        whole = re.compile(r'Projectivy Icon Pack 1\.1\.9(?:, as drawable (.+))?')
+        cited = 0
+        for icon in self.icons:
+            m = whole.fullmatch(icon.get("mapping_source", ""))
+            if not m:
+                continue
+            cited += 1
+            comps = [self._canon(c) for c in icon["components"]]
+            self.assertEqual([c for c in comps if c not in self.reference], [],
+                             f"{icon['drawable']}: cites 1.1.9 for components it lacks")
+            named = set(re.findall(r'"([^"]+)"', m.group(1) or "")) or {icon["drawable"]}
+            there = set().union(*(self.reference[c] for c in comps))
+            self.assertEqual(named, there, f"{icon['drawable']}: 1.1.9 drawable misnamed")
+        self.assertGreater(cited, 800)
+
+    def test_a_partial_1_1_9_citation_names_reference_components(self):
+        partial = re.compile(r'Projectivy Icon Pack 1\.1\.9 \(([^)]+)\)')
+        for icon in self.icons:
+            m = partial.match(icon.get("mapping_source", ""))
+            if not m:
+                continue
+            named = m.group(1).split(", ")
+            if not all("/" in n for n in named):
+                continue  # a hand-written note naming an activity, not a list
+            for comp in named:
+                self.assertIn(comp, icon["components"], icon["drawable"])
+                self.assertIn(self._canon(comp), self.reference, icon["drawable"])
+
+    def test_a_first_commit_is_cited_by_hash_and_date(self):
+        stamp = re.compile(r"first committed in [0-9a-f]{9} "
+                           r"\(\d{4}-\d{2}-\d{2}(?:, (?:v\d+\.\d+\.\d+|#\d+))?\)")
+        for icon in self.icons:
+            source = icon.get("mapping_source", "")
+            self.assertEqual(source.count("first committed in"),
+                             len(stamp.findall(source)), icon["drawable"])
+
+    def test_an_own_app_citation_matches_its_manifest(self):
+        own = re.compile(r"'s own (\S+/AndroidManifest\.xml)(?: \([^)]*\))?: (\.\w+) "
+                         r"is the (LEANBACK_LAUNCHER|LAUNCHER) activity of ([\w.]+)")
+        android = "{http://schemas.android.com/apk/res/android}"
+        seen = 0
+        for icon in self.icons:
+            m = own.search(icon.get("mapping_source", ""))
+            if not m:
+                continue
+            seen += 1
+            path, activity, category, package = m.groups()
+            root = ET.parse(ROOT / path).getroot()
+            declared = {
+                act.get(android + "name"): {c.get(android + "name", "").rsplit(".", 1)[-1]
+                                            for c in act.iter("category")}
+                for act in root.iter("activity")
+            }
+            self.assertIn(category, declared.get(activity, set()), icon["drawable"])
+            self.assertIn(f"{package}/{activity}", icon["components"], icon["drawable"])
+        self.assertGreaterEqual(seen, 4)  # Core EQ, Shift, Line, Doctor
+
+
+class OctoberLauncherReports(unittest.TestCase):
+    """Device reports #377-#383: new launch aliases, not new app identities.
+
+    Three activities live outside the installed package's namespace. Keep
+    those literal names (including Poweramp's activity-alias), and keep the
+    older launch components for devices that still use them.
+    """
+    REPORTS = (
+        (377, "f_droid", "org.fdroid.fdroid/org.fdroid.MainActivity",
+         ("org.fdroid.fdroid/org.fdroid.fdroid.views.main.MainActivity",)),
+        (378, "voltra_tv", "com.amhkor.voltratv/com.voltra.voltratv.tv.SplashActivity",
+         ("com.amhkor.voltratv/com.amhkor.voltratv.tv.SplashActivity",)),
+        (379, "poweramp_eq", "com.maxmpz.equalizer/com.maxmpz.audioplayer.standard_adaptive",
+         ("com.maxmpz.equalizer/.StartupActivity",)),
+        (380, "abciview", "au.net.abc.iview/au.net.abc.iview.ui.router.TvLauncherActivity",
+         ("au.net.abc.iview/.MainActivity", "au.net.abc.iview.tv/.MainActivity",
+          "au.net.abc.iview/au.net.abc.iview.ui.MainActivity")),
+        (383, "moonfin", "org.moonfin.androidtv/org.moonfin.androidtv.MainActivity",
+         ("org.moonfin.androidtv/org.jellyfin.androidtv.ui.startup.StartupActivity",)),
+        (402, "video", "com.pbs.video/com.pbs.video.startup.StartupActivity",
+         ("com.pbs.video/com.pbs.video.StartupActivity",)),
+        (403, "tvunplugged",
+         "com.google.android.youtube.tvunplugged/"
+         "com.google.android.apps.youtube.tvunplugged.activity.ChrobaltMainActivity",
+         ("com.google.android.youtube.tvunplugged/"
+          "com.google.android.apps.youtube.tvunplugged.activity.MainActivity",)),
+        (405, "a_8k_player_vip", "shadeed.Player8kVip/shadeed.player4k.pages.SplashActivity",
+         ("com.shadeed.S4kvip/com.shadeed.ibopro.MainActivity",)),
+        # Kayo now launches a DAZN activity outside its package's namespace.
+        (409, "kayo", "au.com.kayosports.tv/com.dazn.MainActivity",
+         ("au.com.kayosports.tv/au.com.foxsports.martian.tv.main.MainActivity",)),
+    )
+
+    @classmethod
+    def setUpClass(cls):
+        cls.icons = json.loads(CATALOG.read_text(encoding="utf-8"))["icons"]
+
+    def test_reported_components_resolve_to_the_existing_icons(self):
+        mapped = {}
+        for icon in self.icons:
+            for component in icon["components"]:
+                key = _canonical(f"ComponentInfo{{{component}}}")
+                mapped.setdefault(key, []).append(icon["drawable"])
+        for issue, drawable, reported, legacy in self.REPORTS:
+            for component in (reported, *legacy):
+                with self.subTest(issue=issue, component=component):
+                    key = _canonical(f"ComponentInfo{{{component}}}")
+                    self.assertEqual(mapped.get(key), [drawable])
+
+    def test_new_mappings_cite_the_device_report_not_the_old_reference(self):
+        by_id = {i["drawable"]: i for i in self.icons}
+        for issue, drawable, reported, _legacy in self.REPORTS:
+            with self.subTest(issue=issue):
+                icon = by_id[drawable]
+                self.assertIn(f"issue #{issue}", icon["mapping_source"])
+                self.assertIn(reported, icon["mapping_source"])
+                unverified = {_canonical(f"ComponentInfo{{{c}}}")
+                              for c in icon.get("unverified", [])}
+                self.assertNotIn(_canonical(f"ComponentInfo{{{reported}}}"), unverified)
+
+    def test_all_three_packs_emit_new_and_legacy_mappings(self):
+        for tree, suffix in (("app/src/main", "_banner"),
+                             ("app/src/glyphs", ""),
+                             ("glyphs/src/main", "")):
+            for folder in ("res/xml", "assets"):
+                path = ROOT / tree / folder / "appfilter.xml"
+                mapped = {i.get("component"): i.get("drawable")
+                          for i in ET.parse(path).getroot().findall("item")}
+                for issue, drawable, reported, legacy in self.REPORTS:
+                    for component in (reported, *legacy):
+                        full = _canonical(f"ComponentInfo{{{component}}}")
+                        pkg, activity = full.split("/", 1)
+                        forms = [full]
+                        if activity.startswith(pkg + "."):
+                            forms.append(f"{pkg}/{activity[len(pkg):]}")
+                        for form in forms:
+                            with self.subTest(path=path.relative_to(ROOT),
+                                              issue=issue, component=form):
+                                self.assertEqual(mapped.get(f"ComponentInfo{{{form}}}"),
+                                                 drawable + suffix)
+
+
+class OctoberNewAppMappings(unittest.TestCase):
+    """The 29 and 31 October requests: five new apps, each mapped to its exact
+    scanner component in all three packs (both name forms where one exists),
+    citing the device report, and none marked unverified. Aurora Player and
+    Blackout's components were read off the scanner photos in their issues."""
+
+    NEW = (
+        (390, "plezy", "com.edde746.plezy/com.edde746.plezy.MainActivity"),
+        (391, "radio_france",
+         "com.radiofrance.radio.radiofrance.android/com.radiofrance.android.tv.TvMainActivity"),
+        (404, "streamfc", "dev.mogoni.streamfc/dev.mogoni.streamfc.MainActivity"),
+        (392, "aurora_player", "app.auroraiptv/app.auroraiptv.MainActivity"),
+        (394, "blackout", "com.blackout.tv/com.blackout.tv.CommandActivity"),
+    )
+
+    def test_catalog_cites_the_report(self):
+        by_id = {i["drawable"]: i for i in json.loads(CATALOG.read_text(encoding="utf-8"))["icons"]}
+        for issue, drawable, component in self.NEW:
+            with self.subTest(issue=issue):
+                icon = by_id[drawable]
+                self.assertEqual(icon["components"], [component])
+                self.assertIn(f"issue #{issue}", icon["mapping_source"])
+                self.assertIn(component, icon["mapping_source"])
+                self.assertNotIn("unverified", icon)
+
+    def test_every_pack_maps_it(self):
+        for tree, suffix in (("app/src/main", "_banner"),
+                             ("app/src/glyphs", ""),
+                             ("glyphs/src/main", "")):
+            for folder in ("res/xml", "assets"):
+                path = ROOT / tree / folder / "appfilter.xml"
+                mapped = {i.get("component"): i.get("drawable")
+                          for i in ET.parse(path).getroot().findall("item")}
+                for issue, drawable, component in self.NEW:
+                    pkg, activity = component.split("/", 1)
+                    forms = [component]
+                    if activity.startswith(pkg + "."):
+                        forms.append(f"{pkg}/{activity[len(pkg):]}")
+                    for form in forms:
+                        with self.subTest(path=path.relative_to(ROOT), issue=issue, form=form):
+                            self.assertEqual(mapped.get(f"ComponentInfo{{{form}}}"),
+                                             drawable + suffix)
+
+
+class RequestedAppMappings(unittest.TestCase):
+    """New SPORT FM TV request and TVLok's formerly guessed launchers."""
+
+    SPORTFM = "gr.sportfmtv.app/com.yinzcam.connectedtv.MainActivity"
+    TVLOK = ("com.tvlok.app/com.tvlok.app.ui.MainActivity",
+             "com.tvlok.app/com.tvlok.app.ui.TvLauncherActivity")
+    OLD_GUESSES = ("com.tvlok.app/com.tvlok.app.MainActivity",
+                   "com.tvlok.tv/com.tvlok.tv.MainActivity")
+
+    @classmethod
+    def setUpClass(cls):
+        cls.by_id = {i["drawable"]: i for i in
+                     json.loads(CATALOG.read_text(encoding="utf-8"))["icons"]}
+
+    def test_sportfm_keeps_the_scanned_yinzcam_activity_namespace(self):
+        self.assertTrue("sport_fm_tv" in self.by_id, "SPORT FM TV is missing from the catalog")
+        icon = self.by_id["sport_fm_tv"]
+        self.assertEqual(icon["components"], [self.SPORTFM])
+        self.assertIn("issue #382", icon["mapping_source"])
+        self.assertFalse(icon.get("unverified"))
+
+    def test_tvlok_maps_the_apk_activity_and_tv_alias_not_the_guesses(self):
+        receipt = json.loads((ROOT / "tools/reference/tvlok/receipt.json").read_text())
+        self.assertEqual(receipt["package"], "com.tvlok.app")
+        self.assertEqual(receipt["version_name"], "1.0.192")
+        self.assertEqual(receipt["apk_sha256"],
+                         "a627b2a4f6a3e09cf17549f2407de3d04b226b44aab6b3375e53e7760ab47b63")
+        self.assertEqual({r["component"] for r in receipt["launchers"]}, set(self.TVLOK))
+        tv = next(r for r in receipt["launchers"]
+                  if "android.intent.category.LEANBACK_LAUNCHER" in r["categories"])
+        self.assertEqual(tv["kind"], "activity-alias")
+        self.assertEqual(tv["target_activity"], "com.tvlok.app.ui.MainActivity")
+        self.assertNotEqual(tv["component"].split("/", 1)[1], tv["target_activity"])
+        icon = self.by_id["tvlok"]
+        mapped = {_canonical(f"ComponentInfo{{{c}}}") for c in icon["components"]}
+        self.assertEqual(mapped, set(self.TVLOK))
+        self.assertFalse(icon.get("unverified"))
+        self.assertIn("tools/reference/tvlok/receipt.json", icon["mapping_source"])
+
+    def test_all_three_packs_emit_the_verified_requests_without_old_guesses(self):
+        for tree, suffix in (("app/src/main", "_banner"),
+                             ("app/src/glyphs", ""),
+                             ("glyphs/src/main", "")):
+            for folder in ("res/xml", "assets"):
+                path = ROOT / tree / folder / "appfilter.xml"
+                mapped = {i.get("component"): i.get("drawable")
+                          for i in ET.parse(path).getroot().findall("item")}
+                for drawable, components in (("sport_fm_tv", (self.SPORTFM,)),
+                                               ("tvlok", self.TVLOK)):
+                    for component in components:
+                        pkg, activity = component.split("/", 1)
+                        forms = [component]
+                        if activity.startswith(pkg + "."):
+                            forms.append(f"{pkg}/{activity[len(pkg):]}")
+                        for form in forms:
+                            with self.subTest(path=path.relative_to(ROOT), component=form):
+                                self.assertEqual(mapped.get(f"ComponentInfo{{{form}}}"),
+                                                 drawable + suffix)
+                canonical = {_canonical(c) for c in mapped}
+                for guess in self.OLD_GUESSES:
+                    self.assertNotIn(guess, canonical, str(path))
 
 
 if __name__ == "__main__":

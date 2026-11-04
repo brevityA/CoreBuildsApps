@@ -43,6 +43,16 @@ class EnhancedAudioPrefs(context: Context) {
         set(value) = prefs.edit().putBoolean(KEY_LOW_VOLUME_BASS, value).apply()
 
     /**
+     * Full ISO 226 loudness compensation at low volume (1.11.0): restores the
+     * bass and treble the ear loses when the output is turned down, mapped to
+     * the ten manual EQ bands. Off until switched on; low-volume bass and
+     * auto loudness are mutually exclusive — auto loudness wins.
+     */
+    var autoLoudnessEnabled: Boolean
+        get() = prefs.getBoolean(KEY_AUTO_LOUDNESS, false)
+        set(value) = prefs.edit().putBoolean(KEY_AUTO_LOUDNESS, value).apply()
+
+    /**
      * The everyday volume of one output, in dB from that output's own volume
      * curve, that Low-volume bass measures from: nothing is added at or above
      * it. Null until recorded ([tv.corebuilds.eq.apply.LowVolumeBass]).
@@ -61,6 +71,28 @@ class EnhancedAudioPrefs(context: Context) {
         editor.apply()
     }
 
+    /** Stereo speakers (1.10.0): 5.1 folded to two channels ([tv.corebuilds.eq.apply.ToneLayers.stereoDownmix]). */
+    var stereoSpeakersEnabled: Boolean
+        get() = prefs.getBoolean(KEY_STEREO_SPEAKERS, false)
+        set(value) = prefs.edit().putBoolean(KEY_STEREO_SPEAKERS, value).apply()
+
+    /**
+     * The Surround sound mode Stereo speakers replaced with Never, to put back
+     * when it is switched off; null when Core EQ changed nothing.
+     */
+    var surroundRestoreMode: Int?
+        get() = prefs.getInt(KEY_SURROUND_RESTORE, -1).takeIf { it >= 0 }
+        set(value) = prefs.edit().putInt(KEY_SURROUND_RESTORE, value ?: -1).apply()
+
+    /**
+     * Stereo speakers is on but Surround sound could not be changed yet (the
+     * permission was still to be given). Cleared once it is changed, or the
+     * switch goes off, so Core EQ asks once and never fights a later choice.
+     */
+    var surroundPending: Boolean
+        get() = prefs.getBoolean(KEY_SURROUND_PENDING, false)
+        set(value) = prefs.edit().putBoolean(KEY_SURROUND_PENDING, value).apply()
+
     /** The limiter correction should run with: protection-only, or night mode's. */
     fun limiter(): LimiterSettings = limiterFor(nightModeEnabled)
 
@@ -71,6 +103,10 @@ class EnhancedAudioPrefs(context: Context) {
         private const val KEY_NIGHT_MODE = "night_mode_v121"
         private const val KEY_DIALOGUE = "dialogue_boost_v130"
         private const val KEY_LOW_VOLUME_BASS = "low_volume_bass_v130"
+        private const val KEY_AUTO_LOUDNESS = "auto_loudness_v1110"
+        private const val KEY_STEREO_SPEAKERS = "stereo_speakers_v1100"
+        private const val KEY_SURROUND_RESTORE = "surround_restore_mode_v1100"
+        private const val KEY_SURROUND_PENDING = "surround_pending_v1100"
         /** Followed by the output's route key: one reference per output. */
         private const val KEY_LOW_VOLUME_REFERENCE = "low_volume_reference_db_v130:"
 

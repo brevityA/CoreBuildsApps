@@ -7,12 +7,15 @@ tests/test_wallpapers.py hold byte-identical, and the bundled thumb set must
 be exactly the manifest's set (an extra thumb is dead weight, a missing one
 is a blank cell in the in-app grid).
 
-One collection, one APK:
+Two collections:
 
   classic   Wallpapers/manifest.json        -> app/src/main/assets/manifest/wallpapers.json
+  plus      Wallpapers/plus-manifest.json   -> app/src/play/assets/manifest/plus-wallpapers.json
 
 Thumbs live in Wallpapers/thumbs/ and are copied to
-app/src/main/assets/wallpapers_thumbs/.
+app/src/main/assets/wallpapers_thumbs/ (classic, every build) and
+app/src/play/assets/plus_thumbs/ (plus: Core Builds Plus walls, which only
+the Google Play build lists, so only it carries their thumbs).
 
 Usage:
   sync_wallpaper_manifest.py           # verify + copy, fail on drift
@@ -34,6 +37,11 @@ COLLECTIONS = {
         "manifest": WALLPAPERS / "manifest.json",
         "bundled": ROOT / "app/src/main/assets/manifest/wallpapers.json",
         "thumbs": ROOT / "app/src/main/assets/wallpapers_thumbs",
+    },
+    "plus": {
+        "manifest": WALLPAPERS / "plus-manifest.json",
+        "bundled": ROOT / "app/src/play/assets/manifest/plus-wallpapers.json",
+        "thumbs": ROOT / "app/src/play/assets/plus_thumbs",
     },
 }
 

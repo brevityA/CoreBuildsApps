@@ -171,6 +171,7 @@ secrets (repository or environment level) and sets each one that exists:
 | `ICONREQ_GITHUB_APP_INSTALLATION_ID` | `GITHUB_APP_INSTALLATION_ID` |
 | `ICONREQ_GITHUB_APP_PRIVATE_KEY` | `GITHUB_APP_PRIVATE_KEY` |
 | `ICONREQ_DISCORD_WEBHOOK_URL` | `ICON_REQUEST_DISCORD_WEBHOOK_URL` |
+| `ICONREQ_GOOGLE_SERVICE_ACCOUNT_JSON` | `GOOGLE_SERVICE_ACCOUNT_JSON` (Plus, below) |
 
 Secret names cannot start with `GITHUB_` in Actions, hence the prefix.
 When any is set, smoke runs with `--require-sink` and fails if `/healthz`
@@ -194,6 +195,68 @@ The token can do exactly what the App could: read and write issues on
 this one repo. When the App trio is also set, the App wins. When the
 token expires, requests fail with a 502 and the auditor falls back to the
 QR; replace the secret and redeploy.
+
+### Core Premium: priority requests (`GOOGLE_SERVICE_ACCOUNT_JSON`)
+
+The Google Play build sells Core Premium (Plus in code), a one-time product
+(`core_builds_plus`), and sends its purchase token as `plus_token` with
+each one-press request. With a service account configured, the broker
+asks the Google Play Developer API
+(`purchases.products.get` on `tv.corebuilds.iconpack.play`) whether the
+token is a purchase that is neither cancelled, pending nor refunded, and if
+so files the issue with the `priority` label (or adds the label to the open
+duplicate it +1s). Without one, `plus_token` is accepted and ignored, and
+`/healthz` reports `"plus": false`.
+
+The token is never logged, filed or stored. A SHA-256 of it keys a KV
+verdict: six hours for a confirmed purchase (so a refund shows within six
+hours), ten minutes for a refusal (so a pending purchase clears soon), and
+nothing at all when Google could not be reached. Any failure files the
+request without priority; none blocks it.
+
+1. *Google Cloud console → IAM & Admin → Service accounts → Create*, in
+   the project linked to Play Console. No Cloud roles. *Keys → Add key →
+   JSON*: that file is the secret.
+2. Enable the *Google Play Android Developer API* in the same project.
+3. *Play Console → Users and permissions → Invite new users*: the service
+   account's e-mail, app access to Core Builds Icon Pack only, permission
+   **View financial data, orders, and cancellation survey responses**.
+4. Store the JSON file's whole contents as the Core-Builds secret
+   `ICONREQ_GOOGLE_SERVICE_ACCOUNT_JSON` (or
+   `wrangler secret put GOOGLE_SERVICE_ACCOUNT_JSON`) and redeploy;
+   `/healthz` should then say `"plus": true`.
+
+Google does not honour a new service account's Play Console permission
+at once (allow a day); until it does, the check fails with a 401 and
+requests file without priority.
+
+#### Request all (`POST /v1/batch`)
+
+Plus owners also get one press for every missing app on the TV. The body
+is one device note, one `plus_token` and up to `BATCH_MAX` (10) apps, each
+in the single request's grammar:
+
+```json
+{ "device": "Scanned on …", "plus_token": "…",
+  "apps": [ { "app_name": "…", "component": "pkg/.Act", "mapped": false } ] }
+```
+
+- **Plus only.** A token Google does not confirm is refused with 403
+  before GitHub is touched. Unlike a single press, a batch never files
+  without priority.
+- **Limits.** `BATCH_PER_DAY` (3) presses a day per purchase, counted
+  under a SHA-256 of the token in KV, plus the usual per-IP limit, which
+  counts a batch as one request.
+- **Filing.** Each app is filed or +1ed exactly as a single priority
+  request would be. Each label is ensured once per batch, which keeps a
+  full batch inside the Workers subrequest cap.
+- **Answer.** `{ "ok": true, "priority": true, "results": [ { "component",
+  "issue", "duplicate" } | { "component", "error" } ] }`. One failed issue
+  does not undo the others.
+- **GitHub sinks only.** A Discord-only broker answers 501.
+
+`BATCH_MAX` and `BATCH_PER_DAY` live in `constants.mjs`, and
+`tests/test_batch_requests.py` holds the app to them.
 
 The rate-limit `namespace_id`s (3201 production, 3202 staging) are
 account-wide, and this worker shares its account with the cors-proxy,
@@ -243,13 +306,20 @@ deploy on any overlap.
      -d '{"app_name":"Deluart Test App","component":"com.deluart.test/.MainActivity","device":"Scanned on curl, Android 14, pack dev"}'
    # -> {"ok":true,"issue":N,"duplicate":false}  (then close that issue)
    ```
-6. **Bake the URL into the pack** (this is the only app-side step):
-   ```bash
-   cd ../.. && python tools/build_issue_prefills.py \
-     --endpoint https://<name>.<subdomain>.workers.dev/
-   ```
-   Release the pack; auditor presses file directly from then on. Until that
+6. **Bake the URL into the pack** (this is the only app-side step). Only
+   the Google Play build carries it, from the first Play upload built after
+   this change (versionCode 62 on main after 2.5.4; if 62 is already on a
+   Play track, raise the version code first): put the URL in
+   `app/src/play/res/values/request_service.xml` and leave
+   `audit_request_endpoint` empty in the generated
+   `app/src/main/res/values/issue_prefill.xml`, so the GitHub / Downloader
+   build keeps the QR panel (`docs/PLAY-CONSOLE.md` §8 step 6). Then run
+   `python tools/build_play_listing.py` for the store answers.
+   Release the pack; Play presses file directly from then on. Until that
    value is baked, presses silently keep the QR fallback — nothing breaks.
+   (`python tools/build_issue_prefills.py --endpoint <url>` writes the main
+   value instead, which turns requests on in every build. Don't run it unless
+   the GitHub / Downloader build should send them too.)
 
 ## Turn it off
 
@@ -259,11 +329,13 @@ QR panel.
 
 ## Tests
 
-`node --test` — 39 contracts: payload grammar, issue-body parity with
+`node --test` — 50 contracts: payload grammar, issue-body parity with
 `.github/ISSUE_TEMPLATE/1.new_icon_request.yml` and, for mapping reports,
 `2.icon_not_applying.yml` (parsed, so a form edit fails the parity test),
 each form's title prefix and label, hourly rate-limit buckets, a real RS256 JWT
 sign-and-verify, the full file-or-+1 flows against a stubbed GitHub API,
-the personal-token sink and sink precedence, the Discord fallback, and the
-workerd entry-export constraint. For the
+the personal-token sink and sink precedence, the Discord fallback, the Plus
+check (Play ids pinned to the app, refunds, caching by hash, the token sent to
+Google and nowhere else, priority on new and duplicate issues, failures that
+still file), and the workerd entry-export constraint. For the
 deployed-runtime proof run `npm run rehearse` (see above).

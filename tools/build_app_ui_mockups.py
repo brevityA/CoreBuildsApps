@@ -89,6 +89,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from drawable_art import art_path, read_aliases  # noqa: E402
+from alternates import is_alternate  # noqa: E402
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -214,6 +215,9 @@ PACK = ICON_PACK["icon_pack"]
 NAMES = ICON_PACK["icon_names"]
 CATS = ICON_PACK["icon_categories"]
 BESPOKE = [b == "1" for b in ICON_PACK["icon_bespoke"]]
+# MainActivity.iconCount: apps, so an alternate's extra tile is not counted.
+APPS = [not is_alternate(d) for d in PACK]
+ICON_COUNT = sum(APPS)
 
 ICONS_DIR = RES / "drawable-nodpi"
 ALIASES = read_aliases(RES / "values")
@@ -238,18 +242,35 @@ LIVE_THUMBS = ROOT / "Motion/live/thumbs"
 
 
 def live_loops() -> list[dict]:
-    src = (ROOT / "app/src/main/java/tv/corebuilds/iconpack/LiveLoop.kt").read_text(
-        encoding="utf-8")
-    body = re.search(r"val LOOPS: List<Loop> = listOf\((.*?)\n    \)",
-                     src, re.DOTALL).group(1)
-    base = re.search(r'RAW_BASE\s*=\s*\n?\s*"([^"]+)"', src).group(1)
-    titles = re.findall(r'title = "([^"]+)"', body)
-    files = re.findall(r'fileName = "([^"]+)"', body)
-    series = re.search(r'const val SERIES = "([^"]+)"', src).group(1)
-    return [
-        {"name": title, "series": series, "url": base + file_name, "live": True}
-        for title, file_name in zip(titles, files)
-    ]
+    """Every loop the wallpaper browser lists, from the Kotlin that lists them.
+
+    Two generated lists since Core Views shipped: the Motion line's in
+    `LiveLoop.kt` (`MOTION_LOOPS`) and the aerial season's in
+    `CoreViewsLoop.kt` (`LOOPS`). `LiveLoop.LOOPS` is the two concatenated, so
+    reading only the first file would draw a grid eleven tiles short of the
+    app's - the drift this check exists to catch. Both live under the one Live
+    chip: `Loop.series` defaults to `LiveLoop.SERIES`, and neither set
+    overrides it.
+    """
+    source = ROOT / "app/src/main/java/tv/corebuilds/iconpack"
+    series = re.search(r'const val SERIES = "([^"]+)"',
+                       (source / "LiveLoop.kt").read_text(encoding="utf-8")).group(1)
+    loops = []
+    for name, list_name in (
+        ("LiveLoop.kt", "MOTION_LOOPS"),      # the Motion line's forty-eight
+        ("CoreViewsLoop.kt", "LOOPS"),        # the Core Views season's twelve
+    ):
+        src = (source / name).read_text(encoding="utf-8")
+        body = re.search(rf"val {list_name}: List<Loop> = listOf\((.*?)\n    \)",
+                         src, re.DOTALL).group(1)
+        base = re.search(r'RAW_BASE\s*=\s*\n?\s*"([^"]+)"', src).group(1)
+        titles = re.findall(r'title = "([^"]+)"', body)
+        files = re.findall(r'fileName = "([^"]+)"', body)
+        loops += [
+            {"name": title, "series": series, "url": base + file_name, "live": True}
+            for title, file_name in zip(titles, files)
+        ]
+    return loops
 
 
 LIVE_LOOPS = live_loops()
@@ -655,11 +676,13 @@ def wallpapers_entry_sub() -> str:
 
 def category_counts() -> list[tuple[str, str, int]]:
     counts: dict[str, int] = {}
-    for cat in CATS:
-        counts[cat] = counts.get(cat, 0) + 1
-    out = [("ALL", STRINGS["chip_all"], len(PACK))]
+    for cat, app in zip(CATS, APPS):
+        if app:
+            counts[cat] = counts.get(cat, 0) + 1
+    out = [("ALL", STRINGS["chip_all"], ICON_COUNT)]
     if any(BESPOKE):
-        out.append(("BESPOKE", STRINGS["chip_brandmarks"], sum(BESPOKE)))
+        out.append(("BESPOKE", STRINGS["chip_brandmarks"],
+                    sum(b and a for b, a in zip(BESPOKE, APPS))))
     for key, label in CHIP_ORDER:
         if key in counts:
             out.append((key, label, counts[key]))
@@ -724,7 +747,7 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
         ry += dp(24)
     else:
         draw_text(draw, (g, ry + dp(26)),
-                  fmt(STRINGS["pack_stats_fmt"], len(PACK), COMPONENT_COUNT),
+                  fmt(STRINGS["pack_stats_fmt"], ICON_COUNT, COMPONENT_COUNT),
                   f_data, colour("cb_slate"))
         ry += dp(48)
     button(img, g, ry, STRINGS["cta_apply"], "cta", min_w_dp=DIMENS["cb_rail_width"])
@@ -788,7 +811,7 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
 
     # ---- RIGHT PANE ------------------------------------------------------
     search_field(img, pane_l, body_top, (right - pane_l) / SCALE,
-                 hint=fmt(STRINGS["search_hint_fmt"], len(PACK)))
+                 hint=fmt(STRINGS["search_hint_fmt"], ICON_COUNT))
     py = body_top + row_h + gap
     x = pane_l
     f_chip = font("sans", DIMENS["cb_text_label"], bold=True)
@@ -946,10 +969,13 @@ def wallpapers_frame() -> tuple[Image.Image, str]:
         py += tile_h
         row += 1
 
-    note = ("MOCKUP - wallpapers from activity_wallpapers.xml + strings.xml + "
-            f"manifest/wallpapers.json ({len(WALLPAPERS)} stills) + LiveLoop.kt "
-            f"({len(LIVE_LOOPS)} motion loops, LIVE badge), bundled thumbs; "
-            "example: focus, chip")
+    # The caption band ellipsizes rather than overflow the panel, so this line
+    # has to stay short enough to survive whole: the LIVE badge and the counts
+    # are the honesty clauses, and a "MOCKUP - ..." that ends in "..." names
+    # no fiction at all. Counts are interpolated, never typed.
+    note = ("MOCKUP - wallpapers: activity_wallpapers.xml + strings.xml + "
+            f"{len(WALLPAPERS)} stills + {len(LIVE_LOOPS)} live loops "
+            "(LiveLoop.kt, CoreViewsLoop.kt); example: focus, chip")
     return img, note
 
 
@@ -1078,7 +1104,7 @@ def faq_frame() -> tuple[Image.Image, str]:
     y = top + dp(6)
     f_title = font("sans", DIMENS["cb_text_body"], bold=True)
     f_body = font("sans", DIMENS["cb_text_data"])
-    for key in ("cache", "override", "monet", "unmapped"):
+    for key in ("cache", "override", "monet", "projectivy", "unmapped"):
         title = STRINGS[f"faq_{key}_title"]
         body = STRINGS[f"faq_{key}_body"]
         lines = wrap(draw, body, f_body, W - 2 * g - dp(40))
@@ -1466,6 +1492,84 @@ def art_sentence(art: str) -> str:
             "NONE": STRINGS["launcher_compat_art_none"]}[art]
 
 
+# ---------------------------------------------------------------------------
+# Core Builds Glyphs Pack (the glyphs/ module): its one screen
+# ---------------------------------------------------------------------------
+
+GLYPHS_RES = ROOT / "glyphs/src/main/res"
+
+
+def _glyphs_values(file: str, tag: str) -> dict[str, str]:
+    out = {}
+    for element in _xml(GLYPHS_RES / "values" / file):
+        if element.tag == tag:
+            out[element.get("name")] = re.sub(
+                r"\s+", " ", "".join(element.itertext())).strip().replace("\\'", "'")
+    return out
+
+
+def _glyphs_count(xml_file: str, attribute: str) -> int:
+    """GlyphsHomeActivity.countItems: <item> rows carrying the attribute,
+    alternates left out."""
+    return sum(1 for el in _xml(GLYPHS_RES / "xml" / xml_file).iter("item")
+               if el.get(attribute) is not None
+               and not is_alternate(el.get(attribute)))
+
+
+def glyphs_home_frame() -> tuple[Image.Image, str]:
+    """GlyphsHomeActivity on glyphs_home.xml, the package's only screen, with
+    the button focused as it is on entry (<requestFocus/>). Every size, colour
+    and string is read from the glyphs/ module, and the counts are counted the
+    way the activity counts them."""
+    text = _glyphs_values("strings_home.xml", "string")
+    dimen = {k: float(v[:-2]) for k, v in _glyphs_values("dimens.xml", "dimen").items()}
+    hexes = _glyphs_values("colors.xml", "color")
+
+    def rgb(name: str) -> tuple:
+        h = hexes[name].lstrip("#")
+        return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4)) + (255,)
+
+    img = Image.new("RGBA", (W, H), rgb("glyphs_night"))
+    draw = ImageDraw.Draw(img, "RGBA")
+    x, y = dp(dimen["glyphs_home_pad_h"]), dp(dimen["glyphs_home_pad_v"])
+    width = W - 2 * x
+    gap, lead = dp(dimen["glyphs_home_gap"]), dp(dimen["glyphs_home_leading"])
+
+    def block(s: str, size: float, colour_name: str, bold: bool = False) -> None:
+        nonlocal y
+        f = font("sans", size, bold=bold)
+        for line in wrap(draw, s, f, width):
+            draw_text(draw, (x, y), line, f, rgb(colour_name))
+            y += dp(size) + int(dp(size) * 0.25) + lead
+
+    block(text["glyphs_home_title"], dimen["glyphs_home_title"], "glyphs_ink", bold=True)
+    y += gap
+    icons = _glyphs_count("drawable.xml", "drawable")
+    components = _glyphs_count("appfilter.xml", "component")
+    counts = text["glyphs_home_counts"].replace("%1$d", str(icons)).replace("%2$d", str(components))
+    block(counts, dimen["glyphs_home_counts"], "glyphs_cyan")
+    y += gap
+    block(text["glyphs_home_body"], dimen["glyphs_home_body"], "glyphs_slate")
+    y += dp(dimen["glyphs_home_button_gap"])
+
+    # The button: wrap_content with a 320dp minimum, cyan fill while focused,
+    # CTA ink text (drawable/glyphs_button_bg.xml, color/glyphs_button_text.xml).
+    f_btn = font("sans", dimen["glyphs_home_button_text"])
+    label = text["glyphs_home_open"]
+    bw = max(dp(dimen["glyphs_home_button_w"]),
+             text_width(draw, label, f_btn) + 2 * dp(dimen["glyphs_home_button_pad"]))
+    bh = dp(dimen["glyphs_home_button_h"])
+    rrect(draw, [x, y, x + bw, y + bh], dp(dimen["glyphs_home_radius"]), fill=rgb("glyphs_cyan"))
+    draw_text(draw, (x + bw // 2, y + bh // 2), label, f_btn, rgb("glyphs_cta_ink"), anchor="mm")
+    y += bh + gap
+
+    block(text["glyphs_home_hint"], dimen["glyphs_home_hint"], "glyphs_slate")
+    note = (f"Glyphs Pack home: counts from its drawable.xml ({icons}) and "
+            f"appfilter.xml ({components}), button focused; Outfit stands in for "
+            f"the system sans")
+    return img, note
+
+
 FRAMES = [
     ("app-ui-catalogue.png", lambda: catalogue_frame(False)),
     ("app-ui-catalogue-update.png", lambda: catalogue_frame(True)),
@@ -1478,6 +1582,7 @@ FRAMES = [
     ("app-ui-inspector.png", inspector_frame),
     ("app-ui-suite.png", suite_frame),
     ("app-ui-launcher-compat.png", launcher_compat_frame),
+    ("app-ui-glyphs-home.png", glyphs_home_frame),
 ]
 
 
@@ -1507,6 +1612,9 @@ INPUT_GLOBS = (
     "app/src/main/res/layout/*.xml",
     "app/src/main/res/values/*.xml",
     "tools/fonts/*.ttf",
+    "glyphs/src/main/res/layout/*.xml",
+    "glyphs/src/main/res/values/*.xml",
+    "glyphs/src/main/res/xml/*.xml",
 )
 MANIFEST = DOCS / "app-ui-mockups.json"
 

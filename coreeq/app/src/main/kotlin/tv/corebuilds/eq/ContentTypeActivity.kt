@@ -10,22 +10,19 @@ import tv.corebuilds.eq.mode.ContentTypeRegistry
 import tv.corebuilds.eq.ui.showSwitch
 
 /**
- * Content type selection screen: choose the use-case-specific EQ
- * optimization for your primary content (Movies, Anime, TV Shows,
- * Gaming, Music).
+ * Content type selection screen: how strong the optional Extra effects are
+ * for each kind of content.
  *
- * Each content type applies a curated target curve from
- * [UseCaseTargets] that optimizes the room correction for the
- * acoustic characteristics of that content:
+ * A content type sets the platform BassBoost strength and LoudnessEnhancer
+ * gain ([tv.corebuilds.eq.apply.ExtraPlan]). It does **not** change the room
+ * correction or the target curve: the correction is measured once per output
+ * and the target is chosen on the Measure screen. With Extra effects off,
+ * changing the content type changes nothing (the screen's own subtitle says
+ * so).
  *
- * - **Movies:** Dialogue-first, center channel clarity, theatrical presence
- * - **Anime:** Music + dialogue balance, wide dynamic range, enhanced bass
- * - **TV Shows:** Natural dialogue, reduced fatigue, smooth listening
- * - **Gaming:** Spatial cues, low-end impact, low-latency clarity
- * - **Music:** Flat reference, respects mastering, optional bass
- *
- * Automatic detection uses the [ContentTypeRegistry] to identify
- * known streaming apps and switch to the appropriate profile.
+ * Automatic detection uses [ContentTypeRegistry] to identify known streaming
+ * apps and select the matching extras. It can only switch extras; it never
+ * applies a correction or a target.
  */
 class ContentTypeActivity : TvActivity() {
 

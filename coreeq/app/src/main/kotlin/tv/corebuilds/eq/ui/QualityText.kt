@@ -11,7 +11,7 @@ import tv.corebuilds.eq.export.Profile
 
 /**
  * The recording score line, worded and coloured the same on Measure, Home and
- * Profiles: "Recording 78/100 · good" in green, amber or red.
+ * Profiles: "Capture quality 78/100 · good" in green, amber or red.
  */
 object QualityText {
 
@@ -38,7 +38,7 @@ object QualityText {
     )
 
     /**
-     * "Recording 78/100 · good" in the tier colour, then " · " and [base], or
+     * "Capture quality 78/100 · good" in the tier colour, then " · " and [base], or
      * [base] unchanged when the profile carries no score (imports and
      * manual-only profiles). The score leads because Home and Profiles both
      * end their detail lines in an ellipsis.

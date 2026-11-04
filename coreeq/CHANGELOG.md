@@ -6,7 +6,387 @@ Core EQ (`tv.corebuilds.eq`) keeps its own changelog. The repository-root
 must never land there. Releases are `coreeq-v<version>` tags (see
 `PUBLISHING.md`).
 
-## [Unreleased]
+## [1.11.2] — 2026-11-04
+
+- **Every AudioEffect write is bounds-checked before the framework sees it.** Band
+  indices are validated against the device's own `numberOfBands` and gains clamped to
+  its own `bandLevelRange` before `setBandLevel` is called, and the
+  `UnsupportedOperationException` (engine unavailable) and `RuntimeException`
+  (corrupted state from a leaked instance) that actually occur are caught and logged
+  instead of crashing — the CVE-2019-9382 class of bug, closed at application level.
+  Every created effect is released exactly once through a guarded release path.
+- **Output route is probed the way Google documents, not guessed.** A silent PCM
+  `AudioTrack` is started and `getRoutedDevice()` read while it plays, with an
+  `OnRoutingChangedListener` (API 24+) watching for HDMI hot-plug or Bluetooth
+  changes mid-probe and `getDirectPlaybackSupport()` (API 33+) reporting whether the
+  route is a passthrough path that would strip the effect. A probe that reports no
+  route is a hard stop — "Could not confirm output route — correction paused. Play a
+  test tone to continue." — never a silent fallback. A pause caused by a flapping output is
+  held: while the route stays unconfirmable the app keeps answering "unconfirmed" (no repeated
+  track opens, no decay to the estimate), and it resumes only when a device event or a
+  test-tone re-apply lets a fresh probe confirm a route.
+- **The reference DSP flattens the microphone before correcting the room.**
+  `tools/core_eq_dsp.py` subtracts a per-remote-model offset table from the raw
+  measurement (capped at ±6 dB per band, never extrapolated past the tabulated span),
+  warns when the curve carries a MEMS-mic signature (low-frequency roll-off,
+  high-frequency peak), and gates auto-apply behind an explicit "mic calibration is
+  unavailable — apply anyway?" confirmation. `derive_mic_offset` makes the table
+  self-serve: feed it one pink-noise capture taken by the remote mic beside a
+  calibrated reference, and it reduces the (mic − reference) difference to 1/3-octave
+  bands so the room term cancels, leaving the capsule offset to subtract.
+- **The reference DSP can export a hybrid IIR + FIR correction.** 2–4 low-Q IIR
+  biquads for room modes below 300 Hz plus FIR taps for the 300 Hz–16 kHz band, all
+  inside AutoEQ's safety limits (60–16,000 Hz, −12..+3 dB, Q 1–3).
+- **New export: `coreeq_autoeq.csv`** — AutoEQ's native two-column
+  `frequency,gain` format, importable by AutoEQ-compatible tools and Poweramp
+  Equalizer. The export notes that Poweramp adds +6 dB to AutoEQ graphic gains on
+  import. Gains are written to 0.001 dB so fine corrections survive a round-trip.
+  The Poweramp parametric JSON export is unchanged.
+- **The route probe never runs on the main thread.** The silent-track probe
+  opens and stops a real `AudioTrack` and waits ~50 ms for it to settle, so
+  `OutputRoute.current()` on main now answers from the cached probe (or the
+  estimate, before any probe has run) while the track plays on a background
+  executor; auto-apply waits for the confirmed answer instead of blocking or
+  guessing. A device change mid-probe is re-probed, not published stale.
+
+## [1.11.1] — 2026-11-02
+
+**Nothing below was checked on a TV, a soundbar or a speaker pair.** 1.11.0 was
+never released: its tag build, and every Core EQ build after it until this one,
+stopped in the unit tests, because the 1 November features arrived with tests
+that did not compile. This APK is the first to carry 1.11.0's four measurement
+rules (below) as well as everything here. The Android-free Kotlin harness passes
+(647 tests) and lint reports 0 errors.
+
+- **Auto loudness, off by default.** Enhanced audio → Auto loudness restores the
+  bass and treble your ears lose at low volume, using the full ISO 226:2003
+  equal-loudness curves mapped to the ten EQ bands. It adds nothing at or above
+  the output's reference volume, never more than +6 dB per band, and it replaces
+  Low-volume bass while it is on. It needs an output whose volume Android reports
+  in dB; on any other output the status line says there is nothing to compensate.
+- **A measured correction turns itself on once per output.** The first time Core
+  EQ sees an output with a correction, it applies it; after that it only
+  suggests it, and you turn it on from Home.
+- **Core EQ remembers the profile you choose on each output** and prefers it
+  the next time that output is in use. Profiles → Learned preferences lists what
+  it has learned and clears it.
+- **Night mode mentions the time.** With Night mode focused in Enhanced audio,
+  the status line says when it is evening (19:00–22:00) or night (22:00–07:00),
+  in the TV's own time zone.
+- **Six more soundbars get manual-EQ presets.** Sonos Arc, Arc Ultra, Beam
+  (Gen 2) and Ray, Bose Smart Soundbar 900 and Samsung HW-Q990C each get Movie,
+  Dialogue, Music and Late night: 24 presets. They are drawn from published
+  specifications and reviews, and none has been measured by Core EQ. There are
+  also two new built-in presets: Smooth mids and Air.
+- **Fixed before release.** The tests the new features shipped with had never
+  run. Once they did, they found:
+  - **Nine pairs of identical presets.** They had the same curve under two names,
+    for example Sonos Arc Ultra · Movie, Samsung HW-Q990C · Movie and Sonos Beam
+    Gen 2 · Movie. Each one now follows its own model's reviews, so a preset name
+    always means a distinct sound.
+  - **Bose preset names too long.** They are now `Bose Smart 900 · …` to fit the
+    editor's 32-character name limit.
+  - **Auto loudness strength (internal).** The +6 dB cap now applies before the
+    strength scales the curve; before, half strength gave full compensation once
+    the volume was 30 dB down. The app always uses full strength, so nothing
+    audible changes.
+  - **Room-aware guidance and volume-aware suggestions (internal).** These are
+    not yet on any screen. The guidance read the correction's sign backwards,
+    calling a 5 dB lift a cut. The suggestion now counts exactly −30 dB as low
+    volume.
+- **CI.** The workflow is back to the one that built 1.10.1. The debug step and
+  full-history checkouts added while the build was red are gone.
+
+## [1.11.0] — 2026-10-31
+
+**Nothing below was checked on a TV, a soundbar or a speaker pair.** Every rule
+is new in the Android-free Kotlin harness and covered there, and lint passes. No
+sweep has been taken through a remote that reports its response, no refinement
+has been offered and refused on a real check, and no music app has been watched
+with Stereo speakers on.
+
+- **The microphone's own response now comes out of the measurement.** Android
+  reports each active microphone's frequency response
+  (`activeMicrophones[].frequencyResponse`), and Core EQ has stored those points
+  on the profile as provenance since 1.6.1 — but never used them, so a remote
+  that reads 4 dB low at 3 kHz made the room look 4 dB down there and the
+  correction followed it. `SweepAnalysis` now subtracts the reported curve from
+  the band data before nulls, roll-off and the correction read it, deliberately
+  conservatively: at least four valid in-band points or the list is ignored
+  whole; no extrapolation past the reported span; and at most ±6 dB per band, so
+  a wrong or stale report cannot move the correction further than that. Flat
+  metadata is an exact no-op, signal-to-noise still comes from the raw capture
+  (the response scales signal and noise alike), and text exports now say
+  plainly whether the points were applied or kept as metadata.
+- **A check refinement has to prove itself before it earns the button.** The
+  check's figures are read twice: as evidence on screen, and as a gate on the
+  offer. A proposed step is withheld — with the numbers still on screen, and the
+  correction unchanged — when the residual would not drop by at least 0.3 dB RMS
+  (one capture of the same room disagrees by more than that), and the worst band
+  may not grow by more than 0.5 dB on the strength of one capture's average.
+  From +0.8 dB the offer is labelled clearly better.
+- **Stereo speakers listens to what is playing.** The +3 dB speech lift exists
+  for speech inside a folded 5.1 mix; on Music that speech is not there to
+  recover, and the lift would raise the programme with nothing to show for it.
+  With Content type's auto-detect (or manual pick) on, Music folds with the bass
+  guard alone and the service line says so; every other content type — including
+  the fallback when nothing is recognised — keeps the lift whole. Dialogue boost
+  is the user asking for speech by name and is never overruled by the guess.
+- **The Stereo speakers status line says what is true, not what to ask for.**
+  With the "Modify system settings" permission already granted, the setting
+  still showed the permission-ask panel (#413, finding 5). The decision is now
+  one pure, unit-tested table: with the permission in hand and Surround sound
+  still not Never, the line says how to finish by hand — the TV's own menu, the
+  ADB line, or switching the feature off and on to retry — instead of asking for
+  a permission the user already gave.
+
+## [1.10.1] — 2026-10-31
+
+**Nothing below was checked on a TV, a soundbar or a speaker pair.** The route query
+is the one the output label has used since 1.8, the rule around it is in the
+Android-free Kotlin harness (green), and no device has been watched with headphones
+playing and an optical output plugged in at the same time.
+
+- **Bitstream capability is judged by the output in use, not every port plugged in.**
+  `OutputRoute` counted any connected optical output (Android's `TYPE_LINE_DIGITAL`)
+  as making a wired route able to carry Dolby or DTS undecoded. With wired headphones
+  or an analogue line-out actually playing — an optical port stays connected beside
+  them — switching Stereo speakers on still set the TV's Surround sound to Never, for
+  an output that only ever takes PCM. On Android 13 (API 33) and later Core EQ now
+  asks which devices handle media (`getAudioDevicesForAttributes`, the same query
+  behind the output label) and counts only those; where Android names no route, and
+  on Android 11–12, the connected-output estimate stands exactly as in 1.10.0.
+  This is the decision 1.10.0 deferred as finding 2 of the review, tracked in #413.
+
+## [1.10.0] — 2026-10-30
+
+**Nothing below was checked on a TV, a soundbar or a speaker pair.** The new maths (the
+speech lift, the bass guard, the Surround sound decisions and the optical check) is
+covered by the Android-free Kotlin harness (572 tests, 10 of them new, green), and lint
+passes. Nobody has played a 5.1 film through it, or pressed the new switch with a remote.
+
+- **Stereo speakers, for 5.1 on two speakers.** A new switch at the top of Extra effects,
+  off by default, for a 2.0 soundbar or a speaker pair. Folding 5.1 to stereo (Android's
+  `ChannelMix`: fronts at 1.0, the centre at 0.707 into both sides, each surround at 0.707,
+  the LFE at 0.5) turns the centre channel, where the dialogue is, into a phantom image
+  between two spaced speakers, and pours in a bass channel small speakers cannot play. The
+  switch answers both:
+  - **Speech lift:** +3 dB across 2.2–4.5 kHz, on Dialogue boost's curve. **It is a presence
+    lift, not the fold's deficit put back.** ChannelMix mixes the centre into each channel at
+    0.707 — 3.01 dB below a front — but the centre is in *both* channels, so a listener between
+    two spaced speakers gets +3.01 dB against the same signal from one speaker on axis, and
+    0.00 dB in a diffuse field. The fold is level-neutral: it does not under-level dialogue at
+    all. What it costs is the image (a comb-filtered phantom that collapses off-axis) and the
+    small drivers' headroom where intelligibility lives, and that is what the lift is for. Dialogue boost's +2 dB is not added on top, and a Dialogue or House target's own +2 dB
+    is counted, so those get +1 dB. Android gives apps no mid/side stage, so music in that band
+    rises with the speech; the note says so.
+  - **Bass guard:** −6 dB below half an octave under the speaker's measured roll-off, nothing
+    from the roll-off up. Content the speaker cannot play only spends headroom, and the
+    protection limiter answered every explosion by pulling the dialogue down with it. A
+    manual profile, with no measured roll-off, assumes 80 Hz. It works below the roll-off
+    and Low-volume bass above it, so the two never fight.
+- **It makes sure Android does the fold.** Dolby and DTS sent to a soundbar as a bitstream
+  are folded by the soundbar, where Core EQ never hears them. On an output that can carry
+  one (HDMI, HDMI ARC, optical), switching Stereo speakers on sets the TV's Surround sound to
+  Never, through Android 12's public `AudioManager.setEncodedSurroundMode`, once the user
+  allows Core EQ to "Modify system settings" (the new `WRITE_SETTINGS` permission; the
+  screen opens Android's page for it). Switching it off puts the old mode back, but only
+  while the setting is still Never: a later choice is never undone. On Bluetooth, USB and
+  analogue outputs nothing is changed, because they only take PCM. If Android refuses to
+  put the old mode back (the permission was withdrawn), Core EQ keeps it, retries on the
+  next visit and says how to restore it by hand. On Android 11, which has
+  no public switch, the panel gives the TV menu path and
+  `adb shell settings put global encoded_surround_output 1`.
+- **The restore is now one tested rule, not two lines in an activity.** Switching Stereo
+  speakers off puts the Surround sound mode back only if the setting is still Never, and
+  forgets the saved mode only once Android has accepted the write. That rule used to live
+  inside `EnhancedAudioSettingsActivity`, where the regression below could not be tested;
+  `SurroundOutput.restore` takes the write as a function and returns what is still owed, so
+  a refused write (permission withdrawn) keeps the saved mode and retries on the next visit,
+  and that path is now pinned by a test that fails without it.
+- **The bitstream warning now covers optical and Android 11.** It used to check HDMI on
+  Android 12+ only. Optical (S/PDIF) carries Dolby and DTS too, and Android 11 keeps the
+  Surround sound mode in a global setting Core EQ can read, so a soundbar on optical and every Android 11 box
+  (Shield among them) went unwarned. Home, Setup and the status line now cover both.
+
+## [1.9.0] — 2026-10-28
+
+**Nothing below was checked on a TV, a phone or a soundbar, and no display was measured
+with a colorimeter.** The new maths — the TV-equaliser mapping, the manual presets, the
+gamma and PQ codes behind the test patterns — is covered by this repository's Android-free
+Kotlin harness (183 cases, 16 classes, green) and ships in CI's `testDebugUnitTest`. CI also
+compiled the changed activities and `TestPatternView`, linted them, and installed and
+launched the app on the API 30 and 37.0 emulators — the screens build and open — but nobody
+has typed a value into a television's sound menu, looked at the new patterns on a panel, or
+pressed the new buttons with a remote.
+
+- **Twelve generic manual presets, each with a sentence saying what it does.** The manual EQ
+  used to be mostly product presets, which is no help to somebody with speakers Core EQ has
+  never detected. `ManualEq.BUILT_IN_PRESETS` now carries Flat plus eleven shapes that make no
+  claim about anybody's hardware — bass lift, speech clarity, less bass, night quiet, warm,
+  bright, podcast, sibilance tame, small-speaker body, remove boom, low-volume loudness — and
+  the preset picker shows the description on a second line, because "Warm" is a mood, not an
+  explanation. A preset is a tone, never a correction; the descriptions say so.
+- **The TV's own sound equaliser gets real numbers now.** Most televisions will not let Core EQ
+  near the built-in speakers, but all of them have a sound menu with a graphic equaliser in it:
+  five bands at 100 Hz / 300 Hz / 1 kHz / 3 kHz / 10 kHz at ±6 dB on most Samsung and LG sets,
+  seven bands at 125 Hz–8 kHz at ±12 dB on a Sony running Google TV. `TvSoundEq` maps any curve
+  onto those grids by sampling it at the menu's own centres — **Manual EQ → "Show these as TV
+  settings…"** shows the result and can export it as a text file.
+- **Three things the mapping refuses to pretend.** A band outside Core EQ's trusted 40 Hz–8 kHz
+  is reported as "—" with the reason, never as 0 dB, because 0 dB reads as "leave the treble
+  alone" and that is a recommendation the app has not earned (the Samsung 10 kHz slider is
+  therefore always "—"). A value the menu cannot accept is clamped and the wanted value is
+  printed next to it. And the report says what the numbers are not: the sliders are far wider
+  than Core EQ's filters, their shape is unpublished, and the result is a starting point to
+  adjust by ear.
+- **The capability screen's TV export was writing a layout no TV has.** It built a five-band
+  file from a guessed 60/230/910/3600/14000 Hz layout on hardware that reported nothing. It now
+  writes the `TvSoundEq` report for both known grids, sampled from the curve the correction
+  actually asks for — not the headroom-shifted one the service applies, because a television's
+  equaliser has no preamp and shifting it would leave a shape the menu cannot express.
+- **The calibration guide asks instead of lecturing.** `DisplayCalibrationActivity` was a fixed
+  list of ten patterns with one paragraph each: everybody got the same text and nobody was told
+  what to do when it looked wrong. It is now a ten-step walkthrough from `CalibrationGuide` —
+  picture mode, overscan, black, white, gamma, colour, sharpness, motion, uniformity, HDR, record
+  — where each step offers the answers a person can actually give ("the outer marker is cut
+  off", "the whole screen glows grey", "the top row stutters"), shows the advice for the one
+  chosen, and sends Next to the repair step that answer named.
+- **It also says which faults are not settings.** Motion smear is the panel's response time,
+  blotches are dirty-screen effect, and a 1080p interface on a 4K panel is Android's own UI
+  resolution. Sending somebody to a picture menu for those is worse than telling them the truth,
+  and the guide says it before they spend an evening on it.
+- **The display is described from what Android reports, above the first step.** Resolution,
+  refresh and HDR types come from `Display`; the notes turn them into consequences — this mode
+  is not a multiple of 24, so 24p material will judder unevenly; this display reports no HDR, so
+  the HDR pattern is a grey ramp here, and if the TV does support it the input's enhanced mode
+  is the usual reason Android cannot see it. Nothing here is guessed from the model name.
+- **Four test patterns were lying, and are fixed.** Black level used one-code steps (0…15) — a 6%
+  range in which bars 0 and 1 are the same colour on every panel, so "make bar 2 visible" could
+  not be followed; it is now two codes apart, 0…30, each labelled. White level stepped by one
+  code from 240 and put sixteen indistinguishable bars on screen; it now runs 200…255 with the
+  top at 250/253/255. Gamma drew `255·0.5^(1/γ)`, which put the γ2.4 patch at code **191** — a
+  near-white square on a 128 field, making every display look like γ1.8; patches are now derived
+  from the display's transfer, with a power-law row (γ2.2 → 128, γ2.4 → 120) and a BT.1886 row
+  that includes the standard's black offset (γ2.4 → 123). HDR drew six hand-picked greys and
+  claimed PQ tracking; it now draws real ST.2084 codes (100 nits → 128, 1000 nits → 192) and
+  says on screen whether the output is actually HDR.
+- **Three new patterns, and sizes in dp.** 24p judder (a marker stepped at 24 updates a second
+  against one at 60), motion resolution (gratings dragged at three speeds) and a device-pixel
+  grid, which together cover the part of a display no picture menu can change. Pattern text and
+  zones are now in dp, so a 4K panel no longer gets a 28-pixel label the size of a pinhead; the
+  two places where a device pixel is the point — the sharpness 1-pixel zone and the pixel grid —
+  still use one.
+- **The pattern arithmetic is testable, and tested.** It moved into `DisplayMath` (pure Kotlin,
+  no Android imports) so `DisplayMathTest` can pin it. Its first run failed twice for real
+  reasons: the white ladder contained 252/253/254, which are one code apart, and BT.1886 turns
+  out to be *brighter* than the plain power law because the black offset lifts mid-grey — not
+  darker, as first assumed. Both were fixed in the model, not in the assertions.
+- **Tests.** 40 new Kotlin cases across four files (`ManualPresetsTest`, `TvSoundEqTest`,
+  `CalibrationGuideTest`, `DisplayMathTest`) in the Android-free harness, which now runs 183.
+  They include the cases that would have caught the old behaviour: a gamma patch that must not be
+  the old 191, a ladder whose adjacent bars must stay separable, a refused TV band that must not
+  read 0 dB, and a clamp that must print what it wanted.
+
+## [1.8.0] — 2026-10-28
+
+**Nothing below was checked on a TV, a phone or a soundbar, and no acoustic
+measurement was taken for this release.** The refinement arithmetic is covered
+off-device by `CorrectionRefinementTest` (in this repository's Android-free
+Kotlin harness, and in CI's `testDebugUnitTest`) and by the Python reference in
+`tools/core_eq_dsp.py`. CI also compiled `MeasureActivity`, linted it and
+installed and launched the app on the API 30 and 37.0 emulators — the screen
+builds — but the new button has not been pressed on a device.
+
+- **The check sweep now changes the correction, if you let it.** *Check correction* has always reported three numbers and stopped: the room alone, the residual the correction should leave, and what the check actually heard. The difference between the last two is the useful part — band by band it says which way the correction was wrong — and a new **Use the check to refine** button offers to apply it. It is never applied on its own: the button appears only after a scored check, the correction on screen changes only when you press it, and Save keeps whatever is on screen. Check again afterwards to see whether the refinement helped; Save without pressing it and the check is evidence and nothing more, as before.
+- **Seven rules decide how far one check is believed.** The step is taken only on bands both sweeps can speak for (the same mask the figures on screen use); its weighted mean is removed first, so a check taken at another volume refines *shape* and not level; it is scaled by the weaker of the two sweeps' per-band confidence; a band can relax toward 0 dB but never change the direction the first measurement justified, and a band left at 0 dB is not touched; a lift needs a deficit the check itself heard at least 0.5 dB deep and must not sit on a cancellation the check found; the correction's own budget still applies — through the same `budgetEnvelope` the curve is clamped by, so the seat bass cap cannot be exceeded by the back door; and one band moves at most **3 dB**, slope-limited, with steps under 0.1 dB dropped rather than spending a filter on them. `docs/research/core-eq-closed-loop-refinement-2026-10-28.md` records why each exists.
+- **The "before → after" figure starts from what the check heard, not from the old measurement.** Once the two disagree the older curve no longer describes the room, so the refinement is predicted from the check's own residual plus the step. The result card says how many bands moved, by how much, what the residual is expected to become, and how many bands the rules refused to move — so "the check disagreed and nothing was done about it" is visible rather than silent.
+- **A refinement is not offered across a changed chain.** If the check's microphone, output, target or room setting differed from the measurement's, the check is still scored and still says so, but no refinement is offered: it would move the correction on evidence that does not describe the same measurement. The same line explains it.
+- **`Correction.budgetEnvelope`.** The per-band floor and ceiling the curve is held to is now one function, used by both the corrector and the refinement. Two copies of that arithmetic would be two chances to disagree about how much bass a correction may lift.
+- **Tests.** Fourteen new Kotlin cases and twelve in the Python reference, plus three new constants pairs held to the reference by `tests/test_core_eq_parity.py`. The rules are pinned by tests that fail without them: removing the level re-centring, the sign rule, the deficit guard or the shared-band mask each breaks a named case. The two implementations are held to one room — the same fixture prints −2.0080 dB at 100 Hz in both.
+
+## [1.7.1] — 2026-10-27
+
+**Nothing below was checked on a TV, a phone or a soundbar.** The correction
+arithmetic is covered by the off-device unit suite and by the Python reference
+in `tools/core_eq_dsp.py`; the phone-companion screen needs the Android SDK, was
+not compiled here, and has not been run. No acoustic measurement was taken.
+
+- **A cancellation is no longer boosted behind a report that says it wasn't.** The corrector refused nulls and minimum-phase-gated bands on the raw curve, and then two later steps moved every band: the slope limiter, and — decisively — the re-centring pass, which adds one constant to all of them. In a room that is hot against the target the correction mean is negative, so re-centring lifts the whole curve, and a null that had been zeroed came back at **+2.2 dB** and a gated band at **+3.0 dB** — in the same result that told you `63 Hz · deep null · not boosted`. Both refusals are now re-asserted on the finished curve, after every step that can move it, in the app and in the reference. Found while making the corrector smarter; the new tests fail on the old code with exactly those numbers. Not measured in a room.
+- **Bands are trusted by degrees instead of all-or-nothing.** A band 0.1 dB over the 10 dB signal-to-noise gate used to be corrected in full and a band 0.1 dB under it left at zero, so two sweeps of the same room could disagree by the whole correction. Trust now ramps from nothing at the gate to full at 20 dB over it, and the correction is scaled by it: a marginal band asks for less rather than being switched on or off. The gates still decide *whether* a band may be touched.
+- **A second seat buys more bass correction, and a third buys none.** Below the transition the bass lift was capped at +2 dB for one seat, because one seat cannot tell the room's dip from that chair's. When two or more seats were averaged that evidence exists, so the cap rises to **+3 dB** — still far below the +6 dB ceiling, because the microphone stays uncalibrated either way. The result card and the saved profile now state the budget that was actually used.
+- **The phone companion can be driven with a D-pad again.** Every control on that screen is built in code, and a `Button` constructed in code is *not* focusable the way one inflated from a layout is — so the screen had no focus targets at all and nothing ever requested initial focus. On a phone that is invisible; on a remote the cursor has nowhere to land and the first press is swallowed. It matters beyond phones: Home sends **any** device without `FEATURE_LEANBACK` straight to this screen, so a TV box or projector running a phone-style Android build lands there with a remote in hand. The button builder now sets focusable/clickable, the screen places the cursor when it opens, moving it into the remote panel when that appears, and the scroll container hands focus to its children instead of holding it. **The screen was not compiled or run here** — the properties are pinned by `tests/test_core_eq_companion_focus.py`, which fails on the previous source.
+- **A per-band audit for the refusals.** `CorrectionReport.gateViolations` reports any band whose gate and whose applied gain disagree. The wording still describes the gate, as before; this is the check that says whether the curve kept its promise.
+- **Tests.** Eight new Kotlin cases on the curve (the two leaks above, the general "every refusal survives the finished curve" case, the confidence ramp, its NaN/unreadable handling, half-trust halving a gain, and the seat budget) and eight in the Python reference, plus the companion-focus contract above. Two new constants pairs are held to the reference by `tests/test_core_eq_parity.py`.
+
+## [1.7.0] — 2026-10-25
+
+**Nothing below was checked on a TV, a phone or a soundbar.** Every figure and
+behaviour here comes from the measurement chain's own unit tests (478 tests,
+54 classes, green in the repository's Android-free harness), from the Python
+reference in `tools/core_eq_dsp.py`, or from published specifications. No
+acoustic measurement of any description was taken for this release.
+
+- **You can now set how far up the correction reaches.** Measure has a **Correct up to N Hz** button under Target: 500 Hz, 1 kHz, 2 kHz, 4 kHz or 8 kHz (the default, full band). The ceiling can only narrow the band — it is capped at 8 kHz and by the remote's own measured bandwidth edge — so it cannot be used to correct where nothing was heard. Bands above the ceiling are left at 0 dB, and a ceiling that would leave nothing to correct is refused with the reason instead of failing inside the curve maths. The choice is saved with the profile and named in the parametric export's header. **Known limit:** the phone-companion capture path analyses at the full band; the ceiling is a choice made on the TV's Measure screen and is not yet carried in the companion request. The point of it: above a few kHz a phone remote's microphone, not the room, is what the curve describes. Not tested on a TV.
+- **The result card says why each band was left alone.** Under the summary, the Measure screen now lists the largest corrections and the skipped bands with their reason — `63 Hz · deep null · not boosted`, `315 Hz · cut 4.2 dB`, `above 4 kHz · not corrected` — plus anything the room itself is doing that EQ cannot fix: bass decaying more than 1.4× longer than the midrange, a broadband decay above 0.6 s, or a sweep less than 30 dB above the noise floor. The text is derived from the saved result only, so it cannot disagree with the correction that was applied. It is descriptive; it does not change anything. REW imports get the same list, without the phase and noise reasons they cannot measure.
+- **The "corrects X–Y kHz" line was wrong whenever a ceiling applied.** It reported the top of the *measurement*, not the top of the *correction*. It now reports the band that was actually corrected.
+- **The parametric export always names its correction band, and now names the right one.** A profile exported with no filters (the case where a reader most needs the band) used to get only `# Core EQ: no filters`; it now states the band too. `correction_range_hz` in the profile JSON was written as 40 Hz–8 kHz unconditionally and never read back; it now carries the band that was actually corrected and reloads as the profile's ceiling.
+- **A/B switch on Home, and it does not cheat.** One button, visible only while correction is on, alternates between the correction and a loudness-matched bypass; its label names the state you are not in (`Hear it without correction` / `Back to corrected`). The choice is a stored preference the service reads for every session it corrects, so it survives the activity being recreated, and it re-writes the held effect's band gains rather than releasing and recreating it, so the switch does not drop audio. Both sides come from the same fit path (`BandMapping.AbSide`), and the bypass sits at the mean of what the correction **actually applies** — after the headroom shift, so it is not one preamp louder — never above 0 dB, so it cannot clip, and clamped to the backend's own gain range like any other curve. **The two halves are not equally proven:** `BandMapping` and the switch's own rules (`CorrectionSwitch`) are covered by the harness — side equivalence, level match, range clamp, and what happens across a correction off/on cycle — but `EqService`, `DynamicsProcessingEngine` and `MainActivity` need the Android SDK, were not compiled by this suite, and the button has not been run. Not tested on a TV.
+- **JBL Bar 2.0 · Everyday preset.** A six-band starting point for the bar's published 70 Hz–20 kHz (−6 dB) response: +2 dB at 125 Hz, −1 at 250, +1 at 2 kHz, +1 at 4 kHz, −1 at 6.3 kHz, −1.5 at 8 kHz. Nothing is asked for below 70 Hz, and its peak boost of +1.7 dB is deliberately small so it stacks on a measured correction without eating the headroom. It is now the first preset for that model and the one the name match selects. Written from the spec sheet and published reviews; it is a starting point, not a measurement.
+- **"JBL Bar 2.0 · Open stage" is now "· Air".** The filters are unchanged. No EQ setting widens a stereo image, so the name no longer says it does.
+- **Honest in-app text.** The Content-type screen's per-type descriptions now state what those types actually do — a BassBoost of 0–600 and a LoudnessEnhancer of 0–400 mB, sized for intelligibility — instead of implying a per-type equalisation curve. Likewise the ContentType KDoc no longer describes target curves that were never applied.
+- **`UseCaseTargets` deleted.** Ten curated curves and a box-shape helper, 604 lines, with no runtime consumer: `Targets.targetCurve` is the only curve the app applies. Its `boxShape()` also had a real defect — a 1.0 → 0.0 step between 2100 and 2200 Hz, 1.000 dB in a single 1/24-octave step against 0.130 for the `Targets.boxDb` bell used in practice. Removing it removes the trap rather than mending dead code. `ContentType`/`ContentTypeRegistry` stay: they are live through `ExtraPlan.of()`.
+- **`Targets.PIVOT_HZ`.** The 630 Hz normalisation point the target curves have always used is now a named constant instead of a literal repeated in four functions.
+- **Bad input is refused where it enters, not deep inside the maths.** The correction curve, both smoothing helpers, the slope limiter and both analysis entry points now validate their arrays, frequencies, sample rate, sweep length and filter count up front. A mismatched array used to surface as an `ArrayIndexOutOfBoundsException` from a smoothing loop; it now names the actual problem.
+- **Tests that run the DSP instead of describing it.** New suites cover the correction curve (slope limit, edge taper, null handling, cut-only mode), the peaking fit (budget, determinism, preamp, out-of-budget inputs), target-curve shape, the per-band report, the loudness-matched bypass, the ceiling end to end (import → saved profile → exported header), and the shipped soundbar presets as *curves* rather than as lists of numbers. Ten test files that already existed but had never been compiled by the harness now run (85 tests), among them the output-route association (`OutputRouteTest`, 20) and the soundbar preset matching (`HardwarePresetsTest`, 17) — which is how a preset count that had silently gone stale was caught. The harness's `org.json` stand-in gained the indexed `JSONArray.put` the real class has. `ResourceReferencesTest` now resolves every `@kind/name` in `res/` and every `R.kind.name` in Kotlin against what the app actually declares — the check aapt2 performs at link time and the one thing this harness otherwise cannot see, since none of the UI sources compile without the SDK.
+
+## [1.6.1] — 2026-10-25
+
+### Added
+
+- **Optional MediaSession-based app identity for mode rules.** Content modes can use Android's user-granted Notification access to read active media-session package names and `PLAYING`/`BUFFERING` state when DUMP is unavailable. Core EQ never reads notification text or metadata and never uses this source to create an audio effect or infer the output route. Unknown/conflicting playback still falls back to Everyday. The Mode screen and Setup check explain the consent and limits; manual modes remain available without either identity source. While correction runs, Android's active-session and per-controller playback-state callbacks trigger debounced refreshes; the callbacks do not inspect metadata or control playback.
+- **First-install welcome and guided setup.** A new TV install gets a one-time, remote-friendly guide to choose the output, measure the room and review the first correction. Upgrades are not interrupted. It explains that a first GREEN result may turn correction on automatically, that ADB is optional for core measurement/manual modes, and that TV firmware may refuse optional permissions. Setup now links directly to Google's official Platform-Tools and explains common `adb` not found, unauthorized, offline, port and DUMP-denied cases. No command is run by Core EQ; the user copies and reviews each command.
+- **Playback identity diagnostics.** The Content modes screen distinguishes DUMP and MediaSession access, shows whether the persisted player snapshot was complete, and displays the mode decision context. It states that Android does not report snapshot freshness and that package/state identity does not establish audibility, physical output route, or effect coverage.
+- **Portable Core EQ profile exchange.** Profiles export and import the versioned `corebuilds.core-eq/1` JSON format, including mode overlays and measurement provenance. Import is reviewed before saving and gets a new local profile ID; imported measurement metadata does not claim qualification on a different device/output.
+- **Poweramp preset JSON export.** Profiles can be exported as a Poweramp-style preset JSON file, in addition to the existing AutoEQ/Equalizer APO text and Poweramp JSON import paths. The UI labels the unversioned filter-code mapping as best-effort; AutoEQ/Equalizer APO text remains the safer cross-version interchange path. Poweramp Equalizer installation on Android TV is not required.
+
+## [1.6.0] — 2026-10-24
+
+**Known limits (beta).** Read these before relying on Core EQ.
+
+- **No hardware qualification.** Correction has been checked on the emulator and in CI only. Audio paths, acoustic response and microphone calibration have not been checked on a TV or phone.
+- **Auto-apply changes audio.** The first clean (GREEN) measurement per output kind is applied without a tap. Switch it off or switch back in Profiles if a correction sounds wrong.
+- **Imported targets are limited to +6 / −12 dB**, held to the same budget as a correction.
+- **Phone pairing and discovery are untested on real networks and devices.** Mesh routers, guest Wi-Fi and some QR scanners may fail. A failed pairing is visible; the code is required every time.
+- **The imported target curve is held process-wide.** It is only changed on the Measure screen, and each saved profile keeps its own copy.
+- **Preset soundbar tones are starting points** from spec sheets and reviews, not measurements.
+
+- **The Home badge says when correction is on.** While correction is switched on and no playback is reported, the badge reads `ON · WAITING FOR PLAYBACK` in cyan instead of the grey `STANDBY`. The playing and not-applied states are unchanged. Not tested on a TV.
+- **The on-screen card's display time is yours to set.** Profiles has a **Card on screen** button that cycles 1 to 10 seconds (4 by default). It applies to the applied-profile card and the test card. Not tested on a TV.
+- **Tone presets for more soundbars.** Samsung HW-Q800H (and F), Sony Bravia Theatre Bar 6, LG S80TR and JBL Bar 1000 MK2 now have Movie, Dialogue and Music presets. They are picked by the output's product name, as the JBL Bar 800 presets are. They are starting points written from spec sheets and listening reviews, not measurements by Core EQ, and they sit on top of the measured correction. Not tested on the soundbars.
+- **A phone that finds the TV opens its pairing code.** While the TV's Phone link screen is open, a phone that searches and finds the TV asks it to show its pairing code. The request carries no code and grants nothing: pairing still needs the code on the TV screen. The TV accepts at most one such request every five seconds, and ignores them once a phone is paired. Any device on the same Wi-Fi can send that request, so a stranger can make the code appear on the TV, but cannot pair without it. Not tested on a phone and TV.
+- **Target files with decimal commas.** A line such as `20,5 -3,2` (decimal commas, space-separated) is now read as 20.5 Hz at −3.2 dB. It was read as 20 Hz at 5 dB before, with no error.
+- **Measure up to three seats and average them.** After a sweep, Measure has a **Before you save** card. **Add a seat (2 of 3)** sweeps again from another place a head goes, and the seats are combined into one correction. Each band is the energy mean across seats, the same `average_measurements` the Python reference uses, so a dip at one chair cannot cancel a peak at another. The averaged curve then goes through the same correction as one seat: nulls and roll-off are read again from the average, a band is corrected only where every seat measured it cleanly, it stops at the narrowest seat's bandwidth edge, and the bass lift keeps the single-seat 2 dB cap. With three seats, one whose 300 Hz–3 kHz response sits more than 4 dB RMS from the other two is left out and named on screen. A seat measured through another output or remote is refused rather than averaged. The saved profile notes the seat count and any seat left out. Phone-mic measurements stay single-position. In a synthetic test, a peak only one of three seats hears is cut at least 1.5 dB less than that seat alone would cut it, while a peak all three hear is cut as deeply as before.
+- **Check the correction before saving.** **Check correction** plays the sweep again through the correction on screen. The correction runs on an audio session of its own while the service stays suspended, so the sweep is corrected exactly once, whether or not the service reaches that output. Three figures appear under the graph, all against the target: the room alone, the residual the correction should leave (predicted), and what the check sweep actually heard. A green **CHECK · CORRECTION ON** trace is drawn too. Bands the correction deliberately leaves alone (nulls, non-minimum-phase bass, noisy bands, outside the floor and bandwidth edge) are not counted. The check changes nothing and saves nothing by itself; if you then save, its figures go into the profile's notes. It is descriptive, not a pass/fail. It needs DynamicsProcessing; a TV that refuses it gets "Check not run" with Android's reason.
+- **The TV keeps the same phone-link port.** The listener used to take a new random port every time the phone link opened, so a paired phone's saved port was always stale: every reconnect failed once ("connection refused") and then relied on mDNS, which never answers on a network that blocks multicast (guest Wi-Fi, AP isolation, some mesh systems). The TV now listens on port 29517 every time, and falls back to a random port only when another app holds it, with mDNS and the QR finding it as before.
+- **The first QR scan on a phone downloads the scanner instead of failing.** Google's code scanner is a Play services module that downloads on first use, and until now that first scan failed with "QR scanning is not available on this phone". The phone now checks for the module, downloads it with "Downloading the QR scanner…", then opens the camera. "Not available" now means Play services really could not provide it.
+- **Target files: REW house curves and CSV too.** Besides GraphicEQ, the import reads one point per line, frequency then gain, split by spaces, tabs, commas or semicolons (REW house curves, AutoEq target CSVs). Header and `*` / `#` comment lines are skipped, a decimal comma works when columns are split by `;` or tabs, and extra columns are ignored. Points outside 20 Hz–20 kHz are left out with a note instead of refusing the file, and files with more than 256 points are resampled to 256 instead of refused. A number that does not parse still rejects the file.
+- **Imports work on TVs without the system file picker.** Many Android TV, Google TV and Fire TV builds have no DocumentsUI. The REW, target and Manual EQ imports now fall back to any installed file manager (`ACTION_GET_CONTENT`), and only say there is no picker when neither exists.
+- **Phone remote actions ask for local-network access first.** Correction on/off, modes, profile changes and measuring now request the Android 17 local-network permission like Find, Pair and Connect do, instead of timing out after 5 s with "connect timed out" when it was denied.
+- **TV search survives a quick second search.** A search started while the previous one was still resolving a TV could find Android's resolver busy and drop that TV ("No Core EQ TV found"). It now retries that lookup twice, 300 ms apart, and a finished search releases the resolver (Android 14+).
+
+- **Auto-apply once per output (new, changes audio).** The first GREEN-quality measurement for each output kind is saved and applied without a tap. Later measurements, weaker recordings, and outputs Android does not name are only shown. Hardware qualification is not done, so check the first applied correction and switch back in Profiles if it sounds wrong.
+- **Import a target curve on the TV.** Measure has a new **Import target file (GraphicEQ, REW, CSV)** button. The file is read as a target normalised to 0 dB at 1 kHz and held to the same +6 / −12 dB budget as a correction. Choosing a built-in target again returns to it. The imported curve is saved on the TV. Profiles saved with it are recorded as `custom` and keep their own copy of the curve (`target_points` in the profile JSON and the backup), so Profiles still draws the target each one was corrected towards after another import or a restart. The phone companion still uses built-in targets only.
+
+- **Pairing QR lists up to three TV addresses.** A TV with more than one LAN address puts them in the QR, the active network's (Wi-Fi or Ethernet) first. The phone tries the next address only when a connection fails, so a wrong first interface no longer blocks pairing, and a pair that succeeds is never retried on the next address. A wrong code is still reported straight away.
+
+- **Easier phone pairing and reconnects.** Opening the phone companion with no TV paired starts the TV search straight away. If a saved TV stops answering, the phone searches the LAN once and tries each Core EQ TV it finds at a new address with the saved token, one at a time, until one accepts it; the token is the identity check, so a second TV answering first costs one attempt, and the new address is saved only after it connects. A TV typed in or scanned while the search runs is kept, not replaced by what the search finds.
+
+- **Pair by QR code.** While pairing is open, the TV shows a QR code beside the one-time code. It carries the TV's LAN address, the listener port and the same key, and it disappears with the pairing window. On the phone, **Scan TV QR** reads it with Google's code-scanner module (no camera permission) and runs the same encrypted pairing. Typing the address and code still works. The QR format is strict and covered by unit tests. A 6-digit code was not added: over plain HTTP on a LAN it can be checked offline, so a short code needs a password-authenticated key exchange first.
+- **Phone pairing needs Google Play services** for the QR scanner. Without it, the button reports that scanning is unavailable and the typed route still works.
+
+- **Phone companion finds the TV.** While the TV's phone link is open it advertises itself on the LAN over mDNS (`_coreeq._tcp`) with only a display name and port. The phone's new **Find TV on this Wi-Fi** button fills in the address and port. Pairing still needs the one-time code shown on the TV, and a wrong or stale address just fails the handshake.
+- **Phone companion layout.** The screen now clears the status bar, navigation bar and display cutouts (targetSdk 37 draws edge-to-edge), keeps the focused field above the keyboard, and lets the three listening-mode labels wrap instead of clipping on narrow phones. Physical-device qualification of the layout is still required.
 
 ## [1.5.2] — 2026-10-13
 

@@ -40,6 +40,7 @@ from icon_style import display_accent  # noqa: E402
 from glyphs import stroke_label, stroke_label_width  # noqa: E402
 from drawable_art import (ART_EXT, BRANDING_PNGS, alias_identical,
                           write_aliases_file)  # noqa: E402
+import alternates  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "tools" / "catalog.json"
@@ -384,6 +385,15 @@ def main():
             PNG_DIR / f"{i['drawable']}_banner{ART_EXT}", "WEBP", lossless=True)
     print(f"\u2713 banner WebP {PNG_W}x{PNG_H} transparent written "
           f"({len(targets)}/{len(targets)}) \u2192 res/drawable-nodpi/")
+    # Alternates (tools/alternates.py): the supplied 16:9 lockup, resampled.
+    # Manual-only, so outside the alias pass and every appfilter.
+    for d, spec in alternates.entries(data):
+        alternates.banner(spec).save(PNG_DIR / f"{d}_banner{ART_EXT}", "WEBP",
+                                     lossless=True)
+    if alternates.entries(data):
+        print(f"\u2713 alternate banners written "
+              f"({len(alternates.entries(data))}): "
+              + ", ".join(f"{d}_banner" for d, _ in alternates.entries(data)))
 
     # Identical banners ship once (renamed-app twins); stale banner PNGs go.
     banner_files = [PNG_DIR / f"{i['drawable']}_banner{ART_EXT}" for i in targets]

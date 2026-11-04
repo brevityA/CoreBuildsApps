@@ -3,7 +3,7 @@
  * Post-deploy smoke for the icon-request broker — safe against production:
  * everything it checks is non-mutating. Never creates a request/issue.
  *
- *   node smoke.mjs [--strict] [--require-sink] https://<name>.<subdomain>.workers.dev
+ *   node smoke.mjs [--strict] [--require-sink] [--require-plus] https://<name>.<subdomain>.workers.dev
  *
  * --strict requires the /healthz version to equal this checkout's
  * WORKER_VERSION (the deploy pipeline's wait-loop pass exactly like the
@@ -12,14 +12,19 @@
  * --require-sink fails when the worker has no way to file a request
  * (/healthz reports sink "none"): a deploy that set its secrets must not
  * pass smoke while the worker still answers every press with a 503.
+ *
+ * --require-plus fails when /healthz reports "plus": false: a deploy that
+ * pushed GOOGLE_SERVICE_ACCOUNT_JSON must be able to read it, or every Plus
+ * request is quietly filed without priority.
  */
 import { readFileSync } from "node:fs";
 
 const strict = process.argv.includes("--strict");
 const requireSink = process.argv.includes("--require-sink");
+const requirePlus = process.argv.includes("--require-plus");
 const base = process.argv.find((a) => a.startsWith("http"));
 if (!base) {
-  console.error("usage: node smoke.mjs [--strict] [--require-sink] https://…workers.dev");
+  console.error("usage: node smoke.mjs [--strict] [--require-sink] [--require-plus] https://…workers.dev");
   process.exit(2);
 }
 
@@ -38,6 +43,7 @@ check("healthz ok", health.ok, true);
 check("healthz version present", typeof health.version, (v) => v === "string" && v.length > 4);
 if (strict) check("version matches checkout", health.version, ownVersion);
 if (requireSink) check("a filing sink is configured", health.sink, (s) => typeof s === "string" && s !== "none");
+if (requirePlus) check("the Plus purchase check is configured", health.plus, true);
 
 const getRoot = await fetch(`${base}/`);
 check("GET / is 405", getRoot.status, 405);

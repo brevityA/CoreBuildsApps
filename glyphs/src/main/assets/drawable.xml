@@ -3,6 +3,8 @@
 <resources>
     <category title="Square · Core Builds" />
     <item drawable="corebuilds" />
+    <item drawable="corebuilds_glyphs" />
+    <item drawable="corebuilds_glyphs_pack" />
     <item drawable="coredoctor" />
     <item drawable="coreeq" />
     <item drawable="coreline" />
@@ -25,6 +27,7 @@
     <item drawable="filmrise" />
     <item drawable="platform" />
     <item drawable="flix_vision" />
+    <item drawable="flixed" />
     <item drawable="androidtv_4" />
     <item drawable="justwatch" />
     <item drawable="androidtv_5" />
@@ -62,6 +65,7 @@
     <item drawable="weyd" />
     <item drawable="weyd_2" />
     <item drawable="wuplay" />
+    <item drawable="wuplay_alt" />
     <item drawable="yangoplay" />
     <category title="Square · Media centres" />
     <item drawable="dsvideo" />
@@ -71,6 +75,7 @@
     <item drawable="mediabrowser" />
     <item drawable="pixee" />
     <item drawable="plex" />
+    <item drawable="plezy" />
     <item drawable="silo" />
     <category title="Square · On demand" />
     <item drawable="tenplay" />
@@ -89,6 +94,7 @@
     <item drawable="binge" />
     <item drawable="beachbody" />
     <item drawable="britbox" />
+    <item drawable="cinobo" />
     <item drawable="crunchyroid" />
     <item drawable="curiositystream" />
     <item drawable="discovery" />
@@ -118,9 +124,12 @@
     <item drawable="visionplus" />
     <category title="Square · Live TV" />
     <item drawable="xtreamplayeranddownloader" />
+    <item drawable="aquaplay" />
     <item drawable="buzztv6" />
+    <item drawable="deltatv_nl" />
     <item drawable="iptv3u" />
     <item drawable="drama_live" />
+    <item drawable="eaglecast" />
     <item drawable="eternaltviptvbox" />
     <item drawable="fivetviptvbox" />
     <item drawable="screen" />
@@ -135,6 +144,7 @@
     <item drawable="iptv_smarters_plus" />
     <item drawable="kemo_iptv" />
     <item drawable="streamingkemo" />
+    <item drawable="la7" />
     <item drawable="lazyiptvdeluxe" />
     <item drawable="livetv" />
     <item drawable="live_ultra" />
@@ -143,6 +153,7 @@
     <item drawable="myiptv" />
     <item drawable="dcsapp" />
     <item drawable="oktv22" />
+    <item drawable="ott_navigator" />
     <item drawable="ottnavigator" />
     <item drawable="owntv" />
     <item drawable="siptv" />
@@ -158,6 +169,7 @@
     <item drawable="thundertv" />
     <item drawable="tvplayer" />
     <item drawable="tcl_tv" />
+    <item drawable="uyaniktv" />
     <item drawable="wave_iptv" />
     <item drawable="wavetv" />
     <item drawable="nathnetwork_2" />
@@ -165,6 +177,7 @@
     <item drawable="zeniptv" />
     <category title="Square · Players" />
     <item drawable="a_8k_player_vip" />
+    <item drawable="aurora_player" />
     <item drawable="basis" />
     <item drawable="dream_player_tv" />
     <item drawable="gridstreamr" />
@@ -180,10 +193,12 @@
     <item drawable="nova_video_player" />
     <item drawable="ottplayer" />
     <item drawable="player" />
+    <item drawable="scorebox" />
     <item drawable="tdtchannels_player" />
     <item drawable="tg4_player" />
     <item drawable="tubplayer" />
     <item drawable="tvi_player" />
+    <item drawable="vax_player" />
     <item drawable="vimu" />
     <item drawable="vlc" />
     <item drawable="vstro_player" />
@@ -209,6 +224,7 @@
     <item drawable="launchsounds" />
     <item drawable="deezer" />
     <item drawable="dsaudio" />
+    <item drawable="eclipse" />
     <item drawable="fmradio" />
     <item drawable="clearchannel" />
     <item drawable="kfandroid" />
@@ -219,6 +235,7 @@
     <item drawable="podcastaddict" />
     <item drawable="poweramp_eq" />
     <item drawable="music" />
+    <item drawable="radio_france" />
     <item drawable="radio_on_tv" />
     <item drawable="radioparadisewidget" />
     <item drawable="radio_net" />
@@ -245,6 +262,7 @@
     <item drawable="sportscaster" />
     <item drawable="dazn" />
     <item drawable="score_center" />
+    <item drawable="euroleague_tv" />
     <item drawable="euronews" />
     <item drawable="production" />
     <item drawable="foxsports_2" />
@@ -263,12 +281,14 @@
     <item drawable="rally_tv" />
     <item drawable="americasvoicenews" />
     <item drawable="rugbypass_tv" />
+    <item drawable="sport_fm_tv" />
     <item drawable="sport_tv" />
     <item drawable="sportseverywhere" />
     <item drawable="sportsfire" />
     <item drawable="sportsnet" />
     <item drawable="sportzx" />
     <item drawable="sync_sports" />
+    <item drawable="streamfc" />
     <item drawable="rlcplus" />
     <item drawable="talksport" />
     <item drawable="tennis_channel" />
@@ -344,6 +364,8 @@
     <item drawable="fastest" />
     <item drawable="apktime" />
     <item drawable="atvtools" />
+    <item drawable="background_apps_processes" />
+    <item drawable="blackout" />
     <item drawable="buttonmappertv" />
     <item drawable="developer_tools" />
     <item drawable="download_navi" />
@@ -351,13 +373,13 @@
     <item drawable="dr_nettools" />
     <item drawable="dsfinder" />
     <item drawable="dsget" />
+    <item drawable="eset_smart_tv_security" />
     <item drawable="fasttaskkiller" />
     <item drawable="playstore_2" />
     <item drawable="ip_address" />
     <item drawable="iptools" />
     <item drawable="jtv_go_server" />
     <item drawable="launch_on_boot" />
-    <item drawable="luckymanager" />
     <item drawable="magiconnect" />
     <item drawable="matvt_mouse_for_android_tv_toggle" />
     <item drawable="omnisoft" />
@@ -367,6 +389,7 @@
     <item drawable="nuyowifianalyzer" />
     <item drawable="remote_capture" />
     <item drawable="pmx" />
+    <item drawable="porter" />
     <item drawable="quickbars_for_home_assistant" />
     <item drawable="ram" />
     <item drawable="dinhlap" />
@@ -389,6 +412,7 @@
     <item drawable="universalmanager" />
     <item drawable="virtualhere_usb_server" />
     <item drawable="booster" />
+    <item drawable="watchbridge_tv" />
     <item drawable="zank_remote" />
     <item drawable="goodtoolapps" />
     <category title="Square · Stores" />
@@ -409,6 +433,7 @@
     <item drawable="launcher" />
     <item drawable="gamelauncher" />
     <item drawable="ltvlauncher" />
+    <item drawable="luckymanager" />
     <item drawable="launcher_manager" />
     <item drawable="leanbackonfire" />
     <item drawable="monet" />
@@ -489,6 +514,7 @@
     <item drawable="aircast" />
     <item drawable="airpin_pro" />
     <item drawable="receiver" />
+    <item drawable="airplay_touch" />
     <item drawable="airreceiverlite" />
     <item drawable="airscreen" />
     <item drawable="al_jazeera" />
@@ -497,6 +523,7 @@
     <item drawable="amazing_classics" />
     <item drawable="amcandroidtv" />
     <item drawable="amnis" />
+    <item drawable="ampchor" />
     <item drawable="angel" />
     <item drawable="anikentv" />
     <item drawable="anilab" />
@@ -792,7 +819,6 @@
     <item drawable="orftvthek" />
     <item drawable="osn" />
     <item drawable="otf_tv" />
-    <item drawable="ott_navigator" />
     <item drawable="ottplay" />
     <item drawable="panda_plus" />
     <item drawable="scrobble" />
@@ -1005,6 +1031,7 @@
     <item drawable="x_tv" />
     <item drawable="xstream_play" />
     <item drawable="xumo_play" />
+    <item drawable="xuper_tv" />
     <item drawable="yacine_tv" />
     <item drawable="selfcare" />
     <item drawable="yettel_tv" />

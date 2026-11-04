@@ -24,6 +24,7 @@
     <item drawable="aircast" />
     <item drawable="airpin_pro" />
     <item drawable="receiver" />
+    <item drawable="airplay_touch" />
     <item drawable="airreceiverlite" />
     <item drawable="airscreen" />
     <item drawable="ak47sports" />
@@ -38,6 +39,7 @@
     <item drawable="amazon" />
     <item drawable="amcandroidtv" />
     <item drawable="amnis" />
+    <item drawable="ampchor" />
     <item drawable="fastest" />
     <item drawable="anexplorer_pro" />
     <item drawable="angel" />
@@ -60,6 +62,7 @@
     <item drawable="appletv" />
     <item drawable="applinkednew" />
     <item drawable="aptoide" />
+    <item drawable="aquaplay" />
     <item drawable="arc_browser" />
     <item drawable="ard_mediathek" />
     <item drawable="ard_sounds" />
@@ -73,10 +76,12 @@
     <item drawable="atvtools" />
     <item drawable="audials" />
     <item drawable="audiomack" />
+    <item drawable="aurora_player" />
     <item drawable="aurora_store" />
     <item drawable="av_source" />
     <item drawable="award" />
     <item drawable="babyeinstein" />
+    <item drawable="background_apps_processes" />
     <item drawable="background_apps_and_process_list" />
     <item drawable="ballyscorp" />
     <item drawable="basis" />
@@ -94,6 +99,7 @@
     <item drawable="binged" />
     <item drawable="bitdefender" />
     <item drawable="bit_tv" />
+    <item drawable="blackout" />
     <item drawable="blip" />
     <item drawable="blokada" />
     <item drawable="bloomberg" />
@@ -130,6 +136,7 @@
     <item drawable="cinemaghar_tv" />
     <item drawable="danielkorgel" />
     <item drawable="cinemahd_stable" />
+    <item drawable="cinobo" />
     <item drawable="citytvplus" />
     <item drawable="metacubex" />
     <item drawable="clip_tv" />
@@ -140,6 +147,8 @@
     <item drawable="coji_tv_browser" />
     <item drawable="comedybox" />
     <item drawable="corebuilds" />
+    <item drawable="corebuilds_glyphs" />
+    <item drawable="corebuilds_glyphs_pack" />
     <item drawable="coredoctor" />
     <item drawable="coreeq" />
     <item drawable="coreline" />
@@ -171,6 +180,7 @@
     <item drawable="debrify" />
     <item drawable="deezer" />
     <item drawable="deltatv" />
+    <item drawable="deltatv_nl" />
     <item drawable="developer_tools" />
     <item drawable="digdroid" />
     <item drawable="digi_tv" />
@@ -211,8 +221,10 @@
     <item drawable="dudeperfect" />
     <item drawable="enhanced" />
     <item drawable="dw" />
+    <item drawable="eaglecast" />
     <item drawable="earthcamtv" />
     <item drawable="echogram" />
+    <item drawable="eclipse" />
     <item drawable="elefin" />
     <item drawable="emby" />
     <item drawable="appstore" />
@@ -225,11 +237,13 @@
     <item drawable="ertflix_2" />
     <item drawable="estrongs" />
     <item drawable="es_de_frontend" />
+    <item drawable="eset_smart_tv_security" />
     <item drawable="score_center" />
     <item drawable="nathnetwork" />
     <item drawable="eternaltviptvbox" />
     <item drawable="etube" />
     <item drawable="androidtv_6" />
+    <item drawable="euroleague_tv" />
     <item drawable="euronews" />
     <item drawable="expressvpn" />
     <item drawable="f_droid" />
@@ -264,6 +278,7 @@
     <item drawable="flicky" />
     <item drawable="flix_tv" />
     <item drawable="flix_vision" />
+    <item drawable="flixed" />
     <item drawable="flixnest" />
     <item drawable="findlink" />
     <item drawable="flosports" />
@@ -399,6 +414,7 @@
     <item drawable="kuku_tv" />
     <item drawable="ltvlauncher" />
     <item drawable="l_equipe" />
+    <item drawable="la7" />
     <item drawable="laliga" />
     <item drawable="lampa" />
     <item drawable="laughafterdark" />
@@ -604,11 +620,13 @@
     <item drawable="playstation" />
     <item drawable="plex" />
     <item drawable="plexamp" />
+    <item drawable="plezy" />
     <item drawable="pluto_tv" />
     <item drawable="pmx" />
     <item drawable="pocketcasts" />
     <item drawable="podcastaddict" />
     <item drawable="polsat_box_go" />
+    <item drawable="porter" />
     <item drawable="poweramp_eq" />
     <item drawable="ppsspp" />
     <item drawable="premier_sports" />
@@ -636,6 +654,7 @@
     <item drawable="tcl_quick_panel" />
     <item drawable="quickbars_for_home_assistant" />
     <item drawable="quicksupport" />
+    <item drawable="radio_france" />
     <item drawable="radio_on_tv" />
     <item drawable="radioparadisewidget" />
     <item drawable="radio_net" />
@@ -690,6 +709,7 @@
     <item drawable="sbsondemand" />
     <item drawable="scb_next" />
     <item drawable="scholastic" />
+    <item drawable="scorebox" />
     <item drawable="screen_recording_app" />
     <item drawable="screenscape" />
     <item drawable="sd_maid" />
@@ -734,6 +754,7 @@
     <item drawable="source_input" />
     <item drawable="sparkletv" />
     <item drawable="speedtesttv" />
+    <item drawable="sport_fm_tv" />
     <item drawable="sport_tv" />
     <item drawable="sportseverywhere" />
     <item drawable="sportsfire" />
@@ -754,6 +775,7 @@
     <item drawable="stream_fire" />
     <item drawable="streamlocator_vpn" />
     <item drawable="streamvault" />
+    <item drawable="streamfc" />
     <item drawable="streamflix" />
     <item drawable="streamflix_2" />
     <item drawable="devinterestdev" />
@@ -900,6 +922,8 @@
     <item drawable="androidtv_9" />
     <item drawable="user_center" />
     <item drawable="tvod169" />
+    <item drawable="uyaniktv" />
+    <item drawable="vax_player" />
     <item drawable="vbtv" />
     <item drawable="veezie" />
     <item drawable="vega" />
@@ -941,6 +965,7 @@
     <item drawable="wako" />
     <item drawable="amcnetworks" />
     <item drawable="frograms" />
+    <item drawable="watchbridge_tv" />
     <item drawable="watcher_tv" />
     <item drawable="watcho" />
     <item drawable="wave_iptv" />
@@ -965,6 +990,7 @@
     <item drawable="wow2" />
     <item drawable="wrestle_universe" />
     <item drawable="wuplay" />
+    <item drawable="wuplay_alt" />
     <item drawable="x_tv" />
     <item drawable="lonelycatgames" />
     <item drawable="xbox" />
@@ -973,6 +999,7 @@
     <item drawable="mitvplus" />
     <item drawable="xstream_play" />
     <item drawable="xumo_play" />
+    <item drawable="xuper_tv" />
     <item drawable="yacine_tv" />
     <item drawable="yandex_browser" />
     <item drawable="yangoplay" />

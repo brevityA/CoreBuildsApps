@@ -121,6 +121,17 @@
                 android:focusable="true" />
 
             <Button
+                android:id="@+id/btn_mode_media_access"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cb_target_min"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:background="@drawable/bg_ghost"
+                android:text="@string/mode_media_access_off"
+                android:textColor="@color/cb_signal_cyan"
+                android:textSize="@dimen/cb_text_data"
+                android:focusable="true" />
+
+            <Button
                 android:id="@+id/btn_mode_manage_apps"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/cb_target_min"

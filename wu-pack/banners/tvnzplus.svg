@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <g transform="translate(-4.0,0.0)">
+  <g transform="translate(160.77,152.00) scale(0.81250)"><defs><mask id="wuDisc-tvnzplus" maskUnits="userSpaceOnUse" x="0" y="0" width="512" height="512"><rect width="512" height="512" fill="#000000"/><circle cx="256" cy="256" r="211" fill="#FFFFFF"/><g transform="translate(256 256) scale(0.6873) translate(-256 -256)"><path d="M 212 80 L 300 80 L 300 212 L 432 212 L 432 300 L 300 300 L 300 432 L 212 432 L 212 300 L 80 300 L 80 212 L 212 212 Z" fill="none" stroke="#000000" stroke-width="47.7" stroke-linecap="round" stroke-linejoin="round"/></g></mask></defs><rect width="512" height="512" fill="#FFFFFF" mask="url(#wuDisc-tvnzplus)"/></g>
+  <path d="M 620.2 290.8 L 632.4 256.8 L 644.7 290.8 M 624.6 279.2 L 640.3 279.2 M 665.1 290.8 L 665.1 256.8 L 674.6 256.8 C 684.1 256.8 684.1 275.1 674.6 275.1 L 665.1 275.1 M 702.2 290.8 L 702.2 256.8 L 711.7 256.8 C 721.2 256.8 721.2 275.1 711.7 275.1 L 702.2 275.1" fill="none" stroke="#00F0F8" stroke-width="9.0" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 620.2 330.2 L 684.3 330.2 M 652.2 330.2 L 652.2 430.3 M 726.3 330.2 L 761.3 430.3 L 796.4 330.2 M 838.4 430.3 L 838.4 330.2 L 904.5 430.3 L 904.5 330.2 M 946.5 330.2 L 1006.6 330.2 L 946.5 430.3 L 1006.6 430.3 M 1057.6 355.2 L 1057.6 405.3 M 1032.6 380.3 L 1082.7 380.3" fill="none" stroke="#E6EDF3" stroke-width="15.0" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

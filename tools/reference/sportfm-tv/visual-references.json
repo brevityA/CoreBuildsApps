@@ -1,0 +1,33 @@
+{
+  "reviewed": "2026-10-26",
+  "listing": "https://play.google.com/store/apps/details?id=gr.sportfmtv.app",
+  "official_site": "https://www.sportfmtv.gr/",
+  "issue": "https://github.com/brevityA/CoreBuildsApps/issues/382",
+  "usage": "reference-only; not bundled or used as glyph geometry",
+  "rights": "Original SPORT FM TV artwork remains its owner's property; no MIT/CC0 grant is implied.",
+  "color_sample": {
+    "path": "launcher-icon.png",
+    "box": [
+      87,
+      31,
+      119,
+      52
+    ],
+    "method": "Most common RGB in the red TV tag where R > 180, G < 64, B < 96",
+    "color": "#CE1039"
+  },
+  "references": [
+    {
+      "path": "launcher-icon.png",
+      "sha256": "ecd718cd34d3ecaabd40b43db69cd3cea1552acfa28340ab25992ec556ce68ab",
+      "source_page": "https://www.appbrain.com/app/sportfm-tv/gr.sportfmtv.app",
+      "note": "Google Play launcher-icon thumbnail supplied by the listing mirror; not a downloaded APK resource."
+    },
+    {
+      "path": "official-channel-reference.webp",
+      "sha256": "394f48daa3215c6715f22c6e0b7dbfaaf03357a471a153f987d7499728183fde",
+      "source_page": "https://www.sportfmtv.gr/",
+      "note": "Official SPORT FM TV channel artwork, corroborating the crest and TV tag; the channel number is not part of the app glyph."
+    }
+  ]
+}

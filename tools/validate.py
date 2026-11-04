@@ -41,6 +41,12 @@ def main():
     names = {i["drawable"] for i in icons}
     issues = validate_catalog(icons, data.get("artwork"))
     check(not issues, "catalog style/reference contract: " + "; ".join(issues))
+    # Every mapping says where it came from (backfilled for all icons in
+    # 2.5.0): a device report, an issue, a listing, a manifest, the 1.1.9
+    # reference, or the commit that first carried it.
+    for icon in icons:
+        check(bool((icon.get("mapping_source") or "").strip()),
+              f"{icon['name']}: no mapping_source - say where its components came from")
     for icon in icons:
         if icon.get("style") != CORE_MONOLINE:
             continue

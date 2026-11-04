@@ -74,7 +74,7 @@ npm test                 # 23 tests, node:test, no deps
 
 ### Android / TV shell (source complete, APK built by CI)
 
-`ticker/android/` — Kotlin, `minSdk 24`, `targetSdk 34`, `applicationId dev.corebuilds.line`.
+`ticker/android/` — Kotlin, `minSdk 24`, `compileSdk 37`, `targetSdk 37`, `applicationId dev.corebuilds.line`.
 
 - One APK, `LAUNCHER` + `LEANBACK_LAUNCHER`
 - Fullscreen WebView, no browser chrome

@@ -1,6 +1,10 @@
 package tv.corebuilds.eq.export
 
+import tv.corebuilds.eq.dsp.CustomTarget
+import tv.corebuilds.eq.dsp.MicResponse
 import tv.corebuilds.eq.dsp.PeakingFilter
+import tv.corebuilds.eq.dsp.TargetCurveImport
+import tv.corebuilds.eq.dsp.Targets
 
 data class PlatformBand(
     val centerHz: Double,
@@ -89,9 +93,13 @@ data class CaptureInfo(
             ?.joinToString(", ")
             ?.take(110)
             ?.let { " · $it" }.orEmpty()
-        val calibration = if (microphoneResponse.isNotEmpty()) {
-            " · Android reported ${microphoneResponse.size} mic-response points (stored, not applied)"
-        } else ""
+        val calibration = when {
+            MicResponse.applicable(microphoneResponse) ->
+                " · Android reported ${microphoneResponse.size} mic-response points (applied, ±${MicResponse.MAX_APPLIED_DB.toInt()} dB cap)"
+            microphoneResponse.isNotEmpty() ->
+                " · Android reported ${microphoneResponse.size} mic-response points (too few to apply)"
+            else -> ""
+        }
         return "Capture: $input · $rates$source$recorder$mic$unprocessed$effectState$calibration"
     }
 
@@ -109,8 +117,17 @@ data class CaptureInfo(
             val os = captureOsVersion?.takeIf { it.isNotBlank() }?.let { " · Android $it" }.orEmpty()
             add("Recording device: $model$os.")
         }
-        if (microphoneResponse.isNotEmpty()) {
-            add("Android reported ${microphoneResponse.size} microphone frequency-response points; metadata only, not applied to the correction.")
+        if (MicResponse.applicable(microphoneResponse)) {
+            add(
+                "Android reported ${microphoneResponse.size} microphone frequency-response points; applied to " +
+                    "the measurement (capped at ±${MicResponse.MAX_APPLIED_DB.toInt()} dB per band, and never " +
+                    "extrapolated beyond the reported span)."
+            )
+        } else if (microphoneResponse.isNotEmpty()) {
+            add(
+                "Android reported ${microphoneResponse.size} microphone frequency-response points; too few " +
+                    "in band to apply, kept as metadata."
+            )
         }
         processing.takeIf { it.isNotEmpty() }?.let { add("Capture processing: ${it.joinToString("; ")}.") }
     }
@@ -138,6 +155,13 @@ data class Profile(
     val schroederHz: Double? = null,
     val transitionHz: Double = 300.0,
     val rolloffHz: Double = 40.0,
+    /**
+     * Top of the band that was actually corrected, when it was narrower than
+     * [DspConstants.F_MAX]: the user's ceiling, or the measurement's own edge.
+     * Null on profiles saved before this was recorded, where the full band is
+     * still the best available reading of `correction_range_hz`.
+     */
+    val correctionCeilingHz: Double? = null,
     val snrDb: Double? = null,
     /**
      * MeasurementQuality score at save time; null for imports and older profiles.
@@ -169,8 +193,25 @@ data class Profile(
     /** User-authored graphic EQ trims layered on top of [curve]. */
     val manualFilters: List<PeakingFilter> = emptyList(),
     /** True only for a manual profile created without a room measurement. */
-    val manualOnly: Boolean = false
+    val manualOnly: Boolean = false,
+    /**
+     * The imported curve (Hz, dB) a [CustomTarget.KEY] profile was measured
+     * against, copied at save time. Built-in targets are rebuilt from their
+     * key; an imported one cannot be, because the next import replaces it.
+     */
+    val targetPoints: List<Pair<Double, Double>> = emptyList()
 ) {
+    /**
+     * The target this profile was corrected towards, on [freqs]. Null for an
+     * imported target saved without its curve: drawing whatever is imported now
+     * would show a target the correction was never built for.
+     */
+    fun targetDb(freqs: DoubleArray): DoubleArray? = when {
+        target != CustomTarget.KEY -> Targets.targetCurve(target, freqs)
+        targetPoints.size >= 2 -> TargetCurveImport.targetDb(targetPoints, freqs)
+        else -> null
+    }
+
     /** Correction in dB at [hz], interpolated on the measured curve; 0 outside it. */
     fun correctionAt(hz: Double): Double {
         if (curve.isEmpty() || hz < curve.first().hz || hz > curve.last().hz) return 0.0

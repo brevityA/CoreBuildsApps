@@ -6,7 +6,8 @@ package tv.corebuilds.eq.ui
  * - [OFF] – correction is switched off. Nothing is shown.
  * - [FAULT] – the current apply status reports an error; the status line
  *   names it (other eligible sessions may still be corrected).
- * - [STANDBY] – correction is armed, but no qualifying playback is reported
+ * - [STANDBY] – correction is on (switched on and not in fault), but no qualifying
+ *   playback is reported yet; the badge reads `ON · WAITING FOR PLAYBACK`
  *   on the output-mix path (or no session effect can be associated with it).
  * - [LIVE] – the output-mix effect is configured and Android reports media
  *   playback. The UI labels this `PLAYING · COVERAGE UNKNOWN` and pulses in

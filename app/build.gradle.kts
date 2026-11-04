@@ -1,18 +1,22 @@
+import java.util.UUID
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
 }
 
 android {
     namespace = "tv.corebuilds.iconpack"
-    compileSdk = 34
+    // Suite-wide API 37 baseline, including the Play and sideload variants.
+    // minSdk stays 21 for Fire TV.
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "tv.corebuilds.iconpack"
         minSdk = 21
-        targetSdk = 34
-        versionCode = 56
-        versionName = "2.4.3"
+        targetSdk = 37
+        versionCode = 62
+        versionName = "2.5.4"
 
         // Read by the updater code: where to check for a newer release and
         // which FileProvider authority serves the downloaded APK.
@@ -38,6 +42,10 @@ android {
             "GLYPHS_PACKAGE",
             "\"tv.corebuilds.iconpack.glyphs\"",
         )
+        manifestPlaceholders["glyphsPackage"] = "tv.corebuilds.iconpack.glyphs"
+        // github: self-updates from GitHub releases. play: see the play
+        // build type below and Distribution.kt.
+        buildConfigField("String", "DISTRIBUTION", "\"github\"")
     }
 
     // Two installable apps out of one module: the same 35 Kotlin files, the
@@ -112,6 +120,18 @@ android {
     // build type. In particular, no KEYSTORE_* value is read by :test.
 
     signingConfigs {
+        // The Google Play upload key: its own keystore, never the sideload
+        // release key (PLAY_KEYSTORE_* in .github/workflows/play.yml). Play
+        // App Signing re-signs what users install.
+        create("play") {
+            val ksPath = System.getenv("PLAY_KEYSTORE_PATH")
+            if (ksPath != null && file(ksPath).exists()) {
+                storeFile = file(ksPath)
+                storePassword = System.getenv("PLAY_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("PLAY_KEY_ALIAS")
+                keyPassword = System.getenv("PLAY_KEY_PASSWORD")
+            }
+        }
         create("release") {
             // Supplied by CI (see .github/workflows/build.yml) or a local
             // keystore.properties. Unsigned builds still produce a usable
@@ -139,18 +159,62 @@ android {
                 signingConfig = signingConfigs.getByName("release")
             }
         }
+        // The Google Play app: `./gradlew :app:bundleBannersPlay` -> an AAB at
+        // app/build/outputs/bundle/bannersPlay/, built by .github/workflows/play.yml.
+        // A separate app from the sideload one: its own application id
+        // (tv.corebuilds.iconpack.play), its own Glyphs twin
+        // (tv.corebuilds.iconpack.glyphs.play), its own upload key, its own
+        // FileProvider authority - so both can sit on one TV and neither ever
+        // updates the other. It also drops what Play forbids a Play app to do:
+        // no REQUEST_INSTALL_PACKAGES (src/play/AndroidManifest.xml), no
+        // GitHub update check, and the Glyphs switch opens the twin's Play
+        // listing. A build type, not a flavour, so the sideload release paths
+        // CI publishes stay as they are.
+        create("play") {
+            initWith(getByName("release"))
+            matchingFallbacks += listOf("release")
+            applicationIdSuffix = ".play"
+            buildConfigField("String", "DISTRIBUTION", "\"play\"")
+            buildConfigField("String", "UPDATE_MANIFEST_URL", "\"\"")
+            buildConfigField("String", "UPDATE_AUTHORITY", "\"tv.corebuilds.iconpack.play.update\"")
+            manifestPlaceholders["fileProviderAuthority"] = "tv.corebuilds.iconpack.play.update"
+            buildConfigField("String", "GLYPHS_PACKAGE", "\"tv.corebuilds.iconpack.glyphs.play\"")
+            manifestPlaceholders["glyphsPackage"] = "tv.corebuilds.iconpack.glyphs.play"
+            val playKs = System.getenv("PLAY_KEYSTORE_PATH")
+            signingConfig = if (playKs != null && file(playKs).exists()) {
+                signingConfigs.getByName("play")
+            } else {
+                null
+            }
+        }
     }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 
     buildFeatures {
         buildConfig = true
+        // Projectivy's wallpaper-provider interface (src/main/aidl), the same
+        // files Core Motion builds against.
+        aidl = true
+        // The candidate build type renames itself through resValue("string",
+        // "app_name", ...). AGP 9 turns build-type resource values off by
+        // default and fails configuration outright rather than ignoring the
+        // call, so this is a required opt-in on the new toolchain.
+        resValues = true
+    }
+
+    // Core Builds Plus, the Play build's one-time unlock: src/play/java holds
+    // PlusStore over Google Play Billing, and every other build type compiles
+    // the no-op twin in src/github/java, so the sideload APKs carry no Google
+    // library and nothing to buy. kotlin, not java: under AGP 9's built-in
+    // Kotlin a directory added to java.srcDir is not compiled as Kotlin.
+    sourceSets {
+        getByName("debug").kotlin.srcDir("src/github/java")
+        getByName("release").kotlin.srcDir("src/github/java")
+        getByName("candidate").kotlin.srcDir("src/github/java")
     }
 
     androidResources {
@@ -159,8 +223,48 @@ android {
     }
 }
 
+// AGP 9 has built-in Kotlin, so there is no separate kotlin-android plugin
+// and no kotlinOptions block: jvmTarget is stated here instead. Core EQ does
+// the same on the same toolchain.
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17
+    }
+}
+
+// The Play upload is the banner icon pack. The glyphs flavor (Core Builds
+// Glyphs, tv.corebuilds.glyphs) has no Play listing, and as a play variant it
+// would take this build type's FileProvider authority and companion id: two
+// Play apps on one TV declaring one authority is
+// INSTALL_FAILED_CONFLICTING_PROVIDER. Play's square art is the Glyphs Pack
+// companion (glyphs/), as for the sideload pack.
+androidComponents {
+    beforeVariants(selector().withBuildType("play").withFlavor("art" to "glyphs")) {
+        it.enable = false
+    }
+    // The Projectivy wallpaper source's id (WallsProviderService). Projectivy
+    // tells sources apart by it, and the icon pack, its Play and test builds
+    // and Core Builds Glyphs can all sit on one TV, so each application id
+    // gets its own: a name-based UUID, the same on every build machine.
+    onVariants { variant ->
+        variant.manifestPlaceholders.put(
+            "wallsProviderUuid",
+            variant.applicationId.map {
+                UUID.nameUUIDFromBytes("$it/projectivy-walls".toByteArray()).toString()
+            },
+        )
+    }
+}
+
 dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+    // Play only. 8.0.0 is the last release that declares minSdk 21: 8.1.0
+    // through 9.x declare 23, and Fire TV needs 21. Play accepts 8.x until
+    // 2027-08-31.
+    "playImplementation"("com.android.billingclient:billing:8.0.0")
+    // Plain JVM tests for logic with no Android behind it (DayNightTest). The
+    // same JUnit the other suite apps use; CI already runs the unit-test task.
+    testImplementation("junit:junit:4.13.2")
 }

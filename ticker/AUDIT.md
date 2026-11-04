@@ -16,7 +16,7 @@
 | Shared parsers | `lib/*.mjs` (channels, teams, parser, scoreboard, client-slate, rss, ssrf) | imported by both the Node server and the browser/WebView |
 | Web server | `server.mjs`, `node:http`, in-memory 45 s cache | `PORT=8787` default; serves `public/` + `lib/` + `/api/*` |
 | Android shell | Kotlin, **no** leanback/AndroidX library — a fullscreen `WebView` + asset server + on-device proxy + LAN pair server | `MainActivity.kt`, `LineWebClient.kt`, `LineBridge.kt`, `PairServer.kt`, `SafeUrl.kt` |
-| Android build | AGP 8.5.2, Kotlin 1.9.24, `compileSdk 34`, `minSdk 24`, `targetSdk 34`, Gradle 8.7 | `android/app/build.gradle.kts`; `syncWebAssets` copies `public/`+`lib/` into APK assets (`build.gradle.kts:57-69`) |
+| Android build | AGP 9.4.0, AGP built-in Kotlin 2.2.10, `compileSdk 37`, `minSdk 24`, `targetSdk 37`, Gradle 9.7.0 | `android/app/build.gradle.kts`; `syncWebAssets` copies `public/`+`lib/` into APK assets (`build.gradle.kts:57-69`) |
 | CI | `android/github-workflow-core-line-apk.yml` (owner must land as `.github/workflows/core-line-apk.yml`) | runs `npm test` + `assembleDebug`; tags `coreline-v*` → signed release |
 
 The product is a **web UI wrapped in a WebView**. "Android TV" support = `LEANBACK_LAUNCHER` intent filter + `android.software.leanback` `required=false` (one APK for phone + TV) — correct per the official TV docs ([1](https://minimum-viable-product.github.io/marshmallow-docs/training/tv/start/start.html), [2](https://reintech.io/blog/kotlin-android-tv-developing-apps-for-big-screen)). D-pad handling is custom JS (`public/js/tv.js`), not leanback-library widgets.

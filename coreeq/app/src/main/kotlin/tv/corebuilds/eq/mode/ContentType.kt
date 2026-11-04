@@ -1,13 +1,23 @@
 package tv.corebuilds.eq.mode
 
 /**
- * Content type classification for use-case-specific EQ optimization.
+ * What kind of content is playing, used for two things and no more:
  *
- * Each content type maps to a curated target curve in [UseCaseTargets]
- * and a set of known package names for automatic detection.
+ * 1. the strength of the optional extras ([tv.corebuilds.eq.apply.ExtraPlan]:
+ *    platform BassBoost and LoudnessEnhancer), and
+ * 2. a set of known package names for automatic detection
+ *    ([ContentTypeRegistry]).
  *
- * The system supports both manual selection and automatic detection
- * based on the active playback app.
+ * It is **not** a set of EQ curves. Room correction uses the target chosen on
+ * the Measure screen ([tv.corebuilds.eq.dsp.Targets]) and is identical for
+ * every content type. An earlier revision carried ten curated target curves
+ * here ("Dialogue-first optimization", and so on) that no code path applied;
+ * they were removed in 1.7.0 rather than wired in, because none of them had a
+ * measured basis. [description] now states the extras' numbers and nothing
+ * else, so the screen cannot promise a response it does not deliver.
+ *
+ * The system supports both manual selection and automatic detection based on
+ * the active playback app.
  */
 enum class ContentType(
     val key: String,
@@ -18,61 +28,61 @@ enum class ContentType(
     MOVIE(
         key = "movie",
         title = "Movies",
-        description = "Dialogue-first optimization · Center channel clarity · Theatrical presence",
+        description = "Bass boost 60% · loudness +2 dB. Applied on top of the measured correction; off unless Extra effects are on.",
         icon = "🎬"
     ),
     ANIME(
         key = "anime",
         title = "Anime",
-        description = "Music + dialogue balance · Wide dynamic range · Enhanced bass impact",
+        description = "Bass boost 30% · loudness +1 dB. Anime mixes are usually already loud.",
         icon = "🎌"
     ),
     TV_SHOW(
         key = "tv_show",
         title = "TV Shows",
-        description = "Natural dialogue · Reduced fatigue · Smooth long-session listening",
+        description = "Bass boost 20% · loudness +3 dB. Quiet broadcast mixes, little added bass.",
         icon = "📺"
     ),
     SITCOM(
         key = "sitcom",
         title = "Sitcoms",
-        description = "Rapid dialogue clarity · Laughter track taming · Punchline articulation",
+        description = "Bass boost 15% · loudness +2.5 dB. Near the least bass; laughter tracks need none.",
         icon = "😂"
     ),
     DOCUMENTARY(
         key = "documentary",
         title = "Documentaries",
-        description = "Narration-first · Authoritative warmth · Smooth non-fatiguing",
+        description = "Bass boost 10% · loudness +3 dB. Narration first, almost no added low end.",
         icon = "🎓"
     ),
     NEWS(
         key = "news",
         title = "News / Live",
-        description = "Anchor voice clarity · All-day comfort · Background noise reduction",
+        description = "No bass boost · loudness +4 dB. Level help only; speech gets no added bass.",
         icon = "📰"
     ),
     PODCAST(
         key = "podcast",
         title = "Podcasts",
-        description = "Voice-first · High-pass filtered · Boxiness cut · Intelligibility boost",
+        description = "No bass boost · loudness +4 dB. The strongest level help, for quiet voice recordings.",
         icon = "🎙️"
     ),
     GAMING(
         key = "gaming",
         title = "Gaming",
-        description = "Spatial cues · Low-end impact · Low-latency clarity",
+        description = "Bass boost 50% · loudness +1.5 dB. The most bass after Movies.",
         icon = "🎮"
     ),
     MUSIC(
         key = "music",
         title = "Music",
-        description = "Flat reference · Respects mastering · Optional bass enhancement",
+        description = "Bass boost 40% · no loudness gain. Nothing changes the level of a track but the volume control.",
         icon = "🎵"
     ),
     GENERAL(
         key = "general",
         title = "Everyday",
-        description = "Balanced for all content · Safe default · All-day listening comfort",
+        description = "Bass boost 30% · loudness +2 dB. The default when the playing app is not recognised.",
         icon = "🔊"
     );
 

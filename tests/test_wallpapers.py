@@ -25,6 +25,10 @@ from xml.etree import ElementTree as ET
 ROOT = Path(__file__).resolve().parent.parent
 WALLPAPERS = ROOT / "Wallpapers"
 MANIFEST = WALLPAPERS / "manifest.json"
+# Core Builds Plus walls: their own manifest, bundled by the Google Play build only.
+PLUS_MANIFEST = WALLPAPERS / "plus-manifest.json"
+PLUS_BUNDLED_MANIFEST = ROOT / "app/src/play/assets/manifest/plus-wallpapers.json"
+PLUS_BUNDLED_THUMBS = ROOT / "app/src/play/assets/plus_thumbs"
 BUNDLED_MANIFEST = ROOT / "app/src/main/assets/manifest/wallpapers.json"
 SERIES6 = "series-6-circuit-core"
 SERIES8 = "series-8-amoled"
@@ -139,7 +143,8 @@ class ManifestTests(unittest.TestCase):
     def test_no_orphaned_series_on_disk(self):
         on_disk = {d.name for d in (ROOT / "Wallpapers").iterdir()
                    if d.is_dir() and d.name.startswith("series-")}
-        in_manifest = {w["series"] for w in self.walls}
+        plus = {w["series"] for w in json.loads(_read(PLUS_MANIFEST))["wallpapers"]}
+        in_manifest = {w["series"] for w in self.walls} | plus
         self.assertEqual(on_disk - in_manifest, UNMANIFESTED,
                          "series directories the manifest does not index")
         self.assertEqual(in_manifest - on_disk, set(),
@@ -193,6 +198,72 @@ class ThumbnailTests(unittest.TestCase):
                 stale.append(fname)
         self.assertFalse(stale, "bundled thumbs differ from Wallpapers/thumbs "
                                 f"(run tools/sync_wallpaper_manifest.py): {stale}")
+
+
+class PlusCollectionTests(unittest.TestCase):
+    """Series 15 (Spectra) and 16 (Aurum), the Core Premium walls (Plus in
+    code): indexed apart from the main collection and bundled only into the
+    Google Play build."""
+
+    # Each Premium series and the tool that draws it, in manifest order.
+    GENERATORS = {
+        "series-15-spectra": "tools/build_plus_wallpapers.py",
+        "series-16-aurum": "tools/build_aurum_wallpapers.py",
+    }
+
+    def setUp(self):
+        self.manifest = json.loads(_read(PLUS_MANIFEST))
+        self.walls = self.manifest["wallpapers"]
+
+    def test_two_series_of_twelve_counted(self):
+        self.assertEqual(self.manifest["count"], len(self.walls))
+        self.assertEqual(len(self.walls), 24)
+        series = [w["series"] for w in self.walls]
+        # One series after the other, so the Premium chip shows them as sets.
+        self.assertEqual(series, sorted(series, key=list(self.GENERATORS).index))
+        for name in self.GENERATORS:
+            self.assertEqual(series.count(name), 12, name)
+
+    def test_the_copy_names_the_count(self):
+        # The purchase card and Settings say how many walls Premium adds.
+        n = len(self.walls)
+        main = _read(ROOT / "app/src/main/res/values/strings.xml")
+        play = _read(ROOT / "app/src/play/res/values/strings.xml")
+        self.assertIn(f"the {n} Spectra and Aurum wallpapers", main)
+        self.assertIn(f"Spectra and Aurum, {n} wallpapers, are yours", play)
+        self.assertIn("<string name=\"support_title\">Core Premium</string>", play)
+        self.assertNotIn("Core Builds Plus</string>", play)
+
+    def test_numbers_do_not_collide_with_the_main_collection(self):
+        main = json.loads(_read(MANIFEST))["wallpapers"]
+        def number(w):
+            return int(w["name"].split()[0])
+        self.assertFalse({number(w) for w in main} & {number(w) for w in self.walls})
+        self.assertEqual(len({number(w) for w in self.walls}), len(self.walls))
+
+    def test_files_exist_at_their_declared_resolution(self):
+        from PIL import Image
+        for w in self.walls:
+            path = WALLPAPERS / w["series"] / w["url"].rsplit("/", 1)[-1]
+            with Image.open(path) as im:
+                self.assertEqual("x".join(map(str, im.size)), w["resolution"], path.name)
+            self.assertTrue((THUMBS / w["thumb"].rsplit("/", 1)[-1]).exists(), w["name"])
+
+    def test_bundled_only_into_the_play_build(self):
+        self.assertEqual(json.loads(_read(PLUS_BUNDLED_MANIFEST)), self.manifest)
+        want = {w["thumb"].rsplit("/", 1)[-1] for w in self.walls}
+        self.assertEqual({p.name for p in PLUS_BUNDLED_THUMBS.glob("*.jpg")}, want)
+        for name in want:
+            self.assertEqual((PLUS_BUNDLED_THUMBS / name).read_bytes(), (THUMBS / name).read_bytes())
+            # Not in the main assets every build ships.
+            self.assertFalse((BUNDLED_THUMBS / name).exists(), name)
+        self.assertFalse((ROOT / "app/src/main/assets/manifest/plus-wallpapers.json").exists())
+
+    def test_the_series_has_its_generator(self):
+        for w in self.walls:
+            gen = _read(ROOT / self.GENERATORS[w["series"]])
+            self.assertIn(w["url"].rsplit("/", 1)[-1].removesuffix(".png").split("-", 2)[2], gen)
+            self.assertIn(w["series"], gen)
 
 
 def _cache_keys():
@@ -394,6 +465,85 @@ class AndroidWiringTests(unittest.TestCase):
         # The bundled wallpaper assets are exactly thumbs + manifest.
         self.assertTrue((assets / "manifest/wallpapers.json").exists())
         self.assertTrue(any((assets / "wallpapers_thumbs").glob("*.jpg")))
+
+
+class FavouritesTests(unittest.TestCase):
+    """2.5.0 wallpaper favourites: starred in the preview, gathered under a
+    Favourites chip in the browser, a star on the tile."""
+
+    def setUp(self):
+        self.prefs = _read(JAVA / "Prefs.kt")
+        self.preview = _read(JAVA / "WallpaperPreviewActivity.kt")
+        self.browser = _read(JAVA / "WallpapersActivity.kt")
+        self.adapter = _read(JAVA / "WallpaperAdapter.kt")
+
+    def test_a_favourite_is_keyed_by_the_name_a_re_render_keeps(self):
+        # storeName carries the manifest's `since` and moves on every
+        # re-render; a favourite stored under it would silently drop the
+        # next time its wall was redrawn. cacheName is the file name.
+        self.assertIn("Prefs.setWallpaperFavourite(this, wp.cacheName, !starred)", self.preview)
+        self.assertIn("wp.cacheName in Prefs.wallpaperFavourites(this)", self.preview)
+        self.assertIn("all.filter { it.cacheName in favourites }", self.browser)
+        self.assertIn("item.cacheName in favourites", self.adapter)
+        for source in (self.preview, self.browser, self.adapter):
+            self.assertNotRegex(source, r"storeName\s+in\s+(favourites|Prefs\.wallpaperFavourites)")
+
+    def test_the_stored_set_is_copied_before_it_is_changed(self):
+        # SharedPreferences hands back its own set; editing it in place is
+        # documented as unsafe and can lose the write.
+        self.assertIn("getStringSet(KEY_WP_FAVOURITES, null)?.toSet()", self.prefs)
+        self.assertIn("wallpaperFavourites(context).toMutableSet()", self.prefs)
+
+    def test_the_preview_row_links_back_save_favourite_set(self):
+        root = ET.parse(RES / "layout/activity_wallpaper_preview.xml").getroot()
+        ns = "{http://schemas.android.com/apk/res/android}"
+        ids = {el.get(ns + "id", "").split("/")[-1]: el for el in root.iter()}
+        row = [i for i, el in ids.items()
+               if i.startswith("preview_") and el.get(ns + "focusable") == "true"]
+        self.assertEqual(row, ["preview_back", "preview_save", "preview_fav", "preview_set"])
+
+        def edge(view, attr):
+            return (ids[view].get(ns + attr) or "").split("/")[-1]
+
+        self.assertEqual(edge("preview_save", "nextFocusRight"), "preview_fav")
+        self.assertEqual(edge("preview_fav", "nextFocusRight"), "preview_set")
+        self.assertEqual(edge("preview_fav", "nextFocusLeft"), "preview_save")
+        self.assertEqual(edge("preview_set", "nextFocusLeft"), "preview_fav")
+
+    def test_the_row_is_relinked_when_save_leaves_it(self):
+        # Save is GONE for a loop. Before API 26, FocusFinder returns a GONE
+        # nextFocus target instead of following past it, and the cursor
+        # stops; the row must be relinked through the visible buttons.
+        show = self.preview[self.preview.index("private fun showWallpaper()"):]
+        show = show[:show.index("\n    }\n")]
+        self.assertLess(show.index("saveButton.visibility ="), show.index("syncFocusChain()"))
+        self.assertIn(".filter { it.visibility == View.VISIBLE }", self.preview)
+
+    def test_the_chip_appears_only_with_a_favourite_to_show(self):
+        self.assertIn("if (starred > 0)", self.browser)
+        self.assertIn("FAV_KEY -> favouriteWalls()", self.browser)
+        # Un-starring the last one while it is showing falls back to All.
+        self.assertIn("if (showingFavourites && favouriteWalls().isEmpty()) series = null",
+                      self.browser)
+
+    def test_returning_from_the_preview_re_reads_the_stars(self):
+        resume = self.browser[self.browser.index("override fun onResume()"):]
+        resume = resume[:resume.index("\n    }\n")]
+        self.assertIn("Prefs.wallpaperFavourites(this)", resume)
+        self.assertIn("adapter.setFavourites(now)", resume)
+        self.assertIn("bindChips()", resume)
+        # The star is a partial bind, so the tile under the cursor stays put.
+        self.assertIn("notifyItemChanged(i, FAVOURITE_PAYLOAD)", self.adapter)
+
+    def test_strings_and_badge_exist(self):
+        strings = _read(RES / "values/strings.xml")
+        for key in ("chip_favourites_fmt", "wp_fav_add", "wp_fav_remove",
+                    "wp_fav_add_desc", "wp_fav_remove_desc", "wp_fav_badge",
+                    "wp_fav_spoken"):
+            self.assertRegex(strings, rf'<string name="{key}"', key)
+        tile = _read(RES / "layout/item_wallpaper.xml")
+        self.assertIn('android:id="@+id/wp_fav_badge"', tile)
+        self.assertIn('android:layout_gravity="top|end"', tile)
 
 
 if __name__ == "__main__":

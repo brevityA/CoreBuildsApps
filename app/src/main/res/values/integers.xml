@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- How long Projectivy keeps the wallpaper source's list before asking
+         again (WallsProviderService). An hour: night hours begin within the
+         hour, and a change in Settings is sent to Projectivy at once. -->
+    <integer name="walls_cache_duration_millis">3600000</integer>
+</resources>

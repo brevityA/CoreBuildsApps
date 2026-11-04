@@ -72,6 +72,7 @@ import json
 import math
 import sys
 import wave
+from dataclasses import dataclass
 
 import numpy as np
 
@@ -186,6 +187,42 @@ MAX_NULL_SKIP = 2
 # room from one that belongs to that seat or to the microphone's own bass
 # roll-off, so bass dips get at most this much; peaks are still cut in full.
 SINGLE_SEAT_BOOST_DB = 2.0
+
+# The most a correction may lift below the transition once several seats agree
+# (1.7.1). Averaging seats removes the part of a dip that belongs to one chair,
+# so what survives is more likely to be the room. Still well under MAX_BOOST_DB:
+# the microphone is uncalibrated either way.
+MULTI_SEAT_BOOST_DB = 3.0
+
+# Per-band confidence from signal over noise: at or under the gate a band is
+# not trusted at all, and from CONFIDENCE_FULL_SNR_DB up it is trusted fully.
+# Between the two the correction is scaled rather than switched, so a band at
+# 12 dB stops jumping between "fully corrected" and "untouched" on a capture
+# that only just cleared the gate.
+CONFIDENCE_LO_SNR_DB = 10.0
+CONFIDENCE_FULL_SNR_DB = 20.0
+CONFIDENCE_MIN = 0.05
+
+# A band under this much signal over noise is shown but never corrected, and a
+# check sweep that did not hear it over its own noise does not count it. Mirrors
+# SweepAnalysis.BAND_MIN_SNR_DB.
+BAND_MIN_SNR_DB = 10.0
+
+# The closed loop (1.8.0): a check sweep played through the correction says how
+# far the room came out from what the correction predicted. One capture at one
+# position is evidence, not truth, so a band moves at most REFINE_MAX_STEP_DB; a
+# lift needs a deficit the check itself heard at least REFINE_MIN_DEFICIT_DB
+# deep, and a step under REFINE_MIN_APPLIED_DB is dropped rather than spending a
+# filter on it.
+REFINE_MAX_STEP_DB = 3.0
+REFINE_MIN_DEFICIT_DB = 0.5
+REFINE_MIN_APPLIED_DB = 0.1
+
+# The band a check comparison needs before it says anything, and the window its
+# alignment to the target is taken over (PostCorrectionCheck).
+CHECK_MIN_BANDS = 8
+CHECK_ALIGN_LO_HZ = 300.0
+CHECK_ALIGN_HI_HZ = 3000.0
 
 # Decay range a T20 needs (ISO 3382-2:2008): under it `rt60_from_ir` refuses
 # rather than reading short.
@@ -449,6 +486,35 @@ def schroeder_hz(volume_m3: float, rt60_s: float) -> float:
     return 2000.0 * math.sqrt(rt60_s / float(volume_m3))
 
 
+#: Correction ceilings a user may choose, widest last. F_MAX is the trusted
+#: default; every other value narrows the corrected band. Mirrored by
+#: ``CorrectionLimits.CEILING_CHOICES_HZ`` in the app.
+CORRECTION_CEILING_CHOICES_HZ = (500.0, 1000.0, 2000.0, 4000.0, F_MAX)
+
+
+def ceiling_hz(requested: float | None = None) -> float:
+    """A user-chosen correction ceiling, made safe.
+
+    Narrowing is the only direction the safety contract allows: a request above
+    :data:`F_MAX` would claim accuracy the TV remote's microphone does not
+    have, and a non-finite request falls back to the default. Mirrors
+    ``CorrectionLimits.ceilingHz``.
+    """
+    if requested is None or not math.isfinite(requested):
+        return F_MAX
+    return float(min(max(requested, F_MIN), F_MAX))
+
+
+def effective_ceiling_hz(measured_max_hz: float, requested: float | None = None) -> float:
+    """The narrower of the measured bandwidth edge and the user's ceiling.
+
+    ``measured_max_hz`` is where the sweep stopped being trustworthy; it can
+    only narrow the result, never widen it.
+    """
+    measured = F_MAX if not math.isfinite(measured_max_hz) or measured_max_hz <= 0 else measured_max_hz
+    return min(ceiling_hz(measured), ceiling_hz(requested))
+
+
 def transition_hz(volume_m3: float | None = None, rt60_s: float | None = None) -> float:
     """The frequency above which the corrector only shapes.
 
@@ -647,6 +713,36 @@ def _presence_db(f: np.ndarray, gain_db: float) -> np.ndarray:
 # The correction
 # ---------------------------------------------------------------------------
 
+def band_confidence(snr_db) -> np.ndarray:
+    """How far to trust each band, 0..1, from its signal over noise.
+
+    A band on the gate is worth nothing and a band well clear of the noise is
+    worth everything; between the two the scale is linear. Multiplying the
+    correction by this keeps a marginal band corrected *less* instead of
+    treating one tenth of a dB as a pass and the next as a failure.
+    """
+    snr = np.asarray(snr_db, dtype=float)
+    span = CONFIDENCE_FULL_SNR_DB - CONFIDENCE_LO_SNR_DB
+    frac = (snr - CONFIDENCE_LO_SNR_DB) / span
+    conf = np.clip(np.nan_to_num(frac, nan=0.0), 0.0, 1.0)
+    return np.where(conf <= 0.0, 0.0, np.maximum(conf, CONFIDENCE_MIN))
+
+
+def confidence_from_snr(snr_db, min_snr_db: float = None) -> np.ndarray:
+    """[band_confidence] with the gate itself as the floor (accepts either spelling)."""
+    return band_confidence(snr_db)
+
+
+def boost_budget_db(seats: int) -> float:
+    """The bass boost a correction may ask for, given how many seats agreed.
+
+    One seat cannot tell the room's dip from that chair's, so it gets
+    SINGLE_SEAT_BOOST_DB. Two or more seats agreed on the curve that was
+    averaged, which is evidence, so the cap rises to MULTI_SEAT_BOOST_DB.
+    """
+    return MULTI_SEAT_BOOST_DB if int(seats) >= 2 else SINGLE_SEAT_BOOST_DB
+
+
 def _limit_slope(freqs: np.ndarray, curve: np.ndarray, max_db_per_oct: float) -> np.ndarray:
     """Clamp a curve's steepness in both directions, keeping the lower result.
 
@@ -686,6 +782,7 @@ def correction_curve(
     null_mask: np.ndarray | None = None,
     min_phase_ok: np.ndarray | None = None,
     max_boost_below_transition: float | None = None,
+    confidence: np.ndarray | None = None,
 ) -> np.ndarray:
     """The correction to apply: what to add to the measured response to reach target.
 
@@ -740,10 +837,13 @@ def correction_curve(
 
     if null_mask is None:
         null_mask = detect_nulls(f, measured_db)
-    raw = np.where(null_mask & (raw > 0.0), 0.0, raw)
-
+    null_mask = np.asarray(null_mask, dtype=bool)
     if min_phase_ok is not None:
-        raw = np.where(min_phase_ok, raw, 0.0)
+        phase_blocked = ~np.asarray(min_phase_ok, dtype=bool)
+    else:
+        phase_blocked = np.zeros(f.shape, dtype=bool)
+    raw = np.where(null_mask & (raw > 0.0), 0.0, raw)
+    raw = np.where(phase_blocked, 0.0, raw)
 
     if cut_only:
         raw = np.minimum(raw, 0.0)
@@ -779,6 +879,23 @@ def correction_curve(
 
     limited = np.clip(limited, floor, ceiling)
 
+    # Step 8b (1.7.1): scale by how far each band is trusted. Applied after the
+    # budget so a band that is only half trusted asks for half of what it was
+    # allowed, never more.
+    if confidence is not None:
+        conf = np.clip(np.asarray(confidence, dtype=float), 0.0, 1.0)
+        if conf.shape == limited.shape:
+            limited = limited * conf
+
+    # Steps 7 and 8 both move every band by a constant, and that constant is
+    # exactly what broke the two refusals above: re-centring could lift a null
+    # that had been zeroed back to +2 dB, and a minimum-phase-gated band off
+    # zero, so the app boosted a cancellation in the same report that told the
+    # user it was "not boosted". The refusals are therefore re-asserted on the
+    # final curve, after every step that can move it.
+    limited = np.where(null_mask & (limited > 0.0), 0.0, limited)
+    limited = np.where(phase_blocked, 0.0, limited)
+
     band = (f >= f_min) & (f <= f_max)
     return _taper_edges(f, np.where(band, limited, 0.0), f_min, f_max)
 
@@ -809,6 +926,293 @@ def _taper_edges(freqs: np.ndarray, curve: np.ndarray, f_min: float, f_max: floa
         out[ramp_hi] *= 0.5 * (1 - np.cos(np.pi * t))
 
     return out
+
+
+# ---------------------------------------------------------------------------
+# The closed loop: correcting the correction (1.8.0)
+#
+# `PostCorrectionCheck` on the app side compares three curves — the room, the
+# residual the correction should leave, and what a check sweep played through
+# the correction actually heard — and stops at three figures. The *difference*
+# between the prediction and what was heard is the useful part: band by band it
+# says which way the correction was wrong, and adding it back is a closed loop.
+#
+# Everything below is deliberately small, because one check sweep is one
+# capture at one position. Bands either sweep cannot speak for are left out;
+# the change is re-centred so it refines *shape* and not level (a check is taken
+# at another moment and possibly another volume); a band may never change the
+# direction the first measurement justified; a lift needs a deficit the check
+# heard itself and must not sit on a cancellation; and the curve's own budget
+# still applies through the same envelope `correction_curve` clamps with.
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class Refinement:
+    """A correction moved by a check sweep, with what it costs and buys.
+
+    `correction_db` is the new curve and `step_db` what was added to each band
+    (0 where a band was left alone). The two residuals are over the same bands
+    the on-screen figures use, so `predicted_after_rms_db` is directly
+    comparable with the check's own numbers.
+    """
+
+    correction_db: np.ndarray
+    step_db: np.ndarray
+    held_back: int
+    predicted_before_rms_db: float | None
+    predicted_after_rms_db: float | None
+
+    @property
+    def changed(self) -> int:
+        return int(np.count_nonzero(self.step_db))
+
+    @property
+    def raised(self) -> int:
+        return int(np.count_nonzero(self.step_db > 0.0))
+
+    @property
+    def lowered(self) -> int:
+        return int(np.count_nonzero(self.step_db < 0.0))
+
+    @property
+    def largest_db(self) -> float:
+        return float(np.max(np.abs(self.step_db))) if self.step_db.size else 0.0
+
+
+def left_alone(freqs, null_mask=None, floor_hz: float = F_MIN, f_max: float = F_MAX,
+               min_phase_ok=None, snr_db=None) -> np.ndarray:
+    """Bands a correction may not touch: nulls, off the ends, gated, under the noise.
+
+    The mirror of `PostCorrectionCheck.leftAlone`. A correction is judged on the
+    bands it was allowed to correct; a dip it deliberately left is not a
+    residual it failed to remove.
+    """
+    f = np.asarray(freqs, dtype=float)
+    out = (f < floor_hz) | (f > f_max)
+    if null_mask is not None:
+        out |= np.asarray(null_mask, dtype=bool)
+    if min_phase_ok is not None:
+        out |= ~np.asarray(min_phase_ok, dtype=bool)
+    if snr_db is not None:
+        out |= np.asarray(snr_db, dtype=float) < BAND_MIN_SNR_DB
+    return out
+
+
+def shared_skip(**kwargs) -> np.ndarray:
+    """Bands neither the correction nor the check can speak for.
+
+    `left_alone` of the corrected sweep, plus the bands the check did not hear
+    over its own noise. `refine_with_check` and the residual helper share it so
+    the refinement and the figures on screen describe the same bands.
+    """
+    return left_alone(**kwargs)
+
+
+def residual(freqs, measured_db, target_db, skip=None) -> tuple[int, float | None]:
+    """Band count and RMS distance from the target, inside the correctable window.
+
+    The mirror of `PostCorrectionCheck.residual`: nothing under
+    `CHECK_MIN_BANDS` bands is summarised, because a handful of bands is not the
+    room.
+    """
+    f = np.asarray(freqs, dtype=float)
+    measured = np.asarray(measured_db, dtype=float)
+    target = np.asarray(target_db, dtype=float)
+    if skip is None:
+        keep = (f >= F_MIN) & (f <= F_MAX)
+    else:
+        keep = (f >= F_MIN) & (f <= F_MAX) & ~np.asarray(skip, dtype=bool)
+    diff = (measured - target)[keep]
+    diff = diff[np.isfinite(diff)]
+    if diff.size < CHECK_MIN_BANDS:
+        return int(diff.size), None
+    return int(diff.size), float(np.sqrt(np.mean(diff ** 2)))
+
+
+def align_to_target(freqs, measured_db, target_db) -> np.ndarray | None:
+    """`measured_db` moved onto the target's level over 300 Hz-3 kHz.
+
+    A sweep taken with the correction on is quieter by the preamp and wherever
+    it cuts, so only its shape against the target means anything. Null when no
+    band falls in the window.
+    """
+    f = np.asarray(freqs, dtype=float)
+    measured = np.asarray(measured_db, dtype=float)
+    target = np.asarray(target_db, dtype=float)
+    window = (f >= CHECK_ALIGN_LO_HZ) & (f <= CHECK_ALIGN_HI_HZ) & np.isfinite(measured) & np.isfinite(target)
+    if not window.any():
+        return None
+    return measured + float(np.mean(target[window] - measured[window]))
+
+
+def budget_envelope(freqs, transition_hz_: float = DEFAULT_TRANSITION_HZ,
+                    max_boost: float = MAX_BOOST_DB, max_cut: float = MAX_CUT_DB,
+                    max_boost_below_transition: float | None = None,
+                    cut_only: bool = False) -> tuple[np.ndarray, np.ndarray]:
+    """Per-band (floor, ceiling) a correction is held to; the mirror of
+    `Correction.budgetEnvelope`, shared with `refine_with_check` so a refined
+    curve cannot ask for more bass or more shaping than the original could.
+    """
+    f = np.asarray(freqs, dtype=float)
+    lo_t = max(float(transition_hz_), 1.0)
+    hi_t = lo_t * 2.0
+    mix = np.zeros_like(f)
+    ramp = (f > lo_t) & (f < hi_t)
+    mix[ramp] = 0.5 * (1.0 - np.cos(np.pi * np.log2(f[ramp] / lo_t)))
+    mix[f >= hi_t] = 1.0
+    low_boost = float(max_boost) if max_boost_below_transition is None \
+        else min(float(max_boost), float(max_boost_below_transition))
+    ceiling = low_boost + (MAX_SHAPING_DB - low_boost) * mix
+    floor = -float(max_cut) + (float(max_cut) - MAX_SHAPING_DB) * mix
+    if cut_only:
+        ceiling = np.zeros_like(ceiling)
+    return floor, ceiling
+
+
+def refine_with_check(
+    freqs,
+    base_measured_db,
+    target_db,
+    base_correction_db,
+    check_measured_db,
+    *,
+    base_confidence=None,
+    check_confidence=None,
+    null_mask=None,
+    min_phase_ok=None,
+    base_snr_db=None,
+    check_snr_db=None,
+    check_null_mask=None,
+    floor_hz: float = F_MIN,
+    f_max: float = F_MAX,
+    transition_hz_: float = DEFAULT_TRANSITION_HZ,
+    boost_budget_db: float | None = None,
+    max_slope: float = MAX_SLOPE_DB_PER_OCT,
+) -> Refinement | None:
+    """Move `base_correction_db` by what a check sweep played through it heard.
+
+    `base_measured_db` is the room the correction was made from,
+    `check_measured_db` the same position with that correction playing. The
+    residual the correction predicted is `base_measured_db + base_correction_db
+    - target_db`; the one the check heard is `check_measured_db - target_db`
+    after level alignment. Their difference, re-centred and weighted, is the
+    step — see `CorrectionRefinement` for why each rule is there.
+
+    Returns None when the two sweeps cannot be compared (different bands, too
+    few shared, nothing the correction may touch) or when nothing moved.
+    """
+    f = np.asarray(freqs, dtype=float)
+    base_measured = np.asarray(base_measured_db, dtype=float)
+    target = np.asarray(target_db, dtype=float)
+    base_correction = np.asarray(base_correction_db, dtype=float)
+    check_measured = np.asarray(check_measured_db, dtype=float)
+    n = f.size
+    if n < CHECK_MIN_BANDS or check_measured.size < n:
+        return None
+    if base_measured.size != n or target.size != n or base_correction.size != n:
+        return None
+    # A check analysed past the correction's own bandwidth edge is still usable on the bands the
+    # correction has; the extra bands are dropped rather than invented into a longer curve.
+    check_measured = check_measured[:n]
+
+    def trimmed(values):
+        if values is None:
+            return None
+        values = np.asarray(values)
+        return values[:n] if values.size >= n else None
+
+    check_snr_db = trimmed(check_snr_db)
+    check_confidence = trimmed(check_confidence)
+    check_null_mask = trimmed(check_null_mask)
+
+    skip = left_alone(f, null_mask, floor_hz, f_max, min_phase_ok, base_snr_db)
+    if check_snr_db is not None:
+        skip |= np.asarray(check_snr_db, dtype=float) < BAND_MIN_SNR_DB
+    heard = align_to_target(f, check_measured, target)
+    if heard is None:
+        return None
+
+    want = np.zeros(n)
+    weight = np.zeros(n)
+    base_conf = np.ones(n) if base_confidence is None else np.clip(np.asarray(base_confidence, float), 0.0, 1.0)
+    check_conf = np.ones(n) if check_confidence is None else np.clip(np.asarray(check_confidence, float), 0.0, 1.0)
+    if base_conf.size != n or check_conf.size != n:
+        return None
+    predicted = base_measured + base_correction - target
+    actual = heard - target
+    usable = (~skip) & (base_correction != 0.0) & np.isfinite(predicted) & np.isfinite(actual)
+    weight[usable] = np.minimum(base_conf[usable], check_conf[usable])
+    want[usable] = (predicted - actual)[usable]
+    weight_sum = float(weight.sum())
+    if weight_sum <= 0.0:
+        return None
+    mean = float((want * weight).sum() / weight_sum)
+
+    raw = np.zeros(n)
+    raw[usable] = (want - mean)[usable] * weight[usable]
+    raw = np.clip(raw, -REFINE_MAX_STEP_DB, REFINE_MAX_STEP_DB)
+    limited = _limit_slope(f, raw, max_slope)
+
+    # Kotlin's default is Correction.boostBudgetDb(1); keep the two defaults equal.
+    if boost_budget_db is None:
+        boost_budget_db = SINGLE_SEAT_BOOST_DB
+    floor, ceiling = budget_envelope(
+        f, transition_hz_, max_boost_below_transition=boost_budget_db
+    )
+    curve = base_correction.copy()
+    step = np.zeros(n)
+    held_back = 0
+    wanted_move = np.abs(want - mean) * weight
+    check_nulls = (np.zeros(n, dtype=bool) if check_null_mask is None
+                   else np.asarray(check_null_mask, dtype=bool))
+    inside = (f >= floor_hz) & (f <= f_max)
+    for k in range(n):
+        if weight[k] <= 0.0 or base_correction[k] == 0.0:
+            continue
+        if not inside[k]:
+            continue
+        # A band the correction already sits outside the budget for is left alone:
+        # clamping it here would move it without evidence.
+        if base_correction[k] < floor[k] - 1e-9 or base_correction[k] > ceiling[k] + 1e-9:
+            continue
+        move = float(limited[k])
+        if not np.isfinite(move):
+            continue
+        if move > 0.0 and (check_nulls[k] or actual[k] > -REFINE_MIN_DEFICIT_DB):
+            move = 0.0
+        if abs(move) < REFINE_MIN_APPLIED_DB:
+            if wanted_move[k] >= REFINE_MIN_DEFICIT_DB:
+                held_back += 1
+            continue
+        refined = float(base_correction[k]) + move
+        if base_correction[k] > 0.0 and refined < 0.0:
+            refined = 0.0
+        if base_correction[k] < 0.0 and refined > 0.0:
+            refined = 0.0
+        refined = float(np.clip(refined, floor[k], ceiling[k]))
+        # One step, whatever the envelope allows: the budget is a ceiling on the
+        # curve, not a licence to move a band further than one check can justify.
+        refined = float(np.clip(refined,
+                                base_correction[k] - REFINE_MAX_STEP_DB,
+                                base_correction[k] + REFINE_MAX_STEP_DB))
+        if base_correction[k] > 0.0 and refined < 0.0:
+            refined = 0.0
+        if base_correction[k] < 0.0 and refined > 0.0:
+            refined = 0.0
+        step[k] = refined - float(base_correction[k])
+        if step[k] == 0.0:
+            held_back += 1
+        curve[k] = refined
+    if not np.any(step != 0.0):
+        return None
+
+    # Measured from what the check heard, not from the original measurement: once
+    # the two disagree the older curve no longer describes the room, and
+    # ``heard + step`` is the residual this refinement expects to leave. "Before"
+    # is therefore the same check residual the result card already shows.
+    _, before_rms = residual(f, heard, target, skip)
+    _, after_rms = residual(f, heard + curve - base_correction, target, skip)
+    return Refinement(curve, step, held_back, before_rms, after_rms)
 
 
 # ---------------------------------------------------------------------------
@@ -1321,6 +1725,329 @@ def export_profile_json(
 
 
 # ---------------------------------------------------------------------------
+# Microphone calibration
+#
+# An uncalibrated remote microphone equalisers the mic as if it were the room.
+# The fix is to flatten the microphone's own response out of the measurement
+# before the correction reads it: MicResponse(f) = Measured_remote(f) -
+# Measured_reference(f), stored per remote model as an offset table
+# ({frequency, offset_dB}) and subtracted here before any DSP. Where no
+# reference-mic offset exists, the measurement is gated behind an explicit
+# confirmation instead of being auto-applied.
+# ---------------------------------------------------------------------------
+
+#: The most one band may move on the strength of a mic offset table alone.
+#: Mirrors MicResponse.MAX_APPLIED_DB in the app.
+MIC_OFFSET_MAX_DB = 6.0
+
+
+def subtract_mic_offset(
+    freqs: np.ndarray,
+    measured_db: np.ndarray,
+    offset_hz: np.ndarray,
+    offset_db: np.ndarray,
+    max_db: float = MIC_OFFSET_MAX_DB,
+) -> np.ndarray:
+    """Subtract a per-model microphone offset curve from a measurement.
+
+    ``offset_hz``/``offset_db`` are the remote mic's deviation from flat
+    (Measured_remote - Measured_reference), interpolated linearly in log10(Hz)
+    between the tabulated points and clamped to ±[max_db] per band — metadata
+    is not a calibration certificate. Outside the tabulated span the band is
+    left exactly as measured. With fewer than two points the measurement is
+    returned unchanged: one stray point describes a slope nobody measured.
+    """
+    f = np.asarray(freqs, dtype=float)
+    m = np.asarray(measured_db, dtype=float)
+    oh = np.asarray(offset_hz, dtype=float)
+    od = np.asarray(offset_db, dtype=float)
+    if oh.size < 2 or m.size != f.size:
+        return m.copy()
+    order = np.argsort(oh)
+    oh, od = oh[order], od[order]
+    keep = (f >= oh[0]) & (f <= oh[-1]) & np.isfinite(m)
+    out = m.copy()
+    if keep.any():
+        log_oh = np.log10(oh)
+        interp = np.interp(np.log10(f[keep]), log_oh, od)
+        out[keep] = m[keep] - np.clip(interp, -max_db, max_db)
+    return out
+
+
+def derive_mic_offset(
+    freqs: np.ndarray,
+    mic_db: np.ndarray,
+    reference_db: np.ndarray,
+    *,
+    max_db: float = MIC_OFFSET_MAX_DB,
+    f_min: float | None = None,
+    f_max: float | None = None,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Derive a per-model mic offset table from a paired capture.
+
+    The self-serve half of mic calibration: play the same pink-noise run
+    through the remote while the remote's mic *and* a calibrated reference mic
+    record side by side, and the room term cancels — what survives the
+    subtraction is the remote capsule's deviation from the reference. The
+    difference is reduced to 1/3-octave bands on both spectra first (in-band
+    power averaging, the same rule the measurement path uses) so a few dB of
+    positional room-mode mismatch between two capsules centimetres apart does
+    not burn into a table that outlives the capture.
+
+    Returns ``(offset_hz, offset_db)`` at the band centres, clipped to ±max_db
+    — beyond that the "offset" is more likely a placement artifact than a
+    capsule trait, and a table nobody can trust is worse than no table. Feed
+    the result straight into [subtract_mic_offset]; outside the returned span
+    (bands with no energy, or beyond [f_min]/[f_max]) the measurement is left
+    as measured, which is exactly what an empty correction means there.
+    """
+    # Resolved here, not as default args: the AutoEQ band limits are declared
+    # below this function, and defaults bind at def time.
+    if f_min is None:
+        f_min = AUTOEQ_FREQ_MIN_HZ
+    if f_max is None:
+        f_max = AUTOEQ_FREQ_MAX_HZ
+    f = np.asarray(freqs, dtype=float)
+    if f.size < 8:
+        return np.empty(0), np.empty(0)
+    mic_bands, mic_avg = octave_bands(f, np.asarray(mic_db, dtype=float), 3.0, f_min, f_max)
+    ref_bands, ref_avg = octave_bands(f, np.asarray(reference_db, dtype=float), 3.0, f_min, f_max)
+    if mic_bands.size == 0 or not np.array_equal(mic_bands, ref_bands):
+        return np.empty(0), np.empty(0)
+    delta = mic_avg - ref_avg
+    ok = np.isfinite(delta)
+    centres = mic_bands[ok]
+    values = np.clip(delta[ok], -max_db, max_db)
+    return centres, values
+
+
+def mic_limitation_warning(freqs: np.ndarray, measured_db: np.ndarray) -> str | None:
+    """A warning when the measurement carries a MEMS-mic signature.
+
+    A strong low-frequency roll-off (the capsule's output below ~80 Hz is
+    noise) or a high-frequency peak (the capsule's resonance) is characteristic
+    of an uncalibrated consumer MEMS microphone, not the room. Returns the
+    warning text, or None when the curve looks like a room and not a capsule.
+    """
+    f = np.asarray(freqs, dtype=float)
+    db = np.asarray(measured_db, dtype=float)
+    if f.size < 8:
+        return None
+    plateau = (f >= 100.0) & (f <= 300.0)
+    if not plateau.any():
+        return None
+    ref = float(np.mean(db[plateau]))
+    low = f < 80.0
+    hf = f > 5000.0
+    mid = (f >= 1000.0) & (f <= 4000.0)
+    parts = []
+    if low.any() and float(np.mean(db[low])) < ref - NULL_DEPTH_DB:
+        parts.append("strong low-frequency roll-off")
+    if hf.any() and mid.any() and float(np.max(db[hf])) > float(np.mean(db[mid])) + 4.0:
+        parts.append("high-frequency peak")
+    if not parts:
+        return None
+    return ("Measurement shows a " + " and ".join(parts) +
+            " characteristic of an uncalibrated MEMS microphone, not the room.")
+
+
+def auto_apply_gate(quality_ok: bool, mic_calibrated: bool) -> tuple[bool, str]:
+    """Whether a measurement may be auto-applied, and what to say if not.
+
+    An uncalibrated microphone does not block correction — it gates it behind
+    an explicit confirmation, so the user decides with the warning in front of
+    them rather than the app silently equalising the microphone.
+    """
+    if not quality_ok:
+        return False, "Measurement did not pass quality checks. Correct anyway?"
+    if not mic_calibrated:
+        return False, ("Measurement passed quality checks, but mic calibration is "
+                       "unavailable. Apply anyway?")
+    return True, ""
+
+
+# ---------------------------------------------------------------------------
+# Hybrid IIR + FIR correction (CamillaDSP pattern)
+#
+# Low-frequency room modes (below ~300 Hz) are minimum phase, so low-Q IIR
+# biquads fix them cheaply and without phase distortion. Above that the FIR
+# convolution handles the steady-state magnitude correction across the full
+# band. AutoEQ's safety limits are enforced throughout: 60-16,000 Hz range,
+# -12 to +3 dB gain, Q between 1 and 3 — anything outside those bounds sounds
+# worse than the original response.
+# ---------------------------------------------------------------------------
+
+#: AutoEQ safety limits, applied to every filter the hybrid export designs.
+AUTOEQ_FREQ_MIN_HZ = 60.0
+AUTOEQ_FREQ_MAX_HZ = 16000.0
+AUTOEQ_GAIN_MIN_DB = -12.0
+AUTOEQ_GAIN_MAX_DB = 3.0
+BIQUAD_Q_MIN = 1.0
+BIQUAD_Q_MAX = 3.0
+
+#: The split between the IIR and FIR regimes, and the FIR length.
+ROOM_MODE_MAX_HZ = 300.0
+FIR_MIN_HZ = 300.0
+FIR_TAPS = 1024
+HYBRID_MAX_BIQUADS = 4
+
+
+def rbj_peaking_coeffs(fc: float, q: float, gain_db: float, fs: int = FS) -> dict:
+    """RBJ-cookbook peaking biquad coefficients, normalised by a0.
+
+    Returned as ``{b0, b1, b2, a1, a2}`` with ``a0 = 1`` — the form a convolver
+    or biquad chain on-device consumes directly.
+    """
+    amp = 10 ** (gain_db / 40.0)
+    w0 = 2 * math.pi * min(max(fc, 1.0), fs * 0.4999) / fs
+    alpha = math.sin(w0) / (2 * q)
+    cos_w0 = math.cos(w0)
+    a0 = 1.0 + alpha / amp
+    return {
+        "fc": float(fc),
+        "q": float(q),
+        "gain_db": float(gain_db),
+        "b0": (1.0 + alpha * amp) / a0,
+        "b1": (-2.0 * cos_w0) / a0,
+        "b2": (1.0 - alpha * amp) / a0,
+        "a1": (-2.0 * cos_w0) / a0,
+        "a2": (1.0 - alpha / amp) / a0,
+    }
+
+
+def design_room_mode_biquads(
+    freqs: np.ndarray,
+    correction_db: np.ndarray,
+    max_filters: int = HYBRID_MAX_BIQUADS,
+    f_max_hz: float = ROOM_MODE_MAX_HZ,
+) -> list[dict]:
+    """2-4 low-Q IIR peaking biquads for the room modes below [f_max_hz].
+
+    Seeded at the largest correction extrema in the low band, each clamped to
+    the AutoEQ safety limits: frequency inside 60-16,000 Hz, gain inside
+    -12..+3 dB, Q inside 1-3. A cut is kept in full (cutting a modal peak also
+    kills its ringing); a boost is capped at +3 dB because low-frequency boost
+    is where small TV speakers distort.
+    """
+    f = np.asarray(freqs, dtype=float)
+    corr = np.asarray(correction_db, dtype=float)
+    low = (f >= AUTOEQ_FREQ_MIN_HZ) & (f <= min(f_max_hz, AUTOEQ_FREQ_MAX_HZ))
+    if not low.any():
+        return []
+    lf, lc = f[low], corr[low]
+
+    candidates: list[tuple[float, float]] = []
+    for i in range(1, len(lc) - 1):
+        if lc[i] == lc[i - 1] == lc[i + 1]:
+            continue
+        is_extremum = (lc[i] > lc[i - 1] and lc[i] >= lc[i + 1]) or \
+                      (lc[i] < lc[i - 1] and lc[i] <= lc[i + 1])
+        if is_extremum and abs(lc[i]) >= 0.5:
+            candidates.append((float(lf[i]), float(lc[i])))
+    candidates.sort(key=lambda c: -abs(c[1]))
+    candidates = candidates[:max_filters]
+
+    biquads = []
+    for fc, gain in candidates:
+        fc = float(np.clip(fc, AUTOEQ_FREQ_MIN_HZ, min(f_max_hz, AUTOEQ_FREQ_MAX_HZ)))
+        gain = float(np.clip(gain, AUTOEQ_GAIN_MIN_DB, AUTOEQ_GAIN_MAX_DB))
+        # Low-Q by design: room modes are broad, and high-Q + high gain rings.
+        q = float(np.clip(1.0 / max(abs(gain), 0.5), BIQUAD_Q_MIN, BIQUAD_Q_MAX))
+        biquads.append(rbj_peaking_coeffs(fc, q, gain))
+    return sorted(biquads, key=lambda b: b["fc"])
+
+
+def design_fir_taps(
+    freqs: np.ndarray,
+    correction_db: np.ndarray,
+    taps: int = FIR_TAPS,
+    f_min_hz: float = FIR_MIN_HZ,
+    fs: int = FS,
+) -> np.ndarray:
+    """FIR correction taps for the band at and above [f_min_hz], by frequency sampling.
+
+    The desired magnitude is the correction curve (clamped to the AutoEQ gain
+    limits) above [f_min_hz] and zero below it, sampled onto a `taps`-point
+    half-spectrum, inverse-transformed, and windowed. Linear phase, so it adds
+    no phase distortion of its own — the property that makes FIR the right tool
+    for the steady-state region IIR biquads cannot shape without ringing.
+    """
+    f = np.asarray(freqs, dtype=float)
+    corr = np.clip(np.asarray(correction_db, dtype=float),
+                   AUTOEQ_GAIN_MIN_DB, AUTOEQ_GAIN_MAX_DB)
+    grid = np.fft.rfftfreq(taps, 1.0 / fs)
+    desired_db = np.interp(grid, f, corr, left=0.0, right=0.0)
+    desired_db[grid < f_min_hz] = 0.0
+    desired_db[grid > min(AUTOEQ_FREQ_MAX_HZ, fs / 2.0)] = 0.0
+    mag = 10 ** (desired_db / 20.0)
+    h = np.fft.irfft(mag, taps)
+    window = np.hanning(taps)
+    return h * window
+
+
+def export_hybrid(
+    freqs: np.ndarray,
+    correction_db: np.ndarray,
+    max_biquads: int = HYBRID_MAX_BIQUADS,
+) -> dict:
+    """The hybrid correction: IIR biquads for the low band plus FIR taps above it.
+
+    On-device the biquads apply through the platform Equalizer bands (or a
+    biquad chain) and the FIR through a convolver where one is available.
+    """
+    f = np.asarray(freqs, dtype=float)
+    corr = np.asarray(correction_db, dtype=float)
+    biquads = design_room_mode_biquads(f, corr, max_filters=max_biquads)
+    taps = design_fir_taps(f, corr)
+    return {
+        "biquads": biquads,
+        "fir_taps": [round(float(t), 8) for t in taps],
+        "fir_min_hz": FIR_MIN_HZ,
+        "band_hz": [AUTOEQ_FREQ_MIN_HZ, AUTOEQ_FREQ_MAX_HZ],
+        "gain_limits_db": [AUTOEQ_GAIN_MIN_DB, AUTOEQ_GAIN_MAX_DB],
+        "q_limits": [BIQUAD_Q_MIN, BIQUAD_Q_MAX],
+    }
+
+
+# ---------------------------------------------------------------------------
+# AutoEQ-compatible export
+#
+# AutoEQ's native CSV is exactly two columns — frequency in Hz, magnitude in
+# dB — and Poweramp Equalizer imports both that and its own JSON presets.
+# Poweramp adds +6 dB to AutoEQ *graphic* gains on import, so the CSV carries
+# the true dB values and the JSON carries its own; the +6 dB offset is a
+# Poweramp import behaviour, documented here so users are not surprised.
+# ---------------------------------------------------------------------------
+
+def export_autoeq_csv(
+    freqs: np.ndarray,
+    correction_db: np.ndarray,
+    f_min: float = AUTOEQ_FREQ_MIN_HZ,
+    f_max: float = AUTOEQ_FREQ_MAX_HZ,
+) -> str:
+    """`frequency,gain` CSV in AutoEQ's native format — no proprietary blob.
+
+    Rows are the correction sampled at the 1/3-octave centres inside
+    [f_min, f_max], clamped to the AutoEQ gain limits. Gains are written to
+    0.001 dB so a fine correction survives a round-trip without sub-0.01 dB
+    rounding; Poweramp and AutoEQ both accept the extra digits. Note for
+    Poweramp users: importing an AutoEQ *graphic* preset adds +6 dB to these
+    gains; the parametric JSON export does not.
+    """
+    f = np.asarray(freqs, dtype=float)
+    corr = np.asarray(correction_db, dtype=float)
+    band = (f >= f_min) & (f <= min(f_max, AUTOEQ_FREQ_MAX_HZ))
+    lines = [
+        "# CoreEQ_Export.csv — AutoEQ-compatible (frequency Hz, gain dB)",
+        "# Note: Poweramp adds +6 dB to AutoEQ graphic gains on import.",
+        "frequency,gain",
+    ]
+    for hz, db in zip(f[band], corr[band]):
+        lines.append(f"{hz:.1f},{float(np.clip(db, AUTOEQ_GAIN_MIN_DB, AUTOEQ_GAIN_MAX_DB)):.3f}")
+    return "\n".join(lines) + "\n"
+
+
+# ---------------------------------------------------------------------------
 # A synthetic room, so the chain can be exercised with no hardware
 # ---------------------------------------------------------------------------
 
@@ -1777,6 +2504,30 @@ def _selftest() -> int:
     check("millibels clamped on a narrow-range device",
           all(mb == 300 for _, mb in tight))
 
+    # The closed loop (1.8.0): what a check sweep played through the correction
+    # may change. A level difference is not an error; a direction is not
+    # reversible; one band moves at most REFINE_MAX_STEP_DB.
+    flat_target = np.zeros_like(c)
+    refine_corr = correction_curve(
+        c, measured, flat_target, transition_hz_=DEFAULT_TRANSITION_HZ,
+        null_mask=detect_nulls(c, measured),
+        max_boost_below_transition=SINGLE_SEAT_BOOST_DB)
+    predicted = measured + refine_corr
+    level_only = refine_with_check(
+        c, measured, flat_target, refine_corr, flat_target + predicted + 2.5)
+    check("a level difference alone refines nothing", level_only is None)
+    tilted = 6.0 * np.exp(-0.5 * (np.log2(c / 100.0) / 0.6) ** 2)
+    stepped = refine_with_check(
+        c, measured, flat_target, refine_corr, flat_target + predicted - tilted)
+    check("one check moves a band at most REFINE_MAX_STEP_DB",
+          stepped is not None and stepped.largest_db <= REFINE_MAX_STEP_DB + 1e-9,
+          f"largest {0.0 if stepped is None else stepped.largest_db:.2f} dB")
+    check("a cut is never turned into a boost",
+          stepped is not None and bool(np.all(
+              (refine_corr >= 0.0) | (stepped.correction_db <= 0.0)))
+          and bool(np.all((refine_corr <= 0.0) | (stepped.correction_db >= 0.0))),
+          f"{0 if stepped is None else stepped.changed} bands moved")
+
     # Exports.
     geq = export_graphic_eq(c, corr)
     check("GraphicEQ header present", geq.startswith("GraphicEQ: "))
@@ -1808,6 +2559,82 @@ def _selftest() -> int:
           profile["capability"] == {"global_mix": False})
     check("profile carries the whole curve", len(profile["curve"]) == len(c))
     check("profile names its format", profile["format"] == "corebuilds.core-eq/1")
+
+    # Microphone calibration: the offset is subtracted, capped, and never
+    # extrapolated past the tabulated span; the gate demands confirmation
+    # when the mic is uncalibrated.
+    offset_hz = np.array([100.0, 1000.0, 10000.0])
+    offset_db = np.array([2.0, -1.0, 3.0])
+    flat_measured = np.full_like(c, 5.0)
+    flattened = subtract_mic_offset(c, flat_measured, offset_hz, offset_db)
+    check("mic offset is subtracted inside the span",
+          abs(float(flattened[int(np.argmin(np.abs(c - 1000.0)))]) - 6.0) < 0.05)
+    check("mic offset is capped per band",
+          bool(np.all(np.abs(flattened - flat_measured) <= MIC_OFFSET_MAX_DB + 1e-9)))
+    check("mic offset is not extrapolated below the span",
+          abs(float(flattened[int(np.argmin(np.abs(c - 31.5)))]) - 5.0) < 1e-9)
+    check("fewer than two offset points changes nothing",
+          np.array_equal(subtract_mic_offset(c, flat_measured, offset_hz[:1], offset_db[:1]), flat_measured))
+    allowed, message = auto_apply_gate(quality_ok=True, mic_calibrated=False)
+    check("uncalibrated mic gates auto-apply behind confirmation",
+          not allowed and "mic calibration is unavailable" in message)
+    # Deriving a table from a paired capture: a known per-model offset, fed as
+    # (mic = room + offset) against (reference = room), must recover that
+    # offset within the band grid and then undo it via subtract_mic_offset.
+    known_offset_hz = np.array([100.0, 1000.0, 10000.0])
+    known_offset_db = np.array([2.0, -1.0, 3.0])
+    fine = np.geomspace(20.0, 20000.0, 4000)
+    room = np.zeros_like(fine)
+    known = np.interp(np.log10(fine), np.log10(known_offset_hz), known_offset_db)
+    mic = room + known  # the remote's capture sits off flat by its capsule offset
+    derived_hz, derived_db = derive_mic_offset(fine, mic, room)
+    recovered = np.interp(np.log10(known_offset_hz), np.log10(derived_hz), derived_db)
+    check("derived mic table is flat where the two spectra match",
+          derived_hz.size == 0 or bool(np.all(np.abs(recovered - known_offset_db) < 0.35)),
+          f"max {0.0 if derived_hz.size == 0 else float(np.max(np.abs(recovered - known_offset_db))):.2f} dB from known")
+    # Inside the tabulated span only: outside it subtract_mic_offset is
+    # specified to leave the measurement alone, and the synthetic mic curve
+    # does not flatten to zero there.
+    if derived_hz.size >= 2:
+        flattened = subtract_mic_offset(fine, mic, derived_hz, derived_db)
+        inside = (fine >= derived_hz[0]) & (fine <= derived_hz[-1])
+        residual = float(np.max(np.abs(flattened[inside] - room[inside])))
+        check("a derived table is accepted straight back by subtract_mic_offset",
+              residual <= 0.35, f"{residual:.2f} dB residual inside the span")
+    else:
+        check("a derived table is accepted straight back by subtract_mic_offset",
+              False, "derive produced no table to feed back")
+    check("calibrated, good-quality measurement auto-applies",
+          auto_apply_gate(quality_ok=True, mic_calibrated=True) == (True, ""))
+    check("a MEMS-style LF roll-off raises the limitation warning",
+          mic_limitation_warning(c, np.where(c < 80.0, -20.0, 0.0)) is not None)
+    check("a clean curve raises no limitation warning",
+          mic_limitation_warning(c, np.zeros_like(c)) is None)
+
+    # The hybrid IIR+FIR export stays inside the AutoEQ safety limits and
+    # emits both filter kinds.
+    hybrid = export_hybrid(c, corr)
+    check("hybrid export designs at most HYBRID_MAX_BIQUADS biquads",
+          0 <= len(hybrid["biquads"]) <= HYBRID_MAX_BIQUADS)
+    check("biquads respect the AutoEQ gain and Q limits",
+          all(AUTOEQ_GAIN_MIN_DB - 1e-9 <= b["gain_db"] <= AUTOEQ_GAIN_MAX_DB + 1e-9
+              and BIQUAD_Q_MIN - 1e-9 <= b["q"] <= BIQUAD_Q_MAX + 1e-9
+              and AUTOEQ_FREQ_MIN_HZ <= b["fc"] <= ROOM_MODE_MAX_HZ + 1e-9
+              for b in hybrid["biquads"]))
+    check("biquad coefficients are normalised (a0 folded in: b1 == a1)",
+          all(abs(b["b1"] - b["a1"]) < 1e-12 for b in hybrid["biquads"]))
+    check("FIR taps are the requested length and finite",
+          len(hybrid["fir_taps"]) == FIR_TAPS
+          and all(math.isfinite(t) for t in hybrid["fir_taps"]))
+
+    # The AutoEQ CSV is two columns of numbers under a comment header.
+    csv = export_autoeq_csv(c, corr)
+    rows = [line for line in csv.splitlines() if not line.startswith("#")][1:]
+    check("AutoEQ CSV has a header and one row per in-band centre",
+          csv.splitlines()[2] == "frequency,gain" and len(rows) == int(((c >= AUTOEQ_FREQ_MIN_HZ) & (c <= AUTOEQ_FREQ_MAX_HZ)).sum()))
+    check("AutoEQ CSV rows parse as frequency,gain",
+          all(len(r.split(",")) == 2 and _is_num(r.split(",")[0]) and _is_num(r.split(",")[1])
+              for r in rows))
 
     print()
     if failures:

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Google Play build type (see app/build.gradle.kts and Distribution.kt).
+     Play's Device and Network Abuse policy: an app distributed on Play may
+     not install APKs from outside Play, so the Play build drops the install
+     permission its updater and the Glyphs download need. The FileProvider
+     stays: wallpaper sharing uses it too.
+
+     Leanback is required here, unlike the sideload build: Play offers an app
+     whose leanback is optional to phones too, and Console cannot take a
+     phone-compatible bundle off them. The listing is TV-only
+     (docs/play/listing.json form_factors), with no phone screenshots and no
+     tested phone UI, so the manifest makes it so.
+
+     Lint reads this overlay on its own and misses the TV launcher entry and
+     the optional touchscreen that src/main declares; the merged Play
+     manifest has both. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingLeanbackLauncher,ImpliedTouchscreenHardware">
+
+    <uses-permission
+        android:name="android.permission.REQUEST_INSTALL_PACKAGES"
+        tools:node="remove" />
+
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="true"
+        tools:replace="android:required" />
+
+    <!-- No orientation lock on Play. Play's pre-launch report asks for it
+         gone: from Android 16 large screens ignore it, and the Play listing
+         is TV-only, where every screen is landscape already. The sideload
+         build keeps the lock (src/main, held by tools/validate.py), because
+         it can land on a phone and its layouts are drawn for landscape. -->
+    <application>
+        <activity
+            android:name=".MainActivity"
+            tools:remove="android:screenOrientation" />
+    </application>
+
+</manifest>

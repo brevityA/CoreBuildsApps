@@ -103,12 +103,12 @@ Ticker-only clock mode: the ▬ button, or `T`.
 
 `MainActivity` is a fullscreen WebView. `LineWebClient` serves the bundled UI from APK assets at `https://coreline.local` and proxies `/api/proxy?url=` so ESPN / NHL / MLB / your RSS feeds are fetched on-device — no CORS, no home server.
 
-Private addresses are blocked. The app never plays a stream.
+Private feed destinations are blocked. The app never plays a stream. The temporary phone-pairing listener uses Android 17's `ACCESS_LOCAL_NETWORK` permission; on API 37+ the TV asks the user before opening it, then pairing can be started again after granting access.
 
 ## Min requirements
 
 | | |
 |---|---|
 | minSdk | 24 (Android 7 / Fire OS 6) |
-| targetSdk | 34 |
+| compileSdk / targetSdk | 37 / 37 |
 | Leanback | optional — one APK for phone and TV |

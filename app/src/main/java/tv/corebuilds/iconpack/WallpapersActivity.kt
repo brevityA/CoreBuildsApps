@@ -32,6 +32,19 @@ import androidx.recyclerview.widget.RecyclerView
  * video pickers find them - so Live, Export and Select all save every loop
  * in one go instead of one preview at a time.
  *
+ * The Google Play build adds the Core Premium walls (series 15 Spectra and 16
+ * Aurum; Plus in code) once Premium is on sale or owned: one Premium chip
+ * after All for both, a
+ * PREMIUM badge, and without Premium or its trial a press opens the Premium
+ * card instead of the preview. An export leaves them out unless Premium is
+ * bought. They are not part of New, which stays the main collection's
+ * release.
+ *
+ * Favourites are starred in the preview ([Prefs.wallpaperFavourites]); once
+ * there is one, a Favourites chip follows All (and Plus), and starred tiles
+ * wear a star. Coming back from the preview re-reads the set, so a star
+ * given or taken there shows on return without moving the cursor.
+ *
  * TV-first D-pad flow: export/back → series chips → grid.
  */
 class WallpapersActivity : TvActivity() {
@@ -44,10 +57,13 @@ class WallpapersActivity : TvActivity() {
     private lateinit var exportSelected: TextView
 
     private var series: String? = null
+    private var favourites: Set<String> = emptySet()
 
     private val requestStorage =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            if (granted) startExport(adapter.selectedItems()) else
+            // Through beginExport, not straight to startExport: the export
+            // the prompt interrupted still leaves locked Plus walls out.
+            if (granted) beginExport(adapter.selectedItems()) else
                 toast(getString(R.string.wp_storage_permission_denied))
         }
 
@@ -58,7 +74,8 @@ class WallpapersActivity : TvActivity() {
         // the live loop the home screen is playing; the old one plays until then.
         LiveLoopDownloader.refreshActive(this)
 
-        all = WallpaperCatalog.load(this) + LiveLoop.asWallpapers()
+        val plusWalls = if (Plus.shown(this)) WallpaperCatalog.loadPlus(this) else emptyList()
+        all = WallpaperCatalog.load(this) + plusWalls + LiveLoop.asWallpapers()
         count = findViewById(R.id.wp_count)
         selectionBar = findViewById(R.id.wp_selection_bar)
         selectionCount = findViewById(R.id.wp_selection_count)
@@ -66,7 +83,10 @@ class WallpapersActivity : TvActivity() {
         count.text = getString(R.string.wp_sub_fmt, all.size)
 
         adapter = WallpaperAdapter(all) { item ->
-            val visible = adapter.currentItems()
+            if (item.plus && !Plus.unlocked(this)) return@WallpaperAdapter
+            // The preview pages through its list, so it gets only what opens.
+            val on = Plus.active(this)
+            val visible = adapter.currentItems().filter { !it.plus || on }
             val index = visible.indexOfFirst { it.url == item.url }.coerceAtLeast(0)
             startActivity(
                 Intent(this, WallpaperPreviewActivity::class.java).apply {
@@ -115,6 +135,11 @@ class WallpapersActivity : TvActivity() {
             if (picked.isNotEmpty()) beginExport(picked)
         }
 
+        // Opening the browser is seeing the release: the home rail stops
+        // advertising "N new" from here on.
+        WallpaperCatalog.newestSince(mainWalls())?.let { Prefs.setWallpapersNewSeen(this, it) }
+        favourites = Prefs.wallpaperFavourites(this)
+        adapter.setFavourites(favourites)
         bindChips()
         bindBackNavigation()
 
@@ -129,6 +154,27 @@ class WallpapersActivity : TvActivity() {
                 (firstChip ?: chips).requestFocus()
             }
         }
+    }
+
+    /**
+     * The preview is where stars change. Only a change does anything here:
+     * tiles re-star in place, the chip list is rebuilt for the new count, and
+     * the grid re-filters only while it is showing favourites.
+     */
+    override fun onResume() {
+        super.onResume()
+        val now = Prefs.wallpaperFavourites(this)
+        if (now == favourites) return
+        favourites = now
+        adapter.setFavourites(now)
+        // Un-starring the last favourite takes its chip away; the grid falls
+        // back to All rather than sitting on a filter nobody can pick. The
+        // RecyclerView keeps focus through the re-filter on its own (it
+        // moves to a neighbour when the focused tile left with its star).
+        val showingFavourites = series == FAV_KEY
+        if (showingFavourites && favouriteWalls().isEmpty()) series = null
+        bindChips()
+        if (showingFavourites) applyFilter()
     }
 
     private fun bindBackNavigation() {
@@ -182,18 +228,26 @@ class WallpapersActivity : TvActivity() {
     }
 
     private fun bindChips() {
-        // Opening the browser is seeing the release: the home rail stops
-        // advertising "N new" from here on.
-        WallpaperCatalog.newestSince(all)?.let { Prefs.setWallpapersNewSeen(this, it) }
         // The still series, in catalogue order. The loops' own key is not a
-        // series folder; it gets the Live chip below, after New.
-        val present = all.filter { !it.isLive }.map { it.series }.distinct()
+        // series folder; it gets the Live chip below, after New. The Plus
+        // series has its own chip, straight after All.
+        val present = all.filter { !it.isLive && !it.plus }.map { it.series }.distinct()
         val labels = mutableListOf(getString(R.string.chip_all))
         val keys = mutableListOf<String?>(null)
+        if (all.any { it.plus }) {
+            labels += getString(R.string.chip_plus)
+            keys += PLUS_KEY
+        }
+        // Only once something is starred: an empty chip is a dead stop.
+        val starred = favouriteWalls().size
+        if (starred > 0) {
+            labels += getString(R.string.chip_favourites_fmt, starred)
+            keys += FAV_KEY
+        }
         // What this release added or re-rendered, first: with 132 walls in
         // series order, a new series sits under a hundred old ones and a user
         // who updated for the wallpapers would scroll past them.
-        val fresh = WallpaperCatalog.newWalls(all)
+        val fresh = WallpaperCatalog.newWalls(mainWalls())
         if (fresh.isNotEmpty()) {
             labels += getString(R.string.chip_new_fmt, fresh.size)
             keys += NEW_KEY
@@ -219,7 +273,9 @@ class WallpapersActivity : TvActivity() {
             // user just pressed with a fresh ViewHolder and drops the D-pad
             // highlight on the press that moved it.
             itemAnimator = null
-            adapter = WallpaperChipAdapter(labels, keys, null) { key ->
+            // Rebuilt on return from the preview when the stars changed, so
+            // it starts on the filter already showing, not on All.
+            adapter = WallpaperChipAdapter(labels, keys, series) { key ->
                 series = key
                 applyFilter()
             }
@@ -230,7 +286,9 @@ class WallpapersActivity : TvActivity() {
         val filtered = when (series) {
             null -> all
             LIVE_KEY -> all.filter { it.isLive }
-            NEW_KEY -> WallpaperCatalog.newWalls(all)
+            PLUS_KEY -> all.filter { it.plus }
+            FAV_KEY -> favouriteWalls()
+            NEW_KEY -> WallpaperCatalog.newWalls(mainWalls())
             else -> all.filter { it.series == series }
         }
         adapter.submit(filtered)
@@ -239,10 +297,21 @@ class WallpapersActivity : TvActivity() {
         }
     }
 
-    private fun beginExport(wallpapers: List<Wallpaper>) {
+    /** Starred walls still in the catalogue, in catalogue order. */
+    private fun favouriteWalls(): List<Wallpaper> = all.filter { it.cacheName in favourites }
+
+    /** Everything but the Plus walls: what New and the home rail count. */
+    private fun mainWalls(): List<Wallpaper> = all.filter { !it.plus }
+
+    private fun beginExport(picked: List<Wallpaper>) {
         // Stills and loops travel together: WallpaperExporter sends each to
         // its own shared folder (Pictures / Movies), so a mixed selection
-        // is one progress screen, not two.
+        // is one progress screen, not two. Plus walls go only with the
+        // purchase: a copy in Pictures outlasts the trial.
+        val owned = Plus.owned(this)
+        val wallpapers = picked.filter { !it.plus || owned }
+        val held = picked.size - wallpapers.size
+        if (held > 0) toast(getString(R.string.wp_plus_held_fmt, held))
         if (wallpapers.isEmpty()) return
         beginExportAll(wallpapers)
     }
@@ -291,5 +360,9 @@ class WallpapersActivity : TvActivity() {
         private const val LIVE_KEY = "__live__"
         /** Chip key for "new in the latest release"; never a series folder name. */
         private const val NEW_KEY = "__new__"
+        /** Chip key for the Core Builds Plus walls; never a series folder name. */
+        private const val PLUS_KEY = "__plus__"
+        /** Chip key for the starred walls; never a series folder name. */
+        private const val FAV_KEY = "__favourites__"
     }
 }

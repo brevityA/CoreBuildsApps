@@ -126,6 +126,9 @@ jobs:
       - name: Validate catalog + appfilter
         run: python tools/validate.py
 
+      - name: No new look-alike icons (64 px alpha IoU >= 0.80)
+        run: python tools/check_lookalikes.py
+
       - name: Check every UI resource the three modules reference
         run: python tools/check_ui_resources.py
 
@@ -141,6 +144,9 @@ jobs:
           python tests/test_icon_uniformity.py
           python tests/test_ui_wiring.py
           python tests/test_brandmark_badge.py
+          python tests/test_themed_icons.py
+          python tests/test_projectivy_walls.py
+          python tests/test_batch_requests.py
           python tests/test_navigation_graph.py
           python tests/test_tv_scale.py
           python tests/test_mapping_hygiene.py
@@ -150,6 +156,10 @@ jobs:
           python tests/test_wordmark_type.py
           python tests/test_stroke_spacing.py
           python tests/test_icon_review.py
+          python tests/test_play_build.py
+          python tests/test_play_listing.py
+          python tests/test_privacy_policy.py
+          python tests/test_lookalikes.py
           python tests/test_ci_coverage.py
 
       - name: Set up JDK 17
@@ -157,6 +167,11 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+
+      - name: Install Android platform 37
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-37.0" "build-tools;36.0.0" \
+            || bash tools/install_android_platform.sh 37 36.0.0
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
@@ -208,7 +223,12 @@ jobs:
                 ;;
             esac
           done
-          SIGNER="$ANDROID_HOME/build-tools/34.0.0/apksigner"
+          # Build-tools 36 now that the modules compile at 37; the fallback
+          # keeps this check working if a runner image carries a different
+          # patch level (the binary, not the number, is what matters here).
+          SIGNER="$ANDROID_HOME/build-tools/36.0.0/apksigner"
+          [[ -x "$SIGNER" ]] || SIGNER="$(find "$ANDROID_HOME/build-tools" \
+            -maxdepth 2 -name apksigner -type f | sort -V | tail -1)"
           A=$("$SIGNER" verify --print-certs "$APK" | grep 'SHA-256 digest')
           for CANDIDATE in "$GLYPHS_APP" "$GLYPHS"; do
             B=$("$SIGNER" verify --print-certs "$CANDIDATE" | grep 'SHA-256 digest')

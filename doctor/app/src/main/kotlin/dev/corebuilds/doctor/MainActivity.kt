@@ -1,9 +1,14 @@
 package dev.corebuilds.doctor
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -102,6 +107,40 @@ private fun DoctorScreen() {
     var running by remember { mutableStateOf(false) }
     val results = remember { mutableStateListOf<CheckResult>() }
     var finished by remember { mutableStateOf(false) }
+    val pendingInput = remember { mutableStateOf<DoctorInput?>(null) }
+
+    fun runChecks(input: DoctorInput, localNetworkPermissionDenied: Boolean = false) {
+        results.clear()
+        finished = false
+        running = true
+        scope.launch {
+            DoctorEngine.run(context, input).collect { result ->
+                results.add(result)
+            }
+            if (localNetworkPermissionDenied) {
+                results.add(
+                    CheckResult(
+                        name = "Local network access",
+                        verdict = Verdict.WARN,
+                        summary = "Permission denied; LAN-hosted add-on URLs may fail",
+                        fix = "Allow local-network access to test an add-on hosted on your home network.",
+                    )
+                )
+            }
+            running = false
+            finished = true
+        }
+    }
+
+    val localNetworkPermission = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        val input = pendingInput.value
+        pendingInput.value = null
+        if (input != null) {
+            runChecks(input, localNetworkPermissionDenied = !granted)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -132,6 +171,14 @@ private fun DoctorScreen() {
             placeholder = "https://...",
             masked = false
         )
+        if (Build.VERSION.SDK_INT >= 37) {
+            Text(
+                text = "Android may ask for local-network access before testing a custom add-on URL.",
+                color = BrandColors.TextSecondary,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(top = 2.dp, bottom = 8.dp),
+            )
+        }
         DoctorTextField(
             value = rdKey,
             onValueChange = { rdKey = it },
@@ -151,20 +198,19 @@ private fun DoctorScreen() {
 
         Button(
             onClick = {
-                results.clear()
-                finished = false
-                running = true
                 val input = DoctorInput(
                     addonUrl = addonUrl.trim(),
                     rdKey = rdKey.trim(),
                     torboxKey = torboxKey.trim()
                 )
-                scope.launch {
-                    DoctorEngine.run(context, input).collect { result ->
-                        results.add(result)
-                    }
-                    running = false
-                    finished = true
+                if (Build.VERSION.SDK_INT >= 37 && input.addonUrl.isNotBlank() &&
+                    context.checkSelfPermission(Manifest.permission.ACCESS_LOCAL_NETWORK) !=
+                    PackageManager.PERMISSION_GRANTED
+                ) {
+                    pendingInput.value = input
+                    localNetworkPermission.launch(Manifest.permission.ACCESS_LOCAL_NETWORK)
+                } else {
+                    runChecks(input)
                 }
             },
             enabled = !running,

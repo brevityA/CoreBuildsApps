@@ -14,6 +14,7 @@ Run: python tests/test_glyphs_pack.py
 """
 from __future__ import annotations
 
+import json
 import re
 import subprocess
 import sys
@@ -106,9 +107,114 @@ class GeneratedResources(unittest.TestCase):
         # The glyphs are copied at build time, not committed twice; an include
         # that misses them would link but leave launchers resolving nothing.
         gradle = read(PACK_GRADLE)
-        for needed in ('"*.webp"', 'exclude("*_banner.webp")', '"aliases.xml"',
-                       '"cb_banner.png"', '"mipmap-*/**"'):
+        for needed in ('"*.webp"', 'exclude("*_banner.webp")', '"aliases.xml"'):
             self.assertIn(needed, gradle)
+
+    def test_companion_wears_its_own_branding(self):
+        # Copying the pack's mipmaps and cb_banner made the companion's TV-row
+        # banner read "Core Builds Icon Pack", and the Play store banner must be
+        # the on-device banner. The companion's own art is committed instead,
+        # and the copy must not bring the pack's back (a duplicate resource).
+        gradle = read(PACK_GRADLE)
+        self.assertNotIn('"cb_banner.png"', gradle)
+        self.assertNotIn('"mipmap-*/**"', gradle)
+        res = ROOT / "glyphs/src/main/res"
+        for rel in ("drawable-nodpi/cb_banner.png", "mipmap-xhdpi/ic_launcher.png",
+                    "mipmap-xxhdpi/ic_launcher_foreground.png",
+                    "mipmap-anydpi-v26/ic_launcher.xml"):
+            self.assertTrue((res / rel).exists(), rel)
+        self.assertNotEqual(
+            (res / "drawable-nodpi/cb_banner.png").read_bytes(),
+            (ROOT / "app/src/main/res/drawable-nodpi/cb_banner.png").read_bytes(),
+            "the companion's banner is the icon pack's again")
+        branding = read(ROOT / "tools/build_glyphs_branding.py")
+        self.assertIn('COMPANION_SUBTITLE = "Glyphs Pack"', branding)
+
+    def test_home_screen_names_the_label_a_launcher_lists(self):
+        # The icon-pack list shows app_name. "Core Builds Glyphs" alone is the
+        # glyphs flavor, a different app, so the home must not send users to it.
+        label = re.search(r'name="app_name">([^<]+)<',
+                          read(ROOT / "glyphs/src/main/res/values/strings.xml")).group(1)
+        home = read(ROOT / "glyphs/src/main/res/values/strings_home.xml")
+        title = re.search(r'name="glyphs_home_title">([^<]+)<', home).group(1)
+        hint = re.search(r'name="glyphs_home_hint">([^<]+)<', home).group(1)
+        self.assertEqual(title, label)
+        self.assertIn(f"choose {label} in the icon pack list", hint)
+
+
+class SelfIconIdentity(unittest.TestCase):
+    """Applying our own pack must not turn a glyphs app into the main pack.
+
+    Separate launcher mipmaps are not enough: the catalog's appfilter wins
+    after a pack is applied. The flavor and Play IDs also retain their Java
+    namespace, not their applicationId, in the launch activity's name.
+    """
+    COMPONENTS = {
+        "tv.corebuilds.iconpack/tv.corebuilds.iconpack.MainActivity": "corebuilds",
+        "tv.corebuilds.iconpack.play/tv.corebuilds.iconpack.MainActivity": "corebuilds",
+        "tv.corebuilds.glyphs/tv.corebuilds.iconpack.MainActivity": "corebuilds_glyphs",
+        "tv.corebuilds.iconpack.glyphs/tv.corebuilds.iconpack.glyphs.GlyphsHomeActivity":
+            "corebuilds_glyphs_pack",
+        "tv.corebuilds.iconpack.glyphs.play/tv.corebuilds.iconpack.glyphs.GlyphsHomeActivity":
+            "corebuilds_glyphs_pack",
+    }
+
+    def test_catalog_keeps_the_glyphs_apps_separate_from_the_main_pack(self):
+        catalog = json.loads(read(ROOT / "tools/catalog.json"))
+        actual = {}
+        for icon in catalog["icons"]:
+            for component in icon["components"]:
+                pkg, activity = component.split("/", 1)
+                if activity.startswith("."):
+                    activity = pkg + activity
+                actual[f"{pkg}/{activity}"] = icon["drawable"]
+        for component, drawable in self.COMPONENTS.items():
+            with self.subTest(component=component):
+                self.assertEqual(actual.get(component), drawable)
+
+    def test_every_appfilter_maps_the_right_self_icon_in_both_name_forms(self):
+        for tree, suffix in ((ROOT / "app/src/main", "_banner"),
+                             (ROOT / "app/src/glyphs", ""),
+                             (ROOT / "glyphs/src/main", "")):
+            for folder in ("res/xml", "assets"):
+                path = tree / folder / "appfilter.xml"
+                actual = {i.get("component"): i.get("drawable")
+                          for i in ET.parse(path).getroot().findall("item")}
+                for component, drawable in self.COMPONENTS.items():
+                    pkg, activity = component.split("/", 1)
+                    forms = [component]
+                    if activity.startswith(pkg + "."):
+                        forms.append(f"{pkg}/{activity[len(pkg):]}")
+                    for form in forms:
+                        with self.subTest(path=path.relative_to(ROOT), component=form):
+                            self.assertEqual(actual.get(f"ComponentInfo{{{form}}}"),
+                                             drawable + suffix)
+
+    def test_glyphs_catalog_labels_match_the_installed_apps(self):
+        icons = {i["drawable"]: i for i in json.loads(
+            read(ROOT / "tools/catalog.json"))["icons"]}
+        flavor_label = re.search(r'resValue\("string", "app_name", "([^"]+)"\)',
+                                 read(APP_GRADLE)).group(1)
+        companion_label = re.search(r'name="app_name">([^<]+)<',
+                                   read(ROOT / "glyphs/src/main/res/values/strings.xml")).group(1)
+        for drawable, label in (("corebuilds_glyphs", flavor_label),
+                                ("corebuilds_glyphs_pack", companion_label)):
+            with self.subTest(drawable=drawable):
+                self.assertEqual(icons.get(drawable, {}).get("name"), label)
+                # A shorter banner name must not hide which of the two apps it is.
+                self.assertEqual(icons.get(drawable, {}).get("banner_name", label), label)
+
+    def test_native_glyph_icons_stay_distinct_when_no_pack_is_applied(self):
+        main = ROOT / "app/src/main/res"
+        for res in (ROOT / "app/src/glyphs/res", ROOT / "glyphs/src/main/res"):
+            resources = ["drawable-nodpi/cb_banner.png"]
+            for density in ("mipmap-xhdpi", "mipmap-xxhdpi"):
+                resources.extend(f"{density}/{name}.png" for name in (
+                    "ic_launcher", "ic_launcher_foreground", "ic_launcher_monochrome"))
+            for resource in resources:
+                with self.subTest(res=res.relative_to(ROOT), resource=resource):
+                    self.assertNotEqual((res / resource).read_bytes(),
+                                        (main / resource).read_bytes())
 
 
 class OneStylePerPack(unittest.TestCase):
@@ -148,12 +254,23 @@ class OneStylePerPack(unittest.TestCase):
         forward = java.split("if (isPickRequest(in))", 1)[1].split("} else {", 1)[0]
         self.assertIn("putExtra(EXTRA_PICK_GLYPHS, true)", forward)
 
-    def test_picker_shape_comes_from_the_pack_not_the_toggle(self):
+    def test_picker_shape_follows_the_toggle_except_through_glyphs(self):
         src = read(self.MAIN_KT)
         self.assertIn("fun pickFixedByPack(): Boolean = pickMode && GlyphsCompanion.supported()",
                       src)
-        # An unmarked pick came through the icon pack: banners.
-        self.assertIn("!intent.getBooleanExtra(GlyphsCompanion.EXTRA_PICK_GLYPHS, false)", src)
+        # A pick forwarded by Core Builds Glyphs is always square; one through
+        # this pack follows the Art style switch (2.0.1).
+        pick = src.split("pickBanners = if (pickFixedByPack() &&", 1)[1].split("adapter = IconAdapter", 1)[0]
+        self.assertIn("intent.getBooleanExtra(GlyphsCompanion.EXTRA_PICK_GLYPHS, false)", pick)
+        # The branch value itself, not the default in getBooleanExtra(..., false).
+        self.assertRegex(pick.split("} else {", 1)[0], r"\n\s*false\s*\n")
+        # Without chips, an unmarked square pick names the switch, never a
+        # Banner chip that is not on screen.
+        hint = src.split("private fun pickHint()", 1)[1].split("\n    )\n", 1)[0]
+        self.assertIn("pickFixedByPack() -> R.string.picker_hint_square_by_style", hint)
+        self.assertLess(hint.index("picker_hint_square_by_style"),
+                        hint.index("else -> R.string.picker_hint_square"))
+        self.assertIn("Prefs.pickerPrefersBanners(this)", pick.split("} else {", 1)[1])
         # With a companion the picker shows no shape chips, so no pick can
         # write the art style the whole launcher applies.
         chips = src.split("private fun bindPickShape()", 1)[1]
@@ -172,9 +289,11 @@ class OneStylePerPack(unittest.TestCase):
     def test_switch_never_claims_glyphs_the_launcher_lacks(self):
         src = read(COMPANION_KT)
         ensure = src.split("fun ensure(", 1)[1].split("\n    }\n", 1)[0]
-        # Every way ensure() can fail to deliver the pack reverts the style.
-        self.assertEqual(ensure.count("revertToBanners(activity)"), 3, ensure)
-        self.assertEqual(ensure.count("onUnavailable()"), 3, ensure)
+        # Every way ensure() can fail to deliver the pack reverts the style:
+        # no install permission, a refused hand-off, a failed download, and
+        # (Play build) no store to open the companion's listing in.
+        self.assertEqual(ensure.count("revertToBanners(activity)"), 4, ensure)
+        self.assertEqual(ensure.count("onUnavailable()"), 4, ensure)
         revert = src.split("private fun revertToBanners(", 1)[1].split("\n    }\n", 1)[0]
         self.assertIn("Prefs.KEY_PICK_BANNERS, true", revert)
         # A superseded download must not install or revert over a newer one.
@@ -236,7 +355,7 @@ class Manifest(unittest.TestCase):
         # lint reads declaring it as a promise of a LEANBACK_LAUNCHER activity
         # - which the test above holds. required=false: a sideloaded install
         # does not filter on features, and the pack is useful on a phone
-        # launcher too. exported is not optional on targetSdk 34.
+        # launcher too. exported is not optional on targetSdk 37.
         root = ET.parse(PACK_MANIFEST).getroot()
         home = next(a for a in root.iter("activity")
                     if a.get(f"{ANDROID}name") == ".GlyphsHomeActivity")
@@ -281,10 +400,16 @@ class Manifest(unittest.TestCase):
         self.assertNotIn("api(", gradle)
 
     def test_each_side_can_see_the_other(self):
-        self.assertIn('<package android:name="tv.corebuilds.iconpack" />',
+        # Placeholders, so the Play twins see each other and not the
+        # sideload pair; the gradle values are pinned here.
+        self.assertIn('<package android:name="${iconPackId}" />',
                       read(PACK_MANIFEST))
-        self.assertIn('<package android:name="tv.corebuilds.iconpack.glyphs" />',
+        self.assertIn('<package android:name="${glyphsPackage}" />',
                       read(APP_MANIFEST))
+        self.assertIn('manifestPlaceholders["iconPackId"] = "tv.corebuilds.iconpack"',
+                      read(PACK_GRADLE))
+        self.assertIn('manifestPlaceholders["glyphsPackage"] = "tv.corebuilds.iconpack.glyphs"',
+                      read(APP_GRADLE))
 
 
 class Contracts(unittest.TestCase):
@@ -294,8 +419,21 @@ class Contracts(unittest.TestCase):
         self.assertIn(f'"\\"{pack_id}\\""', read(APP_GRADLE))
 
     def test_forward_targets_the_icon_pack(self):
+        # The twin derives its icon pack from its own id, so the sideload
+        # and Play companions each forward to their own app.
         app_id = re.search(r'applicationId = "([^"]+)"', read(APP_GRADLE)).group(1)
-        self.assertIn(f'ICON_PACK = "{app_id}"', read(ACTIVITY_JAVA))
+        pack_id = re.search(r'applicationId = "([^"]+)"', read(PACK_GRADLE)).group(1)
+        java = read(ACTIVITY_JAVA)
+        self.assertIn('return ownPackage.replace(".glyphs", "");', java)
+        self.assertIn("iconPackFor(getPackageName())", java)
+        self.assertNotIn("ICON_PACK", java)
+        # The home screen's Open button too: a hard-coded sideload id would
+        # send the Play companion's user to an app Play never installed.
+        home = read(ACTIVITY_JAVA.with_name("GlyphsHomeActivity.java"))
+        self.assertIn("GlyphsActivity.iconPackFor(getPackageName())", home)
+        self.assertNotIn("GlyphsActivity.ICON_PACK", home)
+        self.assertEqual(pack_id.replace(".glyphs", ""), app_id)
+        self.assertEqual((pack_id + ".play").replace(".glyphs", ""), app_id + ".play")
 
     def test_builds_without_a_companion_offer_none(self):
         # The debug-signed candidate build ships no companion APK, so an

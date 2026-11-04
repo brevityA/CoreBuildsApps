@@ -71,6 +71,26 @@ NoBuffr's original/reference artwork remains its owner's property and is not
 covered by MIT or Simple Icons' CC0 dedication. Source:
 <https://downloads.nobuffr.com/android/nobuffr.apk>.
 
+## SPORT FM TV and TVLok
+
+[`tools/reference/sportfm-tv/`](tools/reference/sportfm-tv/) retains small
+visual references of the SPORT FM TV launcher icon and the official service's
+crest, with source pages, image hashes and the sampled red recorded. These
+are reference thumbnails, not downloaded APK resources or assets bundled
+in the icon pack.
+
+[`tools/reference/tvlok/`](tools/reference/tvlok/) retains the static
+manifest/resource receipt for the vendor's official 1.0.192 APK and small,
+explicitly downsized previews of its icon and banner. Original APK/resource
+hashes and preview hashes are recorded separately. The APK itself is not
+committed, installed, executed or redistributed.
+
+The original artwork remains each brand owner's property and is **not**
+covered by MIT or Simple Icons' CC0 dedication. The shipped
+`sportfm_crest()` and `tvlok_play_tiles()` glyphs are original Core Builds
+rounded-monoline interpretations. Vendor pixels, paths and typography are
+not used as rendered pack artwork.
+
 ## Interpretation is not endorsement
 
 The sources establish recognisable cues and colours; they are not permission

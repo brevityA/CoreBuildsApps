@@ -6,6 +6,8 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.RectF
 import android.media.MediaPlayer
+import android.os.Handler
+import android.os.Looper
 import android.service.wallpaper.WallpaperService
 import android.util.Log
 import android.view.SurfaceHolder
@@ -32,6 +34,11 @@ import java.io.File
  *  - **Re-readable choice.** The chosen loop id lives in [Prefs] rather than in
  *    this engine, so re-picking a loop re-points wallpaper that is already
  *    active instead of requiring a re-apply.
+ *  - **Rotation is a re-pick.** With Core Builds Plus, [LoopRotation] moves
+ *    that choice as the home screen comes back, and the same re-read plays it.
+ *  - **Night is a re-read too.** [DayNight] picks the night loop during night
+ *    hours. While the home screen stays visible the engine re-reads at the
+ *    next boundary, so a screen left on still changes over on time.
  */
 class LiveWallpaperService : WallpaperService() {
 
@@ -44,6 +51,10 @@ class LiveWallpaperService : WallpaperService() {
         private var loop: Loop = LiveLoop.LOOPS[0]
         private var file: File? = null
         private var visible = false
+        private val handler = Handler(Looper.getMainLooper())
+        // Re-run the visibility logic at a night/day boundary while the home
+        // screen is still the visible surface.
+        private val switchCheck = Runnable { if (visible) onVisibilityChanged(true) }
 
         override fun onSurfaceCreated(incoming: SurfaceHolder) {
             holder = incoming
@@ -62,6 +73,15 @@ class LiveWallpaperService : WallpaperService() {
 
         override fun onVisibilityChanged(shown: Boolean) {
             visible = shown
+            handler.removeCallbacks(switchCheck)
+            if (shown && DayNight.active(applicationContext)) {
+                val wait = DayNight.msUntilSwitch(
+                    System.currentTimeMillis(), DayNight.window(applicationContext))
+                handler.postDelayed(switchCheck, wait + SWITCH_SLACK_MS)
+            }
+            // Core Builds Plus rotation moves the choice here, as the home
+            // screen comes back, and the re-read below then plays it.
+            if (shown) LoopRotation.advanceIfDue(applicationContext)
             // Re-read the choice on every visibility change: the preview's
             // "Set live" writes the preference and hands the user to the
             // picker, so the loop can change while this engine is alive. The
@@ -85,10 +105,12 @@ class LiveWallpaperService : WallpaperService() {
 
         override fun onSurfaceDestroyed(incoming: SurfaceHolder) {
             if (holder === incoming) holder = null
+            handler.removeCallbacks(switchCheck)
             stopPlayback()
         }
 
         override fun onDestroy() {
+            handler.removeCallbacks(switchCheck)
             stopPlayback()
             super.onDestroy()
         }
@@ -96,7 +118,7 @@ class LiveWallpaperService : WallpaperService() {
         // ---- choice / file ----------------------------------------------------
 
         private fun loadChoice() {
-            loop = LiveLoop.byId(Prefs.liveLoopId(applicationContext))
+            loop = LiveLoop.byId(DayNight.loopId(applicationContext))
         }
 
         /** Point the engine at [next], or fall back to the still frame. */
@@ -207,5 +229,7 @@ class LiveWallpaperService : WallpaperService() {
 
     private companion object {
         const val TAG = "CoreBuilds/LiveWP"
+        // Fire a second after the hour, so the boundary hour is already in force.
+        const val SWITCH_SLACK_MS = 1_000L
     }
 }

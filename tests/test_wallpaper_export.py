@@ -173,7 +173,13 @@ class KotlinWiringTests(unittest.TestCase):
             line.split("//", 1)[0] for line in no_block.splitlines()
         )
         self.assertNotIn(".titlecase(", code)
-        self.assertIn("toUpperCase(Locale.ROOT)", code)
+        # uppercase(Locale.ROOT), not toUpperCase(Locale): Kotlin 2's compiler
+        # rejects the latter outright as deprecated, and both are the Kotlin
+        # stdlib rather than an Android API, so the API 21 floor above is
+        # unaffected. Locale.ROOT is the part that matters - a default-locale
+        # caser renders "i" as "İ" on a Turkish TV.
+        self.assertIn("uppercase(Locale.ROOT)", code)
+        self.assertNotIn("toUpperCase(Locale.ROOT)", code)
 
     def test_wallpaper_is_parcelable(self):
         src = self.files["WallpaperCatalog.kt"]

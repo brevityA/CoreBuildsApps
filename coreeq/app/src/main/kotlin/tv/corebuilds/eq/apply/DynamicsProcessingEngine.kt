@@ -13,7 +13,9 @@ data class DynamicsProcessingApplied(
     val effect: DynamicsProcessing,
     val bandCentresHz: List<Double>,
     val bandGainsDb: List<Double>,
-    val fitReport: BackendFitReport
+    val fitReport: BackendFitReport,
+    /** Which side of the A/B these gains are, so a caller can tell a stale effect from a current one. */
+    val side: BandMapping.AbSide = BandMapping.AbSide.CORRECTION
 )
 
 /**
@@ -39,16 +41,17 @@ object DynamicsProcessingEngine {
         sessionId: Int,
         profile: Profile,
         limiter: LimiterSettings = LimiterSettings(),
-        layers: ToneLayers = ToneLayers.NONE
+        layers: ToneLayers = ToneLayers.NONE,
+        side: BandMapping.AbSide = BandMapping.AbSide.CORRECTION
     ): DynamicsProcessingApplied {
         check(limiter.isProtectionOnly()) { "Limiter settings must only protect, never boost" }
         val layout = DpBandLayout.specs()
-        val initialFit = BandMapping.fitToBackend(profile, layout.map { it.centerHz }, layers)
+        val initialFit = BandMapping.fitToBackend(profile, layout.map { it.centerHz }, layers, side = side)
         val config = buildConfig(layout, initialFit.targetDb, limiter)
         val effect = DynamicsProcessing(PRIORITY, sessionId, config)
         try {
             check(effect.hasControl()) { "DynamicsProcessing did not obtain control" }
-            val applied = configure(effect, profile, limiter, layers)
+            val applied = configure(effect, profile, limiter, layers, side)
             Log.i(
                 TAG,
                 "Configured session=$sessionId channels=${effect.channelCount} bands=${applied.bandCentresHz.size} " +
@@ -73,7 +76,8 @@ object DynamicsProcessingEngine {
         effect: DynamicsProcessing,
         profile: Profile,
         limiter: LimiterSettings = LimiterSettings(),
-        layers: ToneLayers = ToneLayers.NONE
+        layers: ToneLayers = ToneLayers.NONE,
+        side: BandMapping.AbSide = BandMapping.AbSide.CORRECTION
     ): DynamicsProcessingApplied {
         check(Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) { "DynamicsProcessing requires API 28" }
         check(limiter.isProtectionOnly()) { "Limiter settings must only protect, never boost" }
@@ -94,7 +98,7 @@ object DynamicsProcessingEngine {
             }
         }
         val centres = DpBandLayout.centresFromCutoffs(cutoffs)
-        val fit = BandMapping.fitToBackend(profile, centres, layers)
+        val fit = BandMapping.fitToBackend(profile, centres, layers, side = side)
         val gains = fit.targetDb
         check(gains.size == cutoffs.size) { "DynamicsProcessing band layout changed unexpectedly" }
 
@@ -129,7 +133,8 @@ object DynamicsProcessingEngine {
             effect = effect,
             bandCentresHz = centres,
             bandGainsDb = readBackGains.toList(),
-            fitReport = fit.report(readBackGains)
+            fitReport = fit.report(readBackGains),
+            side = side
         )
     }
 

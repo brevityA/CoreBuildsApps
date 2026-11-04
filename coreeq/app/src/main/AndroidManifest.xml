@@ -12,6 +12,14 @@
     <uses-permission
         android:name="android.permission.DUMP"
         tools:ignore="ProtectedPermissions" />
+    <!-- 1.10.0, Stereo speakers: on Android 12+, setting Surround sound to
+         Never (AudioManager.setEncodedSurroundMode) so Android decodes Dolby
+         and DTS and folds 5.1 to stereo where Core EQ hears it. A special
+         access the user grants on the TV ("Modify system settings"); without
+         it Core EQ explains how to change the setting by hand. -->
+    <uses-permission
+        android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -81,6 +89,11 @@
         </activity>
 
         <activity
+            android:name=".FirstRunActivity"
+            android:exported="false"
+            android:label="@string/first_run_title" />
+
+        <activity
             android:name=".MeasureActivity"
             android:exported="false"
             android:label="@string/measure_title" />
@@ -113,6 +126,7 @@
         <activity
             android:name=".companion.PhoneCompanionActivity"
             android:exported="false"
+            android:windowSoftInputMode="adjustResize"
             android:label="@string/action_companion" />
 
         <activity
@@ -147,6 +161,17 @@
             android:name=".apply.EqService"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />
+
+        <!-- Optional user-granted access to active media-session package/state only. -->
+        <service
+            android:name=".apply.CoreEqNotificationListener"
+            android:label="@string/media_session_access_label"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
 
         <!-- Protected system broadcasts only: they cannot be sent by other apps. -->
         <receiver

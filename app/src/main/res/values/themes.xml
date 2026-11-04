@@ -12,8 +12,6 @@
         <item name="android:colorBackground">@color/cb_night</item>
         <item name="android:textColorPrimary">@color/cb_ink</item>
         <item name="android:textColorSecondary">@color/cb_slate</item>
-        <item name="android:statusBarColor">@color/cb_night</item>
-        <item name="android:navigationBarColor">@color/cb_night</item>
 
         <!-- Brand-cyan press feedback. Without these the shared layouts'
              ?attr/selectableItemBackground resolves to the platform's grey

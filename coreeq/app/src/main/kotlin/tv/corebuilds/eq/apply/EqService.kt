@@ -33,6 +33,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.MainActivity
+import tv.corebuilds.eq.dsp.AutoApplyPolicy
+import tv.corebuilds.eq.export.ProfileRouteStore
 import tv.corebuilds.eq.R
 import tv.corebuilds.eq.export.PlatformBand
 import tv.corebuilds.eq.export.Profile
@@ -42,6 +44,7 @@ import tv.corebuilds.eq.mode.ContentType
 import tv.corebuilds.eq.mode.ContentTypePrefs
 import tv.corebuilds.eq.mode.ContentTypeRegistry
 import tv.corebuilds.eq.ui.EnhancedAudioPrefs
+import tv.corebuilds.eq.dsp.LoudnessCompensation
 import java.util.concurrent.Executors
 import kotlin.math.roundToInt
 
@@ -67,6 +70,12 @@ import kotlin.math.roundToInt
  *   fresh scan instead. A discovered session is released when it disappears
  *   from a later dump.
  *
+ * App-mode identity may also come from MediaSessionManager when the user grants
+ * Android Notification access. That source contributes only package names and
+ * playing/buffering state; it never attaches an effect and does not inspect
+ * notification contents. AudioManager playback state without an identity uses
+ * the safe Everyday mode.
+ *
  * On API 28+ the service tries a DynamicsProcessing PreEQ with its limiter
  *   enabled, then falls back to the platform Equalizer on any refusal. Both
  *   paths lower gains by the largest boost; neither applies positive EQ gain.
@@ -88,7 +97,14 @@ class EqService : Service() {
         val bands: List<PlatformBand>,
         val fitReport: BackendFitReport,
         /** Opt-in BassBoost/LoudnessEnhancer on the same session; created and released with [effect]. */
-        val extras: ExtraEffects? = null
+        val extras: ExtraEffects? = null,
+        /**
+         * Which side of the A/B these band gains are. Kept next to the effect
+         * rather than inferred from the preference, because the preference is
+         * written by the caller before the service is told, and the two can
+         * disagree in the window between.
+         */
+        val side: BandMapping.AbSide = BandMapping.AbSide.CORRECTION
     )
 
     /** An effect held on one session, and where that session came from. */
@@ -96,6 +112,8 @@ class EqService : Service() {
 
     private lateinit var store: ProfileStore
     private lateinit var modeStore: ContentModeStore
+    private lateinit var deviceKeyStore: DeviceKeyStore
+    private lateinit var routeStore: ProfileRouteStore
     
     // The Extra effects screen's switches (all off by default since 1.2.1).
     private var enhancedPrefs: EnhancedAudioPrefs? = null
@@ -103,7 +121,7 @@ class EqService : Service() {
     private var activeLayers = ToneLayers.NONE
     /** Decides when the "profile applied" toast shows: on a change, not on every reapply. */
     private val appliedNotice = AppliedNotice()
-    private val appliedCard by lazy { AppliedCard(this) }
+    private val appliedCard by lazy { AppliedCard(this) { store.cardSeconds * 1_000L } }
     /** What the card says about the correction applied right now, for Profiles' test card; null while nothing is applied. */
     private var currentCard: AppliedCard.Content? = null
     private var currentCardFallback: String? = null
@@ -116,9 +134,16 @@ class EqService : Service() {
     }
     
     private val sessionEqs = mutableMapOf<Int, Held>()
-    /** Only unambiguous DUMP UID-to-package matches may influence app-mode rules. */
+    /** DUMP UID-to-package matches; used for mode rules and optional effect-session attribution. */
     private var discoveredPackages: Set<String> = emptySet()
     private var discoveredHasUnknownPlayer = false
+    /** Optional Notification-access source, used only for app-mode rules, never effect attachment. */
+    private var mediaSessionPackages: Set<String> = emptySet()
+    private var mediaSessionSnapshotInitialized = false
+    private var mediaSessionSnapshotComplete = false
+    /** AudioManager reveals activity but not identity; unknown active playback safely selects Everyday. */
+    private var playbackHintKnown = false
+    private var playbackActiveHint = false
     private var globalEffect: AppliedEffect? = null
     private var globalError: String? = null
     private var suspended = false
@@ -135,10 +160,13 @@ class EqService : Service() {
 
     private val audioManager by lazy { getSystemService(AudioManager::class.java) }
 
-    // DUMP discovery runs off the main thread and applies its results back on
-    // it. Playback callbacks and session broadcasts are coalesced; untrusted
-    // broadcasts cannot queue an unbounded stream of dump processes.
+    // DUMP and MediaSession discovery run off the main thread and apply results
+    // back on it. Playback/session events are coalesced; untrusted broadcasts
+    // cannot queue an unbounded stream of dumps or Binder queries.
     private val mainHandler = Handler(Looper.getMainLooper())
+    private val mediaSessionMonitor by lazy {
+        MediaSessionMonitor(this, mainHandler) { scheduleDiscovery() }
+    }
 
     // Low-volume bass follows the media volume. Settings.System carries the
     // persisted volumes; VOLUME_CHANGED_ACTION arrives sooner on most TVs but
@@ -164,14 +192,16 @@ class EqService : Service() {
         } else {
             discoveryInFlight = true
             discoveryExecutor.execute {
-                val snapshot = try {
+                val dumpSnapshot = if (DumpsysDiscovery.hasGrant(this@EqService)) try {
                     DumpsysDiscovery.discover(android.os.Process.myUid())
                 } catch (e: Exception) {
                     Log.w(TAG, "DUMP discovery failed; retaining the last known player set", e)
                     DiscoverySnapshot(emptyList(), hasUnidentifiedPlayer = false, complete = false)
-                }
+                } else null
+                val mediaSnapshot = MediaSessionDiscovery.discover(this@EqService)
                 mainHandler.post {
-                    applyDiscovered(snapshot)
+                    applyMediaSessionSnapshot(mediaSnapshot)
+                    dumpSnapshot?.let(::applyDiscovered)
                     discoveryInFlight = false
                     if (discoveryAgain) {
                         discoveryAgain = false
@@ -187,7 +217,12 @@ class EqService : Service() {
             // The delivered list is the change that fired this: use it instead
             // of re-querying, which costs a binder call and can race the event.
             publish(configs)
-            mainHandler.post { onOutputsChanged() }
+            val active = audioIsPlaying(configs)
+            mainHandler.post {
+                playbackHintKnown = true
+                playbackActiveHint = active
+                onOutputsChanged()
+            }
             scheduleDiscovery()
         }
     }
@@ -198,7 +233,7 @@ class EqService : Service() {
                 intent.action == AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION
             ) {
                 // Extras are deliberately ignored. The event only asks the
-                // optional DUMP path to refresh its independently discovered snapshot.
+                // optional identity sources to refresh their own snapshots.
                 scheduleDiscovery()
             }
         }
@@ -210,25 +245,104 @@ class EqService : Service() {
         override fun onAudioDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>) = onOutputsChanged()
     }
     private var lastOutput: OutputRoute.Output? = null
+    /** Re-probes owed after a device change raced the last one (see onRouteConfirmed). */
+    private var routeConfirmRetries = 0
+    /**
+     * When the retry cap last gave up; device events inside the cooldown defer
+     * to one timer. Seeded far negative on purpose: initializing to 0 would
+     * put a device event within the first 5 s of boot (elapsedRealtime starts
+     * there) inside "cooldown since a give-up that never happened" and silently
+     * defer the very first probe. Large-negative keeps the subtraction
+     * overflow-free for any realistic uptime.
+     */
+    private var lastRouteGiveUpAtMs = Long.MIN_VALUE / 2
+    /** Written and read on main only; reset only by the deferred runnable it gates. A second caller from off main needs confining (or an AtomicBoolean). */
+    private var routeRetryScheduled = false
 
     /** Reprogram only when the lift actually moves a step; holding the volume key costs a few reapplies. */
     private fun onVolumeChanged() {
-        if (!running || suspended || enhancedPrefs?.lowVolumeBassEnabled != true) return
+        if (!running || suspended) return
+        val prefs = enhancedPrefs ?: return
+        if (!prefs.lowVolumeBassEnabled && !prefs.autoLoudnessEnabled) return
         if (toneLayers() != activeLayers) applyAll()
     }
 
+    /**
+     * An output changed. The first time a device is seen, correction may be
+     * applied automatically ([AutoApplyPolicy]); later times it is only
+     * suggested — the user turns it on from Home.
+     */
     private fun onOutputsChanged() {
-        val output = OutputRoute.current(this)
+        val now = android.os.SystemClock.elapsedRealtime()
+        val sinceGiveUp = now - lastRouteGiveUpAtMs
+        if (sinceGiveUp < ROUTE_GIVEUP_COOLDOWN_MS) {
+            // A give-up just pinned the pause; a sink still flapping gets one
+            // retry burst per cooldown window, not one per event. Skipping the
+            // invalidation keeps the hold (and its UNCONFIRMED answer) intact,
+            // so this only delays a retry — it can never apply something wrong.
+            if (!routeRetryScheduled) {
+                // One deferred re-check per window: a flapper that STOPS must
+                // still get its hold lifted without waiting for a user action.
+                routeRetryScheduled = true
+                mainHandler.postDelayed({
+                    routeRetryScheduled = false
+                    if (running) onOutputsChanged() // onDestroy does not scrub handler posts
+                }, ROUTE_GIVEUP_COOLDOWN_MS - sinceGiveUp)
+            }
+            return
+        }
+        OutputRoute.invalidateProbeCache() // a device arrived or left: probe fresh
+        // The auto-apply decision must run on the probed route, never on the
+        // estimate, and the probe must never block main: confirm off-thread
+        // first, then act on the confirmed answer on main with a fresh cache.
+        OutputRoute.refreshProbeAsync(this) { onRouteConfirmed() }
+    }
+
+    private fun onRouteConfirmed() {
+        if (!OutputRoute.hasFreshProbe()) {
+            if (routeConfirmRetries < MAX_ROUTE_CONFIRM_RETRIES) {
+                // A device arrived while the last probe played, so no answer
+                // was publishable. Re-arm on the fresh probe rather than
+                // deciding on the estimate; the counter bounds the worst case:
+                // a sink flapping faster than a probe settles gets a capped
+                // number of extra track opens per burst, not an endless one.
+                routeConfirmRetries++
+                OutputRoute.refreshProbeAsync(this) { onRouteConfirmed() }
+            } else {
+                // Churn outlasted the retries: surface the unconfirmed route
+                // explicitly — the cache is seeded with UNCONFIRMED *and held*,
+                // so apply pauses with the hard-stop message and stays paused
+                // (no probe, no estimate decay) until a device event or a
+                // confirmed re-apply says otherwise. The cooldown rate-limits
+                // how fast the next burst may run.
+                routeConfirmRetries = 0
+                lastRouteGiveUpAtMs = android.os.SystemClock.elapsedRealtime()
+                OutputRoute.publishUnconfirmedProbe()
+                applyAll()
+            }
+            return
+        }
+        routeConfirmRetries = 0
+        val output = OutputRoute.current(this) ?: return
         if (output == lastOutput) return
+        val key = "${output.kind}|${output.name}"
+        val applied = deviceKeyStore.appliedKeys()
+        if (AutoApplyPolicy.decide(key, applied) == AutoApplyPolicy.Action.SUGGEST_ONLY) {
+            // A device we have seen before: do not auto-apply correction here.
+            // The user turns it on from Home when they want it.
+            return
+        }
         lastOutput = output
         applyAll()
-        if (DumpsysDiscovery.hasGrant(this)) scheduleDiscovery(0L)
+        if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
     }
 
     override fun onCreate() {
         super.onCreate()
         store = ProfileStore(this)
         modeStore = ContentModeStore(this)
+        deviceKeyStore = DeviceKeyStore.of(this)
+        routeStore = ProfileRouteStore.of(this)
         
         enhancedPrefs = EnhancedAudioPrefs(this)
         
@@ -273,7 +387,11 @@ class EqService : Service() {
         lastOutput = OutputRoute.current(this)
         // Registering delivers the current devices once; the full route identity makes that a no-op.
         getSystemService(AudioManager::class.java)?.registerAudioDeviceCallback(deviceCallback, Handler(Looper.getMainLooper()))
+        playbackHintKnown = true
+        playbackActiveHint = audioIsPlaying()
         running = true
+        mediaSessionMonitor.setEnabled(MediaSessionDiscovery.hasAccess(this))
+        if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -291,8 +409,9 @@ class EqService : Service() {
             }
             ACTION_RESUME -> {
                 suspended = false
+                mediaSessionMonitor.setEnabled(MediaSessionDiscovery.hasAccess(this))
                 applyAll()
-                if (DumpsysDiscovery.hasGrant(this)) scheduleDiscovery(0L)
+                if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
             }
             ACTION_RELOAD_PREFS -> {
                 reloadEnhancedPreferences()
@@ -309,34 +428,111 @@ class EqService : Service() {
                     Toast.makeText(this, getString(R.string.card_test_waiting), Toast.LENGTH_LONG).show()
                 }
             }
+            ACTION_SET_BYPASS -> {
+                // A caller that only sends the action, without the extra, must
+                // not flip the correction off: fall back to the state the
+                // preference already holds, which is what the UI writes.
+                val bypass = if (intent.hasExtra(EXTRA_BYPASS)) {
+                    intent.getBooleanExtra(EXTRA_BYPASS, false)
+                } else {
+                    store.bypassEnabled
+                }
+                val target = if (bypass) BandMapping.AbSide.BYPASS else BandMapping.AbSide.CORRECTION
+                // An effect can be stale even when the preference already
+                // matches — Home writes the preference itself before waking
+                // the service — so judge by what is actually held.
+                val stale = sessionEqs.values.any { it.applied.side != target }
+                if (store.bypassEnabled == bypass && !stale) {
+                    // Nothing to do: re-configuring would be one more effect
+                    // write on a TV that may be mid-sentence.
+                    return START_STICKY
+                }
+                store.bypassEnabled = bypass
+                // The effect keeps running; only its band gains change, so the
+                // listener hears the switch without a gap in audio.
+                applyAll()
+                // Only claim the switch took effect where something is actually
+                // being applied. On an output with no profile of its own the
+                // pause message from applyAll() is the true one, and replacing
+                // it with "BYPASS" would say correction is off for the wrong reason.
+                if (!suspended && !outputPaused) {
+                    report(
+                        if (bypass) getString(R.string.status_bypass_on) else getString(R.string.status_bypass_off),
+                        isError = false
+                    )
+                }
+            }
             ACTION_REFRESH_PLAYBACK_HUD -> publish()
-            else -> applyAll() // ACTION_START, ACTION_REAPPLY, or a sticky restart
+            ACTION_REFRESH_DISCOVERY -> {
+                mediaSessionMonitor.setEnabled(MediaSessionDiscovery.hasAccess(this))
+                if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
+                else applyMediaSessionSnapshot(MediaSessionSnapshot(emptySet(), complete = false, available = false))
+            }
+            else -> {
+                // ACTION_START, ACTION_REAPPLY, or a sticky restart. While the
+                // unconfirmed hold is up, an immediate applyAll would only read
+                // the held UNCONFIRMED and re-pause — so run the one fresh
+                // probe the hold forbids, and act on its answer. A confirmed
+                // route lands the correction; a failed probe keeps the pause.
+                // This is what makes "play a test tone to continue" true.
+                if (OutputRoute.isHeldUnconfirmed()) {
+                    OutputRoute.refreshProbeAsync(this) { applyAll() }
+                } else {
+                    applyAll()
+                }
+            }
         }
         return START_STICKY
     }
 
-    /** DUMP-discovered UID mappings are the only package identities used for automatic modes. */
-    private fun activeAppPackages(): Set<String> = discoveredPackages
+    /** DUMP and, when granted, active MediaSession package names may select app-mode rules. */
+    private fun activeAppPackages(): Set<String> = (discoveredPackages + mediaSessionPackages)
         .filter { it.isNotBlank() && it != packageName }
         .toSet()
+
+    private fun hasUnidentifiedPlayback(): Boolean = discoveredHasUnknownPlayer ||
+        (playbackHintKnown && playbackActiveHint && activeAppPackages().isEmpty())
+
+    private fun playerDiscoveryAvailable(): Boolean =
+        DumpsysDiscovery.hasGrant(this) || MediaSessionDiscovery.hasAccess(this)
+
+    private fun modeSnapshotComplete(): Boolean = when {
+        DumpsysDiscovery.hasGrant(this) && MediaSessionDiscovery.hasAccess(this) ->
+            discoverySnapshotComplete && mediaSessionSnapshotComplete && playbackHintKnown
+        DumpsysDiscovery.hasGrant(this) -> discoverySnapshotComplete
+        MediaSessionDiscovery.hasAccess(this) -> mediaSessionSnapshotComplete && playbackHintKnown
+        else -> false
+    }
 
     /** The route-matched room base plus its current content-mode overlay. */
     private fun resolve(): Triple<Profile?, OutputRoute.Output?, Boolean> {
         val output = OutputRoute.current(this)
-        val pick = OutputRoute.pick(
-            store.getAllProfiles(),
-            store.chosenId(),
-            output?.kind,
-            output?.name
-        )
+        val profiles = store.getAllProfiles()
+        val chosen = store.chosenId()
+        // The user's explicit choice always wins over learned preferences.
+        val pick = if (chosen != null && profiles.any { it.id == chosen }) {
+            OutputRoute.pick(profiles, chosen, output?.kind, output?.name)
+        } else {
+            // No explicit choice: use the learned preference for this output,
+            // falling back to output-kind-based picking.
+            val key = output?.let { "${it.kind}|${it.name}" } ?: null
+            val preferredId = key?.let { routeStore.preferredProfile(it) }
+            val preferred = preferredId?.let { profiles.firstOrNull { it.id == preferredId } }
+            if (preferred != null) {
+                OutputRoute.Pick(preferred, switched = chosen != null && chosen != preferred.id)
+            } else {
+                OutputRoute.pick(profiles, null, output?.kind, output?.name)
+            }
+        }
+        val hasPlayerSnapshot = discoveryInitialized || mediaSessionSnapshotInitialized
         val mode = when {
-            !DumpsysDiscovery.hasGrant(this) ->
+            !playerDiscoveryAvailable() ->
                 modeStore.resolve(emptySet(), advanceTemporaryOverride = false).mode
-            !discoveryInitialized -> modeStore.currentDecision().mode
+            !hasPlayerSnapshot -> modeStore.currentDecision().mode
             else -> modeStore.resolve(
                 activeAppPackages(),
-                discoveredHasUnknownPlayer,
-                advanceTemporaryOverride = discoverySnapshotComplete
+                hasUnidentifiedPlayback(),
+                advanceTemporaryOverride = modeSnapshotComplete()
             ).mode
         }
         val effective = pick.profile?.let { modeStore.effectiveProfile(it, mode) }
@@ -351,7 +547,8 @@ class EqService : Service() {
         } else {
             ""
         }
-        return " · on ${output.name}$passthrough"
+        val evidence = OutputRoute.evidenceDescription(output.evidence)
+        return " · on ${output.name} ($evidence)$passthrough"
     }
 
     private fun applyAll() {
@@ -369,11 +566,17 @@ class EqService : Service() {
             setAllEnabled(false)
             announcePaused(output)
             val routeName = output?.name ?: "the output Android could not identify"
-            report(
+            val pauseMessage = if (output?.kind == OutputRoute.UNCONFIRMED) {
+                // A silent playback track was started and Android still named no
+                // routed device: a hard stop, never a silent fallback.
+                "Could not confirm output route — correction paused. Play a test tone to continue."
+            } else if (output?.kind == OutputRoute.AMBIGUOUS) {
+                "Android reports multiple possible audio outputs. Correction is paused because one profile cannot safely represent all of them. Select one output and measure it again."
+            } else {
                 "Nothing measured on $routeName yet, so correction is paused there. " +
-                    "Measure with it playing, or switch back to an output you measured.",
-                isError = false
-            )
+                    "Measure with it playing, or switch back to an output you measured."
+            }
+            report(pauseMessage, isError = false)
             return
         }
         val via = if (switched) " (this output's own profile)" else ""
@@ -397,13 +600,15 @@ class EqService : Service() {
                 val configured = if (createdGlobalNow) global else configureOrReplace(global, 0, profile)
                 globalEffect = configured
                 syncRuntimeBands()
+                // First successful apply for this output: record it so later enables only suggest.
+                recordAutoApplied(this)
                 report(
                     "Output-mix effect configured · $modeName · ${configured.engine} · ${profile.name}$via · ${configured.bands.size} bands${fitNote(listOf(configured))}${extrasNote(listOf(configured), profile)} · coverage depends on TV routing${where(output)}",
                     isError = false
                 )
                 announceApplied(profile, modeName, listOf(configured), output)
                 releaseSessions() // avoid applying the same curve twice where the mix effect is accepted
-                if (DumpsysDiscovery.hasGrant(this)) scheduleDiscovery(0L)
+                if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
                 return
             } catch (e: Exception) {
                 Log.w(TAG, "Output-mix correction could not be configured", e)
@@ -433,22 +638,25 @@ class EqService : Service() {
             else -> {
                 appliedNotice.reset()
                 clearCurrentCard()
-                if (DumpsysDiscovery.hasGrant(this)) scheduleDiscovery(0L)
+                if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
                 report(waitingStatus(), isError = false)
             }
         }
     }
 
     /** What to say when nothing is attached: the way forward, named per grant. */
-    private fun waitingStatus(): String =
-        if (DumpsysDiscovery.hasGrant(this)) {
+    private fun waitingStatus(): String = when {
+        DumpsysDiscovery.hasGrant(this) ->
             "No active media/game session with a usable UID is visible yet. DUMP discovery is checking. " +
                 "The output-mix effect path was unavailable ($globalError); dump visibility and effect support vary by player and TV."
-        } else {
-            "No output-mix effect could be configured ($globalError). Per-session correction and automatic app switching need optional DUMP discovery. " +
-                "Android documents DUMP as unavailable to third-party apps, so this grant may be refused on your TV. " +
+        MediaSessionDiscovery.hasAccess(this) ->
+            "No per-session effect is attached ($globalError). Android media-session access can select app-mode rules, but it cannot create effects on that app's audio session. " +
+                "Per-session correction needs optional DUMP discovery; the output-mix path may also be refused by TV firmware."
+        else ->
+            "No output-mix effect could be configured ($globalError). Per-session correction needs optional DUMP discovery; app-mode rules can also use Android media sessions if Notification access is granted. " +
+                "Android documents DUMP as unavailable to third-party apps, so a TV may refuse that grant. " +
                 "Try the Capability-screen command if supported, or export the profile for the TV's own sound settings."
-        }
+    }
 
     private fun closeSession(session: Int) {
         val applied = sessionEqs.remove(session)?.applied ?: return
@@ -465,19 +673,31 @@ class EqService : Service() {
     private fun createBestEffect(session: Int, profile: Profile): AppliedEffect =
         createCorrection(session, profile).let { it.copy(extras = attachExtras(session)) }
 
+    /**
+     * Which side of the A/B the service is currently playing.
+     *
+     * Read from the stored preference rather than held in a field so the
+     * switch on Home and the effect the service configures cannot disagree
+     * after the activity is recreated or the service restarts. It only changes
+     * the *shape*: [BandMapping.AbSide.BYPASS] keeps the same average level.
+     */
+    private fun side(): BandMapping.AbSide =
+        if (store.bypassEnabled) BandMapping.AbSide.BYPASS else BandMapping.AbSide.CORRECTION
+
     /** Prefer DP on API 28+, and fall back to Equalizer on any construction/configuration refusal. */
     private fun createCorrection(session: Int, profile: Profile): AppliedEffect {
         var dpFailure: String? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             try {
-                val dp = DynamicsProcessingEngine.create(session, profile, limiter(), activeLayers)
+                val dp = DynamicsProcessingEngine.create(session, profile, limiter(), activeLayers, side())
                 return AppliedEffect(
                     effect = dp.effect,
                     engine = ENGINE_DYNAMICS_PROCESSING,
                     bands = dp.bandCentresHz.zip(dp.bandGainsDb).map { (hz, db) ->
                         PlatformBand(hz, (db * 100.0).roundToInt())
                     },
-                    fitReport = dp.fitReport
+                    fitReport = dp.fitReport,
+                    side = dp.side
                 )
             } catch (e: Exception) {
                 dpFailure = e.message ?: e.javaClass.simpleName
@@ -489,14 +709,15 @@ class EqService : Service() {
 
         var eq: Equalizer? = null
         try {
-            eq = Equalizer(PRIORITY, session)
+            // createEqualizerSafely returns null instead of throwing when the
+            // native engine refuses (UnsupportedOperationException) or the
+            // effect state is corrupted (RuntimeException, e.g. a leaked
+            // previous instance) — the CVE-2019-9382 class of failure.
+            eq = EnhancedEffectChain.createEqualizerSafely(session, PRIORITY)
+                ?: throw UnsupportedOperationException("Effect engine unavailable on session $session")
             return configureEqualizer(eq, profile)
         } catch (e: Exception) {
-            try {
-                eq?.release()
-            } catch (_: Exception) {
-                // Preserve the Equalizer refusal below.
-            }
+            EnhancedEffectChain.safeRelease(eq) // preserve the Equalizer refusal below
             throw IllegalStateException(
                 "DynamicsProcessing ($dpFailure) and Equalizer (${e.message ?: e.javaClass.simpleName}) both refused",
                 e
@@ -529,14 +750,15 @@ class EqService : Service() {
     @RequiresApi(Build.VERSION_CODES.P)
     private fun configureDynamicsProcessing(effect: AudioEffect, profile: Profile): AppliedEffect {
         require(effect is DynamicsProcessing) { "Unknown audio effect ${effect.javaClass.simpleName}" }
-        val dp = DynamicsProcessingEngine.configure(effect, profile, limiter(), activeLayers)
+        val dp = DynamicsProcessingEngine.configure(effect, profile, limiter(), activeLayers, side())
         return AppliedEffect(
             effect = effect,
             engine = ENGINE_DYNAMICS_PROCESSING,
             bands = dp.bandCentresHz.zip(dp.bandGainsDb).map { (hz, db) ->
                 PlatformBand(hz, (db * 100.0).roundToInt())
             },
-            fitReport = dp.fitReport
+            fitReport = dp.fitReport,
+            side = dp.side
         )
     }
 
@@ -548,19 +770,32 @@ class EqService : Service() {
         check(range != null && range.size >= 2) { "Equalizer reports no gain range" }
         val centres = List(n) { eq.getCenterFreq(it.toShort()) / 1000.0 }
         val rangeMb = range[0].toInt()..range[1].toInt()
+        val currentSide = side()
         val fit = BandMapping.fitToBackend(
             profile,
             centres,
             activeLayers,
             minGainDb = rangeMb.first / 100.0,
-            maxGainDb = rangeMb.last / 100.0
+            maxGainDb = rangeMb.last / 100.0,
+            side = currentSide
         )
         val mbs = BandMapping.millibels(fit.targetDb, rangeMb)
-        for (i in 0 until n) eq.setBandLevel(i.toShort(), mbs[i])
-        eq.enabled = true
+        // Every band write goes through the bounds-checked, exception-guarded
+        // wrapper: the band index and the millibel value are validated and
+        // clamped against this device's own capabilities before the native
+        // effect engine ever sees them.
+        for (i in 0 until n) {
+            EnhancedEffectChain.safeSetBandLevel(eq, i, mbs[i])
+        }
+        check(EnhancedEffectChain.safeSetEnabled(eq, true)) { "Equalizer refused to enable" }
         check(eq.hasControl()) { "another equaliser app has priority over this audio" }
         val actual = List(n) { index ->
-            val millibels = eq.getBandLevel(index.toShort()).toInt()
+            val millibels = try {
+                eq.getBandLevel(index.toShort()).toInt()
+            } catch (e: RuntimeException) {
+                Log.w(TAG, "Could not read back band $index; keeping the requested value", e)
+                mbs[index].toInt()
+            }
             PlatformBand(centres[index], millibels)
         }
         val readBackDb = DoubleArray(n) { actual[it].millibels / 100.0 }
@@ -568,22 +803,17 @@ class EqService : Service() {
             effect = eq,
             engine = ENGINE_PLATFORM_EQUALIZER,
             bands = actual,
-            fitReport = fit.report(readBackDb)
+            fitReport = fit.report(readBackDb),
+            side = currentSide
         )
     }
 
     private fun releaseApplied(applied: AppliedEffect) {
         applied.extras?.release()
-        try {
-            applied.effect.setEnabled(false)
-        } catch (e: Exception) {
-            Log.w(TAG, "Could not disable ${applied.engine} during teardown", e)
-        }
-        try {
-            applied.effect.release()
-        } catch (e: Exception) {
-            Log.w(TAG, "Could not release ${applied.engine} during teardown", e)
-        }
+        // Disable then release, both guarded: a leaked effect is what makes
+        // the NEXT construction throw RuntimeException.
+        EnhancedEffectChain.safeSetEnabled(applied.effect, false)
+        EnhancedEffectChain.safeRelease(applied.effect)
     }
 
     /** The Home band rail follows the layout of the effect that is actually live. */
@@ -597,12 +827,11 @@ class EqService : Service() {
         val all = listOfNotNull(globalEffect) + sessionEqs.values.map { it.applied }
         for (applied in all) {
             applied.extras?.setEnabled(on)
-            try {
-                check(applied.effect.setEnabled(on) == AudioEffect.SUCCESS) {
-                    "${applied.engine} refused enable=$on"
-                }
-            } catch (e: Exception) {
-                Log.w(TAG, "${applied.engine} no longer valid", e)
+            // safeSetEnabled catches internally (false = engine dead): one dead
+            // effect logs and moves on - a failure here can never skip the
+            // remaining effects the way a throwing per-band loop would.
+            if (!EnhancedEffectChain.safeSetEnabled(applied.effect, on)) {
+                Log.w(TAG, "${applied.engine} no longer valid for enable=$on")
             }
         }
     }
@@ -612,7 +841,7 @@ class EqService : Service() {
      * coalesce into one run; during a scan, at most one follow-up is retained.
      */
     private fun scheduleDiscovery(delayMs: Long = DISCOVERY_DEBOUNCE_MS) {
-        if (!running || suspended || !DumpsysDiscovery.hasGrant(this)) return
+        if (!running || suspended || !playerDiscoveryAvailable()) return
         if (discoveryInFlight) {
             discoveryAgain = true
             return
@@ -623,9 +852,62 @@ class EqService : Service() {
     }
 
     /**
-     * Uses DUMP as the only source for session IDs and app identity. Package
-     * visibility gaps and shared UIDs stay unidentified; their sessions may
-     * still be corrected, but they cannot select a content-mode rule.
+     * Apply the optional app-identity source. It can choose mode rules but is
+     * never used to create/release a session effect. If DUMP is also available,
+     * its snapshot handler below performs the single mode arbitration for both.
+     */
+    private fun applyMediaSessionSnapshot(snapshot: MediaSessionSnapshot) {
+        if (!running || suspended) return
+        val previousDecision = modeStore.currentDecision()
+        when {
+            !snapshot.available -> {
+                mediaSessionPackages = emptySet()
+                mediaSessionSnapshotInitialized = false
+                mediaSessionSnapshotComplete = false
+                if (!DumpsysDiscovery.hasGrant(this)) {
+                    // Last-known packages may have come from an earlier source;
+                    // do not keep them as current after access is revoked.
+                    discoveredPackages = emptySet()
+                    discoveredHasUnknownPlayer = false
+                    discoveryInitialized = false
+                    discoverySnapshotComplete = false
+                }
+            }
+            snapshot.complete -> {
+                mediaSessionPackages = snapshot.packages
+                mediaSessionSnapshotInitialized = true
+                mediaSessionSnapshotComplete = true
+                if (!DumpsysDiscovery.hasGrant(this)) {
+                    discoveredPackages = emptySet()
+                    discoveredHasUnknownPlayer = false
+                    discoveryInitialized = false
+                    discoverySnapshotComplete = false
+                }
+            }
+            else -> mediaSessionSnapshotComplete = false // retain last good set, never expire an override
+        }
+        if (DumpsysDiscovery.hasGrant(this)) return // applyDiscovered arbitrates both sources
+        if (!snapshot.available && !playbackHintKnown) return
+        if (!mediaSessionSnapshotInitialized && snapshot.available) return
+
+        val decision = modeStore.resolve(
+            activeAppPackages(),
+            hasUnidentifiedPlayback(),
+            advanceTemporaryOverride = modeSnapshotComplete()
+        )
+        val playerSnapshotChanged = decision.activePackages != previousDecision.activePackages ||
+            decision.hasUnidentifiedPlayer != previousDecision.hasUnidentifiedPlayer
+        if (decision.mode != previousDecision.mode && (globalEffect != null || sessionEqs.isNotEmpty())) {
+            applyAll()
+        } else if (playerSnapshotChanged) {
+            notifyModeSnapshotChanged()
+        }
+    }
+
+    /**
+     * DUMP supplies candidate effect sessions and UID attribution. Its package
+     * identities combine with optional MediaSession identities for mode rules;
+     * shared UIDs and hidden packages remain unidentified.
      */
     private fun applyDiscovered(snapshot: DiscoverySnapshot) {
         if (!running || suspended) return
@@ -649,7 +931,7 @@ class EqService : Service() {
         // A complete pair of recognized dumps is the only trusted snapshot:
         // it may remove players and expire a temporary override. An incomplete
         // scan may add newly seen players, but cannot erase state or expire one.
-        val positiveEvidence = snapshot.sessions.isNotEmpty() || hasUnknownPlayer
+        val positiveEvidence = snapshot.sessions.isNotEmpty() || hasUnknownPlayer || mediaSessionPackages.isNotEmpty()
         if (snapshot.complete) {
             discoveredPackages = foundPackages
             discoveredHasUnknownPlayer = hasUnknownPlayer
@@ -674,8 +956,8 @@ class EqService : Service() {
         } else {
             modeStore.resolve(
                 activeAppPackages(),
-                discoveredHasUnknownPlayer,
-                advanceTemporaryOverride = snapshot.complete
+                hasUnidentifiedPlayback(),
+                advanceTemporaryOverride = modeSnapshotComplete()
             )
         }
         val playerSnapshotChanged = decision.activePackages != previousDecision.activePackages ||
@@ -1020,15 +1302,37 @@ class EqService : Service() {
     private fun limiter(): LimiterSettings = enhancedPrefs?.limiter() ?: LimiterSettings()
 
     /**
-     * Dialogue boost and Low-volume bass for this moment. The lift is measured
-     * from the current output's own reference volume, recorded the first time
-     * that output reports one ([LowVolumeBass]); a volume Android does not
-     * report (fixed-volume outputs) adds nothing.
+     * Dialogue boost, Low-volume bass, Stereo speakers and full ISO 226 loudness compensation for this moment.
+     * Low-volume bass measures its lift from the output's own reference volume ([LowVolumeBass]); a volume Android
+     * does not report (fixed-volume outputs) adds nothing. Auto loudness is mutually exclusive with low-volume bass.
      */
     private fun toneLayers(): ToneLayers {
         val prefs = enhancedPrefs ?: return ToneLayers.NONE
-        val bass = if (prefs.lowVolumeBassEnabled) LowVolumeBass.read(this, prefs).liftDb else 0.0
-        return ToneLayers(dialogue = prefs.dialogueBoostEnabled, lowVolumeBassDb = bass)
+        val bass = if (prefs.lowVolumeBassEnabled && !prefs.autoLoudnessEnabled) LowVolumeBass.read(this, prefs).liftDb else 0.0
+        val loudness = if (prefs.autoLoudnessEnabled) {
+            val route = OutputRoute.current(this)?.let { "${it.kind}|${it.name}" } ?: OutputRoute.UNKNOWN
+            val now = VolumeLevel.mediaDb(this)
+            val storedReference = prefs.lowVolumeReferenceDb(route)
+            // Capture the reference on first read, like LowVolumeBass does,
+            // so the compensation has a baseline to measure from.
+            if (storedReference == null && now != null) {
+                prefs.setLowVolumeReferenceDb(route, now)
+            }
+            val reference = storedReference ?: now
+            val dbBelowRef = if (reference != null && now != null) reference - now else 0.0
+            LoudnessCompensation.bandGains(dbBelowRef, strength = 1.0)
+        } else {
+            ZERO_GAINS
+        }
+        return ToneLayers(
+            dialogue = prefs.dialogueBoostEnabled,
+            lowVolumeBassDb = bass,
+            stereoDownmix = prefs.stereoSpeakersEnabled,
+            loudnessBandGains = loudness,
+            // What is playing right now: only the stereo speech lift listens (1.11.0),
+            // from the same auto-detect/manual pick ExtraPlan already gets.
+            contentType = extrasContentType()
+        )
     }
 
     override fun onDestroy() {
@@ -1068,6 +1372,7 @@ class EqService : Service() {
         discoveryQueued = false
         discoveryAgain = false
         discoveryExecutor.shutdownNow()
+        mediaSessionMonitor.stop()
         getSystemService(AudioManager::class.java)?.unregisterAudioDeviceCallback(deviceCallback)
         releaseSessions()
         globalEffect?.let(::releaseApplied)
@@ -1118,6 +1423,18 @@ class EqService : Service() {
     companion object {
         const val ACTION_START = "tv.corebuilds.eq.action.START"
         const val ACTION_STOP = "tv.corebuilds.eq.action.STOP"
+        /**
+         * Re-probes after a raced confirmation before the churn gets an
+         * explicit UNCONFIRMED. Load math for the whole burst: each
+         * refreshProbeAsync can open up to 2 tracks (probe + in-executor
+         * re-probe when a device change races it), and re-probes fire on
+         * nearly every call under the churn this cap exists for — so worst
+         * case is (1 initial + 3 retries) × 2 = 8 opens per burst, bounded
+         * across events by the cooldown, not just within a burst.
+         */
+        private const val MAX_ROUTE_CONFIRM_RETRIES = 3
+        /** Quiet time before device events may run another retry burst after a give-up. */
+        private const val ROUTE_GIVEUP_COOLDOWN_MS = 5_000L
         const val ACTION_REAPPLY = "tv.corebuilds.eq.action.REAPPLY"
         const val ACTION_SUSPEND = "tv.corebuilds.eq.action.SUSPEND"
         const val ACTION_RESUME = "tv.corebuilds.eq.action.RESUME"
@@ -1126,6 +1443,16 @@ class EqService : Service() {
         const val ACTION_SHOW_CARD = "tv.corebuilds.eq.action.SHOW_CARD"
         /** Refresh the optional overlay after its setting or Android's overlay permission changes. */
         const val ACTION_REFRESH_PLAYBACK_HUD = "tv.corebuilds.eq.action.REFRESH_PLAYBACK_HUD"
+
+        /**
+         * Switch the A/B side. [EXTRA_BYPASS] true plays the correction's level
+         * at a flat response, false plays the measured shape again. The effect
+         * is reconfigured in place, so no audio gap is introduced.
+         */
+        const val ACTION_SET_BYPASS = "tv.corebuilds.eq.action.SET_BYPASS"
+        const val EXTRA_BYPASS = "tv.corebuilds.eq.extra.BYPASS"
+        /** Re-query app identity after Notification-access or active-session changes. */
+        const val ACTION_REFRESH_DISCOVERY = "tv.corebuilds.eq.action.REFRESH_DISCOVERY"
         /** AudioManager.VOLUME_CHANGED_ACTION: sent by the system on most builds, but hidden API. */
         private const val VOLUME_CHANGED_ACTION = "android.media.VOLUME_CHANGED_ACTION"
         const val ACTION_STATUS_CHANGED = "tv.corebuilds.eq.action.STATUS_CHANGED"
@@ -1140,6 +1467,9 @@ class EqService : Service() {
         private const val DISCOVERY_DEBOUNCE_MS = 2000L
         /** Keep the overlay through brief pauses between tracks. */
         private const val PLAYBACK_HUD_STOP_GRACE_MS = 5000L
+
+        /** Zero-gain band array, reused when auto loudness is off to avoid reallocating on every apply. */
+        val ZERO_GAINS = DoubleArray(10) { 0.0 }
 
         @Volatile
         var running = false
@@ -1162,9 +1492,36 @@ class EqService : Service() {
             }
         }
 
+        /** Record that correction has been applied for the current output, so later enables only suggest. */
+        fun recordAutoApplied(context: Context) {
+            DeviceKeyStore.of(context).currentDeviceKey(context)?.let { key ->
+                DeviceKeyStore.of(context).recordApplied(key)
+            }
+        }
+
         fun disable(context: Context) {
             ProfileStore(context).correctionEnabled = false
             if (running) send(context, ACTION_STOP)
+        }
+
+        /**
+         * Play the A/B side [bypass]: flat at the correction's own average level,
+         * or the measured shape again. Writes the preference first, so the
+         * switch on Home reads back as what the service is doing even if the
+         * service is not running or refuses the intent.
+         */
+        fun setBypass(context: Context, bypass: Boolean) {
+            ProfileStore(context).bypassEnabled = bypass
+            if (!running) return
+            try {
+                context.startService(
+                    Intent(context, EqService::class.java)
+                        .setAction(ACTION_SET_BYPASS)
+                        .putExtra(EXTRA_BYPASS, bypass)
+                )
+            } catch (e: IllegalStateException) {
+                Log.w(TAG, "Could not deliver $ACTION_SET_BYPASS", e)
+            }
         }
 
         /** Deliver [action] to a running service; a no-op when correction is off. */

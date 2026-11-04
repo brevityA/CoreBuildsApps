@@ -65,6 +65,12 @@ class MainActivity : TvActivity() {
      * in [nearestSurvivor] mean something.
      */
     private var catalogOrder: Map<String, Int> = emptyMap()
+    /** Apps in the grid: every tile but the alternates. */
+    private var iconCount = 0
+
+    /** The first entry of the rail's last row: Support, except on Play. */
+    private val railHead: Int =
+        if (Distribution.PLAY) R.id.settings_entry else R.id.support_entry
 
     private var category = ALL
     private var query = ""
@@ -72,6 +78,8 @@ class MainActivity : TvActivity() {
     private var pendingUpdate: UpdateChecker.Result.Available? = null
     private var downloadedApk: File? = null
     private var installOffered = false
+    /** The bar's download is running: presses wait, and the button keeps the remote. */
+    private var updateDownloading = false
 
     /**
      * Keystrokes are filtered as a burst, not one at a time. See [scheduleFilter].
@@ -87,6 +95,9 @@ class MainActivity : TvActivity() {
         Prefs.applyChrome(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        // Google Play only (a no-op elsewhere): settle Core Builds Plus with
+        // Play once per process, so its extras follow purchases and refunds.
+        PlusStore.sync(this)
 
         pickMode = IconPicker.isPickRequest(intent)
         if (pickMode) {
@@ -109,15 +120,22 @@ class MainActivity : TvActivity() {
             )
         }
         catalogOrder = all.withIndex().associate { (index, item) -> item.drawable to index }
+        // Alternates are extra tiles for apps already in the grid, so every
+        // number on this screen counts apps and leaves them out.
+        iconCount = all.count { !it.alternate }
 
         findViewById<TextView>(R.id.count).text =
-            getString(R.string.pack_stats_fmt, all.size, mappedComponents())
+            getString(R.string.pack_stats_fmt, iconCount, mappedComponents())
 
-        pickBanners = if (pickFixedByPack()) {
-            // Which pack the launcher opened decides the shape, not the
-            // toggle: Core Builds Glyphs forwards its picks here marked.
-            !intent.getBooleanExtra(GlyphsCompanion.EXTRA_PICK_GLYPHS, false)
+        pickBanners = if (pickFixedByPack() &&
+            intent.getBooleanExtra(GlyphsCompanion.EXTRA_PICK_GLYPHS, false)) {
+            // Core Builds Glyphs forwards its picks here marked: squares only.
+            false
         } else {
+            // A pick through this pack follows the Art style switch (2.0.1),
+            // so one app can hand out either shape card by card. Picking
+            // never writes the switch, so it cannot flip what the launcher
+            // auto-applies.
             Prefs.pickerPrefersBanners(this)
         }
         adapter = IconAdapter(all, showBanners = pickBanners) { item -> onIconChosen(item) }
@@ -152,6 +170,24 @@ class MainActivity : TvActivity() {
         syncFocusChain()
         bindRailScroll()
         matchRowTextSizes()
+        // Play's Payments policy: an app distributed on Play may not lead users
+        // to a payment method other than Play Billing, and Support is two QR
+        // codes for GitHub Sponsors and Ko-fi - tips to one person are not a
+        // tax-exempt donation, and Google has rejected real apps for exactly
+        // that link. The Play build has no Support entry at all (this rail,
+        // Settings and About each hide theirs), so the last row closes up to
+        // Settings | About. The ids the focus chain names are rewritten rather
+        // than left pointing at the hidden entry: a GONE view that is
+        // focusable still takes the cursor.
+        if (Distribution.PLAY) {
+            findViewById<View>(R.id.support_entry).visibility = View.GONE
+            // Nothing is left of Settings, so LEFT falls back to geometry
+            // (stays put) instead of walking to a view nobody can see.
+            findViewById<View>(R.id.settings_entry).setNextFocusLeftId(View.NO_ID)
+            // The wallpaper card steps DOWN onto the row's first entry.
+            findViewById<View>(R.id.wallpapers_entry).setNextFocusDownId(railHead)
+        }
+
         if (pickMode) {
             // Icon-picker mode has no use for the wallpapers entry or apply.
             findViewById<View>(R.id.wallpapers_group).visibility = View.GONE
@@ -326,14 +362,15 @@ class MainActivity : TvActivity() {
                 if (groupShown) R.id.style_entry else R.id.search
         }
         // Support, Settings and About share the rail's last row: all step down.
+        // On Play there is no Support entry, so [railHead] is Settings.
         findViewById<View>(R.id.support_entry).nextFocusDownId = belowRows
         findViewById<View>(R.id.settings_entry).nextFocusDownId = belowRows
         findViewById<View>(R.id.about_entry).nextFocusDownId = belowRows
         findViewById<View>(R.id.apply_targets).nextFocusUpId =
-            if (groupShown) R.id.support_entry else aboveRows
+            if (groupShown) railHead else aboveRows
         findViewById<View>(R.id.apply_targets).nextFocusDownId = R.id.search
         findViewById<View>(R.id.search).nextFocusUpId = belowRows.takeIf { targetsShown }
-            ?: if (groupShown) R.id.support_entry else aboveRows
+            ?: if (groupShown) railHead else aboveRows
         findViewById<View>(R.id.chip_row).nextFocusUpId = R.id.search
         // Down from the category row: the grid, or the empty state's undo when
         // the grid is the container that just went GONE. The search field always
@@ -508,7 +545,9 @@ class MainActivity : TvActivity() {
             // the only update request left is the one the user asks for in
             // About - which is what the About screen's network list says, and
             // the claim has to stay checkable.
-            if (!updateChecked && Prefs.updateChecks(this)) {
+            // Play builds update through Play only (Device and Network Abuse
+            // policy), so they never check GitHub or offer an APK.
+            if (!Distribution.PLAY && !updateChecked && Prefs.updateChecks(this)) {
                 updateChecked = true
                 checkForUpdate()
             }
@@ -545,11 +584,12 @@ class MainActivity : TvActivity() {
         // Counts are tallied from the same generated arrays that feed the
         // grid, so a chip can never advertise a number the grid cannot back
         // up. A hand-typed "(184)" goes stale on the next tranche; this does
-        // not.
-        val counts = all.groupingBy { it.category }.eachCount()
+        // not. They count apps: an alternate is a second tile for one.
+        val apps = all.filterNot { it.alternate }
+        val counts = apps.groupingBy { it.category }.eachCount()
         val keys = mutableListOf(ALL)
         val labels = mutableListOf(
-            getString(R.string.chip_count_fmt, getString(R.string.chip_all), all.size)
+            getString(R.string.chip_count_fmt, getString(R.string.chip_all), iconCount)
         )
         // Brandmarks is not a category — it cuts across all of them — so it is
         // added by hand next to All rather than through CHIP_ORDER, and
@@ -561,7 +601,7 @@ class MainActivity : TvActivity() {
             labels += getString(
                 R.string.chip_count_fmt,
                 getString(R.string.chip_brandmarks),
-                all.count { it.bespoke }
+                apps.count { it.bespoke }
             )
         }
         for ((key, label) in CHIP_ORDER) {
@@ -612,7 +652,7 @@ class MainActivity : TvActivity() {
      */
     private fun bindSearch() {
         val search = findViewById<EditText>(R.id.search)
-        search.hint = getString(R.string.search_hint_fmt, all.size)
+        search.hint = getString(R.string.search_hint_fmt, iconCount)
         search.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
             override fun onTextChanged(s: CharSequence?, a: Int, b: Int, c: Int) {}
@@ -779,9 +819,12 @@ class MainActivity : TvActivity() {
         adapter.submit(filtered)
         findViewById<TextView>(R.id.count).text =
             if (filtered.size == all.size) {
-                getString(R.string.pack_stats_fmt, all.size, mappedComponents())
+                getString(R.string.pack_stats_fmt, iconCount, mappedComponents())
             } else {
-                getString(R.string.icon_filter_fmt, filtered.size, all.size)
+                // Apps matched, not tiles: a search that hits only an
+                // alternate's name still matched its app, once.
+                getString(R.string.icon_filter_fmt,
+                    filtered.mapTo(HashSet()) { it.app }.size, iconCount)
             }
         bindEmptyState(filtered.size, q)
         // The grid and the empty state just swapped places; down from the
@@ -964,7 +1007,7 @@ class MainActivity : TvActivity() {
                 getString(
                     R.string.empty_body_query_fmt,
                     categoryLabel(category),
-                    all.count(::inCategory)
+                    appsInCategory()
                 )
             }
 
@@ -974,7 +1017,7 @@ class MainActivity : TvActivity() {
         clearSearch.visibility = if (q.isEmpty()) View.GONE else View.VISIBLE
         clearFilter.visibility = if (category == ALL) View.GONE else View.VISIBLE
         clearFilter.text =
-            getString(R.string.empty_clear_filter, all.count(::inCategory))
+            getString(R.string.empty_clear_filter, appsInCategory())
     }
 
     /**
@@ -992,6 +1035,10 @@ class MainActivity : TvActivity() {
         BESPOKE -> item.bespoke
         else -> item.category == category
     }
+
+    /** Apps in the current category: an alternate's tile is not another app. */
+    private fun appsInCategory(): Int =
+        all.filter(::inCategory).mapTo(HashSet()) { it.app }.size
 
     private fun categoryLabel(key: String): String = when (key) {
         BESPOKE -> getString(R.string.chip_brandmarks)
@@ -1096,13 +1143,21 @@ class MainActivity : TvActivity() {
     }
 
     private fun startDownload(update: UpdateChecker.Result.Available) {
+        if (updateDownloading) return
         if (update.apkUrl.isBlank()) {
             toast(getString(R.string.update_failed_fmt, "no apkUrl in version.json"))
             return
         }
         val label = findViewById<TextView>(R.id.update_label)
         val button = findViewById<TextView>(R.id.update_button)
-        button.isEnabled = false
+        // A busy flag, not isEnabled = false. Disabling the focused view makes
+        // Android clear its focus, and a TV is never in touch mode, so the
+        // framework hands the cursor to the next focusable view: Later, one OK
+        // press from dismissing the update. Every D-pad Download press ended
+        // there, and nothing moved it back when the button came back as
+        // Install (Shield report, updating 2.4.1 to 2.4.2). About's row has
+        // always used a flag and never had the problem.
+        updateDownloading = true
         button.text = getString(R.string.update_checking)
         UpdateInstaller.download(this, update.apkUrl, update.versionCode, update.apkSha256) { event ->
             when (event) {
@@ -1110,17 +1165,22 @@ class MainActivity : TvActivity() {
                     label.text = progressLabel(event.received, event.total)
                 }
                 is UpdateInstaller.Event.Ready -> {
+                    updateDownloading = false
                     downloadedApk = event.file
                     installOffered = false
-                    button.isEnabled = true
                     button.text = getString(R.string.update_install, update.versionName)
-                    findViewById<TextView>(R.id.update_sub).text =
-                        getString(R.string.update_sub_install)
+                    // The highlight line and this one share the row; the
+                    // instruction wins once there is something to press.
+                    findViewById<TextView>(R.id.update_highlights).visibility = View.GONE
+                    findViewById<TextView>(R.id.update_sub).apply {
+                        visibility = View.VISIBLE
+                        text = getString(R.string.update_sub_install)
+                    }
                     button.setOnClickListener { startInstall(event.file) }
                     startInstall(event.file)
                 }
                 is UpdateInstaller.Event.Failed -> {
-                    button.isEnabled = true
+                    updateDownloading = false
                     button.text = getString(R.string.update_download, update.versionName)
                     label.text = getString(R.string.update_failed_fmt, event.reason)
                     toast(getString(R.string.update_failed_fmt, event.reason))
@@ -1233,8 +1293,11 @@ class MainActivity : TvActivity() {
 
     private fun pickHint(): String = getString(
         when {
+            pickFixedByPack() && intent.getBooleanExtra(GlyphsCompanion.EXTRA_PICK_GLYPHS, false) ->
+                R.string.picker_hint_glyphs_only
             pickFixedByPack() && pickBanners -> R.string.picker_hint_banners_only
-            pickFixedByPack() -> R.string.picker_hint_glyphs_only
+            // No shape chips here, so point at the switch that sets the shape.
+            pickFixedByPack() -> R.string.picker_hint_square_by_style
             pickBanners -> R.string.picker_hint_banner
             else -> R.string.picker_hint_square
         }
