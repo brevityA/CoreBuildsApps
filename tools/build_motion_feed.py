@@ -19,6 +19,11 @@ Outputs:
 - app/src/main/assets/live_thumbs/       the posters the icon pack bundles
                                           for its grid and engine fallback,
                                           kept exactly the roster's set
+- shift/app/src/main/assets/manifest/live-feed.json
+- shift/app/src/main/assets/live_thumbs/ Core Shift's copy of the feed and
+                                          one poster per row: Shift lists its
+                                          live set from the APK alone, so a
+                                          stale copy is a stale app
 
 Run:  python tools/build_motion_feed.py
 """
@@ -35,7 +40,7 @@ from live_roster import (  # noqa: E402
     BASE_URL, DURATION, FPS, H, ROOT, ROSTER, THUMB_H, THUMB_W, W)
 
 __all__ = ["BASE_URL", "DURATION", "FPS", "W", "H", "THUMB_W", "THUMB_H",
-           "write_feed", "build_sheet"]
+           "write_feed", "build_sheet", "sync_shift_bundle"]
 
 
 def build_sheet(thumbs, out):
@@ -80,6 +85,37 @@ def sync_bundled_thumbs():
             shutil.copyfile(c.thumb, dst)
 
 
+SHIFT_ASSETS = ROOT / "shift" / "app" / "src" / "main" / "assets"
+
+
+def sync_shift_bundle():
+    """Core Shift's bundled feed == Motion/live-feed.json, and its posters ==
+    the roster's, byte for byte, no strays.
+
+    Shift reads its live set only from the APK (LiveCatalog.load), and this
+    copy used to be a manual `cp` in docs/CORE_MOTION_HANDOVER.md. 2.4.0
+    replaced the live set without it: Core Shift 2.3.5 listed clips 01-10,
+    deleted from Motion/live/, drew 21 rows with no poster, and never showed
+    32-58. tests/test_core_shift_content.py fails on any drift.
+    """
+    import shutil
+    manifest = SHIFT_ASSETS / "manifest" / "live-feed.json"
+    manifest.parent.mkdir(parents=True, exist_ok=True)
+    feed = (ROOT / "Motion" / "live-feed.json").read_bytes()
+    if not manifest.is_file() or manifest.read_bytes() != feed:
+        manifest.write_bytes(feed)
+    thumbs = SHIFT_ASSETS / "live_thumbs"
+    thumbs.mkdir(parents=True, exist_ok=True)
+    keep = {c.thumb.name for c in ROSTER}
+    for old in thumbs.glob("*.jpg"):
+        if old.name not in keep:
+            old.unlink()
+    for c in ROSTER:
+        dst = thumbs / c.thumb.name
+        if not dst.is_file() or dst.read_bytes() != c.thumb.read_bytes():
+            shutil.copyfile(c.thumb, dst)
+
+
 def main():
     missing = [c.stem for c in ROSTER if not (c.mp4.is_file() and c.thumb.is_file())]
     if missing:
@@ -89,6 +125,7 @@ def main():
     build_sheet([c.thumb for c in ROSTER], ROOT / "Motion" / "live" / "preview" / "live-preview.png")
     write_feed()
     sync_bundled_thumbs()
+    sync_shift_bundle()
     print(f"done: {len(ROSTER)} live wallpapers listed in Motion/live-feed.json")
     return 0
 
