@@ -252,7 +252,7 @@
     <string name="settings_group_suite">SUITE</string>
     <string name="settings_group_plus">CORE PREMIUM</string>
     <string name="settings_plus_title">Core Premium</string>
-    <string name="settings_plus_sub">One purchase: priority requests (one or all at once), My requests, loop rotation, a night loop, Projectivy walls and the Spectra and Aurum wallpapers.</string>
+    <string name="settings_plus_sub">One purchase: priority requests (one or up to 10 at once), My requests, loop rotation, a night loop, Projectivy walls and the Spectra and Aurum wallpapers.</string>
     <string name="settings_plus_owned">Owned</string>
     <string name="settings_plus_buy">See it</string>
     <string name="settings_plus_trial_fmt">Trial · %1$s</string>
@@ -461,7 +461,7 @@
     <string name="plus_loading">Asking Google Play\u2026</string>
     <string name="plus_loading_button">Premium</string>
     <string name="plus_buy_fmt">Get Premium \u00b7 %1$s</string>
-    <string name="plus_for_sale">One purchase, no subscription: priority icon requests, one app or every missing app at once, My requests, live loop rotation, a night loop, your choice of what Projectivy rotates, and the 24 Spectra and Aurum wallpapers.</string>
+    <string name="plus_for_sale">One purchase, no subscription: priority icon requests, one app or up to 10 missing apps at once, My requests, live loop rotation, a night loop, your choice of what Projectivy rotates, and the 24 Spectra and Aurum wallpapers.</string>
     <string name="plus_owned">Core Premium is active on this Google account: priority requests, Request all under Missing icons, and in Settings My requests, loop rotation, the night loop and Projectivy walls; Spectra and Aurum are under Premium in Wallpapers. Thank you.</string>
     <string name="plus_owned_button">Premium is active</string>
     <string name="plus_pending">Payment pending. Premium switches on when Google Play confirms it.</string>

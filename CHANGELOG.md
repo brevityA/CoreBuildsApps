@@ -6,6 +6,20 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **Core Premium is on sale in the Google Play build.** That build now
+  carries the request service's address, so a missing-icon press files the
+  request in one step, Core Premium's card offers the purchase and the
+  24-hour trial, and a buyer's requests are labelled priority. The
+  GitHub / Downloader build is unchanged: it keeps the QR panel and sells
+  nothing. The Play listing's description, Data safety and content rating
+  answers are regenerated to match (`docs/play/listing.json`), and
+  `docs/privacy.html` (effective 30 October 2026) says which build sends a
+  request straight away and how long the Request all count is kept. Nothing
+  has been bought on a TV yet; `docs/PLAY-CONSOLE.md` §8 lists the Console
+  steps and the test.
+
 ## [2.5.4] — 2026-10-31
 
 ### Added

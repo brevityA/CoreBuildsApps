@@ -467,16 +467,53 @@ class StoreTruth(unittest.TestCase):
 
     def test_check_refuses_a_broker_build_without_the_latch(self):
         import contextlib, io
-        original = listing.broker_enabled
+        original, latch = listing.broker_enabled, listing.BROKER_SHIPPED
+        # Whatever the tree holds, a broker build with the latch off is refused.
         listing.broker_enabled = lambda: True
+        listing.BROKER_SHIPPED = False
         out = io.StringIO()
         try:
-            self.assertFalse(listing.BROKER_SHIPPED)
             with contextlib.redirect_stdout(out):
                 self.assertEqual(listing.check(), 1)
         finally:
-            listing.broker_enabled = original
+            listing.broker_enabled, listing.BROKER_SHIPPED = original, latch
         self.assertIn("BROKER_SHIPPED is False", out.getvalue())
+
+    def test_premium_is_on_in_the_play_build_only(self):
+        # The owner's call (2026-10-30): the Play build posts to the request
+        # service and sells Core Premium; the GitHub / Downloader build keeps
+        # the QR panel. So the URL lives in a Play-only override, main's
+        # generated value stays empty, and the latch is set.
+        play = listing.PLAY_ENDPOINT_RES.read_text(encoding="utf-8")
+        url = re.search(r'name="audit_request_endpoint"[^>]*>([^<]*)<', play).group(1)
+        self.assertRegex(url, r"^https://[a-z0-9.-]+\.workers\.dev/$")
+        self.assertEqual(listing.play_endpoint(), url)
+        main = (ROOT / "app/src/main/res/values/issue_prefill.xml").read_text(encoding="utf-8")
+        self.assertIn('<string name="audit_request_endpoint"></string>', main)
+        self.assertTrue(listing.broker_enabled())
+        self.assertTrue(listing.BROKER_SHIPPED)
+        self.assertTrue(SPEC["content_rating"]["purchases"])
+        self.assertTrue(SPEC["data_safety"]["collects_user_data"])
+        self.assertIn("CORE PREMIUM", SPEC["copy"]["full_description"])
+        # The copy promises no more than the app does: Request all files at
+        # most BatchRequest.MAX per press, and the trial leaves out what the
+        # app itself says comes with the purchase (plus_trial_running_fmt):
+        # the two features the request service checks with Google, and saving
+        # a Premium wall to Pictures.
+        full = SPEC["copy"]["full_description"]
+        batch = (ROOT / "app/src/main/java/tv/corebuilds/iconpack/BatchRequest.kt").read_text(encoding="utf-8")
+        cap = re.search(r"const val MAX = (\d+)", batch).group(1)
+        self.assertIn(f"one app or up to {cap} missing apps at once", full)
+        self.assertNotIn("every missing app at once", full)
+        self.assertIn("the trial has everything but priority requests, Request all and "
+                      "saving a Premium wall to Pictures", full)
+        strings = (ROOT / "app/src/main/res/values/strings.xml").read_text(encoding="utf-8")
+        running = re.search(r'name="plus_trial_running_fmt">([^<]+)<', strings).group(1)
+        self.assertIn("Priority requests, Request all and saving Premium walls to Pictures "
+                      "come with the purchase", running,
+                      "the app's own trial line moved: update the listing's trial sentence to match")
+        token = [c for c in SPEC["data_safety"]["collected"] if "Purchase" in c["type"]][0]
+        self.assertIn("24 hours and 10 minutes", token["what"])
 
     def test_check_catches_a_broker_baked_in_without_new_answers(self):
         original = listing.broker_enabled

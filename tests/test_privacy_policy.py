@@ -109,6 +109,33 @@ class TheClaimsMatchTheCode(unittest.TestCase):
         self.assertFalse(asserted - HOSTS_THE_CODE_CALLS,
                          f"policy names {sorted(asserted - HOSTS_THE_CODE_CALLS)}")
 
+    def test_the_batch_count_retention_is_the_workers(self):
+        # Request all keys a daily count by the purchase token's hash; the
+        # policy must say how long that key lives, not only the six-hour
+        # verdict cache.
+        worker = read(ROOT / "tools/icon_request_broker/worker.mjs")
+        allowed = worker.split("export async function batchAllowed(", 1)[1].split("\n}\n", 1)[0]
+        self.assertIn("expirationTtl: 86_400 + 600", allowed)
+        self.assertIn("batch:${tokenHash}:", worker)
+        text = flat(self.html)
+        # Each place states it, not two mentions anywhere on the page.
+        request_all = text.split("<em>Request all</em> twice", 1)[1].split("</tr>", 1)[0]
+        control = text.split("<h2>Your control</h2>", 1)[1].split("<h2>", 1)[0]
+        self.assertIn("24 hours and 10 minutes", request_all,
+                      "the Request all row must state how long the count is kept")
+        self.assertIn("24 hours and 10 minutes", control,
+                      "Your control must state how long the count is kept")
+
+    def test_it_says_which_build_sends_the_request_straight_away(self):
+        # The Play build carries the request service's address
+        # (app/src/play/res/values/request_service.xml), so a press there is
+        # filed with no step to review it; the GitHub build shows a QR.
+        text = flat(self.html)
+        self.assertIn("On the Google Play build the press sends it straight to", text)
+        self.assertIn("there is no step to review it first", text)
+        self.assertIn("shows a QR code for a pre-filled GitHub issue", text)
+        self.assertNotIn("On the current build", text)
+
     def test_the_icon_request_payload_it_itemises_is_the_payload_sent(self):
         sender = self.src["IconRequestSender.kt"]
         single = sender.split("private fun post(", 1)[1]

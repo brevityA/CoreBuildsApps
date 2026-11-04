@@ -42,7 +42,7 @@ and <code>tv.corebuilds.iconpack.glyphs.play</code>, which have no network code
 and send nothing) and Core Builds Glyphs (<code>tv.corebuilds.glyphs</code>, the
 icon pack drawn in glyph art, covered wherever this page says "the app").</p>
 
-<p><strong>Effective:</strong> 28 October 2026.</p>
+<p><strong>Effective:</strong> 30 October 2026.</p>
 
 <h2>There is no account, and no profile</h2>
 <p>The app has no sign-in, no user identifier and no analytics, advertising or
@@ -75,11 +75,15 @@ described below. Nothing is collected in the background.</p>
     <td>You press <em>Request icon</em> on an auditor row</td>
     <td>The app name, the component name and a device note (model and Android
         version), plus one flag saying whether the pack already maps that app
-        under another activity. No identifier of any kind. On the current
-        build this opens a pre-filled GitHub issue in your browser, which you
-        can edit or abandon before submitting.</td>
-    <td><code>github.com</code> — or, when the anonymous request broker is
-        enabled, the Core Builds broker, which files the issue on your behalf</td>
+        under another activity. No identifier of any kind. On the GitHub /
+        Downloader build this shows a QR code for a pre-filled GitHub issue,
+        which you can edit or abandon on your phone before submitting. On the
+        Google Play build the press sends it straight to the Core Builds
+        broker, which files it as a public GitHub issue: there is no step to
+        review it first.</td>
+    <td><code>github.com</code> (GitHub / Downloader build), or the Core
+        Builds broker, which files the issue on your behalf (Google Play
+        build)</td>
   </tr>
   <tr>
     <td>Google Play build, if you own Core Premium: you press
@@ -100,7 +104,9 @@ described below. Nothing is collected in the background.</p>
         this TV has not requested yet, in one send: each app's name and
         component, one device note and the purchase token, handled exactly as
         above. The broker refuses it unless Google confirms the purchase, and
-        takes at most three a day per purchase.</td>
+        takes at most three a day per purchase: to count them, it keeps a tally
+        for that day under the token's SHA-256 hash for at most 24 hours and 10
+        minutes.</td>
     <td>The Core Builds broker, which checks the token with Google</td>
   </tr>
   <tr>
@@ -219,8 +225,9 @@ press <em>Request icon</em>:</p>
       minutes for rate limiting. It expires by itself and is never written anywhere
       else.</li>
   <li><strong>A SHA-256 hash of a Premium purchase token</strong>, held by the
-      broker with Google's answer for at most six hours. It expires by
-      itself.</li>
+      broker with Google's answer for at most six hours and, after a
+      <em>Request all</em>, as the key of that day's count for at most 24 hours
+      and 10 minutes. Both expire by themselves.</li>
 </ul>
 <p>Nothing else about you is kept, so there is nothing else to request, correct
 or export.</p>
