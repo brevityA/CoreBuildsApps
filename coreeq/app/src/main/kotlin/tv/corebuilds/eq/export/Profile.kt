@@ -41,7 +41,7 @@ data class RepeatabilityCheck(
     val note: String? = null
 )
 
-/** A microphone response point reported by Android; it is metadata, not a correction applied by Core EQ. */
+/** A microphone response point reported by Android; vendor metadata that Core EQ applies via [MicResponse.flatten] only when usable and single-capsule, and always keeps as provenance. */
 data class MicrophoneResponsePoint(
     val microphone: String,
     val frequencyHz: Double,
@@ -51,9 +51,16 @@ data class MicrophoneResponsePoint(
 /**
  * What Android exposed about the actual input path for a sweep. Device support
  * varies; missing fields mean "not reported", not "none". Microphone response
- * points are preserved for audit/research and are explicitly not applied to
- * the room curve. The input rate is the rate Android reports for the
- * AudioRecord stream; it is not a measurement of the microphone ADC clock.
+ * points are preserved as provenance AND applied to the room curve when usable:
+ * [MicResponse.flatten] subtracts them at analysis time whenever at least
+ * [MicResponse.MIN_POINTS] finite, in-band points exist, capped per band at
+ * [MicResponse.MAX_APPLIED_DB] and never extrapolated beyond the reported span
+ * — otherwise the measurement is left untouched, explicitly, in the summary.
+ * Each point carries the reporting microphone's label, and more than one label
+ * on the list, or an [activeMicrophoneCount] above one, refuses the whole list
+ * rather than blending capsules ([MicResponse.verdict]). The input rate
+ * is the rate Android reports for the AudioRecord stream; it is not a
+ * measurement of the microphone ADC clock.
  */
 data class CaptureInfo(
     val requestedSampleRateHz: Int? = null,
@@ -93,12 +100,31 @@ data class CaptureInfo(
             ?.joinToString(", ")
             ?.take(110)
             ?.let { " · $it" }.orEmpty()
-        val calibration = when {
-            MicResponse.applicable(microphoneResponse) ->
-                " · Android reported ${microphoneResponse.size} mic-response points (applied, ±${MicResponse.MAX_APPLIED_DB.toInt()} dB cap)"
-            microphoneResponse.isNotEmpty() ->
+        // The line names the FIRST gate the data fell at, read from the same
+        // MicResponse.verdict that flatten applies: a short multi-mic list
+        // reports "too few" (it would be refused even from one capsule), and
+        // "several mics" only claims a list that sufficed on its own.
+        val micCount = MicResponse.microphoneCount(microphoneResponse)
+        val micSpan = MicResponse.spanText(microphoneResponse)
+        val calibration = when (MicResponse.verdict(microphoneResponse, activeMicrophoneCount)) {
+            MicResponse.Verdict.APPLIED ->
+                " · Android reported ${microphoneResponse.size} mic-response points (applied${micSpan?.let { " over $it" } ?: ""}, ±${MicResponse.MAX_APPLIED_DB.toInt()} dB cap)"
+            // States the current rule, not this profile's history: 1.11.2 and
+            // earlier did subtract these, and a saved profile carries no record
+            // of which version measured it.
+            MicResponse.Verdict.SEVERAL_MICS -> if (micCount > 1) {
+                " · $micCount mics reported mic response; this version applies no composite"
+            } else {
+                " · 1 of $activeMicrophoneCount active mics reported mic response; this version applies none"
+            }
+            MicResponse.Verdict.TOO_FEW ->
                 " · Android reported ${microphoneResponse.size} mic-response points (too few to apply)"
-            else -> ""
+            MicResponse.Verdict.NONE ->
+                // Zero reported points is its own answer: a legitimate no-op
+                // on most TVs, and the first thing a "mic correction does not
+                // seem to work" report must rule out. Silence here read as
+                // "feature missing" for exactly that reason.
+                " · no mic-response reported by Android - correction is room-only"
         }
         return "Capture: $input · $rates$source$recorder$mic$unprocessed$effectState$calibration"
     }
@@ -117,16 +143,35 @@ data class CaptureInfo(
             val os = captureOsVersion?.takeIf { it.isNotBlank() }?.let { " · Android $it" }.orEmpty()
             add("Recording device: $model$os.")
         }
-        if (MicResponse.applicable(microphoneResponse)) {
-            add(
-                "Android reported ${microphoneResponse.size} microphone frequency-response points; applied to " +
-                    "the measurement (capped at ±${MicResponse.MAX_APPLIED_DB.toInt()} dB per band, and never " +
-                    "extrapolated beyond the reported span)."
+        val micCount = MicResponse.microphoneCount(microphoneResponse)
+        val micSpan = MicResponse.spanText(microphoneResponse)
+        // Same verdict, and so the same first-gate priority, as summary().
+        when (MicResponse.verdict(microphoneResponse, activeMicrophoneCount)) {
+            MicResponse.Verdict.APPLIED -> add(
+                "Android reported ${microphoneResponse.size} microphone frequency-response points from one " +
+                    "capsule; applied to the measurement over ${micSpan ?: "the reported span"} (capped at " +
+                    "±${MicResponse.MAX_APPLIED_DB.toInt()} dB per band, never extrapolated beyond the span)."
             )
-        } else if (microphoneResponse.isNotEmpty()) {
-            add(
+            MicResponse.Verdict.SEVERAL_MICS -> add(
+                if (micCount > 1) {
+                    "Android reported ${microphoneResponse.size} microphone frequency-response points from " +
+                        "$micCount microphones; a composite of capsule curves belongs to none of them, " +
+                        "so this version applies none (Core EQ 1.11.2 and earlier did, so a profile measured " +
+                        "with those may include one)."
+                } else {
+                    "Android reported ${microphoneResponse.size} microphone frequency-response points from " +
+                        "one of $activeMicrophoneCount active microphones; one capsule's curve does not describe " +
+                        "a recording several made, so this version applies none (Core EQ 1.11.2 and earlier " +
+                        "did, so a profile measured with those may include it)."
+                }
+            )
+            MicResponse.Verdict.TOO_FEW -> add(
                 "Android reported ${microphoneResponse.size} microphone frequency-response points; too few " +
                     "in band to apply, kept as metadata."
+            )
+            MicResponse.Verdict.NONE -> add(
+                "Android reported no microphone frequency-response data for this capture; the room curve " +
+                    "carries no capsule correction."
             )
         }
         processing.takeIf { it.isNotEmpty() }?.let { add("Capture processing: ${it.joinToString("; ")}.") }

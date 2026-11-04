@@ -296,7 +296,8 @@ class MeasureActivity : TvActivity() {
                             it.copy(
                                 result = SweepAnalysis.analyze(
                                     it.samples, it.rate, target, volume, ceilingHz = ceiling,
-                                    micResponse = it.captureInfo?.microphoneResponse ?: emptyList()
+                                    micResponse = it.captureInfo?.microphoneResponse ?: emptyList(),
+                                    activeMicrophones = it.captureInfo?.activeMicrophoneCount
                                 ),
                                 targetIndex = selectedTargetIndex,
                                 roomIndex = selectedRoomIndex
@@ -309,7 +310,8 @@ class MeasureActivity : TvActivity() {
                             SweepAnalysis.analyze(
                                 capture, lastRate, target, volume, ceilingHz = ceiling,
                                 micResponse = seatCaptures.firstOrNull()?.captureInfo?.microphoneResponse
-                                    ?: emptyList()
+                                    ?: emptyList(),
+                                activeMicrophones = seatCaptures.firstOrNull()?.captureInfo?.activeMicrophoneCount
                             ),
                             emptyList(), null
                         )
@@ -734,7 +736,8 @@ class MeasureActivity : TvActivity() {
                         SweepAnalysis.analyze(
                             samples, rate, plan.target, plan.volumeM3,
                             ceilingHz = plan.ceilingHz,
-                            micResponse = info.microphoneResponse
+                            micResponse = info.microphoneResponse,
+                            activeMicrophones = info.activeMicrophoneCount
                         )
                     )
                 } catch (e: MeasurementException) {

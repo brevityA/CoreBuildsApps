@@ -58,6 +58,36 @@ been seen on a device.
 - **One content-type rule.** The playback service and Manual EQ's suggestion now
   resolve the playing app's content type through the same function, so the two
   cannot disagree.
+- **A response reported by two microphones at once is refused, not blended.**
+  Android gives each active microphone its own response curve and the capture
+  path keeps up to four of them in one list; interpolating that composite
+  produced a curve belonging to no real capsule. The list is applied only when
+  every usable point carries the same microphone label and Android names no
+  more than one active microphone — otherwise the measurement passes through
+  untouched and the capture summary says "N mics reported mic response; this
+  version applies no composite" (or "1 of N active mics reported mic response;
+  this version applies none" when the other mics reported nothing), the same
+  fail-closed doctrine as the route probe's UNCONFIRMED. Labels get a per-index
+  suffix whenever more than one mic reports, so two mics sharing a description
+  can no longer pass as one. Each mic gets an equal share of the 256-point
+  budget, and only points inside 20 Hz–20 kHz count against it, so neither a
+  long first list nor a second list that opens out of band can hide a mic from
+  the guard. One rule, `MicResponse.verdict`, decides for the correction, the
+  capture summary and the export notes alike.
+- **The applied line states the confidence behind it.** "applied" now carries
+  the point count and the frequency span it covers — applied on four points
+  versus twelve is a different claim, and the bare word hid it.
+- **The capture summary now says so when Android reports no mic response.**
+  The result notes, the profile screen and the `CoreEqCapture` log line already
+  distinguished "applied" from "too few to apply"; zero reported points — the
+  common TV case — printed nothing, which made a legitimate no-op look like a
+  silent one. It now reads "no mic-response reported by Android - correction
+  is room-only".
+- **Stale "provenance only" comments corrected.** `CaptureEngine` and
+  `CaptureInfo` claimed the platform mic response is never used to alter the
+  EQ; it has been applied via `MicResponse.flatten` since 1.11.0 under the
+  minimum-points, span and ±6 dB rules. The comments contradicted both the
+  code and each other's file.
 
 ## [1.11.2] — 2026-11-04
 
