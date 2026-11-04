@@ -846,6 +846,31 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertLess(load.index("LauncherPreferences.pinnedPackages"), load.index("runOnUiThread"))
         self.assertNotIn("LauncherPreferences.pinnedPackages", render_rows)
 
+    def test_favourites_editor_reloads_on_return_and_keeps_focus_on_the_same_app(self):
+        manage = (ROOT / "launcher/app/src/main/java/tv/corebuilds/launcher/ManageFavoritesActivity.kt").read_text(encoding="utf-8")
+        create = manage[manage.index("override fun onCreate("):manage.index("override fun onResume(")]
+        resume = manage[manage.index("override fun onResume("):manage.index("override fun onWindowFocusChanged(")]
+        render_rows = manage[manage.index("private fun renderRows()"):manage.index("private fun togglePin(")]
+        # Loaded on every return, not once: an app installed or removed meanwhile
+        # must not leave stale rows and counts.
+        self.assertNotIn("loadApps()", create)
+        self.assertIn("loadApps()", resume)
+        # The rebuild puts focus back on the app that had it, else the first row,
+        # and never takes it off a control outside the rows (the Done button).
+        self.assertLess(render_rows.index("val focusedPackage"), render_rows.index("rows.removeAllViews()"))
+        self.assertIn("restoredRow ?: firstRow", render_rows)
+        self.assertIn("current.parent === rows", render_rows)
+        self.assertNotIn("requestedFirstFocus", manage)
+
+    def test_catalog_skips_entries_this_launcher_has_no_permission_to_start(self):
+        apps = self.APPS.read_text(encoding="utf-8")
+        load = apps[apps.index("fun load(context: Context)"):apps.index("internal fun canStart(")]
+        # The guard runs before an entry can be kept, so a guarded LEANBACK entry
+        # gives way to the package's startable LAUNCHER entry.
+        self.assertLess(load.index("canStart(pm, context.packageName, activity.permission)"),
+                        load.index("val previous = byPackage[packageName]"))
+        self.assertIn("pm.checkPermission(permission, ownPackage) == PackageManager.PERMISSION_GRANTED", apps)
+
     def test_home_refresh_coalesces_mid_scan_requests_and_stops_safely_on_destroy(self):
         activity = self.ACTIVITY.read_text(encoding="utf-8")
         refresh = activity[activity.index("private fun refreshApps()"):activity.index("private fun renderApps(")]

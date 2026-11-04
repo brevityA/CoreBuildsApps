@@ -19,12 +19,18 @@ class ManageFavoritesActivity : Activity() {
     private lateinit var summary: TextView
     private var apps = emptyList<LaunchableApp>()
     private var pinnedPackages = emptySet<String>()
-    private var requestedFirstFocus = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enterImmersiveMode()
         setContentView(createScreen())
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Reload on every return, not only on create: an app installed or
+        // removed while the editor sat in the background must not leave
+        // stale rows and counts behind.
         loadApps()
     }
 
@@ -114,6 +120,9 @@ class ManageFavoritesActivity : Activity() {
     }
 
     private fun renderRows() {
+        // A reload rebuilds every row, so remember which app had focus and put
+        // focus back on it; the first row takes it when that app is gone.
+        val focusedPackage = currentFocus?.takeIf { it.parent === rows }?.tag as? String
         rows.removeAllViews()
         val installed = apps.mapTo(linkedSetOf()) { it.packageName }
         summary.text = getString(R.string.manage_summary, pinnedPackages.size, apps.size)
@@ -125,7 +134,9 @@ class ManageFavoritesActivity : Activity() {
             return
         }
 
-        apps.forEachIndexed { index, app ->
+        var firstRow: View? = null
+        var restoredRow: View? = null
+        apps.forEach { app ->
             val row = PinnedAppRowView(
                 context = this,
                 app = app,
@@ -138,13 +149,16 @@ class ManageFavoritesActivity : Activity() {
             }
             row.tag = app.packageName
             rows.addView(row)
-            if (index == 0) {
-                row.post {
-                    if (!requestedFirstFocus && currentFocus == null) {
-                        requestedFirstFocus = row.requestFocus()
-                    }
-                }
-            }
+            if (firstRow == null) firstRow = row
+            if (app.packageName == focusedPackage) restoredRow = row
+        }
+        val target = restoredRow ?: firstRow
+        target?.post {
+            // Only take focus when the rows had it (or nothing has it yet): never
+            // pull it off the Done button or another control the user is on.
+            // A row that had focus is detached by the rebuild (parent == null).
+            val current = currentFocus
+            if (current == null || current.parent == null || current.parent === rows) target.requestFocus()
         }
     }
 
