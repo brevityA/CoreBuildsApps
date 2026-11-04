@@ -2,7 +2,6 @@ package tv.corebuilds.eq.export
 
 import tv.corebuilds.eq.dsp.CustomTarget
 import tv.corebuilds.eq.dsp.MicResponse
-import java.util.Locale
 import tv.corebuilds.eq.dsp.PeakingFilter
 import tv.corebuilds.eq.dsp.TargetCurveImport
 import tv.corebuilds.eq.dsp.Targets
@@ -106,14 +105,15 @@ data class CaptureInfo(
         // refused even from one capsule), and "composite" only claims a list
         // that sufficed on its own. Labels, not points, are the composite unit.
         val micCount = MicResponse.microphoneCount(microphoneResponse)
-        val micSpan = MicResponse.spanHz(microphoneResponse)?.let {
-            String.format(Locale.US, "%.0f Hz-%.1f kHz", it.first, it.second / 1000.0)
-        }
+        val micSpan = MicResponse.spanText(microphoneResponse)
         val calibration = when {
             MicResponse.applicable(microphoneResponse) && micCount <= 1 ->
                 " · Android reported ${microphoneResponse.size} mic-response points (applied${micSpan?.let { " over $it" } ?: ""}, ±${MicResponse.MAX_APPLIED_DB.toInt()} dB cap)"
-            micCount > 1 ->
-                " · $micCount mics reported mic response; composite not applied"
+            // States the current rule, not this profile's history: 1.11.2 and
+            // earlier did subtract a multi-mic composite, and a saved profile
+            // carries no record of which version measured it.
+            MicResponse.applicable(microphoneResponse) && micCount > 1 ->
+                " · $micCount mics reported mic response; this version applies no composite"
             microphoneResponse.isNotEmpty() ->
                 " · Android reported ${microphoneResponse.size} mic-response points (too few to apply)"
             else ->
@@ -141,9 +141,7 @@ data class CaptureInfo(
             add("Recording device: $model$os.")
         }
         val micCount = MicResponse.microphoneCount(microphoneResponse)
-        val micSpan = MicResponse.spanHz(microphoneResponse)?.let {
-            String.format(Locale.US, "%.0f Hz-%.1f kHz", it.first, it.second / 1000.0)
-        }
+        val micSpan = MicResponse.spanText(microphoneResponse)
         // Same first-gate priority as summary().
         if (MicResponse.applicable(microphoneResponse) && micCount <= 1) {
             add(
@@ -155,7 +153,8 @@ data class CaptureInfo(
             add(
                 "Android reported ${microphoneResponse.size} microphone frequency-response points from " +
                     "$micCount microphones; a composite of capsule curves belongs to none of them, " +
-                    "so none was applied."
+                    "so this version applies none (Core EQ 1.11.2 and earlier did, so a profile measured " +
+                    "with those may include one)."
             )
         } else if (microphoneResponse.isNotEmpty()) {
             add(

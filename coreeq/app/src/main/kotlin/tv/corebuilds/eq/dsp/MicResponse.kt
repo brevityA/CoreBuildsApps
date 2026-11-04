@@ -130,4 +130,53 @@ object MicResponse {
         if (ps.size < 2) return null
         return ps.first().frequencyHz to ps.last().frequencyHz
     }
+
+    /** [spanHz] as text: whole Hz below 1 kHz, tenths of a kHz above, so a low span never reads "0.0 kHz". */
+    fun spanText(points: List<MicrophoneResponsePoint>): String? =
+        spanHz(points)?.let { (low, high) -> "${hzText(low)}-${hzText(high)}" }
+
+    private fun hzText(hz: Double): String =
+        if (hz < 1_000.0) String.format(java.util.Locale.US, "%.0f Hz", hz)
+        else String.format(java.util.Locale.US, "%.1f kHz", hz / 1_000.0)
+
+    /** One active microphone's report as Android gave it: its description and (Hz, dB) points. */
+    class Report(val description: String?, val points: List<Pair<Double, Double>>)
+
+    /** Longest description kept, so a label plus its " #n" suffix fits the 80-character export field. */
+    private const val MAX_DESCRIPTION = 72
+
+    /**
+     * One capture's reports as labelled points, at most [maxPoints] in all, from the
+     * first [maxMicrophones] mics. Both capture paths (the TV's own, and the phone
+     * companion's) build their list here, so the single-capsule guard reads the same
+     * thing from each.
+     *
+     * - **Each mic gets an equal share of [maxPoints].** A first mic with a long list
+     *   could otherwise take the whole budget, leave the next mic no points, and make a
+     *   multi-mic capture look like one capsule to [microphoneCount], so [flatten] would
+     *   apply the first mic's curve to a capture several mics made.
+     * - **With more than one mic, every label carries its position** ("#1", "#2"), so two
+     *   mics sharing a description ("Built-in microphone") stay two capsules.
+     */
+    fun collect(
+        reports: List<Report>,
+        fallbackName: String,
+        maxMicrophones: Int,
+        maxPoints: Int
+    ): List<MicrophoneResponsePoint> {
+        val used = reports.take(maxMicrophones)
+        if (used.isEmpty() || maxPoints <= 0) return emptyList()
+        val share = maxPoints / used.size
+        val out = mutableListOf<MicrophoneResponsePoint>()
+        used.forEachIndexed { index, report ->
+            val description = report.description?.trim()?.takeIf(String::isNotEmpty)?.take(MAX_DESCRIPTION)
+            val label = if (reports.size > 1) "${description ?: fallbackName} #${index + 1}"
+            else description ?: "$fallbackName 1"
+            report.points.asSequence()
+                .filter { (hz, db) -> hz > 0.0 && hz.isFinite() && db.isFinite() }
+                .take(share)
+                .forEach { (hz, db) -> out += MicrophoneResponsePoint(label, hz, db) }
+        }
+        return out
+    }
 }
