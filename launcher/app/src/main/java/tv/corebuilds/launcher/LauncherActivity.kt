@@ -2,9 +2,11 @@ package tv.corebuilds.launcher
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -466,8 +468,7 @@ class LauncherActivity : Activity() {
             favoritesScroller.visibility = View.VISIBLE
             emptyFavorites.visibility = View.GONE
             favorites.forEach { app ->
-                val tile = AppTileView(this, app, ::onAppFocused, wideCard = true)
-                tile.setOnClickListener { launchApp(app) }
+                val tile = appTile(app, wideCard = true)
                 favoritesRow.addView(tile, LinearLayout.LayoutParams(dp(220), dp(112)).apply {
                     marginEnd = dp(12)
                 })
@@ -481,8 +482,7 @@ class LauncherActivity : Activity() {
         if (recentApps.isNotEmpty()) {
             recentSection.visibility = View.VISIBLE
             recentApps.forEach { app ->
-                val tile = AppTileView(this, app, ::onAppFocused, wideCard = true)
-                tile.setOnClickListener { launchApp(app) }
+                val tile = appTile(app, wideCard = true)
                 recentRow.addView(tile, LinearLayout.LayoutParams(dp(220), dp(112)).apply {
                     marginEnd = dp(12)
                 })
@@ -506,8 +506,7 @@ class LauncherActivity : Activity() {
             appGrid.columnCount = columns
             val cellWidth = dp(usableWidthDp / columns) - dp(GRID_CELL_MARGIN_DP * 2)
             apps.forEachIndexed { index, app ->
-                val tile = AppTileView(this, app, ::onAppFocused)
-                tile.setOnClickListener { launchApp(app) }
+                val tile = appTile(app)
                 val row = index / columns
                 val column = index % columns
                 val params = GridLayout.LayoutParams(
@@ -546,6 +545,15 @@ class LauncherActivity : Activity() {
             target.requestFocus()
         }
     }
+
+    private fun appTile(app: LaunchableApp, wideCard: Boolean = false): AppTileView =
+        AppTileView(this, app, ::onAppFocused, wideCard = wideCard).apply {
+            setOnClickListener { launchApp(app) }
+            setOnLongClickListener {
+                showAppActions(app)
+                true
+            }
+        }
 
     private fun onAppFocused(app: LaunchableApp) {
         lastFocusedPackage = app.packageName
@@ -629,6 +637,66 @@ class LauncherActivity : Activity() {
                 getString(R.string.app_launch_blocked, app.label),
                 Toast.LENGTH_SHORT,
             ).show()
+        }
+    }
+
+    private fun showAppActions(app: LaunchableApp) {
+        val isPinned = app.packageName in renderedPins.orEmpty()
+        val favouriteAction = getString(
+            if (isPinned) R.string.app_action_remove_favourite else R.string.app_action_add_favourite,
+        )
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.app_actions_title, app.label))
+            .setItems(
+                arrayOf(favouriteAction, getString(R.string.app_action_app_info)),
+            ) { _, index ->
+                when (index) {
+                    0 -> toggleFavouriteFromHome(app)
+                    1 -> openAppInfo(app)
+                }
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    private fun toggleFavouriteFromHome(app: LaunchableApp) {
+        val installedPackages = apps.mapTo(linkedSetOf()) { it.packageName }
+        if (app.packageName !in installedPackages) {
+            refreshApps()
+            return
+        }
+        try {
+            appLoader.execute {
+                val nowPinned = LauncherPreferences.togglePinned(
+                    applicationContext,
+                    app.packageName,
+                    installedPackages,
+                )
+                runOnUiThread {
+                    if (isFinishing || isDestroyed) return@runOnUiThread
+                    Toast.makeText(
+                        this,
+                        getString(if (nowPinned) R.string.favourite_added else R.string.favourite_removed),
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                    refreshApps()
+                }
+            }
+        } catch (_: RejectedExecutionException) {
+            // onDestroy shuts down the local executor; never revive a finishing activity.
+        }
+    }
+
+    private fun openAppInfo(app: LaunchableApp) {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", app.packageName, null)
+        }
+        try {
+            startActivity(intent)
+        } catch (_: ActivityNotFoundException) {
+            Toast.makeText(this, getString(R.string.app_info_unavailable, app.label), Toast.LENGTH_LONG).show()
+        } catch (_: SecurityException) {
+            Toast.makeText(this, getString(R.string.app_info_unavailable, app.label), Toast.LENGTH_LONG).show()
         }
     }
 

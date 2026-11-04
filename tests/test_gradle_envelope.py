@@ -768,6 +768,30 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
             self.assertEqual(image[:8], b"\x89PNG\r\n\x1a\n")
             self.assertEqual(struct.unpack(">II", image[16:24]), (1920, 1080))
 
+    def test_app_tiles_offer_long_press_app_info_and_local_favourite_actions(self):
+        activity = self.ACTIVITY.read_text(encoding="utf-8")
+        strings = (ROOT / "launcher/app/src/main/res/values/strings.xml").read_text(encoding="utf-8")
+        manifest = self.MANIFEST.read_text(encoding="utf-8")
+        tile_factory = activity[activity.index("private fun appTile("):activity.index("private fun onAppFocused(")]
+        actions = activity[activity.index("private fun showAppActions("):activity.index("private fun openManageFavorites(")]
+
+        self.assertIn("setOnLongClickListener", tile_factory)
+        self.assertIn("showAppActions(app)", tile_factory)
+        self.assertEqual(activity.count("appTile(app, wideCard = true)"), 2)
+        self.assertIn("val tile = appTile(app)", activity)
+        self.assertIn("setItems(", actions)
+        self.assertIn("toggleFavouriteFromHome(app)", actions)
+        self.assertIn("openAppInfo(app)", actions)
+        self.assertIn("LauncherPreferences.togglePinned(", actions)
+        self.assertIn("Settings.ACTION_APPLICATION_DETAILS_SETTINGS", actions)
+        self.assertIn('Uri.fromParts("package", app.packageName, null)', actions)
+        self.assertIn("Long-press for app actions", strings)
+        self.assertIn("Hold OK for app actions", strings)
+        self.assertIn("App info", strings)
+        self.assertNotIn("android.permission.QUERY_ALL_PACKAGES", manifest)
+        self.assertNotIn("android.permission.REQUEST_DELETE_PACKAGES", manifest)
+        self.assertNotIn("Intent.ACTION_DELETE", activity)
+
     def test_package_updates_refresh_labels_and_banner_art(self):
         activity = self.ACTIVITY.read_text(encoding="utf-8")
         apps = self.APPS.read_text(encoding="utf-8")
