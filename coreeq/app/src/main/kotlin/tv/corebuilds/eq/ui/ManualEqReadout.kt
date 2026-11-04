@@ -31,6 +31,14 @@ object ManualEqReadout {
         return "$band · room correction ${signed(correctionDb)}$together"
     }
 
+    /**
+     * What plays at [hz]: the measured [correctionDb] plus the whole manual layer's
+     * response there, not just the selected band's slider, because neighbouring bands
+     * overlap. Null without a room measurement.
+     */
+    fun together(correctionDb: Double?, manualFilters: List<tv.corebuilds.eq.dsp.PeakingFilter>, hz: Double): Double? =
+        correctionDb?.let { it + ManualEq.responseDb(manualFilters, hz) }
+
     private fun signed(value: Double): String {
         // -0.04 dB would print as "-0.0"; a band that is flat reads +0.0.
         val shown = if (kotlin.math.abs(value) < 0.05) 0.0 else value

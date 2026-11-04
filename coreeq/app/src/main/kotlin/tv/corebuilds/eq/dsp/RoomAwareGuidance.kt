@@ -62,6 +62,13 @@ object RoomAwareGuidance {
     /** Smaller manual trims are not worth undoing, whatever sits under them. */
     const val STACKED_MIN_MANUAL_DB = 1.0
 
+    /**
+     * A filter off the band centres (kept from an imported preset or profile) counts at
+     * a band once it moves that band's centre this much: a band it shapes is a band the
+     * person has already set, and an ease or modal hint there would add a second trim.
+     */
+    const val OFF_CENTRE_REACH_DB = 0.5
+
     const val MAX_EASE_HINTS = 3
     private const val EASE_FRACTION = 1.0 / 3.0
     private const val EASE_MIN_DB = 1.0
@@ -72,6 +79,20 @@ object RoomAwareGuidance {
      * being edited), most pressing first: stacked bands, then ease, then the modal
      * caution. Empty for a manual-only profile or one with no measured curve.
      */
+    /**
+     * The manual layer at band [index]: the band's own slider, plus what filters off
+     * the band centres do at its centre when that reaches [OFF_CENTRE_REACH_DB].
+     * Filters on other band centres are left out: their overlap is the graphic EQ
+     * working as drawn, not a setting made at this band.
+     */
+    internal fun manualAt(manualFilters: List<PeakingFilter>, index: Int, fc: Double): Double {
+        val own = ManualEq.gainAtBand(manualFilters, index)
+        val offCentre = manualFilters.filter { filter -> ManualEq.BAND_CENTRES_HZ.none { abs(filter.fc - it) < 0.01 } }
+        if (offCentre.isEmpty()) return own
+        val reach = ManualEq.responseDb(offCentre, fc)
+        return if (abs(reach) >= OFF_CENTRE_REACH_DB) own + reach else own
+    }
+
     fun guide(profile: Profile, manualFilters: List<PeakingFilter>): List<Guidance> {
         if (profile.manualOnly || profile.curve.isEmpty()) return emptyList()
         val stacked = mutableListOf<Pair<Double, Guidance>>()
@@ -80,7 +101,7 @@ object RoomAwareGuidance {
 
         ManualEq.BAND_CENTRES_HZ.forEachIndexed { index, fc ->
             val correction = profile.correctionAt(fc)
-            val manual = ManualEq.gainAtBand(manualFilters, index)
+            val manual = manualAt(manualFilters, index, fc)
             when {
                 manual != 0.0 -> {
                     val total = manual + correction

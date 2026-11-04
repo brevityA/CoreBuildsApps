@@ -150,4 +150,19 @@ class RoomAwareGuidanceTest {
         assertEquals("6.3 kHz", RoomAwareGuidance.hz(6_300.0))
         assertEquals("287 Hz", RoomAwareGuidance.hz(287.4))
     }
+
+    @Test
+    fun anOffCentreFilterCountsAtTheBandsItShapes() {
+        // An imported filter at 2.2 kHz sits between the 2 kHz and 4 kHz bands. It shapes
+        // 2 kHz, so an ease hint there would add a second trim on top of it.
+        val room = profile(corrections = mapOf(2_000.0 to -3.0))
+        assertTrue(RoomAwareGuidance.guide(room, emptyList()).any { it.kind == Kind.EASE_CUT && it.bandIndex == band(2_000.0) })
+        val imported = listOf(PeakingFilter(2_200.0, 1.4, -3.0))
+        assertFalse(RoomAwareGuidance.guide(room, imported).any { it.kind == Kind.EASE_CUT && it.bandIndex == band(2_000.0) })
+        // A centred band's own overlap does not count at its neighbours.
+        assertEquals(0.0, RoomAwareGuidance.manualAt(manual(1_000.0 to 3.0), band(2_000.0), 2_000.0), 1e-9)
+        // Far away it does not reach, and the band keeps its hint.
+        val far = listOf(PeakingFilter(60.0, 1.4, -3.0))
+        assertTrue(RoomAwareGuidance.guide(room, far).any { it.kind == Kind.EASE_CUT && it.bandIndex == band(2_000.0) })
+    }
 }

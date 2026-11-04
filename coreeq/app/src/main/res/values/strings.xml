@@ -68,7 +68,7 @@
     <string name="manual_eq_hints_measure">Room hints · measure the room first</string>
     <string name="manual_eq_hints_title">Room hints · %1$s</string>
     <string name="manual_eq_hints_none_title">Nothing to flag</string>
-    <string name="manual_eq_hints_none_message">Above this room\'s %1$s transition the correction stays under %2$.1f dB at every band you have left alone, nothing below it moves more than %3$.1f dB, and none of your bands piles onto it.</string>
+    <string name="manual_eq_hints_none_message">Above this room\'s %1$s transition the correction stays under %2$.1f dB at every band you have left alone, nothing below it moves more than %3$.1f dB, and no band you moved %4$.1f dB or more reaches %5$.1f dB together with it.</string>
     <string name="manual_eq_hints_focus">Room hints read what the measured correction does at each band. Press to see them.</string>
     <string name="manual_eq_hints_measure_focus">This profile has no room measurement, so there is nothing to read. Press to measure.</string>
     <string name="manual_eq_hint_applied">Room hint applied: %1$s set to %2$s. Move the band to change it.</string>

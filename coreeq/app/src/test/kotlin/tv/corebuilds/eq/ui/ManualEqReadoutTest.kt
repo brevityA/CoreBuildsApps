@@ -2,6 +2,8 @@ package tv.corebuilds.eq.ui
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import tv.corebuilds.eq.dsp.ManualEq
 
@@ -39,5 +41,17 @@ class ManualEqReadoutTest {
     @Test
     fun anUnknownBandIsBlank() {
         assertEquals("", ManualEqReadout.line(42, 0.0, 0.0, 0.0))
+    }
+
+    @Test
+    fun togetherIsTheCorrectionPlusTheWholeManualLayer() {
+        // +3 dB at 1 kHz reaches its neighbour: at 2 kHz the layer is above 0 dB though
+        // the 2 kHz slider is flat, so "together" is not correction + the band's slider.
+        val filters = ManualEq.withBandGain(emptyList(), ManualEq.BAND_CENTRES_HZ.indexOf(1_000.0), 3.0)
+        val together = ManualEqReadout.together(-2.0, filters, 2_000.0)!!
+        assertEquals(-2.0 + ManualEq.responseDb(filters, 2_000.0), together, 1e-9)
+        assertTrue(together > -2.0)
+        assertEquals(1.0, ManualEqReadout.together(-2.0, filters, 1_000.0)!!, 0.05)
+        assertNull(ManualEqReadout.together(null, filters, 1_000.0))
     }
 }

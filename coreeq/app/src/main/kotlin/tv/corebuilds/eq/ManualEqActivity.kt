@@ -101,6 +101,7 @@ class ManualEqActivity : TvActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        restoreSuggestionState(savedInstanceState)
         setContentView(R.layout.activity_manual_eq)
 
         profileStore = ProfileStore(this)
@@ -293,7 +294,7 @@ class ManualEqActivity : TvActivity() {
         val index = bands.selectedBand
         val fc = ManualEq.BAND_CENTRES_HZ.getOrNull(index) ?: return
         val correction = if (active.manualOnly || active.curve.isEmpty()) null else active.correctionAt(fc)
-        val together = correction?.let { it + ManualEq.responseDb(currentManualFilters(), fc) }
+        val together = ManualEqReadout.together(correction, currentManualFilters(), fc)
         textStatus.text = ManualEqReadout.line(index, bands.gainAt(index), correction, together)
     }
 
@@ -338,10 +339,16 @@ class ManualEqActivity : TvActivity() {
      */
     private fun currentSuggestion(): SmartSuggestion.Suggestion? {
         if (!EqService.running) return null
+        // The A/B bypass plays the correction flat: a preset applied now could not be heard.
+        if (profileStore.bypassEnabled) return null
         if (editingMode != modeStore.currentDecision().mode) return null
         val presets = profileStore.manualEqPresets()
-        val shippedId = ManualEq.matchingPreset(currentManualFilters(), presets)?.id
-            ?.takeUnless { it.startsWith(ManualEq.USER_PRESET_ID_PREFIX) }
+        // A preset saved with a shipped preset's exact filters is still the person's own:
+        // shipped presets come first in the list, so look at every match, not the first.
+        val matches = presets.filter { ManualEq.sameFilters(currentManualFilters(), it.filters) }
+        val shippedId = matches
+            .takeIf { found -> found.none { it.id.startsWith(ManualEq.USER_PRESET_ID_PREFIX) } }
+            ?.firstOrNull()?.id
             // A custom curve is never offered a preset, so skip the volume and content
             // reads below: this runs on every band step.
             ?: return null
@@ -362,6 +369,37 @@ class ManualEqActivity : TvActivity() {
         return pick.takeIf { candidate -> presets.any { it.id == candidate.presetId } }
     }
 
+    /**
+     * The suggestion row's state survives the screen being recreated (a configuration
+     * change, or Android reclaiming the process while another app is in front): the
+     * applied preset is saved either way, so losing the undo would lose the way back
+     * to the curve it replaced, and a declined suggestion would come back the same visit.
+     */
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putStringArrayList(STATE_DECLINED, ArrayList(declinedSuggestions))
+        suggestionUndo?.let { undo ->
+            outState.putString(STATE_UNDO_PRESET, undo.presetId)
+            outState.putString(STATE_UNDO_NAME, undo.previousName)
+            outState.putDoubleArray(
+                STATE_UNDO_FILTERS,
+                undo.previousFilters.flatMap { listOf(it.fc, it.q, it.gain) }.toDoubleArray()
+            )
+        }
+    }
+
+    private fun restoreSuggestionState(state: Bundle?) {
+        state ?: return
+        state.getStringArrayList(STATE_DECLINED)?.let { declinedSuggestions += it }
+        val presetId = state.getString(STATE_UNDO_PRESET) ?: return
+        val values = state.getDoubleArray(STATE_UNDO_FILTERS) ?: return
+        suggestionUndo = SuggestionUndo(
+            presetId = presetId,
+            previousName = state.getString(STATE_UNDO_NAME).orEmpty(),
+            previousFilters = values.toList().chunked(3).filter { it.size == 3 }.map { PeakingFilter(it[0], it[1], it[2]) }
+        )
+    }
+
     /** Apply the suggested preset, or put back what it replaced when the row reads Undo. */
     private fun onSuggestionPressed() {
         val active = profile ?: return
@@ -377,6 +415,12 @@ class ManualEqActivity : TvActivity() {
             return
         }
         val pick = suggestion ?: return
+        // Playback, volume or mode may have moved since the row was drawn: apply only the
+        // suggestion that is current, otherwise show the current one and wait for a press.
+        if (currentSuggestion()?.presetId != pick.presetId) {
+            renderSmartRows()
+            return
+        }
         val presets = profileStore.manualEqPresets()
         val preset = presets.firstOrNull { it.id == pick.presetId } ?: return
         val previous = currentManualFilters()
@@ -423,7 +467,9 @@ class ManualEqActivity : TvActivity() {
                         R.string.manual_eq_hints_none_message,
                         RoomAwareGuidance.hz(active.transitionHz),
                         RoomAwareGuidance.EASE_THRESHOLD_DB,
-                        RoomAwareGuidance.MODAL_THRESHOLD_DB
+                        RoomAwareGuidance.MODAL_THRESHOLD_DB,
+                        RoomAwareGuidance.STACKED_MIN_MANUAL_DB,
+                        RoomAwareGuidance.STACKED_TOTAL_DB
                     )
                 )
                 .setPositiveButton(android.R.string.ok, null)
@@ -751,5 +797,9 @@ class ManualEqActivity : TvActivity() {
     private companion object {
         const val APPLY_DEBOUNCE_MS = 160L
         const val REQ_IMPORT_EQ = 4101
+        const val STATE_DECLINED = "manual_eq.declined_suggestions"
+        const val STATE_UNDO_PRESET = "manual_eq.undo_preset"
+        const val STATE_UNDO_NAME = "manual_eq.undo_name"
+        const val STATE_UNDO_FILTERS = "manual_eq.undo_filters"
     }
 }
