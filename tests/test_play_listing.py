@@ -496,14 +496,22 @@ class StoreTruth(unittest.TestCase):
         self.assertTrue(SPEC["data_safety"]["collects_user_data"])
         self.assertIn("CORE PREMIUM", SPEC["copy"]["full_description"])
         # The copy promises no more than the app does: Request all files at
-        # most BatchRequest.MAX per press, and the trial leaves out the two
-        # features the request service checks with Google.
+        # most BatchRequest.MAX per press, and the trial leaves out what the
+        # app itself says comes with the purchase (plus_trial_running_fmt):
+        # the two features the request service checks with Google, and saving
+        # a Premium wall to Pictures.
         full = SPEC["copy"]["full_description"]
         batch = (ROOT / "app/src/main/java/tv/corebuilds/iconpack/BatchRequest.kt").read_text(encoding="utf-8")
         cap = re.search(r"const val MAX = (\d+)", batch).group(1)
         self.assertIn(f"one app or up to {cap} missing apps at once", full)
         self.assertNotIn("every missing app at once", full)
-        self.assertIn("the trial has everything but priority requests and Request all", full)
+        self.assertIn("the trial has everything but priority requests, Request all and "
+                      "saving a Premium wall to Pictures", full)
+        strings = (ROOT / "app/src/main/res/values/strings.xml").read_text(encoding="utf-8")
+        running = re.search(r'name="plus_trial_running_fmt">([^<]+)<', strings).group(1)
+        self.assertIn("Priority requests, Request all and saving Premium walls to Pictures "
+                      "come with the purchase", running,
+                      "the app's own trial line moved: update the listing's trial sentence to match")
         token = [c for c in SPEC["data_safety"]["collected"] if "Purchase" in c["type"]][0]
         self.assertIn("24 hours and 10 minutes", token["what"])
 

@@ -118,9 +118,13 @@ class TheClaimsMatchTheCode(unittest.TestCase):
         self.assertIn("expirationTtl: 86_400 + 600", allowed)
         self.assertIn("batch:${tokenHash}:", worker)
         text = flat(self.html)
-        self.assertIn("24 hours and 10 minutes", text)
-        self.assertGreaterEqual(text.count("24 hours and 10 minutes"), 2,
-                                "the Request all row and Your control both state it")
+        # Each place states it, not two mentions anywhere on the page.
+        request_all = text.split("<em>Request all</em> twice", 1)[1].split("</tr>", 1)[0]
+        control = text.split("<h2>Your control</h2>", 1)[1].split("<h2>", 1)[0]
+        self.assertIn("24 hours and 10 minutes", request_all,
+                      "the Request all row must state how long the count is kept")
+        self.assertIn("24 hours and 10 minutes", control,
+                      "Your control must state how long the count is kept")
 
     def test_it_says_which_build_sends_the_request_straight_away(self):
         # The Play build carries the request service's address
@@ -129,6 +133,7 @@ class TheClaimsMatchTheCode(unittest.TestCase):
         text = flat(self.html)
         self.assertIn("On the Google Play build the press sends it straight to", text)
         self.assertIn("there is no step to review it first", text)
+        self.assertIn("shows a QR code for a pre-filled GitHub issue", text)
         self.assertNotIn("On the current build", text)
 
     def test_the_icon_request_payload_it_itemises_is_the_payload_sent(self):
