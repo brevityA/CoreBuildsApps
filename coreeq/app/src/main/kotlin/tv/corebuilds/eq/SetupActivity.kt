@@ -45,7 +45,7 @@ class SetupActivity : TvActivity() {
         // Other screens focus a first control on open; without this the D-pad
         // starts on a row and has nowhere sensible to go.
         findViewById<Button>(R.id.btn_setup_check).apply {
-            setOnClickListener { refresh() }
+            setOnClickListener { refresh(userAsked = true) }
             requestFocus()
         }
         findViewById<Button>(R.id.btn_setup_copy_report).setOnClickListener {
@@ -59,10 +59,11 @@ class SetupActivity : TvActivity() {
         refresh()
     }
 
-    private fun refresh() {
+    private fun refresh(userAsked: Boolean = false) {
         // Rows are rebuilt on every resume. Removing a focused row drops focus
         // with it, so remember whether focus was in the list and give it back.
         val focusWasInRows = rows.findFocus() != null
+        val previous = lastSteps.map { it.state }
         val output = OutputRoute.current(this)
         val detection = DeviceIdentity.detect(
             Build.MANUFACTURER,
@@ -110,10 +111,23 @@ class SetupActivity : TvActivity() {
         for (step in lastSteps) rows.addView(rowFor(step))
         if (focusWasInRows) findViewById<Button>(R.id.btn_setup_check).requestFocus()
         val needed = lastSteps.count { it.state == SetupGuide.State.NEEDED }
-        status.text = if (needed == 0) {
+        val summary = if (needed == 0) {
             getString(R.string.setup_status_ready)
         } else {
             resources.getQuantityString(R.plurals.setup_status_needed, needed, needed)
+        }
+        // "Check again" used to rebuild identical rows and say nothing, so a press
+        // looked like a dead button whenever nothing had changed. It now says when
+        // it checked and whether anything moved.
+        status.text = if (userAsked) {
+            val changed = previous.zip(lastSteps.map { it.state }).count { (a, b) -> a != b } +
+                kotlin.math.abs(previous.size - lastSteps.size)
+            val time = java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.getDefault()).format(java.util.Date())
+            val outcome = if (changed == 0) getString(R.string.setup_checked_nothing_changed)
+            else resources.getQuantityString(R.plurals.setup_checked_changed, changed, changed)
+            "$summary ${getString(R.string.setup_checked_at, time, outcome)}"
+        } else {
+            summary
         }
     }
 

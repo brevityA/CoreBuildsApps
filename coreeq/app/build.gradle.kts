@@ -17,6 +17,19 @@ android {
         // device nothing changes, and no existing test asserts on Log.
         unitTests {
             isReturnDefaultValues = true
+            // The screen tests (src/test/.../ui/screens) run the real layouts,
+            // focus search and click handlers under Robolectric, which needs
+            // the merged resources. The Android-free tests are unaffected.
+            isIncludeAndroidResources = true
+            all { test ->
+                // Robolectric's sandboxes are memory-hungry; one fork with room
+                // beats a crash halfway through the screen suite.
+                test.maxHeapSize = "2g"
+                // Where the screen tests write their 1920 x 1080 renders.
+                test.systemProperty("coreeq.screens.dir", layout.buildDirectory.dir("screens").get().asFile.absolutePath)
+                // -PscreensTag=before names a set of renders to compare against.
+                test.systemProperty("coreeq.screens.tag", providers.gradleProperty("screensTag").getOrElse("now"))
+            }
         }
     }
 
@@ -122,4 +135,9 @@ dependencies {
     // profile JSON round trip (ProfileJsonTest) brings the real one, as Core
     // Line's tests do.
     testImplementation("org.json:json:20260814")
+    // Screen tests: real layouts, real FocusFinder, real click handlers, and
+    // renders, all on the JVM; there is no TV emulator in the PR gate.
+    testImplementation("org.robolectric:robolectric:4.17")
+    testImplementation("androidx.test:core:1.6.1")
+    testImplementation("androidx.test.ext:junit:1.2.1")
 }

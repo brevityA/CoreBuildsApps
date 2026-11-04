@@ -444,6 +444,12 @@
     <string name="setup_open_overlay">Open overlay setting</string>
     <string name="setup_no_overlay_screen">This TV has no such screen. Use the ADB command instead.</string>
     <string name="setup_check_again">Check again</string>
+    <string name="setup_checked_at">Checked again at %1$s: %2$s</string>
+    <string name="setup_checked_nothing_changed">nothing changed.</string>
+    <plurals name="setup_checked_changed">
+        <item quantity="one">%d step changed.</item>
+        <item quantity="other">%d steps changed.</item>
+    </plurals>
     <string name="setup_copy_report">Copy report</string>
     <string name="setup_report_copied">Report copied.</string>
     <string name="setup_no_clipboard">This TV has no clipboard. Select the text to copy it by hand.</string>
