@@ -242,7 +242,7 @@ class MeasureActivity : TvActivity() {
 
         refreshChoices()
         textStatus.text = getString(R.string.measure_ready)
-        btnRoom.requestFocus()
+        focusOnOpen(btnRoom)
     }
 
     /**

@@ -144,8 +144,76 @@ object ScreenHarness {
         return seen
     }
 
+    /**
+     * True when [view], as it is now, shows at least [share] of itself inside the
+     * window: not scrolled away, not cut off by a container that ran out of room.
+     */
+    fun onScreen(view: View, share: Double = 0.6): Boolean {
+        val rect = android.graphics.Rect()
+        if (!view.getGlobalVisibleRect(rect)) return false
+        val seen = rect.width().toLong() * rect.height()
+        val whole = view.width.toLong() * view.height
+        return whole > 0 && seen >= whole * share
+    }
+
+    /**
+     * Every piece of text on screen that does not fit its box, as readable
+     * sentences: cut short with an ellipsis, taller or wider than the box it is
+     * drawn in, or cut off by a container that cannot scroll. Text inside a
+     * ScrollView or a list may run past the visible area (the remote scrolls to
+     * it), but never past its own box.
+     */
+    fun textProblems(activity: Activity): List<String> {
+        idle()
+        val out = ArrayList<String>()
+        fun walk(view: View, scroller: android.widget.ScrollView?, inList: Boolean) {
+            if (view.visibility != View.VISIBLE) return
+            if (view is android.widget.TextView && view.isShown && view.width > 0 && view.text.isNotEmpty()) {
+                val label = name(view)
+                view.layout?.let { layout ->
+                    val lines = 0 until layout.lineCount
+                    if (lines.any { layout.getEllipsisCount(it) > 0 }) out += "$label is cut short with an ellipsis"
+                    val room = view.height - view.compoundPaddingTop - view.compoundPaddingBottom
+                    if (layout.height > room + 2) out += "$label needs ${layout.height}px of height and has $room"
+                    // The drawn width of each line, without the space a wrap leaves at its end.
+                    val width = view.width - view.compoundPaddingLeft - view.compoundPaddingRight
+                    val text = layout.text
+                    val widest = lines.maxOfOrNull {
+                        val line = text.subSequence(layout.getLineStart(it), layout.getLineEnd(it)).toString().trimEnd()
+                        view.paint.measureText(line)
+                    } ?: 0f
+                    if (widest > width + 2) out += "$label needs ${widest.toInt()}px of width and has $width"
+                }
+                val seen = android.graphics.Rect()
+                val visible = view.getGlobalVisibleRect(seen)
+                when {
+                    scroller != null -> {
+                        // Text in a scrolling area may be scrolled out of sight, but
+                        // must never be drawn outside the area itself, and the remote
+                        // must be able to scroll to it.
+                        val area = android.graphics.Rect()
+                        scroller.getGlobalVisibleRect(area)
+                        if (visible && !area.contains(seen)) out += "$label is drawn outside its scrolling area"
+                        val whole = visible && seen.width() * seen.height() >= view.width * view.height * 98L / 100
+                        if (!whole && !scroller.hasFocusable()) out += "$label runs past a panel the remote cannot scroll"
+                    }
+                    !inList && !onScreen(view, 0.98) -> out += "$label is cut off by its container"
+                }
+            }
+            if (view is ViewGroup) {
+                val nextScroller = (view as? android.widget.ScrollView) ?: scroller
+                val nextInList = inList || view is androidx.recyclerview.widget.RecyclerView
+                for (i in 0 until view.childCount) walk(view.getChildAt(i), nextScroller, nextInList)
+            }
+        }
+        walk(activity.window.decorView, null, false)
+        return out
+    }
+
     /** Draws the whole window at its real size into build/screens/<name>.png. */
     fun render(activity: Activity, name: String): File {
+        // Let the 150 ms focus lift finish, so the render shows the focused state.
+        shadowOf(Looper.getMainLooper()).idleFor(java.time.Duration.ofMillis(400))
         idle()
         val root = activity.window.decorView
         val bitmap = Bitmap.createBitmap(root.width.coerceAtLeast(1), root.height.coerceAtLeast(1), Bitmap.Config.ARGB_8888)

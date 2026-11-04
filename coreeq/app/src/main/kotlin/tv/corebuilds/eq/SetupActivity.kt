@@ -46,7 +46,7 @@ class SetupActivity : TvActivity() {
         // starts on a row and has nowhere sensible to go.
         findViewById<Button>(R.id.btn_setup_check).apply {
             setOnClickListener { refresh(userAsked = true) }
-            requestFocus()
+            focusOnOpen(this)
         }
         findViewById<Button>(R.id.btn_setup_copy_report).setOnClickListener {
             copy(SetupGuide.report(lastSteps, lastReportDetails), getString(R.string.setup_report_copied))
@@ -156,12 +156,14 @@ class SetupActivity : TvActivity() {
     private fun rowFor(step: SetupGuide.Step): LinearLayout {
         val column = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setBackgroundResource(R.drawable.bg_card)
-            setPadding(dp(14), dp(10), dp(14), dp(10))
+            // A section, not a card: the row itself never takes focus, its buttons do.
+            setBackgroundResource(R.drawable.bg_section)
+            setPadding(dp(16), dp(12), dp(16), dp(12))
+            clipChildren = false
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply { bottomMargin = dp(6) }
+            ).apply { bottomMargin = dp(8) }
         }
         val tag = when (step.state) {
             SetupGuide.State.DONE -> getString(R.string.setup_tag_done)
@@ -172,7 +174,10 @@ class SetupActivity : TvActivity() {
         column.addView(line(step.detail, bold = false))
         step.command?.let { column.addView(line(it, bold = false, mono = true)) }
 
-        val actions = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        val actions = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            clipChildren = false
+        }
         step.command?.let { command ->
             actions.addView(button(getString(R.string.setup_copy_command)) {
                 copy(command, getString(R.string.setup_command_copied))
@@ -215,10 +220,14 @@ class SetupActivity : TvActivity() {
         this.text = label
         isAllCaps = false
         gravity = Gravity.CENTER
+        // The theme's button style makes this a pill; the compact height keeps
+        // a row with two actions from towering over its text.
+        minHeight = dp(40)
+        textSize = 14f
         layoutParams = LinearLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
-        ).apply { topMargin = dp(6); marginEnd = dp(8) }
+        ).apply { topMargin = dp(8); marginEnd = dp(8) }
         setOnClickListener { onClick() }
     }
 

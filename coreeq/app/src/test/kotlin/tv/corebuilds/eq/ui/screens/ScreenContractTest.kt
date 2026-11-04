@@ -41,7 +41,11 @@ import tv.corebuilds.eq.display.DisplayCalibrationActivity
  * 2. every control on it can be reached with the four arrows from where focus opens;
  * 3. every button does something you can see: opens a screen or a dialog, closes
  *    this one, starts the service, shows a toast, or changes what is on screen;
- * 4. the buttons that navigate still open the screen they open today.
+ * 4. the buttons that navigate still open the screen they open today;
+ * 5. focus opens on the control a person starts with, and any control that has
+ *    focus is on screen, not scrolled away or cut off by a full container;
+ * 6. every piece of text fits its box: no ellipsis, nothing taller or wider than
+ *    the box it is drawn in, nothing cut off by a container that cannot scroll.
  *
  * Buttons in [Screen.wiredOnly] start a sweep, a pairing server or another long job
  * the JVM cannot run; for those the test checks that a handler is attached, not
@@ -60,7 +64,9 @@ class ScreenContractTest(private val screen: Screen) {
         /** Controls that must close this screen. */
         val finishes: Set<String> = emptySet(),
         /** Controls whose job cannot run on the JVM: they must be wired, nothing more. */
-        val wiredOnly: Set<String> = emptySet()
+        val wiredOnly: Set<String> = emptySet(),
+        /** The control focus opens on; null means any control, as long as one has focus. */
+        val opensOn: String? = null
     ) {
         override fun toString() = name
     }
@@ -84,27 +90,31 @@ class ScreenContractTest(private val screen: Screen) {
                     "btn_nav_display_calibration" to DisplayCalibrationActivity::class.java,
                     "btn_nav_content_type" to ContentTypeActivity::class.java,
                     "btn_nav_extras" to EnhancedAudioSettingsActivity::class.java
-                )
+                ),
+                opensOn = "btn_remeasure"
             ),
-            Screen("manual-eq", ManualEqActivity::class.java, finishes = setOf("btn_manual_eq_done")),
-            Screen("extras", EnhancedAudioSettingsActivity::class.java),
-            Screen("content-type", ContentTypeActivity::class.java, finishes = setOf("btn_content_done")),
-            Screen("mode", ModeActivity::class.java, finishes = setOf("btn_mode_done")),
-            Screen("profiles", ProfilesActivity::class.java),
+            Screen("manual-eq", ManualEqActivity::class.java, finishes = setOf("btn_manual_eq_done"), opensOn = "manual_eq_bands"),
+            Screen("extras", EnhancedAudioSettingsActivity::class.java, opensOn = "btn_extras_stereo"),
+            Screen("content-type", ContentTypeActivity::class.java, finishes = setOf("btn_content_done"), opensOn = "btn_content_general"),
+            Screen("mode", ModeActivity::class.java, finishes = setOf("btn_mode_done"), opensOn = "btn_mode_everyday"),
+            Screen("profiles", ProfilesActivity::class.java, opensOn = "profile_row_root"),
             Screen(
                 "capability", CapabilityActivity::class.java,
                 opens = mapOf("btn_open_support" to SupportActivity::class.java)
             ),
-            Screen("setup", SetupActivity::class.java, finishes = setOf("btn_setup_done")),
+            Screen("setup", SetupActivity::class.java, finishes = setOf("btn_setup_done"), opensOn = "btn_setup_check"),
             Screen(
                 "companion", CompanionActivity::class.java,
-                wiredOnly = setOf("btn_companion_start", "Button(Start pairing)")
+                finishes = setOf("btn_companion_done"),
+                wiredOnly = setOf("btn_companion_start"),
+                opensOn = "btn_companion_start"
             ),
-            Screen("support", SupportActivity::class.java, finishes = setOf("btn_support_done")),
-            Screen("display-calibration", DisplayCalibrationActivity::class.java),
+            Screen("support", SupportActivity::class.java, finishes = setOf("btn_support_done"), opensOn = "btn_support_done"),
+            Screen("display-calibration", DisplayCalibrationActivity::class.java, opensOn = "btn_calibration_next"),
             Screen(
                 "measure", MeasureActivity::class.java,
-                wiredOnly = setOf("btn_measure_start", "btn_measure_repeat", "btn_measure_add_seat", "btn_measure_check")
+                wiredOnly = setOf("btn_measure_start", "btn_measure_repeat", "btn_measure_add_seat", "btn_measure_check"),
+                opensOn = "btn_room_size"
             ),
             Screen(
                 "first-run", FirstRunActivity::class.java,
@@ -112,7 +122,8 @@ class ScreenContractTest(private val screen: Screen) {
                     "btn_first_run_measure" to MeasureActivity::class.java,
                     "btn_first_run_setup" to SetupActivity::class.java
                 ),
-                finishes = setOf("btn_first_run_later")
+                finishes = setOf("btn_first_run_later"),
+                opensOn = "btn_first_run_measure"
             )
         ).map { arrayOf<Any>(it) }
     }
@@ -148,6 +159,45 @@ class ScreenContractTest(private val screen: Screen) {
             val reached = ScreenHarness.reachable(activity)
             val missing = all.filterNot { it in reached }.map { ScreenHarness.name(it) }
             assertTrue("${screen.name}: the D-pad cannot reach $missing (reached ${reached.map { ScreenHarness.name(it) }})", missing.isEmpty())
+        }
+    }
+
+    @Test
+    fun focusOpensWhereThePersonStarts() {
+        withScreen { activity ->
+            ScreenHarness.idle()
+            val focused = ScreenHarness.focused(activity)
+            assertTrue("${screen.name} opens with nothing focused", focused != null)
+            // A screen with a rail opens on its stage: the rail is for leaving.
+            activity.findViewById<View>(tv.corebuilds.eq.R.id.rail)?.let { rail ->
+                var view: View? = focused
+                while (view != null && view !== rail) view = view.parent as? View
+                assertTrue("${screen.name} opens on the rail (${ScreenHarness.name(focused)})", view == null)
+            }
+            screen.opensOn?.let { expected ->
+                assertEquals("${screen.name} opens on the wrong control", expected, ScreenHarness.name(focused))
+            }
+        }
+    }
+
+    @Test
+    fun everyControlIsOnScreenWhenItHasFocus() {
+        withScreen { activity ->
+            val hidden = mutableListOf<String>()
+            for (view in ScreenHarness.focusables(activity)) {
+                view.requestFocus()
+                ScreenHarness.idle()
+                if (!ScreenHarness.onScreen(view)) hidden += ScreenHarness.name(view)
+            }
+            assertTrue("${screen.name}: focused but cut off or off screen: $hidden", hidden.isEmpty())
+        }
+    }
+
+    @Test
+    fun everyTextFitsItsBox() {
+        withScreen { activity ->
+            val problems = ScreenHarness.textProblems(activity)
+            assertTrue("${screen.name}: text that does not fit:\n  " + problems.joinToString("\n  "), problems.isEmpty())
         }
     }
 

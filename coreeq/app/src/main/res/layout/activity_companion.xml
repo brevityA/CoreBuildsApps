@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Phone companion (rail and stage since 1.12.0). The rail and the stage are
+  here; CompanionActivity builds the stage's content in code, as it always
+  has, into companion_content: the address, the actions and the status on
+  the left, the one-time code and its QR on the right.
+-->
+<tv.corebuilds.eq.ui.RailStageLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="@color/cb_night">
+
+    <include layout="@layout/view_rail" />
+
+    <ScrollView
+        android:id="@+id/stage"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:clipToPadding="false"
+        android:requiresFadingEdge="vertical"
+        android:fadingEdgeLength="@dimen/cb_space_xl"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/companion_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/cb_stage_start"
+            android:paddingEnd="@dimen/cb_stage_end"
+            android:paddingTop="@dimen/cb_stage_top"
+            android:paddingBottom="@dimen/cb_stage_bottom"
+            android:clipToPadding="false"
+            android:clipChildren="false" />
+    </ScrollView>
+</tv.corebuilds.eq.ui.RailStageLayout>

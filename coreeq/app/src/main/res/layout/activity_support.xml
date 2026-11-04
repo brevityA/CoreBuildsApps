@@ -1,40 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Support (opened from the Capability screen's Support card). The header is
-  the Capability screen's; below it, what support changes on the left and the
-  two codes on the right, side by side because a TV is wide and short.
-
+  Support (opened from the Capability screen's Support card; rail and stage
+  since 1.12.0, with no rail item marked). What support changes on the left,
+  the two codes on the right, side by side because a TV is wide and short.
   The codes take no focus: a phone reads them, a remote cannot press them.
-  Done is the screen's one stop.
+  Done is the stage's one stop.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<tv.corebuilds.eq.ui.RailStageLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="@color/cb_night">
+
+<include layout="@layout/view_rail" />
+
+<LinearLayout
+    android:id="@+id/stage"
+    android:layout_width="0dp"
+    android:layout_weight="1"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/cb_night"
-    android:paddingLeft="@dimen/cb_gutter_side"
-    android:paddingRight="@dimen/cb_gutter_side"
-    android:paddingTop="@dimen/cb_gutter_top"
-    android:paddingBottom="@dimen/cb_gutter_bottom">
-
-    <!-- Header -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/support_title"
-        android:textColor="@color/cb_slate"
-        android:textSize="@dimen/cb_text_kicker"
-        android:fontFamily="monospace"
-        android:textAllCaps="true" />
+    android:paddingStart="@dimen/cb_stage_start"
+    android:paddingEnd="@dimen/cb_stage_end"
+    android:paddingTop="@dimen/cb_stage_top"
+    android:paddingBottom="@dimen/cb_stage_bottom"
+    android:clipToPadding="false"
+    android:clipChildren="false">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/support_heading"
-        android:textColor="@color/cb_ink"
-        android:textSize="@dimen/cb_text_title"
-        android:textStyle="bold"
-        android:layout_marginTop="4dp" />
+        style="@style/CoreEQ.Title"
+        android:text="@string/support_heading" />
 
     <!-- Body -->
     <LinearLayout
@@ -51,14 +47,15 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:layout_marginEnd="@dimen/cb_space_lg">
+            android:clipChildren="false"
+            android:layout_marginEnd="@dimen/cb_space_md">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/support_body"
                 android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_body"
+                android:textSize="@dimen/cb_text_label"
                 android:lineSpacingExtra="3dp" />
 
             <TextView
@@ -85,14 +82,9 @@
 
             <Button
                 android:id="@+id/btn_support_done"
-                android:layout_width="@dimen/cb_button_min_width"
-                android:layout_height="@dimen/cb_target_min"
-                android:background="@drawable/bg_cta"
+                style="@style/Widget.CoreEQ.Pill.Cta"
+                android:minWidth="160dp"
                 android:text="@string/support_done"
-                android:textColor="@color/cta_text"
-                android:textSize="@dimen/cb_text_label"
-                android:textStyle="bold"
-                android:focusable="true"
                 android:layout_marginTop="@dimen/cb_space_sm" />
         </LinearLayout>
 
@@ -102,7 +94,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/bg_card"
+            android:background="@drawable/bg_section"
             android:padding="@dimen/cb_card_padding">
 
             <ImageView
@@ -119,7 +111,7 @@
                 android:text="@string/support_sponsors_label"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_section"
-                android:textStyle="bold"
+                android:textFontWeight="600"
                 android:layout_marginTop="@dimen/cb_space_sm" />
 
             <TextView
@@ -137,7 +129,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/bg_card"
+            android:background="@drawable/bg_section"
             android:padding="@dimen/cb_card_padding"
             android:layout_marginStart="@dimen/cb_space_md">
 
@@ -155,7 +147,7 @@
                 android:text="@string/support_kofi_label"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_section"
-                android:textStyle="bold"
+                android:textFontWeight="600"
                 android:layout_marginTop="@dimen/cb_space_sm" />
 
             <TextView
@@ -171,3 +163,4 @@
     </LinearLayout>
 
 </LinearLayout>
+</tv.corebuilds.eq.ui.RailStageLayout>

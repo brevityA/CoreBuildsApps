@@ -153,7 +153,7 @@ class ManualEqActivity : TvActivity() {
         bands.setManualFilters(currentManualFilters())
         updatePresetLabel()
         renderProfile()
-        bands.requestFocus()
+        focusOnOpen(bands)
 
         if (EqService.running) EqService.send(this, EqService.ACTION_REAPPLY)
         if (profileStore.correctionEnabled && !EqService.running) {

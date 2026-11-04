@@ -11,22 +11,13 @@
 
     <!-- Header -->
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/measure_title"
-        android:textColor="@color/cb_slate"
-        android:textSize="@dimen/cb_text_kicker"
-        android:fontFamily="monospace"
-        android:textAllCaps="true" />
+        style="@style/CoreEQ.Eyebrow"
+        android:text="@string/measure_title" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/measure_heading"
-        android:textColor="@color/cb_ink"
-        android:textSize="@dimen/cb_text_title"
-        android:textStyle="bold"
-        android:layout_marginTop="4dp" />
+        style="@style/CoreEQ.Title"
+        android:layout_marginTop="2dp"
+        android:text="@string/measure_heading" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -34,7 +25,7 @@
         android:text="@string/measure_sub"
         android:textColor="@color/cb_slate"
         android:textSize="@dimen/cb_text_data"
-        android:layout_marginTop="2dp" />
+        android:layout_marginTop="4dp" />
 
     <!-- Two-pane content -->
     <LinearLayout
@@ -44,8 +35,11 @@
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/cb_space_md">
 
-        <!-- Left rail: scrolls so the optional REW import cannot clip on a 540dp panel. -->
+        <!-- Left column: scrolls so the optional REW import cannot clip on a 540dp panel. -->
         <ScrollView
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:clipToPadding="true"
             android:requiresFadingEdge="vertical"
             android:fadingEdgeLength="@dimen/cb_space_xl"
             android:layout_width="340dp"
@@ -64,8 +58,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@drawable/bg_card"
-                android:padding="@dimen/cb_card_padding"
+                android:background="@drawable/bg_section"
+                android:padding="@dimen/cb_space_md"
                 android:layout_marginBottom="@dimen/cb_space_xs">
 
                 <TextView
@@ -74,8 +68,9 @@
                     android:text="@string/measure_step_1"
                     android:textColor="@color/cb_cta_end"
                     android:textSize="@dimen/cb_text_kicker"
-                    android:fontFamily="monospace"
-                    android:textStyle="bold" />
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.12"
+                    android:textFontWeight="600" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -83,7 +78,7 @@
                     android:text="@string/measure_step1_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_label"
-                    android:textStyle="bold"
+                    android:textFontWeight="600"
                     android:layout_marginTop="2dp" />
 
                 <TextView
@@ -95,6 +90,7 @@
                     android:layout_marginTop="2dp" />
 
                 <Button
+        android:stateListAnimator="@animator/focus_raise"
                     android:id="@+id/btn_room_size"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/cb_target_min"
@@ -109,6 +105,7 @@
                     android:layout_marginTop="@dimen/cb_space_xs" />
 
                 <Button
+        android:stateListAnimator="@animator/focus_raise"
                     android:id="@+id/btn_target"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/cb_target_min"
@@ -122,6 +119,7 @@
                     android:focusable="true"
                     android:layout_marginTop="@dimen/cb_space_xs" />
                 <Button
+        android:stateListAnimator="@animator/focus_raise"
                     android:id="@+id/btn_ceiling"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/cb_target_min"
@@ -135,6 +133,7 @@
                     android:focusable="true"
                     android:layout_marginTop="@dimen/cb_space_xs" />
                 <Button
+        android:stateListAnimator="@animator/focus_raise"
                     android:id="@+id/btn_target_import"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/cb_target_min"
@@ -156,8 +155,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@drawable/bg_card"
-                android:padding="@dimen/cb_card_padding"
+                android:background="@drawable/bg_section"
+                android:padding="@dimen/cb_space_md"
                 android:layout_marginBottom="@dimen/cb_space_xs">
 
                 <TextView
@@ -166,8 +165,9 @@
                     android:text="@string/measure_step_2"
                     android:textColor="@color/cb_warning"
                     android:textSize="@dimen/cb_text_kicker"
-                    android:fontFamily="monospace"
-                    android:textStyle="bold" />
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.12"
+                    android:textFontWeight="600" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -175,7 +175,7 @@
                     android:text="@string/measure_step2_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_label"
-                    android:textStyle="bold"
+                    android:textFontWeight="600"
                     android:layout_marginTop="2dp" />
 
                 <TextView
@@ -193,8 +193,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@drawable/bg_card"
-                android:padding="@dimen/cb_card_padding">
+                android:background="@drawable/bg_section"
+                android:padding="@dimen/cb_space_md">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -202,8 +202,9 @@
                     android:text="@string/measure_step_3"
                     android:textColor="@color/cb_slate"
                     android:textSize="@dimen/cb_text_kicker"
-                    android:fontFamily="monospace"
-                    android:textStyle="bold" />
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.12"
+                    android:textFontWeight="600" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -211,7 +212,7 @@
                     android:text="@string/measure_step3_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_label"
-                    android:textStyle="bold"
+                    android:textFontWeight="600"
                     android:layout_marginTop="2dp" />
 
                 <TextView
@@ -231,8 +232,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@drawable/bg_card"
-                android:padding="@dimen/cb_card_padding"
+                android:background="@drawable/bg_section"
+                android:padding="@dimen/cb_space_md"
                 android:visibility="gone"
                 android:layout_marginTop="@dimen/cb_space_xs">
 
@@ -242,8 +243,9 @@
                     android:text="@string/measure_refine_kicker"
                     android:textColor="@color/cb_success"
                     android:textSize="@dimen/cb_text_kicker"
-                    android:fontFamily="monospace"
-                    android:textStyle="bold" />
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.12"
+                    android:textFontWeight="600" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -251,7 +253,7 @@
                     android:text="@string/measure_refine_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_label"
-                    android:textStyle="bold"
+                    android:textFontWeight="600"
                     android:layout_marginTop="2dp" />
 
                 <TextView
@@ -263,6 +265,7 @@
                     android:layout_marginTop="2dp" />
 
                 <Button
+        android:stateListAnimator="@animator/focus_raise"
                     android:id="@+id/btn_measure_add_seat"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/cb_target_min"
@@ -277,6 +280,7 @@
                     android:layout_marginTop="@dimen/cb_space_xs" />
 
                 <Button
+        android:stateListAnimator="@animator/focus_raise"
                     android:id="@+id/btn_measure_check"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/cb_target_min"
@@ -292,6 +296,7 @@
                     android:layout_marginTop="@dimen/cb_space_xs" />
 
                 <Button
+        android:stateListAnimator="@animator/focus_raise"
                     android:id="@+id/btn_measure_refine"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/cb_target_min"
@@ -311,6 +316,7 @@
 
             <!-- REW import (plan M10): measure elsewhere, correct here. -->
             <Button
+        android:stateListAnimator="@animator/focus_raise"
                 android:id="@+id/btn_measure_import"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/cb_target_min"
@@ -407,7 +413,7 @@
                     android:text="@string/measure_start"
                     android:textColor="@color/cta_text"
                     android:textSize="@dimen/cb_text_label"
-                    android:textStyle="bold"
+                    android:textFontWeight="600"
                     android:focusable="true"
                     android:layout_marginEnd="@dimen/cb_space_sm" />
 
@@ -444,7 +450,7 @@
                     android:text="@string/measure_save"
                     android:textColor="@color/cta_text"
                     android:textSize="@dimen/cb_text_label"
-                    android:textStyle="bold"
+                    android:textFontWeight="600"
                     android:visibility="gone"
                     android:focusable="true" />
             </LinearLayout>

@@ -21,7 +21,7 @@
         android:layout_marginEnd="@dimen/cb_gutter_side"
         android:layout_marginBottom="@dimen/cb_gutter_bottom"
         android:orientation="vertical"
-        android:background="@drawable/bg_card"
+        android:background="@drawable/bg_section"
         android:padding="@dimen/cb_space_lg">
 
         <TextView
@@ -50,7 +50,7 @@
             android:layout_marginTop="4dp"
             android:textColor="@color/cb_signal_cyan"
             android:textSize="@dimen/cb_text_section"
-            android:textStyle="bold" />
+            android:textFontWeight="600" />
 
         <TextView
             android:id="@+id/text_calibration_instruction"

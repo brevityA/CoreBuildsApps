@@ -1,182 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+  Content modes (rail and stage since 1.12.0). Opened from Home's Mode pill,
+  so no rail item is marked; Left from the stage's edge goes to the rail's
+  first item. The controls are one column on the left; the right explains how
+  automatic switching works and lists the app rules.
+-->
+<tv.corebuilds.eq.ui.RailStageLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/cb_night"
-    android:paddingLeft="@dimen/cb_gutter_side"
-    android:paddingRight="@dimen/cb_gutter_side"
-    android:paddingTop="@dimen/cb_gutter_top"
-    android:paddingBottom="@dimen/cb_gutter_bottom">
+    android:orientation="horizontal"
+    android:background="@color/cb_night">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mode_title"
-        android:textColor="@color/cb_slate"
-        android:textSize="@dimen/cb_text_kicker"
-        android:fontFamily="monospace"
-        android:textAllCaps="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mode_heading"
-        android:textColor="@color/cb_ink"
-        android:textSize="@dimen/cb_text_title"
-        android:textStyle="bold"
-        android:layout_marginTop="4dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mode_subtitle"
-        android:textColor="@color/cb_slate"
-        android:textSize="@dimen/cb_text_data"
-        android:layout_marginTop="2dp" />
+    <include layout="@layout/view_rail" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:id="@+id/stage"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/cb_space_md">
+        android:orientation="vertical"
+        android:paddingStart="@dimen/cb_stage_start"
+        android:paddingEnd="@dimen/cb_stage_end"
+        android:paddingTop="@dimen/cb_stage_top"
+        android:paddingBottom="@dimen/cb_stage_bottom"
+        android:clipToPadding="false"
+        android:clipChildren="false">
 
-        <ScrollView
-            android:requiresFadingEdge="vertical"
-            android:fadingEdgeLength="@dimen/cb_space_xl"
-            android:layout_width="340dp"
-            android:layout_height="match_parent"
-            android:fillViewport="true"
-            android:scrollbars="none">
+        <TextView
+            style="@style/CoreEQ.Title"
+            android:text="@string/mode_heading" />
+
+        <TextView
+            style="@style/CoreEQ.Lede"
+            android:text="@string/mode_subtitle"
+            android:layout_marginTop="4dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/text_mode_current"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_card"
-                android:padding="@dimen/cb_card_padding"
-                android:textColor="@color/cb_signal_cyan"
-                android:textSize="@dimen/cb_text_data"
-                android:fontFamily="monospace" />
-
-            <!-- The three modes side by side (1.3.0); the filled chip is the one in use. -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:baselineAligned="false"
-                android:layout_marginTop="@dimen/cb_space_sm">
-
-                <Button
-                    android:id="@+id/btn_mode_movie"
-                    style="@style/CoreEQ.Chip"
-                    android:text="@string/mode_movie_tv" />
-
-                <Button
-                    android:id="@+id/btn_mode_everyday"
-                    style="@style/CoreEQ.Chip"
-                    android:text="@string/mode_everyday"
-                    android:layout_marginStart="@dimen/cb_space_xs" />
-
-                <Button
-                    android:id="@+id/btn_mode_gaming"
-                    style="@style/CoreEQ.Chip"
-                    android:text="@string/mode_gaming"
-                    android:layout_marginStart="@dimen/cb_space_xs" />
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/btn_auto_mode"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/cb_target_min"
-                android:layout_marginTop="@dimen/cb_space_md"
-                android:background="@drawable/bg_toggle"
-                android:drawableEnd="@drawable/ic_switch"
-                android:drawablePadding="@dimen/cb_space_sm"
-                android:text="@string/mode_auto_off"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_data"
-                android:gravity="start|center_vertical"
-                android:paddingStart="@dimen/cb_card_padding"
-                android:paddingEnd="@dimen/cb_card_padding"
-                android:focusable="true" />
-
-            <Button
-                android:id="@+id/btn_mode_override_policy"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/cb_target_min"
-                android:layout_marginTop="@dimen/cb_space_xs"
-                android:background="@drawable/bg_card"
-                android:text="@string/mode_override_temporary"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_data"
-                android:gravity="start|center_vertical"
-                android:paddingStart="@dimen/cb_card_padding"
-                android:paddingEnd="@dimen/cb_card_padding"
-                android:focusable="true" />
-
-            <Button
-                android:id="@+id/btn_mode_media_access"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/cb_target_min"
-                android:layout_marginTop="@dimen/cb_space_xs"
-                android:background="@drawable/bg_ghost"
-                android:text="@string/mode_media_access_off"
-                android:textColor="@color/cb_signal_cyan"
-                android:textSize="@dimen/cb_text_data"
-                android:focusable="true" />
-
-            <Button
-                android:id="@+id/btn_mode_manage_apps"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/cb_target_min"
-                android:layout_marginTop="@dimen/cb_space_xs"
-                android:background="@drawable/bg_ghost"
-                android:text="@string/mode_manage_apps"
-                android:textColor="@color/cb_signal_cyan"
-                android:textSize="@dimen/cb_text_data"
-                android:focusable="true" />
-
-            <Button
-                android:id="@+id/btn_mode_done"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/cb_target_min"
-                android:layout_marginTop="@dimen/cb_space_sm"
-                android:background="@drawable/bg_cta"
-                android:text="@string/mode_done"
-                android:textColor="@color/cta_text"
-                android:textSize="@dimen/cb_text_label"
-                android:textStyle="bold"
-                android:focusable="true" />
-        </LinearLayout>
-        </ScrollView>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_marginStart="@dimen/cb_space_lg"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            android:layout_marginTop="@dimen/cb_space_md">
 
             <ScrollView
                 android:requiresFadingEdge="vertical"
                 android:fadingEdgeLength="@dimen/cb_space_xl"
-                android:layout_width="match_parent"
+                android:layout_width="316dp"
                 android:layout_height="match_parent"
                 android:fillViewport="true"
+                android:clipToPadding="true"
+                android:paddingTop="2dp"
+                android:paddingBottom="8dp"
                 android:scrollbars="none">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="@drawable/bg_card"
-                    android:padding="@dimen/cb_card_padding">
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/text_mode_current"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/cb_signal_cyan"
+                        android:textSize="@dimen/cb_text_data"
+                        android:fontFamily="monospace"
+                        android:paddingStart="4dp" />
+
+                    <!-- The three modes as one segmented control (1.12.0); the
+                         chosen one is cyan (activated). -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:baselineAligned="false"
+                        android:background="@drawable/bg_segment_track"
+                        android:padding="4dp"
+                        android:layout_marginTop="@dimen/cb_space_sm">
+
+                        <Button
+                            android:id="@+id/btn_mode_movie"
+                            style="@style/Widget.CoreEQ.Segment"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="40dp"
+                            android:stateListAnimator="@animator/focus_raise"
+                            android:text="@string/mode_movie_tv" />
+
+                        <Button
+                            android:id="@+id/btn_mode_everyday"
+                            style="@style/Widget.CoreEQ.Segment"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="40dp"
+                            android:stateListAnimator="@animator/focus_raise"
+                            android:text="@string/mode_everyday"
+                            android:layout_marginStart="2dp" />
+
+                        <Button
+                            android:id="@+id/btn_mode_gaming"
+                            style="@style/Widget.CoreEQ.Segment"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="40dp"
+                            android:stateListAnimator="@animator/focus_raise"
+                            android:text="@string/mode_gaming"
+                            android:layout_marginStart="2dp" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_auto_mode"
+                        style="@style/CoreEQ.SwitchRow"
+                        android:layout_marginTop="@dimen/cb_space_md"
+                        android:text="@string/mode_auto_off" />
+
+                    <Button
+                        android:id="@+id/btn_mode_override_policy"
+                        style="@style/CoreEQ.ActionRow"
+                        android:text="@string/mode_override_temporary" />
+
+                    <Button
+                        android:id="@+id/btn_mode_media_access"
+                        style="@style/CoreEQ.ActionRow"
+                        android:background="@drawable/bg_pill_ghost"
+                        android:textColor="@color/pill_ghost_text"
+                        android:text="@string/mode_media_access_off" />
+
+                    <Button
+                        android:id="@+id/btn_mode_manage_apps"
+                        style="@style/CoreEQ.ActionRow"
+                        android:background="@drawable/bg_pill_ghost"
+                        android:textColor="@color/pill_ghost_text"
+                        android:text="@string/mode_manage_apps" />
+
+                    <Button
+                        android:id="@+id/btn_mode_done"
+                        style="@style/CoreEQ.ActionRow"
+                        android:layout_marginTop="@dimen/cb_space_md"
+                        android:gravity="center"
+                        android:background="@drawable/bg_pill_cta"
+                        android:textColor="@color/cta_text"
+                        android:textFontWeight="700"
+                        android:text="@string/mode_done" />
+                </LinearLayout>
+            </ScrollView>
+
+            <!-- How automatic switching works, and the app rules. The panel is
+                 its own viewport: Right from the column enters it (the ring
+                 shows), Up and Down scroll it, Left leaves. -->
+            <ScrollView
+                android:id="@+id/scroll_mode_rules"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/cb_space_md"
+                android:background="@drawable/bg_section_focusable"
+                android:padding="@dimen/cb_space_md"
+                android:clipToPadding="true"
+                android:fillViewport="true"
+                android:focusable="true"
+                android:requiresFadingEdge="vertical"
+                android:fadingEdgeLength="@dimen/cb_space_xl"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                     <TextView
                         style="@style/CoreEQ.MenuHeading"
@@ -195,4 +186,4 @@
             </ScrollView>
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</tv.corebuilds.eq.ui.RailStageLayout>

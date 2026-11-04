@@ -32,7 +32,7 @@ class SupportActivity : TvActivity() {
 
         val done = findViewById<Button>(R.id.btn_support_done)
         done.setOnClickListener { finish() }
-        done.requestFocus()
+        focusOnOpen(done)
     }
 
     private fun show(qrId: Int, urlId: Int, url: String, side: Int) {

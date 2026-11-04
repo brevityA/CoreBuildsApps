@@ -14,6 +14,7 @@ import android.os.Looper
 import android.provider.Settings
 import android.view.View
 import android.widget.Button
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
@@ -152,7 +153,7 @@ class EnhancedAudioSettingsActivity : TvActivity() {
             changed()
         }
         refresh()
-        btnStereo.requestFocus()
+        focusOnOpen(btnStereo)
     }
 
     override fun onStart() {
@@ -272,6 +273,42 @@ class EnhancedAudioSettingsActivity : TvActivity() {
         }
         textDetailStatus.text = status.orEmpty()
         textDetailStatus.visibility = if (status == null) View.GONE else View.VISIBLE
+        fitDetailPanel()
+    }
+
+    /**
+     * The panel stays put beside the list (1.12.0). A new explanation starts at
+     * its top; if it runs past the panel, the panel takes focus on Right so the
+     * rest can be scrolled into view, says so at its foot, and Left goes back to
+     * the switch it explains. Otherwise it is not a stop at all.
+     */
+    private fun fitDetailPanel() {
+        val panel = findViewById<ScrollView>(R.id.scroll_extras_detail)
+        val more = findViewById<View>(R.id.text_extras_detail_more)
+        panel.scrollTo(0, 0)
+        val switch = rowButton(shown)
+        panel.nextFocusLeftId = switch.id
+        panel.post {
+            more.visibility = View.GONE
+            val content = panel.getChildAt(0) ?: return@post
+            content.measure(
+                View.MeasureSpec.makeMeasureSpec(panel.width - panel.paddingLeft - panel.paddingRight, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            )
+            val overflows = content.measuredHeight > panel.height - panel.paddingTop - panel.paddingBottom
+            more.visibility = if (overflows) View.VISIBLE else View.GONE
+            panel.isFocusable = overflows
+        }
+    }
+
+    private fun rowButton(row: Row): Button = when (row) {
+        Row.STEREO -> btnStereo
+        Row.DIALOGUE -> btnDialogue
+        Row.LOW_BASS -> btnLowBass
+        Row.BASS -> btnBass
+        Row.LOUDNESS -> btnLoudness
+        Row.NIGHT -> btnNight
+        Row.AUTO_LOUDNESS -> btnAutoLoudness
     }
 
     /** While Low-volume bass is on: where this output's reference sits and what it adds right now; null while off. */

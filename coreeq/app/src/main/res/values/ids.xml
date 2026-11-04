@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ids for views built in code, so tests and focus rules can name them. -->
+<resources>
+    <item name="btn_companion_start" type="id" />
+    <item name="btn_companion_stop" type="id" />
+    <item name="btn_companion_revoke" type="id" />
+    <item name="btn_companion_done" type="id" />
+</resources>
