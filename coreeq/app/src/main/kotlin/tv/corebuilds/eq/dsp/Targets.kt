@@ -14,6 +14,24 @@ object Targets {
     /** The conventional pivot every house-curve control normalises around. */
     const val PIVOT_HZ = 630.0
 
+    /**
+     * The name a person sees for a target key, the same on every screen (1.12.0).
+     * Home and Profiles used to capitalise the key, so a B&K 1974 profile read "Bk"
+     * and an imported one "Custom", while the phone companion called `house`
+     * "Harman" — the name `room` replaced because it overclaimed. `harman` is the
+     * pre-rename key for the same curve as `room`, so old profiles read "Room".
+     */
+    fun label(key: String): String = when (key.lowercase().trim()) {
+        "flat" -> "Flat"
+        "room", "harman" -> "Room"
+        "dialogue" -> "Dialogue"
+        "bk" -> "B&K 1974"
+        "olive" -> "Olive 2013"
+        "house" -> "House"
+        CustomTarget.KEY -> "Imported file"
+        else -> key.trim().replaceFirstChar { it.titlecase(java.util.Locale.US) }.ifEmpty { "Unknown" }
+    }
+
     fun shelfDb(f: DoubleArray, cornerHz: Double, gainDb: Double): DoubleArray {
         val out = DoubleArray(f.size)
         for (i in f.indices) {

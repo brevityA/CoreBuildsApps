@@ -1,132 +1,153 @@
 package tv.corebuilds.eq.dsp
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import tv.corebuilds.eq.dsp.RoomAwareGuidance.Guidance.Kind
 import tv.corebuilds.eq.export.CurvePoint
 import tv.corebuilds.eq.export.Profile
 
 class RoomAwareGuidanceTest {
 
-    private fun profile(
-        transitionHz: Double = 400.0,
-        vararg points: Pair<Double, Double>
-    ): Profile {
-        val curve = points.map { (hz, db) ->
-            CurvePoint(hz, measuredDb = 0.0, correctionDb = db)
-        }
-        return Profile(
+    /** A profile whose correction is [corrections] at the band centres named, 0 dB at the rest. */
+    private fun profile(transitionHz: Double = 300.0, corrections: Map<Double, Double> = emptyMap(), manualOnly: Boolean = false) =
+        Profile(
             id = "test",
             name = "Test",
             timestampMs = 0L,
             target = "flat",
-            micType = "measurement mic",
-            curve = curve,
-            transitionHz = transitionHz
+            micType = "remote mic",
+            curve = ManualEq.BAND_CENTRES_HZ.map { CurvePoint(it, measuredDb = 0.0, correctionDb = corrections[it] ?: 0.0) },
+            transitionHz = transitionHz,
+            manualOnly = manualOnly
         )
+
+    private fun band(hz: Double) = ManualEq.BAND_CENTRES_HZ.indexOf(hz)
+
+    private fun manual(vararg bands: Pair<Double, Double>): List<PeakingFilter> =
+        bands.fold(emptyList()) { filters, (hz, db) -> ManualEq.withBandGain(filters, band(hz), db) }
+
+    @Test
+    fun noCurveOrNoMeasurementMeansNoHints() {
+        val empty = Profile(id = "e", name = "E", timestampMs = 0L, target = "flat", micType = "remote mic")
+        assertTrue(RoomAwareGuidance.guide(empty, emptyList()).isEmpty())
+        assertTrue(RoomAwareGuidance.guide(profile(corrections = mapOf(2_000.0 to -3.0), manualOnly = true), emptyList()).isEmpty())
     }
 
     @Test
-    fun emptyCurveReturnsNothing() {
-        val p = profile(transitionHz = 400.0)
-        assertEquals(0, RoomAwareGuidance.guide(p, emptyList()).size)
+    fun aShapingCorrectionNearItsLimitIsOfferedBackTheOtherWay() {
+        val g = RoomAwareGuidance.guide(profile(corrections = mapOf(2_000.0 to -3.0, 4_000.0 to 3.0)), emptyList())
+        val cut = g.single { it.bandIndex == band(2_000.0) }
+        assertEquals(Kind.EASE_CUT, cut.kind)
+        assertEquals(1.0, cut.applyGainDb!!, 0.0)
+        assertEquals("Ease the cut at 2 kHz: +1.0 dB", cut.title)
+        assertTrue(cut.detail, cut.detail.startsWith("The correction cuts 3.0 dB here"))
+        val lift = g.single { it.bandIndex == band(4_000.0) }
+        assertEquals(Kind.EASE_LIFT, lift.kind)
+        assertEquals(-1.0, lift.applyGainDb!!, 0.0)
+        assertEquals("Ease the lift at 4 kHz: -1.0 dB", lift.title)
     }
 
     @Test
-    fun strongCutAboveTransitionSuggestsCut() {
-        // 4 kHz is above the 400 Hz transition; a 5 dB cut suggests trimming.
-        val p = profile(
-            transitionHz = 400.0,
-            4000.0 to -5.0
-        )
-        val g = RoomAwareGuidance.guide(p, emptyList())
-        assertTrue(g.any { it.fc == 4000.0 && it.kind == RoomAwareGuidance.Guidance.Kind.SUGGEST_CUT })
+    fun noHintEverAddsTheCorrectionsOwnMoveAgain() {
+        // 1.11.0's guidance answered a cut with "a manual trim can soften it" under a
+        // SUGGEST_CUT kind, and a lift with "a manual boost can reinforce it": doubling
+        // what the correction already does. Every Ease points the other way.
+        val corrections = mapOf(500.0 to -6.0, 1_000.0 to 3.0, 2_000.0 to -2.5, 4_000.0 to 2.8, 8_000.0 to -3.0)
+        val g = RoomAwareGuidance.guide(profile(corrections = corrections), emptyList())
+        val eases = g.filter { it.kind == Kind.EASE_CUT || it.kind == Kind.EASE_LIFT }
+        assertTrue(eases.isNotEmpty())
+        for (hint in eases) {
+            val correction = corrections.getValue(ManualEq.BAND_CENTRES_HZ[hint.bandIndex!!])
+            assertTrue(hint.title, hint.applyGainDb!! * correction < 0.0)
+        }
     }
 
     @Test
-    fun strongLiftAboveTransitionSuggestsBoost() {
-        // 2 kHz is above the 400 Hz transition; a 5 dB lift suggests boosting.
-        val p = profile(
-            transitionHz = 400.0,
-            2000.0 to 5.0
-        )
-        val g = RoomAwareGuidance.guide(p, emptyList())
-        assertTrue(g.any { it.fc == 2000.0 && it.kind == RoomAwareGuidance.Guidance.Kind.SUGGEST_BOOST })
+    fun easeIsAboutAThirdOnTheEditorsGrid() {
+        assertEquals(1.0, RoomAwareGuidance.easeDb(-2.5), 0.0) // 0.83 rounds up to the 1 dB floor
+        assertEquals(1.0, RoomAwareGuidance.easeDb(-3.0), 0.0)
+        assertEquals(1.5, RoomAwareGuidance.easeDb(-4.5), 0.0)
+        assertEquals(2.0, RoomAwareGuidance.easeDb(-6.0), 0.0)
+        assertEquals(2.0, RoomAwareGuidance.easeDb(-11.0), 0.0) // capped
+        assertEquals(-1.5, RoomAwareGuidance.easeDb(4.5), 0.0)
     }
 
     @Test
-    fun smallCorrectionAboveTransitionSuggestsNothing() {
-        // 2 dB cut at 4 kHz is below the 4 dB threshold.
-        val p = profile(transitionHz = 400.0, 4000.0 to -2.0)
-        val g = RoomAwareGuidance.guide(p, emptyList())
-        assertTrue(g.all { it.fc != 4000.0 })
+    fun smallShapingIsLeftAlone() {
+        val g = RoomAwareGuidance.guide(profile(corrections = mapOf(2_000.0 to -2.4, 4_000.0 to 2.0)), emptyList())
+        assertTrue(g.toString(), g.isEmpty())
     }
 
     @Test
-    fun modalBandCorrectionWarnsInsteadOfSuggests() {
-        // 125 Hz is below the 400 Hz transition: warn, don't suggest.
-        val p = profile(transitionHz = 400.0, 125.0 to 5.0)
-        val g = RoomAwareGuidance.guide(p, emptyList())
-        val at125 = g.firstOrNull { it.fc == 125.0 }
-        assertNotNull(at125)
-        assertEquals(RoomAwareGuidance.Guidance.Kind.WARN_AVOID, at125!!.kind)
-    }
-
-    @Test
-    fun alreadyManualFilteredBandIsSkipped() {
-        val p = profile(transitionHz = 400.0, 4000.0 to -5.0)
-        val manual = listOf(PeakingFilter(4000.0, 1.0, -2.0))
-        val g = RoomAwareGuidance.guide(p, manual)
-        assertTrue(g.none { it.fc == 4000.0 })
-    }
-
-    @Test
-    fun highTransitionAddsInfo() {
-        val p = profile(transitionHz = 800.0, 4000.0 to -5.0)
-        val g = RoomAwareGuidance.guide(p, emptyList())
-        assertTrue(g.any { it.kind == RoomAwareGuidance.Guidance.Kind.INFO && it.message.contains("800") })
-    }
-
-    @Test
-    fun guidanceIsSortedByImportance() {
-        val p = profile(
-            transitionHz = 400.0,
-            125.0 to 5.0,    // warn (weight 1)
-            4000.0 to -5.0   // suggest cut (weight 2)
-        )
-        val g = RoomAwareGuidance.guide(p, emptyList())
-        assertTrue(g.size >= 2)
-        // First should be the higher-weight suggestion (SUGGEST_CUT at 4000)
-        assertEquals(4000.0, g[0].fc, 0.0)
-        assertEquals(RoomAwareGuidance.Guidance.Kind.SUGGEST_CUT, g[0].kind)
-        // Second should be the warning at 125 Hz
-        assertEquals(125.0, g[1].fc, 0.0)
-        assertEquals(RoomAwareGuidance.Guidance.Kind.WARN_AVOID, g[1].kind)
-    }
-
-    @Test
-    fun theWordingFollowsTheSignOfTheCorrection() {
-        // correctionDb is added to the measurement: negative is a cut where the
-        // room is loud, positive a lift where it is weak. 1.11.0 read it the
-        // other way round and called a 5 dB lift a cut.
+    fun onlyTheThreeLargestEasesAreListed() {
         val g = RoomAwareGuidance.guide(
-            profile(
-                transitionHz = 400.0,
-                125.0 to -5.0,   // modal peak, corrected by a cut
-                250.0 to 5.0,    // modal dip, corrected by a lift
-                2000.0 to 5.0,   // lift above the transition
-                4000.0 to -6.0   // cut above the transition
-            ),
+            profile(corrections = mapOf(500.0 to -2.6, 1_000.0 to -3.5, 2_000.0 to 3.0, 4_000.0 to -2.8, 8_000.0 to 2.7)),
             emptyList()
         )
-        fun at(hz: Double) = g.single { it.fc == hz }.message
-        assertTrue(at(125.0), at(125.0).startsWith("Room peak at 125 Hz"))
-        assertTrue(at(250.0), at(250.0).startsWith("Room dip at 250 Hz"))
-        assertTrue(at(2000.0), at(2000.0).startsWith("Correction lifts 5 dB at 2000 Hz"))
-        assertTrue(at(4000.0), at(4000.0).startsWith("Correction cuts 6 dB at 4000 Hz"))
+        assertEquals(listOf(band(1_000.0), band(2_000.0), band(4_000.0)), g.map { it.bandIndex })
     }
 
-    private fun assertNotNull(obj: Any?) {
-        if (obj == null) throw AssertionError("expected non-null")
+    @Test
+    fun modesBelowTheTransitionBecomeOneCautionWithNothingToApply() {
+        val g = RoomAwareGuidance.guide(
+            profile(transitionHz = 300.0, corrections = mapOf(63.0 to -6.0, 125.0 to 4.0, 250.0 to -2.0)),
+            emptyList()
+        )
+        val modal = g.single()
+        assertEquals(Kind.MODAL, modal.kind)
+        assertFalse(modal.actionable)
+        assertNull(modal.bandIndex)
+        assertEquals("Leave 63 Hz and 125 Hz to the correction", modal.title)
+        assertTrue(modal.detail, modal.detail.contains("300 Hz transition"))
+        assertTrue(modal.detail, modal.detail.contains("63 Hz -6.0 dB, 125 Hz +4.0 dB"))
+    }
+
+    @Test
+    fun aManualBandPushingTheSameWayAsTheCorrectionIsOfferedForUndo() {
+        val corrections = mapOf(63.0 to 5.5, 500.0 to -7.0, 1_000.0 to -7.0)
+        val g = RoomAwareGuidance.guide(
+            profile(corrections = corrections),
+            manual(63.0 to 3.0, 500.0 to -1.5, 1_000.0 to 2.0)
+        )
+        val lift = g.single { it.bandIndex == band(63.0) }
+        assertEquals(Kind.STACKED, lift.kind)
+        assertEquals(0.0, lift.applyGainDb!!, 0.0)
+        assertEquals("Undo your +3.0 dB at 63 Hz", lift.title)
+        assertTrue(lift.detail, lift.detail.contains("+8.5 dB"))
+        val cut = g.single { it.bandIndex == band(500.0) }
+        assertEquals(Kind.STACKED, cut.kind)
+        assertTrue(cut.detail, cut.detail.contains("-8.5 dB, more than the room asked for"))
+        // +2 dB against a 7 dB cut eases it: the listener's call, not a hint.
+        assertTrue(g.none { it.bandIndex == band(1_000.0) })
+    }
+
+    @Test
+    fun aBandTheListenerHasSetGetsNoEaseOrModalHint() {
+        val g = RoomAwareGuidance.guide(
+            profile(corrections = mapOf(63.0 to -6.0, 2_000.0 to -3.0)),
+            manual(63.0 to -0.5, 2_000.0 to 0.5)
+        )
+        assertTrue(g.toString(), g.isEmpty())
+    }
+
+    @Test
+    fun stackedComesFirstThenEaseThenTheModalCaution() {
+        val g = RoomAwareGuidance.guide(
+            profile(corrections = mapOf(63.0 to 5.5, 125.0 to -5.0, 2_000.0 to -3.0)),
+            manual(63.0 to 3.0)
+        )
+        assertEquals(listOf(Kind.STACKED, Kind.EASE_CUT, Kind.MODAL), g.map { it.kind })
+        assertEquals("Leave 125 Hz to the correction", g.last().title)
+    }
+
+    @Test
+    fun bandsAreNamedAsTheEditorLabelsThem() {
+        assertEquals("40 Hz", RoomAwareGuidance.hz(40.0))
+        assertEquals("1 kHz", RoomAwareGuidance.hz(1_000.0))
+        assertEquals("6.3 kHz", RoomAwareGuidance.hz(6_300.0))
+        assertEquals("287 Hz", RoomAwareGuidance.hz(287.4))
     }
 }

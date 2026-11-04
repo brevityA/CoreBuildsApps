@@ -1,11 +1,11 @@
 package tv.corebuilds.eq.dsp
 
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import tv.corebuilds.eq.mode.ContentMode
+import tv.corebuilds.eq.dsp.SmartSuggestion.Layers
 import tv.corebuilds.eq.mode.ContentType
 
 class SmartSuggestionTest {
@@ -13,28 +13,15 @@ class SmartSuggestionTest {
     private fun suggest(
         contentType: ContentType,
         volumeDb: Double?,
-        currentMode: ContentMode = ContentMode.EVERYDAY,
-        activePreset: String? = null
-    ) = SmartSuggestion.suggest(contentType, volumeDb, currentMode, activePreset)
+        activePreset: String? = "flat",
+        layers: Layers = Layers()
+    ) = SmartSuggestion.suggest(contentType, volumeDb, activePreset, layers)
 
     @Test
-    fun gamingSuggestsFlatUnlessFlatIsAlreadyActive() {
-        val s = suggest(ContentType.GAMING, -25.0, activePreset = "bass-lift")
-        assertNotNull(s)
-        assertEquals("flat", s!!.presetId)
-        assertEquals("🎮", s.icon)
-
-        // Flat already active: nothing to suggest.
+    fun gamingAndMusicSuggestFlatUnlessFlatIsInPlace() {
+        assertEquals("flat", suggest(ContentType.GAMING, -25.0, activePreset = "bass-lift")?.presetId)
+        assertEquals("flat", suggest(ContentType.MUSIC, -25.0, activePreset = "warm")?.presetId)
         assertNull(suggest(ContentType.GAMING, -25.0, activePreset = "flat"))
-    }
-
-    @Test
-    fun musicSuggestsFlatUnlessFlatIsAlreadyActive() {
-        val s = suggest(ContentType.MUSIC, -25.0, activePreset = "warm")
-        assertNotNull(s)
-        assertEquals("flat", s!!.presetId)
-        assertEquals("🎵", s.icon)
-
         assertNull(suggest(ContentType.MUSIC, -25.0, activePreset = "flat"))
     }
 
@@ -43,60 +30,71 @@ class SmartSuggestionTest {
         val s = suggest(ContentType.MOVIE, -35.0, activePreset = "bass-lift")
         assertNotNull(s)
         assertEquals("speech-clarity", s!!.presetId)
-        assertEquals("🗣️", s.icon)
-        assertTrue(s.reason.contains("Quiet"))
-
-        // Already active: nothing to suggest.
+        assertEquals("Quiet movies: lift the consonant band", s.reason)
         assertNull(suggest(ContentType.MOVIE, -35.0, activePreset = "speech-clarity"))
     }
 
     @Test
     fun quietNonDialogueContentSuggestsLowVolumeLoudness() {
-        val s = suggest(ContentType.ANIME, -35.0, activePreset = "flat")
-        assertNotNull(s)
-        assertEquals("low-volume-loudness", s!!.presetId)
-        assertEquals("🔉", s.icon)
-        assertTrue(s.reason.contains("Quiet listening"))
-
+        val s = suggest(ContentType.ANIME, -35.0)
+        assertEquals("low-volume-loudness", s?.presetId)
+        assertTrue(s!!.reason.startsWith("Quiet listening"))
         assertNull(suggest(ContentType.ANIME, -35.0, activePreset = "low-volume-loudness"))
     }
 
     @Test
-    fun normalVolumeDialogueContentSuggestsNothing() {
-        // Normal-volume movie: the measured correction + target already carry
-        // presence, no preset suggestion needed.
-        assertNull(suggest(ContentType.MOVIE, -15.0))
-        assertNull(suggest(ContentType.TV_SHOW, -20.0))
-        assertNull(suggest(ContentType.NEWS, -25.0))
-        assertNull(suggest(ContentType.PODCAST, -25.0))
-        assertNull(suggest(ContentType.DOCUMENTARY, -25.0))
+    fun aCustomCurveIsNeverOfferedAPreset() {
+        // Bands set by hand match no shipped preset (null): replacing them on a guess
+        // would throw the work away, whatever is playing.
+        for (type in ContentType.entries) {
+            assertNull(type.key, suggest(type, -40.0, activePreset = null))
+        }
     }
 
     @Test
-    fun normalVolumeNonDialogueContentSuggestsNothing() {
-        assertNull(suggest(ContentType.ANIME, -25.0))
-        assertNull(suggest(ContentType.GENERAL, -25.0))
-        assertNull(suggest(ContentType.SITCOM, -25.0))
+    fun enhancedAudioAlreadyCompensatingQuietListeningWins() {
+        // Auto loudness and Low-volume bass already lift quiet listening; the preset
+        // would add the same lift a second time.
+        assertNull(suggest(ContentType.ANIME, -35.0, layers = Layers(autoLoudness = true)))
+        assertNull(suggest(ContentType.GENERAL, -35.0, layers = Layers(lowVolumeBass = true)))
+        // Dialogue boost already lifts the speech band, and quiet dialogue content
+        // does not fall through to the loudness preset instead.
+        assertNull(suggest(ContentType.MOVIE, -35.0, activePreset = "bass-lift", layers = Layers(dialogueBoost = true)))
+        // A layer that does a different job does not silence the other suggestion.
+        assertEquals(
+            "speech-clarity",
+            suggest(ContentType.NEWS, -35.0, activePreset = "flat", layers = Layers(autoLoudness = true))?.presetId
+        )
     }
 
     @Test
-    fun fixedVolumeOutputsGetNoVolumeBasedSuggestion() {
-        // volumeDb is null for fixed-volume routes (HDMI-CEC, most soundbars):
-        // no low-volume intelligence is possible.
+    fun normalVolumeSuggestsNothingButTheContentRules() {
+        for (type in listOf(ContentType.MOVIE, ContentType.TV_SHOW, ContentType.NEWS, ContentType.PODCAST,
+            ContentType.DOCUMENTARY, ContentType.ANIME, ContentType.GENERAL, ContentType.SITCOM)) {
+            assertNull(type.key, suggest(type, -20.0, activePreset = "bass-lift"))
+        }
+    }
+
+    @Test
+    fun anUnknownVolumeWithdrawsOnlyTheVolumeSuggestions() {
+        // Fixed-volume outputs (HDMI-CEC, most soundbars) report no dB.
         assertNull(suggest(ContentType.MOVIE, null, activePreset = "bass-lift"))
-        assertNull(suggest(ContentType.ANIME, null, activePreset = "flat"))
-        // Gaming and Music suggest Flat from the content alone, which holds on a
-        // soundbar too, so an unknown volume does not withdraw it.
+        assertNull(suggest(ContentType.ANIME, null))
         assertEquals("flat", suggest(ContentType.GAMING, null, activePreset = "bass-lift")?.presetId)
-        assertEquals("flat", suggest(ContentType.MUSIC, null, activePreset = "warm")?.presetId)
     }
 
     @Test
-    fun thresholdBoundaryIsInclusiveAtQuietDb() {
-        // Exactly QUIET_DB (-30) counts as low volume.
-        assertNotNull(suggest(ContentType.ANIME, -30.0, activePreset = "flat"))
-        // Just above is not low.
-        assertNull(suggest(ContentType.ANIME, -29.9, activePreset = "flat"))
+    fun exactlyQuietDbCountsAsQuiet() {
+        assertNotNull(suggest(ContentType.ANIME, SmartSuggestion.QUIET_DB))
+        assertNull(suggest(ContentType.ANIME, SmartSuggestion.QUIET_DB + 0.1))
     }
 
+    @Test
+    fun everySuggestedPresetShips() {
+        val shipped = ManualEq.BUILT_IN_PRESETS.map { it.id }.toSet()
+        val suggested = ContentType.entries.flatMap { type ->
+            listOf(-40.0, -20.0, null).mapNotNull { suggest(type, it, activePreset = "bass-lift")?.presetId }
+        }.toSet()
+        assertTrue(suggested.toString(), suggested.isNotEmpty() && shipped.containsAll(suggested))
+    }
 }

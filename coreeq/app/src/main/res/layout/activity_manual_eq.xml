@@ -106,6 +106,25 @@
                 style="@style/CoreEQ.ActionRow"
                 android:text="@string/manual_eq_choose_preset_default" />
 
+            <!-- One preset suggested for what is playing now; hidden when there is none. -->
+            <Button
+                android:id="@+id/btn_manual_eq_suggestion"
+                style="@style/CoreEQ.ActionRow"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textColor="@color/cb_signal_cyan"
+                android:visibility="gone"
+                tools:visibility="visible"
+                tools:text="Try Speech clarity" />
+
+            <!-- What the measured correction is doing that a hand-set band should know. -->
+            <Button
+                android:id="@+id/btn_manual_eq_hints"
+                style="@style/CoreEQ.ActionRow"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:text="@string/manual_eq_hints_none" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

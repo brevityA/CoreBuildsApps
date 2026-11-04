@@ -198,4 +198,16 @@ class ContentTypeRegistryTest {
             }
         }
     }
+
+    @Test
+    fun theServiceAndManualEqPickTheContentTypeOneWay() {
+        val music = ContentTypeRegistry.packagesFor(ContentType.MUSIC).first()
+        // Auto-detect: the playing app decides; an unrecognised one is Everyday.
+        assertEquals(ContentType.MUSIC, ContentTypePrefs.pick(true, "movie", setOf(music)))
+        assertEquals(ContentType.GENERAL, ContentTypePrefs.pick(true, "movie", setOf("com.example.unknown")))
+        assertEquals(ContentType.GENERAL, ContentTypePrefs.pick(true, null, emptySet()))
+        // Manual: the pick decides, whatever plays; an unknown key is Everyday.
+        assertEquals(ContentType.MOVIE, ContentTypePrefs.pick(false, "movie", setOf(music)))
+        assertEquals(ContentType.GENERAL, ContentTypePrefs.pick(false, "nonsense", emptySet()))
+    }
 }

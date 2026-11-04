@@ -460,7 +460,7 @@ class MainActivity : TvActivity() {
         if (profile.manualOnly) {
             textProfileSub.text = "Manual EQ · no room measurement · ${profile.manualFilters.size} tone bands · $outputLabel"
         } else {
-            val targetName = profile.target.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString() }
+            val targetName = "${tv.corebuilds.eq.dsp.Targets.label(profile.target)} target"
             val rt = profile.rt60Seconds?.let { String.format(Locale.US, "RT60 %.2f s", it) } ?: "RT60 unknown"
             val measurementLimit = if (profile.measurementNotes.isNotEmpty()) " · magnitude-only; phase unverified" else ""
             val manual = if (profile.manualFilters.isNotEmpty()) " · ${profile.manualFilters.size} tone bands" else ""

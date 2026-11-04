@@ -157,7 +157,7 @@ class ProfileStore(context: Context) {
         }
         val existing = storedManualEqPresets().firstOrNull { it.name.equals(cleanName, ignoreCase = true) }
         val preset = ManualEqPreset(
-            id = existing?.id ?: "custom-${UUID.randomUUID()}",
+            id = existing?.id ?: "${ManualEq.USER_PRESET_ID_PREFIX}${UUID.randomUUID()}",
             name = cleanName,
             filters = ManualEq.sanitize(filters)
         )
