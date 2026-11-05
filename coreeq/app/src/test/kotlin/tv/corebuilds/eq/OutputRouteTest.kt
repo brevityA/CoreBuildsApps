@@ -276,4 +276,82 @@ class OutputRouteTest {
         val noOptical = listOf(AudioDeviceInfo.TYPE_LINE_ANALOG)
         assertFalse(OutputRoute.bitstreamCapable(OutputRoute.WIRED, OutputRoute.capabilityTypes(emptyList(), noOptical)))
     }
+
+    @Test
+    fun routeIdentityIgnoresEvidenceUpgradesAndDisplayCase() {
+        val estimate = OutputRoute.Output(HDMI_ARC, "  Soundbar  ", OutputRoute.Evidence.CONNECTED_ESTIMATE)
+        val probe = OutputRoute.Output(HDMI_ARC, "soundbar", OutputRoute.Evidence.TRACK_PROBE)
+        assertEquals(OutputRoute.identity(estimate), OutputRoute.identity(probe))
+    }
+
+    @Test
+    fun routeIdentityStillDistinguishesEndpointsAndOutputKinds() {
+        val first = OutputRoute.Output(BLUETOOTH, "First headset")
+        val second = OutputRoute.Output(BLUETOOTH, "Second headset")
+        assertFalse(OutputRoute.identity(first) == OutputRoute.identity(second))
+        assertFalse(OutputRoute.identity(first) == OutputRoute.identity(first.copy(kind = OutputRoute.USB)))
+        assertNull(OutputRoute.identity(null))
+    }
+
+
+    @Test
+    fun bluetoothA2dpAndLeAudioAreMediaRoutesButHandsFreeIsNotBorrowed() {
+        assertEquals(BLUETOOTH, OutputRoute.kindOf(AudioDeviceInfo.TYPE_BLUETOOTH_A2DP))
+        assertEquals(BLUETOOTH, OutputRoute.kindOf(26)) // BLE headset
+        assertEquals(BLUETOOTH, OutputRoute.kindOf(27)) // BLE speaker
+        assertNull(OutputRoute.kindOf(AudioDeviceInfo.TYPE_BLUETOOTH_SCO))
+    }
+
+    @Test
+    fun theSameBluetoothDeviceKeepsItsNamedProfileAcrossDisplayCaseChanges() {
+        val headphones = profile("headphones", 300, BLUETOOTH, "  My Headphones  ")
+        val other = profile("other-headphones", 400, BLUETOOTH, "Different Headphones")
+        val pick = OutputRoute.pick(listOf(speakers, headphones, other), headphones.id, BLUETOOTH, "MY HEADPHONES")
+        assertEquals(headphones.id, pick.profile?.id)
+        assertFalse(pick.switched)
+    }
+
+    @Test
+    fun genericBluetoothReportingDoesNotBorrowEvenTheOnlyNamedBluetoothProfile() {
+        val headphones = profile("headphones", 300, BLUETOOTH, "My Headphones")
+        val profiles = listOf(speakers, headphones)
+        for (name in listOf(null, "Bluetooth", " ")) {
+            val output = OutputRoute.Output(BLUETOOTH, name.orEmpty(), OutputRoute.Evidence.TRACK_PROBE)
+            assertNull(OutputRoute.pick(profiles, headphones.id, BLUETOOTH, name).profile)
+            assertTrue("this is an unidentified device, not a deleted profile", OutputRoute.needsDeviceName(profiles, output))
+        }
+    }
+
+    @Test
+    fun aDifferentNamedBluetoothDeviceIsGenuinelyUnmeasured() {
+        val headphones = profile("headphones", 300, BLUETOOTH, "Old Headphones")
+        val output = OutputRoute.Output(BLUETOOTH, "New Headphones", OutputRoute.Evidence.TRACK_PROBE)
+        assertNull(OutputRoute.pick(listOf(headphones, speakers), headphones.id, BLUETOOTH, output.name).profile)
+        assertFalse(OutputRoute.needsDeviceName(listOf(headphones, speakers), output))
+    }
+
+    @Test
+    fun genericBluetoothProfilesRemainCompatibleButSpeakersAreNeverBorrowed() {
+        val named = profile("named", 300, BLUETOOTH, "My Headphones")
+        val generic = profile("generic-bt", 200, BLUETOOTH)
+        val output = OutputRoute.Output(BLUETOOTH, "Bluetooth")
+        assertEquals(generic.id, OutputRoute.pick(listOf(named, generic, speakers), named.id, BLUETOOTH, output.name).profile?.id)
+        assertFalse(OutputRoute.needsDeviceName(listOf(named, generic, speakers), output))
+        assertNull(OutputRoute.pick(listOf(speakers), speakers.id, BLUETOOTH, output.name).profile)
+        assertFalse(OutputRoute.needsDeviceName(listOf(speakers), output))
+    }
+
+    @Test
+    fun bluetoothReconnectReturnsToItsOwnProfileWithoutAnUncertainRouteFallback() {
+        val headphones = profile("headphones", 300, BLUETOOTH, "My Headphones")
+        val profiles = listOf(speakers, headphones, legacy)
+        assertEquals(headphones.id, OutputRoute.pick(profiles, headphones.id, BLUETOOTH, "My Headphones").profile?.id)
+        for (uncertain in listOf(OutputRoute.UNCONFIRMED, OutputRoute.AMBIGUOUS)) {
+            assertNull(OutputRoute.pick(profiles, headphones.id, uncertain).profile)
+            assertFalse(OutputRoute.needsDeviceName(profiles, OutputRoute.Output(uncertain, "Bluetooth")))
+        }
+        assertEquals(speakers.id, OutputRoute.pick(profiles, headphones.id, SPEAKER).profile?.id)
+        assertEquals(headphones.id, OutputRoute.pick(profiles, headphones.id, BLUETOOTH, "My Headphones").profile?.id)
+    }
+
 }

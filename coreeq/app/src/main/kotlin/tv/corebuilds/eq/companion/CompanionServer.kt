@@ -91,12 +91,6 @@ internal class CompanionServer(
     @Volatile private var measurement: MeasurementSession? = null
     @Volatile private var measurementTimeout: Runnable? = null
     @Volatile private var lastError: String? = null
-    /**
-     * Called (on the server thread) when a phone asks the TV to show its pairing screen. The
-     * request carries nothing and grants nothing: it only opens the screen, which still needs
-     * the one-time code.
-     */
-    @Volatile var onWake: (() -> Unit)? = null
     private val wakeLock = Any()
     private var lastWakeMs: Long? = null
 
@@ -526,6 +520,8 @@ internal class CompanionServer(
             .put("output_name", output?.name ?: JSONObject.NULL)
             .put("output_evidence", output?.let { OutputRoute.evidenceDescription(it.evidence) } ?: JSONObject.NULL)
             .put("correction_enabled", profileStore.correctionEnabled)
+            .put("service_running", EqService.running)
+            .put("bypass_enabled", profileStore.bypassEnabled)
             .put("profile_id", profile?.id ?: JSONObject.NULL)
             .put("profile_name", profile?.name ?: JSONObject.NULL)
             .put("mode", modeStore.currentDecision().mode.key)
@@ -1149,7 +1145,11 @@ internal class CompanionServer(
         synchronized(nonceLock) { replayedNonces.clear() }
     }
 
-    /** Unauthenticated: opens the pairing screen at most once per [WakeLimiter.MIN_INTERVAL_MS]. */
+    /**
+     * Legacy discovery probe. Acknowledged for older phones, but deliberately
+     * cannot open pairing, start an activity, or change correction. Only the
+     * person at the TV can open a new pairing window.
+     */
     private fun wake(): HttpResponse {
         val now = SystemClock.elapsedRealtime()
         val accepted = synchronized(wakeLock) {
@@ -1158,7 +1158,7 @@ internal class CompanionServer(
                 true
             } else false
         }
-        if (accepted) onWake?.invoke()
+        if (!accepted) return plain(429, "Try again shortly")
         return HttpResponse(200, JSONObject().put("ok", true).toString().toByteArray(StandardCharsets.UTF_8))
     }
 

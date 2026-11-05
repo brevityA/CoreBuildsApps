@@ -64,4 +64,65 @@ class AppliedNoticeTest {
         notice.onPaused("x")
         assertTrue(notice.onApplied("paused", "x"))
     }
+
+    @Test
+    fun `a brief route pause recovering to the same profile produces neither card`() {
+        val notice = AppliedNotice()
+        assertTrue(notice.onApplied("room", "Everyday"))
+        assertTrue(notice.deferPause("unconfirmed"))
+        assertFalse("same pause must not restart its settling timer", notice.deferPause("unconfirmed"))
+        assertFalse("restoring the same profile is not news before the pause was announced", notice.onApplied("room", "Everyday"))
+        assertFalse("old timer must not announce after recovery", notice.commitPause("unconfirmed"))
+    }
+
+    @Test
+    fun `a settled pause and its eventual recovery are both announced once`() {
+        val notice = AppliedNotice()
+        notice.onApplied("room", "Everyday")
+        assertTrue(notice.deferPause("bluetooth|unmeasured"))
+        assertTrue(notice.commitPause("bluetooth|unmeasured"))
+        assertFalse(notice.commitPause("bluetooth|unmeasured"))
+        assertFalse(notice.deferPause("bluetooth|unmeasured"))
+        assertTrue(notice.onApplied("room", "Everyday"))
+    }
+
+    @Test
+    fun `a superseded pause cannot announce the wrong route`() {
+        val notice = AppliedNotice()
+        assertTrue(notice.deferPause("unconfirmed"))
+        assertTrue(notice.deferPause("ambiguous"))
+        assertFalse(notice.commitPause("unconfirmed"))
+        assertTrue(notice.commitPause("ambiguous"))
+    }
+
+    @Test
+    fun `returning to an already announced paused route cancels a pending other warning`() {
+        val notice = AppliedNotice()
+        notice.onPaused("bluetooth|unmeasured")
+        notice.deferPause("unconfirmed")
+        assertFalse(notice.deferPause("bluetooth|unmeasured"))
+        assertFalse(notice.commitPause("unconfirmed"))
+    }
+
+    @Test
+    fun `a genuine profile change is announced even if an unconfirmed warning was pending`() {
+        val notice = AppliedNotice()
+        notice.onApplied("speaker-room", "Everyday")
+        notice.deferPause("unconfirmed")
+        assertTrue(notice.onApplied("soundbar-room", "Everyday"))
+        assertFalse(notice.commitPause("unconfirmed"))
+    }
+
+    @Test
+    fun `reset or measurement suspension cancels a pending pause`() {
+        val notice = AppliedNotice()
+        notice.deferPause("unconfirmed")
+        notice.cancelDeferredPause()
+        assertFalse(notice.commitPause("unconfirmed"))
+        notice.deferPause("ambiguous")
+        notice.reset()
+        assertFalse(notice.commitPause("ambiguous"))
+        assertTrue(notice.onApplied("room", "Everyday"))
+    }
+
 }

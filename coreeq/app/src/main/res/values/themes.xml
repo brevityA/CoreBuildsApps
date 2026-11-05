@@ -180,6 +180,17 @@
         <item name="android:accessibilityHeading">true</item>
     </style>
 
+    <!-- A section's heading inside a stage or a phone card. -->
+    <style name="CoreEQ.Section" parent="android:Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/cb_ink</item>
+        <item name="android:textSize">@dimen/cb_text_section</item>
+        <item name="android:fontFamily">@font/outfit</item>
+        <item name="android:textFontWeight">600</item>
+        <item name="android:accessibilityHeading">true</item>
+    </style>
+
     <!-- The sentence under a title. -->
     <style name="CoreEQ.Lede" parent="android:Widget.TextView">
         <item name="android:layout_width">match_parent</item>

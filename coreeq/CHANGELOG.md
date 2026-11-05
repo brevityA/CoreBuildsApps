@@ -6,6 +6,85 @@ Core EQ (`tv.corebuilds.eq`) keeps its own changelog. The repository-root
 must never land there. Releases are `coreeq-v<version>` tags (see
 `PUBLISHING.md`).
 
+## [Unreleased]
+
+Android build, lint, Robolectric and physical phone/TV checks remain unverified
+for these changes. See `docs/CORE_EQ_PHONE_UX_TEST_RUNBOOK.md` for the local
+source/policy receipt and the required device matrix.
+
+### Added
+
+- **Phone-first navigation.** Separate Control, Measure and TV tabs keep daily
+  controls ahead of setup. The selected tab survives recreation, and a saved
+  pairing opens Control. Connection freshness, last-known/offline data, the
+  correction switch, stopped service and A/B bypass are distinguished.
+
+### Changed
+
+- **Less setup friction.** QR leads; manual address/code entry is expandable.
+  Profile, target and room volume are named choice lists. The selected mode
+  has a check mark. Unpair, Forget and replacing a TV require confirmation.
+  Capture keeps the screen awake and asks Android to lock orientation.
+- **Passive phone connection.** Foreground status checks are read-only, do not
+  rebuild controls or steal focus, and never retry a write. TV discovery and
+  legacy unauthenticated wake probes no longer open a pairing window; choose
+  Start pairing on the TV. Closing the TV phone-link screen still disconnects
+  the phone, without switching correction off.
+- **The phone companion looks like 1.12's TV screens.**
+  - **Type and controls:** the TV's type scale (Title, Section, Eyebrow) and
+    pills (gradient primary, cyan-edged ghost). Every control answers a touch
+    with a ripple; the TV's focus rings stay for keyboards and D-pads.
+  - **Listening mode** uses the TV's Content type chips. The chosen mode is
+    filled; offline, the row dims and the last choice keeps a cyan tint. Labels
+    shrink to 11sp before they are cut.
+  - **Rows that open a list** (profile, target, room volume) are card rows with
+    a chevron.
+  - **Bottom tabs** carry the rail's icons.
+  - **Connected, the connection card is one strip** with Refresh; offline it
+    stays the full card with Reconnect.
+  - **With a TV saved, pairing folds into "Pair a different TV".**
+  - **While measuring, the Measure tab shows only** "Measuring", what to do,
+    an 8dp progress bar and Cancel.
+  - Every tab and state is checked for text that does not fit on a 320dp phone.
+
+### Fixed
+
+- **Stable profile-status cards.** Playback callbacks no longer invalidate the
+  route on every change or feed the silent probe back into itself. The probe
+  queues finite silent PCM with media attributes; initial route establishment
+  is not a route change. Invalidations cannot be overwritten by stale probes,
+  and retry callbacks wait for their own probe completion. An enabled profile
+  recovers on its own measured output without the first-measurement auto-enable
+  policy blocking it. Short route checks pause effects/status immediately but
+  do not flash a warning and reannounce the same profile; settled missing-profile,
+  unconfirmed and ambiguous routes have distinct messages. A generic Bluetooth
+  label with only device-specific saved profiles is now explained as an
+  unidentified device, not a missing/deleted profile; matching remains strict.
+  Learned preferences and session discovery cannot bypass output matching or an
+  outstanding probe. These paths still require Android/TV verification; profiles
+  are not borrowed
+  across uncertain routes to suppress a card.
+- **No self-sustaining route checks.** Android reports Core EQ's own silent
+  probe to its playback callback like any other player. Read as playback, each
+  probe scheduled player discovery, and discovery found the 2-second probe
+  stale and ran the next one: a probe and an effect reapply about every 3
+  seconds with nothing playing (with player discovery granted, on devices
+  where correction attaches per app). Reports during a probe and for 500 ms
+  after it are now ignored, followed by one look at whether real playback
+  started or stopped meanwhile.
+- **Latest correction choice wins.** A queued STOP cannot overwrite a newer
+  enable. An explicitly disabled correction rejects sticky/late starts and
+  RESUME/REAPPLY. A late start still goes foreground for a moment before it
+  stops, because Android crashes an app whose service stops before
+  `startForeground()`. Route/discovery callbacks from a destroyed service
+  instance cannot reapply after a replacement has started.
+- **No stale phone commands.** Offline, busy and measurement states share one
+  interaction policy, including the previously unguarded mode buttons. An old
+  status read cannot overwrite a local command's result; a successful command
+  followed by a failed status read is no longer reported as a failed toggle.
+  Forget stops discovery before clearing credentials, and cancelled searches
+  cannot chain new reconnect attempts from their completion callback.
+
 ## [1.12.0] — 2026-11-04
 
 **Nothing below was checked on a TV or a phone.** It runs in the Kotlin

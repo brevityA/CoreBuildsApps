@@ -6,8 +6,10 @@ import tv.corebuilds.eq.apply.OutputRoute
 
 /**
  * Persistent record of which outputs have had correction auto-applied at least
- * once (1.11.0). [AutoApplyPolicy.decide] consults this: a device whose key is
- * already recorded only gets a suggestion, never an automatic re-apply.
+ * once (1.11.0). The first-measurement AutoApplyPolicy consults this: a later
+ * measurement is suggested instead of automatically enabling correction.
+ * This does not block an already-enabled service from following its measured
+ * output or recovering from a temporary route pause.
  *
  * Each output keeps its own entry because a TV's speakers and a soundbar are
  * different devices with different volumes, profiles, and correction needs.

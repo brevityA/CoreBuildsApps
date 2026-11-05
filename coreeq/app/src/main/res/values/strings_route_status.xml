@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="status_route_checking">Checking the audio output · correction paused until the route is confirmed.</string>
+    <string name="card_route_unconfirmed_title">Audio output unconfirmed</string>
+    <string name="card_route_unconfirmed_detail">Correction paused · Android did not confirm a route. Your profiles are still saved. Check the TV output, then reapply from Core EQ.</string>
+    <string name="notice_route_unconfirmed">Core EQ · correction paused · audio output unconfirmed. Your profiles are still saved.</string>
+    <string name="card_route_ambiguous_title">Audio output is unclear</string>
+    <string name="card_route_ambiguous_detail">Correction paused · Android reported multiple outputs or a route change. Select one output, then reapply.</string>
+    <string name="notice_route_ambiguous">Core EQ · correction paused · audio output is unclear, not a missing profile.</string>
+    <string name="card_route_unknown_title">Audio output not identified</string>
+    <string name="card_route_unknown_detail">Correction paused · Android did not name a matching output. Check the TV output and the profile it was measured on.</string>
+    <string name="notice_route_unknown">Core EQ · correction paused · audio output not identified.</string>
+    <string name="status_device_name_unconfirmed">Android reported %1$s without identifying the device. Correction is paused; your profiles are still saved. Reconnect the intended device, then select its profile again.</string>
+    <string name="card_device_name_unconfirmed_title">Audio device name unconfirmed</string>
+    <string name="card_device_name_unconfirmed_detail">Android reported %1$s without a device name. Correction is paused rather than guessing a device-specific profile. Your profiles are still saved.</string>
+    <string name="notice_device_name_unconfirmed">Core EQ · correction paused · %1$s device name unconfirmed. Your profiles are still saved.</string>
+</resources>

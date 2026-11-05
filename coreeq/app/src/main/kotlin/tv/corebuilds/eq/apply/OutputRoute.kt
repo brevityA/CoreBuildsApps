@@ -23,14 +23,13 @@ import tv.corebuilds.eq.export.Profile
  * the soundbar's profile applies; switch to an output nothing was measured on
  * and correction steps aside instead of applying another chain's curve.
  *
- * Android does not expose another app's actual media destination. On API 33+
- * [current] asks for the anticipated route for media attributes; earlier
- * versions use a connected-output estimate only when one external candidate
- * is present; competing external endpoints are treated as ambiguous. At
- * measurement time the route reported for the sweep's own `AudioTrack` is
- * stronger evidence, but does not prove the acoustic path or downstream signal
- * processing. If Android reports no route, the connected-output estimate is
- * retained and labeled as such.
+ * Android does not expose another app's actual media destination. [current]
+ * prefers the route reported for Core EQ's finite silent PCM probe. If a probe
+ * cannot start, API 33+ anticipated media routing or a connected-output estimate
+ * is retained and labelled; competing endpoints remain ambiguous. A probe that
+ * starts but reports no route is UNCONFIRMED, not an estimate fallback.
+ * Measurement-time sweep routing is evidence about that sweep track. Neither
+ * track proves another app's path, acoustic coverage or downstream processing.
  */
 object OutputRoute {
 
@@ -124,8 +123,9 @@ object OutputRoute {
     /**
      * Google's documented pattern for asking where audio actually goes: start
      * a silent PCM [AudioTrack] and read [AudioTrack.getRoutedDevice] while it
-     * is playing. A connected-device list is a guess; this is the hardware
-     * route. The track is released in [finally] no matter what.
+     * is playing. This reports this probe track's route, not another app's
+     * destination, effect coverage or downstream processing. The track is
+     * released in `finally` no matter what.
      *
      * On API 24+ an [AudioTrack.OnRoutingChangedListener] watches for the route
      * changing mid-probe (HDMI hot-plug, Bluetooth connect); on API 33+
@@ -138,7 +138,7 @@ object OutputRoute {
      * fallback to "Everyday".
      */
     fun probeWithSilentTrack(context: Context): ProbeResult? {
-        val am = context.getSystemService(AudioManager::class.java) ?: return null
+        context.getSystemService(AudioManager::class.java) ?: return null
         val format = AudioFormat.Builder()
             .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
             .setSampleRate(PROBE_SAMPLE_RATE_HZ)
@@ -146,32 +146,47 @@ object OutputRoute {
             .build()
         val track = try {
             AudioTrack.Builder()
+                .setAudioAttributes(mediaAttributes())
                 .setAudioFormat(format)
                 .setBufferSizeInBytes(PROBE_BUFFER_BYTES)
-                .setTransferMode(AudioTrack.MODE_STREAM)
+                .setTransferMode(AudioTrack.MODE_STATIC)
                 .build()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             return null
         }
 
-        var routeChanged = false
-        val listener = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            AudioTrack.OnRoutingChangedListener { routeChanged = true }
-        } else null
-        if (listener != null) {
-            try {
-                track.addOnRoutingChangedListener(listener, Handler(Looper.getMainLooper()))
-            } catch (e: Exception) {
-                // Observation is best-effort; the static read below still runs.
-            }
+        val observed = ProbeRouteObservation<Int>()
+        val listener = AudioTrack.OnRoutingChangedListener {
+            observed.observe(readRoutedDevices(track).map { it.id })
+        }
+        try {
+            track.addOnRoutingChangedListener(listener, Handler(Looper.getMainLooper()))
+        } catch (_: Exception) {
+            // The bounded polls below still observe reported endpoints.
         }
 
+        var playbackStarted = false
+        ownProbe.started() // ended in `finally`, after the track is released
         return try {
-            track.play() // getRoutedDevice() is only meaningful while playing
-            Thread.sleep(PROBE_SETTLE_MS)
-            val devices = readRoutedDevices(track)
+            // play() on an empty streaming track does not establish a usable
+            // playback route. Queue real PCM zeros, without focus or volume
+            // changes. A finite static buffer cannot run away or underrun
+            // halfway through the settling window.
+            val silence = ByteArray(PROBE_BUFFER_BYTES)
+            if (track.write(silence, 0, silence.size) != silence.size) return null
+            track.play()
+            playbackStarted = true
+            val deadline = SystemClock.elapsedRealtime() + PROBE_SETTLE_MS
+            var devices: List<AudioDeviceInfo>
+            while (true) {
+                devices = readRoutedDevices(track)
+                observed.observe(devices.map { it.id })
+                val remaining = deadline - SystemClock.elapsedRealtime()
+                if (remaining <= 0L) break
+                Thread.sleep(minOf(PROBE_POLL_MS, remaining))
+            }
             val output = if (devices.isEmpty()) {
-                Output(UNCONFIRMED, label(UNCONFIRMED), Evidence.TRACK_PROBE)
+                unconfirmedOutput()
             } else {
                 resolveCandidates(devices.map { device ->
                     val kind = kindOf(device.type) ?: UNKNOWN
@@ -181,33 +196,30 @@ object OutputRoute {
                         else displayName(kind, device.productName?.toString()),
                         Evidence.TRACK_PROBE
                     )
-                }) ?: Output(UNCONFIRMED, label(UNCONFIRMED), Evidence.TRACK_PROBE)
+                }) ?: unconfirmedOutput()
             }
-            // A route that moved while the probe was listening is ambiguous
-            // evidence, not a confirmed one.
-            val confirmed = if (routeChanged && output.kind != UNCONFIRMED) {
+            // Android sends an initial "routed" callback when playback starts.
+            // That is normal. Only observing different endpoint identities
+            // makes this probe ambiguous, including A -> B -> A.
+            val confirmed = if (observed.changed() && output.kind != UNCONFIRMED) {
                 Output(AMBIGUOUS, label(AMBIGUOUS), Evidence.AMBIGUOUS)
             } else output
             ProbeResult(confirmed, directPlaybackSupport(format))
+        } catch (_: InterruptedException) {
+            Thread.currentThread().interrupt()
+            if (playbackStarted) ProbeResult(unconfirmedOutput(), null) else null
         } catch (e: RuntimeException) {
-            null
+            Log.w("OutputRoute", "Silent route probe failed", e)
+            if (playbackStarted) ProbeResult(unconfirmedOutput(), null) else null
         } finally {
-            if (listener != null) {
-                try {
-                    track.removeOnRoutingChangedListener(listener)
-                } catch (_: Exception) {}
-            }
-            try {
-                track.stop()
-            } catch (_: Exception) {}
-            // Same swallow as stop(): a throw from finally would skip past the
-            // catch that already decided the result and turn a confirmed probe
-            // into an inconclusive one; a track that cannot release is gone.
-            try {
-                track.release()
-            } catch (_: Exception) {}
+            try { track.removeOnRoutingChangedListener(listener) } catch (_: Exception) { }
+            try { track.stop() } catch (_: Exception) { }
+            try { track.release() } catch (_: Exception) { }
+            ownProbe.ended(SystemClock.elapsedRealtime())
         }
     }
+
+    private fun unconfirmedOutput() = Output(UNCONFIRMED, label(UNCONFIRMED), Evidence.TRACK_PROBE)
 
     /**
      * API 33+: can this PCM format be direct-played at all — i.e. is the
@@ -258,12 +270,12 @@ object OutputRoute {
     }
 
     /**
-     * Best available media route indication. The authoritative answer comes
-     * first: a silent playback track started and [AudioTrack.getRoutedDevice]
-     * read while it plays. Only when no track can be opened at all does this
-     * fall back to the API 33+ anticipated route and then the connected-output
-     * estimate — and a probe that reported no route is [UNCONFIRMED], which
-     * pauses correction rather than guessing.
+     * Best available media route indication. Prefer the reported route
+     * from the probe: a silent playback track started and
+     * [AudioTrack.getRoutedDevice] read while it plays. Only when a usable probe
+     * cannot start does this fall back to the API 33+ anticipated route and then
+     * the connected-output estimate. A started probe that reported no route
+     * is [UNCONFIRMED], which pauses correction rather than guessing.
      *
      * The probe opens a real AudioTrack and waits for it to settle, so this
      * never blocks the main thread: on main, a cold cache answers from the
@@ -271,8 +283,9 @@ object OutputRoute {
      * in the background, or from the estimate when no probe has run yet. UI
      * reads are display-only and self-correct on the next read; the
      * auto-apply path ([refreshProbeAsync] with a callback) acts only on the
-     * confirmed answer, so applying never runs on an estimate. After a
-     * retry-cap give-up the hold pins this answer to [UNCONFIRMED] outright —
+     * confirmed cache answer. A track-open failure retains the explicitly
+     * labelled estimate fallback below; an empty reported route never does.
+     * After a retry-cap give-up the hold pins this answer to [UNCONFIRMED] outright —
      * no probe, no estimate decay — until a device event or a confirmed
      * background probe says something new.
      */
@@ -289,8 +302,8 @@ object OutputRoute {
             // reads — only from device events and explicit re-applies.
             return Output(UNCONFIRMED, label(UNCONFIRMED), Evidence.TRACK_PROBE)
         }
-        val cached = probeCache
-        if (cached != null && SystemClock.elapsedRealtime() - cached.first < PROBE_CACHE_MS) {
+        val cached = probeState.snapshot()
+        if (cached != null && SystemClock.elapsedRealtime() - cached.atMs < PROBE_CACHE_MS) {
             // Fresh probe within its window: trust it. A null result (no track
             // could be opened at all) falls through to the estimate, and that
             // is a decision, not an oversight: if this ROM cannot open the
@@ -302,7 +315,7 @@ object OutputRoute {
             // wrong gets its profile applied on a device where nothing can
             // confirm it. Reachable only with no hold set; a give-up hold
             // short-circuits above this branch.
-            return cached.second?.output ?: estimateOutput(context)
+            return cached.result?.output ?: estimateOutput(context)
         }
         if (isOnMainThread()) {
             // Never block the UI on a track open + settle. Refresh in the
@@ -310,17 +323,34 @@ object OutputRoute {
             // have: a prior probe result beats the estimate. UI reads
             // self-correct on the next read once the background probe lands.
             refreshProbeAsync(context)
-            return cached?.second?.output ?: estimateOutput(context)
+            return cached?.result?.output ?: estimateOutput(context)
         }
-        val generation = probeGeneration
+        val generation = probeState.generation()
         val probed = probeWithSilentTrack(context)
-        // Only publish if no invalidation landed while the track played.
-        // Same check-then-write race (and same accepted-mitigation) as
-        // refreshProbeAsync's publish path — see the comment there.
-        if (probeGeneration == generation) {
-            probeCache = SystemClock.elapsedRealtime() to probed
+        val publication = probeState.publish(
+            generation, SystemClock.elapsedRealtime(), probed, releasesHold(probed)
+        )
+        if (!publication.accepted) {
+            // A device event overtook this read: never return the obsolete
+            // result even though it was correctly refused by the cache.
+            return if (probeState.isHeld()) unconfirmedOutput()
+                else probeState.snapshot()?.result?.output ?: unconfirmedOutput()
         }
+        if (publication.changed) notifyRouteListeners()
         return probed?.output ?: estimateOutput(context)
+    }
+
+    /** Read-only indication. Playback callbacks use it without opening another AudioTrack. */
+    internal fun indication(context: Context): Output? = try {
+        estimateOutput(context)
+    } catch (e: RuntimeException) {
+        Log.w("OutputRoute", "Media route indication unavailable", e)
+        null
+    }
+
+    /** Evidence upgrades are not device switches. */
+    internal fun identity(output: Output?): Pair<String, String>? = output?.let {
+        it.kind to it.name.trim().lowercase(java.util.Locale.ROOT)
     }
 
     /** The non-authoritative route reads: anticipated (API 33+) then connected estimate. */
@@ -360,9 +390,9 @@ object OutputRoute {
         return resolveConnectedCandidates(external, speaker)
     }
 
-    internal fun resolveConnectedCandidates(external: List<Output>, speaker: Output?): Output? = when {
-        external.size > 1 -> Output(AMBIGUOUS, label(AMBIGUOUS), Evidence.AMBIGUOUS)
-        external.size == 1 -> external.single()
+    internal fun resolveConnectedCandidates(externalCandidates: List<Output>, speaker: Output?): Output? = when {
+        externalCandidates.size > 1 -> Output(AMBIGUOUS, label(AMBIGUOUS), Evidence.AMBIGUOUS)
+        externalCandidates.size == 1 -> externalCandidates.single()
         else -> speaker
     }
 
@@ -491,10 +521,14 @@ object OutputRoute {
         return Pick(null, switched = chosen != null)
     }
 
-    private fun specificName(kind: String, name: String?): String? {
-        val clean = name?.trim()?.takeIf { s -> s.isNotEmpty() } ?: return null
-        return clean.takeUnless { it.equals(label(kind), ignoreCase = true) }
-            ?.lowercase(java.util.Locale.ROOT)
+    private fun specificName(kind: String, name: String?): String? =
+        ProfileOutputIdentity.specificName(label(kind), name)
+
+    /** A same-kind profile exists, but Android did not identify which device is playing. */
+    internal fun needsDeviceName(profiles: List<Profile>, output: Output?): Boolean {
+        if (output == null || output.kind in setOf(UNKNOWN, AMBIGUOUS, UNCONFIRMED)) return false
+        val names = profiles.filter { it.outputKind == output.kind }.map { it.outputName }
+        return ProfileOutputIdentity.needsDeviceName(label(output.kind), output.name, names)
     }
 
     /**
@@ -581,132 +615,88 @@ object OutputRoute {
     private const val TYPE_BLE_HEADSET = 26 // API 31
     private const val TYPE_BLE_SPEAKER = 27 // API 31
 
-    /** Silent-track route probe: 48 kHz stereo PCM, a small buffer, a short settle. */
-    private const val PROBE_SAMPLE_RATE_HZ = 48000
-    private const val PROBE_BUFFER_BYTES = 4096
-    private const val PROBE_SETTLE_MS = 50L
-    /** How long a probe result is reused, so one apply does not reopen the track. */
-    private const val PROBE_CACHE_MS = 2000L
+    /** Finite silent PCM, longer than the bounded settling/polling window. */
+    private const val PROBE_SAMPLE_RATE_HZ = 48_000
+    private const val PROBE_TRACK_MS = 250
+    private const val PROBE_BUFFER_BYTES = PROBE_SAMPLE_RATE_HZ * PROBE_TRACK_MS / 1000 * 2 * 2
+    private const val PROBE_SETTLE_MS = 120L
+    private const val PROBE_POLL_MS = 10L
+    private const val PROBE_CACHE_MS = 2_000L
 
-    @Volatile
-    private var probeCache: Pair<Long, ProbeResult?>? = null
+    /** How long after a probe's track is released its stop/release reports may still arrive. */
+    internal const val OWN_PROBE_ECHO_MS = 500L
+    private val ownProbe = OwnProbeEcho(OWN_PROBE_ECHO_MS)
 
-    /**
-     * Bumped on every invalidation. A background probe whose generation no
-     * longer matches was overtaken by a device change and must not publish a
-     * route computed for the old device set.
-     */
-    @Volatile
-    private var probeGeneration = 0L
+    /** True while Core EQ's own probe plays and briefly after: a playback report now is its echo. */
+    internal fun isOwnProbeEcho(): Boolean = ownProbe.isEcho(SystemClock.elapsedRealtime())
 
-    /**
-     * While set, [current] answers UNCONFIRMED without probing — a hard stop
-     * that survives the cache window so no null-probe can decay into the
-     * estimate. Cleared only by a device event ([invalidateProbeCache]) or a
-     * background probe that confirms a real route, never by expiry: the pause
-     * holds until something new is actually known.
-     */
-    @Volatile
-    private var heldUnconfirmed = false
+    private val probeState = RouteProbeState<ProbeResult>()
+    private val routeListeners = java.util.concurrent.CopyOnWriteArraySet<() -> Unit>()
 
-    /** True while the [publishUnconfirmedProbe] hold is active (see EqService's re-apply path). */
-    internal fun isHeldUnconfirmed(): Boolean = heldUnconfirmed
+    internal fun addRouteListener(listener: () -> Unit) { routeListeners.add(listener) }
+    internal fun removeRouteListener(listener: () -> Unit) { routeListeners.remove(listener) }
 
-    /** Drop the cached probe and release any unconfirmed hold: a device arrived or left. */
-    fun invalidateProbeCache() {
-        probeGeneration++
-        probeCache = null
-        heldUnconfirmed = false
-    }
+    internal fun isHeldUnconfirmed(): Boolean = probeState.isHeld()
 
-    /** True when the cache holds a probe result younger than [PROBE_CACHE_MS]. */
-    internal fun hasFreshProbe(): Boolean {
-        val cached = probeCache ?: return false
-        return SystemClock.elapsedRealtime() - cached.first < PROBE_CACHE_MS
-    }
+    /** Invalidation and publication use the same lock; stale probes cannot republish over it. */
+    fun invalidateProbeCache() = probeState.invalidate()
 
-    /**
-     * Seed an [UNCONFIRMED] route into the probe cache and pin the hold,
-     * without opening a track. The caller reaches this after retrying a fresh
-     * probe too many times — device churn the probe cannot get a clean read
-     * through. The generation bump first (same as [invalidateProbeCache]) so
-     * any in-flight probe is discarded rather than completing over the seed:
-     * without it, a racing probe publish would erase the hold and refund the
-     * retry budget. Release paths are real knowledge, not time: a device
-     * event, or a background probe that confirms a route.
-     */
-    internal fun publishUnconfirmedProbe() {
-        probeGeneration++
-        probeCache = SystemClock.elapsedRealtime() to
-            ProbeResult(Output(UNCONFIRMED, label(UNCONFIRMED), Evidence.TRACK_PROBE), null)
-        heldUnconfirmed = true
-    }
+    internal fun hasFreshProbe(): Boolean = probeState.snapshot()?.let {
+        SystemClock.elapsedRealtime() - it.atMs < PROBE_CACHE_MS
+    } ?: false
 
-    /** One daemon thread: probes are cheap to hold but must never run on the caller's thread. */
+    internal fun publishUnconfirmedProbe() = probeState.hold(
+        SystemClock.elapsedRealtime(), ProbeResult(unconfirmedOutput(), null)
+    )
+
+    private fun releasesHold(result: ProbeResult?): Boolean = result != null && result.output.kind != UNCONFIRMED
+
     private val probeExecutor = java.util.concurrent.Executors.newSingleThreadExecutor { r ->
         Thread(r, "coreeq-route-probe").apply { isDaemon = true }
     }
 
-    /** Coalescing flag: callers racing on a cold cache queue one probe, not N track opens. */
-    private val probeInFlight = java.util.concurrent.atomic.AtomicBoolean(false)
-
-    /** Callbacks owed the completion of the in-flight (or next) probe. */
-    private val pendingProbeCallbacks = java.util.concurrent.ConcurrentLinkedQueue<() -> Unit>()
-
     /**
-     * Run a silent-track probe off-thread, refresh the cache with its result,
-     * then run [onDone] on the main thread. [current] fires this whenever a
-     * main-thread read would otherwise block; the auto-apply path calls it
-     * directly when it must act on the confirmed answer rather than the
-     * estimate. Concurrent calls coalesce onto the in-flight probe: [onDone]
-     * joins its completion queue instead of opening another track.
+     * Coalesced, generation-checked probe. Completion callbacks are detached
+     * before dispatch: a retry requested by a callback must await its own
+     * worker, not run immediately in the old completion's drain loop.
      */
     fun refreshProbeAsync(context: Context, onDone: () -> Unit = {}) {
         val app = context.applicationContext
-        pendingProbeCallbacks.add(onDone)
-        if (!probeInFlight.compareAndSet(false, true)) return
+        if (!probeState.enqueue(onDone)) return
         probeExecutor.execute {
-            var generation = probeGeneration
+            var generation = probeState.generation()
             var result: ProbeResult? = null
             try {
                 result = probeWithSilentTrack(app)
+                if (probeState.generation() != generation) {
+                    generation = probeState.generation()
+                    result = probeWithSilentTrack(app)
+                }
             } catch (e: RuntimeException) {
                 Log.w("OutputRoute", "Background route probe failed", e)
             }
-            if (probeGeneration != generation) {
-                // A device changed mid-probe: the answer is about the old set.
-                generation = probeGeneration
-                try {
-                    result = probeWithSilentTrack(app)
-                } catch (e: RuntimeException) {
-                    Log.w("OutputRoute", "Re-probe after device change failed", e)
-                }
-            }
-            // Known, accepted race: the generation check and this write are
-            // two volatile operations, not one atomic section. An
-            // invalidateProbeCache() landing between them republishes a stale
-            // result over the just-nulled cache (and can clear a hold the
-            // event just set) for up to the PROBE_CACHE_MS window. Nothing
-            // decided in that window is unsafe — the next real device event
-            // re-arms fresh — but if a "stale route applied" report ever
-            // appears, the fix is a synchronized check-and-write here and in
-            // current()'s synchronous publish, not a bigger rework.
-            if (probeGeneration == generation) {
-                probeCache = SystemClock.elapsedRealtime() to result
-                if (result != null && result.output.kind != UNCONFIRMED) {
-                    // Real knowledge released the pause: a confirmed route is
-                    // allowed back through current(). A null result (no track)
-                    // or an UNCONFIRMED one leaves any hold exactly as it was.
-                    heldUnconfirmed = false
-                }
-            }
-            probeInFlight.set(false)
+            val completion = probeState.complete(
+                generation, SystemClock.elapsedRealtime(), result, releasesHold(result)
+            )
             Handler(Looper.getMainLooper()).post {
-                var callback = pendingProbeCallbacks.poll()
-                while (callback != null) {
-                    callback()
-                    callback = pendingProbeCallbacks.poll()
+                completion.callbacks.forEach { callback ->
+                    try { callback() } catch (e: RuntimeException) {
+                        Log.w("OutputRoute", "Route completion callback failed", e)
+                    }
                 }
+                if (completion.publication.changed) dispatchRouteListeners()
+            }
+        }
+    }
+
+    private fun notifyRouteListeners() {
+        Handler(Looper.getMainLooper()).post { dispatchRouteListeners() }
+    }
+
+    private fun dispatchRouteListeners() {
+        routeListeners.forEach { listener ->
+            try { listener() } catch (e: RuntimeException) {
+                Log.w("OutputRoute", "Route listener failed", e)
             }
         }
     }

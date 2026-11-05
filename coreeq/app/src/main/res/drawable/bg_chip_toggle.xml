@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Filter/export chip: pill radius with active & focused states -->
+<!--
+  Filter/export chip: pill radius with active & focused states. A chip that
+  cannot be used (the phone's listening modes while the TV is offline) drops
+  its body: the chosen one keeps a 16% cyan tint so the last known choice
+  still reads, the rest keep only a hairline.
+-->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_activated="true" android:state_enabled="false">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/cb_selected_fill" />
+            <corners android:radius="@dimen/cb_radius_pill" />
+            <stroke android:width="1dp" android:color="@color/cb_hairline" />
+        </shape>
+    </item>
+    <item android:state_enabled="false">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <corners android:radius="@dimen/cb_radius_pill" />
+            <stroke android:width="1dp" android:color="@color/cb_hairline" />
+        </shape>
+    </item>
     <item android:state_activated="true" android:state_focused="true">
         <shape android:shape="rectangle">
             <gradient android:angle="315"

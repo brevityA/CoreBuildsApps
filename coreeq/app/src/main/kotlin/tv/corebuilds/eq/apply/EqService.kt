@@ -33,7 +33,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.MainActivity
-import tv.corebuilds.eq.dsp.AutoApplyPolicy
 import tv.corebuilds.eq.export.ProfileRouteStore
 import tv.corebuilds.eq.R
 import tv.corebuilds.eq.export.PlatformBand
@@ -124,6 +123,7 @@ class EqService : Service() {
     /** What the card says about the correction applied right now, for Profiles' test card; null while nothing is applied. */
     private var currentCard: AppliedCard.Content? = null
     private var currentCardFallback: String? = null
+    private var pendingPausedCard: Runnable? = null
     private var currentPlaybackHudState = PlaybackHudState.HIDDEN
     private val playbackHudHideRunnable = Runnable {
         if (currentPlaybackHudState == PlaybackHudState.IDLE) {
@@ -146,7 +146,10 @@ class EqService : Service() {
     private var globalEffect: AppliedEffect? = null
     private var globalError: String? = null
     private var suspended = false
-    /** True while the current output has no profile of its own: effects are held, disabled. */
+    // Public `running` describes the process, not this instance. A route probe
+    // can finish after destruction and after a replacement service starts.
+    private var instanceRunning = false
+    /** True while the route is settling/unsafe or has no matching profile: effects stay disabled. */
     private var outputPaused = false
 
     // The last words report() chose, and what publish() last put on screen, so
@@ -186,6 +189,7 @@ class EqService : Service() {
     private var discoverySnapshotComplete = false
     private val discoveryRunnable = Runnable {
         discoveryQueued = false
+        if (!CorrectionServicePolicy.canApply(instanceRunning, store.correctionEnabled, suspended)) return@Runnable
         if (discoveryInFlight) {
             discoveryAgain = true
         } else {
@@ -211,19 +215,66 @@ class EqService : Service() {
         }
     }
 
-    private val playbackCallback = object : AudioManager.AudioPlaybackCallback() {
-        override fun onPlaybackConfigChanged(configs: MutableList<AudioPlaybackConfiguration>?) {
-            // The delivered list is the change that fired this: use it instead
-            // of re-querying, which costs a binder call and can race the event.
-            publish(configs)
-            val active = audioIsPlaying(configs)
-            mainHandler.post {
+    private val playbackRouteHint = PlaybackRouteHint<Pair<String, String>?>(null)
+    private var playbackCheckQueued = false
+    private val playbackCheck = Runnable {
+        playbackCheckQueued = false
+        if (instanceRunning && store.correctionEnabled && !suspended) {
+            // Read after a finite probe has stopped, not its own start/stop
+            // callback. Playback is only a hint; it must not invalidate a
+            // verified route on every track, pause or UI sound.
+            val configs = try { audioManager.activePlaybackConfigurations } catch (_: RuntimeException) { null }
+            if (configs != null) {
                 playbackHintKnown = true
-                playbackActiveHint = active
-                onOutputsChanged()
+                playbackActiveHint = audioIsPlaying(configs)
+                publish(configs)
             }
+            val hint = OutputRoute.identity(OutputRoute.indication(this))
+            if (playbackRouteHint.observe(hint, playbackActiveHint)) onOutputsChanged()
             scheduleDiscovery()
         }
+    }
+    private val playbackCallback = object : AudioManager.AudioPlaybackCallback() {
+        override fun onPlaybackConfigChanged(configs: MutableList<AudioPlaybackConfiguration>?) {
+            // Decided when Android reports it: the probe's start and release
+            // reports arrive while it plays or just after it ends.
+            val ownProbeEcho = OutputRoute.isOwnProbeEcho()
+            mainHandler.post {
+                if (!instanceRunning || suspended || !store.correctionEnabled) return@post
+                // Core EQ's own silent probe is not content. Treated as playback,
+                // it scheduled discovery, whose apply ran the next probe.
+                if (ownProbeEcho) queueOwnProbeRecheck() else queuePlaybackCheck()
+            }
+        }
+    }
+    private var ownProbeRecheckQueued = false
+    /**
+     * Real playback may start or stop while a probe plays. Once its echo has
+     * passed, look again, and treat it as playback only if the playing state
+     * really changed. (One app replacing another mid-probe waits for its next
+     * report.)
+     */
+    private val ownProbeRecheck = Runnable {
+        ownProbeRecheckQueued = false
+        if (!CorrectionServicePolicy.canApply(instanceRunning, store.correctionEnabled, suspended)) return@Runnable
+        if (OutputRoute.isOwnProbeEcho()) {
+            queueOwnProbeRecheck()
+            return@Runnable
+        }
+        val configs = try { audioManager.activePlaybackConfigurations } catch (_: RuntimeException) { null }
+        if (configs != null && audioIsPlaying(configs) != playbackActiveHint) queuePlaybackCheck()
+    }
+
+    private fun queuePlaybackCheck() {
+        if (playbackCheckQueued) return
+        playbackCheckQueued = true
+        mainHandler.postDelayed(playbackCheck, PLAYBACK_ROUTE_CHECK_MS)
+    }
+
+    private fun queueOwnProbeRecheck() {
+        if (ownProbeRecheckQueued) return
+        ownProbeRecheckQueued = true
+        mainHandler.postDelayed(ownProbeRecheck, OutputRoute.OWN_PROBE_ECHO_MS)
     }
 
     private val sessionReceiver = object : BroadcastReceiver() {
@@ -240,10 +291,15 @@ class EqService : Service() {
 
     /** Plugging in a soundbar or headphones changes which profile is right. */
     private val deviceCallback = object : AudioDeviceCallback() {
-        override fun onAudioDevicesAdded(addedDevices: Array<out AudioDeviceInfo>) = onOutputsChanged()
-        override fun onAudioDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>) = onOutputsChanged()
+        override fun onAudioDevicesAdded(addedDevices: Array<out AudioDeviceInfo>) {
+            if (addedDevices.any { it.isSink }) onOutputsChanged()
+        }
+        override fun onAudioDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>) {
+            if (removedDevices.any { it.isSink }) onOutputsChanged()
+        }
     }
     private var lastOutput: OutputRoute.Output? = null
+    private val routeProbeListener: () -> Unit = { onRouteConfirmed() }
     /** Re-probes owed after a device change raced the last one (see onRouteConfirmed). */
     private var routeConfirmRetries = 0
     /**
@@ -260,18 +316,29 @@ class EqService : Service() {
 
     /** Reprogram only when the lift actually moves a step; holding the volume key costs a few reapplies. */
     private fun onVolumeChanged() {
-        if (!running || suspended) return
+        if (!instanceRunning || suspended) return
         val prefs = enhancedPrefs ?: return
         if (!prefs.lowVolumeBassEnabled && !prefs.autoLoudnessEnabled) return
         if (toneLayers() != activeLayers) applyAll()
     }
 
-    /**
-     * An output changed. The first time a device is seen, correction may be
-     * applied automatically ([AutoApplyPolicy]); later times it is only
-     * suggested — the user turns it on from Home.
-     */
+    /** Confirm a real output/hint change, while preserving the user's on/off choice. */
     private fun onOutputsChanged() {
+        if (!instanceRunning || !store.correctionEnabled) return
+        playbackRouteHint.reset(OutputRoute.identity(OutputRoute.indication(this)))
+        if (suspended) {
+            // Defer this device callback's probe until the sweep has ended.
+            OutputRoute.invalidateProbeCache()
+            return
+        }
+        // A previous output's curve is not safe while the new route settles.
+        // Home/status pauses immediately; a brief transition does not spam cards.
+        outputPaused = true
+        setAllEnabled(false)
+        announcePaused(OutputRoute.Output(
+            OutputRoute.UNCONFIRMED, OutputRoute.label(OutputRoute.UNCONFIRMED), OutputRoute.Evidence.TRACK_PROBE
+        ))
+        report(getString(R.string.status_route_checking), isError = false)
         val now = android.os.SystemClock.elapsedRealtime()
         val sinceGiveUp = now - lastRouteGiveUpAtMs
         if (sinceGiveUp < ROUTE_GIVEUP_COOLDOWN_MS) {
@@ -285,19 +352,20 @@ class EqService : Service() {
                 routeRetryScheduled = true
                 mainHandler.postDelayed({
                     routeRetryScheduled = false
-                    if (running) onOutputsChanged() // onDestroy does not scrub handler posts
+                    if (instanceRunning) onOutputsChanged() // onDestroy does not scrub handler posts
                 }, ROUTE_GIVEUP_COOLDOWN_MS - sinceGiveUp)
             }
             return
         }
         OutputRoute.invalidateProbeCache() // a device arrived or left: probe fresh
-        // The auto-apply decision must run on the probed route, never on the
-        // estimate, and the probe must never block main: confirm off-thread
-        // first, then act on the confirmed answer on main with a fresh cache.
+        // Re-confirm off-thread, then apply only this output's matching profile.
+        // This is not a new automatic enable: the saved switch is already on.
         OutputRoute.refreshProbeAsync(this) { onRouteConfirmed() }
     }
 
-    private fun onRouteConfirmed() {
+    private fun onRouteConfirmed(forceApply: Boolean = false) {
+        if (!instanceRunning || !store.correctionEnabled) return
+        if (suspended) return
         if (!OutputRoute.hasFreshProbe()) {
             if (routeConfirmRetries < MAX_ROUTE_CONFIRM_RETRIES) {
                 // A device arrived while the last probe played, so no answer
@@ -306,7 +374,7 @@ class EqService : Service() {
                 // a sink flapping faster than a probe settles gets a capped
                 // number of extra track opens per burst, not an endless one.
                 routeConfirmRetries++
-                OutputRoute.refreshProbeAsync(this) { onRouteConfirmed() }
+                OutputRoute.refreshProbeAsync(this) { onRouteConfirmed(forceApply) }
             } else {
                 // Churn outlasted the retries: surface the unconfirmed route
                 // explicitly — the cache is seeded with UNCONFIRMED *and held*,
@@ -322,23 +390,37 @@ class EqService : Service() {
             return
         }
         routeConfirmRetries = 0
-        val output = OutputRoute.current(this) ?: return
-        if (output == lastOutput) return
-        val key = "${output.kind}|${output.name}"
-        val applied = deviceKeyStore.appliedKeys()
-        if (AutoApplyPolicy.decide(key, applied) == AutoApplyPolicy.Action.SUGGEST_ONLY) {
-            // A device we have seen before: do not auto-apply correction here.
-            // The user turns it on from Home when they want it.
-            return
-        }
+        val output = OutputRoute.current(this)
+        if (!forceApply && OutputRoute.identity(output) == OutputRoute.identity(lastOutput) && !outputPaused) return
+        Log.i(TAG, "Route result: kind=${output?.kind ?: OutputRoute.UNKNOWN}, evidence=${output?.evidence}, wasPaused=$outputPaused")
         lastOutput = output
+        // Once correction is enabled it follows its measured outputs, including
+        // returning from an uncertain/unmeasured route. The first-measurement
+        // auto-enable policy must not block that recovery for a known device.
         applyAll()
         if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
+    }
+
+    private fun reapplyWithConfirmedRoute() {
+        if (!CorrectionServicePolicy.canApply(instanceRunning, store.correctionEnabled, suspended)) return
+        val fresh = OutputRoute.hasFreshProbe() && !OutputRoute.isHeldUnconfirmed()
+        val kind = if (fresh) OutputRoute.current(this)?.kind else OutputRoute.UNCONFIRMED
+        if (fresh && kind != OutputRoute.UNCONFIRMED && kind != OutputRoute.AMBIGUOUS) applyAll()
+        else OutputRoute.refreshProbeAsync(this) { onRouteConfirmed(forceApply = true) }
     }
 
     override fun onCreate() {
         super.onCreate()
         store = ProfileStore(this)
+        // A queued start (or an Android sticky restart) is not a new user choice,
+        // so an explicit off stops here without applying anything. enable()
+        // starts this service with startForegroundService(), and Android crashes
+        // an app whose service stops before calling startForeground(), even when
+        // it stops on purpose. Go foreground for that moment, then stop.
+        if (!store.correctionEnabled) {
+            stopAfterExplicitOff()
+            return
+        }
         modeStore = ContentModeStore(this)
         deviceKeyStore = DeviceKeyStore.of(this)
         routeStore = ProfileRouteStore.of(this)
@@ -383,33 +465,50 @@ class EqService : Service() {
         ContextCompat.registerReceiver(
             this, volumeReceiver, IntentFilter(VOLUME_CHANGED_ACTION), ContextCompat.RECEIVER_NOT_EXPORTED
         )
+        playbackHintKnown = true
+        playbackActiveHint = audioIsPlaying()
+        playbackRouteHint.reset(OutputRoute.identity(OutputRoute.indication(this)), playbackActiveHint)
         lastOutput = OutputRoute.current(this)
         // Registering delivers the current devices once; the full route identity makes that a no-op.
         getSystemService(AudioManager::class.java)?.registerAudioDeviceCallback(deviceCallback, Handler(Looper.getMainLooper()))
-        playbackHintKnown = true
-        playbackActiveHint = audioIsPlaying()
+        instanceRunning = true
         running = true
+        OutputRoute.addRouteListener(routeProbeListener)
         mediaSessionMonitor.setEnabled(MediaSessionDiscovery.hasAccess(this))
         if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (!running) return START_NOT_STICKY // onCreate could not go foreground
-        when (intent?.action) {
-            ACTION_STOP -> {
-                store.correctionEnabled = false
-                stopSelf()
+        if (!instanceRunning) {
+            stopSelf(startId)
+            return START_NOT_STICKY // disabled before creation, or foreground start refused
+        }
+        when (CorrectionServicePolicy.decide(store.correctionEnabled, intent?.action == ACTION_STOP)) {
+            CorrectionServicePolicy.Decision.STOP -> {
+                stopSelf(startId)
                 return START_NOT_STICKY
             }
+            // disable() already saved the choice. If it is on now, this STOP was
+            // queued before a newer enable; never write over that newer choice.
+            CorrectionServicePolicy.Decision.IGNORE_STALE_STOP -> return START_STICKY
+            CorrectionServicePolicy.Decision.HANDLE -> Unit
+        }
+        when (intent?.action) {
             ACTION_SUSPEND -> {
                 suspended = true
+                mainHandler.removeCallbacks(playbackCheck)
+                playbackCheckQueued = false
+                mainHandler.removeCallbacks(ownProbeRecheck)
+                ownProbeRecheckQueued = false
+                clearCurrentCard()
+                appliedCard.dismiss()
                 setAllEnabled(false)
                 report("Correction paused while this room is measured.", isError = false)
             }
             ACTION_RESUME -> {
                 suspended = false
                 mediaSessionMonitor.setEnabled(MediaSessionDiscovery.hasAccess(this))
-                applyAll()
+                reapplyWithConfirmedRoute()
                 if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
             }
             ACTION_RELOAD_PREFS -> {
@@ -468,17 +567,9 @@ class EqService : Service() {
                 else applyMediaSessionSnapshot(MediaSessionSnapshot(emptySet(), complete = false, available = false))
             }
             else -> {
-                // ACTION_START, ACTION_REAPPLY, or a sticky restart. While the
-                // unconfirmed hold is up, an immediate applyAll would only read
-                // the held UNCONFIRMED and re-pause — so run the one fresh
-                // probe the hold forbids, and act on its answer. A confirmed
-                // route lands the correction; a failed probe keeps the pause.
-                // This is what makes "play a test tone to continue" true.
-                if (OutputRoute.isHeldUnconfirmed()) {
-                    OutputRoute.refreshProbeAsync(this) { applyAll() }
-                } else {
-                    applyAll()
-                }
+                // Never flash an estimate's profile before a cold/held probe
+                // completes. Explicit reapply is also the held-route recovery.
+                reapplyWithConfirmedRoute()
             }
         }
         return START_STICKY
@@ -504,7 +595,14 @@ class EqService : Service() {
     }
 
     /** The route-matched room base plus its current content-mode overlay. */
-    private fun resolve(): Triple<Profile?, OutputRoute.Output?, Boolean> {
+    private data class ResolvedProfile(
+        val profile: Profile?,
+        val output: OutputRoute.Output?,
+        val switched: Boolean,
+        val needsDeviceName: Boolean
+    )
+
+    private fun resolve(): ResolvedProfile {
         val output = OutputRoute.current(this)
         val profiles = store.getAllProfiles()
         val chosen = store.chosenId()
@@ -518,7 +616,9 @@ class EqService : Service() {
             val preferredId = key?.let { routeStore.preferredProfile(it) }
             val preferred = preferredId?.let { profiles.firstOrNull { it.id == preferredId } }
             if (preferred != null) {
-                OutputRoute.Pick(preferred, switched = chosen != null && chosen != preferred.id)
+                // Learning is a preference, not permission to bypass route
+                // safety (including ambiguous/unconfirmed and legacy cases).
+                OutputRoute.pick(profiles, preferred.id, output?.kind, output?.name)
             } else {
                 OutputRoute.pick(profiles, null, output?.kind, output?.name)
             }
@@ -535,7 +635,10 @@ class EqService : Service() {
             ).mode
         }
         val effective = pick.profile?.let { modeStore.effectiveProfile(it, mode) }
-        return Triple(effective, output, pick.switched)
+        return ResolvedProfile(
+            effective, output, pick.switched,
+            needsDeviceName = pick.profile == null && OutputRoute.needsDeviceName(profiles, output)
+        )
     }
 
     /** " · on Sonos Beam", plus the passthrough caveat where it applies. */
@@ -551,21 +654,29 @@ class EqService : Service() {
     }
 
     private fun applyAll() {
-        if (suspended) return
+        if (!CorrectionServicePolicy.canApply(instanceRunning, store.correctionEnabled, suspended)) return
+        if (!OutputRoute.hasFreshProbe() && !OutputRoute.isHeldUnconfirmed()) {
+            reapplyWithConfirmedRoute()
+            return
+        }
         activeLayers = toneLayers()
         if (store.getAllProfiles().isEmpty()) {
             clearCurrentCard()
             report("No measurement yet. Measure this room to create a correction.", isError = true)
             return
         }
-        val (profile, output, switched) = resolve()
+        val resolved = resolve()
+        val (profile, output, switched) = resolved
+        lastOutput = output
         if (profile == null) {
             // Another chain's curve would be wrong here: step aside, say why.
             outputPaused = true
             setAllEnabled(false)
-            announcePaused(output)
+            announcePaused(output, resolved.needsDeviceName)
             val routeName = output?.name ?: "the output Android could not identify"
-            val pauseMessage = if (output?.kind == OutputRoute.UNCONFIRMED) {
+            val pauseMessage = if (resolved.needsDeviceName) {
+                getString(R.string.status_device_name_unconfirmed, OutputRoute.label(output?.kind))
+            } else if (output?.kind == OutputRoute.UNCONFIRMED) {
                 // A silent playback track was started and Android still named no
                 // routed device: a hard stop, never a silent fallback.
                 "Could not confirm output route — correction paused. Play a test tone to continue."
@@ -840,7 +951,7 @@ class EqService : Service() {
      * coalesce into one run; during a scan, at most one follow-up is retained.
      */
     private fun scheduleDiscovery(delayMs: Long = DISCOVERY_DEBOUNCE_MS) {
-        if (!running || suspended || !playerDiscoveryAvailable()) return
+        if (!instanceRunning || suspended || !store.correctionEnabled || !playerDiscoveryAvailable()) return
         if (discoveryInFlight) {
             discoveryAgain = true
             return
@@ -856,7 +967,7 @@ class EqService : Service() {
      * its snapshot handler below performs the single mode arbitration for both.
      */
     private fun applyMediaSessionSnapshot(snapshot: MediaSessionSnapshot) {
-        if (!running || suspended) return
+        if (!instanceRunning || suspended || !store.correctionEnabled) return
         val previousDecision = modeStore.currentDecision()
         when {
             !snapshot.available -> {
@@ -909,7 +1020,7 @@ class EqService : Service() {
      * shared UIDs and hidden packages remain unidentified.
      */
     private fun applyDiscovered(snapshot: DiscoverySnapshot) {
-        if (!running || suspended) return
+        if (!instanceRunning || suspended || !store.correctionEnabled) return
         val previousDecision = modeStore.currentDecision()
         val foundPackages = linkedSetOf<String>()
         val packageBySession = mutableMapOf<Int, String?>()
@@ -968,6 +1079,12 @@ class EqService : Service() {
             return
         }
         if (decision.mode != previousDecision.mode && sessionEqs.isNotEmpty()) applyAll()
+        if (outputPaused || !OutputRoute.hasFreshProbe()) {
+            // Discovery must not attach an estimate's curve while a probe is
+            // pending or correction is paused on an unsafe/unmeasured route.
+            applyAll()
+            return
+        }
 
         // Prune only against a complete snapshot. A failed command, permission
         // refusal, or unrecognized firmware format is not proof a player ended.
@@ -1077,7 +1194,7 @@ class EqService : Service() {
      * the notification on every focus change.
      */
     private fun publish(configs: List<AudioPlaybackConfiguration>? = null) {
-        if (!running || messageBody.isEmpty()) return
+        if (!instanceRunning || messageBody.isEmpty()) return
         val healthy = !suspended && !outputPaused && !messageError
         val hasOutputMixEffect = globalEffect != null
         val hasSessionEffect = sessionEqs.isNotEmpty()
@@ -1118,7 +1235,7 @@ class EqService : Service() {
      */
     private fun syncPlaybackHud(next: PlaybackHudState) {
         mainHandler.post {
-            if (!running) {
+            if (!instanceRunning) {
                 mainHandler.removeCallbacks(playbackHudHideRunnable)
                 currentPlaybackHudState = PlaybackHudState.HIDDEN
                 appliedCard.dismissPersistent()
@@ -1240,6 +1357,8 @@ class EqService : Service() {
      * off on Profiles.
      */
     private fun announceApplied(profile: Profile, modeName: String, applied: List<AppliedEffect>, output: OutputRoute.Output?) {
+        pendingPausedCard?.let(mainHandler::removeCallbacks)
+        pendingPausedCard = null
         val detail = listOfNotNull(
             modeName,
             output?.let { OutputRoute.label(it.kind) },
@@ -1258,21 +1377,53 @@ class EqService : Service() {
         showCard(content, fallback)
     }
 
-    /** Once per output without a profile: say on screen that correction stepped aside there. */
-    private fun announcePaused(output: OutputRoute.Output?) {
+    /** Pause audio immediately, but announce only a settled pause and its actual reason. */
+    private fun announcePaused(output: OutputRoute.Output?, needsDeviceName: Boolean = false) {
         val label = OutputRoute.label(output?.kind ?: OutputRoute.UNKNOWN)
-        val content = AppliedCard.Content(
-            active = false,
-            title = getString(R.string.card_paused_title),
-            detail = getString(R.string.card_paused_detail, label),
-            extras = null
-        )
-        val fallback = getString(R.string.notice_paused, label)
+        val (title, detail, fallback) = when (output?.kind) {
+            OutputRoute.UNCONFIRMED -> Triple(
+                getString(R.string.card_route_unconfirmed_title),
+                getString(R.string.card_route_unconfirmed_detail),
+                getString(R.string.notice_route_unconfirmed)
+            )
+            OutputRoute.AMBIGUOUS -> Triple(
+                getString(R.string.card_route_ambiguous_title),
+                getString(R.string.card_route_ambiguous_detail),
+                getString(R.string.notice_route_ambiguous)
+            )
+            null, OutputRoute.UNKNOWN -> Triple(
+                getString(R.string.card_route_unknown_title),
+                getString(R.string.card_route_unknown_detail),
+                getString(R.string.notice_route_unknown)
+            )
+            else -> if (needsDeviceName) Triple(
+                getString(R.string.card_device_name_unconfirmed_title),
+                getString(R.string.card_device_name_unconfirmed_detail, label),
+                getString(R.string.notice_device_name_unconfirmed, label)
+            ) else Triple(
+                getString(R.string.card_paused_title),
+                getString(R.string.card_paused_detail, label),
+                getString(R.string.notice_paused, label)
+            )
+        }
+        val content = AppliedCard.Content(active = false, title = title, detail = detail, extras = null)
         currentCard = content
         currentCardFallback = fallback
-        if (!appliedNotice.onPaused(output?.let { "${it.kind}|${it.name}" } ?: OutputRoute.UNKNOWN)) return
-        if (!store.announceApplied) return
-        showCard(content, fallback)
+        val routeKey = output?.let { "${it.kind}|${it.name}" } ?: OutputRoute.UNKNOWN
+        // A change in explanation is news even if Android repeats the same generic label.
+        val key = "$routeKey|needsDeviceName=$needsDeviceName"
+        if (!appliedNotice.deferPause(key)) return
+        // Do not leave an old "Correction on" overlay up while effects are paused.
+        appliedCard.dismiss()
+        pendingPausedCard?.let(mainHandler::removeCallbacks)
+        val notice = Runnable {
+            pendingPausedCard = null
+            if (instanceRunning && store.correctionEnabled && !suspended && outputPaused &&
+                appliedNotice.commitPause(key) && store.announceApplied
+            ) showCard(content, fallback)
+        }
+        pendingPausedCard = notice
+        mainHandler.postDelayed(notice, PAUSED_NOTICE_SETTLE_MS)
     }
 
     /** The card, or the same words as a text toast where Android will not let Core EQ draw over other apps. */
@@ -1285,6 +1436,9 @@ class EqService : Service() {
     }
 
     private fun clearCurrentCard() {
+        pendingPausedCard?.let(mainHandler::removeCallbacks)
+        pendingPausedCard = null
+        appliedNotice.cancelDeferredPause()
         currentCard = null
         currentCardFallback = null
     }
@@ -1335,13 +1489,17 @@ class EqService : Service() {
     }
 
     override fun onDestroy() {
-        if (!running) {
+        OutputRoute.removeRouteListener(routeProbeListener)
+        if (!instanceRunning) {
+            mainHandler.removeCallbacksAndMessages(null)
+            discoveryExecutor.shutdownNow()
             super.onDestroy()
             return
         }
         // Down first: teardown below closes sessions, and publish() must not
         // write a transient "Correcting …" status (or light the indicator)
         // mid-teardown only to have it overwritten a moment later.
+        instanceRunning = false
         running = false
         appliedCard.dismiss() // a card about correction must not outlive it
         discoveredPackages = emptySet()
@@ -1396,6 +1554,20 @@ class EqService : Service() {
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
+
+    private fun stopAfterExplicitOff() {
+        createChannel()
+        val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK else 0
+        try {
+            ServiceCompat.startForeground(this, NOTIFICATION_ID, notification("Audio correction is off."), type)
+        } catch (e: Exception) {
+            // Refused (a background or post-reboot start): there is no
+            // foreground request to honour, so stopping below is safe.
+            Log.w(TAG, "startForeground refused while stopping an off correction", e)
+        }
+        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+        stopSelf()
+    }
 
     private fun createChannel() {
         val channel = NotificationChannel(CHANNEL_ID, "Audio correction", NotificationManager.IMPORTANCE_LOW)
@@ -1464,6 +1636,10 @@ class EqService : Service() {
 
         /** Playback changes coalesce into one re-discovery after this pause. */
         private const val DISCOVERY_DEBOUNCE_MS = 2000L
+        /** Longer than the finite 250 ms probe: do not interpret its own playback as content. */
+        private const val PLAYBACK_ROUTE_CHECK_MS = 400L
+        /** Effects/status pause immediately; transient route handovers stay quiet on screen. */
+        private const val PAUSED_NOTICE_SETTLE_MS = 750L
         /** Keep the overlay through brief pauses between tracks. */
         private const val PLAYBACK_HUD_STOP_GRACE_MS = 5000L
 
