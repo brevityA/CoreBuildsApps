@@ -404,7 +404,11 @@ jobs:
 
       - name: Say the on-device tests run on API 30 only
         if: ${{ !startsWith(github.ref, 'refs/tags/coreeq-v') && !matrix.device-tests }}
-        run: echo "::notice title=Core EQ on-device tests::not run on API ${{ matrix.api-level }}; its system server crash-loops on this runner (25 restarts in about 6 minutes on PR #455). They run on API 30; this job checks the install."
+        # A block scalar on purpose: in a plain one-line `run:` YAML reads
+        # " #" as the start of a comment, and the first version of this step
+        # lost its closing quote that way ("unexpected EOF", cdcbc75cf).
+        run: |
+          echo "::notice title=Core EQ on-device tests::not run on API ${{ matrix.api-level }}; its system server crash-loops on this runner (25 restarts in about 6 minutes on PR 455). They run on API 30; this job checks the install."
 
       # The emulator runner installs the platform without a channel flag, so
       # the canary-channel packages are installed here first; a package that is

@@ -126,6 +126,11 @@ class OnDeviceTestRuns(unittest.TestCase):
         self.assertIn("matrix.device-tests }}\n        with:\n          name: CoreEQ-androidTest", workflow)
         api30 = workflow[workflow.index("- api-level: '30'"):workflow.index("- api-level: '37.0'")]
         self.assertIn("device-tests: true", api30)
+        # The skip notice must reach the shell whole: a plain `run:` lost its tail at " #".
+        notice = workflow[workflow.index("- name: Say the on-device tests run on API 30 only"):]
+        notice = notice[:notice.index("\n\n")]
+        self.assertIn("run: |", notice)
+        self.assertIn("this job checks the install.\"", notice)
         script = EMULATOR.read_text(encoding="utf-8")
         self.assertIn("TEST_APK=androidtest/coreeq-debug-androidTest.apk", script)
         self.assertIn("tv.corebuilds.eq.debug.test/androidx.test.runner.AndroidJUnitRunner", script)
