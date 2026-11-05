@@ -1,19 +1,19 @@
 {
-  "versionCode": 26,
-  "versionName": "1.12.0",
-  "releaseDate": "2026-11-04",
+  "versionCode": 27,
+  "versionName": "1.13.0",
+  "releaseDate": "2026-11-05",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "75c6a9c31b98f255b3c7ae757b784d819a22ca5041a44a6acd2df3bccd0c27ee",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.12.0",
+  "apkSha256": "f47c10b932fdbf218d30060ee2dd586dc9c24f21e774a884b7b55b6c3595c705",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.13.0",
   "minSdk": 30,
   "highlights": [
-    "A rail on every screen.",
-    "Focus opens where you start.",
-    "Text fits its box.",
-    "Information panels stay put.",
-    "A new look in the brand's own type.",
-    "Setup's Check again says what it did.",
-    "The TV side of the phone companion",
-    "Manual EQ reads the room."
+    "Phone-first navigation.",
+    "Less setup friction.",
+    "Passive phone connection.",
+    "The phone companion looks like 1.12's TV screens.",
+    "Stable profile-status cards.",
+    "No self-sustaining route checks.",
+    "Latest correction choice wins.",
+    "No stale phone commands."
   ]
 }
