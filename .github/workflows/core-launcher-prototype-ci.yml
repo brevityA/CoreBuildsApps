@@ -1,6 +1,6 @@
 name: Core Builds Launcher prototype CI
 
-# Build/lint guard only. Tag publishing lives in core-launcher-release.yml
+# Build/lint/open-the-screens guard only. Tag publishing lives in core-launcher-release.yml
 # (dispatch-only, pre-release); this workflow never builds or publishes a release.
 on:
   pull_request:
@@ -51,9 +51,12 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
 
       - id: build
-        name: Build and lint debug APK
+        name: Build, lint and open-the-screens tests
         working-directory: launcher
-        run: ./gradlew :app:lintDebug :app:assembleDebug --no-daemon --stacktrace
+        # testDebugUnitTest opens Home and the favourites editor under
+        # Robolectric on API 26, 30 and 35. launcher-v0.1.0 built and linted
+        # clean yet closed on open on Android 11+; nothing had run an activity.
+        run: ./gradlew :app:testDebugUnitTest :app:lintDebug :app:assembleDebug --no-daemon --stacktrace
 
       - id: revision
         name: Record exact source commit for validation artifact
@@ -83,5 +86,5 @@ jobs:
         working-directory: launcher
         shell: bash
         run: |
-          ./gradlew :app:lintDebug :app:assembleDebug --no-daemon --stacktrace --console=plain > build_out.txt 2>&1 || true
+          ./gradlew :app:testDebugUnitTest :app:lintDebug :app:assembleDebug --no-daemon --stacktrace --console=plain > build_out.txt 2>&1 || true
           python3 ../tools/extract_launcher_gradle_diagnostics.py build_out.txt

@@ -17,10 +17,17 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 
+/**
+ * Hides the system bars. Safe to call before setContentView(): on Android 11+
+ * Window.getInsetsController() reads the window's decor view without creating
+ * it, so calling it first in onCreate threw a NullPointerException and the
+ * launcher closed the moment it opened. The decor view's own controller is
+ * asked instead; reading window.decorView creates the decor if needed.
+ */
 internal fun Activity.enterImmersiveMode() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         window.setDecorFitsSystemWindows(false)
-        window.insetsController?.apply {
+        window.decorView.windowInsetsController?.apply {
             systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             hide(WindowInsets.Type.systemBars())
         }

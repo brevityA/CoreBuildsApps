@@ -24,6 +24,7 @@ An installable, **private-use** Android TV / Google TV HOME launcher experiment.
 - [LauncherUi.kt](app/src/main/java/tv/corebuilds/launcher/LauncherUi.kt) defines reusable TV tiles, focus styling, and accessibility descriptions.
 - [ManageFavoritesActivity.kt](app/src/main/java/tv/corebuilds/launcher/ManageFavoritesActivity.kt) provides the favourites editor; [AndroidManifest.xml](app/src/main/AndroidManifest.xml) declares HOME and launcher entry points.
 - [tests/test_gradle_envelope.py](../tests/test_gradle_envelope.py) contains source/manifest contract checks for the prototype. These are not Android UI automation and do not establish physical-device behavior.
+- [ScreensOpenTest.kt](app/src/test/java/tv/corebuilds/launcher/ScreensOpenTest.kt) opens Home and the favourites editor under Robolectric on API 26, 30 and 35 and checks each shows an installed app with focus on it. It runs the platform's own framework code, not a device, so it proves the screens open; it does not establish remote, TalkBack or HOME-role behaviour.
 
 Wallpaper galleries, recommendations/channels, search, weather/scores, remote setup, and vendor-specific HOME-key workarounds are deliberately out of scope for v0.1.
 
@@ -79,6 +80,8 @@ Some televisions restrict third-party HOME selection. This prototype intentional
 
 **Tested build vs shipped tag.** The eight PASS results attest to the `f01b5194bc71c3fd917b79ce5e6b02e19150d4e6` debug artifact. The [launcher-v0.1.0 pre-release](https://github.com/brevityA/CoreBuildsApps/releases/tag/launcher-v0.1.0) was cut later from `7c017a5e7e5728e01f19cd46a34d5a42230ab761` (APK SHA-256 `6cdfbc4cd18da4ddad116e15b6d4494331e374ccf42cd03b255ef2f4fa308e9f`), which adds three review fixes made after that test: package entries this launcher may not start are skipped before they are kept, the favourites editor reloads on return and restores focus to the same app, and the offline preview joined the CI mockup checks. Those three paths are therefore **not covered by the Google TV pass**; re-run this checklist against the pre-release APK before treating v0.1.0 as device-verified.
 
+**Known defect in launcher-v0.1.0: both screens close as they open on Android 11 and later.** `enterImmersiveMode()` ran before `setContentView()` and asked the window for its insets controller; from Android 11 (API 30) `Window.getInsetsController()` reads the window's decor view without creating it, so `onCreate` threw a `NullPointerException`. Found under Robolectric on API 30 and 35 and confirmed in the API 34 framework bytecode, not on a device. The same call order is in `f01b519`, the build the Google TV pass covers, so re-run the checklist on a 0.1.1 build before relying on that record. 0.1.1 reads the decor view's own controller, which is safe before `setContentView()`, and CI now opens both screens on every launcher PR.
+
 **Validation owner:** Repository owner (reported PASS in PR #435 review, 2026-11-04).
 
 **Target completion date:** Met — results recorded 2026-11-04.
@@ -112,4 +115,4 @@ Use **NOT RUN**, **PASS**, **FAIL**, or **BLOCKED** in the status column. Run th
 
 Favourites/Recent persistence and package-based focus restoration after a catalog refresh are v0.1 checks. Persisting the exact focused item across process recreation is **not currently promised** by v0.1; if required, add it to scope and record it as a separate check.
 
-The launcher CI build/lint gate is separate from this table: it checks that the debug APK builds and lints, not that the UI works with a physical remote or TalkBack. The rows above carry the owner's attestation for one Google TV device; nothing here claims coverage of other vendors, other Android TV OS versions, or the unused release variant.
+The launcher CI gate is separate from this table: it checks that the debug APK builds and lints and that both screens open under Robolectric, not that the UI works with a physical remote or TalkBack. The rows above carry the owner's attestation for one Google TV device; nothing here claims coverage of other vendors, other Android TV OS versions, or the unused release variant.
