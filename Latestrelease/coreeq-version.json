@@ -1,19 +1,15 @@
 {
-  "versionCode": 27,
-  "versionName": "1.13.0",
+  "versionCode": 28,
+  "versionName": "1.13.1",
   "releaseDate": "2026-11-05",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "f47c10b932fdbf218d30060ee2dd586dc9c24f21e774a884b7b55b6c3595c705",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.13.0",
+  "apkSha256": "aad13851b42bfd2f79a02f6059df9f3ae1bceda11713f0efef48a22ef4afec2d",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.13.1",
   "minSdk": 30,
   "highlights": [
-    "Phone-first navigation.",
-    "Less setup friction.",
-    "Passive phone connection.",
-    "The phone companion looks like 1.12's TV screens.",
-    "Stable profile-status cards.",
-    "No self-sustaining route checks.",
-    "Latest correction choice wins.",
-    "No stale phone commands."
+    "Phone pairing works.",
+    "A phone that cannot encrypt the token no longer leaves the TV paired.",
+    "A failed save after the TV accepts is reported.",
+    "After updating, pair again."
   ]
 }
