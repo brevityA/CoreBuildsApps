@@ -234,17 +234,8 @@ class CompanionActivity : TvActivity() {
                 }
             }
             candidateServer = runningServer
-            // A phone looking for this TV opens its pairing screen, so the user only has to
-            // scan. Refused while paired, while the screen is hidden, or while a code is showing.
-            runningServer.onWake = {
-                runOnUiThread {
-                    if (screenVisible && server === candidateServer && !isFinishing && !isDestroyed &&
-                        !runningServerPaired() && activeCode == null
-                    ) {
-                        openPairing()
-                    }
-                }
-            }
+            // Discovery is passive. Only Start pairing on this TV opens a code;
+            // opening or searching from a phone must not change this screen.
             val port = runningServer.start()
             listenPort = port
             server = runningServer

@@ -1,14 +1,20 @@
 package tv.corebuilds.eq.companion
 
 import android.Manifest
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.InputFilter
 import android.text.InputType
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
@@ -16,7 +22,9 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.OnBackPressedCallback
 import com.google.android.gms.common.moduleinstall.InstallStatusListener
 import com.google.android.gms.common.moduleinstall.ModuleInstall
 import com.google.android.gms.common.moduleinstall.ModuleInstallClient
@@ -38,8 +46,8 @@ import kotlin.math.roundToInt
 /** Android phone UI for local TV control and a foreground-only phone-mic measurement. */
 class PhoneCompanionActivity : AppCompatActivity() {
 
-    private data class RemoteProfile(val id: String, val name: String, val active: Boolean, val manualOnly: Boolean)
-    private data class Dashboard(
+    internal data class RemoteProfile(val id: String, val name: String, val active: Boolean, val manualOnly: Boolean)
+    internal data class Dashboard(
         val deviceName: String,
         val version: String,
         val output: String,
@@ -48,8 +56,12 @@ class PhoneCompanionActivity : AppCompatActivity() {
         val profileName: String,
         val serviceStatus: String,
         val serviceError: Boolean,
-        val profiles: List<RemoteProfile>
+        val profiles: List<RemoteProfile>,
+        val serviceRunning: Boolean? = null,
+        val bypassEnabled: Boolean = false
     )
+    private enum class PhoneTab { CONTROL, MEASURE, TV }
+
     private data class RoomChoice(val label: String, val volumeM3: Double?)
 
     private lateinit var credentialStore: PhoneCredentialStore
@@ -75,7 +87,51 @@ class PhoneCompanionActivity : AppCompatActivity() {
     private lateinit var findTvButton: Button
     private lateinit var scanQrButton: Button
     private lateinit var discoveryLine: TextView
+    private lateinit var contentScroll: ScrollView
+    private lateinit var controlPage: LinearLayout
+    private lateinit var measurePage: LinearLayout
+    private lateinit var tvPage: LinearLayout
+    private lateinit var controlEmpty: LinearLayout
+    private lateinit var manualPairPanel: LinearLayout
+    private lateinit var manualPairButton: Button
+    private lateinit var savedTvPanel: LinearLayout
+    private lateinit var savedTvLine: TextView
+    private lateinit var connectionHint: TextView
+    private lateinit var correctionState: TextView
+    private lateinit var outputLine: TextView
+    private lateinit var serviceLine: TextView
+    private lateinit var profileButton: Button
+    private lateinit var measureAvailability: TextView
+    private lateinit var measureFeedback: TextView
+    private val modeButtons = linkedMapOf<String, Button>()
+    private val tabButtons = linkedMapOf<PhoneTab, Button>()
+    private var selectedTab = PhoneTab.TV
+    private var pairedCredentials: PhoneCredentials? = null
+    private var tvConnected = false
+    private var screenResumed = false
+    private var searchedOnFirstOpen = false
+    private var initialConnectionRequested = false
+    private var qrInProgress = false
+    private var statusRefreshInProgress = false
+    private var dashboardRevision = 0L
+    private var lastSyncMs: Long? = null
+    private var orientationBeforeCapture: Int? = null
+    private var focusBeforeOperation: View? = null
     private var tvSearch: TvDiscovery.Search? = null
+    private var searchGeneration = 0L
+    private var scannerInstallClient: ModuleInstallClient? = null
+    private var scannerInstallListener: InstallStatusListener? = null
+    private val uiHandler = Handler(Looper.getMainLooper())
+    private val refreshTicker = object : Runnable {
+        override fun run() {
+            if (!screenResumed) return
+            if (pairedCredentials != null && hasLocalNetworkAccess() && !qrInProgress && tvSearch == null) {
+                // Reads only. Never retry a state-changing command or silently turn EQ on.
+                refreshDashboard(quiet = true, allowRediscovery = false)
+            }
+            uiHandler.postDelayed(this, REFRESH_INTERVAL_MS)
+        }
+    }
     /** Other TV addresses from the QR, tried only when a connection to the first one fails. */
     private var fallbackHosts: List<String> = emptyList()
 
@@ -108,40 +164,44 @@ class PhoneCompanionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         credentialStore = PhoneCredentialStore(this)
+        pairedCredentials = credentialStore.load()
         val prefs = getSharedPreferences(PREFS, MODE_PRIVATE)
         targetIndex = prefs.getInt(KEY_TARGET, 0).coerceIn(targets.indices)
         roomIndex = prefs.getInt(KEY_ROOM, 0).coerceIn(rooms.indices)
+        selectedTab = savedInstanceState?.getString(KEY_TAB)?.let { key ->
+            PhoneTab.entries.firstOrNull { it.name == key }
+        } ?: if (pairedCredentials == null) PhoneTab.TV else PhoneTab.CONTROL
         setContentView(buildContent())
-        focusFirstControl()
-
-        credentialStore.load()?.let { saved ->
+        pairedCredentials?.let { saved ->
             hostField.setText(saved.host)
             portField.setText(saved.port.toString())
-            remotePanel.visibility = View.VISIBLE
-            connectionLine.setText(R.string.phone_saved_not_connected)
-            setRemoteEnabled(true)
-            withLocalNetwork { refreshDashboard() }
-        } ?: run {
-            remotePanel.visibility = View.GONE
-            connectionLine.setText(R.string.phone_not_paired)
-            setRemoteEnabled(false)
-            // Nothing is saved yet, so look for the TV straight away.
-            withLocalNetwork { startTvSearch() }
         }
+        selectTab(selectedTab, moveFocus = false)
+        updateConnectionUi()
+        setRemoteEnabled(false)
         refreshMeasurementChoices()
+        focusFirstControl()
+        contentScroll.post { if (!isFinishing && !isDestroyed) focusFirstControl() }
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                when {
+                    measurementInProgress -> confirmCancelCapture()
+                    selectedTab != PhoneTab.CONTROL && pairedCredentials != null -> selectTab(PhoneTab.CONTROL)
+                    else -> { isEnabled = false; onBackPressedDispatcher.onBackPressed() }
+                }
+            }
+        })
     }
 
-    private fun buildContent(): ScrollView {
-        // targetSdk 37 draws edge-to-edge, so the scroll view keeps its background under the
-        // status and navigation bars and pads its content clear of them. The bottom inset is
-        // the keyboard when it is taller than the navigation bar, so the focused field and the
-        // pair button stay on screen while typing.
-        val scroll = ScrollView(this).apply {
-            isFillViewport = true
-            clipToPadding = false
-            // Children are the focus stops; the scroll container only follows them.
-            descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
-            isFocusable = false
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString(KEY_TAB, selectedTab.name)
+        super.onSaveInstanceState(outState)
+    }
+
+    /** A phone-sized shell: one scrolling page and navigation that never scrolls away. */
+    private fun buildContent(): View {
+        val root = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
             setBackgroundColor(color(R.color.cb_night))
             ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
                 val bars = insets.getInsets(
@@ -152,180 +212,436 @@ class PhoneCompanionActivity : AppCompatActivity() {
                 insets
             }
         }
-        val column = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(dp(20), dp(18), dp(20), dp(24))
+        val header = column(padding = 20).apply { setPadding(dp(20), dp(12), dp(20), dp(8)) }
+        header.addView(label(getString(R.string.phone_brand), 26f, true, R.color.cb_ink).apply {
+            isAccessibilityHeading = true
+        })
+        header.addView(label(getString(R.string.phone_brand_caption), 12f, false, R.color.cb_signal_cyan))
+        root.addView(header, matchWrap())
+        contentScroll = ScrollView(this).apply {
+            id = R.id.phone_scroll
+            isFillViewport = true
+            clipToPadding = false
+            descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
+            isFocusable = false
         }
-        scroll.addView(column)
-        column.addView(label(getString(R.string.phone_companion_title), 25f, true, R.color.cb_ink))
-        column.addView(label(getString(R.string.phone_companion_subtitle), 15f, false, R.color.cb_slate))
-        column.addView(cardText(getString(R.string.phone_capture_warning)))
+        val content = column(padding = 20).apply { setPadding(dp(20), dp(8), dp(20), dp(24)) }
+        contentScroll.addView(content)
+        root.addView(contentScroll, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
 
-        val pairHeading = label(getString(R.string.phone_pair_heading), 19f, true, R.color.cb_ink)
-        column.addView(pairHeading, matchWrap(top = 16))
-        findTvButton = actionButton(getString(R.string.phone_find_tv_button), primary = false).apply {
-            setOnClickListener { withLocalNetwork { startTvSearch() } }
+        val connectionCard = section()
+        connectionLine = label(getString(R.string.phone_not_paired), 18f, true, R.color.cb_ink).apply {
+            id = R.id.phone_connection_state
         }
-        column.addView(findTvButton, matchWrap(top = 6))
-        scanQrButton = actionButton(getString(R.string.phone_scan_qr_button), primary = true).apply {
-            setOnClickListener { scanTvQr() }
+        connectionCard.addView(connectionLine)
+        connectionHint = label("", 13f, false, R.color.cb_slate)
+        connectionCard.addView(connectionHint, matchWrap(top = 2))
+        connectButton = actionButton(getString(R.string.phone_connect_button), primary = false).apply {
+            id = R.id.phone_connect
+            setOnClickListener {
+                if (pairedCredentials == null) selectTab(PhoneTab.TV)
+                else withLocalNetwork { refreshDashboard() }
+            }
         }
-        column.addView(scanQrButton, matchWrap(top = 6))
-        discoveryLine = label("", 14f, false, R.color.cb_slate)
-        column.addView(discoveryLine, matchWrap(top = 4))
-        hostField = editField(getString(R.string.phone_tv_ip_hint), InputType.TYPE_CLASS_PHONE).apply {
-            contentDescription = getString(R.string.phone_tv_ip_accessibility)
-        }
-        portField = editField(getString(R.string.phone_tv_port_hint), InputType.TYPE_CLASS_NUMBER).apply {
-            contentDescription = getString(R.string.phone_tv_port_accessibility)
-        }
-        codeField = editField(getString(R.string.phone_pair_code_hint), InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS).apply {
-            filters = arrayOf(InputFilter.LengthFilter(64))
-            isSingleLine = true
-            contentDescription = getString(R.string.phone_pair_code_accessibility)
-        }
-        column.addView(hostField, matchWrap(top = 6))
-        column.addView(portField, matchWrap(top = 6))
-        column.addView(codeField, matchWrap(top = 6))
-        pairButton = actionButton(getString(R.string.phone_pair_button), primary = true)
-        connectButton = actionButton(getString(R.string.phone_connect_button), primary = false)
-        column.addView(pairButton, matchWrap(top = 8))
-        column.addView(connectButton, matchWrap(top = 6))
-        pairButton.setOnClickListener { withLocalNetwork { pairWithTv() } }
-        connectButton.setOnClickListener { withLocalNetwork { refreshDashboard() } }
-
-        connectionLine = label(getString(R.string.phone_not_paired), 15f, true, R.color.cb_signal_cyan)
-        column.addView(connectionLine, matchWrap(top = 12))
-        detailLine = label("", 14f, false, R.color.cb_slate)
-        column.addView(detailLine, matchWrap(top = 5))
-        statusLine = cardText(getString(R.string.phone_measure_ready))
-        column.addView(statusLine, matchWrap(top = 8))
-
-        remotePanel = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
+        connectionCard.addView(connectButton, matchWrap(top = 8))
+        content.addView(connectionCard, matchWrap())
+        statusLine = cardText("").apply {
+            id = R.id.phone_feedback
             visibility = View.GONE
         }
-        column.addView(remotePanel, matchWrap(top = 14))
-        buildRemotePanel(remotePanel)
-        return scroll
+        content.addView(statusLine, matchWrap(top = 10))
+        controlPage = column().apply { id = R.id.phone_control_page }
+        measurePage = column().apply { id = R.id.phone_measure_page }
+        tvPage = column().apply { id = R.id.phone_tv_page }
+        content.addView(controlPage, matchWrap(top = 18))
+        content.addView(measurePage, matchWrap(top = 18))
+        content.addView(tvPage, matchWrap(top = 18))
+        buildControlPage()
+        buildMeasurePage()
+        buildTvPage()
+
+        val navigation = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            setPadding(dp(12), dp(8), dp(12), dp(8))
+            setBackgroundColor(color(R.color.cb_card_surface))
+        }
+        listOf(
+            PhoneTab.CONTROL to R.string.phone_tab_control,
+            PhoneTab.MEASURE to R.string.phone_tab_measure,
+            PhoneTab.TV to R.string.phone_tab_tv
+        ).forEach { (tab, title) ->
+            val button = actionButton(getString(title), primary = false).apply {
+                id = when (tab) {
+                    PhoneTab.CONTROL -> R.id.phone_tab_control
+                    PhoneTab.MEASURE -> R.id.phone_tab_measure
+                    PhoneTab.TV -> R.id.phone_tab_tv
+                }
+                setBackgroundResource(R.drawable.bg_segment)
+                setTextColor(ContextCompat.getColorStateList(this@PhoneCompanionActivity, R.color.segment_text))
+                setOnClickListener { selectTab(tab) }
+            }
+            tabButtons[tab] = button
+            navigation.addView(button, weightedWrap())
+        }
+        root.addView(navigation, matchWrap())
+        return root
     }
 
-    private fun buildRemotePanel(parent: LinearLayout) {
-        parent.addView(label(getString(R.string.phone_remote_heading), 20f, true, R.color.cb_ink))
-        correctionButton = actionButton(getString(R.string.phone_correction_off), primary = true)
-        correctionButton.setOnClickListener {
-            val current = dashboard ?: return@setOnClickListener
-            runControl(JSONObject().put("op", "set_enabled").put("enabled", !current.correctionEnabled))
+    private fun buildControlPage() {
+        controlEmpty = section().apply {
+            addView(heading(R.string.phone_control_empty_title))
+            addView(label(getString(R.string.phone_control_empty_body), 15f, false, R.color.cb_slate), matchWrap(top = 6))
+            addView(actionButton(getString(R.string.phone_open_tv_setup), primary = true).apply {
+                id = R.id.phone_open_tv_setup
+                setOnClickListener { selectTab(PhoneTab.TV) }
+            }, matchWrap(top = 12))
         }
-        parent.addView(correctionButton, matchWrap(top = 8))
-
-        parent.addView(label(getString(R.string.phone_profiles_heading), 16f, true, R.color.cb_ink), matchWrap(top = 10))
-        profileList = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        parent.addView(profileList, matchWrap(top = 4))
-
-        val modeRow = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
+        controlPage.addView(controlEmpty, matchWrap())
+        remotePanel = column().apply { visibility = View.GONE }
+        controlPage.addView(remotePanel, matchWrap())
+        val correctionCard = section()
+        correctionCard.addView(eyebrow(R.string.phone_correction_heading))
+        correctionState = label("", 26f, true, R.color.cb_ink).apply { id = R.id.phone_correction_state }
+        correctionCard.addView(correctionState, matchWrap(top = 4))
+        serviceLine = label("", 14f, false, R.color.cb_slate)
+        correctionCard.addView(serviceLine, matchWrap(top = 4))
+        correctionButton = actionButton(getString(R.string.phone_correction_off), primary = true).apply {
+            id = R.id.phone_correction_toggle
+            setOnClickListener {
+                val current = dashboard ?: return@setOnClickListener
+                runControl(JSONObject().put("op", "set_enabled").put("enabled", !current.correctionEnabled))
+            }
         }
-        parent.addView(label(getString(R.string.phone_mode_heading), 16f, true, R.color.cb_ink), matchWrap(top = 10))
+        correctionCard.addView(correctionButton, matchWrap(top = 12))
+        outputLine = label("", 13f, false, R.color.cb_slate)
+        correctionCard.addView(outputLine, matchWrap(top = 10))
+        remotePanel.addView(correctionCard, matchWrap())
+
+        val modeCard = section()
+        modeCard.addView(heading(R.string.phone_mode_heading))
+        val modeRow = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
         listOf(
             "movie_tv" to R.string.phone_mode_movie,
             "everyday" to R.string.phone_mode_everyday,
             "gaming" to R.string.phone_mode_gaming
-        ).forEach { (mode, titleRes) ->
-            val button = actionButton(getString(titleRes), primary = false).apply {
-                // Three equal columns on a narrow phone: let long labels wrap instead of clipping.
-                minimumWidth = 0
-                maxLines = 2
-                setPadding(dp(6), dp(8), dp(6), dp(8))
-                setOnClickListener { runControl(JSONObject().put("op", "set_mode").put("mode", mode)) }
+        ).forEach { (mode, title) ->
+            val button = actionButton(getString(title), primary = false).apply {
+                id = when (mode) {
+                    "movie_tv" -> R.id.phone_mode_movie
+                    "gaming" -> R.id.phone_mode_gaming
+                    else -> R.id.phone_mode_everyday
+                }
+                textSize = 14f
+                setPadding(dp(4), dp(10), dp(4), dp(10))
+                setBackgroundResource(R.drawable.bg_segment)
+                setTextColor(ContextCompat.getColorStateList(this@PhoneCompanionActivity, R.color.segment_text))
+                setOnClickListener {
+                    if (dashboard?.mode != mode) runControl(JSONObject().put("op", "set_mode").put("mode", mode))
+                }
             }
+            modeButtons[mode] = button
             modeRow.addView(button, weightedWrap())
         }
-        parent.addView(modeRow, matchWrap(top = 5))
+        modeCard.addView(modeRow, matchWrap(top = 8))
+        modeCard.addView(label(getString(R.string.phone_mode_note), 13f, false, R.color.cb_slate), matchWrap(top = 8))
+        remotePanel.addView(modeCard, matchWrap(top = 12))
 
-        parent.addView(label(getString(R.string.phone_measure_heading), 19f, true, R.color.cb_ink), matchWrap(top = 16))
-        parent.addView(label(getString(R.string.phone_measure_explanation), 14f, false, R.color.cb_slate), matchWrap(top = 4))
-        targetButton = actionButton("", primary = false)
-        roomButton = actionButton("", primary = false)
-        parent.addView(targetButton, matchWrap(top = 6))
-        parent.addView(roomButton, matchWrap(top = 6))
+        val profileCard = section()
+        profileCard.addView(heading(R.string.phone_profiles_heading))
+        profileList = column()
+        profileButton = actionButton(getString(R.string.phone_no_profiles), primary = false).apply {
+            id = R.id.phone_profile_picker
+            gravity = Gravity.START or Gravity.CENTER_VERTICAL
+            setOnClickListener { chooseProfile() }
+        }
+        profileList.addView(profileButton, matchWrap(top = 10))
+        profileCard.addView(profileList, matchWrap())
+        remotePanel.addView(profileCard, matchWrap(top = 12))
+    }
+
+    private fun buildMeasurePage() {
+        measurePage.addView(heading(R.string.phone_measure_heading))
+        measureAvailability = label("", 14f, false, R.color.cb_slate)
+        measurePage.addView(measureAvailability, matchWrap(top = 4))
+        measureFeedback = cardText("").apply {
+            id = R.id.phone_measure_feedback
+            visibility = View.GONE
+        }
+        measurePage.addView(measureFeedback, matchWrap(top = 10))
+        measureProgress = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {
+            id = R.id.phone_measure_progress
+            max = PROGRESS_MAX
+            visibility = View.GONE
+            progressTintList = android.content.res.ColorStateList.valueOf(color(R.color.cb_signal_cyan))
+            contentDescription = getString(R.string.phone_measure_progress_accessibility)
+        }
+        measurePage.addView(measureProgress, matchWrap(top = 12))
+        cancelMeasureButton = actionButton(getString(R.string.phone_cancel_measure), primary = false).apply {
+            id = R.id.phone_cancel_measure
+            visibility = View.GONE
+            setOnClickListener { cancelCapture(sendRemote = true) }
+        }
+        measurePage.addView(cancelMeasureButton, matchWrap(top = 8))
+        val preparation = section()
+        preparation.addView(heading(R.string.phone_measure_prepare))
+        preparation.addView(label(getString(R.string.phone_measure_checklist), 15f, false, R.color.cb_ink), matchWrap(top = 8))
+        preparation.addView(label(getString(R.string.phone_capture_warning), 13f, false, R.color.cb_slate), matchWrap(top = 10))
+        measurePage.addView(preparation, matchWrap(top = 14))
+        val choices = section()
+        choices.addView(heading(R.string.phone_measure_options))
+        targetButton = actionButton("", primary = false).apply {
+            id = R.id.phone_target_picker
+            setOnClickListener { chooseTarget() }
+        }
+        roomButton = actionButton("", primary = false).apply {
+            id = R.id.phone_room_picker
+            setOnClickListener { chooseRoom() }
+        }
+        choices.addView(targetButton, matchWrap(top = 10))
+        choices.addView(roomButton, matchWrap(top = 8))
         repeatCheck = CheckBox(this).apply {
+            id = R.id.phone_repeat_check
             text = getString(R.string.phone_repeat_option)
+            textSize = 15f
+            minimumHeight = dp(48)
+            isFocusable = true
+            isClickable = true
             setTextColor(color(R.color.cb_ink))
             buttonTintList = android.content.res.ColorStateList.valueOf(color(R.color.cb_signal_cyan))
-            setPadding(0, dp(4), 0, dp(4))
             isChecked = getSharedPreferences(PREFS, MODE_PRIVATE).getBoolean(KEY_REPEAT, false)
             setOnCheckedChangeListener { _, checked ->
                 getSharedPreferences(PREFS, MODE_PRIVATE).edit().putBoolean(KEY_REPEAT, checked).apply()
             }
         }
-        parent.addView(repeatCheck, matchWrap(top = 8))
-        parent.addView(cardText(getString(R.string.phone_repeat_explanation)), matchWrap(top = 2))
-        targetButton.setOnClickListener {
-            targetIndex = (targetIndex + 1) % targets.size
-            getSharedPreferences(PREFS, MODE_PRIVATE).edit().putInt(KEY_TARGET, targetIndex).apply()
-            refreshMeasurementChoices()
-        }
-        roomButton.setOnClickListener {
-            roomIndex = (roomIndex + 1) % rooms.size
-            getSharedPreferences(PREFS, MODE_PRIVATE).edit().putInt(KEY_ROOM, roomIndex).apply()
-            refreshMeasurementChoices()
-        }
-        measureButton = actionButton(getString(R.string.phone_measure_button), primary = true)
-        measureButton.setOnClickListener {
-            withLocalNetwork {
-                if (repeatFallbackSessionId != null) retrySaveFirstCapture() else requestMicrophoneThenMeasure()
+        choices.addView(repeatCheck, matchWrap(top = 10))
+        choices.addView(label(getString(R.string.phone_repeat_explanation), 13f, false, R.color.cb_slate), matchWrap(top = 4))
+        measurePage.addView(choices, matchWrap(top = 12))
+        measureButton = actionButton(getString(R.string.phone_measure_button), primary = true).apply {
+            id = R.id.phone_start_measure
+            setOnClickListener {
+                withLocalNetwork {
+                    if (repeatFallbackSessionId != null) retrySaveFirstCapture() else requestMicrophoneThenMeasure()
+                }
             }
         }
-        parent.addView(measureButton, matchWrap(top = 8))
-        measureProgress = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {
-            max = PROGRESS_MAX
-            progress = 0
-            visibility = View.GONE
-            contentDescription = getString(R.string.phone_measure_progress_accessibility)
-        }
-        parent.addView(measureProgress, matchWrap(top = 8))
-        cancelMeasureButton = actionButton(getString(R.string.phone_cancel_measure), primary = false).apply {
-            visibility = View.GONE
-            setOnClickListener { cancelCapture(sendRemote = true) }
-        }
-        parent.addView(cancelMeasureButton, matchWrap(top = 5))
-
-        revokeButton = actionButton(getString(R.string.phone_unpair_button), primary = false).apply {
-            setOnClickListener { withLocalNetwork { revokePairing() } }
-        }
-        forgetButton = actionButton(getString(R.string.phone_forget_button), primary = false).apply {
-            setOnClickListener { forgetLocally() }
-        }
-        parent.addView(revokeButton, matchWrap(top = 18))
-        parent.addView(forgetButton, matchWrap(top = 5))
-        parent.addView(label(getString(R.string.phone_forget_note), 12f, false, R.color.cb_slate), matchWrap(top = 3))
+        measurePage.addView(measureButton, matchWrap(top = 16))
+        measurePage.addView(label(getString(R.string.phone_measure_foreground), 13f, false, R.color.cb_slate), matchWrap(top = 8))
     }
 
-    private fun pairWithTv() {
+    private fun buildTvPage() {
+        tvPage.addView(heading(R.string.phone_tv_heading))
+        savedTvPanel = section()
+        savedTvPanel.addView(heading(R.string.phone_saved_tv_heading))
+        savedTvLine = label("", 15f, false, R.color.cb_ink)
+        savedTvPanel.addView(savedTvLine, matchWrap(top = 6))
+        detailLine = label("", 13f, false, R.color.cb_slate)
+        savedTvPanel.addView(detailLine, matchWrap(top = 6))
+        revokeButton = actionButton(getString(R.string.phone_unpair_button), primary = false).apply {
+            id = R.id.phone_unpair
+            setOnClickListener { confirmUnpair() }
+        }
+        forgetButton = actionButton(getString(R.string.phone_forget_button), primary = false).apply {
+            id = R.id.phone_forget
+            setOnClickListener { confirmForget() }
+        }
+        savedTvPanel.addView(revokeButton, matchWrap(top = 12))
+        savedTvPanel.addView(forgetButton, matchWrap(top = 8))
+        savedTvPanel.addView(label(getString(R.string.phone_forget_note), 13f, false, R.color.cb_slate), matchWrap(top = 6))
+        tvPage.addView(savedTvPanel, matchWrap(top = 14))
+        val pairing = section()
+        pairing.addView(heading(R.string.phone_pair_heading))
+        pairing.addView(label(getString(R.string.phone_pair_steps), 14f, false, R.color.cb_slate), matchWrap(top = 6))
+        scanQrButton = actionButton(getString(R.string.phone_scan_qr_button), primary = true).apply {
+            id = R.id.phone_scan_qr
+            setOnClickListener { scanTvQr() }
+        }
+        pairing.addView(scanQrButton, matchWrap(top = 12))
+        findTvButton = actionButton(getString(R.string.phone_find_tv_button), primary = false).apply {
+            id = R.id.phone_find_tv
+            setOnClickListener { withLocalNetwork { startTvSearch() } }
+        }
+        pairing.addView(findTvButton, matchWrap(top = 8))
+        discoveryLine = label("", 14f, false, R.color.cb_slate).apply {
+            accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE
+        }
+        pairing.addView(discoveryLine, matchWrap(top = 6))
+        manualPairButton = actionButton(getString(R.string.phone_manual_pair_show), primary = false).apply {
+            id = R.id.phone_manual_pair_toggle
+            setOnClickListener { showManualPairing(manualPairPanel.visibility != View.VISIBLE) }
+        }
+        pairing.addView(manualPairButton, matchWrap(top = 10))
+        manualPairPanel = column().apply {
+            id = R.id.phone_manual_pair_panel
+            visibility = View.GONE
+        }
+        hostField = editField(getString(R.string.phone_tv_ip_hint), InputType.TYPE_CLASS_PHONE).apply {
+            id = R.id.phone_host
+            contentDescription = getString(R.string.phone_tv_ip_accessibility)
+        }
+        portField = editField(getString(R.string.phone_tv_port_hint), InputType.TYPE_CLASS_NUMBER).apply {
+            id = R.id.phone_port
+            contentDescription = getString(R.string.phone_tv_port_accessibility)
+        }
+        codeField = editField(getString(R.string.phone_pair_code_hint), InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS).apply {
+            id = R.id.phone_pair_code
+            filters = arrayOf(InputFilter.LengthFilter(64))
+            typeface = android.graphics.Typeface.MONOSPACE
+            imeOptions = EditorInfo.IME_ACTION_DONE
+            contentDescription = getString(R.string.phone_pair_code_accessibility)
+            setOnEditorActionListener { _, action, _ ->
+                if (action == EditorInfo.IME_ACTION_DONE) {
+                    withLocalNetwork { pairWithTv() }; true
+                } else false
+            }
+        }
+        manualPairPanel.addView(eyebrow(R.string.phone_ip_label), matchWrap(top = 12))
+        manualPairPanel.addView(hostField, matchWrap(top = 4))
+        manualPairPanel.addView(eyebrow(R.string.phone_port_label), matchWrap(top = 10))
+        manualPairPanel.addView(portField, matchWrap(top = 4))
+        manualPairPanel.addView(eyebrow(R.string.phone_code_label), matchWrap(top = 10))
+        manualPairPanel.addView(codeField, matchWrap(top = 4))
+        pairButton = actionButton(getString(R.string.phone_pair_button), primary = true).apply {
+            id = R.id.phone_pair
+            setOnClickListener { withLocalNetwork { pairWithTv() } }
+        }
+        manualPairPanel.addView(pairButton, matchWrap(top = 12))
+        pairing.addView(manualPairPanel, matchWrap())
+        tvPage.addView(pairing, matchWrap(top = 14))
+        tvPage.addView(label(getString(R.string.phone_link_visibility), 14f, false, R.color.cb_slate), matchWrap(top = 12))
+    }
+
+    private fun selectTab(tab: PhoneTab, moveFocus: Boolean = true) {
+        val changed = selectedTab != tab
+        selectedTab = tab
+        controlPage.visibility = if (tab == PhoneTab.CONTROL) View.VISIBLE else View.GONE
+        measurePage.visibility = if (tab == PhoneTab.MEASURE) View.VISIBLE else View.GONE
+        tvPage.visibility = if (tab == PhoneTab.TV) View.VISIBLE else View.GONE
+        connectButton.visibility = if (tab == PhoneTab.TV && pairedCredentials == null) View.GONE else View.VISIBLE
+        tabButtons.forEach { (key, button) ->
+            button.isActivated = key == tab
+            button.isSelected = key == tab
+            button.contentDescription = getString(
+                if (key == tab) R.string.phone_tab_selected else R.string.phone_tab_accessibility,
+                button.text
+            )
+        }
+        if (changed) {
+            (getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager)
+                ?.hideSoftInputFromWindow(contentScroll.windowToken, 0)
+            contentScroll.scrollTo(0, 0)
+        }
+        if (moveFocus) focusFirstControl()
+    }
+
+    private fun showManualPairing(show: Boolean) {
+        manualPairPanel.visibility = if (show) View.VISIBLE else View.GONE
+        manualPairButton.text = getString(if (show) R.string.phone_manual_pair_hide else R.string.phone_manual_pair_show)
+        if (show) hostField.requestFocus() else manualPairButton.requestFocus()
+    }
+
+    private fun chooseTarget() {
+        if (!uiState().canChangeSetup) return
+        AlertDialog.Builder(this)
+            .setTitle(R.string.phone_target_title)
+            .setSingleChoiceItems(targets.map { it.second }.toTypedArray(), targetIndex) { dialog, which ->
+                if (uiState().canChangeSetup) {
+                    targetIndex = which
+                    getSharedPreferences(PREFS, MODE_PRIVATE).edit().putInt(KEY_TARGET, which).apply()
+                    refreshMeasurementChoices()
+                }
+                dialog.dismiss()
+            }.setNegativeButton(android.R.string.cancel, null).show()
+    }
+
+    private fun chooseRoom() {
+        if (!uiState().canChangeSetup) return
+        AlertDialog.Builder(this)
+            .setTitle(R.string.phone_room_title)
+            .setSingleChoiceItems(rooms.map { it.label }.toTypedArray(), roomIndex) { dialog, which ->
+                if (uiState().canChangeSetup) {
+                    roomIndex = which
+                    getSharedPreferences(PREFS, MODE_PRIVATE).edit().putInt(KEY_ROOM, which).apply()
+                    refreshMeasurementChoices()
+                }
+                dialog.dismiss()
+            }.setNegativeButton(android.R.string.cancel, null).show()
+    }
+
+    private fun chooseProfile() {
+        val value = dashboard ?: return
+        if (!uiState().canControl || value.profiles.isEmpty()) return
+        val profiles = value.profiles
+        val titles = profiles.map { profile ->
+            if (profile.manualOnly) getString(R.string.phone_profile_manual, profile.name) else profile.name
+        }
+        AlertDialog.Builder(this)
+            .setTitle(R.string.phone_profiles_heading)
+            .setSingleChoiceItems(titles.toTypedArray(), profiles.indexOfFirst { it.active }) { dialog, which ->
+                if (!profiles[which].active) runControl(JSONObject().put("op", "activate_profile").put("id", profiles[which].id))
+                dialog.dismiss()
+            }.setNegativeButton(android.R.string.cancel, null).show()
+    }
+
+    private fun confirmUnpair() {
+        AlertDialog.Builder(this).setTitle(R.string.phone_unpair_title)
+            .setMessage(R.string.phone_unpair_confirm)
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.phone_unpair_action) { _, _ -> withLocalNetwork { revokePairing() } }.show()
+    }
+
+    private fun confirmForget() {
+        AlertDialog.Builder(this).setTitle(R.string.phone_forget_title)
+            .setMessage(R.string.phone_forget_note)
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(R.string.phone_forget_action) { _, _ -> forgetLocally() }.show()
+    }
+
+    private fun confirmCancelCapture() {
+        AlertDialog.Builder(this).setTitle(R.string.phone_cancel_measure)
+            .setMessage(R.string.phone_cancel_measure_confirm)
+            .setNegativeButton(R.string.phone_keep_measuring, null)
+            .setPositiveButton(R.string.phone_cancel_measure) { _, _ -> cancelCapture(sendRemote = true) }.show()
+    }
+
+    private fun pairWithTv(replaceConfirmed: Boolean = false) {
         if (operationInProgress || measurementInProgress || repeatFallbackSessionId != null) return
         val host = parsePrivateIpv4(hostField.text?.toString().orEmpty())
         if (host == null) {
             setStatus(getString(R.string.phone_invalid_tv_ip), error = true)
+            hostField.error = getString(R.string.phone_invalid_tv_ip)
             hostField.requestFocus()
             return
         }
         val port = portField.text?.toString()?.trim()?.toIntOrNull()?.takeIf { it in 1..65535 }
         if (port == null) {
             setStatus(getString(R.string.phone_invalid_tv_port), error = true)
+            portField.error = getString(R.string.phone_invalid_tv_port)
             portField.requestFocus()
             return
         }
         val pairingKey = CompanionCrypto.decodeKey(codeField.text?.toString().orEmpty(), CompanionCrypto.PAIRING_KEY_BYTES)
         if (pairingKey == null) {
             setStatus(getString(R.string.phone_invalid_pair_code), error = true)
+            codeField.error = getString(R.string.phone_invalid_pair_code)
             codeField.requestFocus()
             return
         }
+        hostField.error = null
+        portField.error = null
+        codeField.error = null
+        if (pairedCredentials != null && !replaceConfirmed) {
+            AlertDialog.Builder(this).setTitle(R.string.phone_replace_tv_title)
+                .setMessage(R.string.phone_replace_tv_confirm)
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(R.string.phone_pair_button) { _, _ -> pairWithTv(replaceConfirmed = true) }.show()
+            return
+        }
+        (getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager)
+            ?.hideSoftInputFromWindow(codeField.windowToken, 0)
         // The user is pairing with these fields now; a search still running must not
         // replace the address underneath them.
         stopTvSearch()
+        dashboardRevision++
         setOperationBusy(true)
         setStatus(getString(R.string.phone_pairing), error = false)
         thread(name = "CoreEqPhonePair") {
@@ -339,7 +655,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
                 val unreachable = e is java.net.ConnectException ||
                     e is java.net.SocketTimeoutException ||
                     e is java.net.NoRouteToHostException
-                runOnUiThread {
+                onUi {
                     setOperationBusy(false)
                     val next = fallbackHosts.firstOrNull()
                     if (unreachable && next != null) {
@@ -347,7 +663,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
                         fallbackHosts = fallbackHosts.drop(1)
                         hostField.setText(next)
                         setStatus(getString(R.string.phone_trying_next_address, next), error = false)
-                        pairWithTv()
+                        pairWithTv(replaceConfirmed = true)
                     } else {
                         fallbackHosts = emptyList()
                         setStatus(getString(R.string.phone_pair_failed, readableError(e)), error = true)
@@ -361,60 +677,68 @@ class PhoneCompanionActivity : AppCompatActivity() {
             val newDashboard = try {
                 loadDashboard(saved)
             } catch (e: Exception) {
-                runOnUiThread {
+                onUi {
                     setOperationBusy(false)
                     fallbackHosts = emptyList()
                     codeField.text?.clear()
-                    remotePanel.visibility = View.VISIBLE
-                    connectionLine.setText(R.string.phone_saved_not_connected)
-                    setRemoteEnabled(true)
+                    pairedCredentials = saved
+                    dashboard = null
+                    markDisconnected()
                     setStatus(getString(R.string.phone_paired_not_loaded, readableError(e)), error = true)
                 }
                 return@thread
             }
-            runOnUiThread {
+            onUi {
                 setOperationBusy(false)
                 fallbackHosts = emptyList()
                 codeField.text?.clear()
-                remotePanel.visibility = View.VISIBLE
+                pairedCredentials = saved
                 setStatus(getString(R.string.phone_pair_success), error = false)
                 showDashboard(newDashboard)
-                setRemoteEnabled(true)
+                selectTab(PhoneTab.CONTROL)
             }
         }
     }
 
-    private fun refreshDashboard() {
-        if (operationInProgress || measurementInProgress || repeatFallbackSessionId != null) return
-        val credentials = credentialStore.load()
-        if (credentials == null) {
-            remotePanel.visibility = View.GONE
-            connectionLine.setText(R.string.phone_not_paired)
-            detailLine.text = ""
-            setRemoteEnabled(false)
-            setStatus(getString(R.string.phone_pair_first), error = false)
+    private fun refreshDashboard(quiet: Boolean = false, allowRediscovery: Boolean = true) {
+        if (operationInProgress || measurementInProgress || repeatFallbackSessionId != null || qrInProgress) return
+        if (statusRefreshInProgress) {
+            if (!quiet) setStatus(getString(R.string.phone_connecting), error = false)
             return
         }
-        hostField.setText(credentials.host)
-        portField.setText(credentials.port.toString())
-        remotePanel.visibility = View.VISIBLE
-        setOperationBusy(true)
-        setStatus(getString(R.string.phone_connecting), error = false)
+        val credentials = pairedCredentials
+        if (credentials == null) {
+            dashboard = null
+            markDisconnected()
+            return
+        }
+        statusRefreshInProgress = true
+        val revision = dashboardRevision
+        // Quiet reads never disable controls (which would drop keyboard/D-pad
+        // focus every ten seconds). A user action invalidates this read instead.
+        if (!quiet) setOperationBusy(true)
+        if (!quiet) setStatus(getString(R.string.phone_connecting), error = false)
         thread(name = "CoreEqPhoneStatus") {
             try {
                 val newDashboard = loadDashboard(credentials)
-                runOnUiThread {
-                    setOperationBusy(false)
+                onUi {
+                    statusRefreshInProgress = false
+                    if (!samePairing(credentials) || revision != dashboardRevision) return@onUi
+                    val reconnected = !tvConnected
+                    if (!quiet) setOperationBusy(false)
                     showDashboard(newDashboard)
-                    setRemoteEnabled(true)
+                    if (reconnected && quiet) setStatus(getString(R.string.phone_connection_restored), error = false)
+                    else if (!quiet) setStatus("", error = false)
                 }
             } catch (e: Exception) {
-                runOnUiThread {
-                    setOperationBusy(false)
-                    connectionLine.setText(R.string.phone_saved_not_connected)
-                    setRemoteEnabled(true)
-                    setStatus(getString(R.string.phone_connect_failed, readableError(e)), error = true)
-                    rediscoverSavedTv(credentials)
+                onUi {
+                    statusRefreshInProgress = false
+                    if (!samePairing(credentials) || revision != dashboardRevision) return@onUi
+                    val wasConnected = tvConnected
+                    if (!quiet) setOperationBusy(false)
+                    markDisconnected()
+                    if (!quiet || wasConnected) setStatus(getString(R.string.phone_connect_failed, readableError(e)), error = true)
+                    if (allowRediscovery && screenResumed) rediscoverSavedTv(credentials)
                 }
             }
         }
@@ -430,7 +754,8 @@ class PhoneCompanionActivity : AppCompatActivity() {
      */
     private fun rediscoverSavedTv(saved: PhoneCredentials) {
         if (operationInProgress || measurementInProgress || repeatFallbackSessionId != null) return
-        tvSearch?.cancel()
+        stopTvSearch()
+        val generation = searchGeneration
         setStatus(getString(R.string.phone_rediscovering), error = false)
         val candidates = ArrayDeque<TvDiscovery.FoundTv>()
         val seen = hashSetOf("${saved.host}:${saved.port}")
@@ -440,7 +765,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
         var connected = false
         lateinit var search: TvDiscovery.Search
         fun tryNext() {
-            if (trying || connected) return
+            if (trying || connected || generation != searchGeneration || !screenResumed || !samePairing(saved)) return
             val next = candidates.removeFirstOrNull()
             if (next == null) {
                 // Nothing left to try. A failed attempt already left its own message.
@@ -449,7 +774,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
             }
             trying = true
             tried = true
-            retryWithFoundTv(saved, next.host, next.port) { ok ->
+            retryWithFoundTv(saved, next.host, next.port, generation) { ok ->
                 trying = false
                 if (ok) {
                     connected = true
@@ -464,17 +789,18 @@ class PhoneCompanionActivity : AppCompatActivity() {
             timeoutMs = FIND_TV_TIMEOUT_MS,
             firstOnly = false,
             onFound = { found ->
-                if (seen.add("${found.host}:${found.port}")) {
+                if (screenResumed && samePairing(saved) && seen.add("${found.host}:${found.port}")) {
                     candidates.addLast(found)
                     tryNext()
                 }
             },
             onDone = { _ ->
                 searching = false
-                if (tvSearch === search) tvSearch = null
-                // onStop/onDestroy cancel the search; leaving the screen is not a cue to
-                // start another connection attempt.
-                if (!isFinishing && !isDestroyed) tryNext()
+                // stopTvSearch releases this reference before cancelling: a cancelled
+                // search must not launch another connection from its onDone callback.
+                val current = tvSearch === search
+                if (current) tvSearch = null
+                if (current && screenResumed && !isFinishing && !isDestroyed) tryNext()
             }
         )
         tvSearch = search
@@ -486,16 +812,28 @@ class PhoneCompanionActivity : AppCompatActivity() {
         saved: PhoneCredentials,
         host: String,
         port: Int,
+        generation: Long,
         onResult: (Boolean) -> Unit
     ) {
+        dashboardRevision++
         setOperationBusy(true)
         setStatus(getString(R.string.phone_connecting), error = false)
         thread(name = "CoreEqPhoneRediscover") {
             try {
                 val creds = PhoneCredentials(host, port, saved.token)
                 val newDashboard = loadDashboard(creds)
-                credentialStore.save(creds)
-                runOnUiThread {
+                onUi {
+                    if (generation != searchGeneration || !screenResumed || !samePairing(saved)) {
+                        setOperationBusy(false)
+                        return@onUi
+                    }
+                    // Only the address changed; keep the existing encrypted token.
+                    if (!credentialStore.updateAddress(saved, host, port)) {
+                        setOperationBusy(false)
+                        onResult(false)
+                        return@onUi
+                    }
+                    pairedCredentials = creds
                     setOperationBusy(false)
                     hostField.setText(host)
                     portField.setText(port.toString())
@@ -505,8 +843,9 @@ class PhoneCompanionActivity : AppCompatActivity() {
                     onResult(true)
                 }
             } catch (e: Exception) {
-                runOnUiThread {
+                onUi {
                     setOperationBusy(false)
+                    if (generation != searchGeneration || !screenResumed || !samePairing(saved)) return@onUi
                     setStatus(getString(R.string.phone_connect_failed, readableError(e)), error = true)
                     onResult(false)
                 }
@@ -549,55 +888,56 @@ class PhoneCompanionActivity : AppCompatActivity() {
                 ?: getString(R.string.phone_no_active_profile),
             serviceStatus = status.optString("service_status", "").take(180),
             serviceError = status.optBoolean("service_error", false),
-            profiles = profiles
+            profiles = profiles,
+            serviceRunning = if (status.has("service_running")) status.optBoolean("service_running") else null,
+            bypassEnabled = status.optBoolean("bypass_enabled", false)
         )
     }
 
-    private fun showDashboard(value: Dashboard) {
+    /** Render a read-only TV snapshot; this never starts or stops correction. */
+    internal fun showDashboard(value: Dashboard) {
         dashboard = value
-        connectionLine.text = getString(R.string.phone_connected, value.deviceName, value.version)
-        val modeTitle = when (value.mode) {
-            "movie_tv" -> getString(R.string.phone_mode_movie)
-            "gaming" -> getString(R.string.phone_mode_gaming)
-            else -> getString(R.string.phone_mode_everyday)
-        }
+        tvConnected = true
+        lastSyncMs = System.currentTimeMillis()
+        updateConnectionUi()
+        val currentModeTitle = modeTitle(value.mode)
         val onOff = getString(if (value.correctionEnabled) R.string.phone_state_on else R.string.phone_state_off)
-        detailLine.text = getString(
-            R.string.phone_dashboard_details,
-            value.output,
-            modeTitle,
-            onOff,
-            value.profileName,
+        detailLine.text = getString(R.string.phone_tv_version, value.version) + "\n" + getString(
+            R.string.phone_dashboard_details, value.output, currentModeTitle, onOff, value.profileName,
             value.serviceStatus.ifBlank { getString(R.string.phone_status_unknown) }
         )
-        detailLine.setTextColor(color(if (value.serviceError) R.color.cb_warning else R.color.cb_slate))
-        correctionButton.text = getString(
-            if (value.correctionEnabled) R.string.phone_correction_on else R.string.phone_correction_off
-        )
-        correctionButton.isEnabled = !operationInProgress && !measurementInProgress
-        profileList.removeAllViews()
-        if (value.profiles.isEmpty()) {
-            profileList.addView(label(getString(R.string.phone_no_profiles), 14f, false, R.color.cb_slate))
-        } else {
-            value.profiles.forEach { profile ->
-                val title = when {
-                    profile.active && profile.manualOnly -> getString(R.string.phone_profile_active_manual, profile.name)
-                    profile.active -> getString(R.string.phone_profile_active, profile.name)
-                    profile.manualOnly -> getString(R.string.phone_profile_manual, profile.name)
-                    else -> profile.name
-                }
-                val button = actionButton(title, primary = profile.active).apply {
-                    isEnabled = !operationInProgress && !measurementInProgress
-                    setOnClickListener {
-                        runControl(JSONObject().put("op", "activate_profile").put("id", profile.id))
-                    }
-                }
-                profileList.addView(button, matchWrap(top = 4))
-            }
+        correctionState.text = getString(when {
+            !value.correctionEnabled -> R.string.phone_correction_state_off
+            value.serviceRunning == false -> R.string.phone_correction_state_stopped
+            value.bypassEnabled -> R.string.phone_correction_state_bypass
+            else -> R.string.phone_correction_state_on
+        })
+        serviceLine.text = value.serviceStatus.ifBlank { getString(R.string.phone_status_unknown) }
+        serviceLine.setTextColor(color(if (value.serviceError || (value.correctionEnabled && value.serviceRunning == false)) R.color.cb_warning else R.color.cb_slate))
+        outputLine.text = getString(R.string.phone_output_label, value.output)
+        correctionButton.text = getString(if (value.correctionEnabled) R.string.phone_correction_on else R.string.phone_correction_off)
+        correctionButton.isActivated = value.correctionEnabled
+        modeButtons.forEach { (mode, button) ->
+            val selected = mode == value.mode
+            button.isActivated = selected
+            button.isSelected = selected
+            button.text = if (selected) getString(R.string.phone_choice_selected, modeTitle(mode)) else modeTitle(mode)
+            button.contentDescription = getString(
+                if (selected) R.string.phone_tab_selected else R.string.phone_tab_accessibility, modeTitle(mode)
+            )
         }
+        // Stable controls: polling must not rebuild a list or steal the D-pad/keyboard focus.
+        profileButton.text = if (value.profiles.isEmpty()) getString(R.string.phone_no_profiles)
+            else getString(R.string.phone_profile_choice, value.profileName)
         setRemoteEnabled(true)
         refreshMeasurementChoices()
     }
+
+    private fun modeTitle(mode: String): String = getString(when (mode) {
+        "movie_tv" -> R.string.phone_mode_movie
+        "gaming" -> R.string.phone_mode_gaming
+        else -> R.string.phone_mode_everyday
+    })
 
     /**
      * Every remote action goes through the local-network check, as Find, Pair and Connect do.
@@ -607,26 +947,37 @@ class PhoneCompanionActivity : AppCompatActivity() {
     private fun runControl(request: JSONObject) = withLocalNetwork { runControlNow(request) }
 
     private fun runControlNow(request: JSONObject) {
-        if (operationInProgress || measurementInProgress || repeatFallbackSessionId != null) return
-        val credentials = credentialStore.load() ?: return
+        if (!uiState().canControl) return
+        val credentials = pairedCredentials ?: return
+        dashboardRevision++
         setOperationBusy(true)
         setStatus(getString(R.string.phone_sending_command), error = false)
         thread(name = "CoreEqPhoneControl") {
             try {
                 val response = requireOk(clientFor(credentials).rpc(request))
-                val newDashboard = loadDashboard(credentials)
-                runOnUiThread {
+                // A command may succeed even when the subsequent read fails. Never call
+                // that a failed toggle, or retry the write automatically.
+                val snapshot = runCatching { loadDashboard(credentials) }
+                onUi {
+                    if (!samePairing(credentials)) return@onUi
                     setOperationBusy(false)
-                    showDashboard(newDashboard)
+                    snapshot.getOrNull()?.let(::showDashboard) ?: run {
+                        markDisconnected()
+                        setStatus(getString(R.string.phone_command_sent_no_status), error = true)
+                        return@onUi
+                    }
                     val message = response.optString("profile_name", "").takeIf { it.isNotBlank() }
                         ?: response.optString("title", "").takeIf { it.isNotBlank() }
                         ?: getString(R.string.phone_command_complete)
                     setStatus(message, error = false)
                 }
             } catch (e: Exception) {
-                runOnUiThread {
+                onUi {
+                    if (!samePairing(credentials)) return@onUi
                     setOperationBusy(false)
-                    setStatus(getString(R.string.phone_command_failed, readableError(e)), error = true)
+                    val uncertain = e is java.io.IOException
+                    if (uncertain) markDisconnected()
+                    setStatus(getString(if (uncertain) R.string.phone_command_unknown else R.string.phone_command_failed, readableError(e)), error = true)
                 }
             }
         }
@@ -646,8 +997,8 @@ class PhoneCompanionActivity : AppCompatActivity() {
     }
 
     private fun startPhoneMeasurement() {
-        if (measurementInProgress || operationInProgress || repeatFallbackSessionId != null) return
-        val credentials = credentialStore.load()
+        if (!uiState().canControl) return
+        val credentials = pairedCredentials
         if (credentials == null) {
             setStatus(getString(R.string.phone_pair_first), error = true)
             return
@@ -658,6 +1009,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
             requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQ_MICROPHONE)
             return
         }
+        dashboardRevision++
         measurementInProgress = true
         measurementCancelled = false
         activeSessionId = null
@@ -674,7 +1026,8 @@ class PhoneCompanionActivity : AppCompatActivity() {
             var repeatSessionId: String? = null
             try {
                 fun recordPass(pass: Int, sessionId: String? = null): PhoneRecording = engine.capture(
-                    onRecordingReady = { captureInfo ->
+                    onRecordingReady = { _ ->
+                        if (measurementCancelled) throw InterruptedException("Phone measurement cancelled.")
                         val startRequest = if (pass == 1) {
                             JSONObject()
                                 .put("op", "start_measurement")
@@ -692,10 +1045,11 @@ class PhoneCompanionActivity : AppCompatActivity() {
                             captureSeconds = response.optDouble("capture_seconds", Double.NaN)
                         )
                         activeSessionId = start.sessionId
+                        if (measurementCancelled) throw InterruptedException("Phone measurement cancelled.")
                         start
                     },
                     onProgress = { fraction ->
-                        runOnUiThread {
+                        onUi {
                             if (!measurementCancelled && !isDestroyed) {
                                 val totalFraction = if (repeatRequested) (pass - 1 + fraction) / 2.0 else fraction.toDouble()
                                 measureProgress.progress = (totalFraction * PROGRESS_MAX).roundToInt().coerceIn(0, PROGRESS_MAX)
@@ -714,7 +1068,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
 
                 fun upload(recording: PhoneRecording): JSONObject {
                     if (measurementCancelled) throw InterruptedException("Phone measurement cancelled.")
-                    runOnUiThread {
+                    onUi {
                         if (!isDestroyed) setStatus(getString(R.string.phone_measure_uploading), error = false)
                     }
                     val request = JSONObject()
@@ -733,7 +1087,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
                 val result = if (firstResponse.optBoolean("awaiting_repeat", false)) {
                     repeatFallbackSessionId = first.sessionId
                     repeatSessionId = first.sessionId
-                    runOnUiThread {
+                    onUi {
                         if (!isDestroyed) setStatus(getString(R.string.phone_measure_repeat_waiting), error = false)
                     }
                     if (measurementCancelled) throw InterruptedException("Phone measurement cancelled.")
@@ -747,7 +1101,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
                 repeatSessionId = null
                 repeatFallbackSessionId = null
                 val newDashboard = runCatching { loadDashboard(credentials) }.getOrNull()
-                runOnUiThread {
+                onUi {
                     measurementInProgress = false
                     captureEngine = null
                     setMeasurementUi(false)
@@ -778,7 +1132,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
                     activeSessionId = null
                     repeatFallbackSessionId = null
                     val newDashboard = runCatching { loadDashboard(credentials) }.getOrNull()
-                    runOnUiThread {
+                    onUi {
                         measurementInProgress = false
                         captureEngine = null
                         setMeasurementUi(false)
@@ -804,7 +1158,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
                         }
                     }
                     activeSessionId = null
-                    runOnUiThread {
+                    onUi {
                         measurementInProgress = false
                         captureEngine = null
                         setMeasurementUi(false)
@@ -858,7 +1212,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
         val sessionId = activeSessionId
         val firstCaptureCanBeSaved = repeatFallbackSessionId != null
         if (sendRemote && !firstCaptureCanBeSaved && !sessionId.isNullOrBlank()) {
-            val credentials = credentialStore.load()
+            val credentials = pairedCredentials
             if (credentials != null) {
                 thread(name = "CoreEqPhoneCancel") {
                     runCatching {
@@ -874,7 +1228,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
     private fun retrySaveFirstCapture() {
         if (operationInProgress || measurementInProgress) return
         val sessionId = repeatFallbackSessionId ?: return
-        val credentials = credentialStore.load()
+        val credentials = pairedCredentials
         if (credentials == null) {
             setStatus(getString(R.string.phone_pair_first), error = true)
             return
@@ -889,7 +1243,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
                 repeatFallbackSessionId = null
                 activeSessionId = null
                 val newDashboard = runCatching { loadDashboard(credentials) }.getOrNull()
-                runOnUiThread {
+                onUi {
                     setOperationBusy(false)
                     newDashboard?.let(::showDashboard)
                     setStatus(
@@ -901,7 +1255,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
                     )
                 }
             } catch (e: Exception) {
-                runOnUiThread {
+                onUi {
                     setOperationBusy(false)
                     setStatus(
                         getString(R.string.phone_measure_repeat_save_failed, readableError(e)),
@@ -914,24 +1268,26 @@ class PhoneCompanionActivity : AppCompatActivity() {
 
     private fun revokePairing() {
         if (operationInProgress || measurementInProgress || repeatFallbackSessionId != null) return
-        val credentials = credentialStore.load() ?: return
+        val credentials = pairedCredentials ?: return
+        dashboardRevision++
         setOperationBusy(true)
         setStatus(getString(R.string.phone_unpairing), error = false)
         thread(name = "CoreEqPhoneRevoke") {
             try {
                 requireOk(clientFor(credentials).rpc(JSONObject().put("op", "revoke")))
                 credentialStore.clear()
-                runOnUiThread {
+                onUi {
+                    pairedCredentials = null
+                    stopTvSearch()
                     dashboard = null
-                    remotePanel.visibility = View.GONE
                     detailLine.text = ""
-                    connectionLine.setText(R.string.phone_not_paired)
                     setOperationBusy(false)
-                    setRemoteEnabled(false)
+                    markDisconnected()
+                    selectTab(PhoneTab.TV)
                     setStatus(getString(R.string.phone_unpaired), error = false)
                 }
             } catch (e: Exception) {
-                runOnUiThread {
+                onUi {
                     setOperationBusy(false)
                     setStatus(getString(R.string.phone_unpair_failed, readableError(e)), error = true)
                 }
@@ -940,13 +1296,19 @@ class PhoneCompanionActivity : AppCompatActivity() {
     }
 
     private fun forgetLocally() {
-        if (measurementInProgress || operationInProgress || repeatFallbackSessionId != null) return
+        if (!uiState().canChangeSetup) return
+        dashboardRevision++
+        stopTvSearch()
         credentialStore.clear()
+        pairedCredentials = null
         dashboard = null
-        remotePanel.visibility = View.GONE
-        connectionLine.setText(R.string.phone_not_paired)
         detailLine.text = ""
-        setRemoteEnabled(false)
+        hostField.text?.clear()
+        portField.text?.clear()
+        codeField.text?.clear()
+        fallbackHosts = emptyList()
+        markDisconnected()
+        selectTab(PhoneTab.TV)
         setStatus(getString(R.string.phone_forgotten), error = false)
     }
 
@@ -978,16 +1340,43 @@ class PhoneCompanionActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        screenResumed = true
+        if (!qrInProgress && pendingMicrophoneAction == null && pendingLocalNetworkAction == null) {
+            if (pairedCredentials != null) {
+                if (!initialConnectionRequested) {
+                    initialConnectionRequested = true
+                    withLocalNetwork { refreshDashboard(quiet = dashboard != null) }
+                } else if (hasLocalNetworkAccess()) refreshDashboard(quiet = dashboard != null)
+            } else if (!searchedOnFirstOpen) {
+                searchedOnFirstOpen = true
+                // Discovery is passive: it cannot open a code or change anything on the TV.
+                withLocalNetwork { startTvSearch() }
+            }
+        }
+        uiHandler.removeCallbacks(refreshTicker)
+        uiHandler.postDelayed(refreshTicker, REFRESH_INTERVAL_MS)
+    }
+
+    override fun onPause() {
+        screenResumed = false
+        uiHandler.removeCallbacks(refreshTicker)
+        super.onPause()
+    }
+
     override fun onStop() {
         if (measurementInProgress && !isChangingConfigurations) cancelCapture(sendRemote = true)
-        tvSearch?.cancel()
+        stopTvSearch()
         super.onStop()
     }
 
     override fun onDestroy() {
         if (measurementInProgress) cancelCapture(sendRemote = true)
-        tvSearch?.cancel()
-        tvSearch = null
+        stopTvSearch()
+        uiHandler.removeCallbacksAndMessages(null)
+        clearScannerInstall()
+        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         super.onDestroy()
     }
 
@@ -998,7 +1387,8 @@ class PhoneCompanionActivity : AppCompatActivity() {
      */
     private fun scanTvQr() {
         if (operationInProgress || measurementInProgress || repeatFallbackSessionId != null) return
-        scanQrButton.isEnabled = false
+        qrInProgress = true
+        updateControls()
         val scanner = GmsBarcodeScanning.getClient(this)
         val installer = ModuleInstall.getClient(this)
         // The scanner is a Play services module that is not in the APK. On a phone that has
@@ -1006,6 +1396,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
         // available on this phone". Ask first, and download it with the user told why.
         installer.areModulesAvailable(scanner)
             .addOnSuccessListener { availability ->
+                if (isFinishing || isDestroyed) return@addOnSuccessListener
                 if (availability.areModulesAvailable()) {
                     startTvQrScan(scanner)
                 } else {
@@ -1033,12 +1424,15 @@ class PhoneCompanionActivity : AppCompatActivity() {
                 }
             }
         }
+        scannerInstallClient = installer
+        scannerInstallListener = listener
         val request = ModuleInstallRequest.newBuilder()
             .addApi(scanner)
             .setListener(listener)
             .build()
         installer.installModules(request)
             .addOnSuccessListener { response ->
+                if (isFinishing || isDestroyed) return@addOnSuccessListener
                 if (response.areModulesAlreadyInstalled()) {
                     installer.unregisterListener(listener)
                     startTvQrScan(scanner)
@@ -1051,17 +1445,38 @@ class PhoneCompanionActivity : AppCompatActivity() {
     }
 
     private fun startTvQrScan(scanner: GmsBarcodeScanner) {
+        if (isFinishing || isDestroyed) return
+        if (!screenResumed) {
+            finishQrScan()
+            setStatus(getString(R.string.phone_scan_ready), error = false)
+            return
+        }
         scanner.startScan()
             .addOnSuccessListener { barcode ->
-                scanQrButton.isEnabled = true
+                if (isFinishing || isDestroyed) return@addOnSuccessListener
+                finishQrScan()
                 handleTvQr(barcode.rawValue)
             }
-            .addOnCanceledListener { scanQrButton.isEnabled = true }
+            .addOnCanceledListener { finishQrScan() }
             .addOnFailureListener { scanUnavailable() }
     }
 
+    private fun clearScannerInstall() {
+        scannerInstallListener?.let { listener -> scannerInstallClient?.unregisterListener(listener) }
+        scannerInstallListener = null
+        scannerInstallClient = null
+    }
+
+    private fun finishQrScan() {
+        clearScannerInstall()
+        qrInProgress = false
+        if (!isFinishing && !isDestroyed) updateControls()
+    }
+
     private fun scanUnavailable() {
-        scanQrButton.isEnabled = true
+        finishQrScan()
+        if (isFinishing || isDestroyed) return
+        showManualPairing(true)
         setStatus(getString(R.string.phone_scan_unavailable), error = true)
     }
 
@@ -1085,8 +1500,8 @@ class PhoneCompanionActivity : AppCompatActivity() {
      * pairing, and a wrong or stale address simply fails the handshake.
      */
     private fun startTvSearch() {
-        if (operationInProgress || measurementInProgress) return
-        tvSearch?.cancel()
+        if (!uiState().canChangeSetup || qrInProgress) return
+        stopTvSearch()
         findTvButton.isEnabled = false
         discoveryLine.text = getString(R.string.phone_find_tv_searching)
         // The search starts by itself when nothing is paired, so the user may type an
@@ -1106,13 +1521,9 @@ class PhoneCompanionActivity : AppCompatActivity() {
                 } else {
                     hostField.setText(found.host)
                     portField.setText(found.port.toString())
-                    discoveryLine.text = getString(R.string.phone_find_tv_woke, found.name, found.host)
-                    codeField.requestFocus()
-                    // Ask the TV to show its pairing code. A failed wake is harmless: the user
-                    // can still type the code, or use Scan TV QR, from the TV's own screen.
-                    thread(name = "CoreEqWake") {
-                        runCatching { CompanionClient(found.host, found.port, ByteArray(0)).wake() }
-                    }
+                    discoveryLine.text = getString(R.string.phone_find_tv_found, found.name, found.host)
+                    // Do not summon a TV screen or focus the keyboard during passive discovery.
+                    // Manual entry is available on demand; scanning remains the primary path.
                 }
             },
             onDone = { foundAny ->
@@ -1120,7 +1531,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
                 // is stored. stopTvSearch() lets go of it first, which reads as "stopped".
                 val stopped = tvSearch !== search
                 if (tvSearch === search) tvSearch = null
-                findTvButton.isEnabled = true
+                updateControls()
                 if (!foundAny) discoveryLine.text = if (stopped) "" else getString(R.string.phone_find_tv_none)
             }
         )
@@ -1130,6 +1541,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
 
     /** Ends any running search on purpose (pairing has started), without a "not found". */
     private fun stopTvSearch() {
+        searchGeneration++ // also invalidates a reconnect already in flight after a search timed out
         val search = tvSearch ?: return
         tvSearch = null
         search.cancel()
@@ -1145,50 +1557,118 @@ class PhoneCompanionActivity : AppCompatActivity() {
 
     private fun setMeasurementUi(active: Boolean) {
         refreshMeasureButtonLabel()
-        val savePending = repeatFallbackSessionId != null
-        val controlsEnabled = !active && !operationInProgress && !savePending
-        measureButton.isEnabled = !active && !operationInProgress && dashboard != null
-        targetButton.isEnabled = controlsEnabled
-        roomButton.isEnabled = controlsEnabled
-        repeatCheck.isEnabled = controlsEnabled
         cancelMeasureButton.visibility = if (active) View.VISIBLE else View.GONE
         measureProgress.visibility = if (active) View.VISIBLE else View.GONE
-        correctionButton.isEnabled = controlsEnabled && dashboard != null
-        pairButton.isEnabled = controlsEnabled
-        connectButton.isEnabled = controlsEnabled
-        revokeButton.isEnabled = controlsEnabled && credentialStore.load() != null
-        forgetButton.isEnabled = controlsEnabled && credentialStore.load() != null
-        setProfileButtonsEnabled(controlsEnabled)
+        if (active) {
+            selectTab(PhoneTab.MEASURE, moveFocus = false)
+            contentScroll.scrollTo(0, 0)
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            if (orientationBeforeCapture == null) {
+                orientationBeforeCapture = requestedOrientation
+                requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
+            }
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            orientationBeforeCapture?.let { requestedOrientation = it }
+            orientationBeforeCapture = null
+        }
+        updateControls()
     }
 
     private fun setOperationBusy(busy: Boolean) {
+        if (busy && !operationInProgress) focusBeforeOperation = window.currentFocus
         operationInProgress = busy
         refreshMeasureButtonLabel()
-        val controlsEnabled = !busy && !measurementInProgress && repeatFallbackSessionId == null
-        pairButton.isEnabled = controlsEnabled
-        connectButton.isEnabled = controlsEnabled
-        correctionButton.isEnabled = controlsEnabled && dashboard != null
-        revokeButton.isEnabled = controlsEnabled && credentialStore.load() != null
-        forgetButton.isEnabled = controlsEnabled && credentialStore.load() != null
-        targetButton.isEnabled = controlsEnabled
-        roomButton.isEnabled = controlsEnabled
-        repeatCheck.isEnabled = controlsEnabled
-        measureButton.isEnabled = !busy && !measurementInProgress && dashboard != null
-        setProfileButtonsEnabled(controlsEnabled)
+        updateControls()
+        if (!busy) {
+            val previous = focusBeforeOperation
+            focusBeforeOperation = null
+            if (previous?.isShown == true && previous.isEnabled &&
+                (!packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN) || !contentScroll.isInTouchMode)
+            ) previous.requestFocus()
+        }
+    }
+
+    private fun uiState() = PhoneUiState(
+        connected = tvConnected && dashboard != null,
+        operationInProgress = operationInProgress || qrInProgress,
+        measurementInProgress = measurementInProgress,
+        firstCapturePending = repeatFallbackSessionId != null
+    )
+
+    private fun updateControls() {
+        val state = uiState()
+        val canSetUp = state.canChangeSetup && !qrInProgress
+        pairButton.isEnabled = canSetUp
+        findTvButton.isEnabled = canSetUp && tvSearch == null
+        scanQrButton.isEnabled = canSetUp
+        manualPairButton.isEnabled = canSetUp
+        hostField.isEnabled = canSetUp
+        portField.isEnabled = canSetUp
+        codeField.isEnabled = canSetUp
+        connectButton.isEnabled = canSetUp
+        correctionButton.isEnabled = state.canControl
+        modeButtons.values.forEach { it.isEnabled = state.canControl }
+        setProfileButtonsEnabled(state.canControl && dashboard?.profiles?.isNotEmpty() == true)
+        revokeButton.isEnabled = canSetUp && pairedCredentials != null && tvConnected
+        forgetButton.isEnabled = canSetUp && pairedCredentials != null
+        targetButton.isEnabled = state.canChangeSetup
+        roomButton.isEnabled = state.canChangeSetup
+        repeatCheck.isEnabled = state.canChangeSetup
+        measureButton.isEnabled = state.canStartOrSave
+        measureAvailability.text = getString(when {
+            measurementInProgress -> R.string.phone_measure_in_progress
+            repeatFallbackSessionId != null -> R.string.phone_measure_save_pending
+            !tvConnected -> R.string.phone_measure_connect_first
+            else -> R.string.phone_measure_connected
+        })
     }
 
     private fun setRemoteEnabled(enabled: Boolean) {
         val wasHidden = remotePanel.visibility != View.VISIBLE
-        remotePanel.visibility = if (enabled) View.VISIBLE else View.GONE
-        // Revealing the panel is the moment the cursor has new places to go; a
-        // D-pad that was left on a hidden control would otherwise stay stuck.
-        if (enabled && wasHidden) focusFirstControl()
-        setOperationBusy(operationInProgress)
-        if (!enabled) {
-            pairButton.isEnabled = !operationInProgress
-            connectButton.isEnabled = !operationInProgress
-        }
+        val showControls = enabled && dashboard != null
+        remotePanel.visibility = if (showControls) View.VISIBLE else View.GONE
+        controlEmpty.visibility = if (showControls) View.GONE else View.VISIBLE
+        updateControls()
+        // Never steal focus on a quiet status refresh, only when controls first appear.
+        if (showControls && wasHidden && selectedTab == PhoneTab.CONTROL) focusFirstControl()
     }
+
+    private fun updateConnectionUi() {
+        savedTvPanel.visibility = if (pairedCredentials == null) View.GONE else View.VISIBLE
+        connectButton.visibility = if (selectedTab == PhoneTab.TV && pairedCredentials == null) View.GONE else View.VISIBLE
+        pairedCredentials?.let { saved -> savedTvLine.text = getString(R.string.phone_saved_tv_address, saved.host, saved.port) }
+        connectionLine.text = when {
+            tvConnected -> getString(R.string.phone_connected_device, dashboard?.deviceName.orEmpty())
+            pairedCredentials != null -> getString(R.string.phone_saved_not_connected)
+            else -> getString(R.string.phone_not_paired)
+        }
+        connectionLine.setTextColor(color(if (tvConnected) R.color.cb_success else R.color.cb_ink))
+        connectionHint.text = when {
+            tvConnected -> getString(R.string.phone_sync_at, android.text.format.DateFormat.getTimeFormat(this).format(java.util.Date(lastSyncMs ?: System.currentTimeMillis())))
+            dashboard != null -> getString(R.string.phone_last_known_note)
+            pairedCredentials != null -> getString(R.string.phone_reconnect_hint)
+            else -> getString(R.string.phone_pair_short_hint)
+        }
+        connectButton.text = getString(when {
+            pairedCredentials == null -> R.string.phone_open_tv_setup
+            tvConnected -> R.string.phone_refresh_button
+            else -> R.string.phone_reconnect_button
+        })
+    }
+
+    private fun markDisconnected() {
+        tvConnected = false
+        updateConnectionUi()
+        // Keep a previous snapshot visible but never let stale controls change the TV.
+        setRemoteEnabled(dashboard != null)
+    }
+
+    private fun samePairing(saved: PhoneCredentials): Boolean =
+        pairedCredentials?.token?.contentEquals(saved.token) == true
+
+    private fun hasLocalNetworkAccess(): Boolean = Build.VERSION.SDK_INT < 37 ||
+        checkSelfPermission(Manifest.permission.ACCESS_LOCAL_NETWORK) == PackageManager.PERMISSION_GRANTED
 
     private fun setProfileButtonsEnabled(enabled: Boolean) {
         for (i in 0 until profileList.childCount) {
@@ -1209,8 +1689,22 @@ class PhoneCompanionActivity : AppCompatActivity() {
     }
 
     private fun setStatus(message: String, error: Boolean) {
-        statusLine.text = message
-        statusLine.setTextColor(color(if (error) R.color.cb_warning else R.color.cb_ink))
+        // Capture/provenance reports belong to Measure, not above daily controls.
+        val destination = if (measurementInProgress || selectedTab == PhoneTab.MEASURE) measureFeedback else statusLine
+        if (destination === measureFeedback) {
+            statusLine.visibility = View.GONE
+            statusLine.text = ""
+        }
+        destination.visibility = if (message.isBlank()) View.GONE else View.VISIBLE
+        // Recording percentages are visible, not a stream of TalkBack interruptions.
+        destination.accessibilityLiveRegion = if (measurementInProgress) View.ACCESSIBILITY_LIVE_REGION_NONE
+            else View.ACCESSIBILITY_LIVE_REGION_POLITE
+        destination.text = message
+        destination.setTextColor(color(if (error) R.color.cb_warning else R.color.cb_ink))
+    }
+
+    private fun onUi(block: () -> Unit) {
+        runOnUiThread { if (!isFinishing && !isDestroyed) block() }
     }
 
     private fun captureSummary(capture: JSONObject, sampleRateHz: Int): String {
@@ -1284,7 +1778,8 @@ class PhoneCompanionActivity : AppCompatActivity() {
         isSingleLine = true
         setTextColor(color(R.color.cb_ink))
         setHintTextColor(color(R.color.cb_slate))
-        setPadding(dp(12), dp(6), dp(12), dp(6))
+        setPadding(dp(12), dp(12), dp(12), dp(12))
+        minimumHeight = dp(52)
         setBackgroundResource(R.drawable.bg_card)
         textSize = 16f
     }
@@ -1312,17 +1807,19 @@ class PhoneCompanionActivity : AppCompatActivity() {
      * That is why this screen is reachable from a D-pad remote (MainActivity
      * sends any non-leanback device straight here) and yet had no focus target:
      * the cursor had nowhere to land and nothing to move between. Focusable,
-     * clickable and not focusable-in-touch-mode is what the XML screens get for
-     * free, and the bg_cta / bg_ghost selectors already carry a focused ring.
+     * clickable and focusable in touch mode keeps the initial focus available
+     * even on a phone-style TV box. The selectors carry the focused ring.
      */
     private fun actionButton(textValue: String, primary: Boolean): Button = Button(this).apply {
         text = textValue
         isAllCaps = false
         textSize = 15f
-        setTextColor(color(if (primary) R.color.cta_text else R.color.ghost_text))
+        setTextColor(ContextCompat.getColorStateList(this@PhoneCompanionActivity, if (primary) R.color.cta_text else R.color.ghost_text))
         setBackgroundResource(if (primary) R.drawable.bg_cta else R.drawable.bg_ghost)
-        minimumHeight = dp(48)
-        setPadding(dp(12), dp(8), dp(12), dp(8))
+        minimumHeight = dp(52)
+        minimumWidth = 0
+        stateListAnimator = null // Touch controls must not scale or shift their neighbours.
+        setPadding(dp(12), dp(10), dp(12), dp(10))
         isFocusable = true
         isFocusableInTouchMode = true
         isClickable = true
@@ -1337,14 +1834,31 @@ class PhoneCompanionActivity : AppCompatActivity() {
      * remote panel appears, so the paired screen also starts on a real control.
      */
     private fun focusFirstControl() {
-        if (::scanQrButton.isInitialized && scanQrButton.visibility == View.VISIBLE && scanQrButton.isEnabled) {
-            scanQrButton.requestFocus()
-        } else if (::findTvButton.isInitialized && findTvButton.isEnabled) {
-            findTvButton.requestFocus()
-        } else if (::correctionButton.isInitialized && correctionButton.visibility == View.VISIBLE) {
-            correctionButton.requestFocus()
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN) && contentScroll.isInTouchMode) return
+        // isShown includes the tab and parent visibility; a control hidden by its
+        // page is never an opening focus target. Do not pop up the phone keyboard.
+        val target = when (selectedTab) {
+            PhoneTab.CONTROL -> if (correctionButton.isShown && correctionButton.isEnabled) correctionButton else connectButton
+            PhoneTab.MEASURE -> if (measurementInProgress) cancelMeasureButton else targetButton
+            PhoneTab.TV -> if (scanQrButton.isShown && scanQrButton.isEnabled) scanQrButton else findTvButton
         }
+        if (target.isShown && target.isEnabled) target.requestFocus()
     }
+
+    private fun column(padding: Int = 0): LinearLayout = LinearLayout(this).apply {
+        orientation = LinearLayout.VERTICAL
+        if (padding > 0) setPadding(dp(padding), dp(padding), dp(padding), dp(padding))
+    }
+
+    private fun section(): LinearLayout = column(padding = 16).apply {
+        setBackgroundResource(R.drawable.bg_section)
+    }
+
+    private fun heading(title: Int): TextView = label(getString(title), 20f, true, R.color.cb_ink).apply {
+        isAccessibilityHeading = true
+    }
+
+    private fun eyebrow(title: Int): TextView = label(getString(title), 12f, true, R.color.cb_slate)
 
     private fun matchWrap(top: Int = 0): LinearLayout.LayoutParams =
         LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
@@ -1364,6 +1878,8 @@ class PhoneCompanionActivity : AppCompatActivity() {
         private const val REQ_LOCAL_NETWORK = 731
         private const val REQ_MICROPHONE = 732
         private const val FIND_TV_TIMEOUT_MS = 8_000L
+        private const val REFRESH_INTERVAL_MS = 10_000L
+        private const val KEY_TAB = "phone_tab"
         private const val PROGRESS_MAX = 1000
         private const val PREFS = "core_eq_phone_measurement"
         private const val KEY_TARGET = "target_index"

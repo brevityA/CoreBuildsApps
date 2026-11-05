@@ -1,8 +1,8 @@
 package tv.corebuilds.eq.companion
 
 /**
- * How often an unauthenticated wake request may open the TV's pairing screen. A LAN peer can
- * send wake requests, so a burst cannot keep the TV's pairing screen busy or flashing.
+ * Bounds the legacy unauthenticated discovery probe. It is acknowledged for
+ * older phone clients, but can no longer open a pairing code or any TV UI.
  */
 internal object WakeLimiter {
     const val MIN_INTERVAL_MS = 5_000L

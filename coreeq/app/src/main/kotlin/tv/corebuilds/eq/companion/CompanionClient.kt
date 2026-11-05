@@ -45,8 +45,8 @@ internal class CompanionClient(
     }
 
     /**
-     * Asks the TV to show its pairing screen. Unauthenticated and unencrypted by design: the
-     * TV answers with `{"ok":true}` and does nothing else. Returns the HTTP status.
+     * Legacy probe retained for protocol compatibility. It is not used for discovery:
+     * the TV acknowledges it without opening pairing or changing any UI.
      */
     fun wake(): Int {
         val body = "{}".toByteArray(StandardCharsets.US_ASCII)
@@ -172,6 +172,14 @@ internal class PhoneCredentialStore(context: Context) {
         } catch (_: Exception) {
             null
         }
+    }
+
+    /** Move a saved pairing after authenticated rediscovery, without re-encrypting its token. */
+    fun updateAddress(expected: PhoneCredentials, host: String, port: Int): Boolean {
+        val current = load() ?: return false
+        if (!current.token.contentEquals(expected.token)) return false
+        prefs.edit().putString(KEY_HOST, host).putInt(KEY_PORT, port).apply()
+        return true
     }
 
     fun clear() {

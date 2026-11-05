@@ -6,6 +6,59 @@ Core EQ (`tv.corebuilds.eq`) keeps its own changelog. The repository-root
 must never land there. Releases are `coreeq-v<version>` tags (see
 `PUBLISHING.md`).
 
+## [Unreleased]
+
+Android build, lint, Robolectric and physical phone/TV checks remain unverified
+for these changes. See `docs/CORE_EQ_PHONE_UX_TEST_RUNBOOK.md` for the local
+source/policy receipt and the required device matrix.
+
+### Added
+
+- **Phone-first navigation.** Separate Control, Measure and TV tabs keep daily
+  controls ahead of setup. The selected tab survives recreation, and a saved
+  pairing opens Control. Connection freshness, last-known/offline data, the
+  correction switch, stopped service and A/B bypass are distinguished.
+
+### Changed
+
+- **Less setup friction.** QR leads; manual address/code entry is expandable.
+  Profile, target and room volume are named choice lists. The selected mode
+  has a check mark. Unpair, Forget and replacing a TV require confirmation.
+  Capture keeps the screen awake and asks Android to lock orientation.
+- **Passive phone connection.** Foreground status checks are read-only, do not
+  rebuild controls or steal focus, and never retry a write. TV discovery and
+  legacy unauthenticated wake probes no longer open a pairing window; choose
+  Start pairing on the TV. Closing the TV phone-link screen still disconnects
+  the phone, without switching correction off.
+
+### Fixed
+
+- **Stable profile-status cards.** Playback callbacks no longer invalidate the
+  route on every change or feed the silent probe back into itself. The probe
+  queues finite silent PCM with media attributes; initial route establishment
+  is not a route change. Invalidations cannot be overwritten by stale probes,
+  and retry callbacks wait for their own probe completion. An enabled profile
+  recovers on its own measured output without the first-measurement auto-enable
+  policy blocking it. Short route checks pause effects/status immediately but
+  do not flash a warning and reannounce the same profile; settled missing-profile,
+  unconfirmed and ambiguous routes have distinct messages. A generic Bluetooth
+  label with only device-specific saved profiles is now explained as an
+  unidentified device, not a missing/deleted profile; matching remains strict.
+  Learned preferences and session discovery cannot bypass output matching or an
+  outstanding probe. These paths still require Android/TV verification; profiles
+  are not borrowed
+  across uncertain routes to suppress a card.
+- **Latest correction choice wins.** A queued STOP cannot overwrite a newer
+  enable. An explicitly disabled correction rejects sticky/late starts and
+  RESUME/REAPPLY. Route/discovery callbacks from a destroyed service instance
+  cannot reapply after a replacement has started.
+- **No stale phone commands.** Offline, busy and measurement states share one
+  interaction policy, including the previously unguarded mode buttons. An old
+  status read cannot overwrite a local command's result; a successful command
+  followed by a failed status read is no longer reported as a failed toggle.
+  Forget stops discovery before clearing credentials, and cancelled searches
+  cannot chain new reconnect attempts from their completion callback.
+
 ## [1.12.0] — 2026-11-04
 
 **Nothing below was checked on a TV or a phone.** It runs in the Kotlin

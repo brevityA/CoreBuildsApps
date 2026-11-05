@@ -4,6 +4,35 @@
 
 **Implementation follow-up:** this audit's software-addressable safeguards have now been implemented in the working tree: ambiguous multi-output routes fail closed; pre-33 competing external endpoints are not priority-ranked; sweep route reports accumulate across playback so route changes become ambiguous; route evidence is labeled; the UI explains capture-score and frequency-range limits; and synthetic-score documentation no longer implies field accuracy. A local Gradle run was unavailable because Java is absent in this workspace; PR #375 CI has since passed the unit-test/lint job, candidate APK assembly, and Android API 30/37 install checks for the implementation. These are software/emulator checks only. Physical validation remains outstanding and cannot be completed from this environment.
 
+## Profile-status follow-up — 5 November 2026 (source only)
+
+A later user report concerns repeated **applied → no profile** overlay cards,
+not TV power. The working-tree follow-up removes playback/probe feedback,
+queues finite silent PCM before route reads, distinguishes initial routing from
+endpoint changes, atomically publishes generation-checked results and detaches
+completion batches before callbacks can request retries. The enabled service
+follows new accepted probe evidence, including recovery to a previously applied
+output. Learned preferences and session discovery use the same fail-closed
+matching/freshness rules. Status/effects pause immediately; warning cards settle
+for 750 ms and say whether a route is unconfirmed, ambiguous or truly unmeasured.
+
+The user subsequently confirmed Bluetooth as the current output and identified
+the host as a Hotack L007CM Android projector (reported m7332 SoC). Its Android
+API/firmware, remote Bluetooth device and physical route behavior remain
+unverified; the supplied HDMI-CEC label is not Bluetooth profile identity.
+The follow-up also distinguishes a generic
+Bluetooth label that cannot identify a named saved profile from a genuinely
+unmeasured named device. The matching rules are not broadened, and no profile
+is retagged or borrowed to silence the warning.
+
+This is not a hardware diagnosis or a new coverage claim. The PCM probe still
+cannot prove another app's route, a connected estimate remains a bounded fallback
+when a usable probe cannot start, and callbacks/coarse hints cannot establish
+every format-specific routing change. Android build/lint/Robolectric and the
+physical matrix have **not run for this follow-up**. See
+`CORE_EQ_PHONE_UX_TEST_RUNBOOK.md` for source/policy receipts and device steps;
+earlier PR/emulator receipts above do not validate these newer changes.
+
 ## Executive summary
 
 Core EQ has a fail-safe for profiles tagged to different output kinds, records useful capture/backend provenance, and avoids presenting backend gain read-back as an acoustic measurement. The software follow-up now handles reported multi-output and competing pre-33 endpoint cases conservatively. The main unresolved limitation is route truth: Android generally does not expose another app's actual media sink to a third-party app. On API 33+, Core EQ asks for an *anticipated* media route; below API 33 it can only use a connected-output estimate when there is one external candidate. At measurement time the sweep's own `AudioTrack` route is better evidence, but it only describes that sweep's track, not whether another app's stream or the eventual listener's sound took the same acoustic path.

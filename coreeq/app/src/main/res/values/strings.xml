@@ -497,11 +497,11 @@
     <string name="phone_companion_subtitle">Pair with Core EQ on your TV to control correction and profiles, or take a room measurement from one phone-mic position.</string>
     <string name="phone_capture_warning">Phone microphones are not calibrated by Core EQ. Android may change the input route or apply processing that this app cannot fully inspect or disable. Keep the phone still at one listening position; this is not multi-position averaging.</string>
     <string name="phone_pair_heading">Pair with your TV</string>
-    <string name="phone_tv_ip_hint">TV private IPv4 address · for example 192.168.1.20</string>
+    <string name="phone_tv_ip_hint">192.168.1.20</string>
     <string name="phone_tv_ip_accessibility">TV private IPv4 address shown on the Core EQ companion screen</string>
-    <string name="phone_tv_port_hint">Port shown on the TV</string>
+    <string name="phone_tv_port_hint">Port shown on TV</string>
     <string name="phone_tv_port_accessibility">TCP port shown on the Core EQ TV screen</string>
-    <string name="phone_pair_code_hint">One-time pairing code · enter all 32 hex characters</string>
+    <string name="phone_pair_code_hint">32-character code from TV</string>
     <string name="phone_pair_code_accessibility">One-time pairing code shown on the TV</string>
     <string name="phone_pair_button">Pair this phone</string>
     <string name="phone_connect_button">Connect / refresh</string>
@@ -517,7 +517,7 @@
     <string name="phone_scan_unavailable">Google Play services could not provide the QR scanner on this phone. Enter the TV address and code instead.</string>
     <string name="phone_find_tv_searching">Looking for a Core EQ TV on this network. Open the phone link on the TV first.</string>
     <string name="phone_find_tv_woke">Found %1$s at %2$s. Asked the TV to show its pairing code: scan the code on its screen, or type it here.</string>
-    <string name="phone_find_tv_found">Found %1$s at %2$s. Enter the pairing code shown on the TV.</string>
+    <string name="phone_find_tv_found">Found %1$s at %2$s. On the TV, choose Start pairing, then scan its QR or enter the code here.</string>
     <string name="phone_find_tv_found_kept">Found %1$s at %2$s. Kept the address you entered.</string>
     <string name="phone_find_tv_none">No Core EQ TV found. Open the phone link on the TV, check you are on the same Wi-Fi, or enter the address below.</string>
     <string name="phone_not_paired">No TV paired</string>
@@ -528,7 +528,7 @@
     <string name="phone_pairing">Pairing with the TV…</string>
     <string name="phone_pair_success">Phone paired. The code can no longer be reused.</string>
     <string name="phone_pair_failed">Pairing failed: %1$s</string>
-    <string name="phone_paired_not_loaded">Phone paired, but the TV did not answer afterwards: %1$s. Press Connect / refresh to try again.</string>
+    <string name="phone_paired_not_loaded">Phone paired, but the TV did not answer afterwards: %1$s. Tap Reconnect to try again.</string>
     <string name="phone_pair_first">Pair this phone on the TV first, then connect.</string>
     <string name="phone_connecting">Connecting to Core EQ on the local network…</string>
     <string name="phone_connect_failed">Could not connect: %1$s</string>
@@ -542,7 +542,7 @@
     <string name="phone_remote_heading">TV controls</string>
     <string name="phone_correction_on">Turn correction off</string>
     <string name="phone_correction_off">Turn correction on</string>
-    <string name="phone_profiles_heading">Profiles · tap to activate</string>
+    <string name="phone_profiles_heading">Room profile</string>
     <string name="phone_profile_active">✓ %1$s · active</string>
     <string name="phone_profile_active_manual">✓ %1$s · active · manual</string>
     <string name="phone_profile_manual">%1$s · manual</string>
@@ -556,11 +556,11 @@
     <string name="phone_command_failed">The TV command failed: %1$s</string>
     <string name="phone_measure_heading">Phone-mic measurement</string>
     <string name="phone_measure_explanation">The TV plays a short sweep while this phone records. Set the phone where your head is, hold it still, and keep the room quiet. The TV audio output and phone input use separate clocks; the sweep markers help align them.</string>
-    <string name="phone_target_choice">Target: %1$s · tap to change</string>
-    <string name="phone_room_choice_unknown">Room volume: not provided · tap to change</string>
-    <string name="phone_room_choice">Room volume: %1$s · tap to change</string>
+    <string name="phone_target_choice">Target · %1$s</string>
+    <string name="phone_room_choice_unknown">Room volume · not provided</string>
+    <string name="phone_room_choice">Room volume · %1$s</string>
     <string name="phone_measure_button">Start phone measurement</string>
-    <string name="phone_repeat_option">Compare a repeat at this phone position (two sweeps; no averaging)</string>
+    <string name="phone_repeat_option">Compare a second sweep</string>
     <string name="phone_repeat_explanation">Keep the phone still and keep output and volume unchanged. This checks repeats at this position only; no physical pass/fail cutoff is qualified.</string>
     <string name="phone_measure_progress_accessibility">Phone microphone measurement progress</string>
     <string name="phone_cancel_measure">Cancel measurement</string>

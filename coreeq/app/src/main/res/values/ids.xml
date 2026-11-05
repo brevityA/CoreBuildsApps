@@ -5,4 +5,40 @@
     <item name="btn_companion_stop" type="id" />
     <item name="btn_companion_revoke" type="id" />
     <item name="btn_companion_done" type="id" />
+
+    <!-- Phone pages and controls: stable identities for accessibility and UI tests. -->
+    <item name="phone_cancel_measure" type="id" />
+    <item name="phone_connect" type="id" />
+    <item name="phone_connection_state" type="id" />
+    <item name="phone_control_page" type="id" />
+    <item name="phone_correction_state" type="id" />
+    <item name="phone_correction_toggle" type="id" />
+    <item name="phone_feedback" type="id" />
+    <item name="phone_find_tv" type="id" />
+    <item name="phone_forget" type="id" />
+    <item name="phone_host" type="id" />
+    <item name="phone_manual_pair_panel" type="id" />
+    <item name="phone_manual_pair_toggle" type="id" />
+    <item name="phone_measure_page" type="id" />
+    <item name="phone_measure_progress" type="id" />
+    <item name="phone_mode_everyday" type="id" />
+    <item name="phone_mode_gaming" type="id" />
+    <item name="phone_mode_movie" type="id" />
+    <item name="phone_open_tv_setup" type="id" />
+    <item name="phone_pair" type="id" />
+    <item name="phone_pair_code" type="id" />
+    <item name="phone_port" type="id" />
+    <item name="phone_profile_picker" type="id" />
+    <item name="phone_repeat_check" type="id" />
+    <item name="phone_room_picker" type="id" />
+    <item name="phone_scan_qr" type="id" />
+    <item name="phone_scroll" type="id" />
+    <item name="phone_start_measure" type="id" />
+    <item name="phone_tab_control" type="id" />
+    <item name="phone_tab_measure" type="id" />
+    <item name="phone_tab_tv" type="id" />
+    <item name="phone_target_picker" type="id" />
+    <item name="phone_tv_page" type="id" />
+    <item name="phone_unpair" type="id" />
+    <item name="phone_measure_feedback" type="id" />
 </resources>

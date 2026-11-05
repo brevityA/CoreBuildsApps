@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The phone companion's D-pad contract, held statically.
+"""Phone companion focus, interaction and TV lifecycle wiring, held statically.
 
 Why this exists
 ---------------
@@ -37,11 +37,11 @@ MAIN = ROOT / "coreeq/app/src/main/kotlin/tv/corebuilds/eq/MainActivity.kt"
 
 def _method_body(source: str, name: str) -> str | None:
     """The body of `private fun <name>(...)` as text, up to the next top-level `private fun`."""
-    start = re.search(rf"^    (?:private )?fun {re.escape(name)}\b", source, re.M)
+    start = re.search(rf"^    (?:(?:private|internal|override) )?fun {re.escape(name)}\b", source, re.M)
     if start is None:
         return None
     rest = source[start.start():]
-    following = re.search(r"^    (?:private )?fun ", rest[1:], re.M)
+    following = re.search(r"^    (?:(?:private|internal|override) )?fun ", rest[1:], re.M)
     return rest if following is None else rest[: following.start() + 1]
 
 
@@ -131,6 +131,117 @@ class EntryPointContract(unittest.TestCase):
         source = MAIN.read_text(encoding="utf-8")
         self.assertIn("FEATURE_LEANBACK", source)
         self.assertIn("PhoneCompanionActivity::class.java", source)
+
+
+class PhoneInteractionContract(unittest.TestCase):
+    def setUp(self) -> None:
+        self.source = PHONE.read_text(encoding="utf-8")
+
+    def body(self, name: str) -> str:
+        result = _method_body(self.source, name)
+        self.assertIsNotNone(result, name)
+        return result or ""
+
+    def test_discovery_is_passive_and_does_not_summon_a_tv_code(self) -> None:
+        self.assertNotIn(".wake()", self.source)
+        self.assertNotIn("onWake", TV.read_text(encoding="utf-8"))
+        server = PHONE.parent / "CompanionServer.kt"
+        self.assertNotIn("onWake", server.read_text(encoding="utf-8"))
+
+    def test_phone_has_separate_control_measure_and_tv_pages(self) -> None:
+        for page in ("CONTROL", "MEASURE", "TV"):
+            self.assertIn(f"PhoneTab.{page}", self.source)
+        tabs = self.body("selectTab")
+        for page in ("controlPage", "measurePage", "tvPage"):
+            self.assertIn(f"{page}.visibility", tabs)
+        self.assertIn("KEY_TAB", self.body("onSaveInstanceState"))
+
+    def test_every_mode_button_uses_the_same_busy_and_connection_policy(self) -> None:
+        controls = self.body("updateControls")
+        self.assertIn("modeButtons.values.forEach { it.isEnabled = state.canControl }", controls)
+        self.assertIn("if (!uiState().canControl) return", self.body("runControlNow"))
+        self.assertIn("if (!uiState().canControl) return", self.body("startPhoneMeasurement"))
+
+    def test_read_only_refresh_never_toggles_eq_or_rebuilds_controls(self) -> None:
+        for name in ("refreshDashboard", "showDashboard", "onResume"):
+            body = self.body(name)
+            self.assertNotIn("set_enabled", body)
+            self.assertNotIn("EqService.enable", body)
+            self.assertNotIn("EqService.disable", body)
+        render = self.body("showDashboard")
+        self.assertNotIn("removeAllViews", render)
+        self.assertIn("lastSyncMs", render)
+        refresh = self.body("refreshDashboard")
+        self.assertIn("if (!quiet) setOperationBusy(true)", refresh)
+        self.assertIn("revision != dashboardRevision", refresh)
+
+    def test_polling_stops_when_phone_is_not_visible(self) -> None:
+        self.assertIn("screenResumed = false", self.body("onPause"))
+        self.assertIn("removeCallbacks(refreshTicker)", self.body("onPause"))
+        self.assertIn("stopTvSearch()", self.body("onStop"))
+        self.assertIn("removeCallbacksAndMessages(null)", self.body("onDestroy"))
+
+    def test_forgetting_stops_discovery_before_clearing_credentials(self) -> None:
+        body = self.body("forgetLocally")
+        self.assertLess(body.index("stopTvSearch()"), body.index("credentialStore.clear()"))
+        self.assertIn("pairedCredentials = null", body)
+        self.assertIn("screenResumed", self.body("rediscoverSavedTv"))
+        self.assertIn("samePairing(saved)", self.body("retryWithFoundTv"))
+        self.assertIn("generation != searchGeneration", self.body("retryWithFoundTv"))
+        self.assertIn("searchGeneration++", self.body("stopTvSearch"))
+
+    def test_choices_and_destructive_actions_use_explicit_dialogs(self) -> None:
+        for name in ("chooseTarget", "chooseRoom", "chooseProfile"):
+            self.assertIn("setSingleChoiceItems", self.body(name))
+        for name in ("confirmUnpair", "confirmForget"):
+            body = self.body(name)
+            self.assertIn("setNegativeButton", body)
+            self.assertIn("setPositiveButton", body)
+
+    def test_capture_keeps_screen_awake_and_is_cleaned_up(self) -> None:
+        body = self.body("setMeasurementUi")
+        self.assertIn("FLAG_KEEP_SCREEN_ON", body)
+        self.assertIn("window.clearFlags", body)
+        self.assertIn("SCREEN_ORIENTATION_LOCKED", body)
+        self.assertIn("cancelCapture(sendRemote = true)", self.body("onStop"))
+
+    def test_new_phone_resource_references_resolve_and_values_are_valid_xml(self) -> None:
+        import xml.etree.ElementTree as ET
+        res = ROOT / "coreeq/app/src/main/res"
+        definitions: dict[str, set[str]] = {}
+        for path in (res / "values").glob("*.xml"):
+            for element in ET.parse(path).getroot():
+                if "name" not in element.attrib:
+                    continue
+                kind = element.get("type") if element.tag == "item" else element.tag
+                definitions.setdefault(kind or "", set()).add(element.attrib["name"])
+        for path in (res / "color").glob("*.xml"):
+            definitions.setdefault("color", set()).add(path.stem)
+        for kind, name in re.findall(r"(?<!android\.)R\.(id|string|color)\.(phone_\w+)", self.source):
+            self.assertIn(name, definitions.get(kind, set()), f"undefined R.{kind}.{name}")
+
+
+class CorrectionLifecycleContract(unittest.TestCase):
+    def setUp(self) -> None:
+        self.source = (ROOT / "coreeq/app/src/main/kotlin/tv/corebuilds/eq/apply/EqService.kt").read_text(encoding="utf-8")
+
+    def test_disabled_correction_is_rejected_before_foreground_start(self) -> None:
+        body = _method_body(self.source, "onCreate") or ""
+        self.assertIn("if (!store.correctionEnabled)", body)
+        self.assertLess(body.index("if (!store.correctionEnabled)"), body.index("ServiceCompat.startForeground"))
+
+    def test_queued_stop_cannot_write_over_a_newer_user_choice(self) -> None:
+        body = _method_body(self.source, "onStartCommand") or ""
+        self.assertIn("CorrectionServicePolicy.decide(store.correctionEnabled", body)
+        self.assertIn("Decision.IGNORE_STALE_STOP", body)
+        self.assertNotIn("store.correctionEnabled = false", body)
+        self.assertIn("stopSelf(startId)", body)
+
+    def test_async_reapply_and_route_callbacks_cannot_revive_a_stopped_service(self) -> None:
+        self.assertIn("instanceRunning = false", _method_body(self.source, "onDestroy") or "")
+        self.assertIn("CorrectionServicePolicy.canApply(instanceRunning, store.correctionEnabled, suspended)", _method_body(self.source, "applyAll") or "")
+        for name in ("onOutputsChanged", "onRouteConfirmed"):
+            self.assertIn("if (!instanceRunning || !store.correctionEnabled) return", _method_body(self.source, name) or "")
 
 
 if __name__ == "__main__":
