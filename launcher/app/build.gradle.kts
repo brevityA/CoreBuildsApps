@@ -16,8 +16,8 @@ android {
         // for 0.2.0. Every screen is opened on API 30-35 in ScreensOpenTest.
         minSdk = 30
         targetSdk = 37
-        versionCode = 3
-        versionName = "0.2.0"
+        versionCode = 4
+        versionName = "0.3.0"
     }
 
     testOptions {

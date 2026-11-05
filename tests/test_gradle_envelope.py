@@ -689,7 +689,7 @@ class LauncherGradleDiagnosticExtraction(unittest.TestCase):
 
 
 class PrivateLauncherPrototypeContract(unittest.TestCase):
-    """Source and manifest invariants of the private launcher (0.2).
+    """Source and manifest invariants of the private launcher (0.2-0.3).
 
     Behaviour - what the remote reaches, that focus never drops or jumps, that
     panels trap focus, that favourites keep their order and survive uninstalls,
@@ -846,6 +846,86 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         preview_readme = (ROOT / "docs/mockups/README.md").read_text(encoding="utf-8")
         self.assertIn("rendered column count", preview_readme)
         self.assertIn("not evidence of Android remote behavior", preview_readme)
+
+    def test_polish_uses_system_motion_and_bounded_local_only_smarts(self):
+        activity = self.ACTIVITY.read_text(encoding="utf-8")
+        motion = (self.SRC / "Motion.kt").read_text(encoding="utf-8")
+        preferences = self.PREFERENCES.read_text(encoding="utf-8")
+        backup = (self.SRC / "LauncherBackup.kt").read_text(encoding="utf-8")
+        search = (self.SRC / "SearchPanel.kt").read_text(encoding="utf-8")
+        apps = self.APPS.read_text(encoding="utf-8")
+        sources = "".join(path.read_text(encoding="utf-8") for path in self.SRC.glob("*.kt"))
+        # One finite motion system, wired into the activity and the OS setting.
+        self.assertIn("Settings.Global.ANIMATOR_DURATION_SCALE", motion)
+        self.assertIn("Motion.configure(settings)", activity)
+        self.assertIn("Motion.cancelScrolls()", activity)
+        self.assertIn("Motion.reveal(infoArea)", activity)
+        self.assertIn("Motion.scroll(view, property, target)", activity)
+        # Local search, local sort and document-picker backup are wired, not dead code.
+        self.assertIn("KeyEvent.KEYCODE_SEARCH", activity)
+        self.assertIn("searchPanel.open(visible", activity)
+        self.assertIn("sortedVisibleApps(visible)", activity)
+        self.assertIn("Intent.ACTION_CREATE_DOCUMENT", activity)
+        self.assertIn("LauncherBackup.restore(applicationContext, it)", activity)
+        self.assertIn("AppSearch.rank(apps, query, preferred)", search)
+        # Bounded local state and art memory, with a versioned restore allowlist.
+        self.assertIn("EVENT_LIMIT = 96", preferences)
+        self.assertIn("EVENT_WINDOW_MS = 30L", preferences)
+        self.assertIn('FORMAT = "core-builds-launcher-layout"', backup)
+        self.assertIn("VERSION = 1", backup)
+        self.assertIn("MAX_BYTES = 256 * 1024", backup)
+        self.assertIn("ART_CACHE_BYTES = 24 * 1024 * 1024", apps)
+        self.assertIn("LruCache<String, CardArt>", apps)
+        self.assertIn("LauncherApps.clearArtCache()", activity)
+        # The user's "any and everything" request did not add a surveillance API.
+        for forbidden in (
+            "UsageStatsManager",
+            "PACKAGE_USAGE_STATS",
+            "HttpURLConnection",
+            "java.net.URL",
+            "VideoView",
+            "WebView",
+            "AccessibilityService",
+        ):
+            self.assertNotIn(forbidden, sources)
+
+    def test_polish_is_covered_by_named_source_tests_and_a_fresh_preview(self):
+        home = (self.TESTS / "HomeScreenTest.kt").read_text(encoding="utf-8")
+        model = (self.TESTS / "ModelTest.kt").read_text(encoding="utf-8")
+        self.assertIn("fun motionOrderAndSmartSettingsApplyAndPersist()", home)
+        self.assertIn("fun localSearchFindsAnAppAndOkOpensIt()", home)
+        self.assertIn("fun aVersionedLayoutBackupRestoresOnlyKnownLauncherKeys()", model)
+        self.assertIn("fun localAppSearchRanksExactPrefixWordAndInitialMatches()", model)
+        preview = (ROOT / "docs/mockups/core-launcher-polish.html").read_text(encoding="utf-8")
+        generator = (ROOT / "tools/build_launcher_polish_preview.py").read_text(encoding="utf-8")
+        self.assertIn("DESIGN ILLUSTRATION · NOT A SCREENSHOT", preview)
+        self.assertIn("no network requests", preview)
+        self.assertIn("connect-src 'none'", preview)
+        self.assertIn("data:image/webp;base64,", preview)
+        self.assertIn("Smart suggestions", preview)
+        self.assertIn("Find an app", preview)
+        self.assertIn("Motion", preview)
+        self.assertIn("const columns = items.filter(item => item.offsetTop === items[0].offsetTop).length || 1;", generator)
+        self.assertNotIn("http://", preview)
+        self.assertNotIn("https://", preview)
+        self.assertNotIn("fetch(", preview)
+        self.assertNotRegex(preview.lower(), r"<script[^>]+src\s*=")
+        self.assertNotRegex(preview.lower(), r"<link[^>]+href\s*=")
+
+    def test_documentation_records_03_scope_and_unrun_device_gate(self):
+        readme = (ROOT / "launcher/README.md").read_text(encoding="utf-8")
+        changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+        research = (ROOT / "docs/CORE_LAUNCHER_POLISH_RESEARCH.md").read_text(encoding="utf-8")
+        mockups = (ROOT / "docs/mockups/README.md").read_text(encoding="utf-8")
+        self.assertIn("What 0.3 adds", readme)
+        self.assertIn("No device has run 0.3 yet", readme)
+        self.assertIn("versionCode = 4", (ROOT / "launcher/app/build.gradle.kts").read_text(encoding="utf-8"))
+        self.assertIn('versionName = "0.3.0"', (ROOT / "launcher/app/build.gradle.kts").read_text(encoding="utf-8"))
+        self.assertIn("Results (0.3)", readme)
+        self.assertIn("Core Builds Launcher private prototype 0.3.0", changelog)
+        self.assertIn("not a measured market win", research)
+        self.assertIn("core-launcher-polish.html", mockups)
+        self.assertIn("build_launcher_polish_preview.py --check", mockups)
 
     def test_app_visibility_is_narrow_and_offline(self):
         query_pairs = set()

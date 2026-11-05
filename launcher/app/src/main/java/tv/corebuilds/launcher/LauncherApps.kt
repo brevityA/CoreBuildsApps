@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
+import android.util.LruCache
 
 /** One launchable activity per installed package, preferring its TV entry point. */
 internal data class LaunchableApp(
@@ -15,6 +16,8 @@ internal data class LaunchableApp(
     val art: CardArt,
     /** The user's artwork choice for this app, as stored; empty for none. */
     val artKey: String = "",
+    /** First install time, for the permission-free Newest install sort. */
+    val installedAt: Long = 0L,
 ) {
     /** Changes whenever what the card shows could change: a new label, entry point, update or art. */
     val renderKey: String get() = "$packageName/$activityName:$label:$tvOptimized:$lastUpdateTime:${art.source}:$artKey"
@@ -23,9 +26,17 @@ internal data class LaunchableApp(
 internal object LauncherAppCatalog {
     /**
      * Card art keyed by app version and [ArtSpec], so a refresh on every return
-     * to Home re-renders only apps that changed. Pruned to the apps still installed.
+     * to Home re-renders only apps that changed. The byte cap mirrors the
+     * bounded-image-cache lesson from current launcher releases: a TV with a
+     * large app catalogue cannot make bitmap memory grow without limit.
      */
-    private val artCache = HashMap<String, CardArt>()
+    private const val ART_CACHE_BYTES = 24 * 1024 * 1024
+    private val artCache = object : LruCache<String, CardArt>(ART_CACHE_BYTES) {
+        override fun sizeOf(key: String, value: CardArt): Int =
+            listOf(value.banner, value.icon, value.backdrop).sumOf { bitmap -> bitmap?.byteCount ?: 0 }
+                .coerceAtLeast(1)
+        // Do not recycle evicted bitmaps: a card in the current view may still draw them.
+    }
 
     fun load(context: Context, spec: ArtSpec, pack: IconPack?, custom: Map<String, CustomArt> = emptyMap()): List<LaunchableApp> {
         val pm = context.packageManager
@@ -57,11 +68,15 @@ internal object LauncherAppCatalog {
             val activity = resolved.activityInfo
             val label = resolved.loadLabel(pm)?.toString()?.trim()?.takeIf { it.isNotEmpty() }
                 ?: activity.name.substringAfterLast('.')
-            val updated = packageLastUpdateTime(pm, packageName)
+            // One PackageInfo lookup gives both the art invalidation timestamp
+            // and the install time used by the Newest install sort.
+            val info = pm.packageInfoOrNull(packageName)
+            val updated = info?.lastUpdateTime ?: 0L
+            val installedAt = info?.firstInstallTime ?: 0L
             val pick = custom[packageName]
             val cacheKey = "$packageName/${activity.name}:$updated:$tvOptimized:${spec}:${pack?.packageName}:${pick?.stored()}"
             liveKeys += cacheKey
-            val art = synchronized(artCache) { artCache[cacheKey] } ?: run {
+            val art = synchronized(artCache) { artCache.get(cacheKey) } ?: run {
                 // The user's pick for this app wins; if its pack or file is gone, the app falls back.
                 val customDrawable = pick?.let { CustomArtStore.load(context, it) }
                 CardArtFactory.create(
@@ -72,13 +87,21 @@ internal object LauncherAppCatalog {
                     appBanner = { if (tvOptimized) loadSafely { activity.loadBanner(pm) } else null },
                     appIcon = { loadSafely { resolved.loadIcon(pm) } ?: pm.defaultActivityIcon },
                 )
-            }.also { synchronized(artCache) { artCache[cacheKey] = it } }
-            LaunchableApp(packageName, activity.name, label, tvOptimized, updated, art, pick?.stored().orEmpty())
+            }.also { synchronized(artCache) { artCache.put(cacheKey, it) } }
+            LaunchableApp(packageName, activity.name, label, tvOptimized, updated, art, pick?.stored().orEmpty(), installedAt)
         }
-        synchronized(artCache) { artCache.keys.retainAll(liveKeys) }
+        synchronized(artCache) {
+            for (key in artCache.snapshot().keys) if (key !in liveKeys) artCache.remove(key)
+            artCache.trimToSize(ART_CACHE_BYTES)
+        }
         return apps.sortedWith(
             compareBy<LaunchableApp, String>(String.CASE_INSENSITIVE_ORDER) { it.label }.thenBy { it.packageName },
         )
+    }
+
+    /** Retires cached bitmaps when the art source or card size changes. */
+    fun clearArtCache() {
+        synchronized(artCache) { artCache.evictAll() }
     }
 
     private inline fun <T> loadSafely(block: () -> T?): T? = try {
@@ -90,7 +113,9 @@ internal object LauncherAppCatalog {
     /** True when [ownPackage] may start an activity guarded by [permission] (null means unguarded). */
     internal fun canStart(pm: PackageManager, ownPackage: String, permission: String?): Boolean =
         permission.isNullOrEmpty() || pm.checkPermission(permission, ownPackage) == PackageManager.PERMISSION_GRANTED
+}
 
-    private fun packageLastUpdateTime(pm: PackageManager, packageName: String): Long =
-        pm.packageInfoOrNull(packageName)?.lastUpdateTime ?: 0L
+/** Small compatibility façade for cache lifecycle calls from the activity. */
+internal object LauncherApps {
+    fun clearArtCache() = LauncherAppCatalog.clearArtCache()
 }

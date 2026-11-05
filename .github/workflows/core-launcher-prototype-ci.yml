@@ -7,19 +7,31 @@ on:
     paths:
       - 'launcher/**'
       - 'docs/CORE_LAUNCHER_PROTOTYPE_RESEARCH.md'
+      - 'docs/CORE_LAUNCHER_POLISH_RESEARCH.md'
+      - 'docs/mockups/**'
+      - 'CHANGELOG.md'
       - '.github/workflows/core-launcher-prototype-ci.yml'
       - 'tools/gradle_envelope.json'
       - 'tools/check_gradle_envelope.py'
+      - 'tools/build_launcher_offline_preview.py'
+      - 'tools/build_launcher_polish_preview.py'
       - 'tools/extract_launcher_gradle_diagnostics.py'
+      - 'tests/test_gradle_envelope.py'
   push:
     branches: [main]
     paths:
       - 'launcher/**'
       - 'docs/CORE_LAUNCHER_PROTOTYPE_RESEARCH.md'
+      - 'docs/CORE_LAUNCHER_POLISH_RESEARCH.md'
+      - 'docs/mockups/**'
+      - 'CHANGELOG.md'
       - '.github/workflows/core-launcher-prototype-ci.yml'
       - 'tools/gradle_envelope.json'
       - 'tools/check_gradle_envelope.py'
+      - 'tools/build_launcher_offline_preview.py'
+      - 'tools/build_launcher_polish_preview.py'
       - 'tools/extract_launcher_gradle_diagnostics.py'
+      - 'tests/test_gradle_envelope.py'
   workflow_dispatch:
 
 permissions:
@@ -49,6 +61,12 @@ jobs:
             || bash tools/install_android_platform.sh 37.0 36.0.0
 
       - uses: gradle/actions/setup-gradle@v6
+
+      - name: Check launcher source contracts and offline previews
+        run: |
+          python3 tests/test_gradle_envelope.py
+          python3 tools/build_launcher_offline_preview.py --check
+          python3 tools/build_launcher_polish_preview.py --check
 
       - id: build
         name: Build, lint and open-the-screens tests

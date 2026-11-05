@@ -6,6 +6,22 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added — Core Builds Launcher private prototype 0.3.0
+
+- **Local-first polish pass.** Full, Calm and Off motion with Android's system
+  animation scale; a 30-day/96-event local suggestion model; local app search;
+  A–Z / Most used / TV first / Newest install ordering; current-value settings;
+  quick settings; and versioned, size-bounded layout backup/restore. See
+  `docs/CORE_LAUNCHER_POLISH_RESEARCH.md` and `launcher/README.md`.
+- **Bounded art memory and clearer copy.** Card art uses a 24 MB
+  `byteCount`-bounded cache, custom-art keys for removed apps are pruned, and
+  settings/search/toast copy states its action, current value and local-data
+  boundary. No permission was added and no network call was introduced.
+- **Source-level coverage.** Robolectric tests cover the new settings, search
+  and backup flows; Python source/manifest tests pin the bounded local-only
+  contracts. Physical TV, TalkBack and performance measurements are still NOT
+  RUN, so this is not a "best on market" or speed claim.
+
 ### Changed
 
 - **Core Premium is on sale in the Google Play build.** That build now

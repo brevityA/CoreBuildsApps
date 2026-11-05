@@ -39,6 +39,10 @@ internal open class FocusCard(context: Context, val kind: RowKind) : FrameLayout
         style = Paint.Style.STROKE
         strokeWidth = ringWidth
     }
+    private val glow = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        strokeWidth = ringWidth * 3f
+    }
     private val chevron = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.WHITE }
     private val rect = RectF()
     private val path = Path()
@@ -73,7 +77,12 @@ internal open class FocusCard(context: Context, val kind: RowKind) : FrameLayout
     override fun onDrawForeground(canvas: Canvas) {
         super.onDrawForeground(canvas)
         if (!isFocused && !moving) return
-        ring.color = if (moving) Color.WHITE else context.getColor(R.color.cb_cyan)
+        val active = context.getColor(R.color.cb_cyan)
+        ring.color = if (moving) Color.WHITE else active
+        glow.color = if (moving) Color.argb(42, 255, 255, 255) else Color.argb(45, 0, 212, 255)
+        val glowInset = glow.strokeWidth / 2f
+        rect.set(glowInset, glowInset, width - glowInset, height - glowInset)
+        canvas.drawRoundRect(rect, radius - glowInset, radius - glowInset, glow)
         val inset = ringWidth / 2f
         rect.set(inset, inset, width - inset, height - inset)
         canvas.drawRoundRect(rect, radius - inset, radius - inset, ring)
@@ -283,17 +292,34 @@ internal class BackdropView(context: Context) : View(context) {
             next.glow = radial(width * 0.78f, height * 0.22f, width * 0.75f, tint, 150)
             next.glowWidth = width
         }
-        previous = now
+        val duration = Motion.backdropMs(context)
+        previous = if (duration == 0L) null else now
         current = next
         animator?.cancel()
+        if (duration == 0L) {
+            fade = 1f
+            animator = null
+            invalidate()
+            return
+        }
+        fade = 0f
         animator = ValueAnimator.ofFloat(0f, 1f).apply {
-            duration = 280
+            this.duration = duration
             addUpdateListener {
                 fade = it.animatedValue as Float
                 invalidate()
             }
             start()
         }
+    }
+
+    /** Ends a crossfade immediately; called when Home pauses or the screen is replaced. */
+    fun finishFade() {
+        animator?.cancel()
+        animator = null
+        previous = null
+        fade = 1f
+        invalidate()
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -351,3 +377,7 @@ internal class BackdropView(context: Context) : View(context) {
 /** The title above a shelf: Outfit SemiBold, quiet, aligned with the cards. */
 internal fun Context.shelfTitle(value: String): TextView =
     text(value, 16f, 0xFFC9D1D9.toInt(), weight = 600, tracking = 0.01f)
+
+/** A one-line explanation under a shelf title; short enough for TV distance. */
+internal fun Context.shelfNote(value: String): TextView =
+    text(value, 11f, 0xFF8B949E.toInt(), weight = 400, tracking = 0.01f)

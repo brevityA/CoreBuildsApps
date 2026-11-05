@@ -1,6 +1,5 @@
 package tv.corebuilds.launcher
 
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
@@ -21,7 +20,6 @@ import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.ImageView
@@ -58,9 +56,11 @@ class LauncherActivity : Activity() {
     private var renderedKey: String? = null
     private var loaded = false
     private var scanning = false
+    @Volatile private var artSignature = ""
     private var rescanRequested = false
     private var userInteracted = false
     private var resetArmed = false
+    private var infoSignature = ""
     /** The app whose artwork a pack browser or the image picker is choosing, across the round trip. */
     private var pendingArtApp: String? = null
 
@@ -68,12 +68,14 @@ class LauncherActivity : Activity() {
     private lateinit var topBar: LinearLayout
     private lateinit var clockColumn: LinearLayout
     private lateinit var customiseButton: View
+    private lateinit var infoArea: LinearLayout
     private lateinit var infoEyebrow: TextView
     private lateinit var infoTitle: TextView
     private lateinit var infoMeta: TextView
     private lateinit var shelves: ScrollView
     private lateinit var shelvesContent: LinearLayout
     private lateinit var panel: SidePanel
+    private lateinit var searchPanel: SearchPanel
 
     private val navRows = ArrayList<NavRow>()
     private var lastCard: Pair<RowKind, String?>? = null
@@ -90,6 +92,7 @@ class LauncherActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Motion.configure(LauncherPreferences.readSettings(applicationContext))
         pendingArtApp = savedInstanceState?.getString(STATE_PENDING_ART_APP)
         setContentView(buildHome())
         enterImmersiveMode()
@@ -125,6 +128,9 @@ class LauncherActivity : Activity() {
     }
 
     override fun onPause() {
+        // No transition should keep invalidating a window the user cannot see.
+        Motion.cancelScrolls()
+        backdrop.finishFade()
         // Leaving mid-move keeps the order as it stands, like pressing OK.
         finishMove()
         if (receiverRegistered) {
@@ -172,6 +178,7 @@ class LauncherActivity : Activity() {
     /** Back never leaves Home: it closes a panel, ends a move, or returns to the first card. */
     internal fun handleBack() {
         when {
+            searchPanel.isOpen -> searchPanel.close()
             panel.isOpen -> panel.back()
             moving != null -> finishMove()
             else -> goToTop()
@@ -179,6 +186,7 @@ class LauncherActivity : Activity() {
     }
 
     private fun goToTop() {
+        if (searchPanel.isOpen) searchPanel.close()
         if (panel.isOpen) panel.close()
         finishMove()
         val first = navRows.firstOrNull()?.cards?.firstOrNull()
@@ -248,7 +256,7 @@ class LauncherActivity : Activity() {
 
         // The info area sits on the shelves' top edge and grows upward, so a
         // two-line name never pushes the shelves around.
-        val info = LinearLayout(this).apply {
+        infoArea = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.BOTTOM
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
@@ -258,14 +266,14 @@ class LauncherActivity : Activity() {
             setLineSpacing(0f, 0.95f)
         }
         infoMeta = text("", 15f, 0xFFB8C2CC.toInt(), weight = 400)
-        info.addView(infoEyebrow)
-        info.addView(infoTitle, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+        infoArea.addView(infoEyebrow)
+        infoArea.addView(infoTitle, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
             topMargin = dp(6)
         })
-        info.addView(infoMeta, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+        infoArea.addView(infoMeta, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
             topMargin = dp(8)
         })
-        root.addView(info, FrameLayout.LayoutParams(dp(INFO_WIDTH_DP), dp(SHELVES_TOP_DP - INFO_TOP_DP - 8)).apply {
+        root.addView(infoArea, FrameLayout.LayoutParams(dp(INFO_WIDTH_DP), dp(SHELVES_TOP_DP - INFO_TOP_DP - 8)).apply {
             leftMargin = dp(SAFE_X); topMargin = dp(INFO_TOP_DP)
         })
 
@@ -300,6 +308,18 @@ class LauncherActivity : Activity() {
             }
         }
         root.addView(panel, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+        searchPanel = SearchPanel(this).apply {
+            onLaunch = { app ->
+                close()
+                launchApp(app)
+            }
+            onClosed = {
+                shelves.descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
+                topBar.descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
+                (cardFor(lastCard) ?: navRows.firstOrNull()?.cards?.firstOrNull() ?: customiseButton).requestFocus()
+            }
+        }
+        root.addView(searchPanel, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
         return root
     }
 
@@ -324,6 +344,17 @@ class LauncherActivity : Activity() {
                 val chosenPack = IconPacks.resolve(settings.artwork, installedPacks)
                 val pack = chosenPack?.let { IconPacks.load(applicationContext, it.packageName) }
                 val customArt = LauncherPreferences.readCustomArt(applicationContext)
+                // A different art source or card size changes every cache key;
+                // retire the old bitmaps before the new catalog is built.
+                val signature = listOf(
+                    settings.artwork.toString(), chosenPack?.packageName.orEmpty(),
+                    spec.width, spec.height, customArt.entries.sortedBy { it.key }.joinToString { "${it.key}=${it.value}" },
+                ).joinToString("|")
+                if (signature != artSignature) {
+                    LauncherApps.clearArtCache()
+                    artSignature = signature
+                }
+                CustomArtStore.prune(applicationContext, customArt)
                 val loadedApps = LauncherAppCatalog.load(applicationContext, spec.copy(source = pack?.packageName ?: "app"), pack, customArt)
                 val snapshot = LauncherPreferences.snapshot(applicationContext, loadedApps.map { it.packageName })
                 runOnUiThread {
@@ -362,6 +393,7 @@ class LauncherActivity : Activity() {
         apps.forEach { append(it.renderKey).append('|') }
         append(state.favourites).append(state.recents).append(state.hidden.sorted())
         append(state.settings.cardSize).append(state.settings.showRecents)
+        append(state.settings.smartSuggestions).append(state.settings.appSort).append(state.usage)
     }
 
     /** Card and icon pixel sizes for the chosen card size, from this screen's width. */
@@ -380,6 +412,7 @@ class LauncherActivity : Activity() {
     private fun gapDp(size: CardSize): Int = if (size == CardSize.COMPACT) 14 else 16
 
     private fun applySettings(settings: HomeSettings) {
+        Motion.configure(settings)
         backdrop.mode = settings.backdrop
         backdrop.dim = settings.dim
         clockColumn.visibility = if (settings.showClock) View.VISIBLE else View.GONE
@@ -407,16 +440,21 @@ class LauncherActivity : Activity() {
 
         if (state.settings.showRecents && state.recents.isNotEmpty()) {
             val recentCards = state.recents.mapNotNull { byPackage[it] }.map { appCard(it, RowKind.RECENT) }
-            if (recentCards.isNotEmpty()) addShelf(getString(R.string.row_recent), RowKind.RECENT, recentCards, cardW, cardH, gap)
+            if (recentCards.isNotEmpty()) {
+                val title = if (state.settings.smartSuggestions) R.string.row_suggested else R.string.row_recent
+                val note = if (state.settings.smartSuggestions) R.string.row_suggested_note else R.string.row_recent_note
+                addShelf(getString(title), RowKind.RECENT, recentCards, cardW, cardH, gap, note = getString(note))
+            }
         }
 
         val visible = apps.filterNot { it.packageName in state.hidden }
-        if (visible.isNotEmpty()) {
+        val ordered = sortedVisibleApps(visible)
+        if (ordered.isNotEmpty()) {
             val title = shelfTitle(getString(R.string.row_all_apps_count, visible.size))
             shelvesContent.addView(title, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                 leftMargin = dp(SAFE_X); topMargin = dp(ROW_GAP_DP)
             })
-            visible.chunked(state.settings.cardSize.perRow).forEachIndexed { index, chunk ->
+            ordered.chunked(state.settings.cardSize.perRow).forEachIndexed { index, chunk ->
                 val row = LinearLayout(this).apply {
                     orientation = LinearLayout.HORIZONTAL
                     clipChildren = false
@@ -447,7 +485,32 @@ class LauncherActivity : Activity() {
         }
     }
 
-    private fun addShelf(title: String, kind: RowKind, cards: List<FocusCard>, cardW: Int, cardH: Int, gap: Int) {
+    /** Local app ordering: no system usage API, no permission and no network metadata. */
+    private fun sortedVisibleApps(visible: List<LaunchableApp>): List<LaunchableApp> = when (state.settings.appSort) {
+        AppSort.A_Z -> visible
+        AppSort.MOST_USED -> visible.sortedWith(
+            compareByDescending<LaunchableApp> { state.usage[it.packageName] ?: 0 }
+                .thenBy(String.CASE_INSENSITIVE_ORDER) { it.label },
+        )
+        AppSort.TV_FIRST -> visible.sortedWith(
+            compareByDescending<LaunchableApp> { it.tvOptimized }
+                .thenBy(String.CASE_INSENSITIVE_ORDER) { it.label },
+        )
+        AppSort.NEWEST -> visible.sortedWith(
+            compareByDescending<LaunchableApp> { it.installedAt }
+                .thenBy(String.CASE_INSENSITIVE_ORDER) { it.label },
+        )
+    }
+
+    private fun addShelf(
+        title: String,
+        kind: RowKind,
+        cards: List<FocusCard>,
+        cardW: Int,
+        cardH: Int,
+        gap: Int,
+        note: String? = null,
+    ) {
         val container = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             clipChildren = false
@@ -456,6 +519,11 @@ class LauncherActivity : Activity() {
         container.addView(shelfTitle(title), LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
             leftMargin = dp(SAFE_X)
         })
+        if (note != null) {
+            container.addView(shelfNote(note), LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                leftMargin = dp(SAFE_X); topMargin = dp(2)
+            })
+        }
         val row = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             clipChildren = false
@@ -522,7 +590,7 @@ class LauncherActivity : Activity() {
             card is AppCard -> {
                 val eyebrow = getString(when (card.kind) {
                     RowKind.FAVOURITES -> R.string.info_eyebrow_favourite
-                    RowKind.RECENT -> R.string.info_eyebrow_recent
+                    RowKind.RECENT -> if (state.settings.smartSuggestions) R.string.info_eyebrow_suggested else R.string.info_eyebrow_recent
                     RowKind.ALL_APPS -> R.string.info_eyebrow_all_apps
                 })
                 val type = getString(if (card.app.tvOptimized) R.string.info_tv_app else R.string.info_app)
@@ -534,10 +602,14 @@ class LauncherActivity : Activity() {
     }
 
     private fun showInfoText(title: String, meta: String, eyebrow: String) {
+        val signature = "$eyebrow\n$title\n$meta"
+        val changed = signature != infoSignature
+        infoSignature = signature
         infoEyebrow.text = eyebrow
         infoEyebrow.visibility = if (eyebrow.isEmpty()) View.INVISIBLE else View.VISIBLE
         fitTitle(title)
         infoMeta.text = meta
+        if (changed) Motion.reveal(infoArea)
     }
 
     /**
@@ -563,6 +635,18 @@ class LauncherActivity : Activity() {
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
         if (event.action == KeyEvent.ACTION_DOWN) userInteracted = true
         val direction = direction(event.keyCode)
+        if (searchPanel.isOpen) {
+            if (direction != null) {
+                if (event.action == KeyEvent.ACTION_DOWN) searchPanel.move(direction)
+                return true
+            }
+            // Printable keys, deletion and IME actions belong to the search input.
+            return super.dispatchKeyEvent(event)
+        }
+        if (event.keyCode == KeyEvent.KEYCODE_SEARCH) {
+            if (event.action == KeyEvent.ACTION_UP) openSearch()
+            return true
+        }
         if (panel.isOpen) {
             if (direction != null) {
                 if (event.action == KeyEvent.ACTION_DOWN) panel.move(direction)
@@ -667,13 +751,7 @@ class LauncherActivity : Activity() {
     }
 
     private fun animateScroll(view: View, property: String, target: Int) {
-        val current = if (property == "scrollY") view.scrollY else view.scrollX
-        if (current == target) return
-        ObjectAnimator.ofInt(view, property, current, target).apply {
-            duration = 220
-            interpolator = DecelerateInterpolator()
-            start()
-        }
+        Motion.scroll(view, property, target)
     }
 
     // ---------------------------------------------------------------- launch + actions
@@ -875,6 +953,11 @@ class LauncherActivity : Activity() {
                 PanelItem(getString(R.string.setting_card_size), value = cardSizeLabel(s.cardSize)) { panel.push { cardSizePage() } },
                 PanelItem(getString(R.string.setting_recent), value = onOff(s.showRecents)) { updateSettings { it.copy(showRecents = !it.showRecents) } },
                 PanelItem(getString(R.string.setting_clock), value = onOff(s.showClock)) { updateSettings { it.copy(showClock = !it.showClock) } },
+                PanelItem(getString(R.string.setting_motion), value = motionLabel(s.motion)) { panel.push { motionPage() } },
+                PanelItem(getString(R.string.setting_smart_suggestions), value = smartLabel(s.smartSuggestions)) { panel.push { smartPage() } },
+                PanelItem(getString(R.string.setting_sort_apps), value = sortLabel(s.appSort)) { panel.push { appSortPage() } },
+                PanelItem(getString(R.string.setting_find_app), meta = getString(R.string.setting_find_app_meta), value = getString(R.string.quick_open)) { openSearch() },
+                PanelItem(getString(R.string.setting_quick_settings), meta = getString(R.string.setting_quick_settings_meta)) { panel.push { quickSettingsPage() } },
                 PanelItem(getString(R.string.setting_favourites), value = resources.getQuantityString(R.plurals.setting_favourites_value, state.favourites.size, state.favourites.size)) {
                     openFavouritesPicker(asRoot = false)
                 },
@@ -888,6 +971,9 @@ class LauncherActivity : Activity() {
                         if (n == 0) getString(R.string.setting_hidden_value_none) else resources.getQuantityString(R.plurals.setting_favourites_value, n, n)
                     },
                 ) { panel.push { customArtPage() } },
+                PanelItem(getString(R.string.setting_backup), meta = getString(R.string.setting_backup_meta)) { panel.push { backupPage() } },
+                PanelItem(getString(R.string.setting_restore), meta = getString(R.string.setting_restore_meta)) { panel.push { restorePage() } },
+                PanelItem(getString(R.string.setting_about), meta = getString(R.string.setting_about_meta)) { panel.push { aboutPage() } },
                 PanelItem(getString(R.string.setting_set_home), meta = getString(R.string.setting_set_home_meta)) {
                     panel.close(); openHomeSettings()
                 },
@@ -963,6 +1049,125 @@ class LauncherActivity : Activity() {
             }
         },
     )
+
+    private fun motionPage(): PanelPage = PanelPage(
+        eyebrow = getString(R.string.customise_eyebrow),
+        title = getString(R.string.motion_title),
+        body = getString(R.string.motion_body),
+        items = MotionMode.entries.map { mode ->
+            PanelItem(
+                motionLabel(mode),
+                meta = getString(when (mode) {
+                    MotionMode.FULL -> R.string.motion_full_meta
+                    MotionMode.CALM -> R.string.motion_calm_meta
+                    MotionMode.OFF -> R.string.motion_off_meta
+                }),
+                selected = state.settings.motion == mode,
+            ) { updateSettings { it.copy(motion = mode) } }
+        },
+    )
+
+    private fun smartPage(): PanelPage = PanelPage(
+        eyebrow = getString(R.string.customise_eyebrow),
+        title = getString(R.string.smart_title),
+        body = getString(R.string.smart_body),
+        items = listOf(
+            PanelItem(getString(R.string.smart_on), meta = getString(R.string.value_on), selected = state.settings.smartSuggestions) {
+                updateSettings { it.copy(smartSuggestions = true) }
+            },
+            PanelItem(getString(R.string.smart_off), meta = getString(R.string.value_off), selected = !state.settings.smartSuggestions) {
+                updateSettings { it.copy(smartSuggestions = false) }
+            },
+        ),
+    )
+
+    private fun appSortPage(): PanelPage = PanelPage(
+        eyebrow = getString(R.string.customise_eyebrow),
+        title = getString(R.string.sort_title),
+        body = getString(R.string.sort_body),
+        items = AppSort.entries.map { sort ->
+            PanelItem(sortLabel(sort), meta = sortMeta(sort), selected = state.settings.appSort == sort) {
+                updateSettings { it.copy(appSort = sort) }
+            }
+        },
+    )
+
+    private fun quickSettingsPage(): PanelPage = PanelPage(
+        eyebrow = getString(R.string.customise_eyebrow),
+        title = getString(R.string.quick_title),
+        body = getString(R.string.quick_body),
+        items = listOf(
+            quickItem(R.string.quick_network, R.string.quick_network_meta, Settings.ACTION_WIFI_SETTINGS, Settings.ACTION_WIRELESS_SETTINGS),
+            quickItem(R.string.quick_bluetooth, R.string.quick_bluetooth_meta, Settings.ACTION_BLUETOOTH_SETTINGS),
+            quickItem(R.string.quick_display, R.string.quick_display_meta, Settings.ACTION_DISPLAY_SETTINGS, Settings.ACTION_SOUND_SETTINGS),
+            quickItem(R.string.quick_accessibility, R.string.quick_accessibility_meta, Settings.ACTION_ACCESSIBILITY_SETTINGS),
+            quickItem(R.string.quick_apps, R.string.quick_apps_meta, Settings.ACTION_APPLICATION_SETTINGS),
+            quickItem(R.string.quick_home, R.string.quick_home_meta, Settings.ACTION_HOME_SETTINGS, Settings.ACTION_SETTINGS),
+        ),
+    )
+
+    private fun quickItem(title: Int, meta: Int, vararg actions: String): PanelItem =
+        PanelItem(getString(title), meta = getString(meta), value = getString(R.string.quick_open)) {
+            panel.close()
+            openSystemSettings(actions.toList())
+        }
+
+    private fun aboutPage(): PanelPage {
+        val version = packageManager.packageInfoOrNull(packageName)?.versionName
+            ?: getString(R.string.about_version_unknown)
+        return PanelPage(
+            eyebrow = getString(R.string.customise_eyebrow),
+            title = getString(R.string.about_title),
+            body = getString(R.string.about_body),
+            items = listOf(
+                PanelItem(getString(R.string.about_version), value = version) {},
+                PanelItem(getString(R.string.about_network), value = getString(R.string.about_network_value)) {},
+                PanelItem(getString(R.string.about_storage), value = getString(R.string.about_storage_value)) {},
+            ),
+            footer = getString(R.string.about_footer),
+        )
+    }
+
+    private fun backupPage(): PanelPage = PanelPage(
+        eyebrow = getString(R.string.customise_eyebrow),
+        title = getString(R.string.setting_backup),
+        body = getString(R.string.backup_body),
+        items = listOf(
+            PanelItem(getString(R.string.backup_action), value = getString(R.string.quick_open)) { startBackup() },
+        ),
+    )
+
+    private fun restorePage(): PanelPage = PanelPage(
+        eyebrow = getString(R.string.customise_eyebrow),
+        title = getString(R.string.setting_restore),
+        body = getString(R.string.restore_body),
+        items = listOf(
+            PanelItem(getString(R.string.restore_action), value = getString(R.string.quick_open)) { startRestore() },
+        ),
+    )
+
+    private fun openSystemSettings(actions: List<String>) {
+        for (action in actions + Settings.ACTION_SETTINGS) {
+            try {
+                startActivity(Intent(action))
+                return
+            } catch (_: ActivityNotFoundException) {
+                // Try the next public settings action this TV may expose.
+            } catch (_: SecurityException) {
+                break
+            }
+        }
+        toast(getString(R.string.toast_settings_unavailable))
+    }
+
+    private fun openSearch() {
+        lastCard = focusedIdentity() ?: lastCard
+        panel.close()
+        shelves.descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
+        topBar.descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
+        val visible = apps.filterNot { it.packageName in state.hidden }
+        searchPanel.open(visible, (state.favourites + state.recents).toSet())
+    }
 
     private fun choicePage(title: String, items: List<PanelItem>) =
         PanelPage(eyebrow = getString(R.string.customise_eyebrow), title = title, items = items)
@@ -1078,34 +1283,117 @@ class LauncherActivity : Activity() {
         )
     }
 
+    private fun runOnLoader(block: () -> Unit) {
+        try {
+            appLoader.execute(block)
+        } catch (_: RejectedExecutionException) {
+            // Home is finishing; no new disk work is started.
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun startBackup() {
+        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+            .addCategory(Intent.CATEGORY_OPENABLE)
+            .setType("application/json")
+            .putExtra(Intent.EXTRA_TITLE, LauncherBackup.FILE_NAME)
+        try {
+            startActivityForResult(intent, REQUEST_BACKUP)
+        } catch (_: ActivityNotFoundException) {
+            toast(getString(R.string.toast_file_picker_unavailable))
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun startRestore() {
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            .addCategory(Intent.CATEGORY_OPENABLE)
+            .setType("application/json")
+        try {
+            startActivityForResult(intent, REQUEST_RESTORE)
+        } catch (_: ActivityNotFoundException) {
+            toast(getString(R.string.toast_file_picker_unavailable))
+        }
+    }
+
+    private fun handleBackupResult(resultCode: Int, data: Intent?) {
+        val uri = data?.data ?: return
+        if (resultCode != RESULT_OK) return
+        runOnLoader {
+            val ok = try {
+                val bytes = LauncherBackup.export(applicationContext).toByteArray(Charsets.UTF_8)
+                contentResolver.openOutputStream(uri, "wt")?.use { stream ->
+                    stream.write(bytes)
+                    true
+                } ?: false
+            } catch (_: Exception) {
+                false
+            }
+            runOnUiThread {
+                if (isFinishing || isDestroyed) return@runOnUiThread
+                toast(getString(if (ok) R.string.toast_backup_saved else R.string.toast_backup_failed))
+            }
+        }
+    }
+
+    private fun handleRestoreResult(resultCode: Int, data: Intent?) {
+        val uri = data?.data ?: return
+        if (resultCode != RESULT_OK) return
+        runOnLoader {
+            val text = try {
+                contentResolver.openInputStream(uri)?.use { LauncherBackup.readBounded(it) }
+            } catch (_: Exception) {
+                null
+            }
+            val ok = text?.let { LauncherBackup.restore(applicationContext, it) } ?: false
+            runOnUiThread {
+                if (isFinishing || isDestroyed) return@runOnUiThread
+                if (!ok) {
+                    toast(getString(R.string.toast_restore_failed))
+                    return@runOnUiThread
+                }
+                CustomArtStore.prune(applicationContext, LauncherPreferences.readCustomArt(applicationContext))
+                Motion.configure(LauncherPreferences.readSettings(applicationContext))
+                state = HomeState(emptyList(), emptySet(), emptyList(), HomeSettings())
+                renderedKey = null
+                if (panel.isOpen) panel.close()
+                toast(getString(R.string.toast_restored))
+                refreshApps()
+            }
+        }
+    }
+
     @Deprecated("Activity results without AndroidX; this launcher has no AndroidX dependency.")
     @Suppress("DEPRECATION")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode != REQUEST_PICK_ICON && requestCode != REQUEST_PICK_IMAGE) return
+        when (requestCode) {
+            REQUEST_PICK_ICON, REQUEST_PICK_IMAGE -> handleArtworkResult(requestCode, resultCode, data)
+            REQUEST_BACKUP -> handleBackupResult(resultCode, data)
+            REQUEST_RESTORE -> handleRestoreResult(resultCode, data)
+        }
+    }
+
+    private fun handleArtworkResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val packageName = pendingArtApp ?: return
         pendingArtApp = null
         if (resultCode != RESULT_OK) return
         val app = apps.firstOrNull { it.packageName == packageName } ?: return
         val uri = data?.data
-        try {
-            appLoader.execute {
-                // Decoding and saving an image is disk work; keep it off the main thread.
-                val art = when (requestCode) {
-                    REQUEST_PICK_IMAGE -> uri?.let { CustomArtStore.importImage(applicationContext, it, packageName) }
-                    else -> CustomArtStore.fromPickResult(applicationContext, data, packageName)
-                }
-                runOnUiThread {
-                    if (isFinishing || isDestroyed) return@runOnUiThread
-                    if (art == null) {
-                        toast(getString(if (requestCode == REQUEST_PICK_IMAGE) R.string.art_image_failed else R.string.art_nothing_returned))
-                    } else {
-                        setCustomArt(app, art)
-                    }
+        runOnLoader {
+            // Decoding and saving an image is disk work; keep it off the main thread.
+            val art = when (requestCode) {
+                REQUEST_PICK_IMAGE -> uri?.let { CustomArtStore.importImage(applicationContext, it, packageName) }
+                else -> CustomArtStore.fromPickResult(applicationContext, data, packageName)
+            }
+            runOnUiThread {
+                if (isFinishing || isDestroyed) return@runOnUiThread
+                if (art == null) {
+                    toast(getString(if (requestCode == REQUEST_PICK_IMAGE) R.string.art_image_failed else R.string.art_nothing_returned))
+                } else {
+                    setCustomArt(app, art)
                 }
             }
-        } catch (_: RejectedExecutionException) {
-            // Finishing; the choice is dropped.
         }
     }
 
@@ -1190,6 +1478,28 @@ class LauncherActivity : Activity() {
         CardSize.LARGE -> R.string.card_size_large_meta
     })
 
+    private fun motionLabel(mode: MotionMode) = getString(when (mode) {
+        MotionMode.FULL -> R.string.motion_full
+        MotionMode.CALM -> R.string.motion_calm
+        MotionMode.OFF -> R.string.motion_off
+    })
+
+    private fun smartLabel(enabled: Boolean) = getString(if (enabled) R.string.smart_on else R.string.smart_off)
+
+    private fun sortLabel(sort: AppSort) = getString(when (sort) {
+        AppSort.A_Z -> R.string.sort_a_z
+        AppSort.MOST_USED -> R.string.sort_most_used
+        AppSort.TV_FIRST -> R.string.sort_tv_first
+        AppSort.NEWEST -> R.string.sort_newest
+    })
+
+    private fun sortMeta(sort: AppSort) = getString(when (sort) {
+        AppSort.A_Z -> R.string.sort_a_z_meta
+        AppSort.MOST_USED -> R.string.sort_most_used_meta
+        AppSort.TV_FIRST -> R.string.sort_tv_first_meta
+        AppSort.NEWEST -> R.string.sort_newest_meta
+    })
+
     internal companion object {
         /** The TV overscan-safe margins: 48dp at the sides, 27dp top and bottom. */
         const val SAFE_X = 48
@@ -1204,6 +1514,8 @@ class LauncherActivity : Activity() {
         const val CARD_PAD_DP = 12
         const val REQUEST_PICK_ICON = 41
         const val REQUEST_PICK_IMAGE = 42
+        const val REQUEST_BACKUP = 43
+        const val REQUEST_RESTORE = 44
         const val STATE_PENDING_ART_APP = "pending_art_app"
         /** At most this many suggestions per pack for one app: banner, glyph and an alternate. */
         const val MAX_SUGGESTIONS = 3

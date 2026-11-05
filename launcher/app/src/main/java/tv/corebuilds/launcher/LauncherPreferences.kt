@@ -2,6 +2,7 @@ package tv.corebuilds.launcher
 
 import android.content.Context
 import android.content.SharedPreferences
+import java.util.Calendar
 
 /** Where the card art comes from: the app's own art, or an installed icon pack. */
 internal sealed class ArtworkChoice {
@@ -33,6 +34,12 @@ internal enum class Dim(val scrimAlpha: Int) { LIGHT(90), MEDIUM(140), STRONG(19
 
 internal enum class CardSize(val perRow: Int) { COMPACT(6), STANDARD(5), LARGE(4) }
 
+/** User-selected transition amount. Android's system animator scale is applied on top. */
+internal enum class MotionMode(val factor: Float) { FULL(1f), CALM(0.55f), OFF(0f) }
+
+/** The order of the All apps grid. All inputs are local and permission-free. */
+internal enum class AppSort { A_Z, MOST_USED, TV_FIRST, NEWEST }
+
 /** Everything the Customise panel can change. */
 internal data class HomeSettings(
     val artwork: ArtworkChoice = ArtworkChoice.Automatic,
@@ -41,6 +48,9 @@ internal data class HomeSettings(
     val cardSize: CardSize = CardSize.STANDARD,
     val showRecents: Boolean = true,
     val showClock: Boolean = true,
+    val motion: MotionMode = MotionMode.FULL,
+    val smartSuggestions: Boolean = true,
+    val appSort: AppSort = AppSort.A_Z,
 )
 
 /** One consistent read of the saved layout, taken off the main thread with each catalog scan. */
@@ -48,11 +58,21 @@ internal data class HomeState(
     /** Favourites in the user's order that are launchable now. */
     val favourites: List<String>,
     val hidden: Set<String>,
-    /** Recently opened, newest first, never a favourite or a hidden app. */
+    /** Recently opened, or locally ranked suggestions, newest/best first. */
     val recents: List<String>,
     val settings: HomeSettings,
     /** Artwork the user chose per app, by package. Kept while an app is uninstalled. */
     val customArt: Map<String, CustomArt> = emptyMap(),
+    /** Local launch counts from the bounded event window; used by Most used sorting. */
+    val usage: Map<String, Int> = emptyMap(),
+)
+
+/** A launch record for local suggestions. The slot is a coarse hour/day part, never a location. */
+private data class LaunchEvent(
+    val packageName: String,
+    val at: Long,
+    val slot: Int,
+    val dayType: Int,
 )
 
 /** Small, device-local state only. No account, network sync, or analytics. */
@@ -65,16 +85,29 @@ internal object LauncherPreferences {
     private const val KEY_FAVOURITES = "favourite_order"
     private const val KEY_HIDDEN = "hidden_packages"
     private const val KEY_RECENTS = "recent_packages"
+    private const val KEY_LAUNCH_EVENTS = "launch_events"
     private const val KEY_ARTWORK = "artwork"
     private const val KEY_BACKDROP = "backdrop"
     private const val KEY_DIM = "backdrop_dim"
     private const val KEY_CARD_SIZE = "card_size"
     private const val KEY_SHOW_RECENTS = "show_recents"
     private const val KEY_SHOW_CLOCK = "show_clock"
+    private const val KEY_MOTION = "motion"
+    private const val KEY_SMART_SUGGESTIONS = "smart_suggestions"
+    private const val KEY_APP_SORT = "app_sort"
     private const val KEY_CUSTOM_ART = "custom_art"
 
     private const val RECENTS_LIMIT = 5
+    private const val EVENT_LIMIT = 96
+    private const val EVENT_WINDOW_MS = 30L * 24L * 60L * 60L * 1000L
     private const val SEPARATOR = "\n"
+
+    /** Backup/restore writes only these launcher-owned keys. */
+    private val WRITABLE_KEYS = setOf(
+        KEY_LEGACY_PINS, KEY_FAVOURITES, KEY_HIDDEN, KEY_RECENTS, KEY_LAUNCH_EVENTS,
+        KEY_ARTWORK, KEY_BACKDROP, KEY_DIM, KEY_CARD_SIZE, KEY_SHOW_RECENTS,
+        KEY_SHOW_CLOCK, KEY_MOTION, KEY_SMART_SUGGESTIONS, KEY_APP_SORT, KEY_CUSTOM_ART,
+    )
 
     // On first run, surface the Core Builds apps that are actually installed.
     // After the user edits favourites, their explicit list is the source of truth.
@@ -87,6 +120,8 @@ internal object LauncherPreferences {
         listOf("tv.corebuilds.eq"),
         listOf("dev.corebuilds.doctor"),
     )
+
+    internal fun rawPreferences(context: Context): SharedPreferences = prefs(context)
 
     private fun prefs(context: Context): SharedPreferences =
         context.getSharedPreferences(FILE, Context.MODE_PRIVATE)
@@ -107,12 +142,17 @@ internal object LauncherPreferences {
         // Keep a user's choice while an app is uninstalled; never show it.
         val favourites = savedFavourites(preferences, installedInOrder).filter { it in installed }
         val hidden = preferences.list(KEY_HIDDEN).toSet()
+        val settings = settings(preferences)
+        val exclude = favourites.toSet() + hidden
+        val events = activeEvents(preferences)
+        val usage = events.groupingBy { it.packageName }.eachCount()
         return HomeState(
             favourites = favourites,
             hidden = hidden,
-            recents = recentPackages(preferences, installed, exclude = favourites.toSet() + hidden),
-            settings = settings(preferences),
+            recents = suggestions(preferences, events, installed, exclude, settings.smartSuggestions),
+            settings = settings,
             customArt = customArt(preferences),
+            usage = usage,
         )
     }
 
@@ -160,6 +200,78 @@ internal object LauncherPreferences {
         return launchable.filterNot { it in exclude }.take(RECENTS_LIMIT)
     }
 
+    /**
+     * Smart suggestions combine recent use, frequency and the current coarse
+     * time context. The score is deterministic and uses only events recorded on
+     * this TV in the last 30 days. With no events it is exactly the legacy row.
+     */
+    private fun suggestions(
+        preferences: SharedPreferences,
+        events: List<LaunchEvent>,
+        installed: Set<String>,
+        exclude: Set<String>,
+        smart: Boolean,
+    ): List<String> {
+        val fallback = recentPackages(preferences, installed, exclude)
+        if (!smart) return fallback
+        val eligible = events.filter { it.packageName in installed && it.packageName !in exclude }
+        if (eligible.isEmpty()) return fallback
+        val now = System.currentTimeMillis()
+        val slot = timeSlot(now)
+        val dayType = dayType(now)
+        val candidates = (fallback + eligible.map { it.packageName }.distinct()).distinct()
+        return candidates.map { packageName ->
+            val own = eligible.filter { it.packageName == packageName }
+            val last = own.maxOfOrNull { it.at } ?: 0L
+            val age = (now - last).coerceIn(0L, EVENT_WINDOW_MS)
+            val recency = 50f * (1f - age.toFloat() / EVENT_WINDOW_MS.toFloat())
+            val frequency = own.size * 5f
+            val context = own.count { it.slot == slot && it.dayType == dayType } * 12f
+            val legacyIndex = fallback.indexOf(packageName)
+            val legacy = if (legacyIndex >= 0) (RECENTS_LIMIT - legacyIndex) * 0.2f else 0f
+            packageName to (recency + frequency + context + legacy)
+        }
+            .sortedWith(compareByDescending<Pair<String, Float>> { it.second }.thenBy { it.first })
+            .map { it.first }
+            .take(RECENTS_LIMIT)
+    }
+
+    /** Reads and prunes the bounded event window; a malformed line is ignored. */
+    private fun activeEvents(preferences: SharedPreferences): List<LaunchEvent> {
+        val now = System.currentTimeMillis()
+        val stored = preferences.list(KEY_LAUNCH_EVENTS)
+        val events = stored.mapNotNull { line ->
+            val parts = line.split('|')
+            val packageName = parts.getOrNull(0)?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+            val at = parts.getOrNull(1)?.toLongOrNull() ?: return@mapNotNull null
+            val slot = parts.getOrNull(2)?.toIntOrNull() ?: timeSlot(at)
+            val day = parts.getOrNull(3)?.toIntOrNull() ?: dayType(at)
+            LaunchEvent(packageName, at, slot, day)
+        }.filter { it.at in 0..now && now - it.at <= EVENT_WINDOW_MS }.takeLast(EVENT_LIMIT)
+        if (events.size != stored.size) {
+            preferences.edit().putList(KEY_LAUNCH_EVENTS, events.map { it.stored() }).apply()
+        }
+        return events
+    }
+
+    private fun LaunchEvent.stored(): String = "$packageName|$at|$slot|$dayType"
+
+    /** Morning, day, evening and late night; no exact timestamp is kept in a suggestion model. */
+    private fun timeSlot(time: Long): Int {
+        val hour = Calendar.getInstance().apply { timeInMillis = time }.get(Calendar.HOUR_OF_DAY)
+        return when (hour) {
+            in 5..10 -> 0
+            in 11..16 -> 1
+            in 17..22 -> 2
+            else -> 3
+        }
+    }
+
+    private fun dayType(time: Long): Int {
+        val day = Calendar.getInstance().apply { timeInMillis = time }.get(Calendar.DAY_OF_WEEK)
+        return if (day == Calendar.SATURDAY || day == Calendar.SUNDAY) 1 else 0
+    }
+
     /** The Customise settings alone; the scan reads them first to size the card art. */
     fun readSettings(context: Context): HomeSettings = settings(prefs(context))
 
@@ -172,6 +284,9 @@ internal object LauncherPreferences {
             cardSize = enumValue(preferences.getString(KEY_CARD_SIZE, null), defaults.cardSize),
             showRecents = preferences.getBoolean(KEY_SHOW_RECENTS, defaults.showRecents),
             showClock = preferences.getBoolean(KEY_SHOW_CLOCK, defaults.showClock),
+            motion = enumValue(preferences.getString(KEY_MOTION, null), defaults.motion),
+            smartSuggestions = preferences.getBoolean(KEY_SMART_SUGGESTIONS, defaults.smartSuggestions),
+            appSort = enumValue(preferences.getString(KEY_APP_SORT, null), defaults.appSort),
         )
     }
 
@@ -186,6 +301,9 @@ internal object LauncherPreferences {
             .putString(KEY_CARD_SIZE, settings.cardSize.name)
             .putBoolean(KEY_SHOW_RECENTS, settings.showRecents)
             .putBoolean(KEY_SHOW_CLOCK, settings.showClock)
+            .putString(KEY_MOTION, settings.motion.name)
+            .putBoolean(KEY_SMART_SUGGESTIONS, settings.smartSuggestions)
+            .putString(KEY_APP_SORT, settings.appSort.name)
             .apply()
     }
 
@@ -224,11 +342,39 @@ internal object LauncherPreferences {
         preferences.edit().putList(KEY_HIDDEN, current).apply()
     }
 
+    /** Records a launch for both the legacy five-item row and local smart suggestions. */
     fun recordLaunch(context: Context, packageName: String) {
         val preferences = prefs(context)
+        val now = System.currentTimeMillis()
+        val event = LaunchEvent(packageName, now, timeSlot(now), dayType(now))
+        val events = (activeEvents(preferences) + event).takeLast(EVENT_LIMIT)
         val updated = (listOf(packageName) + preferences.list(KEY_RECENTS).filterNot { it == packageName })
             .take(RECENTS_LIMIT)
-        preferences.edit().putList(KEY_RECENTS, updated).apply()
+        preferences.edit()
+            .putList(KEY_LAUNCH_EVENTS, events.map { it.stored() })
+            .putList(KEY_RECENTS, updated)
+            .apply()
+    }
+
+    /** Replaces only known launcher keys from a validated, user-chosen backup. */
+    fun replaceAll(context: Context, values: Map<String, Any?>) {
+        val editor = prefs(context).edit().clear()
+        for (key in WRITABLE_KEYS) {
+            when (val value = values[key]) {
+                is String -> editor.putString(key, value)
+                is Boolean -> editor.putBoolean(key, value)
+                is Int -> editor.putInt(key, value)
+                is Long -> editor.putLong(key, value)
+                is Float -> editor.putFloat(key, value)
+                is List<*> -> {
+                    val strings = value.filterIsInstance<String>()
+                    if (key == KEY_LEGACY_PINS) editor.putStringSet(key, strings.toSet())
+                    else editor.putString(key, strings.distinct().joinToString(SEPARATOR))
+                }
+                else -> Unit
+            }
+        }
+        editor.apply()
     }
 
     /** Favourites, hidden apps, history and settings back to first run. */

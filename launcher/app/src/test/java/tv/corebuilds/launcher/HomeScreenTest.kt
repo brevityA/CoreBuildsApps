@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.view.KeyEvent
 import android.view.View
+import android.widget.EditText
 import android.widget.TextClock
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
@@ -337,6 +338,48 @@ class HomeScreenTest {
         assertNotNull(started)
         assertEquals(card.app.activityName, started.component?.className)
         assertTrue(started.hasCategory(Intent.CATEGORY_LEANBACK_LAUNCHER))
+    }
+
+    @Test
+    fun motionOrderAndSmartSettingsApplyAndPersist() = home { activity ->
+        openCustomise(activity)
+        clickRow(activity, R.string.setting_motion)
+        clickRow(activity, R.string.motion_off)
+        HomeHarness.waitForApps(activity)
+        assertEquals(MotionMode.OFF, LauncherPreferences.readSettings(context).motion)
+        activity.handleBack()
+        HomeHarness.settle()
+
+        clickRow(activity, R.string.setting_sort_apps)
+        clickRow(activity, R.string.sort_tv_first)
+        HomeHarness.waitForApps(activity)
+        assertEquals(AppSort.TV_FIRST, LauncherPreferences.readSettings(context).appSort)
+        activity.handleBack()
+        HomeHarness.settle()
+
+        clickRow(activity, R.string.setting_smart_suggestions)
+        clickRow(activity, R.string.smart_off)
+        HomeHarness.waitForApps(activity)
+        assertFalse(LauncherPreferences.readSettings(context).smartSuggestions)
+    }
+
+    @Test
+    fun localSearchFindsAnAppAndOkOpensIt() = home { activity ->
+        openCustomise(activity)
+        clickRow(activity, R.string.setting_find_app)
+        val search = HomeHarness.descendants(activity.window.decorView).filterIsInstance<SearchPanel>().single()
+        assertTrue(search.isOpen)
+        val input = HomeHarness.descendants(search).filterIsInstance<EditText>().single()
+        input.setText("Harbor")
+        HomeHarness.settle()
+        val result = HomeHarness.descendants(search).first {
+            it.contentDescription?.startsWith("Harbor News.") == true
+        }
+        result.performClick()
+        val started = shadowOf(activity).nextStartedActivity
+        assertNotNull(started)
+        assertEquals("org.example.harbor", started?.component?.packageName)
+        assertFalse(search.isOpen)
     }
 
     @Test
