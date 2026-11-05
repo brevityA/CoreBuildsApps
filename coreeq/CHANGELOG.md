@@ -8,9 +8,12 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
-Android build, lint, Robolectric and physical phone/TV checks remain unverified
-for these changes. See `docs/CORE_EQ_PHONE_UX_TEST_RUNBOOK.md` for the local
-source/policy receipt and the required device matrix.
+## [1.13.0] — 2026-11-05
+
+versionCode 27. Android build, lint and Robolectric pass: 869 unit tests, lint
+0 errors. Physical phone and TV checks, including the Bluetooth profile card
+on the reporting projector, have not been run. See
+`docs/CORE_EQ_PHONE_UX_TEST_RUNBOOK.md` for the device matrix.
 
 ### Added
 
