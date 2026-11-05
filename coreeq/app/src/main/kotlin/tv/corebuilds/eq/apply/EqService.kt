@@ -236,12 +236,45 @@ class EqService : Service() {
     }
     private val playbackCallback = object : AudioManager.AudioPlaybackCallback() {
         override fun onPlaybackConfigChanged(configs: MutableList<AudioPlaybackConfiguration>?) {
+            // Decided when Android reports it: the probe's start and release
+            // reports arrive while it plays or just after it ends.
+            val ownProbeEcho = OutputRoute.isOwnProbeEcho()
             mainHandler.post {
-                if (!instanceRunning || suspended || !store.correctionEnabled || playbackCheckQueued) return@post
-                playbackCheckQueued = true
-                mainHandler.postDelayed(playbackCheck, PLAYBACK_ROUTE_CHECK_MS)
+                if (!instanceRunning || suspended || !store.correctionEnabled) return@post
+                // Core EQ's own silent probe is not content. Treated as playback,
+                // it scheduled discovery, whose apply ran the next probe.
+                if (ownProbeEcho) queueOwnProbeRecheck() else queuePlaybackCheck()
             }
         }
+    }
+    private var ownProbeRecheckQueued = false
+    /**
+     * Real playback may start or stop while a probe plays. Once its echo has
+     * passed, look again, and treat it as playback only if the playing state
+     * really changed. (One app replacing another mid-probe waits for its next
+     * report.)
+     */
+    private val ownProbeRecheck = Runnable {
+        ownProbeRecheckQueued = false
+        if (!CorrectionServicePolicy.canApply(instanceRunning, store.correctionEnabled, suspended)) return@Runnable
+        if (OutputRoute.isOwnProbeEcho()) {
+            queueOwnProbeRecheck()
+            return@Runnable
+        }
+        val configs = try { audioManager.activePlaybackConfigurations } catch (_: RuntimeException) { null }
+        if (configs != null && audioIsPlaying(configs) != playbackActiveHint) queuePlaybackCheck()
+    }
+
+    private fun queuePlaybackCheck() {
+        if (playbackCheckQueued) return
+        playbackCheckQueued = true
+        mainHandler.postDelayed(playbackCheck, PLAYBACK_ROUTE_CHECK_MS)
+    }
+
+    private fun queueOwnProbeRecheck() {
+        if (ownProbeRecheckQueued) return
+        ownProbeRecheckQueued = true
+        mainHandler.postDelayed(ownProbeRecheck, OutputRoute.OWN_PROBE_ECHO_MS)
     }
 
     private val sessionReceiver = object : BroadcastReceiver() {
@@ -465,6 +498,8 @@ class EqService : Service() {
                 suspended = true
                 mainHandler.removeCallbacks(playbackCheck)
                 playbackCheckQueued = false
+                mainHandler.removeCallbacks(ownProbeRecheck)
+                ownProbeRecheckQueued = false
                 clearCurrentCard()
                 appliedCard.dismiss()
                 setAllEnabled(false)

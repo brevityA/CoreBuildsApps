@@ -166,6 +166,7 @@ object OutputRoute {
         }
 
         var playbackStarted = false
+        ownProbe.started() // ended in `finally`, after the track is released
         return try {
             // play() on an empty streaming track does not establish a usable
             // playback route. Queue real PCM zeros, without focus or volume
@@ -214,6 +215,7 @@ object OutputRoute {
             try { track.removeOnRoutingChangedListener(listener) } catch (_: Exception) { }
             try { track.stop() } catch (_: Exception) { }
             try { track.release() } catch (_: Exception) { }
+            ownProbe.ended(SystemClock.elapsedRealtime())
         }
     }
 
@@ -620,6 +622,13 @@ object OutputRoute {
     private const val PROBE_SETTLE_MS = 120L
     private const val PROBE_POLL_MS = 10L
     private const val PROBE_CACHE_MS = 2_000L
+
+    /** How long after a probe's track is released its stop/release reports may still arrive. */
+    internal const val OWN_PROBE_ECHO_MS = 500L
+    private val ownProbe = OwnProbeEcho(OWN_PROBE_ECHO_MS)
+
+    /** True while Core EQ's own probe plays and briefly after: a playback report now is its echo. */
+    internal fun isOwnProbeEcho(): Boolean = ownProbe.isEcho(SystemClock.elapsedRealtime())
 
     private val probeState = RouteProbeState<ProbeResult>()
     private val routeListeners = java.util.concurrent.CopyOnWriteArraySet<() -> Unit>()

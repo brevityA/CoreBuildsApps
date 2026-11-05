@@ -72,6 +72,22 @@ class RouteStabilityContract(unittest.TestCase):
         duration = int(re.search(r"PROBE_TRACK_MS = (\d+)", self.route)[1])
         self.assertGreater(wait, duration)
 
+    def test_the_probes_own_playback_reports_never_schedule_discovery(self) -> None:
+        # The probe's AudioTrack is reported to Core EQ's own playback callback.
+        # Read as playback, it scheduled discovery, whose apply found the probe
+        # stale and ran the next one: a probe and a reapply every few seconds.
+        body = method(self.route, "probeWithSilentTrack")
+        self.assertLess(body.index("ownProbe.started()"), body.index("track.play()"))
+        cleanup = body.split("} finally {", 1)[1]
+        self.assertLess(cleanup.index("track.release()"), cleanup.index("ownProbe.ended("))
+        callback = self.service.split("private val playbackCallback =", 1)[1].split("private var ownProbeRecheckQueued", 1)[0]
+        self.assertLess(callback.index("OutputRoute.isOwnProbeEcho()"), callback.index("mainHandler.post"))
+        self.assertIn("if (ownProbeEcho) queueOwnProbeRecheck() else queuePlaybackCheck()", callback)
+        recheck = self.service.split("private val ownProbeRecheck =", 1)[1].split("private fun queuePlaybackCheck", 1)[0]
+        self.assertIn("audioIsPlaying(configs) != playbackActiveHint", recheck)
+        self.assertNotIn("scheduleDiscovery", recheck)
+        self.assertGreater(int(re.search(r"OWN_PROBE_ECHO_MS = (\d+)L", self.route)[1]), 0)
+
     def test_route_indications_and_identity_do_not_open_playback_tracks(self) -> None:
         body = method(self.route, "indication")
         self.assertIn("estimateOutput(context)", body)

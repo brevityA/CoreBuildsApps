@@ -48,6 +48,14 @@ source/policy receipt and the required device matrix.
   outstanding probe. These paths still require Android/TV verification; profiles
   are not borrowed
   across uncertain routes to suppress a card.
+- **No self-sustaining route checks.** Android reports Core EQ's own silent
+  probe to its playback callback like any other player. Read as playback, each
+  probe scheduled player discovery, and discovery found the 2-second probe
+  stale and ran the next one: a probe and an effect reapply about every 3
+  seconds with nothing playing (with player discovery granted, on devices
+  where correction attaches per app). Reports during a probe and for 500 ms
+  after it are now ignored, followed by one look at whether real playback
+  started or stopped meanwhile.
 - **Latest correction choice wins.** A queued STOP cannot overwrite a newer
   enable. An explicitly disabled correction rejects sticky/late starts and
   RESUME/REAPPLY. A late start still goes foreground for a moment before it
