@@ -25,8 +25,9 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Owner-entered network wallpapers.** Customise accepts one typed HTTP/HTTPS
   URL, validates it, checks a validated internet connection, bounds the fetch
   to 8 MB and 1920×1080 sampling, then applies it through Android's
-  `WallpaperManager`. There is no default endpoint, gallery, account,
-  telemetry or automatic refresh.
+  `WallpaperManager`. The application opts into cleartext for owner-typed
+  HTTP/LAN URLs; HTTPS is recommended. There is no default endpoint, gallery,
+  account, telemetry or automatic refresh.
 - **Boot fallback and status notification.** A `BOOT_COMPLETED` receiver checks
   the saved Launch-on-boot setting and the current HOME resolution before
   trying one start. On Android 13+ the activity requests

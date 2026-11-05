@@ -985,6 +985,8 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
             "android.permission.RECEIVE_BOOT_COMPLETED",
             "android.permission.POST_NOTIFICATIONS",
         })
+        application = self.manifest.find("application")
+        self.assertEqual(application.get(f"{{{self.ANDROID}}}usesCleartextTraffic"), "true")
         receivers = self.manifest.findall("application/receiver")
         self.assertEqual(len(receivers), 1)
         self.assertEqual(receivers[0].get(f"{{{self.ANDROID}}}name"), ".BootReceiver")
