@@ -47,8 +47,10 @@ versionCode 28. Android build, lint and Robolectric pass: 877 unit tests, lint
   `apk` job builds them as the `CoreEQ-androidTest` artifact, and
   `tools/install_core_eq_on_emulator.sh` runs them on both emulators once user
   0 is unlocked (the 37.0 image's framework restart leaves it locked, and its
-  encrypted storage unreadable, for a while) and `system_server` has kept
-  one pid for 30 s. A framework restart under the run (locked storage, a lost
+  encrypted storage unreadable, for a while) and the system server has gone
+  30 s without restarting (`sys.system_server.start_count`, else its pid; a
+  device that reports neither is warned about, not failed). The post-install
+  `pm path` check asks again when the package service itself fails. A framework restart under the run (locked storage, a lost
   service, `DeadObjectException` from `am instrument`, "System has crashed")
   earns another run, up to 3 in all; any other failure fails at once. A run
   fails unless `am instrument` reports `OK` with at least one test.

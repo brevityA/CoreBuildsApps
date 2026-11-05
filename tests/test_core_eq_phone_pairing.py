@@ -132,11 +132,16 @@ class OnDeviceTestRuns(unittest.TestCase):
         # locked and credential-encrypted SharedPreferences throw (PR #455, first run).
         self.assertIn("am get-started-user-state 0", script)
         self.assertIn("RUNNING_UNLOCKED", script)
+        # The post-install check asks a broken package service again, never a missing package.
+        self.assertIn("package check met a restart", script)
         # The activity manager dying under `am instrument` is a restart, not a test failure.
         self.assertIn("DeadObjectException", script)
         self.assertIn("System has crashed", script)
         # A stable system server, not just an answering package service, before each run.
+        self.assertIn("getprop sys.system_server.start_count", script)
         self.assertIn("pidof system_server", script)
+        # A device that cannot report it is warned about, not failed (84e5e1ff0's 37.0 run).
+        self.assertIn("running without the stability wait", script)
         run = script[script.index("run_device_tests() {"):]
         self.assertLess(run.index("wait_for_stable_system_server"), run.index("am instrument -w"))
         # Restarts earn at most three runs; an assertion failure gets none.

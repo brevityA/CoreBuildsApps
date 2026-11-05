@@ -181,12 +181,26 @@ install_one() { # installs $APK and proves $PACKAGE is on the device
     fi
   fi
 
-  wait_for_package_service "before checking the package" || return 1
-  if ! PATH_OUT=$(adb shell pm path "$PACKAGE" 2>&1); then
-    echo "::error title=package not installed::${PACKAGE} is not on the device after installing ${APK}: $(escape "$PATH_OUT")"
-    return 1
-  fi
-  printf 'Installed %s as %s\n' "$APK" "$PACKAGE"
+  # The check itself can meet the 37.0 framework restart: PR #455's
+  # 03e3a43c3 run installed the release-shape APK ("Success") and then read
+  # "Failure calling service package: Broken pipe (32)" from `pm path`. A
+  # package service that failed to answer is asked again, up to 3 times; a
+  # package it reports missing is a failure at once.
+  local check
+  for check in 1 2 3; do
+    wait_for_package_service "before checking the package" || return 1
+    if PATH_OUT=$(adb shell pm path "$PACKAGE" 2>&1); then
+      printf 'Installed %s as %s\n' "$APK" "$PACKAGE"
+      return 0
+    fi
+    if (( check < 3 )) && printf '%s\n' "$PATH_OUT" | grep -qE 'Broken pipe|Can.t find service|DeadObjectException'; then
+      echo "::warning title=package check met a restart::$(escape "$PATH_OUT"); asking again"
+      continue
+    fi
+    break
+  done
+  echo "::error title=package not installed::${PACKAGE} is not on the device after installing ${APK}: $(escape "$PATH_OUT")"
+  return 1
 }
 
 # On-device tests (coreeq/app/src/androidTest), on the runs that built them:
@@ -218,23 +232,53 @@ wait_for_user_unlocked() { # <label>
 # under the test install ("Broken pipe"), under `am instrument` itself
 # (DeadObjectException) and mid-run ("System has crashed"), each well after
 # boot_completed. A package service that answers is not enough; the system
-# server has to stay the same process for 30 s before a run starts.
+# server has to go 30 s without restarting before a run starts.
+#
+# Its generation is read from `sys.system_server.start_count`, which the system
+# server raises each time it starts (init holds properties, so getprop answers
+# even while it is down). `pidof` is the fallback, then `ps`: on 84e5e1ff0 the
+# 37.0 image answered `pidof system_server` with nothing for 300 s, so a pid
+# alone failed the job on a device that was otherwise ready. When none of the
+# three answers for 60 s the wait says so and lets the run go ahead.
+system_server_generation() {
+  local value
+  value=$(timeout 30 adb shell getprop sys.system_server.start_count 2>/dev/null | tr -d '\r' || true)
+  if [[ -n "$value" ]]; then
+    printf 'start_count=%s' "$value"
+    return 0
+  fi
+  value=$(timeout 30 adb shell pidof system_server 2>/dev/null | tr -d '\r' || true)
+  if [[ -z "$value" ]]; then
+    value=$(timeout 30 adb shell ps -A -o PID,NAME 2>/dev/null | tr -d '\r' \
+      | awk '$2 == "system_server" { print $1; exit }' || true)
+  fi
+  if [[ -n "$value" ]]; then
+    printf 'pid=%s' "$value"
+  fi
+}
+
 wait_for_stable_system_server() { # <label>
-  local label="$1" deadline=$((SECONDS + 300)) pid="" last="" steady=0
+  local label="$1" started=$SECONDS deadline=$((SECONDS + 300)) gen="" last="" steady=0 seen=0
   while (( SECONDS < deadline )); do
-    pid=$(timeout 30 adb shell pidof system_server 2>/dev/null | tr -d '\r' || true)
-    if [[ -n "$pid" && "$pid" == "$last" ]]; then
-      steady=$((steady + 5))
-      if (( steady >= 30 )); then
-        return 0
+    gen=$(system_server_generation)
+    if [[ -n "$gen" ]]; then
+      seen=1
+      if [[ "$gen" == "$last" ]]; then
+        steady=$((steady + 5))
+        if (( steady >= 30 )); then
+          return 0
+        fi
+      else
+        steady=0
       fi
-    else
-      steady=0
+    elif (( ! seen && SECONDS - started >= ${UNREADABLE_AFTER_S:-60} )); then
+      echo "::warning title=system server not readable (${label})::no answer from sys.system_server.start_count, pidof or ps for ${UNREADABLE_AFTER_S:-60} s; running without the stability wait"
+      return 0
     fi
-    last="$pid"
+    last="$gen"
     sleep 5
   done
-  echo "::error title=system server not stable (${label})::system_server did not keep one pid for 30 s within 300 s (last: ${pid:-none})"
+  echo "::error title=system server not stable (${label})::the system server did not go 30 s without restarting within 300 s (last: ${gen:-none})"
   return 1
 }
 
