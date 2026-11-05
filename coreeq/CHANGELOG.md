@@ -9,7 +9,7 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 ## [1.12.0] — 2026-11-04
 
 **Nothing below was checked on a TV or a phone.** It runs in the Kotlin
-harness (788 tests, including 78 screen checks on the real layouts under
+harness (805 tests, including 78 screen checks on the real layouts under
 Robolectric at 1920 x 1080 and 40 rail checks), which passes, and lint
 reports 0 errors; no screen here has been seen on a device.
 
