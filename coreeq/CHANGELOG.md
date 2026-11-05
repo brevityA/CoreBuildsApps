@@ -30,7 +30,8 @@ versionCode 28. Android build, lint and Robolectric pass: 877 unit tests, lint
 - **A failed save after the TV accepts is reported.** The phone writes the
   token synchronously and checks the write. If it fails, the phone says the
   TV accepted it but the pairing was not saved, and to pair again, instead of
-  showing "Phone paired" and losing the token on the next start.
+  showing "Phone paired" and losing the token on the next start. The TV's
+  side of that pairing is not undone; pairing again replaces it.
 - **After updating, pair again.** A phone that tried to pair on 1.13.0 saved
   nothing. On the TV choose Start pairing, then scan the code; the new
   pairing replaces the old one.
