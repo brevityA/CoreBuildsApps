@@ -231,7 +231,7 @@ jobs:
             echo "::error::${line:0:400}"
           done
           exit 0
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.name }} debug APK
           path: ${{ matrix.artifact }}

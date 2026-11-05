@@ -125,7 +125,7 @@ jobs:
           ls -lh test-apk/
 
       - name: Upload short-lived workflow hand-off
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: iconpack-test-${{ github.sha }}
           path: test-apk/
