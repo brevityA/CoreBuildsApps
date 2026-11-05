@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Outfit, the Core Builds brand face (SIL OFL 1.1; licence in
+  assets/licenses/Outfit-OFL.txt). Four static weights cut from the upstream
+  variable font, because a font-family resource cannot pick a weight from one
+  variable file before API 31 and minSdk is 30. textStyle="bold" takes 700;
+  android:textFontWeight picks 500 or 600.
+-->
+<font-family xmlns:android="http://schemas.android.com/apk/res/android">
+    <font android:fontStyle="normal" android:fontWeight="400" android:font="@font/outfit_regular" />
+    <font android:fontStyle="normal" android:fontWeight="500" android:font="@font/outfit_medium" />
+    <font android:fontStyle="normal" android:fontWeight="600" android:font="@font/outfit_semibold" />
+    <font android:fontStyle="normal" android:fontWeight="700" android:font="@font/outfit_bold" />
+</font-family>

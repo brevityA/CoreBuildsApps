@@ -4,104 +4,93 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
-import android.graphics.drawable.Drawable
-import android.os.Build
 
 /** One launchable activity per installed package, preferring its TV entry point. */
 internal data class LaunchableApp(
     val packageName: String,
     val activityName: String,
     val label: String,
-    val icon: Drawable,
-    val banner: Drawable?,
     val tvOptimized: Boolean,
     val lastUpdateTime: Long,
-)
+    val art: CardArt,
+    /** The user's artwork choice for this app, as stored; empty for none. */
+    val artKey: String = "",
+) {
+    /** Changes whenever what the card shows could change: a new label, entry point, update or art. */
+    val renderKey: String get() = "$packageName/$activityName:$label:$tvOptimized:$lastUpdateTime:${art.source}:$artKey"
+}
 
 internal object LauncherAppCatalog {
-    fun load(context: Context): List<LaunchableApp> {
+    /**
+     * Card art keyed by app version and [ArtSpec], so a refresh on every return
+     * to Home re-renders only apps that changed. Pruned to the apps still installed.
+     */
+    private val artCache = HashMap<String, CardArt>()
+
+    fun load(context: Context, spec: ArtSpec, pack: IconPack?, custom: Map<String, CustomArt> = emptyMap()): List<LaunchableApp> {
         val pm = context.packageManager
-        val byPackage = linkedMapOf<String, LaunchableApp>()
+        val chosen = linkedMapOf<String, Pair<ResolveInfo, Boolean>>()
         val queries = listOf(
             Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LEANBACK_LAUNCHER) to true,
             Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER) to false,
         )
-
-        queries.forEach { (intent, tvOptimized) ->
-            queryActivities(pm, intent).forEach activityLoop@{ resolved ->
-                val activity = resolved.activityInfo ?: return@activityLoop
+        for ((intent, tvOptimized) in queries) {
+            for (resolved in pm.queryActivities(intent)) {
+                val activity = resolved.activityInfo ?: continue
                 val packageName = activity.packageName
-                if (packageName == context.packageName) return@activityLoop
+                if (packageName == context.packageName) continue
                 // An entry guarded by a permission this launcher does not hold
                 // throws SecurityException on launch. Skip it, so the package's
                 // other launchable entry (often its LAUNCHER one) is kept instead
-                // of a tile that can only show the "denied" toast.
-                if (!canStart(pm, context.packageName, activity.permission)) return@activityLoop
-
-                val previous = byPackage[packageName]
+                // of a card that can only show the "not allowed" toast.
+                if (!canStart(pm, context.packageName, activity.permission)) continue
+                val previous = chosen[packageName]
                 // A package can expose both mobile and TV activities. Keep the
                 // TV-specific one; otherwise keep the first launchable entry.
-                if (previous == null || (tvOptimized && !previous.tvOptimized)) {
-                    val label = resolved.loadLabel(pm)?.toString()?.trim()
-                        ?.takeIf { it.isNotEmpty() }
-                        ?: activity.name.substringAfterLast('.')
-                    val icon = try {
-                        resolved.loadIcon(pm)
-                    } catch (_: RuntimeException) {
-                        pm.defaultActivityIcon
-                    }
-                    // TV apps often publish a 16:9 banner for the focused
-                    // spotlight. Keep it local and optional; the UI falls back
-                    // to the package icon when no banner is supplied.
-                    val banner = if (tvOptimized) {
-                        try {
-                            activity.loadBanner(pm)
-                        } catch (_: RuntimeException) {
-                            null
-                        }
-                    } else {
-                        null
-                    }
-                    byPackage[packageName] = LaunchableApp(
-                        packageName = packageName,
-                        activityName = activity.name,
-                        label = label,
-                        icon = icon,
-                        banner = banner,
-                        tvOptimized = tvOptimized,
-                        lastUpdateTime = packageLastUpdateTime(pm, packageName),
-                    )
-                }
+                if (previous == null || (tvOptimized && !previous.second)) chosen[packageName] = resolved to tvOptimized
             }
         }
 
-        return byPackage.values.sortedWith(
-            compareBy<LaunchableApp, String>(String.CASE_INSENSITIVE_ORDER) { it.label }
-                .thenBy { it.packageName },
+        val liveKeys = HashSet<String>()
+        val apps = chosen.map { (packageName, entry) ->
+            val (resolved, tvOptimized) = entry
+            val activity = resolved.activityInfo
+            val label = resolved.loadLabel(pm)?.toString()?.trim()?.takeIf { it.isNotEmpty() }
+                ?: activity.name.substringAfterLast('.')
+            val updated = packageLastUpdateTime(pm, packageName)
+            val pick = custom[packageName]
+            val cacheKey = "$packageName/${activity.name}:$updated:$tvOptimized:${spec}:${pack?.packageName}:${pick?.stored()}"
+            liveKeys += cacheKey
+            val art = synchronized(artCache) { artCache[cacheKey] } ?: run {
+                // The user's pick for this app wins; if its pack or file is gone, the app falls back.
+                val customDrawable = pick?.let { CustomArtStore.load(context, it) }
+                CardArtFactory.create(
+                    spec = spec,
+                    packArt = customDrawable ?: pack?.drawableFor(packageName, activity.name),
+                    packSource = if (customDrawable != null) ArtSource.CUSTOM else ArtSource.PACK,
+                    // TV apps publish a 16:9 banner; it fills the card. Others show their icon.
+                    appBanner = { if (tvOptimized) loadSafely { activity.loadBanner(pm) } else null },
+                    appIcon = { loadSafely { resolved.loadIcon(pm) } ?: pm.defaultActivityIcon },
+                )
+            }.also { synchronized(artCache) { artCache[cacheKey] = it } }
+            LaunchableApp(packageName, activity.name, label, tvOptimized, updated, art, pick?.stored().orEmpty())
+        }
+        synchronized(artCache) { artCache.keys.retainAll(liveKeys) }
+        return apps.sortedWith(
+            compareBy<LaunchableApp, String>(String.CASE_INSENSITIVE_ORDER) { it.label }.thenBy { it.packageName },
         )
+    }
+
+    private inline fun <T> loadSafely(block: () -> T?): T? = try {
+        block()
+    } catch (_: RuntimeException) {
+        null
     }
 
     /** True when [ownPackage] may start an activity guarded by [permission] (null means unguarded). */
     internal fun canStart(pm: PackageManager, ownPackage: String, permission: String?): Boolean =
         permission.isNullOrEmpty() || pm.checkPermission(permission, ownPackage) == PackageManager.PERMISSION_GRANTED
 
-    @Suppress("DEPRECATION")
-    private fun packageLastUpdateTime(pm: PackageManager, packageName: String): Long = try {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            pm.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0L)).lastUpdateTime
-        } else {
-            pm.getPackageInfo(packageName, 0).lastUpdateTime
-        }
-    } catch (_: PackageManager.NameNotFoundException) {
-        0L
-    }
-
-    private fun queryActivities(pm: PackageManager, intent: Intent): List<ResolveInfo> {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            pm.queryIntentActivities(intent, PackageManager.ResolveInfoFlags.of(0L))
-        } else {
-            @Suppress("DEPRECATION")
-            pm.queryIntentActivities(intent, 0)
-        }
-    }
+    private fun packageLastUpdateTime(pm: PackageManager, packageName: String): Long =
+        pm.packageInfoOrNull(packageName)?.lastUpdateTime ?: 0L
 }
