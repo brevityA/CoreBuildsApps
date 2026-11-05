@@ -195,8 +195,27 @@ install_one() { # installs $APK and proves $PACKAGE is on the device
 # failed on every phone with "Caller-provided IV not permitted".
 TEST_APK=androidtest/coreeq-debug-androidTest.apk
 TEST_RUNNER=tv.corebuilds.eq.debug.test/androidx.test.runner.AndroidJUnitRunner
+
+# A started user is not an unlocked one. When the 37.0 image restarts its
+# framework (above), user 0 comes back RUNNING_LOCKED for a while, and every
+# SharedPreferences read in credential-encrypted storage throws "not available
+# until after user (id 0) is unlocked": PR #455's first run failed both tests
+# that way after the package service had already answered.
+wait_for_user_unlocked() { # <label>
+  local label="$1" deadline=$((SECONDS + 300)) state=""
+  while (( SECONDS < deadline )); do
+    state=$(timeout 60 adb shell am get-started-user-state 0 2>/dev/null | tr -d '\r' || true)
+    if [[ "$state" == *RUNNING_UNLOCKED* ]]; then
+      return 0
+    fi
+    sleep 5
+  done
+  echo "::error title=user not unlocked (${label})::user 0 did not reach RUNNING_UNLOCKED within 300 s (last state: $(escape "${state:-none}"))"
+  return 1
+}
+
 run_device_tests() {
-  local out passed
+  local out passed attempt
   APK="$TEST_APK"
   wait_for_package_service "before installing the on-device tests" || return 1
   if ! install_apk "on-device tests, streaming" -r -t; then
@@ -206,15 +225,28 @@ run_device_tests() {
     wait_for_package_service "before the on-device tests' second install" || return 1
     install_apk "on-device tests, no-streaming" --no-streaming -r -t || return 1
   fi
-  out=$(timeout 600 adb shell am instrument -w "$TEST_RUNNER" 2>&1 || true)
-  printf '%s\n' "$out"
-  # am instrument exits 0 whether or not a test failed; its summary line says
-  # which, and "OK (0 tests)" would mean the runner found nothing to run.
-  passed=$(printf '%s\n' "$out" | grep -oE 'OK \([1-9][0-9]* tests?\)' | tail -n 1 || true)
-  if [[ -n "$passed" ]] && ! printf '%s\n' "$out" | grep -qE 'FAILURES!!!|INSTRUMENTATION_FAILED|Process crashed'; then
-    echo "::notice title=Core EQ on-device tests::${passed}"
-    return 0
-  fi
+  for attempt in 1 2; do
+    wait_for_package_service "before the on-device tests, run ${attempt}" || return 1
+    wait_for_user_unlocked "before the on-device tests, run ${attempt}" || return 1
+    out=$(timeout 600 adb shell am instrument -w "$TEST_RUNNER" 2>&1 || true)
+    printf '%s\n' "$out"
+    # am instrument exits 0 whether or not a test failed; its summary line says
+    # which, and "OK (0 tests)" would mean the runner found nothing to run.
+    passed=$(printf '%s\n' "$out" | grep -oE 'OK \([1-9][0-9]* tests?\)' | tail -n 1 || true)
+    if [[ -n "$passed" ]] && ! printf '%s\n' "$out" | grep -qE 'FAILURES!!!|INSTRUMENTATION_FAILED|Process crashed'; then
+      echo "::notice title=Core EQ on-device tests::${passed}"
+      return 0
+    fi
+    # A framework restart under the run (storage locked again, a service gone)
+    # earns one more run once the device is ready. Any other failure, or the
+    # same one twice, is the code's.
+    if (( attempt == 1 )) && printf '%s\n' "$out" | grep -qE 'not available until after user|Can.t find service|DeadSystemException'; then
+      crash_report "on-device tests, first run"
+      echo "::warning title=Core EQ on-device tests::the first run met a framework restart on this emulator; running once more"
+      continue
+    fi
+    break
+  done
   echo "::error title=Core EQ on-device tests::$(escape "$(printf '%s\n' "$out" | grep -m6 -E 'FAILURES!!!|INSTRUMENTATION_FAILED|Process crashed|Exception|Error|^[0-9]+\) ' || printf 'no OK line in the am instrument output')")"
   return 1
 }

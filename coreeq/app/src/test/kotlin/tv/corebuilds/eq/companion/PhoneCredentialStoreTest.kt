@@ -40,7 +40,7 @@ class PhoneCredentialStoreTest {
     @Test
     fun `a sealed and committed pairing loads back in a new store`() {
         val first = store()
-        first.commit(first.seal(credentials))
+        assertTrue(first.commit(first.seal(credentials)))
 
         val loaded = store().load()
 
@@ -56,6 +56,24 @@ class PhoneCredentialStoreTest {
         store.seal(credentials)
 
         assertNull(store.load())
+    }
+
+    @Test
+    fun `a failed seal keeps the pairing already saved`() {
+        val first = store()
+        first.commit(first.seal(credentials))
+        val replacement = PhoneCredentials("192.168.50.251", 29518, ByteArray(CompanionCrypto.TOKEN_BYTES) { 1 })
+
+        try {
+            store { throw java.security.KeyStoreException("AndroidKeyStore not found") }.seal(replacement)
+            fail("seal should refuse without a usable key")
+        } catch (_: PhoneKeyStorageException) {
+        }
+
+        val loaded = store().load()!!
+        assertEquals("192.168.50.250", loaded.host)
+        assertEquals(29517, loaded.port)
+        assertArrayEquals(token, loaded.token)
     }
 
     @Test

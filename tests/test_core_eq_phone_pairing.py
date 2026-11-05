@@ -76,15 +76,27 @@ class PairingOrder(unittest.TestCase):
         seal = body.index("credentialStore.seal(")
         pair = body.index(".pair(pairingKey, token, clientName)")
         ok = body.index("requireOk(response)")
-        commit = body.index("credentialStore.commit(sealed)")
+        commit = body.index("if (!credentialStore.commit(sealed)) throw PhonePairingNotSavedException()")
         self.assertLess(seal, pair, "a phone that cannot keep the token must stop before the TV spends its code")
         self.assertLess(pair, ok)
         self.assertLess(ok, commit, "nothing is stored until the TV has accepted the token")
 
     def test_a_storage_failure_says_so(self) -> None:
         phone = PHONE.read_text(encoding="utf-8")
-        self.assertIn("e is PhoneKeyStorageException", phone)
+        self.assertIn("is PhoneKeyStorageException -> getString(R.string.phone_pair_key_store_failed", phone)
         self.assertIn("R.string.phone_pair_key_store_failed", phone)
+        # After the TV accepts, a failed write is reported rather than shown as "Phone paired".
+        self.assertIn("is PhonePairingNotSavedException -> getString(R.string.phone_pair_not_saved)", phone)
+
+    def test_the_token_is_written_synchronously_and_checked(self) -> None:
+        client = CLIENT.read_text(encoding="utf-8")
+        commit = _between(client, "fun commit(sealed: SealedPhoneCredentials): Boolean", "fun load()")
+        self.assertIn(".commit()", commit)
+        self.assertNotIn(".apply()", commit, "apply() never reports whether the write happened")
+
+    def test_the_keystore_key_is_created_once(self) -> None:
+        client = CLIENT.read_text(encoding="utf-8")
+        self.assertIn("@Synchronized\n        private fun androidKeystoreKey()", client)
 
 
 class OnDeviceTestRuns(unittest.TestCase):
@@ -94,6 +106,9 @@ class OnDeviceTestRuns(unittest.TestCase):
         self.assertIn(".setRandomizedEncryptionRequired(true)", source)
         self.assertIn("store.seal(", source)
         self.assertIn("store.commit(sealed)", source)
+        # A really paired debug install is not overwritten or cleared by the test.
+        self.assertIn("assumeTrue(", source)
+        self.assertNotIn("PhoneCredentialStore(context).clear()", source)
         self.assertIn("PhoneCredentialStore(context).load()", source)
 
     def test_gradle_declares_the_runner_and_its_libraries(self) -> None:
@@ -113,6 +128,12 @@ class OnDeviceTestRuns(unittest.TestCase):
         # am instrument exits 0 on a failed test; the script has to read the summary.
         self.assertIn("OK \\([1-9][0-9]* tests?\\)", script)
         self.assertIn("FAILURES!!!", script)
+        # The 37.0 image restarts its framework after boot; user 0 then comes back
+        # locked and credential-encrypted SharedPreferences throw (PR #455, first run).
+        self.assertIn("am get-started-user-state 0", script)
+        self.assertIn("RUNNING_UNLOCKED", script)
+        run = script[script.index("run_device_tests() {"):]
+        self.assertLess(run.index('wait_for_user_unlocked "before the on-device tests'), run.index("am instrument -w"))
 
 
 if __name__ == "__main__":

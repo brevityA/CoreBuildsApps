@@ -9,7 +9,9 @@ import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
+import org.junit.Assume.assumeTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.security.InvalidAlgorithmParameterException
@@ -31,9 +33,9 @@ class PhoneCredentialStoreKeystoreTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
+    /** Only the probe key: the round trip removes its own pairing, and nothing else is touched. */
     @After
     fun cleanUp() {
-        PhoneCredentialStore(context).clear()
         KeyStore.getInstance("AndroidKeyStore").apply { load(null) }.deleteEntry(PROBE_ALIAS)
     }
 
@@ -61,17 +63,23 @@ class PhoneCredentialStoreKeystoreTest {
     fun aPairingSealsCommitsAndLoadsBackWithTheKeystoreKey() {
         val token = ByteArray(CompanionCrypto.TOKEN_BYTES) { (it * 5 + 1).toByte() }
         val store = PhoneCredentialStore(context)
+        // A debug install someone has really paired is left alone: this test would overwrite it.
+        assumeTrue("this debug install already has a pairing; not overwriting it", store.load() == null)
 
-        val sealed = store.seal(PhoneCredentials("192.168.50.250", 29517, token))
-        assertEquals(12, sealed.nonce.size)
-        assertNull("sealing alone must not store the pairing", store.load())
-        store.commit(sealed)
+        try {
+            val sealed = store.seal(PhoneCredentials("192.168.50.250", 29517, token))
+            assertEquals(12, sealed.nonce.size)
+            assertNull("sealing alone must not store the pairing", store.load())
+            assertTrue("the pairing was not written", store.commit(sealed))
 
-        val loaded = PhoneCredentialStore(context).load()
-        assertNotNull("the committed pairing did not decrypt with the Keystore key", loaded)
-        assertEquals("192.168.50.250", loaded!!.host)
-        assertEquals(29517, loaded.port)
-        assertArrayEquals(token, loaded.token)
+            val loaded = PhoneCredentialStore(context).load()
+            assertNotNull("the committed pairing did not decrypt with the Keystore key", loaded)
+            assertEquals("192.168.50.250", loaded!!.host)
+            assertEquals(29517, loaded.port)
+            assertArrayEquals(token, loaded.token)
+        } finally {
+            store.clear()
+        }
     }
 
     private companion object {

@@ -528,7 +528,8 @@
     <string name="phone_pairing">Pairing with the TV…</string>
     <string name="phone_pair_success">Phone paired. The code can no longer be reused.</string>
     <string name="phone_pair_failed">Pairing failed: %1$s</string>
-    <string name="phone_pair_key_store_failed">This phone could not store the pairing key in Android Keystore (%1$s). The TV was not asked to pair, so its code still works for the rest of its 2 minutes.</string>
+    <string name="phone_pair_key_store_failed">This phone could not store the pairing key in Android Keystore (%1$s), so it stopped before asking the TV to pair. If the TV\'s code has run out, choose Start pairing on the TV for a new one.</string>
+    <string name="phone_pair_not_saved">The TV accepted this phone, but the phone could not save the pairing. Choose Start pairing on the TV and pair again.</string>
     <string name="phone_paired_not_loaded">Phone paired, but the TV did not answer afterwards: %1$s. Tap Reconnect to try again.</string>
     <string name="phone_pair_first">Pair this phone on the TV first, then connect.</string>
     <string name="phone_connecting">Connecting to Core EQ on the local network…</string>

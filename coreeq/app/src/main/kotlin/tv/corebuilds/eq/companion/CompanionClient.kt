@@ -148,6 +148,10 @@ internal class SealedPhoneCredentials(
 internal class PhoneKeyStorageException(cause: Throwable) :
     Exception(cause.message?.trim()?.takeIf(String::isNotEmpty) ?: cause.javaClass.simpleName, cause)
 
+/** The TV accepted the token, but the phone could not write it to its own storage. */
+internal class PhonePairingNotSavedException :
+    Exception("the paired token could not be written to this phone's storage")
+
 /**
  * Keeps a phone's paired token encrypted by a device-keystore AES key.
  *
@@ -186,15 +190,18 @@ internal class PhoneCredentialStore(
         throw PhoneKeyStorageException(e)
     }
 
-    /** Stores a token [seal] encrypted, once the TV has accepted it. */
-    fun commit(sealed: SealedPhoneCredentials) {
+    /**
+     * Stores a token [seal] encrypted, once the TV has accepted it. Written synchronously
+     * (pairing runs off the main thread) so a failed write is reported, not lost: `apply()`
+     * never says whether the disk write happened. Returns whether it did.
+     */
+    fun commit(sealed: SealedPhoneCredentials): Boolean =
         prefs.edit()
             .putString(KEY_HOST, sealed.host)
             .putInt(KEY_PORT, sealed.port)
             .putString(KEY_NONCE, Base64.getEncoder().encodeToString(sealed.nonce))
             .putString(KEY_CIPHER, Base64.getEncoder().encodeToString(sealed.encrypted))
-            .apply()
-    }
+            .commit()
 
     fun load(): PhoneCredentials? {
         return try {
@@ -239,6 +246,12 @@ internal class PhoneCredentialStore(
         private const val TRANSFORMATION = "AES/GCM/NoPadding"
         private val AAD = "tv.corebuilds.eq.phone-token.v1".toByteArray(StandardCharsets.UTF_8)
 
+        /**
+         * The phone's pairing key, created on first use. Synchronized: two first pairings at
+         * once could both miss the alias, and the second generateKey() would replace the key
+         * that sealed the first token.
+         */
+        @Synchronized
         private fun androidKeystoreKey(): SecretKey {
             val store = KeyStore.getInstance(ANDROID_KEYSTORE).apply { load(null) }
             (store.getKey(ALIAS, null) as? SecretKey)?.let { return it }

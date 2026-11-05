@@ -752,7 +752,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
                 val clientName = "${Build.MANUFACTURER} ${Build.MODEL}".trim().take(60).ifBlank { "Android phone" }
                 val response = CompanionClient(host, port, pairingKey).pair(pairingKey, token, clientName)
                 requireOk(response)
-                credentialStore.commit(sealed)
+                if (!credentialStore.commit(sealed)) throw PhonePairingNotSavedException()
                 credentials
             } catch (e: Exception) {
                 val unreachable = e is java.net.ConnectException ||
@@ -769,10 +769,10 @@ class PhoneCompanionActivity : AppCompatActivity() {
                         pairWithTv(replaceConfirmed = true)
                     } else {
                         fallbackHosts = emptyList()
-                        val message = if (e is PhoneKeyStorageException) {
-                            getString(R.string.phone_pair_key_store_failed, readableError(e))
-                        } else {
-                            getString(R.string.phone_pair_failed, readableError(e))
+                        val message = when (e) {
+                            is PhoneKeyStorageException -> getString(R.string.phone_pair_key_store_failed, readableError(e))
+                            is PhonePairingNotSavedException -> getString(R.string.phone_pair_not_saved)
+                            else -> getString(R.string.phone_pair_failed, readableError(e))
                         }
                         setStatus(message, error = true)
                     }

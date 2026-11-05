@@ -10,9 +10,9 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [1.13.1] — 2026-11-05
 
-versionCode 28. Android build, lint and Robolectric pass: 876 unit tests, lint
-0 errors. The Keystore check below runs on the API 30 and API 37 emulators in
-CI. Pairing on a physical phone has not been re-run yet.
+versionCode 28. Android build, lint and Robolectric pass: 877 unit tests, lint
+0 errors. The on-device Keystore test passes on the API 30 emulator in CI
+(`OK (2 tests)`). Pairing on a physical phone has not been re-run yet.
 
 ### Fixed
 
@@ -21,12 +21,16 @@ CI. Pairing on a physical phone has not been re-run yet.
   Pro XL). The phone encrypts its pairing token with an Android Keystore key
   that chooses its own IV; Core EQ passed one in, and the Keystore refuses
   that. Core EQ now lets the Keystore choose and stores the IV it picked.
-- **A phone that cannot store the token no longer leaves the TV paired.** The
-  phone used to encrypt the token after the TV had accepted it, so the TV
+- **A phone that cannot encrypt the token no longer leaves the TV paired.**
+  The phone used to encrypt the token after the TV had accepted it, so the TV
   spent its one-time code and showed "Paired to <phone>" while the phone had
   nothing saved. The token is now encrypted before the TV is asked. If that
-  fails, the phone says the Keystore could not store it and that the TV was
-  not asked, so the TV's code still works.
+  fails, the phone says the Keystore could not store it and that it stopped
+  before asking the TV.
+- **A failed save after the TV accepts is reported.** The phone writes the
+  token synchronously and checks the write. If it fails, the phone says the
+  TV accepted it but the pairing was not saved, and to pair again, instead of
+  showing "Phone paired" and losing the token on the next start.
 - **After updating, pair again.** A phone that tried to pair on 1.13.0 saved
   nothing. On the TV choose Start pairing, then scan the code; the new
   pairing replaces the old one.
@@ -34,14 +38,16 @@ CI. Pairing on a physical phone has not been re-run yet.
 ### Internal
 
 - `PhoneCredentialStore` takes its key from a provider, so
-  `PhoneCredentialStoreTest` runs 7 round-trip, tamper, wrong-key and
-  rediscovery cases on a software AES key.
+  `PhoneCredentialStoreTest` runs 8 cases on a software AES key: round trip,
+  tamper, wrong key, rediscovery, and a failed seal keeping the old pairing.
 - First on-device tests (`coreeq/app/src/androidTest`).
   `PhoneCredentialStoreKeystoreTest` first proves the device's Keystore refuses
   a caller IV, then seals, stores and loads a pairing with the real key. The
   `apk` job builds them as the `CoreEQ-androidTest` artifact, and
-  `tools/install_core_eq_on_emulator.sh` runs them on both emulators. A run
-  fails unless `am instrument` reports `OK` with at least one test.
+  `tools/install_core_eq_on_emulator.sh` runs them on both emulators once user
+  0 is unlocked (the 37.0 image's framework restart leaves it locked, and its
+  encrypted storage unreadable, for a while). A run fails unless
+  `am instrument` reports `OK` with at least one test.
 - `tests/test_core_eq_phone_pairing.py` holds three rules: no IV is passed to
   Keystore encryption, sealing happens before the TV is asked, and CI still
   runs the device tests.
