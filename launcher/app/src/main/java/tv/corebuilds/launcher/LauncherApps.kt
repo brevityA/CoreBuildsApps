@@ -13,9 +13,11 @@ internal data class LaunchableApp(
     val tvOptimized: Boolean,
     val lastUpdateTime: Long,
     val art: CardArt,
+    /** The user's artwork choice for this app, as stored; empty for none. */
+    val artKey: String = "",
 ) {
     /** Changes whenever what the card shows could change: a new label, entry point, update or art. */
-    val renderKey: String get() = "$packageName/$activityName:$label:$tvOptimized:$lastUpdateTime:${art.fromPack}"
+    val renderKey: String get() = "$packageName/$activityName:$label:$tvOptimized:$lastUpdateTime:${art.source}:$artKey"
 }
 
 internal object LauncherAppCatalog {
@@ -25,7 +27,7 @@ internal object LauncherAppCatalog {
      */
     private val artCache = HashMap<String, CardArt>()
 
-    fun load(context: Context, spec: ArtSpec, pack: IconPack?): List<LaunchableApp> {
+    fun load(context: Context, spec: ArtSpec, pack: IconPack?, custom: Map<String, CustomArt> = emptyMap()): List<LaunchableApp> {
         val pm = context.packageManager
         val chosen = linkedMapOf<String, Pair<ResolveInfo, Boolean>>()
         val queries = listOf(
@@ -56,16 +58,22 @@ internal object LauncherAppCatalog {
             val label = resolved.loadLabel(pm)?.toString()?.trim()?.takeIf { it.isNotEmpty() }
                 ?: activity.name.substringAfterLast('.')
             val updated = packageLastUpdateTime(pm, packageName)
-            val cacheKey = "$packageName/${activity.name}:$updated:$tvOptimized:${spec}:${pack?.packageName}"
+            val pick = custom[packageName]
+            val cacheKey = "$packageName/${activity.name}:$updated:$tvOptimized:${spec}:${pack?.packageName}:${pick?.stored()}"
             liveKeys += cacheKey
-            val art = synchronized(artCache) { artCache[cacheKey] } ?: CardArtFactory.create(
-                spec = spec,
-                packArt = pack?.drawableFor(packageName, activity.name),
-                // TV apps publish a 16:9 banner; it fills the card. Others show their icon.
-                appBanner = { if (tvOptimized) loadSafely { activity.loadBanner(pm) } else null },
-                appIcon = { loadSafely { resolved.loadIcon(pm) } ?: pm.defaultActivityIcon },
-            ).also { synchronized(artCache) { artCache[cacheKey] = it } }
-            LaunchableApp(packageName, activity.name, label, tvOptimized, updated, art)
+            val art = synchronized(artCache) { artCache[cacheKey] } ?: run {
+                // The user's pick for this app wins; if its pack or file is gone, the app falls back.
+                val customDrawable = pick?.let { CustomArtStore.load(context, it) }
+                CardArtFactory.create(
+                    spec = spec,
+                    packArt = customDrawable ?: pack?.drawableFor(packageName, activity.name),
+                    packSource = if (customDrawable != null) ArtSource.CUSTOM else ArtSource.PACK,
+                    // TV apps publish a 16:9 banner; it fills the card. Others show their icon.
+                    appBanner = { if (tvOptimized) loadSafely { activity.loadBanner(pm) } else null },
+                    appIcon = { loadSafely { resolved.loadIcon(pm) } ?: pm.defaultActivityIcon },
+                )
+            }.also { synchronized(artCache) { artCache[cacheKey] = it } }
+            LaunchableApp(packageName, activity.name, label, tvOptimized, updated, art, pick?.stored().orEmpty())
         }
         synchronized(artCache) { artCache.keys.retainAll(liveKeys) }
         return apps.sortedWith(

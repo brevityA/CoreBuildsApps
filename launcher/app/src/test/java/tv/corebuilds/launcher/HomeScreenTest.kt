@@ -159,7 +159,8 @@ class HomeScreenTest {
         val panel = HomeHarness.descendants(activity.window.decorView).filterIsInstance<SidePanel>().single()
         assertTrue(panel.isOpen)
         val titles = HomeHarness.descendants(panel).filterIsInstance<android.widget.TextView>().map { it.text.toString() }.toList()
-        for (expected in listOf(R.string.option_open, R.string.option_remove_favourite, R.string.option_move, R.string.option_hide, R.string.option_app_info)) {
+        for (expected in listOf(R.string.option_open, R.string.option_remove_favourite, R.string.option_move, R.string.option_hide,
+                                R.string.option_change_artwork, R.string.option_app_info)) {
             assertTrue("options lack ${context.getString(expected)}", context.getString(expected) in titles)
         }
         HomeHarness.render(activity, "04-app-options")
@@ -336,6 +337,65 @@ class HomeScreenTest {
         assertNotNull(started)
         assertEquals(card.app.activityName, started.component?.className)
         assertTrue(started.hasCategory(Intent.CATEGORY_LEANBACK_LAUNCHER))
+    }
+
+    @Test
+    fun anImageOnTheTvBecomesAnAppsCardAndResetsFromCustomise() = home { activity ->
+        val glide = appCards(activity, RowKind.ALL_APPS).first { it.app.label == "Glide Files" }
+        assertEquals(ArtSource.APP, glide.app.art.source)
+        assertTrue("an icon-only app starts with no banner", glide.app.art.banner == null)
+        glide.requestFocus()
+        HomeHarness.settle()
+        glide.performLongClick()
+        HomeHarness.settle()
+        clickRow(activity, R.string.option_change_artwork)
+        waitForPanelRow(activity, R.string.art_image)
+        HomeHarness.render(activity, "13-change-artwork")
+
+        // A wide image from the TV's storage: the picker hands back a content URI.
+        val image = android.net.Uri.parse("content://org.example.files/wide.png")
+        val png = java.io.ByteArrayOutputStream().also { out ->
+            android.graphics.Bitmap.createBitmap(1280, 720, android.graphics.Bitmap.Config.ARGB_8888).apply {
+                eraseColor(0xFF7C3AED.toInt())
+            }.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, out)
+        }.toByteArray()
+        shadowOf(activity.contentResolver).registerInputStreamSupplier(image) { java.io.ByteArrayInputStream(png) }
+        clickRow(activity, R.string.art_image)
+        val request = shadowOf(activity).nextStartedActivityForResult
+        assertEquals(Intent.ACTION_OPEN_DOCUMENT, request.intent.action)
+        shadowOf(activity).receiveResult(request.intent, android.app.Activity.RESULT_OK, Intent().setData(image))
+        HomeHarness.waitForApps(activity)
+
+        val custom = appCards(activity, RowKind.ALL_APPS).first { it.app.label == "Glide Files" }
+        assertEquals(ArtSource.CUSTOM, custom.app.art.source)
+        assertNotNull("a wide image fills the card", custom.app.art.banner)
+        custom.requestFocus()
+        HomeHarness.settle()
+        HomeHarness.render(activity, "14-custom-artwork")
+
+        // Customise › Custom artwork lists it; OK puts it back and deletes the copy.
+        openCustomise(activity)
+        clickRow(activity, R.string.setting_custom_art)
+        val files = java.io.File(activity.filesDir, "custom_art").listFiles().orEmpty()
+        assertEquals(1, files.size)
+        val panel = HomeHarness.descendants(activity.window.decorView).filterIsInstance<SidePanel>().single()
+        HomeHarness.descendants(panel).first { it.contentDescription?.startsWith("Glide Files") == true }.performClick()
+        HomeHarness.waitForApps(activity)
+        assertEquals(ArtSource.APP, appCards(activity, RowKind.ALL_APPS).first { it.app.label == "Glide Files" }.app.art.source)
+        assertEquals(0, java.io.File(activity.filesDir, "custom_art").listFiles().orEmpty().size)
+    }
+
+    /** The artwork page opens after the packs are read on the loader thread. */
+    private fun waitForPanelRow(activity: LauncherActivity, title: Int) {
+        val label = context.getString(title)
+        val deadline = System.currentTimeMillis() + 5_000
+        while (System.currentTimeMillis() < deadline) {
+            HomeHarness.idle()
+            val panel = HomeHarness.descendants(activity.window.decorView).filterIsInstance<SidePanel>().single()
+            if (HomeHarness.descendants(panel).any { it.contentDescription?.startsWith(label) == true }) break
+            Thread.sleep(10)
+        }
+        HomeHarness.settle()
     }
 
     private fun allAppsFirstRow(activity: LauncherActivity): List<AppCard> {

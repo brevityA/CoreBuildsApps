@@ -658,6 +658,28 @@ class LauncherGradleDiagnosticExtraction(unittest.TestCase):
         self.assertIn("e: src/Main.kt:24: unresolved reference: missingSymbol", selected)
         self.assertIn("FAILURE: Build failed with an exception.", selected)
 
+    def test_a_failing_unit_test_is_named_with_its_exception(self):
+        selected = launcher_diagnostics.select_diagnostics([
+            "> Task :app:testDebugUnitTest",
+            "",
+            "HomeScreenTest > rowEndsHoldFocusAndUpFromTheTopReachesCustomise FAILED",
+            "    org.junit.ComparisonFailure at HomeScreenTest.kt:121",
+            "",
+            "29 tests completed, 1 failed",
+            "",
+            "> Task :app:testDebugUnitTest FAILED",
+            "FAILURE: Build failed with an exception.",
+            "* What went wrong:",
+            "Execution failed for task ':app:testDebugUnitTest'.",
+            "> There were failing tests. See the report at: file:///report/index.html",
+        ])
+        self.assertIn("HomeScreenTest > rowEndsHoldFocusAndUpFromTheTopReachesCustomise FAILED", selected)
+        self.assertIn("org.junit.ComparisonFailure at HomeScreenTest.kt:121", selected)
+        self.assertLess(
+            selected.index("HomeScreenTest > rowEndsHoldFocusAndUpFromTheTopReachesCustomise FAILED"),
+            selected.index("FAILURE: Build failed with an exception."),
+        )
+
     def test_warning_only_log_falls_back_without_emitting_a_warning_annotation(self):
         warning = "w: src/Main.kt:17: this warning mentions error: only as prose"
         self.assertEqual(
@@ -831,6 +853,7 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
             ("android.intent.action.MAIN", "android.intent.category.LEANBACK_LAUNCHER"),
             ("android.intent.action.MAIN", "android.intent.category.LAUNCHER"),
             ("org.adw.launcher.THEMES", None),
+            ("org.adw.launcher.icons.ACTION_PICK_ICON", None),
         })
         permissions = {
             node.get(f"{{{self.ANDROID}}}name")

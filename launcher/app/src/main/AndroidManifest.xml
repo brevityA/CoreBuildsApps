@@ -4,7 +4,8 @@
     <!--
       A launcher needs visibility only for activities that can actually be
       launched, plus installed icon packs (the open org.adw.launcher.THEMES
-      contract every pack declares, the Core Builds Icon Pack included). Keep
+      contract every pack declares, the Core Builds Icon Pack included) and
+      their icon browsers (ACTION_PICK_ICON). Keep
       these intent queries narrow; do not request QUERY_ALL_PACKAGES.
     -->
     <queries>
@@ -18,6 +19,10 @@
         </intent>
         <intent>
             <action android:name="org.adw.launcher.THEMES" />
+        </intent>
+        <!-- A pack's own icon browser, for one app's artwork (Customise per app). -->
+        <intent>
+            <action android:name="org.adw.launcher.icons.ACTION_PICK_ICON" />
         </intent>
     </queries>
 

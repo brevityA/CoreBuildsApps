@@ -21,9 +21,11 @@ internal class CardArt(
     /** The art's average colour: the plate behind an icon, and the glow behind it on the backdrop. */
     val tint: Int,
     val backdrop: Bitmap?,
-    /** True when an icon pack supplied the art, false when it is the app's own. */
-    val fromPack: Boolean,
+    /** Where the art came from: the app itself, the chosen icon pack, or the user's pick for this app. */
+    val source: ArtSource,
 )
+
+internal enum class ArtSource { APP, PACK, CUSTOM }
 
 /** Pixel sizes the art is rendered at, from the card size in Customise. */
 internal data class ArtSpec(val cardWidth: Int, val cardHeight: Int, val iconSize: Int, val source: String, val cornerRadius: Float = 0f)
@@ -34,17 +36,23 @@ internal object CardArtFactory {
     private const val BACKDROP_WIDTH = 48
     private const val BACKDROP_HEIGHT = 27
 
+    /**
+     * The card for one app: [packArt] (the user's pick or the icon pack's) when
+     * there is one, else the app's own banner, else its icon. Art at least 1.4x
+     * wider than tall fills the card; squarer art sits on a tinted plate.
+     */
     fun create(
         spec: ArtSpec,
         packArt: Drawable?,
         appBanner: () -> Drawable?,
         appIcon: () -> Drawable,
+        packSource: ArtSource = ArtSource.PACK,
     ): CardArt {
         if (packArt != null) {
-            return if (isBanner(packArt)) bannerArt(spec, packArt, fromPack = true) else iconArt(spec, packArt, fromPack = true)
+            return if (isBanner(packArt)) bannerArt(spec, packArt, packSource) else iconArt(spec, packArt, packSource)
         }
-        appBanner()?.let { return bannerArt(spec, it, fromPack = false) }
-        return iconArt(spec, appIcon(), fromPack = false)
+        appBanner()?.let { return bannerArt(spec, it, ArtSource.APP) }
+        return iconArt(spec, appIcon(), ArtSource.APP)
     }
 
     private fun isBanner(drawable: Drawable): Boolean {
@@ -53,15 +61,15 @@ internal object CardArtFactory {
         return w > 0 && h > 0 && w.toFloat() / h >= BANNER_ASPECT
     }
 
-    private fun bannerArt(spec: ArtSpec, drawable: Drawable, fromPack: Boolean): CardArt {
+    private fun bannerArt(spec: ArtSpec, drawable: Drawable, source: ArtSource): CardArt {
         // Rounded in the bitmap itself, so the corners match the card wherever it is drawn.
         val banner = render(drawable, spec.cardWidth, spec.cardHeight, crop = true, cornerRadius = spec.cornerRadius)
-        return CardArt(banner, null, averageColor(banner), soften(banner), fromPack)
+        return CardArt(banner, null, averageColor(banner), soften(banner), source)
     }
 
-    private fun iconArt(spec: ArtSpec, drawable: Drawable, fromPack: Boolean): CardArt {
+    private fun iconArt(spec: ArtSpec, drawable: Drawable, source: ArtSource): CardArt {
         val icon = render(drawable, spec.iconSize, spec.iconSize, crop = false)
-        return CardArt(null, icon, averageColor(icon), null, fromPack)
+        return CardArt(null, icon, averageColor(icon), null, source)
     }
 
     /** Draws [drawable] into a [width] x [height] bitmap: centre-cropped, or fitted inside. */

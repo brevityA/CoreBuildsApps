@@ -51,6 +51,8 @@ internal data class HomeState(
     /** Recently opened, newest first, never a favourite or a hidden app. */
     val recents: List<String>,
     val settings: HomeSettings,
+    /** Artwork the user chose per app, by package. Kept while an app is uninstalled. */
+    val customArt: Map<String, CustomArt> = emptyMap(),
 )
 
 /** Small, device-local state only. No account, network sync, or analytics. */
@@ -69,6 +71,7 @@ internal object LauncherPreferences {
     private const val KEY_CARD_SIZE = "card_size"
     private const val KEY_SHOW_RECENTS = "show_recents"
     private const val KEY_SHOW_CLOCK = "show_clock"
+    private const val KEY_CUSTOM_ART = "custom_art"
 
     private const val RECENTS_LIMIT = 5
     private const val SEPARATOR = "\n"
@@ -107,7 +110,28 @@ internal object LauncherPreferences {
             hidden = hidden,
             recents = recentPackages(preferences, installed, exclude = favourites.toSet() + hidden),
             settings = settings(preferences),
+            customArt = customArt(preferences),
         )
+    }
+
+    /** One "package<TAB>art" line per app with chosen artwork. */
+    private fun customArt(preferences: SharedPreferences): Map<String, CustomArt> =
+        preferences.list(KEY_CUSTOM_ART).mapNotNull { line ->
+            val app = line.substringBefore('\t', "")
+            val art = CustomArt.parse(line.substringAfter('\t', ""))
+            if (app.isBlank() || art == null) null else app to art
+        }.toMap()
+
+    fun readCustomArt(context: Context): Map<String, CustomArt> = customArt(prefs(context))
+
+    /** Sets or (with null) clears [packageName]'s artwork and returns what it replaced. */
+    fun setCustomArt(context: Context, packageName: String, art: CustomArt?): CustomArt? {
+        val preferences = prefs(context)
+        val current = customArt(preferences).toMutableMap()
+        val previous = current.remove(packageName)
+        if (art != null) current[packageName] = art
+        preferences.edit().putList(KEY_CUSTOM_ART, current.map { (app, value) -> "$app\t${value.stored()}" }).apply()
+        return previous
     }
 
     /** The saved order, migrating 0.1's set or seeding the first-run Core Builds favourites. */

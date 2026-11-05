@@ -61,6 +61,8 @@ class LauncherActivity : Activity() {
     private var rescanRequested = false
     private var userInteracted = false
     private var resetArmed = false
+    /** The app whose artwork a pack browser or the image picker is choosing, across the round trip. */
+    private var pendingArtApp: String? = null
 
     private lateinit var backdrop: BackdropView
     private lateinit var topBar: LinearLayout
@@ -88,6 +90,7 @@ class LauncherActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        pendingArtApp = savedInstanceState?.getString(STATE_PENDING_ART_APP)
         setContentView(buildHome())
         enterImmersiveMode()
         registerHomeBackHandler()
@@ -129,6 +132,11 @@ class LauncherActivity : Activity() {
             receiverRegistered = false
         }
         super.onPause()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        pendingArtApp?.let { outState.putString(STATE_PENDING_ART_APP, it) }
     }
 
     override fun onDestroy() {
@@ -315,7 +323,8 @@ class LauncherActivity : Activity() {
                 val installedPacks = IconPacks.installed(applicationContext)
                 val chosenPack = IconPacks.resolve(settings.artwork, installedPacks)
                 val pack = chosenPack?.let { IconPacks.load(applicationContext, it.packageName) }
-                val loadedApps = LauncherAppCatalog.load(applicationContext, spec.copy(source = pack?.packageName ?: "app"), pack)
+                val customArt = LauncherPreferences.readCustomArt(applicationContext)
+                val loadedApps = LauncherAppCatalog.load(applicationContext, spec.copy(source = pack?.packageName ?: "app"), pack, customArt)
                 val snapshot = LauncherPreferences.snapshot(applicationContext, loadedApps.map { it.packageName })
                 runOnUiThread {
                     scanning = false
@@ -832,6 +841,10 @@ class LauncherActivity : Activity() {
                         panel.close(); setHidden(app, true, announce = true)
                     })
                 }
+                add(PanelItem(
+                    getString(R.string.option_change_artwork),
+                    meta = getString(if (app.packageName in state.customArt) R.string.option_artwork_custom else R.string.option_artwork_default),
+                ) { openArtworkPicker(app) })
                 add(PanelItem(getString(R.string.option_app_info), meta = getString(R.string.option_app_info_meta)) {
                     panel.close(); openAppInfo(app)
                 })
@@ -869,6 +882,12 @@ class LauncherActivity : Activity() {
                     getString(R.string.setting_hidden),
                     value = if (hiddenCount == 0) getString(R.string.setting_hidden_value_none) else resources.getQuantityString(R.plurals.setting_hidden_value, hiddenCount, hiddenCount),
                 ) { panel.push { hiddenPage() } },
+                PanelItem(
+                    getString(R.string.setting_custom_art),
+                    value = customArtCount().let { n ->
+                        if (n == 0) getString(R.string.setting_hidden_value_none) else resources.getQuantityString(R.plurals.setting_favourites_value, n, n)
+                    },
+                ) { panel.push { customArtPage() } },
                 PanelItem(getString(R.string.setting_set_home), meta = getString(R.string.setting_set_home_meta)) {
                     panel.close(); openHomeSettings()
                 },
@@ -881,6 +900,7 @@ class LauncherActivity : Activity() {
                         panel.refresh()
                     } else {
                         LauncherPreferences.reset(applicationContext)
+                        CustomArtStore.clearAll(applicationContext)
                         state = HomeState(emptyList(), emptySet(), emptyList(), HomeSettings())
                         renderedKey = null
                         panel.close()
@@ -969,6 +989,159 @@ class LauncherActivity : Activity() {
         if (asRoot) openPanel(page) else panel.push(page)
     }
 
+    // ---------------------------------------------------------------- custom artwork
+
+    private fun customArtCount(): Int = state.customArt.keys.count { pkg -> apps.any { it.packageName == pkg } }
+
+    /**
+     * Artwork for one app. The packs' own suggestions for it (the Core Builds
+     * banner and glyph, say) apply in one press; Browse opens a pack's icon
+     * browser; an image comes from the TV's storage; Default undoes the pick.
+     * Packs are read off the main thread before the page opens.
+     */
+    private fun openArtworkPicker(app: LaunchableApp) {
+        val spec = artSpec(state.settings)
+        try {
+            appLoader.execute {
+                val choices = packs.mapNotNull { info ->
+                    val pack = IconPacks.load(applicationContext, info.packageName) ?: return@mapNotNull null
+                    val suggestions = pack.namesFor(app.packageName).take(MAX_SUGGESTIONS).mapNotNull { name ->
+                        pack.drawable(name)?.let { drawable ->
+                            Triple(info, name, CardArtFactory.create(spec, drawable, { null }, { drawable }))
+                        }
+                    }
+                    val browsable = packageManager.queryActivities(Intent(CustomArtStore.PICK_ICON_ACTION).setPackage(info.packageName)).isNotEmpty()
+                    Triple(info, suggestions, browsable)
+                }
+                runOnUiThread {
+                    if (isFinishing || isDestroyed || !panel.isOpen) return@runOnUiThread
+                    panel.push { artworkPickerPage(app, choices) }
+                }
+            }
+        } catch (_: RejectedExecutionException) {
+            // Finishing; nothing to open.
+        }
+    }
+
+    private fun artworkPickerPage(
+        app: LaunchableApp,
+        choices: List<Triple<IconPackInfo, List<Triple<IconPackInfo, String, CardArt>>, Boolean>>,
+    ): PanelPage {
+        val current = state.customArt[app.packageName]
+        val items = ArrayList<PanelItem>()
+        items += PanelItem(getString(R.string.art_default), meta = getString(R.string.art_default_meta), selected = current == null) {
+            setCustomArt(app, null)
+        }
+        for ((info, suggestions, _) in choices) {
+            for ((pack, name, art) in suggestions) {
+                val choice = CustomArt.PackResource(pack.packageName, name)
+                items += PanelItem(packLabel(info), meta = getString(R.string.art_suggestion_meta), art = art, selected = current == choice) {
+                    setCustomArt(app, choice)
+                }
+            }
+        }
+        for ((info, _, browsable) in choices) {
+            if (!browsable) continue
+            items += PanelItem(getString(R.string.art_browse, packLabel(info)), meta = getString(R.string.art_browse_meta)) {
+                pendingArtApp = app.packageName
+                try {
+                    @Suppress("DEPRECATION")
+                    startActivityForResult(Intent(CustomArtStore.PICK_ICON_ACTION).setPackage(info.packageName), REQUEST_PICK_ICON)
+                } catch (_: ActivityNotFoundException) {
+                    pendingArtApp = null
+                    toast(getString(R.string.art_browse_failed, packLabel(info)))
+                }
+            }
+        }
+        items += PanelItem(
+            getString(R.string.art_image),
+            meta = getString(R.string.art_image_meta),
+            selected = current is CustomArt.Image,
+        ) {
+            pendingArtApp = app.packageName
+            try {
+                @Suppress("DEPRECATION")
+                startActivityForResult(
+                    Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("image/*"),
+                    REQUEST_PICK_IMAGE,
+                )
+            } catch (_: ActivityNotFoundException) {
+                pendingArtApp = null
+                toast(getString(R.string.art_no_image_picker))
+            }
+        }
+        return PanelPage(
+            eyebrow = getString(R.string.options_eyebrow),
+            title = getString(R.string.art_title, app.label),
+            body = getString(R.string.art_body),
+            items = items,
+        )
+    }
+
+    @Deprecated("Activity results without AndroidX; this launcher has no AndroidX dependency.")
+    @Suppress("DEPRECATION")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != REQUEST_PICK_ICON && requestCode != REQUEST_PICK_IMAGE) return
+        val packageName = pendingArtApp ?: return
+        pendingArtApp = null
+        if (resultCode != RESULT_OK) return
+        val app = apps.firstOrNull { it.packageName == packageName } ?: return
+        val uri = data?.data
+        try {
+            appLoader.execute {
+                // Decoding and saving an image is disk work; keep it off the main thread.
+                val art = when (requestCode) {
+                    REQUEST_PICK_IMAGE -> uri?.let { CustomArtStore.importImage(applicationContext, it, packageName) }
+                    else -> CustomArtStore.fromPickResult(applicationContext, data, packageName)
+                }
+                runOnUiThread {
+                    if (isFinishing || isDestroyed) return@runOnUiThread
+                    if (art == null) {
+                        toast(getString(if (requestCode == REQUEST_PICK_IMAGE) R.string.art_image_failed else R.string.art_nothing_returned))
+                    } else {
+                        setCustomArt(app, art)
+                    }
+                }
+            }
+        } catch (_: RejectedExecutionException) {
+            // Finishing; the choice is dropped.
+        }
+    }
+
+    /** Saves (or with null, clears) [app]'s artwork, deletes an image it replaced, and redraws. */
+    private fun setCustomArt(app: LaunchableApp, art: CustomArt?) {
+        val previous = LauncherPreferences.setCustomArt(applicationContext, app.packageName, art)
+        if (previous == art) {
+            if (panel.isOpen) panel.close()
+            return
+        }
+        CustomArtStore.discard(applicationContext, previous)
+        state = state.copy(customArt = if (art == null) state.customArt - app.packageName else state.customArt + (app.packageName to art))
+        if (panel.isOpen) panel.close()
+        toast(getString(if (art == null) R.string.toast_artwork_default else R.string.toast_artwork_custom, app.label))
+        refreshApps()
+    }
+
+    private fun customArtPage(): PanelPage {
+        val custom = apps.filter { it.packageName in state.customArt }
+        return PanelPage(
+            eyebrow = getString(R.string.customise_eyebrow),
+            title = getString(R.string.custom_art_title),
+            body = getString(R.string.custom_art_body),
+            items = custom.map { app ->
+                PanelItem(app.label, value = getString(R.string.custom_art_state), art = app.art) {
+                    LauncherPreferences.setCustomArt(applicationContext, app.packageName, null)
+                        ?.let { CustomArtStore.discard(applicationContext, it) }
+                    state = state.copy(customArt = state.customArt - app.packageName)
+                    panel.refresh()
+                    refreshApps()
+                }
+            },
+            empty = getString(R.string.custom_art_empty),
+        )
+    }
+
     private fun hiddenPage(): PanelPage {
         val hidden = apps.filter { it.packageName in state.hidden }
         return PanelPage(
@@ -1029,6 +1202,11 @@ class LauncherActivity : Activity() {
         const val ROW_GAP_DP = 6
         /** Room around each row of cards for the 1.1x focus lift and its ring. */
         const val CARD_PAD_DP = 12
+        const val REQUEST_PICK_ICON = 41
+        const val REQUEST_PICK_IMAGE = 42
+        const val STATE_PENDING_ART_APP = "pending_art_app"
+        /** At most this many suggestions per pack for one app: banner, glyph and an alternate. */
+        const val MAX_SUGGESTIONS = 3
         const val TITLE_MAX_SP = 44f
         const val TITLE_MIN_SP = 30f
     }

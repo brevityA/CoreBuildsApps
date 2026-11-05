@@ -48,6 +48,9 @@
     <string name="option_hide">Hide from All apps</string>
     <string name="option_hide_meta">Find it again in Customise › Hidden apps</string>
     <string name="option_unhide">Show in All apps</string>
+    <string name="option_change_artwork">Change artwork</string>
+    <string name="option_artwork_default">Default</string>
+    <string name="option_artwork_custom">Custom</string>
     <string name="option_app_info">App info</string>
     <string name="option_app_info_meta">Android\'s settings for this app</string>
 
@@ -63,10 +66,11 @@
     <string name="setting_favourites">Favourites</string>
     <string name="setting_hidden">Hidden apps</string>
     <string name="setting_hidden_value_none">None</string>
+    <string name="setting_custom_art">Custom artwork</string>
     <string name="setting_set_home">Set as Home app</string>
     <string name="setting_set_home_meta">Opens Android\'s default-app settings</string>
     <string name="setting_reset">Reset home screen</string>
-    <string name="setting_reset_meta">Favourites, hidden apps and settings go back to how they started</string>
+    <string name="setting_reset_meta">Favourites, hidden apps, custom artwork and settings go back to how they started</string>
     <string name="setting_reset_confirm">Press OK again to reset</string>
     <string name="customise_footer">No ads, no account, no network. Your choices and app history stay on this TV.</string>
 
@@ -108,6 +112,25 @@
     <string name="favourites_body">OK adds or removes an app. New favourites go to the end of the row; hold OK on a favourite and choose Move to change its place.</string>
     <string name="favourite_state_on">In favourites</string>
 
+    <string name="art_title">Artwork for %1$s</string>
+    <string name="art_body">Pick this app\'s card. Wide art fills the card; square art sits on a plate tinted from it.</string>
+    <string name="art_default">Default</string>
+    <string name="art_default_meta">Follows Customise › Artwork</string>
+    <string name="art_suggestion_meta">The pack\'s art for this app</string>
+    <string name="art_browse">Browse %1$s</string>
+    <string name="art_browse_meta">Opens the pack\'s icon browser</string>
+    <string name="art_browse_failed">%1$s did not open its icon browser.</string>
+    <string name="art_image">Image on this TV</string>
+    <string name="art_image_meta">A PNG or JPG from storage or a USB drive</string>
+    <string name="art_no_image_picker">This TV has no file picker for images.</string>
+    <string name="art_image_failed">That image could not be read.</string>
+    <string name="art_nothing_returned">The icon browser returned no icon.</string>
+
+    <string name="custom_art_title">Custom artwork</string>
+    <string name="custom_art_body">Apps with artwork you picked. OK puts an app back to its default.</string>
+    <string name="custom_art_empty">No custom artwork. Hold OK on an app and choose Change artwork.</string>
+    <string name="custom_art_state">Custom</string>
+
     <string name="hidden_title">Hidden apps</string>
     <string name="hidden_body">Hidden apps are left out of All apps and Recently opened. OK shows an app again.</string>
     <string name="hidden_empty">No hidden apps. Hold OK on an app and choose Hide.</string>
@@ -119,6 +142,8 @@
     <string name="toast_hidden">%1$s hidden from All apps</string>
     <string name="toast_shown">%1$s is back in All apps</string>
     <string name="toast_reset">Home screen reset</string>
+    <string name="toast_artwork_custom">%1$s has new artwork</string>
+    <string name="toast_artwork_default">%1$s is back to its default artwork</string>
     <string name="app_no_longer_available">%1$s is no longer installed. Refreshing apps.</string>
     <string name="app_launch_blocked">Android did not let %1$s open.</string>
     <string name="app_info_unavailable">This TV has no App info screen for %1$s.</string>

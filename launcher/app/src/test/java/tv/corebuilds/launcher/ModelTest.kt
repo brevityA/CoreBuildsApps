@@ -101,6 +101,49 @@ class ModelTest {
     }
 
     @Test
+    fun customArtRoundTripsAndAnIconBrowserResultIsUnderstood() {
+        assertEquals(CustomArt.PackResource("tv.corebuilds.iconpack", "atlas_banner"), CustomArt.parse("res|tv.corebuilds.iconpack|atlas_banner"))
+        assertEquals(CustomArt.Image("a.png"), CustomArt.parse(CustomArt.Image("a.png").stored()))
+        assertNull(CustomArt.parse("file|../escape.png"))
+        assertNull(CustomArt.parse("nonsense"))
+
+        assertNull(LauncherPreferences.setCustomArt(context, "org.example.atlas", CustomArt.PackResource("p", "x")))
+        assertEquals(CustomArt.PackResource("p", "x"), LauncherPreferences.setCustomArt(context, "org.example.atlas", CustomArt.Image("a.png")))
+        assertEquals(mapOf("org.example.atlas" to CustomArt.Image("a.png")), LauncherPreferences.snapshot(context, listOf("org.example.atlas")).customArt)
+
+        // The Core Builds pack answers ACTION_PICK_ICON with a resource reference...
+        val reference = android.content.Intent().putExtra(
+            android.content.Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+            android.content.Intent.ShortcutIconResource().apply {
+                packageName = "tv.corebuilds.iconpack"
+                resourceName = "tv.corebuilds.iconpack:drawable/atlas_banner"
+            },
+        )
+        assertEquals(CustomArt.PackResource("tv.corebuilds.iconpack", "atlas_banner"),
+            CustomArtStore.fromPickResult(context, reference, "org.example.atlas"))
+        // ...and a pack that only sends a bitmap gets it saved here.
+        val bitmapOnly = android.content.Intent().putExtra("icon", Bitmap.createBitmap(64, 64, Bitmap.Config.ARGB_8888))
+        val saved = CustomArtStore.fromPickResult(context, bitmapOnly, "org.example.atlas") as CustomArt.Image
+        assertNotNull(CustomArtStore.load(context, saved))
+        CustomArtStore.discard(context, saved)
+        assertNull(CustomArtStore.load(context, saved))
+        assertNull(CustomArtStore.fromPickResult(context, android.content.Intent(), "org.example.atlas"))
+    }
+
+    @Test
+    fun appfilterListsEveryDrawableAPackMapsToAnApp() {
+        val xml = """
+            <resources>
+              <item component="ComponentInfo{org.example.atlas/.TvMain}" drawable="atlas_banner"/>
+              <item component="ComponentInfo{org.example.atlas/.Main}" drawable="atlas_glyph"/>
+              <item component="ComponentInfo{org.example.atlas/.Other}" drawable="atlas_banner"/>
+            </resources>
+        """.trimIndent()
+        val filter = IconPacks.parse(Xml.newPullParser().apply { setInput(StringReader(xml)) })
+        assertEquals(listOf("atlas_banner", "atlas_glyph"), filter.allByPackage["org.example.atlas"])
+    }
+
+    @Test
     fun wideArtFillsTheCardAndSquareArtSitsOnATintedPlate() {
         val spec = ArtSpec(320, 180, 76, "test")
         val wide = BitmapDrawable(context.resources, Bitmap.createBitmap(640, 360, Bitmap.Config.ARGB_8888).apply { eraseColor(Color.BLUE) })
@@ -109,13 +152,13 @@ class ModelTest {
         assertNotNull(fromPackBanner.banner)
         assertEquals(320, fromPackBanner.banner!!.width)
         assertNotNull(fromPackBanner.backdrop)
-        assertTrue(fromPackBanner.fromPack)
+        assertEquals(ArtSource.PACK, fromPackBanner.source)
         val fromPackGlyph = CardArtFactory.create(spec, square, { wide }, { square })
         assertNull(fromPackGlyph.banner)
         assertEquals(76, fromPackGlyph.icon!!.width)
         assertEquals(Color.GREEN, fromPackGlyph.tint)
         val ownBanner = CardArtFactory.create(spec, null, { wide }, { square })
-        assertFalse(ownBanner.fromPack)
+        assertEquals(ArtSource.APP, ownBanner.source)
         assertNotNull(ownBanner.banner)
     }
 }

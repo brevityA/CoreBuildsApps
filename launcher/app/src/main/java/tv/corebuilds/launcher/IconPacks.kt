@@ -22,9 +22,20 @@ internal class IconPack(
     val packageName: String,
     private val byComponent: Map<String, String>,
     private val byPackage: Map<String, String>,
+    private val allByPackage: Map<String, List<String>> = emptyMap(),
     private val loadDrawable: (String) -> Drawable?,
 ) {
     val mappedComponents: Int get() = byComponent.size
+
+    /** Every drawable the pack maps to [packageName]'s activities: its suggestions for that app. */
+    fun namesFor(packageName: String): List<String> = allByPackage[packageName].orEmpty()
+
+    /** A drawable by name, for a suggestion or a saved choice; null when the pack lacks it. */
+    fun drawable(name: String): Drawable? = try {
+        loadDrawable(name)
+    } catch (_: RuntimeException) {
+        null
+    }
 
     fun drawableFor(packageName: String, activityName: String): Drawable? {
         val name = byComponent["$packageName/$activityName"] ?: byPackage[packageName] ?: return null
@@ -53,7 +64,9 @@ internal object IconPacks {
 
     private data class CacheKey(val packageName: String, val lastUpdateTime: Long)
 
-    private var cached: Pair<CacheKey, IconPack>? = null
+    /** The last few packs loaded: the active one, plus any the artwork picker opened. */
+    private val cached = LinkedHashMap<CacheKey, IconPack>()
+    private const val CACHE_PACKS = 3
 
     /** Installed packs: Core Builds banners, then Core Builds glyphs, then the rest A-Z. */
     fun installed(context: Context): List<IconPackInfo> {
@@ -94,24 +107,26 @@ internal object IconPacks {
         val pm = context.packageManager
         val updated = pm.packageInfoOrNull(packageName)?.lastUpdateTime ?: return null
         val key = CacheKey(packageName, updated)
-        cached?.takeIf { it.first == key }?.let { return it.second }
+        cached[key]?.let { return it }
         val resources = try {
             pm.getResourcesForApplication(packageName)
         } catch (_: PackageManager.NameNotFoundException) {
             return null
         }
         val parser = appfilterParser(resources, packageName) ?: return null
-        val (byComponent, byPackage) = try {
+        val filter = try {
             parse(parser)
         } catch (_: Exception) {
             // A malformed appfilter means no pack art, never a crashed home screen.
             return null
         }
-        val pack = IconPack(packageName, byComponent, byPackage) { name ->
+        val pack = IconPack(packageName, filter.byComponent, filter.byPackage, filter.allByPackage) { name ->
             val id = resources.getIdentifier(name, "drawable", packageName)
             if (id == 0) null else resources.getDrawable(id, null)
         }
-        cached = key to pack
+        cached.keys.removeAll { it.packageName == packageName }
+        cached[key] = pack
+        while (cached.size > CACHE_PACKS) cached.remove(cached.keys.first())
         return pack
     }
 
@@ -126,10 +141,17 @@ internal object IconPacks {
         }
     }
 
-    /** component ("package/fully.qualified.Activity") -> drawable, and package -> first drawable. */
-    fun parse(parser: XmlPullParser): Pair<Map<String, String>, Map<String, String>> {
+    /** An appfilter read once: component -> drawable, package -> first drawable, package -> every drawable. */
+    data class Appfilter(
+        val byComponent: Map<String, String>,
+        val byPackage: Map<String, String>,
+        val allByPackage: Map<String, List<String>>,
+    )
+
+    fun parse(parser: XmlPullParser): Appfilter {
         val byComponent = linkedMapOf<String, String>()
         val byPackage = linkedMapOf<String, String>()
+        val allByPackage = linkedMapOf<String, MutableList<String>>()
         var event = parser.eventType
         while (event != XmlPullParser.END_DOCUMENT) {
             if (event == XmlPullParser.START_TAG && parser.name == "item") {
@@ -137,12 +159,15 @@ internal object IconPacks {
                 val drawable = parser.getAttributeValue(null, "drawable")?.trim()
                 if (component != null && !drawable.isNullOrEmpty()) {
                     byComponent.putIfAbsent(component, drawable)
-                    byPackage.putIfAbsent(component.substringBefore('/'), drawable)
+                    val app = component.substringBefore('/')
+                    byPackage.putIfAbsent(app, drawable)
+                    val names = allByPackage.getOrPut(app) { mutableListOf() }
+                    if (drawable !in names) names += drawable
                 }
             }
             event = parser.next()
         }
-        return byComponent to byPackage
+        return Appfilter(byComponent, byPackage, allByPackage)
     }
 
     /** "ComponentInfo{pkg/.Main}" (or a bare "pkg/.Main") -> "pkg/pkg.Main"; null when it is not a component. */

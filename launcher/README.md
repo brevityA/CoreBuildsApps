@@ -13,7 +13,14 @@ An installable, **private-use** Android TV / Google TV HOME launcher experiment.
 - **Shelves of 16:9 cards.** Favourites (in your order, with an Add card at the end), Recently opened (the last five non-favourite apps, newest first; can be turned off), and All apps as a grid of 4, 5 or 6 cards a row. A TV app's banner fills its card; any other app shows its icon and name on a plate tinted from the icon.
 - **Focus you can always see.** The focused card lifts 1.1x (the TV focus system's card scale) with a 3dp cyan ring drawn inside its own bounds, so no container can clip it. The focused row scrolls to one fixed line; rows above fade out instead of ending in a cut.
 - **A remote that never surprises.** Every arrow is decided by the launcher, not Android's geometric search. Left/Right walk a row and stop at its ends; Up/Down move to the nearest card in the next row and stop at the last; Up from the first row reaches Customise and Down comes back to the card you left. Back closes a panel, ends a move, or returns to the first card; it never leaves Home. Home pressed on Home does the same.
-- **Options in one side panel.** Hold OK on a card (or press Menu): Open, Add to / Remove from favourites, Move, Hide from All apps, App info. Customise uses the same panel. While a panel is open nothing behind it takes focus.
+- **Options in one side panel.** Hold OK on a card (or press Menu): Open, Add to / Remove from favourites, Move, Hide from All apps, Change artwork, App info. Customise uses the same panel. While a panel is open nothing behind it takes focus.
+- **Custom artwork per app.** Change artwork offers:
+  - the icon packs' own art for that app (the Core Builds banner and glyph, say), each applied with one press;
+  - **Browse** for each pack that has an icon browser, which opens it through the open `ACTION_PICK_ICON` contract the Core Builds Icon Pack answers;
+  - **Image on this TV**, a PNG or JPG through Android's file picker, copied into the launcher's own storage and capped at 960 px wide;
+  - **Default**, to undo the pick.
+
+  A pack pick is saved as a reference, so it redraws at any card size and follows pack updates. If the pack or file goes away, the app falls back to its default. **Customise › Custom artwork** lists every app with a pick and resets each with OK.
 - **Customisation.**
   - **Artwork:** each app's own banner or icon, or any installed icon pack. Core Builds banners are used by default when the Core Builds Icon Pack is installed; Core Builds glyphs and other packs can be chosen. Apps a pack does not cover keep their own art.
   - **Background:** follows the focused app, Core Builds, or Void, with Light, Medium or Strong dim.
@@ -34,7 +41,8 @@ Wallpaper galleries, recommendations/channels, search, weather/scores, TV inputs
 - [SidePanel.kt](app/src/main/java/tv/corebuilds/launcher/SidePanel.kt): the right-hand sheet. Stacked pages, rows, and focus kept inside.
 - [LauncherApps.kt](app/src/main/java/tv/corebuilds/launcher/LauncherApps.kt): launchable activities (TV entry preferred, permission-guarded entries skipped), with card art cached per app version.
 - [CardArt.kt](app/src/main/java/tv/corebuilds/launcher/CardArt.kt): card art drawn once at card size (banners rounded, icons on a tinted plate), plus the 48 × 27 softened copy the background scales up.
-- [IconPacks.kt](app/src/main/java/tv/corebuilds/launcher/IconPacks.kt): icon packs through the open appfilter contract. It reads `res/xml/appfilter.xml` (or `assets/appfilter.xml`) once per installed version, matching components first and then by package.
+- [IconPacks.kt](app/src/main/java/tv/corebuilds/launcher/IconPacks.kt): icon packs through the open appfilter contract. It reads `res/xml/appfilter.xml` (or `assets/appfilter.xml`) once per installed version, matching components first and then by package, and lists every drawable a pack maps to an app as its suggestions.
+- [CustomArt.kt](app/src/main/java/tv/corebuilds/launcher/CustomArt.kt): per-app artwork. It covers pack references and imported images, reads a pack browser's result (resource reference first, else the bitmap it sent), and imports and deletes image files.
 - [LauncherPreferences.kt](app/src/main/java/tv/corebuilds/launcher/LauncherPreferences.kt): ordered favourites with the 0.1 migration, hidden apps, bounded history, and the Customise settings.
 - [LauncherUi.kt](app/src/main/java/tv/corebuilds/launcher/LauncherUi.kt): Outfit type, the focus lift, API 30-safe package queries, and immersive mode that is safe before `setContentView()`.
 
@@ -42,7 +50,7 @@ Wallpaper galleries, recommendations/channels, search, weather/scores, TV inputs
 
 The launcher CI job runs `:app:testDebugUnitTest` before lint and assemble. These tests run the real activity under Robolectric at 1920 × 1080, with invented apps whose icons and banners are drawn by the test; they prove behaviour on the platform's own framework code, not on a TV.
 
-- [HomeScreenTest.kt](app/src/test/java/tv/corebuilds/launcher/HomeScreenTest.kt), 16 tests (API 35). It checks:
+- [HomeScreenTest.kt](app/src/test/java/tv/corebuilds/launcher/HomeScreenTest.kt), 17 tests (API 35). It checks:
   - what Home opens on, and that every card and Customise is reachable by remote;
   - that row ends hold, and Up from the top goes to Customise and back;
   - that every focused card shows whole on screen, lift included, and that text fits, including a 57-character app name;
@@ -50,15 +58,18 @@ The launcher CI job runs `:app:testDebugUnitTest` before lint and assemble. Thes
   - that Move reorders favourites and the order survives a restart, and Add puts a favourite at the end;
   - that Hide takes an app out of All apps and Hidden apps brings it back;
   - that Recently opened is right and its setting turns it off, card size changes the row and is saved, and background and clock apply at once;
-  - that Home on Home returns to the first card, a newly installed app appears, and OK starts the TV entry.
+  - that Home on Home returns to the first card, a newly installed app appears, and OK starts the TV entry;
+  - that an image picked from the TV's storage becomes that app's card, is listed in Custom artwork, and resets with its file deleted.
 
   Renders land in `app/build/screens`.
 - `HomeOpensTest`, in the same file: Home opens with a focused card on API 30–35.
-- [ModelTest.kt](app/src/test/java/tv/corebuilds/launcher/ModelTest.kt), 7 tests. It checks:
+- [ModelTest.kt](app/src/test/java/tv/corebuilds/launcher/ModelTest.kt), 9 tests. It checks:
   - first-run seeding and the 0.1 migration;
   - that reordering keeps an uninstalled favourite's slot;
   - recent history rules, and settings round trip and reset;
-  - appfilter parsing with package fallback, and banner versus icon art.
+  - appfilter parsing with package fallback, and every drawable a pack maps to an app;
+  - banner versus icon art;
+  - custom-art storage, and both kinds of pack-browser result.
 - [tests/test_gradle_envelope.py](../tests/test_gradle_envelope.py) pins the source and manifest invariants:
   - the HOME and launcher entry points;
   - zero permissions and narrow queries;
@@ -150,6 +161,7 @@ Use **NOT RUN**, **PASS**, **FAIL**, or **BLOCKED** in the status column.
 | 5 | Add a favourite from All apps; Move it two places left; press OK; force-stop and reopen. | It is added at the end, moves as pressed, and keeps its place after the restart. | NOT RUN | |
 | 6 | Hide an app; find it in Customise › Hidden apps and show it again. | It leaves All apps and Recently opened, and comes back. | NOT RUN | |
 | 7 | In Customise, change Artwork (with the Core Builds Icon Pack installed), Background, Background dim, Card size, Recently opened row and Clock. | Each change applies without leaving the panel and persists after a restart; Core Builds banners replace app art for covered apps. | NOT RUN | |
+| 7a | Hold OK on an app › Change artwork: apply a Core Builds suggestion; then Browse the Core Builds pack and pick another icon; then pick an image from a USB drive; then Default. Restart between steps. | Each pick shows on that app's card at once and after a restart; Default restores it; Customise › Custom artwork lists the app until then. | NOT RUN | |
 | 8 | HOME role: Customise › Set as Home app, select the prototype, press Home repeatedly (including from inside another app and from deep in All apps), then restore the previous Home app. | Home opens the prototype and returns to the first card; the previous Home app can be restored. | NOT RUN | |
 | 9 | Install and uninstall an app (for example with `adb`) while Home is showing. | The new app appears and the removed one disappears without leaving Home. | NOT RUN | |
 | 10 | Enable TalkBack; walk cards, the options panel and Customise. | Each card announces its name and the hold-OK hint once; panel rows announce their title, value and selected state. | NOT RUN | |
