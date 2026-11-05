@@ -44,16 +44,19 @@ versionCode 28. Android build, lint and Robolectric pass: 877 unit tests, lint
 - First on-device tests (`coreeq/app/src/androidTest`).
   `PhoneCredentialStoreKeystoreTest` first proves the device's Keystore refuses
   a caller IV, then seals, stores and loads a pairing with the real key. The
-  `apk` job builds them as the `CoreEQ-androidTest` artifact, and
-  `tools/install_core_eq_on_emulator.sh` runs them on both emulators once user
-  0 is unlocked (the 37.0 image's framework restart leaves it locked, and its
-  encrypted storage unreadable, for a while) and the system server has gone
-  30 s without restarting (`sys.system_server.start_count`, else its pid; a
-  device that reports neither is warned about, not failed). The post-install
-  `pm path` check asks again when the package service itself fails. A framework restart under the run (locked storage, a lost
-  service, `DeadObjectException` from `am instrument`, "System has crashed")
-  earns another run, up to 3 in all; any other failure fails at once. A run
-  fails unless `am instrument` reports `OK` with at least one test.
+  `apk` job builds them as the `CoreEQ-androidTest` artifact, and the API 30
+  emulator job runs them through `tools/install_core_eq_on_emulator.sh`.
+  - Before each run the script waits for user 0 to be unlocked and for the
+    system server to go 30 s without restarting
+    (`sys.system_server.start_count`, else its pid).
+  - A framework restart under a run (locked storage, a lost service,
+    `DeadObjectException`, "System has crashed") earns another run, up to 3;
+    any other failure fails at once. A run fails unless `am instrument`
+    reports `OK` with at least one test.
+  - Not on API 37.0: that preview image's system server crash-loops on the CI
+    runner (25 restarts in about 6 minutes on PR #455). Its install check,
+    which finishes between crashes, still runs, and now asks again when
+    `pm path` meets a broken package service.
 - `tests/test_core_eq_phone_pairing.py` holds three rules: no IV is passed to
   Keystore encryption, sealing happens before the TV is asked, and CI still
   runs the device tests.

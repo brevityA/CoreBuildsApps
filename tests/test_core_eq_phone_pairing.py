@@ -121,6 +121,11 @@ class OnDeviceTestRuns(unittest.TestCase):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn(":app:assembleDebugAndroidTest", workflow)
         self.assertEqual(workflow.count("name: CoreEQ-androidTest"), 2, "uploaded once, downloaded once")
+        # Only the API 30 leg downloads them (the 37.0 image crash-loops, PR #455), and it
+        # still has to: a matrix with no device-tests leg would silently run none.
+        self.assertIn("matrix.device-tests }}\n        with:\n          name: CoreEQ-androidTest", workflow)
+        api30 = workflow[workflow.index("- api-level: '30'"):workflow.index("- api-level: '37.0'")]
+        self.assertIn("device-tests: true", api30)
         script = EMULATOR.read_text(encoding="utf-8")
         self.assertIn("TEST_APK=androidtest/coreeq-debug-androidTest.apk", script)
         self.assertIn("tv.corebuilds.eq.debug.test/androidx.test.runner.AndroidJUnitRunner", script)
