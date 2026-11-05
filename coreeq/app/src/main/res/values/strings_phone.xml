@@ -12,6 +12,9 @@
     <string name="phone_sync_at">Local link · checked at %1$s</string>
     <string name="phone_reconnect_button">Reconnect</string>
     <string name="phone_refresh_button">Refresh status</string>
+    <string name="phone_refresh_short">Refresh</string>
+    <string name="phone_pair_another">Pair a different TV</string>
+    <string name="phone_measure_live_title">Measuring</string>
     <string name="phone_connection_restored">TV connection restored. No correction settings were changed.</string>
     <string name="phone_reconnect_hint">Open Phone companion on your TV, then reconnect. The saved pairing is kept.</string>
     <string name="phone_last_known_note">Not connected · the values below are last known, not live. Reconnect before changing the TV.</string>

@@ -30,6 +30,22 @@ source/policy receipt and the required device matrix.
   legacy unauthenticated wake probes no longer open a pairing window; choose
   Start pairing on the TV. Closing the TV phone-link screen still disconnects
   the phone, without switching correction off.
+- **The phone companion looks like 1.12's TV screens.**
+  - **Type and controls:** the TV's type scale (Title, Section, Eyebrow) and
+    pills (gradient primary, cyan-edged ghost). Every control answers a touch
+    with a ripple; the TV's focus rings stay for keyboards and D-pads.
+  - **Listening mode** uses the TV's Content type chips. The chosen mode is
+    filled; offline, the row dims and the last choice keeps a cyan tint. Labels
+    shrink to 11sp before they are cut.
+  - **Rows that open a list** (profile, target, room volume) are card rows with
+    a chevron.
+  - **Bottom tabs** carry the rail's icons.
+  - **Connected, the connection card is one strip** with Refresh; offline it
+    stays the full card with Reconnect.
+  - **With a TV saved, pairing folds into "Pair a different TV".**
+  - **While measuring, the Measure tab shows only** "Measuring", what to do,
+    an 8dp progress bar and Cancel.
+  - Every tab and state is checked for text that does not fit on a 320dp phone.
 
 ### Fixed
 
@@ -48,10 +64,20 @@ source/policy receipt and the required device matrix.
   outstanding probe. These paths still require Android/TV verification; profiles
   are not borrowed
   across uncertain routes to suppress a card.
+- **No self-sustaining route checks.** Android reports Core EQ's own silent
+  probe to its playback callback like any other player. Read as playback, each
+  probe scheduled player discovery, and discovery found the 2-second probe
+  stale and ran the next one: a probe and an effect reapply about every 3
+  seconds with nothing playing (with player discovery granted, on devices
+  where correction attaches per app). Reports during a probe and for 500 ms
+  after it are now ignored, followed by one look at whether real playback
+  started or stopped meanwhile.
 - **Latest correction choice wins.** A queued STOP cannot overwrite a newer
   enable. An explicitly disabled correction rejects sticky/late starts and
-  RESUME/REAPPLY. Route/discovery callbacks from a destroyed service instance
-  cannot reapply after a replacement has started.
+  RESUME/REAPPLY. A late start still goes foreground for a moment before it
+  stops, because Android crashes an app whose service stops before
+  `startForeground()`. Route/discovery callbacks from a destroyed service
+  instance cannot reapply after a replacement has started.
 - **No stale phone commands.** Offline, busy and measurement states share one
   interaction policy, including the previously unguarded mode buttons. An old
   status read cannot overwrite a local command's result; a successful command

@@ -178,13 +178,21 @@ class PhoneCompanionScreenTest {
         activity.findViewById<View>(R.id.phone_tab_tv).performClick()
         val forget = activity.findViewById<View>(R.id.phone_forget)
         forget.performClick()
+        val connection = activity.findViewById<TextView>(R.id.phone_connection_state)
+        val before = connection.text.toString()
         val first = ShadowDialog.getLatestDialog() as AlertDialog
+        // A dialog button posts its listener (and the dismiss) to the main looper,
+        // so run the queue before reading what the click did.
         first.getButton(AlertDialog.BUTTON_NEGATIVE).performClick()
+        ScreenHarness.idle()
+        assertFalse(first.isShowing)
+        assertEquals(before, connection.text.toString())
         assertTrue(forget.isEnabled)
         forget.performClick()
         val second = ShadowDialog.getLatestDialog() as AlertDialog
         second.getButton(AlertDialog.BUTTON_POSITIVE).performClick()
-        assertEquals(activity.getString(R.string.phone_not_paired), activity.findViewById<TextView>(R.id.phone_connection_state).text.toString())
+        ScreenHarness.idle()
+        assertEquals(activity.getString(R.string.phone_not_paired), connection.text.toString())
         assertFalse(ProfileStore(activity).correctionEnabled)
     }
 
@@ -198,5 +206,119 @@ class PhoneCompanionScreenTest {
             assertTrue(ScreenHarness.onScreen(activity.findViewById(id)))
         }
         assertEquals(emptyList<String>(), ScreenHarness.textProblems(activity))
+    }
+
+    @Test
+    fun `connected is one strip with Refresh and offline is the full card with Reconnect`() = withPhone { activity ->
+        connected(activity)
+        activity.findViewById<View>(R.id.phone_tab_control).performClick()
+        assertTrue(activity.findViewById<View>(R.id.phone_refresh).isShown)
+        assertFalse(activity.findViewById<View>(R.id.phone_connect).isShown)
+        call(activity, "markDisconnected")
+        assertFalse(activity.findViewById<View>(R.id.phone_refresh).isShown)
+        val reconnect = activity.findViewById<Button>(R.id.phone_connect)
+        assertTrue(reconnect.isShown)
+        assertEquals(activity.getString(R.string.phone_reconnect_button), reconnect.text.toString())
+    }
+
+    @Test
+    fun `listening modes are chips that keep the last choice visible but dim while offline`() = withPhone { activity ->
+        connected(activity, snapshot().copy(mode = "gaming"))
+        activity.findViewById<View>(R.id.phone_tab_control).performClick()
+        val gaming = activity.findViewById<Button>(R.id.phone_mode_gaming)
+        val movie = activity.findViewById<Button>(R.id.phone_mode_movie)
+        assertTrue(gaming.isActivated && gaming.isEnabled)
+        val enabledColour = movie.currentTextColor
+        call(activity, "markDisconnected")
+        assertFalse(gaming.isEnabled)
+        assertTrue(gaming.isActivated) // the last known mode still reads as chosen
+        assertFalse(movie.isEnabled)
+        assertTrue("an offline mode must look unavailable", movie.currentTextColor != enabledColour)
+    }
+
+    @Test
+    fun `a saved TV folds pairing into one button that opens it`() = withPhone { activity ->
+        connected(activity)
+        activity.findViewById<View>(R.id.phone_tab_tv).performClick()
+        val another = activity.findViewById<View>(R.id.phone_pair_another)
+        assertTrue(another.isShown)
+        assertFalse(activity.findViewById<View>(R.id.phone_pairing_panel).isShown)
+        another.performClick()
+        assertTrue(activity.findViewById<View>(R.id.phone_pairing_panel).isShown)
+        assertFalse(another.isShown)
+        assertTrue(activity.findViewById<View>(R.id.phone_scan_qr).isShown)
+        // A finger gets a scroll, not a keyboard focus ring on Scan.
+        assertFalse(activity.findViewById<View>(R.id.phone_scan_qr).isFocused)
+    }
+
+    @Test
+    fun `an unpaired phone shows pairing without the fold`() = withPhone { activity ->
+        assertTrue(activity.findViewById<View>(R.id.phone_pairing_panel).isShown)
+        assertFalse(activity.findViewById<View>(R.id.phone_pair_another).isShown)
+    }
+
+    @Test
+    fun `measuring shows only what applies mid-capture and restores setup afterwards`() = withPhone { activity ->
+        connected(activity)
+        activity.findViewById<View>(R.id.phone_tab_measure).performClick()
+        assertTrue(activity.findViewById<View>(R.id.phone_measure_setup).isShown)
+        field(activity, "measurementInProgress", true)
+        callBoolean(activity, "setMeasurementUi", true)
+        assertTrue(activity.findViewById<View>(R.id.phone_measure_live).isShown)
+        assertTrue(activity.findViewById<View>(R.id.phone_measure_progress).isShown)
+        assertTrue(activity.findViewById<View>(R.id.phone_cancel_measure).isShown)
+        assertFalse(activity.findViewById<View>(R.id.phone_measure_setup).isShown)
+        assertFalse(activity.findViewById<View>(R.id.phone_start_measure).isShown)
+        field(activity, "measurementInProgress", false)
+        callBoolean(activity, "setMeasurementUi", false)
+        assertFalse(activity.findViewById<View>(R.id.phone_measure_live).isShown)
+        assertTrue(activity.findViewById<View>(R.id.phone_measure_setup).isShown)
+    }
+
+    @Test
+    fun `every control answers a touch with a ripple over the TV's own states`() = withPhone { activity ->
+        connected(activity)
+        for (id in listOf(
+            R.id.phone_correction_toggle, R.id.phone_mode_movie, R.id.phone_profile_picker, R.id.phone_refresh,
+            R.id.phone_tab_control, R.id.phone_target_picker, R.id.phone_forget, R.id.phone_scan_qr
+        )) {
+            val name = activity.resources.getResourceEntryName(id)
+            assertTrue("$name has no touch ripple", activity.findViewById<View>(id).background is android.graphics.drawable.RippleDrawable)
+        }
+    }
+
+    @Test
+    @Config(qualifiers = "en-rUS-w320dp-h640dp-port-mdpi")
+    fun `every tab and state fits its text on a 320dp phone`() {
+        val problems = mutableListOf<String>()
+        fun check(state: String, activity: PhoneCompanionActivity) {
+            ScreenHarness.idle()
+            ScreenHarness.textProblems(activity).forEach { problems += "$state: $it" }
+        }
+        withPhone { activity -> check("first open", activity) }
+        withPhone { activity ->
+            activity.findViewById<View>(R.id.phone_manual_pair_toggle).performClick()
+            check("manual pairing", activity)
+        }
+        withPhone { activity ->
+            connected(activity)
+            for ((tab, name) in listOf(R.id.phone_tab_control to "control", R.id.phone_tab_measure to "measure", R.id.phone_tab_tv to "tv")) {
+                activity.findViewById<View>(tab).performClick()
+                check(name, activity)
+            }
+            activity.findViewById<View>(R.id.phone_pair_another).performClick()
+            check("pair another", activity)
+            activity.findViewById<View>(R.id.phone_tab_control).performClick()
+            call(activity, "markDisconnected")
+            check("offline", activity)
+        }
+        withPhone { activity ->
+            connected(activity)
+            activity.findViewById<View>(R.id.phone_tab_measure).performClick()
+            field(activity, "measurementInProgress", true)
+            callBoolean(activity, "setMeasurementUi", true)
+            check("measuring", activity)
+        }
+        assertEquals(emptyList<String>(), problems)
     }
 }

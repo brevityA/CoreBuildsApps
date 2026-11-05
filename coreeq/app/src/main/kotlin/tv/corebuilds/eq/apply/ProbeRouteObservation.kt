@@ -18,6 +18,33 @@ internal class ProbeRouteObservation<T> {
     fun changed(): Boolean = moved
 }
 
+/**
+ * Core EQ's own silent route probe is a real AudioTrack, and Android reports its
+ * start, stop and release to Core EQ's playback callback like any other player.
+ * Those reports are not content. Treated as playback, each probe scheduled player
+ * discovery, and discovery found the probe stale and ran the next one: a probe
+ * and an effect reapply every few seconds with nothing playing. While a probe
+ * plays, and for [echoMs] after it ends, playback reports are its echo.
+ */
+internal class OwnProbeEcho(private val echoMs: Long) {
+    private var running = 0
+    private var lastEndedAtMs = Long.MIN_VALUE / 2
+
+    @Synchronized
+    fun started() {
+        running++
+    }
+
+    @Synchronized
+    fun ended(nowMs: Long) {
+        if (running > 0) running--
+        lastEndedAtMs = nowMs
+    }
+
+    @Synchronized
+    fun isEcho(nowMs: Long): Boolean = running > 0 || nowMs - lastEndedAtMs < echoMs
+}
+
 /** A playback callback is a hint, not evidence that an output changed. Ignores repeated hints. */
 internal class PlaybackRouteHint<T>(initial: T) {
     private var previous = initial
