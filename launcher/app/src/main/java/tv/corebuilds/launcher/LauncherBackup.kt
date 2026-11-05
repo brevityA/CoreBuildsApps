@@ -68,19 +68,25 @@ internal object LauncherBackup {
     }
 
     /** Reads at most [MAX_BYTES] bytes, so a huge picked file cannot exhaust memory. */
-    fun readBounded(stream: InputStream): String? = try {
-        val out = ByteArrayOutputStream()
-        val buffer = ByteArray(4096)
-        var total = 0
-        while (true) {
-            val count = stream.read(buffer)
-            if (count < 0) break
-            total += count
-            if (total > MAX_BYTES) return null
-            out.write(buffer, 0, count)
+    fun readBounded(stream: InputStream): String? {
+        return try {
+            val out = ByteArrayOutputStream()
+            val buffer = ByteArray(4096)
+            var total = 0
+            var tooLarge = false
+            while (true) {
+                val count = stream.read(buffer)
+                if (count < 0) break
+                total += count
+                if (total > MAX_BYTES) {
+                    tooLarge = true
+                    break
+                }
+                out.write(buffer, 0, count)
+            }
+            if (tooLarge) null else String(out.toByteArray(), Charsets.UTF_8)
+        } catch (_: Exception) {
+            null
         }
-        String(out.toByteArray(), Charsets.UTF_8)
-    } catch (_: Exception) {
-        null
     }
 }

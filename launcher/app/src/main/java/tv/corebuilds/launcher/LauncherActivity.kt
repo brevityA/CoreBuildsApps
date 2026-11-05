@@ -348,7 +348,7 @@ class LauncherActivity : Activity() {
                 // retire the old bitmaps before the new catalog is built.
                 val signature = listOf(
                     settings.artwork.toString(), chosenPack?.packageName.orEmpty(),
-                    spec.width, spec.height, customArt.entries.sortedBy { it.key }.joinToString { "${it.key}=${it.value}" },
+                    spec.cardWidth, spec.cardHeight, customArt.entries.sortedBy { it.key }.joinToString { "${it.key}=${it.value}" },
                 ).joinToString("|")
                 if (signature != artSignature) {
                     LauncherApps.clearArtCache()
