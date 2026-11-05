@@ -8,6 +8,11 @@
 
     <!-- Phone pages and controls: stable identities for accessibility and UI tests. -->
     <item name="phone_cancel_measure" type="id" />
+    <item name="phone_refresh" type="id" />
+    <item name="phone_pair_another" type="id" />
+    <item name="phone_pairing_panel" type="id" />
+    <item name="phone_measure_live" type="id" />
+    <item name="phone_measure_setup" type="id" />
     <item name="phone_connect" type="id" />
     <item name="phone_connection_state" type="id" />
     <item name="phone_control_page" type="id" />

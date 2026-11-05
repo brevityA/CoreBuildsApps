@@ -30,6 +30,22 @@ source/policy receipt and the required device matrix.
   legacy unauthenticated wake probes no longer open a pairing window; choose
   Start pairing on the TV. Closing the TV phone-link screen still disconnects
   the phone, without switching correction off.
+- **The phone companion looks like 1.12's TV screens.**
+  - **Type and controls:** the TV's type scale (Title, Section, Eyebrow) and
+    pills (gradient primary, cyan-edged ghost). Every control answers a touch
+    with a ripple; the TV's focus rings stay for keyboards and D-pads.
+  - **Listening mode** uses the TV's Content type chips. The chosen mode is
+    filled; offline, the row dims and the last choice keeps a cyan tint. Labels
+    shrink to 11sp before they are cut.
+  - **Rows that open a list** (profile, target, room volume) are card rows with
+    a chevron.
+  - **Bottom tabs** carry the rail's icons.
+  - **Connected, the connection card is one strip** with Refresh; offline it
+    stays the full card with Reconnect.
+  - **With a TV saved, pairing folds into "Pair a different TV".**
+  - **While measuring, the Measure tab shows only** "Measuring", what to do,
+    an 8dp progress bar and Cancel.
+  - Every tab and state is checked for text that does not fit on a 320dp phone.
 
 ### Fixed
 

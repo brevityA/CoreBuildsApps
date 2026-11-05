@@ -7,8 +7,18 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.Typeface
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.RippleDrawable
 import android.text.InputFilter
 import android.text.InputType
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +44,7 @@ import com.google.mlkit.vision.codescanner.GmsBarcodeScanner
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.core.widget.TextViewCompat
 import androidx.core.view.WindowInsetsCompat
 import org.json.JSONObject
 import tv.corebuilds.eq.R
@@ -103,6 +114,15 @@ class PhoneCompanionActivity : AppCompatActivity() {
     private lateinit var profileButton: Button
     private lateinit var measureAvailability: TextView
     private lateinit var measureFeedback: TextView
+    /** Connected: a one-line strip with this compact Refresh. Otherwise the full card and connectButton. */
+    private lateinit var refreshButton: Button
+    private lateinit var pairingPanel: LinearLayout
+    private lateinit var pairAnotherButton: Button
+    private lateinit var measureHeading: TextView
+    private lateinit var measureLiveTitle: TextView
+    /** Setup that does not apply while a capture runs: the checklist, options, Start and its note. */
+    private lateinit var measureSetup: LinearLayout
+    private var pairingExpanded = false
     private val modeButtons = linkedMapOf<String, Button>()
     private val tabButtons = linkedMapOf<PhoneTab, Button>()
     private var selectedTab = PhoneTab.TV
@@ -213,10 +233,12 @@ class PhoneCompanionActivity : AppCompatActivity() {
             }
         }
         val header = column(padding = 20).apply { setPadding(dp(20), dp(12), dp(20), dp(8)) }
-        header.addView(label(getString(R.string.phone_brand), 26f, true, R.color.cb_ink).apply {
+        header.addView(styled(getString(R.string.phone_brand), R.style.CoreEQ_Title).apply {
             isAccessibilityHeading = true
         })
-        header.addView(label(getString(R.string.phone_brand_caption), 12f, false, R.color.cb_signal_cyan))
+        header.addView(styled(getString(R.string.phone_brand_caption), R.style.CoreEQ_Eyebrow).apply {
+            setTextColor(color(R.color.cb_signal_cyan))
+        }, matchWrap(top = 2))
         root.addView(header, matchWrap())
         contentScroll = ScrollView(this).apply {
             id = R.id.phone_scroll
@@ -229,13 +251,34 @@ class PhoneCompanionActivity : AppCompatActivity() {
         contentScroll.addView(content)
         root.addView(contentScroll, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
 
-        val connectionCard = section()
-        connectionLine = label(getString(R.string.phone_not_paired), 18f, true, R.color.cb_ink).apply {
+        // Connected, this is one quiet strip with a compact Refresh: the pages below
+        // are the point. Anything that needs the user (no TV, offline) gets the full
+        // card with its explanation and a full-width action.
+        val connectionCard = section().apply { setPadding(dp(16), dp(12), dp(12), dp(12)) }
+        val connectionRow = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        val connectionText = column()
+        connectionLine = label(getString(R.string.phone_not_paired), 17f, true, R.color.cb_ink).apply {
             id = R.id.phone_connection_state
         }
-        connectionCard.addView(connectionLine)
+        connectionText.addView(connectionLine)
         connectionHint = label("", 13f, false, R.color.cb_slate)
-        connectionCard.addView(connectionHint, matchWrap(top = 2))
+        connectionText.addView(connectionHint, matchWrap(top = 2))
+        connectionRow.addView(connectionText, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+        refreshButton = actionButton(getString(R.string.phone_refresh_short), primary = false).apply {
+            id = R.id.phone_refresh
+            visibility = View.GONE
+            isSingleLine = true
+            setPadding(dp(16), 0, dp(16), 0)
+            contentDescription = getString(R.string.phone_refresh_button)
+            setOnClickListener { withLocalNetwork { refreshDashboard() } }
+        }
+        connectionRow.addView(refreshButton, LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+        ).apply { marginStart = dp(12) })
+        connectionCard.addView(connectionRow, matchWrap())
         connectButton = actionButton(getString(R.string.phone_connect_button), primary = false).apply {
             id = R.id.phone_connect
             setOnClickListener {
@@ -243,7 +286,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
                 else withLocalNetwork { refreshDashboard() }
             }
         }
-        connectionCard.addView(connectButton, matchWrap(top = 8))
+        connectionCard.addView(connectButton, matchWrap(top = 10))
         content.addView(connectionCard, matchWrap())
         statusLine = cardText("").apply {
             id = R.id.phone_feedback
@@ -265,19 +308,31 @@ class PhoneCompanionActivity : AppCompatActivity() {
             setPadding(dp(12), dp(8), dp(12), dp(8))
             setBackgroundColor(color(R.color.cb_card_surface))
         }
+        // The TV rail's own icons, tinted the way the rail tints them (rail_icon).
         listOf(
-            PhoneTab.CONTROL to R.string.phone_tab_control,
-            PhoneTab.MEASURE to R.string.phone_tab_measure,
-            PhoneTab.TV to R.string.phone_tab_tv
-        ).forEach { (tab, title) ->
+            Triple(PhoneTab.CONTROL, R.string.phone_tab_control, R.drawable.ic_nav_home),
+            Triple(PhoneTab.MEASURE, R.string.phone_tab_measure, R.drawable.ic_action_mic),
+            Triple(PhoneTab.TV, R.string.phone_tab_tv, R.drawable.ic_nav_display)
+        ).forEach { (tab, title, icon) ->
             val button = actionButton(getString(title), primary = false).apply {
                 id = when (tab) {
                     PhoneTab.CONTROL -> R.id.phone_tab_control
                     PhoneTab.MEASURE -> R.id.phone_tab_measure
                     PhoneTab.TV -> R.id.phone_tab_tv
                 }
-                setBackgroundResource(R.drawable.bg_segment)
+                background = touchable(R.drawable.bg_segment)
                 setTextColor(ContextCompat.getColorStateList(this@PhoneCompanionActivity, R.color.segment_text))
+                textSize = 13f
+                isSingleLine = true
+                setPadding(dp(4), dp(6), dp(4), dp(6))
+                compoundDrawablePadding = dp(2)
+                ContextCompat.getDrawable(this@PhoneCompanionActivity, icon)?.mutate()?.let { drawable ->
+                    drawable.setBounds(0, 0, dp(22), dp(22))
+                    setCompoundDrawablesRelative(null, drawable, null, null)
+                }
+                TextViewCompat.setCompoundDrawableTintList(
+                    this, ContextCompat.getColorStateList(this@PhoneCompanionActivity, R.color.rail_icon)
+                )
                 setOnClickListener { selectTab(tab) }
             }
             tabButtons[tab] = button
@@ -331,10 +386,16 @@ class PhoneCompanionActivity : AppCompatActivity() {
                     "gaming" -> R.id.phone_mode_gaming
                     else -> R.id.phone_mode_everyday
                 }
-                textSize = 14f
-                setPadding(dp(4), dp(10), dp(4), dp(10))
-                setBackgroundResource(R.drawable.bg_segment)
-                setTextColor(ContextCompat.getColorStateList(this@PhoneCompanionActivity, R.color.segment_text))
+                // The TV's Content type chips (CoreEQ.Chip): a card-bodied pill that
+                // reads as tappable, filled with the brand gradient when chosen, and
+                // visibly dimmed while the TV is offline or a command is in flight.
+                // Three chips share a 320dp phone's width: the label shrinks (to 11sp)
+                // before it is cut, at any font scale. The 320dp text-fit test holds it.
+                maxLines = 1
+                setPadding(dp(4), 0, dp(4), 0)
+                setAutoSizeTextTypeUniformWithConfiguration(11, 14, 1, android.util.TypedValue.COMPLEX_UNIT_SP)
+                background = touchable(R.drawable.bg_chip_toggle)
+                setTextColor(ContextCompat.getColorStateList(this@PhoneCompanionActivity, R.color.chip_text))
                 setOnClickListener {
                     if (dashboard?.mode != mode) runControl(JSONObject().put("op", "set_mode").put("mode", mode))
                 }
@@ -351,7 +412,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
         profileList = column()
         profileButton = actionButton(getString(R.string.phone_no_profiles), primary = false).apply {
             id = R.id.phone_profile_picker
-            gravity = Gravity.START or Gravity.CENTER_VERTICAL
+            asChoiceRow()
             setOnClickListener { chooseProfile() }
         }
         profileList.addView(profileButton, matchWrap(top = 10))
@@ -360,7 +421,17 @@ class PhoneCompanionActivity : AppCompatActivity() {
     }
 
     private fun buildMeasurePage() {
-        measurePage.addView(heading(R.string.phone_measure_heading))
+        measureHeading = heading(R.string.phone_measure_heading)
+        measurePage.addView(measureHeading)
+        // While a capture runs the page is only this: a title that says so, what to
+        // do, progress and Cancel. The setup below cannot change mid-capture anyway.
+        measureLiveTitle = styled(getString(R.string.phone_measure_live_title), R.style.CoreEQ_Title).apply {
+            id = R.id.phone_measure_live
+            setTextColor(color(R.color.cb_signal_cyan))
+            visibility = View.GONE
+            accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE
+        }
+        measurePage.addView(measureLiveTitle, matchWrap())
         measureAvailability = label("", 14f, false, R.color.cb_slate)
         measurePage.addView(measureAvailability, matchWrap(top = 4))
         measureFeedback = cardText("").apply {
@@ -372,29 +443,37 @@ class PhoneCompanionActivity : AppCompatActivity() {
             id = R.id.phone_measure_progress
             max = PROGRESS_MAX
             visibility = View.GONE
-            progressTintList = android.content.res.ColorStateList.valueOf(color(R.color.cb_signal_cyan))
+            progressDrawable = ContextCompat.getDrawable(this@PhoneCompanionActivity, R.drawable.bg_progress)
+            minHeight = dp(8)
+            maxHeight = dp(8)
             contentDescription = getString(R.string.phone_measure_progress_accessibility)
         }
-        measurePage.addView(measureProgress, matchWrap(top = 12))
+        measurePage.addView(measureProgress, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(8)).apply {
+            topMargin = dp(16)
+        })
         cancelMeasureButton = actionButton(getString(R.string.phone_cancel_measure), primary = false).apply {
             id = R.id.phone_cancel_measure
             visibility = View.GONE
             setOnClickListener { cancelCapture(sendRemote = true) }
         }
-        measurePage.addView(cancelMeasureButton, matchWrap(top = 8))
+        measurePage.addView(cancelMeasureButton, matchWrap(top = 16))
+        measureSetup = column().apply { id = R.id.phone_measure_setup }
+        measurePage.addView(measureSetup, matchWrap())
         val preparation = section()
         preparation.addView(heading(R.string.phone_measure_prepare))
         preparation.addView(label(getString(R.string.phone_measure_checklist), 15f, false, R.color.cb_ink), matchWrap(top = 8))
         preparation.addView(label(getString(R.string.phone_capture_warning), 13f, false, R.color.cb_slate), matchWrap(top = 10))
-        measurePage.addView(preparation, matchWrap(top = 14))
+        measureSetup.addView(preparation, matchWrap(top = 14))
         val choices = section()
         choices.addView(heading(R.string.phone_measure_options))
         targetButton = actionButton("", primary = false).apply {
             id = R.id.phone_target_picker
+            asChoiceRow()
             setOnClickListener { chooseTarget() }
         }
         roomButton = actionButton("", primary = false).apply {
             id = R.id.phone_room_picker
+            asChoiceRow()
             setOnClickListener { chooseRoom() }
         }
         choices.addView(targetButton, matchWrap(top = 10))
@@ -415,7 +494,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
         }
         choices.addView(repeatCheck, matchWrap(top = 10))
         choices.addView(label(getString(R.string.phone_repeat_explanation), 13f, false, R.color.cb_slate), matchWrap(top = 4))
-        measurePage.addView(choices, matchWrap(top = 12))
+        measureSetup.addView(choices, matchWrap(top = 12))
         measureButton = actionButton(getString(R.string.phone_measure_button), primary = true).apply {
             id = R.id.phone_start_measure
             setOnClickListener {
@@ -424,8 +503,8 @@ class PhoneCompanionActivity : AppCompatActivity() {
                 }
             }
         }
-        measurePage.addView(measureButton, matchWrap(top = 16))
-        measurePage.addView(label(getString(R.string.phone_measure_foreground), 13f, false, R.color.cb_slate), matchWrap(top = 8))
+        measureSetup.addView(measureButton, matchWrap(top = 16))
+        measureSetup.addView(label(getString(R.string.phone_measure_foreground), 13f, false, R.color.cb_slate), matchWrap(top = 8))
     }
 
     private fun buildTvPage() {
@@ -448,7 +527,25 @@ class PhoneCompanionActivity : AppCompatActivity() {
         savedTvPanel.addView(forgetButton, matchWrap(top = 8))
         savedTvPanel.addView(label(getString(R.string.phone_forget_note), 13f, false, R.color.cb_slate), matchWrap(top = 6))
         tvPage.addView(savedTvPanel, matchWrap(top = 14))
-        val pairing = section()
+        // With a TV saved, pairing another is a rare errand: one line, not a second card.
+        pairAnotherButton = actionButton(getString(R.string.phone_pair_another), primary = false).apply {
+            id = R.id.phone_pair_another
+            visibility = View.GONE
+            setOnClickListener {
+                pairingExpanded = true
+                updateConnectionUi()
+                // A finger gets the card scrolled into view; a keyboard or D-pad gets
+                // the cursor on Scan, as focusFirstControl() decides for every page.
+                if (packageManager.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN) && contentScroll.isInTouchMode) {
+                    contentScroll.post { contentScroll.smoothScrollTo(0, (tvPage.top + pairingPanel.top - dp(8)).coerceAtLeast(0)) }
+                } else if (scanQrButton.isEnabled) {
+                    scanQrButton.requestFocus()
+                }
+            }
+        }
+        tvPage.addView(pairAnotherButton, matchWrap(top = 12))
+        val pairing = section().apply { id = R.id.phone_pairing_panel }
+        pairingPanel = pairing
         pairing.addView(heading(R.string.phone_pair_heading))
         pairing.addView(label(getString(R.string.phone_pair_steps), 14f, false, R.color.cb_slate), matchWrap(top = 6))
         scanQrButton = actionButton(getString(R.string.phone_scan_qr_button), primary = true).apply {
@@ -516,7 +613,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
         controlPage.visibility = if (tab == PhoneTab.CONTROL) View.VISIBLE else View.GONE
         measurePage.visibility = if (tab == PhoneTab.MEASURE) View.VISIBLE else View.GONE
         tvPage.visibility = if (tab == PhoneTab.TV) View.VISIBLE else View.GONE
-        connectButton.visibility = if (tab == PhoneTab.TV && pairedCredentials == null) View.GONE else View.VISIBLE
+        connectButton.visibility = if (showsConnectButton()) View.VISIBLE else View.GONE
         tabButtons.forEach { (key, button) ->
             button.isActivated = key == tab
             button.isSelected = key == tab
@@ -682,6 +779,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
                     fallbackHosts = emptyList()
                     codeField.text?.clear()
                     pairedCredentials = saved
+                    pairingExpanded = false
                     dashboard = null
                     markDisconnected()
                     setStatus(getString(R.string.phone_paired_not_loaded, readableError(e)), error = true)
@@ -693,6 +791,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
                 fallbackHosts = emptyList()
                 codeField.text?.clear()
                 pairedCredentials = saved
+                pairingExpanded = false
                 setStatus(getString(R.string.phone_pair_success), error = false)
                 showDashboard(newDashboard)
                 selectTab(PhoneTab.CONTROL)
@@ -927,8 +1026,10 @@ class PhoneCompanionActivity : AppCompatActivity() {
             )
         }
         // Stable controls: polling must not rebuild a list or steal the D-pad/keyboard focus.
-        profileButton.text = if (value.profiles.isEmpty()) getString(R.string.phone_no_profiles)
+        profileButton.text = rowText(
+            if (value.profiles.isEmpty()) getString(R.string.phone_no_profiles)
             else getString(R.string.phone_profile_choice, value.profileName)
+        )
         setRemoteEnabled(true)
         refreshMeasurementChoices()
     }
@@ -1559,6 +1660,10 @@ class PhoneCompanionActivity : AppCompatActivity() {
         refreshMeasureButtonLabel()
         cancelMeasureButton.visibility = if (active) View.VISIBLE else View.GONE
         measureProgress.visibility = if (active) View.VISIBLE else View.GONE
+        // Mid-capture the page says one thing: it is measuring. Setup returns afterwards.
+        measureLiveTitle.visibility = if (active) View.VISIBLE else View.GONE
+        measureHeading.visibility = if (active) View.GONE else View.VISIBLE
+        measureSetup.visibility = if (active) View.GONE else View.VISIBLE
         if (active) {
             selectTab(PhoneTab.MEASURE, moveFocus = false)
             contentScroll.scrollTo(0, 0)
@@ -1607,6 +1712,8 @@ class PhoneCompanionActivity : AppCompatActivity() {
         portField.isEnabled = canSetUp
         codeField.isEnabled = canSetUp
         connectButton.isEnabled = canSetUp
+        refreshButton.isEnabled = canSetUp
+        pairAnotherButton.isEnabled = canSetUp
         correctionButton.isEnabled = state.canControl
         modeButtons.values.forEach { it.isEnabled = state.canControl }
         setProfileButtonsEnabled(state.canControl && dashboard?.profiles?.isNotEmpty() == true)
@@ -1634,9 +1741,18 @@ class PhoneCompanionActivity : AppCompatActivity() {
         if (showControls && wasHidden && selectedTab == PhoneTab.CONTROL) focusFirstControl()
     }
 
+    /** Full-width Reconnect / Set up only when the user has something to do; connected, the strip's Refresh suffices. */
+    private fun showsConnectButton(): Boolean =
+        !tvConnected && !(selectedTab == PhoneTab.TV && pairedCredentials == null)
+
     private fun updateConnectionUi() {
-        savedTvPanel.visibility = if (pairedCredentials == null) View.GONE else View.VISIBLE
-        connectButton.visibility = if (selectedTab == PhoneTab.TV && pairedCredentials == null) View.GONE else View.VISIBLE
+        val paired = pairedCredentials != null
+        savedTvPanel.visibility = if (paired) View.VISIBLE else View.GONE
+        if (!paired) pairingExpanded = false
+        pairingPanel.visibility = if (!paired || pairingExpanded) View.VISIBLE else View.GONE
+        pairAnotherButton.visibility = if (paired && !pairingExpanded) View.VISIBLE else View.GONE
+        connectButton.visibility = if (showsConnectButton()) View.VISIBLE else View.GONE
+        refreshButton.visibility = if (tvConnected) View.VISIBLE else View.GONE
         pairedCredentials?.let { saved -> savedTvLine.text = getString(R.string.phone_saved_tv_address, saved.host, saved.port) }
         connectionLine.text = when {
             tvConnected -> getString(R.string.phone_connected_device, dashboard?.deviceName.orEmpty())
@@ -1788,8 +1904,53 @@ class PhoneCompanionActivity : AppCompatActivity() {
         text = textValue
         textSize = size
         setTextColor(color(colorId))
-        if (bold) setTypeface(typeface, android.graphics.Typeface.BOLD)
+        // The TV's weights: 600 for emphasis (its headings and titles), not synthetic bold.
+        if (bold) typeface = Typeface.create(typeface, 600, false)
         setPadding(0, dp(3), 0, dp(3))
+    }
+
+    /** Text in one of the TV's text styles (CoreEQ.Title, .Section, .Eyebrow): one type scale for both. */
+    private fun styled(textValue: String, style: Int): TextView = TextView(this).apply {
+        setTextAppearance(style)
+        text = textValue
+        setPadding(0, dp(2), 0, dp(2))
+    }
+
+    /**
+     * A TV design-system background with touch feedback. The TV drawables answer
+     * focus (a remote has nothing else); a finger needs a ripple, in the theme's
+     * cb_ripple, clipped to the same shape. Focus, activated and disabled states
+     * still come from the drawable underneath.
+     */
+    private fun touchable(drawableRes: Int, radius: Float = PILL_RADIUS_DP * resources.displayMetrics.density): Drawable {
+        val content = ContextCompat.getDrawable(this, drawableRes)
+        val mask = GradientDrawable().apply {
+            cornerRadius = radius
+            setColor(Color.WHITE)
+        }
+        return RippleDrawable(ColorStateList.valueOf(color(R.color.cb_ripple)), content, mask)
+    }
+
+    /** A row that opens a list (the TV's menu rows): start-aligned on a card, a chevron at the end. */
+    private fun Button.asChoiceRow() {
+        background = touchable(R.drawable.bg_card, resources.getDimension(R.dimen.cb_radius_card))
+        setTextColor(ContextCompat.getColorStateList(this@PhoneCompanionActivity, R.color.ghost_text))
+        gravity = Gravity.START or Gravity.CENTER_VERTICAL
+        textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+        setPadding(dp(16), dp(10), dp(12), dp(10))
+        setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_chevron_end, 0)
+        compoundDrawablePadding = dp(8)
+        TextViewCompat.setCompoundDrawableTintList(this, ColorStateList.valueOf(color(R.color.cb_slate)))
+    }
+
+    /** "Title\nhint" for a row: the title in the row's ink, the hint smaller and in slate. */
+    private fun rowText(value: String): CharSequence {
+        val split = value.indexOf('\n')
+        if (split < 0) return value
+        return SpannableStringBuilder(value).apply {
+            setSpan(ForegroundColorSpan(color(R.color.cb_slate)), split + 1, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(AbsoluteSizeSpan(13, true), split + 1, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
     }
 
     private fun cardText(textValue: String): TextView = label(
@@ -1814,8 +1975,11 @@ class PhoneCompanionActivity : AppCompatActivity() {
         text = textValue
         isAllCaps = false
         textSize = 15f
-        setTextColor(ContextCompat.getColorStateList(this@PhoneCompanionActivity, if (primary) R.color.cta_text else R.color.ghost_text))
-        setBackgroundResource(if (primary) R.drawable.bg_cta else R.drawable.bg_ghost)
+        // The TV's pills: Widget.CoreEQ.Pill.Cta for the one primary action, .Ghost
+        // (cyan edge and label) for the rest, each with a ripple for touch.
+        setTextColor(ContextCompat.getColorStateList(this@PhoneCompanionActivity, if (primary) R.color.cta_text else R.color.pill_ghost_text))
+        background = touchable(if (primary) R.drawable.bg_pill_cta else R.drawable.bg_pill_ghost)
+        if (primary) typeface = Typeface.create(typeface, 700, false)
         minimumHeight = dp(52)
         minimumWidth = 0
         stateListAnimator = null // Touch controls must not scale or shift their neighbours.
@@ -1840,7 +2004,8 @@ class PhoneCompanionActivity : AppCompatActivity() {
         val target = when (selectedTab) {
             PhoneTab.CONTROL -> if (correctionButton.isShown && correctionButton.isEnabled) correctionButton else connectButton
             PhoneTab.MEASURE -> if (measurementInProgress) cancelMeasureButton else targetButton
-            PhoneTab.TV -> if (scanQrButton.isShown && scanQrButton.isEnabled) scanQrButton else findTvButton
+            PhoneTab.TV -> listOf(scanQrButton, pairAnotherButton, revokeButton)
+                .firstOrNull { it.isShown && it.isEnabled } ?: findTvButton
         }
         if (target.isShown && target.isEnabled) target.requestFocus()
     }
@@ -1854,11 +2019,11 @@ class PhoneCompanionActivity : AppCompatActivity() {
         setBackgroundResource(R.drawable.bg_section)
     }
 
-    private fun heading(title: Int): TextView = label(getString(title), 20f, true, R.color.cb_ink).apply {
+    private fun heading(title: Int): TextView = styled(getString(title), R.style.CoreEQ_Section).apply {
         isAccessibilityHeading = true
     }
 
-    private fun eyebrow(title: Int): TextView = label(getString(title), 12f, true, R.color.cb_slate)
+    private fun eyebrow(title: Int): TextView = styled(getString(title), R.style.CoreEQ_Eyebrow)
 
     private fun matchWrap(top: Int = 0): LinearLayout.LayoutParams =
         LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
@@ -1875,6 +2040,8 @@ class PhoneCompanionActivity : AppCompatActivity() {
     private fun dp(value: Int): Int = (value * resources.displayMetrics.density).roundToInt()
 
     companion object {
+        /** cb_radius_pill: a corner radius past half the height makes a pill of any size. */
+        private const val PILL_RADIUS_DP = 999f
         private const val REQ_LOCAL_NETWORK = 731
         private const val REQ_MICROPHONE = 732
         private const val FIND_TV_TIMEOUT_MS = 8_000L
