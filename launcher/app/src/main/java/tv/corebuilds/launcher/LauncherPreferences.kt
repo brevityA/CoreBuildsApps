@@ -37,7 +37,7 @@ internal enum class CardSize(val perRow: Int) { COMPACT(6), STANDARD(5), LARGE(4
 /** User-selected transition amount. Android's system animator scale is applied on top. */
 internal enum class MotionMode(val factor: Float) { FULL(1f), CALM(0.55f), OFF(0f) }
 
-/** The order of the All apps grid. All inputs are local and permission-free. */
+/** The order of the All apps grid. Inputs are local state, package metadata and optional owner-granted usage. */
 internal enum class AppSort { A_Z, MOST_USED, TV_FIRST, NEWEST }
 
 /** Everything the Customise panel can change. */
@@ -51,6 +51,10 @@ internal data class HomeSettings(
     val motion: MotionMode = MotionMode.FULL,
     val smartSuggestions: Boolean = true,
     val appSort: AppSort = AppSort.A_Z,
+    /** A wallpaper URL the owner typed; empty means no network fetch. */
+    val wallpaperUrl: String = "",
+    /** Optional BOOT_COMPLETED fallback when this app is already HOME. */
+    val launchOnBoot: Boolean = false,
 )
 
 /** One consistent read of the saved layout, taken off the main thread with each catalog scan. */
@@ -63,8 +67,8 @@ internal data class HomeState(
     val settings: HomeSettings,
     /** Artwork the user chose per app, by package. Kept while an app is uninstalled. */
     val customArt: Map<String, CustomArt> = emptyMap(),
-    /** Local launch counts from the bounded event window; used by Most used sorting. */
-    val usage: Map<String, Int> = emptyMap(),
+    /** Local launch counts plus optional system foreground minutes; used by Most used sorting. */
+    val usage: Map<String, Long> = emptyMap(),
 )
 
 /** A launch record for local suggestions. The slot is a coarse hour/day part, never a location. */
@@ -75,7 +79,7 @@ private data class LaunchEvent(
     val dayType: Int,
 )
 
-/** Small, device-local state only. No account, network sync, or analytics. */
+/** Small, owner-controlled state. No account, cloud sync, or analytics. */
 internal object LauncherPreferences {
     private const val FILE = "launcher_private_preferences"
 
@@ -95,6 +99,8 @@ internal object LauncherPreferences {
     private const val KEY_MOTION = "motion"
     private const val KEY_SMART_SUGGESTIONS = "smart_suggestions"
     private const val KEY_APP_SORT = "app_sort"
+    private const val KEY_WALLPAPER_URL = "wallpaper_url"
+    private const val KEY_LAUNCH_ON_BOOT = "launch_on_boot"
     private const val KEY_CUSTOM_ART = "custom_art"
 
     private const val RECENTS_LIMIT = 5
@@ -106,7 +112,8 @@ internal object LauncherPreferences {
     private val WRITABLE_KEYS = setOf(
         KEY_LEGACY_PINS, KEY_FAVOURITES, KEY_HIDDEN, KEY_RECENTS, KEY_LAUNCH_EVENTS,
         KEY_ARTWORK, KEY_BACKDROP, KEY_DIM, KEY_CARD_SIZE, KEY_SHOW_RECENTS,
-        KEY_SHOW_CLOCK, KEY_MOTION, KEY_SMART_SUGGESTIONS, KEY_APP_SORT, KEY_CUSTOM_ART,
+        KEY_SHOW_CLOCK, KEY_MOTION, KEY_SMART_SUGGESTIONS, KEY_APP_SORT,
+        KEY_WALLPAPER_URL, KEY_LAUNCH_ON_BOOT, KEY_CUSTOM_ART,
     )
 
     // On first run, surface the Core Builds apps that are actually installed.
@@ -145,11 +152,12 @@ internal object LauncherPreferences {
         val settings = settings(preferences)
         val exclude = favourites.toSet() + hidden
         val events = activeEvents(preferences)
-        val usage = events.groupingBy { it.packageName }.eachCount()
+        val localUsage = events.groupingBy { it.packageName }.eachCount().mapValues { it.value.toLong() }
+        val usage = LauncherUsage.usageCounts(context, installed, localUsage)
         return HomeState(
             favourites = favourites,
             hidden = hidden,
-            recents = suggestions(preferences, events, installed, exclude, settings.smartSuggestions),
+            recents = suggestions(preferences, events, usage, installed, exclude, settings.smartSuggestions),
             settings = settings,
             customArt = customArt(preferences),
             usage = usage,
@@ -208,6 +216,7 @@ internal object LauncherPreferences {
     private fun suggestions(
         preferences: SharedPreferences,
         events: List<LaunchEvent>,
+        usage: Map<String, Long>,
         installed: Set<String>,
         exclude: Set<String>,
         smart: Boolean,
@@ -229,7 +238,8 @@ internal object LauncherPreferences {
             val context = own.count { it.slot == slot && it.dayType == dayType } * 12f
             val legacyIndex = fallback.indexOf(packageName)
             val legacy = if (legacyIndex >= 0) (RECENTS_LIMIT - legacyIndex) * 0.2f else 0f
-            packageName to (recency + frequency + context + legacy)
+            val foreground = (usage[packageName] ?: 0L).coerceAtMost(100L)
+            packageName to (recency + frequency + context + legacy + foreground)
         }
             .sortedWith(compareByDescending<Pair<String, Float>> { it.second }.thenBy { it.first })
             .map { it.first }
@@ -287,6 +297,8 @@ internal object LauncherPreferences {
             motion = enumValue(preferences.getString(KEY_MOTION, null), defaults.motion),
             smartSuggestions = preferences.getBoolean(KEY_SMART_SUGGESTIONS, defaults.smartSuggestions),
             appSort = enumValue(preferences.getString(KEY_APP_SORT, null), defaults.appSort),
+            wallpaperUrl = preferences.getString(KEY_WALLPAPER_URL, defaults.wallpaperUrl).orEmpty(),
+            launchOnBoot = preferences.getBoolean(KEY_LAUNCH_ON_BOOT, defaults.launchOnBoot),
         )
     }
 
@@ -304,6 +316,8 @@ internal object LauncherPreferences {
             .putString(KEY_MOTION, settings.motion.name)
             .putBoolean(KEY_SMART_SUGGESTIONS, settings.smartSuggestions)
             .putString(KEY_APP_SORT, settings.appSort.name)
+            .putString(KEY_WALLPAPER_URL, settings.wallpaperUrl)
+            .putBoolean(KEY_LAUNCH_ON_BOOT, settings.launchOnBoot)
             .apply()
     }
 

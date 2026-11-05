@@ -94,6 +94,50 @@
     <string name="selected_state">Selected</string>
     <string name="value_on">On</string>
     <string name="value_off">Off</string>
+    <string name="value_granted">Granted</string>
+    <string name="value_not_granted">Not granted</string>
+    <string name="value_ready">Ready</string>
+    <string name="value_permission">Permission</string>
+    <string name="value_saved">Saved</string>
+
+    <!-- Connected TV: usage access, wallpaper, boot and notifications -->
+    <string name="setting_usage_access">Usage access</string>
+    <string name="setting_usage_access_meta">Owner-granted system usage stats for smarter suggestions</string>
+    <string name="usage_title">Usage access</string>
+    <string name="usage_body">Allow Android usage access to rank Suggested now and Most used by foreground time. Without it, the launcher uses only its own last 30 days of launches.</string>
+    <string name="usage_open">Open usage access settings</string>
+    <string name="usage_open_meta">Android Settings decides whether this permission is granted</string>
+    <string name="usage_refresh">Refresh suggestions</string>
+    <string name="usage_refresh_meta">Re-read local history and any granted usage stats</string>
+    <string name="usage_refreshed">Suggestions refreshed</string>
+
+    <string name="setting_wallpaper">Network wallpaper</string>
+    <string name="setting_wallpaper_meta">Fetch one image from a URL you type, then set the TV wallpaper</string>
+    <string name="wallpaper_title">Network wallpaper</string>
+    <string name="wallpaper_body">Enter an HTTP or HTTPS image URL. The launcher downloads at most 8 MB, scales it for the TV and applies it through Android\'s wallpaper manager. No gallery, default endpoint or automatic refresh.</string>
+    <string name="wallpaper_url_hint">https://example.invalid/wallpaper.jpg</string>
+    <string name="wallpaper_input_description">Wallpaper image URL. Type an HTTP or HTTPS address.</string>
+    <string name="wallpaper_fetch">Fetch and apply</string>
+    <string name="wallpaper_clear">Clear saved URL</string>
+    <string name="wallpaper_cancel">Cancel</string>
+    <string name="wallpaper_offline">This TV is not online. Check its network connection.</string>
+    <string name="wallpaper_invalid_url">Enter a valid HTTP or HTTPS image URL.</string>
+    <string name="wallpaper_loading">Fetching wallpaper…</string>
+    <string name="wallpaper_applied">Wallpaper applied</string>
+    <string name="wallpaper_failed">That wallpaper could not be fetched or applied.</string>
+    <string name="wallpaper_url_cleared">Saved wallpaper URL cleared</string>
+
+    <string name="setting_launch_on_boot">Launch on boot</string>
+    <string name="setting_launch_on_boot_meta">A BOOT_COMPLETED fallback when this app is already HOME</string>
+    <string name="setting_notification">Status notification</string>
+    <string name="setting_notification_meta">Show a one-off launcher status notification</string>
+    <string name="notification_title">Core Builds Launcher</string>
+    <string name="notification_body">Connected TV features are ready. Your layout and history stay on this TV.</string>
+    <string name="notification_channel">Launcher status</string>
+    <string name="notification_shown">Status notification shown</string>
+    <string name="notification_failed">This TV did not show the notification.</string>
+    <string name="notification_granted">Notification permission granted</string>
+    <string name="notification_denied">Notification permission was not granted.</string>
 
     <!-- Artwork -->
     <string name="artwork_title">Artwork</string>
@@ -180,6 +224,8 @@
     <string name="quick_apps_meta">Open Android\'s app list</string>
     <string name="quick_home">Home app</string>
     <string name="quick_home_meta">Choose the default home screen</string>
+    <string name="quick_usage">Usage access</string>
+    <string name="quick_usage_meta">Open Android\'s usage-access permission screen</string>
     <string name="quick_open">OPEN</string>
     <string name="toast_settings_unavailable">This TV did not open that settings screen.</string>
 
@@ -189,9 +235,11 @@
     <string name="about_version">Version</string>
     <string name="about_version_unknown">Private build</string>
     <string name="about_network">Network access</string>
-    <string name="about_network_value">None</string>
+    <string name="about_network_value">User-entered URLs only</string>
     <string name="about_storage">Saved data</string>
     <string name="about_storage_value">On this TV</string>
+    <string name="about_permissions">Connected TV permissions</string>
+    <string name="about_permissions_value">7 declared</string>
     <string name="about_footer">Search, suggestions, artwork picks and layout settings never leave this TV.</string>
 
     <!-- Favourites and per-app artwork -->

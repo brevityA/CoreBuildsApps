@@ -1,25 +1,30 @@
 package tv.corebuilds.launcher
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.graphics.Paint
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.text.InputType
 import android.text.format.DateFormat
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.ImageView
@@ -35,7 +40,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.RejectedExecutionException
 
 /**
- * The HOME screen (0.2): a background that follows the focused app, a top bar
+ * The HOME screen (0.4): a background that follows the focused app, a top bar
  * with the clock and Customise, an info area naming the focused app, and
  * shelves below it: Favourites (ordered, with an Add card), Recently opened,
  * and All apps as a grid. Every arrow is decided here, not by Android's
@@ -61,6 +66,7 @@ class LauncherActivity : Activity() {
     private var userInteracted = false
     private var resetArmed = false
     private var infoSignature = ""
+    private var wallpaperDialog: AlertDialog? = null
     /** The app whose artwork a pack browser or the image picker is choosing, across the round trip. */
     private var pendingArtApp: String? = null
 
@@ -145,8 +151,22 @@ class LauncherActivity : Activity() {
         pendingArtApp?.let { outState.putString(STATE_PENDING_ART_APP, it) }
     }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray,
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode != REQUEST_NOTIFICATIONS) return
+        val granted = grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED
+        toast(getString(if (granted) R.string.notification_granted else R.string.notification_denied))
+        if (granted) showStatusNotification()
+    }
+
     override fun onDestroy() {
         rescanRequested = false
+        wallpaperDialog?.dismiss()
+        wallpaperDialog = null
         // Let any queued preference write finish; never start new work.
         appLoader.shutdown()
         super.onDestroy()
@@ -178,6 +198,7 @@ class LauncherActivity : Activity() {
     /** Back never leaves Home: it closes a panel, ends a move, or returns to the first card. */
     internal fun handleBack() {
         when {
+            wallpaperDialog?.isShowing == true -> wallpaperDialog?.dismiss()
             searchPanel.isOpen -> searchPanel.close()
             panel.isOpen -> panel.back()
             moving != null -> finishMove()
@@ -186,6 +207,7 @@ class LauncherActivity : Activity() {
     }
 
     private fun goToTop() {
+        wallpaperDialog?.takeIf { it.isShowing }?.dismiss()
         if (searchPanel.isOpen) searchPanel.close()
         if (panel.isOpen) panel.close()
         finishMove()
@@ -485,11 +507,11 @@ class LauncherActivity : Activity() {
         }
     }
 
-    /** Local app ordering: no system usage API, no permission and no network metadata. */
+    /** App ordering from local state and optional owner-granted usage time; no network metadata. */
     private fun sortedVisibleApps(visible: List<LaunchableApp>): List<LaunchableApp> = when (state.settings.appSort) {
         AppSort.A_Z -> visible
         AppSort.MOST_USED -> visible.sortedWith(
-            compareByDescending<LaunchableApp> { state.usage[it.packageName] ?: 0 }
+            compareByDescending<LaunchableApp> { state.usage[it.packageName] ?: 0L }
                 .thenBy(String.CASE_INSENSITIVE_ORDER) { it.label },
         )
         AppSort.TV_FIRST -> visible.sortedWith(
@@ -634,6 +656,7 @@ class LauncherActivity : Activity() {
 
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
         if (event.action == KeyEvent.ACTION_DOWN) userInteracted = true
+        if (wallpaperDialog?.isShowing == true) return super.dispatchKeyEvent(event)
         val direction = direction(event.keyCode)
         if (searchPanel.isOpen) {
             if (direction != null) {
@@ -958,6 +981,26 @@ class LauncherActivity : Activity() {
                 PanelItem(getString(R.string.setting_sort_apps), value = sortLabel(s.appSort)) { panel.push { appSortPage() } },
                 PanelItem(getString(R.string.setting_find_app), meta = getString(R.string.setting_find_app_meta), value = getString(R.string.quick_open)) { openSearch() },
                 PanelItem(getString(R.string.setting_quick_settings), meta = getString(R.string.setting_quick_settings_meta)) { panel.push { quickSettingsPage() } },
+                PanelItem(
+                    getString(R.string.setting_usage_access),
+                    meta = getString(R.string.setting_usage_access_meta),
+                    value = getString(if (LauncherUsage.hasAccess(this)) R.string.value_granted else R.string.value_not_granted),
+                ) { panel.push { usageAccessPage() } },
+                PanelItem(
+                    getString(R.string.setting_wallpaper),
+                    meta = getString(R.string.setting_wallpaper_meta),
+                    value = getString(if (state.settings.wallpaperUrl.isBlank()) R.string.value_off else R.string.value_saved),
+                ) { panel.push { wallpaperPage() } },
+                PanelItem(
+                    getString(R.string.setting_launch_on_boot),
+                    meta = getString(R.string.setting_launch_on_boot_meta),
+                    value = onOff(s.launchOnBoot),
+                ) { updateSettings { it.copy(launchOnBoot = !it.launchOnBoot) } },
+                PanelItem(
+                    getString(R.string.setting_notification),
+                    meta = getString(R.string.setting_notification_meta),
+                    value = getString(if (LauncherNotification.canPost(this)) R.string.value_ready else R.string.value_permission),
+                ) { requestOrShowNotification() },
                 PanelItem(getString(R.string.setting_favourites), value = resources.getQuantityString(R.plurals.setting_favourites_value, state.favourites.size, state.favourites.size)) {
                     openFavouritesPicker(asRoot = false)
                 },
@@ -1103,6 +1146,7 @@ class LauncherActivity : Activity() {
             quickItem(R.string.quick_accessibility, R.string.quick_accessibility_meta, Settings.ACTION_ACCESSIBILITY_SETTINGS),
             quickItem(R.string.quick_apps, R.string.quick_apps_meta, Settings.ACTION_APPLICATION_SETTINGS),
             quickItem(R.string.quick_home, R.string.quick_home_meta, Settings.ACTION_HOME_SETTINGS, Settings.ACTION_SETTINGS),
+            quickItem(R.string.quick_usage, R.string.quick_usage_meta, Settings.ACTION_USAGE_ACCESS_SETTINGS),
         ),
     )
 
@@ -1123,6 +1167,7 @@ class LauncherActivity : Activity() {
                 PanelItem(getString(R.string.about_version), value = version) {},
                 PanelItem(getString(R.string.about_network), value = getString(R.string.about_network_value)) {},
                 PanelItem(getString(R.string.about_storage), value = getString(R.string.about_storage_value)) {},
+                PanelItem(getString(R.string.about_permissions), value = getString(R.string.about_permissions_value)) {},
             ),
             footer = getString(R.string.about_footer),
         )
@@ -1145,6 +1190,125 @@ class LauncherActivity : Activity() {
             PanelItem(getString(R.string.restore_action), value = getString(R.string.quick_open)) { startRestore() },
         ),
     )
+
+    private fun usageAccessPage(): PanelPage = PanelPage(
+        eyebrow = getString(R.string.customise_eyebrow),
+        title = getString(R.string.usage_title),
+        body = getString(R.string.usage_body),
+        items = listOf(
+            PanelItem(
+                getString(R.string.usage_open),
+                meta = getString(R.string.usage_open_meta),
+                value = getString(R.string.quick_open),
+            ) {
+                panel.close()
+                openSystemSettings(listOf(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+            },
+            PanelItem(getString(R.string.usage_refresh), meta = getString(R.string.usage_refresh_meta)) {
+                refreshApps()
+                panel.refresh()
+                toast(getString(R.string.usage_refreshed))
+            },
+        ),
+    )
+
+    private fun wallpaperPage(): PanelPage = PanelPage(
+        eyebrow = getString(R.string.customise_eyebrow),
+        title = getString(R.string.wallpaper_title),
+        body = getString(R.string.wallpaper_body),
+        items = listOf(
+            PanelItem(getString(R.string.wallpaper_fetch), value = getString(R.string.quick_open)) { openNetworkWallpaper() },
+            PanelItem(getString(R.string.wallpaper_clear)) {
+                updateSettings { it.copy(wallpaperUrl = "") }
+                toast(getString(R.string.wallpaper_url_cleared))
+            },
+        ),
+    )
+
+    /** A framework dialog owns focus and the IME; dispatchKeyEvent defers to it. */
+    private fun openNetworkWallpaper() {
+        panel.close()
+        val input = EditText(this).apply {
+            hint = getString(R.string.wallpaper_url_hint)
+            contentDescription = getString(R.string.wallpaper_input_description)
+            setText(state.settings.wallpaperUrl)
+            setSelection(text?.length ?: 0)
+            isSingleLine = true
+            maxLines = 1
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
+            setTextColor(this@LauncherActivity.getColor(R.color.cb_text))
+            setHintTextColor(this@LauncherActivity.getColor(R.color.cb_muted))
+            setPadding(this@LauncherActivity.dp(20), this@LauncherActivity.dp(14), this@LauncherActivity.dp(20), this@LauncherActivity.dp(14))
+        }
+        wallpaperDialog = AlertDialog.Builder(this)
+            .setTitle(R.string.wallpaper_title)
+            .setMessage(R.string.wallpaper_body)
+            .setView(input)
+            .setPositiveButton(R.string.wallpaper_fetch) { _, _ ->
+                val url = input.text?.toString()?.trim().orEmpty()
+                when {
+                    url.isEmpty() -> {
+                        updateSettings { it.copy(wallpaperUrl = "") }
+                        toast(getString(R.string.wallpaper_url_cleared))
+                    }
+                    !NetworkWallpaper.isAllowedUrl(url) -> toast(getString(R.string.wallpaper_invalid_url))
+                    else -> {
+                        updateSettings { it.copy(wallpaperUrl = url) }
+                        fetchAndApplyWallpaper(url)
+                    }
+                }
+            }
+            .setNeutralButton(R.string.wallpaper_clear) { _, _ ->
+                updateSettings { it.copy(wallpaperUrl = "") }
+                toast(getString(R.string.wallpaper_url_cleared))
+            }
+            .setNegativeButton(R.string.wallpaper_cancel) { _, _ -> }
+            .setOnDismissListener { wallpaperDialog = null }
+            .show()
+        input.requestFocus()
+    }
+
+    private fun fetchAndApplyWallpaper(url: String) {
+        if (!NetworkWallpaper.isAllowedUrl(url)) {
+            toast(getString(R.string.wallpaper_invalid_url))
+            return
+        }
+        if (!NetworkWallpaper.isOnline(this)) {
+            toast(getString(R.string.wallpaper_offline))
+            return
+        }
+        toast(getString(R.string.wallpaper_loading))
+        runOnLoader {
+            val bitmap = NetworkWallpaper.fetch(url)
+            val applied = bitmap?.let { NetworkWallpaper.apply(applicationContext, it) } ?: false
+            runOnUiThread {
+                if (isFinishing || isDestroyed) return@runOnUiThread
+                toast(getString(if (applied) R.string.wallpaper_applied else R.string.wallpaper_failed))
+            }
+        }
+    }
+
+    private fun requestOrShowNotification() {
+        if (LauncherNotification.canPost(this)) {
+            showStatusNotification()
+            return
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), REQUEST_NOTIFICATIONS)
+        } else {
+            showStatusNotification()
+        }
+    }
+
+    private fun showStatusNotification() {
+        val shown = LauncherNotification.showStatus(
+            this,
+            getString(R.string.notification_title),
+            getString(R.string.notification_body),
+        )
+        toast(getString(if (shown) R.string.notification_shown else R.string.notification_failed))
+        if (panel.isOpen) panel.refresh()
+    }
 
     private fun openSystemSettings(actions: List<String>) {
         for (action in actions + Settings.ACTION_SETTINGS) {
@@ -1516,6 +1680,7 @@ class LauncherActivity : Activity() {
         const val REQUEST_PICK_IMAGE = 42
         const val REQUEST_BACKUP = 43
         const val REQUEST_RESTORE = 44
+        const val REQUEST_NOTIFICATIONS = 45
         const val STATE_PENDING_ART_APP = "pending_art_app"
         /** At most this many suggestions per pack for one app: banner, glyph and an alternate. */
         const val MAX_SUGGESTIONS = 3

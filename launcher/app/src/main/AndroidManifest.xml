@@ -2,12 +2,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
-      A launcher needs visibility only for activities that can actually be
-      launched, plus installed icon packs (the open org.adw.launcher.THEMES
-      contract every pack declares, the Core Builds Icon Pack included) and
-      their icon browsers (ACTION_PICK_ICON). Keep
-      these intent queries narrow; do not request QUERY_ALL_PACKAGES.
+      0.4's connected-TV feature set. QUERY_ALL_PACKAGES gives the private,
+      sideload-only prototype visibility of every installed package; the four
+      narrow intent queries below remain as explicit contracts for launchers
+      and icon packs. PACKAGE_USAGE_STATS is an AppOps permission the owner must
+      grant in Android Settings; the app never forces it. Network wallpapers are
+      fetched only from a URL the owner types. POST_NOTIFICATIONS is requested
+      at runtime on Android 13+.
     -->
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <queries>
         <intent>
             <action android:name="android.intent.action.MAIN" />
@@ -68,5 +78,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--
+          Optional fallback for TVs that allow a HOME app to start after boot.
+          The receiver checks the saved setting and the system's current HOME
+          resolution before doing anything; it never changes the default role.
+        -->
+        <receiver
+            android:name=".BootReceiver"
+            android:directBootAware="false"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

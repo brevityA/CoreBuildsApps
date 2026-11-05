@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A white sliders glyph for the launcher's status notification. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M3,6 L21,6 M3,12 L21,12 M3,18 L21,18"
+        android:strokeWidth="2"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeLineCap="round" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M15,3.6 a2.4,2.4 0,1 1,0 4.8 a2.4,2.4 0,1 1,0 -4.8 Z M8,9.6 a2.4,2.4 0,1 1,0 4.8 a2.4,2.4 0,1 1,0 -4.8 Z M17,15.6 a2.4,2.4 0,1 1,0 4.8 a2.4,2.4 0,1 1,0 -4.8 Z" />
+</vector>

@@ -357,6 +357,10 @@ class HomeScreenTest {
         activity.handleBack()
         HomeHarness.settle()
 
+        clickRow(activity, R.string.setting_launch_on_boot)
+        HomeHarness.waitForApps(activity)
+        assertTrue(LauncherPreferences.readSettings(context).launchOnBoot)
+
         clickRow(activity, R.string.setting_smart_suggestions)
         clickRow(activity, R.string.smart_off)
         HomeHarness.waitForApps(activity)

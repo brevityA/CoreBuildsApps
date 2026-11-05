@@ -1,7 +1,7 @@
 # Core Builds Launcher — prototype research and scope
 
-**Research date:** 2026-11-04
-**Status:** The private launcher prototype and its Kotlin/XML source are included in this PR; CI is configured for the debug build/lint. The [launcher README](../launcher/README.md#required-physical-device-validation-merge-gate) is the single source of truth for hardware-validation status, owner/date, and results. This sandbox has no local JDK/Android SDK or attached TV. The permission surface remains deliberately minimal pending the target-device definition.
+**Research date:** 2026-11-04; **0.4 scope note:** 2026-11-06
+**Status:** The private launcher prototype and its Kotlin/XML source are included in this PR; CI is configured for the debug build/lint. The [launcher README](../launcher/README.md#required-physical-device-validation-merge-gate) is the single source of truth for hardware-validation status, owner/date, and results. This sandbox has no local JDK/Android SDK or attached TV. This document records the 0.1/0.2 local-first direction: its zero-permission, no-network and no-`QUERY_ALL_PACKAGES` statements describe those historical releases. On 2026-11-06 the owner requested extra permissions for the application; [0.4 adds the exact connected-TV set](CORE_LAUNCHER_POLISH_RESEARCH.md#04-connected-tv-permission-expansion-2026-11-06) for this private launcher only.
 
 ## Recommendation
 
@@ -9,7 +9,7 @@ Prototype a narrow Core Builds home surface, not a full Google TV replacement. A
 
 The current deliverable is deliberately a private, side-loadable experiment. It is not in `suite.json`; it has a build/lint CI check plus a dispatch-only pre-release lane that attaches the debug APK for a `launcher-v*` tag (no store listing, no Downloader channel, no update feed, no release signing). It makes no promise that every manufacturer permits a third-party default launcher.
 
-**First device result (2026-11-04):** all eight physical checks were reported PASS by the repository owner on a Chromecast with Google TV against the `f01b519` debug build. That attestation, its gaps (OS build, remote model, APK hash not captured) and the exact scope are recorded in the [launcher README](../launcher/README.md#required-physical-device-validation-merge-gate); it is one device, not a compatibility claim.
+**First device result (2026-11-04, historical):** all eight physical checks were reported PASS by the repository owner on a Chromecast with Google TV against the `f01b519` debug build. That attestation concerned that earlier build only; it did not sign off 0.2's full hardware checklist, 0.3, or 0.4. Its gaps (OS build, remote model, APK hash not captured) and the exact scope are recorded in the [launcher README](../launcher/README.md#required-physical-device-validation-merge-gate), which remains authoritative; it is one device, not a compatibility claim.
 
 ## Findings
 
@@ -92,7 +92,7 @@ The visual pass combines the repository's [Core Builds brand guide](BRAND-GUIDE.
 - **Focus that survives edges:** controls keep the Night card dark and use a clear cyan outline plus modest 1.025–1.055 scale; focus is never signalled by colour alone. The shelf and grid allow focused tiles to lift without clipping. The app label, launch action, and long-press hint are exposed as one spoken description.
 - **Contextual app actions:** long-press a tile to open the D-pad/TalkBack-navigable menu, toggle its local favourite state, or open Android's App info screen. Returning from App info uses the existing foreground catalog refresh; no new permission, uninstall action, or network behavior is added.
 - **Brand and distance:** the launcher now uses the pack's own generated Core Builds hex/diamond mark and banner, with the Brand Guide's Void `#04070F`, Night `#0D1117`, Panel Ink `#151923`, and Signal Cyan `#00D4FF`. The UI keeps bold sans app names, mono utility labels, safe margins, short copy, and high contrast. Installed package labels, icons, and banners remain the source of app identity; the launcher does not invent or redraw vendor marks.
-- **Private-use clarity:** the running launcher uses installed app labels and package artwork, not fabricated vendor marks. Favourites and at most five recent package IDs stay in local `SharedPreferences`; history is filtered to launchable packages and is never synced. The app-action menu is local and hands App info to Android Settings. There is no network permission, online feed, ad surface, account, or Home-key interception.
+- **Private-use clarity:** the running launcher uses installed app labels and package artwork, not fabricated vendor marks. Favourites and at most five recent package IDs stay in local `SharedPreferences`; history is filtered to launchable packages and is never synced. The app-action menu is local and hands App info to Android Settings. In 0.2 there was no network permission, online feed, ad surface, account, or Home-key interception; 0.4 adds only the connected features named above.
 
 ### Follow-up launcher research: local-first patterns
 
@@ -134,7 +134,9 @@ Together with Lumen, Flix, and Aerial above, the strongest repeatable ideas are:
 
 “Full coverage” should mean every **user-launchable** app surfaced by the Android TV or standard launcher activity queries, on an explicitly supported device/API matrix—not every installed package and not a guarantee that every OEM honors the third-party HOME role. Since 0.2 the supported range is Android 11 (API 30) to the latest; 0.1 was API 26 (Android 8). Fire OS based on Android may run the APK, but OEM Home overrides vary; Vega OS is not an Android runtime.
 
-| Need | Recommended approach | Permission cost |
+The table below is the 0.1/0.2 recommendation. 0.4 deliberately broadens the first row with `QUERY_ALL_PACKAGES` and adds owner-typed network wallpapers, usage access, boot fallback and notifications; see its boundary table in the polish research.
+
+| Need | Recommended approach in 0.1/0.2 | Permission cost |
 |---|---|---|
 | Discover launchable TV and sideloaded apps | Keep the two narrow manifest intent queries already present | No runtime permission; no `QUERY_ALL_PACKAGES` |
 | Show hidden or non-launchable packages | Do not include in the base launcher; they cannot necessarily be opened | Broad package visibility adds policy/privacy burden and is not needed for normal app coverage |
@@ -146,8 +148,8 @@ Together with Lumen, Flix, and Aerial above, the strongest repeatable ideas are:
 
 ### Recommended next sequence
 
-1. Agree the supported device/API list and what “full coverage” means before changing `minSdk` or package visibility.
-2. Keep the current zero-permission, no-network, framework-Views baseline; measure release APK, cold start, idle CPU and PSS on at least one low-RAM TV.
+1. Agree the supported device/API list and what “full coverage” means before changing `minSdk` or package visibility. (0.4's owner-selected connected-TV set is the recorded scope change.)
+2. For 0.1/0.2, keep the zero-permission, no-network, framework-Views baseline and measure release APK, cold start, idle CPU and PSS on at least one low-RAM TV. 0.4 replaces that permission boundary for the private launcher only.
 3. If profiling confirms it, lazily load banners/icons and virtualize only the app surface that needs it.
 4. After physical sign-off and tester feedback, decide whether manual favourite order or hiding apps merits a separate local-preference design; if approved, migrate state deliberately and repeat D-pad/TalkBack tests.
 5. Grow Core Builds integration through explicit installed-package/launcher-entry contracts and first-party shortcuts—not another content feed or a cross-app permission.
@@ -173,8 +175,8 @@ The owner set three goals for 0.2: support Android 11 to the latest, clean up th
 ### Decisions
 
 - **Style: immersive list.** The pattern Android's own guidance and Google TV share, with Projectivy-style focused-app wallpaper and tvOS-style naming above the shelves. It replaces 0.1's boxed spotlight panel, which put a bordered box between the user and the apps.
-- **Customisation that changes common tasks:** favourite order and Move, hidden apps, card size, background and dim, recently-opened and clock toggles, and icon packs. Each is local preference state with no new permission. These were deferred in 0.1 ("Manual order, folders, hidden-app management and custom categories") pending the data-model work 0.2 does: ordered favourites with a one-time migration, tested in `ModelTest`.
-- **Icon packs through the open contract only.** Adds one `<queries>` intent (`org.adw.launcher.THEMES`) and no permission. The Core Builds banners pack is the default when installed; any other pack can be chosen; apps a pack does not cover keep their own art.
+- **Customisation that changes common tasks:** favourite order and Move, hidden apps, card size, background and dim, recently-opened and clock toggles, and icon packs. In 0.2 each is local preference state with no new permission. These were deferred in 0.1 ("Manual order, folders, hidden-app management and custom categories") pending the data-model work 0.2 does: ordered favourites with a one-time migration, tested in `ModelTest`.
+- **Icon packs through the open contract only.** In 0.2 this added one `<queries>` intent (`org.adw.launcher.THEMES`) and no permission. The Core Builds banners pack is the default when installed; any other pack can be chosen; apps a pack does not cover keep their own art.
 - **Still out:** categories and folders (a second navigation level for a private prototype), wallpaper plugins and video wallpapers (provider contracts and idle cost), feeds, search, inputs and widgets (network, providers or vendor variance), and anything that intercepts Home.
 - **Android 11 floor.** `minSdk` moves from 26 to 30 as the owner asked; the pre-11 system-bar path is removed. Robolectric opens Home on API 30–35 on every launcher PR.
 
@@ -182,13 +184,13 @@ The owner set three goals for 0.2: support Android 11 to the latest, clean up th
 
 - Native Android app, API 26 minimum, built against the suite's API 37 toolchain.
 - HOME, standard launcher, and Leanback launcher entry points.
-- App catalog from visible launcher activities; no network calls and no broad package permission.
+- App catalog from visible launcher activities; in 0.1 there were no network calls and no broad package permission.
 - App launch, local favourites and a conditional last-five local Recent shelf; long-press app actions for favourite toggling and Android App info; default-home settings handoff, clock/date, Core Builds icon-pack branding and a focus-driven app spotlight with installed-banner/icon fallback.
 - Private debug application ID `tv.corebuilds.launcher.prototype.debug`; no public release or suite registry update.
 
-The implementation is in [`LauncherActivity.kt`](../launcher/app/src/main/java/tv/corebuilds/launcher/LauncherActivity.kt), [`LauncherApps.kt`](../launcher/app/src/main/java/tv/corebuilds/launcher/LauncherApps.kt), [`LauncherPreferences.kt`](../launcher/app/src/main/java/tv/corebuilds/launcher/LauncherPreferences.kt), [`LauncherUi.kt`](../launcher/app/src/main/java/tv/corebuilds/launcher/LauncherUi.kt), [`ManageFavoritesActivity.kt`](../launcher/app/src/main/java/tv/corebuilds/launcher/ManageFavoritesActivity.kt), and [`AndroidManifest.xml`](../launcher/app/src/main/AndroidManifest.xml). [`tests/test_gradle_envelope.py`](../tests/test_gradle_envelope.py) has source/manifest contract assertions; those checks are not Android UI automation or physical-device evidence. The launcher README contains the [required hardware-validation record](../launcher/README.md#required-physical-device-validation-merge-gate).
+The 0.1 implementation is in [`LauncherActivity.kt`](../launcher/app/src/main/java/tv/corebuilds/launcher/LauncherActivity.kt), [`LauncherApps.kt`](../launcher/app/src/main/java/tv/corebuilds/launcher/LauncherApps.kt), [`LauncherPreferences.kt`](../launcher/app/src/main/java/tv/corebuilds/launcher/LauncherPreferences.kt), [`LauncherUi.kt`](../launcher/app/src/main/java/tv/corebuilds/launcher/LauncherUi.kt), [`ManageFavoritesActivity.kt`](../launcher/app/src/main/java/tv/corebuilds/launcher/ManageFavoritesActivity.kt), and [`AndroidManifest.xml`](../launcher/app/src/main/AndroidManifest.xml). [`tests/test_gradle_envelope.py`](../tests/test_gradle_envelope.py) has source/manifest contract assertions; those checks are not Android UI automation or physical-device evidence. The launcher README contains the [required hardware-validation record](../launcher/README.md#required-physical-device-validation-merge-gate).
 
-Not included: recommendation channels, media playback, custom system wallpaper, search, account/cloud sync, weather, sports feeds, key remapping, accessibility-based Home interception, vendor-specific setup, or any public distribution path — the only artifact lane is a dispatch-only private pre-release of the debug APK.
+In 0.1, not included: recommendation channels, media playback, custom system wallpaper, search, account/cloud sync, weather, sports feeds, key remapping, accessibility-based Home interception, vendor-specific setup, or any public distribution path — the only artifact lane is a dispatch-only private pre-release of the debug APK.
 
 ### KDoc coverage for the private prototype
 

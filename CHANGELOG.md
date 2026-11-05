@@ -6,7 +6,42 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
-### Added — Core Builds Launcher private prototype 0.3.0
+### Added
+
+#### Core Builds Launcher private prototype 0.4.0
+
+- **Connected-TV permissions.** Following the owner's explicit request to use
+  extra Android permissions for the application, the private launcher declares
+  exactly `QUERY_ALL_PACKAGES`, `PACKAGE_USAGE_STATS`, `INTERNET`,
+  `ACCESS_NETWORK_STATE`, `SET_WALLPAPER`, `RECEIVE_BOOT_COMPLETED` and
+  `POST_NOTIFICATIONS`. `docs/CORE_LAUNCHER_POLISH_RESEARCH.md` records the
+  rationale and boundaries; this is a sideload-only prototype, not a Play
+  release.
+- **Broader app discovery and ranking.** `LauncherApps` retains its narrow
+  launcher-intent queries and adds an installed-package fallback for apps
+  hidden by Android 11 visibility filters. Owner-granted `UsageStatsManager`
+  foreground minutes can now contribute to Suggested and Most used, with the
+  bounded local launch history as the fallback.
+- **Owner-entered network wallpapers.** Customise accepts one typed HTTP/HTTPS
+  URL, validates it, checks a validated internet connection, bounds the fetch
+  to 8 MB and 1920×1080 sampling, then applies it through Android's
+  `WallpaperManager`. There is no default endpoint, gallery, account,
+  telemetry or automatic refresh.
+- **Boot fallback and status notification.** A `BOOT_COMPLETED` receiver checks
+  the saved Launch-on-boot setting and the current HOME resolution before
+  trying one start. On Android 13+ the activity requests
+  `POST_NOTIFICATIONS` only when the owner presses Status notification, then
+  posts one dismissible low-importance notification.
+- **Coverage and documentation.** New Robolectric tests cover connected
+  settings/backup round trip and wallpaper URL validation. Python source and
+  manifest tests pin the exact seven-permission set, the new helpers, bounded
+  network behavior and the remaining no-privileged-override boundary. The
+  0.4 preview simulates the new permission states without making network
+  requests. Physical TV, TalkBack, boot, notification, network and performance
+  measurements are still NOT RUN; this is not a "best on market" or speed
+  claim.
+
+#### Core Builds Launcher private prototype 0.3.0 (historical)
 
 - **Local-first polish pass.** Full, Calm and Off motion with Android's system
   animation scale; a 30-day/96-event local suggestion model; local app search;
@@ -16,14 +51,21 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Bounded art memory and clearer copy.** Card art uses a 24 MB
   `byteCount`-bounded cache, custom-art keys for removed apps are pruned, and
   settings/search/toast copy states its action, current value and local-data
-  boundary. No permission was added and no network call was introduced.
+  boundary. 0.3 added no permission and no network call; 0.4 changes that
+  boundary for this launcher only.
 - **Source-level coverage.** Robolectric tests cover the new settings, search
-  and backup flows; Python source/manifest tests pin the bounded local-only
-  contracts. Physical TV, TalkBack and performance measurements are still NOT
-  RUN, so this is not a "best on market" or speed claim.
+  and backup flows; Python source/manifest tests pin the bounded 0.3 contracts
+  (updated for 0.4 below). Physical TV, TalkBack and performance measurements
+  are still NOT RUN, so this is not a "best on market" or speed claim.
 
 ### Changed
 
+- **0.3 local-only contracts superseded for this launcher.** The launcher's
+  README, About copy, research, preview and source tests now describe the
+  connected-TV set instead of zero permissions. Search, layout, custom art,
+  local history and backups still stay on the TV; only a user-entered wallpaper
+  URL uses the network. The public six-product suite and its Data safety
+  answers are unchanged.
 - **Core Premium is on sale in the Google Play build.** That build now
   carries the request service's address, so a missing-icon press files the
   request in one step, Core Premium's card offers the purchase and the

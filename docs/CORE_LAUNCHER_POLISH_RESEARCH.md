@@ -1,23 +1,38 @@
 # Core Builds Launcher — polish, motion and market research
 
-**Research date:** 2026-11-05  
-**Scope:** A fresh desk benchmark of current Android TV / Google TV launchers, Android's TV and performance guidance, and a concrete 0.3 polish plan for the private Core Builds launcher prototype. No competitor code, artwork or branding was copied. This is not an install-and-use, latency, memory, TalkBack or device-compatibility benchmark; those claims still require the physical-TV record in [`launcher/README.md`](../launcher/README.md#required-physical-device-validation-merge-gate).
+**Research date:** 2026-11-05; **0.4 permission update:** 2026-11-06
+**Scope:** A fresh desk benchmark of current Android TV / Google TV launchers, Android's TV and performance guidance, a concrete 0.3 polish plan for the private Core Builds launcher prototype, and the owner-requested 0.4 connected-TV permission expansion. No competitor code, artwork or branding was copied. This is not an install-and-use, latency, memory, TalkBack or device-compatibility benchmark; those claims still require the physical-TV record in [`launcher/README.md`](../launcher/README.md#required-physical-device-validation-merge-gate).
 
 ## Executive decision
 
 The best launchers do not win by adding every possible row. They win on a short path from **wake → focused app → open**, on predictable D-pad behaviour, on legible state, and on returning from standby without work. Projectivy shows how deep app/artwork management and recoverable settings build trust; Monet 1.1.0 explicitly prioritises faster standby return, lower CPU load and smoother menus; FLauncher and AT4K show the value of a restrained app-first surface. Google's TV guidance keeps the immersive preview, safe margins and a visible focus state central.
 
-Core Builds 0.3 therefore adopts:
+Core Builds 0.3 adopted:
 
 1. **A single motion system** with short, interruptible transitions, a user-selectable motion level, and automatic respect for Android's system animator scale ("Remove animations"). No continuously animating wallpaper, ticker or idle loop.
-2. **Smarter local ranking** of the existing Recently opened shelf: recency, frequency and time-of-day/day-type patterns learned from a bounded event list in launcher-private preferences. No account, telemetry, `UsageStatsManager` or network.
+2. **Smarter local ranking** of the existing Recently opened shelf: recency, frequency and time-of-day/day-type patterns learned from a bounded event list in launcher-private preferences. 0.3 used no account, telemetry, `UsageStatsManager` or network; 0.4 adds optional owner-granted system usage stats as described below.
 3. **Find an app**: a local, ranked search overlay with prefix, word-prefix, initials and subsequence matching. It is available from Customise and the remote's Search key.
 4. **Fast organisation**: configurable All apps order (A–Z, most used, TV apps first, newest install), plus the existing card sizes, favourites, Move, hidden apps and per-app artwork.
-5. **Settings that explain themselves**: each row shows its current value, and the motion/suggestion/sort pages use one-line explanations. Quick settings provide permission-free Android system handoffs.
+5. **Settings that explain themselves**: each row shows its current value, and the motion/suggestion/sort pages use one-line explanations. Quick settings provide Android system handoffs; 0.4 adds the usage-access permission screen.
 6. **Recoverability**: versioned JSON backup/restore through Android's document picker, with a bounded read and a known-key allowlist. Imported image files stay on the TV; pack-resource references are portable.
-7. **Bounded performance**: a byte-capped `LruCache` for rendered card art, one `PackageInfo` lookup per app, no repeated icon-pack parsing on an unchanged TV, no new permission, and no background service.
+7. **Bounded performance**: a byte-capped `LruCache` for rendered card art, one `PackageInfo` lookup per app, no repeated icon-pack parsing on an unchanged TV, no new 0.3 permission, and no background service. 0.4 adds the exact seven-permission connected set below.
 
-Deliberately deferred: recommendation/channel providers, Watch Next, video/Reddit wallpapers, weather/sports widgets, HDMI-input integrations, user profiles, PIN locks, custom key interception, accessibility-service Home overrides and cloud sync. They need vendor contracts, broad permissions, network access, continuous work, or device-specific behaviour and would weaken the local-first core.
+In 0.3, recommendation/channel providers, Watch Next, video/Reddit wallpapers, weather/sports widgets, HDMI-input integrations, user profiles, PIN locks, custom key interception, accessibility-service Home overrides and cloud sync were deferred. They need vendor contracts, broad permissions, network access, continuous work, or device-specific behaviour and would weaken the local-first core. 0.4 adds only the bounded, owner-controlled connected-TV features below; it does not add feeds, galleries or cloud sync.
+
+## 0.4 connected-TV permission expansion (2026-11-06)
+
+**Scope change.** The repository owner asked to use extra Android permissions **for the application** and selected the connected-TV feature set. For this private, sideload-only launcher, 0.4 explicitly reverses the 0.2/0.3 zero-permission and no-network boundary. The public six-product suite, its Play Data safety answers, and its glyph-pack no-network contracts are unchanged. [Google Play's `QUERY_ALL_PACKAGES` policy](https://support.google.com/googleplay/android-developer/answer/10158779) may scrutinise broad package visibility; this prototype is not distributed through Play.
+
+| Permission | Feature unlocked | Boundary |
+|---|---|---|
+| `QUERY_ALL_PACKAGES` | Broad sideloaded-app discovery: narrow launcher-intent queries first, then an installed-package fallback for launchable HOME entries hidden by Android 11 visibility filters. | Permission-guarded entries are still skipped; the launcher does not scan files, inventory non-launchable packages or send a package list anywhere. |
+| `PACKAGE_USAGE_STATS` | Owner-granted `UsageStatsManager` foreground minutes over the last 30 days for Suggested and Most used. | Declaration alone does not grant AppOps usage access. An explicit handoff opens `ACTION_USAGE_ACCESS_SETTINGS`; denial leaves the 0.3 bounded local launch history as the only signal. Statistics stay on the TV. |
+| `INTERNET`, `ACCESS_NETWORK_STATE` | Fetch one user-typed HTTP/HTTPS wallpaper image only after a validated connection check. | No default endpoint, gallery, account, telemetry, redirect service, polling or automatic refresh. Unsafe schemes, oversized responses and offline state fail locally. |
+| `SET_WALLPAPER` | Apply that decoded bitmap through Android's `WallpaperManager`. | 8 MiB download cap, 1920×1080 sampling bound, 8 s connect / 12 s read timeouts, and a background executor. Failure leaves the existing wallpaper alone. |
+| `RECEIVE_BOOT_COMPLETED` | An optional Launch-on-boot fallback through a `BOOT_COMPLETED` receiver. | The receiver checks the saved setting and current HOME resolution, catches background-start failures and never changes the default HOME role. OEM restrictions still apply. |
+| `POST_NOTIFICATIONS` | A one-off launcher status notification and its low-importance channel. | Requested at runtime on Android 13+ only when the owner presses Status notification; denial posts nothing. No persistent foreground service or promotional notifications. |
+
+No `WRITE_SECURE_SETTINGS`, `RoleManager`, accessibility-service HOME override, `BIND_ACCESSIBILITY_SERVICE`, uninstall/kill action, `WebView`, `VideoView`, continuous animator or cloud SDK is introduced. Android 13+ owns the notification prompt; Android Settings owns usage access; Android's HOME role remains the owner's choice. Physical permission screens, wallpaper fetch, boot behaviour, notification delivery, TalkBack and performance remain unmeasured.
 
 ## Source matrix
 
@@ -48,7 +63,7 @@ Motion levels: **Full** (1.0x), **Calm** (0.55x) and **Off** (0x). The effective
 
 ## Feature decisions
 
-### Adopted in 0.3
+### Adopted in 0.3 (historical)
 
 | Competitor pattern | Core Builds implementation | Why it stays within the contract |
 |---|---|---|
@@ -56,21 +71,22 @@ Motion levels: **Full** (1.0x), **Calm** (0.55x) and **Off** (0x). The effective
 | Monet's current-value settings overview and smoother menus | Every Customise row shows a value; focused panel rows get a small, short translation; page changes preserve the focused row | No overlay service or always-on compositing. |
 | Monet's All Apps panel / action dock | `KEYCODE_SEARCH` or Customise › Find an app opens a ranked local search; app options stay on long OK / Menu | No key interception and no global overlay. |
 | Monet/FLauncher/AT4K organisation | All apps sort A–Z, Most used, TV apps first or Newest install | Uses launcher-private launch events, `tvOptimized` and `firstInstallTime` only. |
-| Projectivy/Monet backups | Versioned JSON export/import through `ACTION_CREATE_DOCUMENT` / `ACTION_OPEN_DOCUMENT` | User-chosen file, 256 KB cap, known-key allowlist, no storage or Internet permission. |
+| Projectivy/Monet backups | Versioned JSON export/import through `ACTION_CREATE_DOCUMENT` / `ACTION_OPEN_DOCUMENT` | User-chosen file, 256 KB cap, known-key allowlist. 0.3 needed no storage or Internet permission; 0.4 adds user-entered wallpaper URLs separately. |
 | Projectivy/Monet quick controls | Customise › Quick settings opens Wi‑Fi, Bluetooth, display, sound, accessibility, apps and Home settings through public `Settings` actions | Permission-free handoffs; unavailable screens fall back safely. |
-| Adaptive personalisation without tracking | Smart Suggestions score recency, frequency and matching time-of-day/day-type from the last 30 days of local launches | No usage-stats permission, account, network sync or analytics; the row can be switched off and reset clears history. |
-| Projectivy's artwork previews | Existing per-app artwork picker retains live card thumbnails and one-press pack suggestions | Already local; copy is clarified, not expanded into a network gallery. |
+| Adaptive personalisation without tracking | Smart Suggestions score recency, frequency and matching time-of-day/day-type from the last 30 days of local launches, plus optional owner-granted foreground time in 0.4 | No account, network sync or analytics; 0.3 had no usage-stats permission, 0.4 keeps a local fallback, and the row can be switched off and reset clears history. |
+| Projectivy's artwork previews | Existing per-app artwork picker retains live card thumbnails and one-press pack suggestions; 0.4 adds one bounded user-entered network wallpaper | 0.3 stayed local and 0.4 deliberately adds one URL, not a gallery or feed. |
 
 ### Explicitly deferred
 
 | Pattern | Reason |
 |---|---|
-| Watch Next, channel providers, weather/sports/Reddit rows | Require provider contracts, network, freshness/error states and potentially vendor-specific permissions. |
+| Watch Next, channel providers, weather/sports/Reddit rows | Require provider contracts, freshness/error states and vendor-specific permissions. 0.4's one-shot user-entered wallpaper is not a content feed. |
 | Animated/video/GIF wallpapers and live widgets | Continuous GPU/CPU and memory cost conflicts with the fast-return goal and needs a per-device performance budget. |
 | HDMI/AV input renaming and switching | Vendor-specific activities and TV-input framework integration; a private prototype cannot promise parity across TVs. |
 | Parental PINs, child profiles, app locks | Security-sensitive state, threat modelling and recovery UX deserve a separate release, not a UI polish pass. |
 | Accessibility-service Home override / global key capture | Broad privilege and OEM-dependent behaviour. The launcher still hands off to Android's Home-app settings. |
 | Remote-button remapping | Competes with app/game key handling and needs real-remote matrices before it is safe. |
+| Default wallpaper endpoints, cloud galleries and automatic rotation | No owner-typed URL, provider account or background refresh is needed to deliver the 0.4 wallpaper feature. |
 
 ## Copy and accessibility rules
 
@@ -87,20 +103,25 @@ Motion levels: **Full** (1.0x), **Calm** (0.55x) and **Off** (0x). The effective
 | File | Responsibility |
 |---|---|
 | `launcher/app/src/main/java/tv/corebuilds/launcher/Motion.kt` | Motion levels, Android reduced-motion scale, focus/reveal/scroll/sheet animations. |
-| `LauncherPreferences.kt` | New settings, bounded local launch events, smart ranking, usage counts, backup allowlist. |
-| `LauncherApps.kt` | Byte-capped artwork cache, one package-info lookup, install time for sorting. |
+| `LauncherPreferences.kt` | 0.3/0.4 settings, connected wallpaper URL and boot choice, bounded local launch events, optional system usage counts, smart ranking, backup allowlist. |
+| `LauncherApps.kt` | Byte-capped artwork cache, narrow launcher-intent queries plus `QUERY_ALL_PACKAGES` installed-package fallback, one package-info lookup, install time for sorting. |
+| `LauncherUsage.kt` | Owner-granted AppOps check, 30-day foreground-minute aggregation with a 600-minute/day cap, and local-launch fallback. |
+| `NetworkWallpaper.kt` | HTTP/HTTPS URL validation, validated connectivity, 8 MiB/1920×1080 bounded fetch, `WallpaperManager` apply. |
+| `LauncherNotification.kt` | `POST_NOTIFICATIONS` gate, low-importance channel, one-off status notification. |
+| `BootReceiver.kt` | `BOOT_COMPLETED` fallback gated on the saved setting and current HOME resolution. |
+| `AndroidManifest.xml`, `ic_notification.xml` | Exact seven-permission set, BOOT_COMPLETED receiver, notification small icon. |
 | `HomeViews.kt` | Two-layer focus ring, motion-aware backdrop crossfade, shelf notes. |
 | `SidePanel.kt` | Motion-aware entrance and panel focus cue. |
 | `SearchPanel.kt` | Local ranked app search and remote-friendly result navigation. |
 | `LauncherBackup.kt` | Versioned, bounded JSON layout export/import. |
-| `LauncherActivity.kt` | Sort/search/quick settings/backup pages, motion configuration, info reveal, intent handoffs. |
-| `strings.xml` | Rewritten user-facing copy and accessibility descriptions. |
-| `docs/mockups/core-launcher-polish.html` | New interactive, offline 0.3 design illustration of motion, search, settings and local-data copy. The 0.1-era offline preview is retained as historical context. |
-| `launcher/README.md`, `CHANGELOG.md`, `docs/mockups/README.md` | Version, implementation/test maps, physical-device checklist and private-prototype changelog. |
+| `LauncherActivity.kt` | Sort/search/quick settings/backup pages, connected wallpaper/usage/boot/notification actions, runtime notification permission, motion configuration, info reveal, intent handoffs. |
+| `strings.xml` | Rewritten user-facing copy, connected-TV permission explanations and accessibility descriptions. |
+| `docs/mockups/core-launcher-polish.html` | Interactive, offline 0.4 design illustration of motion, search, settings, simulated connected-TV permission states and data-boundary copy. The 0.1-era offline preview is retained as historical context. |
+| `launcher/README.md`, `CHANGELOG.md`, `docs/mockups/README.md` | 0.4 version, exact permission map, implementation/test maps, physical-device checklist and private-prototype changelog. |
 
 ## Verification boundary
 
-- Python source/manifest tests pin zero permissions, narrow `<queries>`, the off-main-thread scan, system animation scale, bounded local history/backup/art cache, Back behaviour, and the original offline preview's D-pad/self-contained contract. New polish-specific assertions cover the source boundaries and test names.
-- Robolectric opens Home on API 30–35 and exercises remote navigation, panels, settings, custom artwork, focus clipping and text fit. `HomeScreenTest` now covers motion/sort/suggestion settings and the local search-to-launch flow; `ModelTest` covers polished settings round-trip, bounded backup restore and search ranking.
+- Python source/manifest tests pin the exact seven-permission set, the `BOOT_COMPLETED` receiver, narrow `<queries>` plus broad discovery, the off-main-thread scan, system animation scale, bounded local history/backup/art cache/network fetch, Back behaviour, and the original offline preview's D-pad/self-contained contract. Connected-TV assertions cover the new helper boundaries and test names.
+- Robolectric opens Home on API 30–35 and exercises remote navigation, panels, settings, custom artwork, focus clipping and text fit. `HomeScreenTest` covers motion/sort/suggestion/boot settings and the local search-to-launch flow; `ModelTest` covers polished settings round-trip, connected settings/backup, wallpaper URL validation, bounded backup restore and search ranking.
 - CI compiles, lints and assembles the debug APK; local sandbox has no JDK/Android SDK or attached TV.
-- **Not proven here:** 60 fps, standby-return time, CPU use, TalkBack announcements, IME behaviour, HOME-role routing, OEM settings availability or any claim of being "best on the market". Those require the physical-device matrix and on-device GPU profiling. The result of this pass is a stronger design and implementation candidate, not a measured market win.
+- **Not proven here:** 60 fps, standby-return time, CPU use, TalkBack announcements, IME behaviour, HOME-role routing, OEM settings availability, runtime notification prompts, usage-access grant/denial, wallpaper fetch/apply, BOOT_COMPLETED delivery or any claim of being "best on the market". Those require the physical-device matrix and on-device GPU profiling. The result of this pass is a stronger design and implementation candidate, not a measured market win.

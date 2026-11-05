@@ -689,7 +689,7 @@ class LauncherGradleDiagnosticExtraction(unittest.TestCase):
 
 
 class PrivateLauncherPrototypeContract(unittest.TestCase):
-    """Source and manifest invariants of the private launcher (0.2-0.3).
+    """Source and manifest invariants of the private launcher (0.2-0.4).
 
     Behaviour - what the remote reaches, that focus never drops or jumps, that
     panels trap focus, that favourites keep their order and survive uninstalls,
@@ -847,7 +847,7 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertIn("rendered column count", preview_readme)
         self.assertIn("not evidence of Android remote behavior", preview_readme)
 
-    def test_polish_uses_system_motion_and_bounded_local_only_smarts(self):
+    def test_polish_uses_system_motion_and_connected_tv_permissions(self):
         activity = self.ACTIVITY.read_text(encoding="utf-8")
         motion = (self.SRC / "Motion.kt").read_text(encoding="utf-8")
         preferences = self.PREFERENCES.read_text(encoding="utf-8")
@@ -877,15 +877,34 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertIn("ART_CACHE_BYTES = 24 * 1024 * 1024", apps)
         self.assertIn("LruCache<String, CardArt>", apps)
         self.assertIn("LauncherApps.clearArtCache()", activity)
-        # The user's "any and everything" request did not add a surveillance API.
+        # 0.4's connected set is owner-controlled: usage access, a typed
+        # wallpaper URL, boot fallback and a runtime notification permission.
+        usage = (self.SRC / "LauncherUsage.kt").read_text(encoding="utf-8")
+        wallpaper = (self.SRC / "NetworkWallpaper.kt").read_text(encoding="utf-8")
+        notification = (self.SRC / "LauncherNotification.kt").read_text(encoding="utf-8")
+        boot = (self.SRC / "BootReceiver.kt").read_text(encoding="utf-8")
+        self.assertIn("UsageStatsManager.INTERVAL_DAILY", usage)
+        self.assertIn("AppOpsManager.OPSTR_GET_USAGE_STATS", usage)
+        self.assertIn("Settings.ACTION_USAGE_ACCESS_SETTINGS", activity)
+        self.assertIn("NetworkWallpaper.isAllowedUrl", activity)
+        self.assertIn("NetworkCapabilities.NET_CAPABILITY_VALIDATED", wallpaper)
+        self.assertIn("WallpaperManager.getInstance(context).setBitmap", wallpaper)
+        self.assertIn("HttpURLConnection", wallpaper)
+        self.assertIn("java.net.URL", wallpaper)
+        self.assertIn("Manifest.permission.POST_NOTIFICATIONS", notification)
+        self.assertIn("NotificationChannel", notification)
+        self.assertIn("Intent.ACTION_BOOT_COMPLETED", boot)
+        self.assertIn("getInstalledApplications(0)", apps)
+        # Privileged HOME overrides, web content and uninstall/kill remain out.
         for forbidden in (
-            "UsageStatsManager",
-            "PACKAGE_USAGE_STATS",
-            "HttpURLConnection",
-            "java.net.URL",
+            "RoleManager",
+            "WRITE_SECURE_SETTINGS",
+            "BIND_ACCESSIBILITY_SERVICE",
             "VideoView",
             "WebView",
             "AccessibilityService",
+            "Intent.ACTION_DELETE",
+            "killBackgroundProcesses",
         ):
             self.assertNotIn(forbidden, sources)
 
@@ -896,6 +915,8 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertIn("fun localSearchFindsAnAppAndOkOpensIt()", home)
         self.assertIn("fun aVersionedLayoutBackupRestoresOnlyKnownLauncherKeys()", model)
         self.assertIn("fun localAppSearchRanksExactPrefixWordAndInitialMatches()", model)
+        self.assertIn("fun connectedTvSettingsRoundTripAndBackupKeepOwnerEnteredChoices()", model)
+        self.assertIn("fun networkWallpaperAcceptsOnlyHttpUrlsAndRejectsUnsafeSchemes()", model)
         preview = (ROOT / "docs/mockups/core-launcher-polish.html").read_text(encoding="utf-8")
         generator = (ROOT / "tools/build_launcher_polish_preview.py").read_text(encoding="utf-8")
         self.assertIn("DESIGN ILLUSTRATION · NOT A SCREENSHOT", preview)
@@ -905,6 +926,10 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertIn("Smart suggestions", preview)
         self.assertIn("Find an app", preview)
         self.assertIn("Motion", preview)
+        self.assertIn("Usage access", preview)
+        self.assertIn("Network wallpaper", preview)
+        self.assertIn("Launch on boot", preview)
+        self.assertIn("Status notification", preview)
         self.assertIn("const columns = items.filter(item => item.offsetTop === items[0].offsetTop).length || 1;", generator)
         self.assertNotIn("http://", preview)
         self.assertNotIn("https://", preview)
@@ -912,22 +937,24 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertNotRegex(preview.lower(), r"<script[^>]+src\s*=")
         self.assertNotRegex(preview.lower(), r"<link[^>]+href\s*=")
 
-    def test_documentation_records_03_scope_and_unrun_device_gate(self):
+    def test_documentation_records_04_scope_and_unrun_device_gate(self):
         readme = (ROOT / "launcher/README.md").read_text(encoding="utf-8")
         changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
         research = (ROOT / "docs/CORE_LAUNCHER_POLISH_RESEARCH.md").read_text(encoding="utf-8")
         mockups = (ROOT / "docs/mockups/README.md").read_text(encoding="utf-8")
-        self.assertIn("What 0.3 adds", readme)
-        self.assertIn("No device has run 0.3 yet", readme)
-        self.assertIn("versionCode = 4", (ROOT / "launcher/app/build.gradle.kts").read_text(encoding="utf-8"))
-        self.assertIn('versionName = "0.3.0"', (ROOT / "launcher/app/build.gradle.kts").read_text(encoding="utf-8"))
-        self.assertIn("Results (0.3)", readme)
-        self.assertIn("Core Builds Launcher private prototype 0.3.0", changelog)
+        self.assertIn("What 0.4 adds", readme)
+        self.assertIn("No device has run 0.4 yet", readme)
+        self.assertIn("versionCode = 5", (ROOT / "launcher/app/build.gradle.kts").read_text(encoding="utf-8"))
+        self.assertIn('versionName = "0.4.0"', (ROOT / "launcher/app/build.gradle.kts").read_text(encoding="utf-8"))
+        self.assertIn("Results (0.4)", readme)
+        self.assertIn("Core Builds Launcher private prototype 0.4.0", changelog)
+        self.assertIn("QUERY_ALL_PACKAGES", readme)
+        self.assertIn("PACKAGE_USAGE_STATS", readme)
         self.assertIn("not a measured market win", research)
         self.assertIn("core-launcher-polish.html", mockups)
         self.assertIn("build_launcher_polish_preview.py --check", mockups)
 
-    def test_app_visibility_is_narrow_and_offline(self):
+    def test_connected_tv_permissions_and_queries_are_declared(self):
         query_pairs = set()
         for node in self.manifest.findall("queries/intent"):
             action = node.find("action")
@@ -947,9 +974,20 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
             node.get(f"{{{self.ANDROID}}}name")
             for node in self.manifest.findall("uses-permission")
         }
-        # No permission at all: no QUERY_ALL_PACKAGES, INTERNET, uninstall,
-        # process-killing, secure-settings or accessibility grant.
-        self.assertEqual(permissions, set())
+        # 0.4's connected-TV set is deliberate and exact. No privileged HOME
+        # overrides, uninstall/kill, secure settings or background service.
+        self.assertEqual(permissions, {
+            "android.permission.QUERY_ALL_PACKAGES",
+            "android.permission.PACKAGE_USAGE_STATS",
+            "android.permission.INTERNET",
+            "android.permission.ACCESS_NETWORK_STATE",
+            "android.permission.SET_WALLPAPER",
+            "android.permission.RECEIVE_BOOT_COMPLETED",
+            "android.permission.POST_NOTIFICATIONS",
+        })
+        receivers = self.manifest.findall("application/receiver")
+        self.assertEqual(len(receivers), 1)
+        self.assertEqual(receivers[0].get(f"{{{self.ANDROID}}}name"), ".BootReceiver")
         self.assertEqual(self.manifest.findall("application/service"), [])
 
     def test_home_never_forces_default_home_or_removes_apps(self):
@@ -960,7 +998,8 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         # App actions are local: App info through Android Settings, no uninstall or kill.
         self.assertIn("Settings.ACTION_APPLICATION_DETAILS_SETTINGS", sources)
         self.assertIn('Uri.fromParts("package", app.packageName, null)', sources)
-        for forbidden in ("Intent.ACTION_DELETE", "ACTION_UNINSTALL_PACKAGE", "killBackgroundProcesses", "HttpURLConnection", "java.net.URL"):
+        self.assertIn("Settings.ACTION_USAGE_ACCESS_SETTINGS", sources)
+        for forbidden in ("Intent.ACTION_DELETE", "ACTION_UNINSTALL_PACKAGE", "killBackgroundProcesses"):
             self.assertNotIn(forbidden, sources)
 
     def test_android_11_is_the_floor_and_the_old_crash_stays_fixed(self):
@@ -983,6 +1022,7 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertLess(load.index("canStart(pm, context.packageName, activity.permission)"),
                         load.index("val previous = chosen[packageName]"))
         self.assertIn("pm.checkPermission(permission, ownPackage) == PackageManager.PERMISSION_GRANTED", apps)
+        self.assertIn("getInstalledApplications(0)", load)
         # Package art is the app's own unless the user picked an icon pack.
         self.assertIn("activity.loadBanner(pm)", apps)
         self.assertIn("resolved.loadIcon(pm)", apps)
@@ -1006,7 +1046,7 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         self.assertIn("RECENTS_LIMIT = 5", preferences)
         self.assertIn("exclude = favourites.toSet() + hidden", preferences)
         self.assertIn("LauncherPreferences.recordLaunch(applicationContext, app.packageName)", activity)
-        self.assertIn("No account, network sync, or analytics", preferences)
+        self.assertIn("No account, cloud sync, or analytics", preferences)
 
     def test_the_scan_reads_preferences_off_the_main_thread_and_coalesces(self):
         activity = self.ACTIVITY.read_text(encoding="utf-8")

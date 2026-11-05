@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the self-contained 0.3 Core Builds Launcher design preview.
+"""Build the self-contained 0.4 Core Builds Launcher design preview.
 
 All artwork comes from this repository and is embedded as a data URI. The HTML
 uses no external script, font, image or network request. It is an interactive
@@ -72,7 +72,7 @@ TEMPLATE = r'''<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'none'; form-action 'none'; object-src 'none'; base-uri 'none'">
-<title>Core Builds Launcher · 0.3 design preview</title>
+<title>Core Builds Launcher · 0.4 connected TV design preview</title>
 <style>
 :root {
   --void: #04070F;
@@ -377,7 +377,7 @@ body[data-motion="off"] * { transition-duration: 0ms !important; animation-durat
 </head>
 <body data-motion="full" data-background="focus">
 <div class="stage">
-  <div class="stage-label"><span>Core Builds Launcher · 0.3 interaction study</span><span>Design illustration · no network requests</span></div>
+  <div class="stage-label"><span>Core Builds Launcher · 0.4 connected TV interaction study</span><span>Design illustration · no network requests</span></div>
   <main class="tv" id="tv" aria-label="Core Builds Launcher design illustration">
     <div class="focus-backdrop" id="focus-backdrop"></div>
     <div class="scrim"></div>
@@ -412,10 +412,10 @@ body[data-motion="off"] * { transition-duration: 0ms !important; animation-durat
       </section>
     </div>
     <footer>
-      <span>SMART · PRIVATE · SMOOTH</span>
+      <span>CONNECTED TV · PRIVATE SETTINGS · SMOOTH MOTION</span>
       <span><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> move · <kbd>OK</kbd> open · <kbd>F</kbd> favourite · <kbd>H</kbd> hide · <kbd>S</kbd> search · <kbd>C</kbd> customise · <kbd>Esc</kbd> back</span>
     </footer>
-    <div class="disclaimer">DESIGN ILLUSTRATION · NOT A SCREENSHOT · SAMPLE LOCAL DATA IN THIS BROWSER ONLY</div>
+    <div class="disclaimer">DESIGN ILLUSTRATION · NOT A SCREENSHOT · CONNECTED TV PERMISSIONS SIMULATED IN THIS BROWSER ONLY</div>
 
     <aside class="panel" id="panel" aria-hidden="true" aria-label="Customise">
       <div class="panel-head">
@@ -451,7 +451,7 @@ const DEFAULTS = {
   favourites: ["tv.corebuilds.iconpack", "tv.corebuilds.line", "tv.corebuilds.shift", "tv.corebuilds.eq"],
   hidden: [],
   recents: ["com.aiostreams.tv", "com.aurora.player", "com.neilturner.aerialviews", "com.sony.bravia.core", "au.net.abc.iview"],
-  settings: { motion: "full", smart: true, sort: "a_z", cardSize: "standard", background: "focus", dim: "medium", artwork: "app", showSuggested: true, showClock: true }
+  settings: { motion: "full", smart: true, sort: "a_z", cardSize: "standard", background: "focus", dim: "medium", artwork: "app", showSuggested: true, showClock: true, usageAccess: false, wallpaperUrl: "", launchOnBoot: false, notifications: false }
 };
 let state = loadState();
 let currentApp = APPS[0];
@@ -695,6 +695,12 @@ const GROUPS = [
   { id: "showClock", title: "Clock", note: "Top bar", choices: [
     { id: true, label: "Show", meta: "Time and date in the top bar." },
     { id: false, label: "Hide", meta: "More room for the top bar actions." } ] },
+  { id: "launchOnBoot", title: "Launch on boot", note: "BOOT_COMPLETED fallback", choices: [
+    { id: true, label: "On", meta: "Start after boot only when this app is already HOME." },
+    { id: false, label: "Off", meta: "Let Android handle HOME startup as usual." } ] },
+  { id: "usageAccess", title: "Usage access", note: "Owner-granted AppOps", choices: [
+    { id: true, label: "Granted", meta: "System foreground time can rank suggestions." },
+    { id: false, label: "Not granted", meta: "Use this launcher's local launch history only." } ] },
 ];
 const ACTIONS = [
   { id: "find", title: "Find an app", meta: "Search every installed, visible app by name.", value: "OPEN" },
@@ -703,7 +709,10 @@ const ACTIONS = [
   { id: "restore", title: "Restore layout", meta: "Replace settings from a format/version-checked local snapshot.", value: "LOAD" },
   { id: "hidden", title: "Hidden apps", meta: "Bring every hidden sample app back.", value: String(state.hidden.length) },
   { id: "home", title: "Set as Home app", meta: "Hands off to Android settings; not available in a browser preview.", value: "OPEN" },
-  { id: "about", title: "About this Home", meta: "Version 0.3.0 · no account, no network, no analytics.", value: "0.3.0" },
+  { id: "wallpaper", title: "Network wallpaper", meta: "Fetch one bounded image from a URL you type, then apply it through Android wallpaper settings.", value: "SET" },
+  { id: "usage", title: "Usage access settings", meta: "Open Android's owner-granted usage access screen.", value: "OPEN" },
+  { id: "notification", title: "Status notification", meta: "Request POST_NOTIFICATIONS on Android 13+, then show a one-off status notification.", value: "SHOW" },
+  { id: "about", title: "About this Home", meta: "Version 0.4.0 · connected wallpapers are user-entered URLs only; no account or analytics.", value: "0.4.0" },
   { id: "reset", title: "Reset home screen", meta: "Press twice to restore the sample layout.", value: "TWICE" },
 ];
 function currentValue(group) {
@@ -755,7 +764,10 @@ function runAction(action) {
     case "restore": restoreLayout(); break;
     case "hidden": state.hidden = []; saveState(); renderCards(true); renderSettings(); toast("All sample apps are visible again"); break;
     case "home": toast("Browser preview: the launcher opens Android's Home-app settings here"); break;
-    case "about": toast("Core Builds Launcher 0.3.0 · local SharedPreferences only · zero permissions"); break;
+    case "wallpaper": toast("Browser preview: the app fetches one HTTP or HTTPS image URL you type, then uses SET_WALLPAPER"); break;
+    case "usage": toast("Browser preview: the app opens Android's usage access permission screen"); break;
+    case "notification": toast("Browser preview: the app requests POST_NOTIFICATIONS, then posts a one-off status notification"); break;
+    case "about": toast("Core Builds Launcher 0.4.0 · connected TV permissions · no account or analytics"); break;
     case "reset":
       if (!resetArmed) { resetArmed = true; toast("Press Reset once more to confirm"); }
       else { state = JSON.parse(JSON.stringify(DEFAULTS)); resetArmed = false; saveState(); applySettings(); renderSettings(); closePanel(); toast("Sample layout reset"); }

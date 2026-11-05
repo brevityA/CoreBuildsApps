@@ -16,7 +16,7 @@ internal data class LaunchableApp(
     val art: CardArt,
     /** The user's artwork choice for this app, as stored; empty for none. */
     val artKey: String = "",
-    /** First install time, for the permission-free Newest install sort. */
+    /** First install time, for the Newest install sort. */
     val installedAt: Long = 0L,
 ) {
     /** Changes whenever what the card shows could change: a new label, entry point, update or art. */
@@ -38,6 +38,7 @@ internal object LauncherAppCatalog {
         // Do not recycle evicted bitmaps: a card in the current view may still draw them.
     }
 
+    @Suppress("DEPRECATION")
     fun load(context: Context, spec: ArtSpec, pack: IconPack?, custom: Map<String, CustomArt> = emptyMap()): List<LaunchableApp> {
         val pm = context.packageManager
         val chosen = linkedMapOf<String, Pair<ResolveInfo, Boolean>>()
@@ -60,6 +61,31 @@ internal object LauncherAppCatalog {
                 // TV-specific one; otherwise keep the first launchable entry.
                 if (previous == null || (tvOptimized && !previous.second)) chosen[packageName] = resolved to tvOptimized
             }
+        }
+
+        // QUERY_ALL_PACKAGES: include packages whose launch activity was hidden
+        // by Android 11's visibility filter but which still publish a HOME-
+        // launchable intent. Permission-guarded entries are skipped exactly as
+        // above. The narrow queries remain the first, cheapest discovery path.
+        val installedApplications = try {
+            pm.getInstalledApplications(0)
+        } catch (_: RuntimeException) {
+            emptyList()
+        }
+        for (application in installedApplications) {
+            val packageName = application.packageName ?: continue
+            if (packageName == context.packageName || chosen.containsKey(packageName)) continue
+            val launchIntent = pm.getLeanbackLaunchIntentForPackage(packageName)
+                ?: pm.getLaunchIntentForPackage(packageName)
+                ?: continue
+            val resolved = try {
+                pm.resolveActivity(launchIntent, 0)
+            } catch (_: RuntimeException) {
+                null
+            } ?: continue
+            val activity = resolved.activityInfo ?: continue
+            if (!canStart(pm, context.packageName, activity.permission)) continue
+            chosen[packageName] = resolved to launchIntent.hasCategory(Intent.CATEGORY_LEANBACK_LAUNCHER)
         }
 
         val liveKeys = HashSet<String>()
