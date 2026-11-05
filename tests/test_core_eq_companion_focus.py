@@ -225,10 +225,16 @@ class CorrectionLifecycleContract(unittest.TestCase):
     def setUp(self) -> None:
         self.source = (ROOT / "coreeq/app/src/main/kotlin/tv/corebuilds/eq/apply/EqService.kt").read_text(encoding="utf-8")
 
-    def test_disabled_correction_is_rejected_before_foreground_start(self) -> None:
+    def test_disabled_correction_is_rejected_before_the_service_sets_up(self) -> None:
         body = _method_body(self.source, "onCreate") or ""
         self.assertIn("if (!store.correctionEnabled)", body)
-        self.assertLess(body.index("if (!store.correctionEnabled)"), body.index("ServiceCompat.startForeground"))
+        self.assertLess(body.index("if (!store.correctionEnabled)"), body.index("modeStore = ContentModeStore"))
+        self.assertIn("stopAfterExplicitOff()", body)
+        # enable() uses startForegroundService(); Android crashes an app whose
+        # service stops before startForeground(), so go foreground, then stop.
+        stop = _method_body(self.source, "stopAfterExplicitOff") or ""
+        self.assertLess(stop.index("ServiceCompat.startForeground"), stop.index("stopSelf()"))
+        self.assertIn("ServiceCompat.STOP_FOREGROUND_REMOVE", stop)
 
     def test_queued_stop_cannot_write_over_a_newer_user_choice(self) -> None:
         body = _method_body(self.source, "onStartCommand") or ""

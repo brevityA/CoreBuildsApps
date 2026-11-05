@@ -379,10 +379,13 @@ class EqService : Service() {
     override fun onCreate() {
         super.onCreate()
         store = ProfileStore(this)
-        // A queued start (or an Android sticky restart) is not a new user choice.
-        // Do not even create a foreground notification after an explicit off.
+        // A queued start (or an Android sticky restart) is not a new user choice,
+        // so an explicit off stops here without applying anything. enable()
+        // starts this service with startForegroundService(), and Android crashes
+        // an app whose service stops before calling startForeground(), even when
+        // it stops on purpose. Go foreground for that moment, then stop.
         if (!store.correctionEnabled) {
-            stopSelf()
+            stopAfterExplicitOff()
             return
         }
         modeStore = ContentModeStore(this)
@@ -1516,6 +1519,20 @@ class EqService : Service() {
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
+
+    private fun stopAfterExplicitOff() {
+        createChannel()
+        val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK else 0
+        try {
+            ServiceCompat.startForeground(this, NOTIFICATION_ID, notification("Audio correction is off."), type)
+        } catch (e: Exception) {
+            // Refused (a background or post-reboot start): there is no
+            // foreground request to honour, so stopping below is safe.
+            Log.w(TAG, "startForeground refused while stopping an off correction", e)
+        }
+        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+        stopSelf()
+    }
 
     private fun createChannel() {
         val channel = NotificationChannel(CHANNEL_ID, "Audio correction", NotificationManager.IMPORTANCE_LOW)

@@ -50,8 +50,10 @@ source/policy receipt and the required device matrix.
   across uncertain routes to suppress a card.
 - **Latest correction choice wins.** A queued STOP cannot overwrite a newer
   enable. An explicitly disabled correction rejects sticky/late starts and
-  RESUME/REAPPLY. Route/discovery callbacks from a destroyed service instance
-  cannot reapply after a replacement has started.
+  RESUME/REAPPLY. A late start still goes foreground for a moment before it
+  stops, because Android crashes an app whose service stops before
+  `startForeground()`. Route/discovery callbacks from a destroyed service
+  instance cannot reapply after a replacement has started.
 - **No stale phone commands.** Offline, busy and measurement states share one
   interaction policy, including the previously unguarded mode buttons. An old
   status read cannot overwrite a local command's result; a successful command

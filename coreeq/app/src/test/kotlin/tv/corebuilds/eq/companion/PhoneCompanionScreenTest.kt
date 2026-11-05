@@ -178,13 +178,21 @@ class PhoneCompanionScreenTest {
         activity.findViewById<View>(R.id.phone_tab_tv).performClick()
         val forget = activity.findViewById<View>(R.id.phone_forget)
         forget.performClick()
+        val connection = activity.findViewById<TextView>(R.id.phone_connection_state)
+        val before = connection.text.toString()
         val first = ShadowDialog.getLatestDialog() as AlertDialog
+        // A dialog button posts its listener (and the dismiss) to the main looper,
+        // so run the queue before reading what the click did.
         first.getButton(AlertDialog.BUTTON_NEGATIVE).performClick()
+        ScreenHarness.idle()
+        assertFalse(first.isShowing)
+        assertEquals(before, connection.text.toString())
         assertTrue(forget.isEnabled)
         forget.performClick()
         val second = ShadowDialog.getLatestDialog() as AlertDialog
         second.getButton(AlertDialog.BUTTON_POSITIVE).performClick()
-        assertEquals(activity.getString(R.string.phone_not_paired), activity.findViewById<TextView>(R.id.phone_connection_state).text.toString())
+        ScreenHarness.idle()
+        assertEquals(activity.getString(R.string.phone_not_paired), connection.text.toString())
         assertFalse(ProfileStore(activity).correctionEnabled)
     }
 
