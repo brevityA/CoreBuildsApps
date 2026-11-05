@@ -47,9 +47,10 @@ versionCode 28. Android build, lint and Robolectric pass: 877 unit tests, lint
   `apk` job builds them as the `CoreEQ-androidTest` artifact, and
   `tools/install_core_eq_on_emulator.sh` runs them on both emulators once user
   0 is unlocked (the 37.0 image's framework restart leaves it locked, and its
-  encrypted storage unreadable, for a while). A framework restart under
-  the run (locked storage, a lost service, `DeadObjectException` from
-  `am instrument`) earns one more run; any other failure fails at once. A run
+  encrypted storage unreadable, for a while) and `system_server` has kept
+  one pid for 30 s. A framework restart under the run (locked storage, a lost
+  service, `DeadObjectException` from `am instrument`, "System has crashed")
+  earns another run, up to 3 in all; any other failure fails at once. A run
   fails unless `am instrument` reports `OK` with at least one test.
 - `tests/test_core_eq_phone_pairing.py` holds three rules: no IV is passed to
   Keystore encryption, sealing happens before the TV is asked, and CI still

@@ -134,7 +134,14 @@ class OnDeviceTestRuns(unittest.TestCase):
         self.assertIn("RUNNING_UNLOCKED", script)
         # The activity manager dying under `am instrument` is a restart, not a test failure.
         self.assertIn("DeadObjectException", script)
+        self.assertIn("System has crashed", script)
+        # A stable system server, not just an answering package service, before each run.
+        self.assertIn("pidof system_server", script)
         run = script[script.index("run_device_tests() {"):]
+        self.assertLess(run.index("wait_for_stable_system_server"), run.index("am instrument -w"))
+        # Restarts earn at most three runs; an assertion failure gets none.
+        self.assertIn("for attempt in 1 2 3; do", script)
+        self.assertIn("(( attempt < 3 ))", script)
         self.assertLess(run.index('wait_for_user_unlocked "before the on-device tests'), run.index("am instrument -w"))
 
 

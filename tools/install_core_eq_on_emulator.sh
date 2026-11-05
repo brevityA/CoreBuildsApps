@@ -214,6 +214,30 @@ wait_for_user_unlocked() { # <label>
   return 1
 }
 
+# The 37.0 image does not restart its framework once: on PR #455 it restarted
+# under the test install ("Broken pipe"), under `am instrument` itself
+# (DeadObjectException) and mid-run ("System has crashed"), each well after
+# boot_completed. A package service that answers is not enough; the system
+# server has to stay the same process for 30 s before a run starts.
+wait_for_stable_system_server() { # <label>
+  local label="$1" deadline=$((SECONDS + 300)) pid="" last="" steady=0
+  while (( SECONDS < deadline )); do
+    pid=$(timeout 30 adb shell pidof system_server 2>/dev/null | tr -d '\r' || true)
+    if [[ -n "$pid" && "$pid" == "$last" ]]; then
+      steady=$((steady + 5))
+      if (( steady >= 30 )); then
+        return 0
+      fi
+    else
+      steady=0
+    fi
+    last="$pid"
+    sleep 5
+  done
+  echo "::error title=system server not stable (${label})::system_server did not keep one pid for 30 s within 300 s (last: ${pid:-none})"
+  return 1
+}
+
 run_device_tests() {
   local out passed attempt
   APK="$TEST_APK"
@@ -225,8 +249,9 @@ run_device_tests() {
     wait_for_package_service "before the on-device tests' second install" || return 1
     install_apk "on-device tests, no-streaming" --no-streaming -r -t || return 1
   fi
-  for attempt in 1 2; do
+  for attempt in 1 2 3; do
     wait_for_package_service "before the on-device tests, run ${attempt}" || return 1
+    wait_for_stable_system_server "before the on-device tests, run ${attempt}" || return 1
     wait_for_user_unlocked "before the on-device tests, run ${attempt}" || return 1
     out=$(timeout 600 adb shell am instrument -w "$TEST_RUNNER" 2>&1 || true)
     printf '%s\n' "$out"
@@ -237,15 +262,15 @@ run_device_tests() {
       echo "::notice title=Core EQ on-device tests::${passed}"
       return 0
     fi
-    # A framework restart under the run earns one more run once the device is
-    # ready: storage locked again, a service gone, or the activity manager
-    # dying under `am instrument` itself (DeadObjectException from
-    # startInstrumentation, PR #455's second 37.0 run, before any test began;
-    # "System has crashed" when it dies mid-run). Any other failure, or the
-    # same one twice, is the code's.
-    if (( attempt == 1 )) && printf '%s\n' "$out" | grep -qE 'not available until after user|Can.t find service|DeadSystemException|DeadObjectException|System has crashed'; then
-      crash_report "on-device tests, first run"
-      echo "::warning title=Core EQ on-device tests::the first run met a framework restart on this emulator; running once more"
+    # A framework restart under the run earns another run, up to three in
+    # all, once the device is ready again: storage locked again, a service
+    # gone, the activity manager dying under `am instrument` itself
+    # (DeadObjectException from startInstrumentation, before any test began)
+    # or mid-run ("System has crashed"). None of these can come from a test
+    # body. Any other failure, an assertion above all, is the code's at once.
+    if (( attempt < 3 )) && printf '%s\n' "$out" | grep -qE 'not available until after user|Can.t find service|DeadSystemException|DeadObjectException|System has crashed'; then
+      crash_report "on-device tests, run ${attempt}"
+      echo "::warning title=Core EQ on-device tests::run ${attempt} met a framework restart on this emulator; running again once the system server is stable"
       continue
     fi
     break
