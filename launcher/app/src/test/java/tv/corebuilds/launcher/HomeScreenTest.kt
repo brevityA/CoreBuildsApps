@@ -413,8 +413,24 @@ class HomeScreenTest {
         shadowOf(activity).receiveResult(request.intent, android.app.Activity.RESULT_OK, Intent().setData(image))
         HomeHarness.waitForApps(activity)
 
-        val custom = appCards(activity, RowKind.ALL_APPS).first { it.app.label == "Glide Files" }
-        assertEquals(ArtSource.CUSTOM, custom.app.art.source)
+        // The import, preference write and coalesced follow-up scan run on
+        // different threads; wait for the rendered card, not just for shelves.
+        val deadline = System.currentTimeMillis() + 8_000
+        while (System.currentTimeMillis() < deadline) {
+            HomeHarness.idle()
+            if (appCards(activity, RowKind.ALL_APPS).any {
+                    it.app.label == "Glide Files" && it.app.art.source == ArtSource.CUSTOM
+                }) break
+            Thread.sleep(10)
+        }
+        HomeHarness.settle()
+        val custom = appCards(activity, RowKind.ALL_APPS).firstOrNull { it.app.label == "Glide Files" }
+        val stored = LauncherPreferences.readCustomArt(context)["org.example.glide"]
+        assertTrue(
+            "custom art did not render; stored=$stored, artKey=${custom?.app?.artKey}, source=${custom?.app?.art?.source}",
+            custom?.app?.art?.source == ArtSource.CUSTOM,
+        )
+        assertEquals(ArtSource.CUSTOM, custom!!.app.art.source)
         assertNotNull("a wide image fills the card", custom.app.art.banner)
         custom.requestFocus()
         HomeHarness.settle()
