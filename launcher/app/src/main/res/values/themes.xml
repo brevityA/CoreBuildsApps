@@ -7,8 +7,9 @@
         <item name="android:statusBarColor">@color/cb_background</item>
         <item name="android:navigationBarColor">@color/cb_background</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowActionModeOverlay">true</item>
-        <item name="android:fontFamily">sans</item>
+        <item name="android:fontFamily">@font/outfit</item>
         <item name="android:colorControlHighlight">#5500D4FF</item>
+        <!-- The home draws its own backdrop; no window animation between Home presses. -->
+        <item name="android:windowAnimationStyle">@null</item>
     </style>
 </resources>

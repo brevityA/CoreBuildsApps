@@ -2,7 +2,8 @@
 """Extract concise Gradle failure diagnostics without promoting Kotlin warnings.
 
 The launcher CI reruns Gradle in plain-console mode after a failure, then uses
-this helper to surface actual compiler/build errors as GitHub annotations.
+this helper to surface actual compiler/build errors, and the name and exception
+of each failing unit test, as GitHub annotations.
 """
 from __future__ import annotations
 
@@ -15,6 +16,9 @@ DIAGNOSTIC = re.compile(
     r"> Task .* FAILED|BUILD FAILED|.*\.kt:\d+(?::\d+)?: error: |"
     r".*: error: .+|.*: Error: .+)"
 )
+# A failing unit test, as Gradle's plain console prints it ("HomeScreenTest > rowEnds FAILED"),
+# followed by an indented line naming the exception and where it was thrown.
+TEST_FAILURE = re.compile(r"^[\w.$\[\]]+ > .+ FAILED$")
 FALLBACK = re.compile(
     r"(?:\bFAILED\b|BUILD FAILED|: error: |Exception in thread|"
     r"(?:^|:\s*)Caused by: )",
@@ -33,11 +37,26 @@ def select_diagnostics(lines: list[str]) -> list[str]:
     """Return a short error-only excerpt suitable for GitHub annotations."""
     selected: list[str] = []
     capture_cause = 0
+    capture_exception = False
 
     for line in lines:
         stripped = line.strip()
         if _is_kotlin_warning(stripped):
             continue
+        if TEST_FAILURE.search(stripped):
+            if stripped not in selected:
+                selected.append(stripped)
+            capture_exception = True
+            capture_cause = 0
+            continue
+        if capture_exception:
+            if stripped and line[:1].isspace():
+                if stripped not in selected:
+                    selected.append(stripped)
+                capture_exception = False
+                continue
+            if stripped:
+                capture_exception = False
         if DIAGNOSTIC.search(stripped):
             if stripped and stripped not in selected:
                 selected.append(stripped)
