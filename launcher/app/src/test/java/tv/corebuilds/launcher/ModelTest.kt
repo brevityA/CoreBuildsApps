@@ -76,6 +76,8 @@ class ModelTest {
 
     @Test
     fun recentsAreFiveLaunchableAppsNewestFirstWithoutFavouritesOrHiddenApps() {
+        // This test pins the legacy row; the default 0.3 Suggested row ranks events.
+        LauncherPreferences.saveSettings(context, HomeSettings(smartSuggestions = false))
         val installed = (1..8).map { "app$it" }
         installed.forEach { LauncherPreferences.recordLaunch(context, it) }
         LauncherPreferences.setFavourite(context, "app8", true, installed)
@@ -87,12 +89,95 @@ class ModelTest {
 
     @Test
     fun settingsRoundTripAndResetGoesBackToFirstRun() {
-        val changed = HomeSettings(ArtworkChoice.IconPack("pack.x"), Backdrop.VOID, Dim.STRONG, CardSize.COMPACT, showRecents = false, showClock = false)
+        val changed = HomeSettings(
+            ArtworkChoice.IconPack("pack.x"), Backdrop.VOID, Dim.STRONG, CardSize.COMPACT,
+            showRecents = false, showClock = false,
+            motion = MotionMode.CALM, smartSuggestions = false, appSort = AppSort.TV_FIRST,
+            wallpaperUrl = "https://example.invalid/wallpaper.jpg", launchOnBoot = true,
+        )
         LauncherPreferences.saveSettings(context, changed)
         assertEquals(changed, LauncherPreferences.readSettings(context))
         LauncherPreferences.reset(context)
         assertEquals(HomeSettings(), LauncherPreferences.readSettings(context))
     }
+
+    @Test
+    fun aVersionedLayoutBackupRestoresOnlyKnownLauncherKeys() {
+        LauncherPreferences.saveSettings(context, HomeSettings(
+            motion = MotionMode.OFF,
+            appSort = AppSort.MOST_USED,
+            wallpaperUrl = "https://example.invalid/home.jpg",
+            launchOnBoot = true,
+        ))
+        LauncherPreferences.setFavourite(context, "org.example.atlas", true, listOf("org.example.atlas"))
+        val backup = LauncherBackup.export(context)
+        prefs.edit().putString("unknown_key", "must not be restored").commit()
+        val backupWithUnknownKey = LauncherBackup.export(context)
+        assertTrue(backupWithUnknownKey.contains("unknown_key"))
+        LauncherPreferences.reset(context)
+        // A foreign key already on this device must also be cleared by a restore.
+        prefs.edit().putString("unknown_key", "must not survive").commit()
+        assertTrue(LauncherBackup.restore(context, backupWithUnknownKey))
+        assertEquals(MotionMode.OFF, LauncherPreferences.readSettings(context).motion)
+        assertEquals(AppSort.MOST_USED, LauncherPreferences.readSettings(context).appSort)
+        assertEquals("https://example.invalid/home.jpg", LauncherPreferences.readSettings(context).wallpaperUrl)
+        assertTrue(LauncherPreferences.readSettings(context).launchOnBoot)
+        assertEquals(listOf("org.example.atlas"), LauncherPreferences.snapshot(context, listOf("org.example.atlas")).favourites)
+        assertFalse(prefs.contains("unknown_key"))
+        assertFalse(LauncherBackup.restore(context, "{}"))
+        assertFalse(LauncherBackup.restore(context, "x".repeat(LauncherBackup.MAX_BYTES + 1)))
+    }
+
+    @Test
+    fun localAppSearchRanksExactPrefixWordAndInitialMatches() {
+        val apps = listOf(
+            fakeApp("Core Builds Icon Pack", "tv.corebuilds.iconpack"),
+            fakeApp("Core EQ", "tv.corebuilds.eq"),
+            fakeApp("Harbor News", "org.example.harbor"),
+            fakeApp("Atlas Video", "org.example.atlas"),
+        )
+        assertEquals("Harbor News", AppSearch.rank(apps, "harbor").first().label)
+        assertEquals("Core EQ", AppSearch.rank(apps, "eq").first().label)
+        assertEquals("Core Builds Icon Pack", AppSearch.rank(apps, "cbip").first().label)
+        assertEquals("Atlas Video", AppSearch.rank(apps, "atlas").first().label)
+        assertTrue(AppSearch.rank(apps, "not-installed").isEmpty())
+        val preferred = setOf("org.example.atlas")
+        assertEquals("Atlas Video", AppSearch.rank(apps, "", preferred).first().label)
+    }
+
+    @Test
+    fun connectedTvSettingsRoundTripAndBackupKeepOwnerEnteredChoices() {
+        val changed = HomeSettings(
+            wallpaperUrl = "https://example.invalid/tv.jpg",
+            launchOnBoot = true,
+            smartSuggestions = false,
+            appSort = AppSort.MOST_USED,
+        )
+        LauncherPreferences.saveSettings(context, changed)
+        val backup = LauncherBackup.export(context)
+        LauncherPreferences.reset(context)
+        assertTrue(LauncherBackup.restore(context, backup))
+        assertEquals(changed, LauncherPreferences.readSettings(context))
+    }
+
+    @Test
+    fun networkWallpaperAcceptsOnlyHttpUrlsAndRejectsUnsafeSchemes() {
+        assertTrue(NetworkWallpaper.isAllowedUrl("https://example.invalid/wall.jpg"))
+        assertTrue(NetworkWallpaper.isAllowedUrl("http://example.invalid/wall.jpg"))
+        assertFalse(NetworkWallpaper.isAllowedUrl("file:///sdcard/wall.jpg"))
+        assertFalse(NetworkWallpaper.isAllowedUrl("content://media/wall.jpg"))
+        assertFalse(NetworkWallpaper.isAllowedUrl("not a url"))
+        assertFalse(NetworkWallpaper.isAllowedUrl(""))
+    }
+
+    private fun fakeApp(label: String, packageName: String): LaunchableApp = LaunchableApp(
+        packageName,
+        ".Main",
+        label,
+        tvOptimized = false,
+        lastUpdateTime = 0L,
+        art = CardArt(null, null, Color.RED, null, ArtSource.APP),
+    )
 
     @Test
     fun appfilterMapsComponentsAndFallsBackByPackage() {

@@ -5,42 +5,46 @@
 
     <!-- Top bar -->
     <string name="customise">Customise</string>
-    <string name="customise_description">Customise your home screen</string>
+    <string name="customise_description">Open Customise and shortcuts</string>
 
     <!-- Info area: follows the focused card -->
     <string name="info_eyebrow_favourite">FAVOURITE</string>
     <string name="info_eyebrow_recent">RECENTLY OPENED</string>
+    <string name="info_eyebrow_suggested">SUGGESTED FOR NOW</string>
     <string name="info_eyebrow_all_apps">ALL APPS</string>
     <string name="info_tv_app">TV app</string>
     <string name="info_app">App</string>
-    <string name="info_hint">OK to open  ·  Hold OK for options</string>
+    <string name="info_hint">OK to open  ·  Hold OK or Menu for options</string>
     <string name="info_meta">%1$s  ·  %2$s</string>
     <string name="info_add_title">Add favourites</string>
-    <string name="info_add_meta">Pick the apps for your first row</string>
+    <string name="info_add_meta">Choose the apps for your first row</string>
     <string name="info_customise_title">Customise</string>
-    <string name="info_customise_meta">Artwork, background, card size and hidden apps</string>
+    <string name="info_customise_meta">Layout, artwork, motion and shortcuts</string>
     <string name="info_scanning_title">Finding your apps</string>
     <string name="info_scanning_meta">Reading the apps on this TV</string>
     <string name="info_empty_title">No apps yet</string>
     <string name="info_empty_meta">Install an app and it appears here</string>
     <string name="info_moving_title">Moving %1$s</string>
-    <string name="info_moving_meta">Left and Right move it  ·  OK or Back to finish</string>
+    <string name="info_moving_meta">Left / Right move it  ·  OK or Back saves</string>
 
     <!-- Shelves -->
     <string name="row_favourites">Favourites</string>
     <string name="row_recent">Recently opened</string>
+    <string name="row_suggested">Suggested now</string>
+    <string name="row_suggested_note">Learns your routine on this TV · can be turned off</string>
+    <string name="row_recent_note">Your last five apps · stays on this TV</string>
     <string name="row_all_apps_count">All apps  ·  %1$d</string>
     <string name="add_card">Add</string>
 
     <!-- Card accessibility: label, state, and the long-press hint -->
-    <string name="card_description">%1$s. Press OK to open, hold OK for options.</string>
-    <string name="card_description_tv">%1$s, TV app. Press OK to open, hold OK for options.</string>
-    <string name="card_description_moving">%1$s, moving. Left and Right move it, OK to finish.</string>
+    <string name="card_description">%1$s. Press OK to open. Hold OK or press Menu for options.</string>
+    <string name="card_description_tv">%1$s, TV app. Press OK to open. Hold OK or press Menu for options.</string>
+    <string name="card_description_moving">%1$s, moving. Left and Right move it. OK saves.</string>
     <string name="add_card_description">Add favourites</string>
 
     <!-- App options panel -->
     <string name="options_eyebrow">APP OPTIONS</string>
-    <string name="option_open">Open</string>
+    <string name="option_open">Open app</string>
     <string name="option_add_favourite">Add to favourites</string>
     <string name="option_remove_favourite">Remove from favourites</string>
     <string name="option_move">Move</string>
@@ -52,7 +56,7 @@
     <string name="option_artwork_default">Default</string>
     <string name="option_artwork_custom">Custom</string>
     <string name="option_app_info">App info</string>
-    <string name="option_app_info_meta">Android\'s settings for this app</string>
+    <string name="option_app_info_meta">Open Android settings for this app</string>
 
     <!-- Customise panel -->
     <string name="customise_eyebrow">CUSTOMISE</string>
@@ -61,45 +65,104 @@
     <string name="setting_background">Background</string>
     <string name="setting_dim">Background dim</string>
     <string name="setting_card_size">Card size</string>
-    <string name="setting_recent">Recently opened row</string>
+    <string name="setting_recent">Suggested row</string>
     <string name="setting_clock">Clock</string>
     <string name="setting_favourites">Favourites</string>
     <string name="setting_hidden">Hidden apps</string>
     <string name="setting_hidden_value_none">None</string>
     <string name="setting_custom_art">Custom artwork</string>
+    <string name="setting_motion">Motion and speed</string>
+    <string name="setting_smart_suggestions">Smart suggestions</string>
+    <string name="setting_sort_apps">App order</string>
+    <string name="setting_find_app">Find an app</string>
+    <string name="setting_find_app_meta">Search every installed app by name</string>
+    <string name="setting_quick_settings">Quick settings</string>
+    <string name="setting_quick_settings_meta">Android network, display and device shortcuts</string>
+    <string name="setting_backup">Back up layout</string>
+    <string name="setting_backup_meta">Save a file you choose</string>
+    <string name="setting_restore">Restore layout</string>
+    <string name="setting_restore_meta">Replace this layout from a file</string>
+    <string name="setting_about">About this Home</string>
+    <string name="setting_about_meta">Version, privacy and local data</string>
     <string name="setting_set_home">Set as Home app</string>
-    <string name="setting_set_home_meta">Opens Android\'s default-app settings</string>
+    <string name="setting_set_home_meta">Open Android\'s default-app settings</string>
     <string name="setting_reset">Reset home screen</string>
-    <string name="setting_reset_meta">Favourites, hidden apps, custom artwork and settings go back to how they started</string>
+    <string name="setting_reset_meta">Return favourites, hidden apps, artwork, history and settings to their defaults</string>
     <string name="setting_reset_confirm">Press OK again to reset</string>
-    <string name="customise_footer">No ads, no account, no network. Your choices and app history stay on this TV.</string>
+    <string name="customise_footer">No ads, account or network. Your layout, history and suggestions stay on this TV.</string>
 
     <string name="selected_state">Selected</string>
     <string name="value_on">On</string>
     <string name="value_off">Off</string>
+    <string name="value_granted">Granted</string>
+    <string name="value_not_granted">Not granted</string>
+    <string name="value_ready">Ready</string>
+    <string name="value_permission">Permission</string>
+    <string name="value_saved">Saved</string>
 
+    <!-- Connected TV: usage access, wallpaper, boot and notifications -->
+    <string name="setting_usage_access">Usage access</string>
+    <string name="setting_usage_access_meta">Owner-granted system usage stats for smarter suggestions</string>
+    <string name="usage_title">Usage access</string>
+    <string name="usage_body">Allow Android usage access to rank Suggested now and Most used by foreground time. Without it, the launcher uses only its own last 30 days of launches.</string>
+    <string name="usage_open">Open usage access settings</string>
+    <string name="usage_open_meta">Android Settings decides whether this permission is granted</string>
+    <string name="usage_refresh">Refresh suggestions</string>
+    <string name="usage_refresh_meta">Re-read local history and any granted usage stats</string>
+    <string name="usage_refreshed">Suggestions refreshed</string>
+
+    <string name="setting_wallpaper">Network wallpaper</string>
+    <string name="setting_wallpaper_meta">Fetch one image from a URL you type, then set the TV wallpaper</string>
+    <string name="wallpaper_title">Network wallpaper</string>
+    <string name="wallpaper_body">Enter an HTTP or HTTPS image URL. The launcher downloads at most 8 MB, scales it for the TV and applies it through Android\'s wallpaper manager. No gallery, default endpoint or automatic refresh.</string>
+    <string name="wallpaper_url_hint">https://example.invalid/wallpaper.jpg</string>
+    <string name="wallpaper_input_description">Wallpaper image URL. Type an HTTP or HTTPS address.</string>
+    <string name="wallpaper_fetch">Fetch and apply</string>
+    <string name="wallpaper_clear">Clear saved URL</string>
+    <string name="wallpaper_cancel">Cancel</string>
+    <string name="wallpaper_offline">This TV is not online. Check its network connection.</string>
+    <string name="wallpaper_invalid_url">Enter a valid HTTP or HTTPS image URL.</string>
+    <string name="wallpaper_loading">Fetching wallpaper…</string>
+    <string name="wallpaper_applied">Wallpaper applied</string>
+    <string name="wallpaper_failed">That wallpaper could not be fetched or applied.</string>
+    <string name="wallpaper_url_cleared">Saved wallpaper URL cleared</string>
+
+    <string name="setting_launch_on_boot">Launch on boot</string>
+    <string name="setting_launch_on_boot_meta">A BOOT_COMPLETED fallback when this app is already HOME</string>
+    <string name="setting_notification">Status notification</string>
+    <string name="setting_notification_meta">Show a one-off launcher status notification</string>
+    <string name="notification_title">Core Builds Launcher</string>
+    <string name="notification_body">Connected TV features are ready. Your layout and history stay on this TV.</string>
+    <string name="notification_channel">Launcher status</string>
+    <string name="notification_shown">Status notification shown</string>
+    <string name="notification_failed">This TV did not show the notification.</string>
+    <string name="notification_granted">Notification permission granted</string>
+    <string name="notification_denied">Notification permission was not granted.</string>
+
+    <!-- Artwork -->
     <string name="artwork_title">Artwork</string>
-    <string name="artwork_body">Icon packs replace each app\'s card art. Apps a pack does not cover keep their own.</string>
+    <string name="artwork_body">Use each app\'s own art or an installed icon pack. Apps a pack misses keep their own art.</string>
     <string name="artwork_app">App artwork</string>
-    <string name="artwork_app_meta">Each app\'s own TV banner, or its icon</string>
+    <string name="artwork_app_meta">Each app\'s own TV banner or icon</string>
     <string name="artwork_core_banners">Core Builds banners</string>
     <string name="artwork_core_glyphs">Core Builds glyphs</string>
     <string name="artwork_pack_meta">Icon pack</string>
     <string name="artwork_missing">%1$s is no longer installed; showing app artwork</string>
 
+    <!-- Background -->
     <string name="background_title">Background</string>
     <string name="background_focused">Follows the focused app</string>
-    <string name="background_focused_meta">The app\'s artwork, softened behind the home screen</string>
+    <string name="background_focused_meta">Softened app art behind the home screen</string>
     <string name="background_core">Core Builds</string>
     <string name="background_core_meta">Void with a cyan and violet glow</string>
     <string name="background_void">Void</string>
-    <string name="background_void_meta">Plain dark background</string>
-
+    <string name="background_void_meta">Plain dark background · lightest on the TV</string>
     <string name="dim_title">Background dim</string>
     <string name="dim_light">Light</string>
     <string name="dim_medium">Medium</string>
     <string name="dim_strong">Strong</string>
 
+    <!-- Card size -->
     <string name="card_size_title">Card size</string>
     <string name="card_size_compact">Compact</string>
     <string name="card_size_compact_meta">6 cards a row</string>
@@ -108,33 +171,113 @@
     <string name="card_size_large">Large</string>
     <string name="card_size_large_meta">4 cards a row</string>
 
-    <string name="favourites_title">Favourites</string>
-    <string name="favourites_body">OK adds or removes an app. New favourites go to the end of the row; hold OK on a favourite and choose Move to change its place.</string>
-    <string name="favourite_state_on">In favourites</string>
+    <!-- Motion -->
+    <string name="motion_title">Motion and speed</string>
+    <string name="motion_body">Short transitions make focus easy to follow. Android\'s Remove animations setting is always respected.</string>
+    <string name="motion_full">Full</string>
+    <string name="motion_full_meta">Lift, reveal and background fades</string>
+    <string name="motion_calm">Calm</string>
+    <string name="motion_calm_meta">Shorter, quieter transitions</string>
+    <string name="motion_off">Off</string>
+    <string name="motion_off_meta">Instant changes · lowest work</string>
 
+    <!-- Smart suggestions and app order -->
+    <string name="smart_title">Smart suggestions</string>
+    <string name="smart_body">Rank the suggested row by recent use, frequency and the time of day. History stays local for 30 days.</string>
+    <string name="smart_on">Learn my routine</string>
+    <string name="smart_off">Recent only</string>
+    <string name="sort_title">App order</string>
+    <string name="sort_body">Choose how All apps is arranged. Every option uses information already on this TV.</string>
+    <string name="sort_a_z">A to Z</string>
+    <string name="sort_a_z_meta">Alphabetical by app name</string>
+    <string name="sort_most_used">Most used</string>
+    <string name="sort_most_used_meta">Local launch counts first</string>
+    <string name="sort_tv_first">TV apps first</string>
+    <string name="sort_tv_first_meta">Leanback apps, then everything else</string>
+    <string name="sort_newest">Newest install</string>
+    <string name="sort_newest_meta">Recently installed apps first</string>
+
+    <!-- Search -->
+    <string name="search_eyebrow">LOCAL SEARCH</string>
+    <string name="search_title">Find an app</string>
+    <string name="search_body">Results update as you type. Nothing is sent anywhere.</string>
+    <string name="search_hint">Type an app name</string>
+    <string name="search_input_description">Search app name. Type to filter local results.</string>
+    <string name="search_results">%1$d results  ·  %2$s</string>
+    <string name="search_status_local">on this TV only</string>
+    <string name="search_empty">No apps match. Try part of the name or its initials.</string>
+    <string name="search_footer">Up / Down browse results  ·  OK opens  ·  Back closes</string>
+    <string name="search_result_description">%1$s. Press OK to open.</string>
+
+    <!-- Quick settings -->
+    <string name="quick_title">Quick settings</string>
+    <string name="quick_body">Shortcuts to Android settings. What opens depends on your TV.</string>
+    <string name="quick_network">Network and internet</string>
+    <string name="quick_network_meta">Wi-Fi, Ethernet and connections</string>
+    <string name="quick_bluetooth">Bluetooth</string>
+    <string name="quick_bluetooth_meta">Remotes, headphones and accessories</string>
+    <string name="quick_display">Display and sound</string>
+    <string name="quick_display_meta">Resolution, sound and picture settings</string>
+    <string name="quick_accessibility">Accessibility</string>
+    <string name="quick_accessibility_meta">TalkBack, text and motion settings</string>
+    <string name="quick_apps">All system apps</string>
+    <string name="quick_apps_meta">Open Android\'s app list</string>
+    <string name="quick_home">Home app</string>
+    <string name="quick_home_meta">Choose the default home screen</string>
+    <string name="quick_usage">Usage access</string>
+    <string name="quick_usage_meta">Open Android\'s usage-access permission screen</string>
+    <string name="quick_open">OPEN</string>
+    <string name="toast_settings_unavailable">This TV did not open that settings screen.</string>
+
+    <!-- About -->
+    <string name="about_title">About this Home</string>
+    <string name="about_body">A private, local-first Android TV launcher prototype. It opens apps, not recommendations.</string>
+    <string name="about_version">Version</string>
+    <string name="about_version_unknown">Private build</string>
+    <string name="about_network">Network access</string>
+    <string name="about_network_value">User-entered URLs only</string>
+    <string name="about_storage">Saved data</string>
+    <string name="about_storage_value">On this TV</string>
+    <string name="about_permissions">Connected TV permissions</string>
+    <string name="about_permissions_value">7 declared</string>
+    <string name="about_footer">Search, suggestions, artwork picks and layout settings never leave this TV.</string>
+
+    <!-- Favourites and per-app artwork -->
+    <string name="favourites_title">Favourites</string>
+    <string name="favourites_body">OK adds or removes an app. New favourites go to the end; hold OK on a favourite and choose Move.</string>
+    <string name="favourite_state_on">In favourites</string>
     <string name="art_title">Artwork for %1$s</string>
-    <string name="art_body">Pick this app\'s card. Wide art fills the card; square art sits on a plate tinted from it.</string>
+    <string name="art_body">Pick this app\'s card. Wide art fills it; square art sits on a tinted plate.</string>
     <string name="art_default">Default</string>
     <string name="art_default_meta">Follows Customise › Artwork</string>
     <string name="art_suggestion_meta">The pack\'s art for this app</string>
     <string name="art_browse">Browse %1$s</string>
-    <string name="art_browse_meta">Opens the pack\'s icon browser</string>
+    <string name="art_browse_meta">Open the pack\'s icon browser</string>
     <string name="art_browse_failed">%1$s did not open its icon browser.</string>
     <string name="art_image">Image on this TV</string>
-    <string name="art_image_meta">A PNG or JPG from storage or a USB drive</string>
+    <string name="art_image_meta">A PNG or JPG from storage or USB</string>
     <string name="art_no_image_picker">This TV has no file picker for images.</string>
     <string name="art_image_failed">That image could not be read.</string>
     <string name="art_nothing_returned">The icon browser returned no icon.</string>
-
     <string name="custom_art_title">Custom artwork</string>
-    <string name="custom_art_body">Apps with artwork you picked. OK puts an app back to its default.</string>
+    <string name="custom_art_body">Apps with artwork you picked. OK returns an app to its default.</string>
     <string name="custom_art_empty">No custom artwork. Hold OK on an app and choose Change artwork.</string>
     <string name="custom_art_state">Custom</string>
-
     <string name="hidden_title">Hidden apps</string>
-    <string name="hidden_body">Hidden apps are left out of All apps and Recently opened. OK shows an app again.</string>
+    <string name="hidden_body">Hidden apps are left out of All apps and the suggested row. OK shows an app again.</string>
     <string name="hidden_empty">No hidden apps. Hold OK on an app and choose Hide.</string>
     <string name="hidden_state">Hidden</string>
+
+    <!-- Backup and restore -->
+    <string name="backup_body">Save favourites, order, hidden apps, settings and local history to a file you choose. Imported image files stay on this TV.</string>
+    <string name="backup_action">Save layout file</string>
+    <string name="restore_body">Choose a Core Builds layout file. Its settings replace the current layout; imported image files are not included.</string>
+    <string name="restore_action">Choose layout file</string>
+    <string name="toast_backup_saved">Layout saved</string>
+    <string name="toast_backup_failed">Could not save the layout file.</string>
+    <string name="toast_restored">Layout restored</string>
+    <string name="toast_restore_failed">That file is not a valid Core Builds layout.</string>
+    <string name="toast_file_picker_unavailable">This TV has no file picker.</string>
 
     <!-- Toasts -->
     <string name="toast_favourite_added">%1$s added to favourites</string>

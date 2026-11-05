@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.view.KeyEvent
 import android.view.View
+import android.widget.EditText
 import android.widget.TextClock
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
@@ -340,6 +341,52 @@ class HomeScreenTest {
     }
 
     @Test
+    fun motionOrderAndSmartSettingsApplyAndPersist() = home { activity ->
+        openCustomise(activity)
+        clickRow(activity, R.string.setting_motion)
+        clickRow(activity, R.string.motion_off)
+        HomeHarness.waitForApps(activity)
+        assertEquals(MotionMode.OFF, LauncherPreferences.readSettings(context).motion)
+        activity.handleBack()
+        HomeHarness.settle()
+
+        clickRow(activity, R.string.setting_sort_apps)
+        clickRow(activity, R.string.sort_tv_first)
+        HomeHarness.waitForApps(activity)
+        assertEquals(AppSort.TV_FIRST, LauncherPreferences.readSettings(context).appSort)
+        activity.handleBack()
+        HomeHarness.settle()
+
+        clickRow(activity, R.string.setting_launch_on_boot)
+        HomeHarness.waitForApps(activity)
+        assertTrue(LauncherPreferences.readSettings(context).launchOnBoot)
+
+        clickRow(activity, R.string.setting_smart_suggestions)
+        clickRow(activity, R.string.smart_off)
+        HomeHarness.waitForApps(activity)
+        assertFalse(LauncherPreferences.readSettings(context).smartSuggestions)
+    }
+
+    @Test
+    fun localSearchFindsAnAppAndOkOpensIt() = home { activity ->
+        openCustomise(activity)
+        clickRow(activity, R.string.setting_find_app)
+        val search = HomeHarness.descendants(activity.window.decorView).filterIsInstance<SearchPanel>().single()
+        assertTrue(search.isOpen)
+        val input = HomeHarness.descendants(search).filterIsInstance<EditText>().single()
+        input.setText("Harbor")
+        HomeHarness.settle()
+        val result = HomeHarness.descendants(search).first {
+            it.contentDescription?.startsWith("Harbor News.") == true
+        }
+        result.performClick()
+        val started = shadowOf(activity).nextStartedActivity
+        assertNotNull(started)
+        assertEquals("org.example.harbor", started?.component?.packageName)
+        assertFalse(search.isOpen)
+    }
+
+    @Test
     fun anImageOnTheTvBecomesAnAppsCardAndResetsFromCustomise() = home { activity ->
         val glide = appCards(activity, RowKind.ALL_APPS).first { it.app.label == "Glide Files" }
         assertEquals(ArtSource.APP, glide.app.art.source)
@@ -366,8 +413,24 @@ class HomeScreenTest {
         shadowOf(activity).receiveResult(request.intent, android.app.Activity.RESULT_OK, Intent().setData(image))
         HomeHarness.waitForApps(activity)
 
-        val custom = appCards(activity, RowKind.ALL_APPS).first { it.app.label == "Glide Files" }
-        assertEquals(ArtSource.CUSTOM, custom.app.art.source)
+        // The import, preference write and coalesced follow-up scan run on
+        // different threads; wait for the rendered card, not just for shelves.
+        val deadline = System.currentTimeMillis() + 8_000
+        while (System.currentTimeMillis() < deadline) {
+            HomeHarness.idle()
+            if (appCards(activity, RowKind.ALL_APPS).any {
+                    it.app.label == "Glide Files" && it.app.art.source == ArtSource.CUSTOM
+                }) break
+            Thread.sleep(10)
+        }
+        HomeHarness.settle()
+        val custom = appCards(activity, RowKind.ALL_APPS).firstOrNull { it.app.label == "Glide Files" }
+        val stored = LauncherPreferences.readCustomArt(context)["org.example.glide"]
+        assertTrue(
+            "custom art did not render; stored=$stored, artKey=${custom?.app?.artKey}, source=${custom?.app?.art?.source}",
+            custom?.app?.art?.source == ArtSource.CUSTOM,
+        )
+        assertEquals(ArtSource.CUSTOM, custom!!.app.art.source)
         assertNotNull("a wide image fills the card", custom.app.art.banner)
         custom.requestFocus()
         HomeHarness.settle()

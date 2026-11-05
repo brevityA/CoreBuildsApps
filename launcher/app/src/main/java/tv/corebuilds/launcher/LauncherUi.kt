@@ -14,7 +14,6 @@ import android.util.TypedValue
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
-import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
 
 /**
@@ -101,13 +100,10 @@ internal fun Context.text(
     importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
 }
 
-/** The focus lift every focusable shares: [scale] up over 150 ms, back down the same way. */
+/**
+ * The focus lift every focusable shares. [Motion] owns the duration and turns
+ * it into an immediate state change when the user or Android asks for less motion.
+ */
 internal fun View.animateFocus(focused: Boolean, scale: Float) {
-    animate().cancel()
-    animate()
-        .scaleX(if (focused) scale else 1f)
-        .scaleY(if (focused) scale else 1f)
-        .setDuration(150)
-        .setInterpolator(DecelerateInterpolator())
-        .start()
+    Motion.focus(this, focused, scale)
 }

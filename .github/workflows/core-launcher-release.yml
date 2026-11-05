@@ -98,6 +98,11 @@ jobs:
       - name: Launcher source contract
         run: python3 tests/test_gradle_envelope.py
 
+      - name: Check offline launcher previews are current
+        run: |
+          python3 tools/build_launcher_offline_preview.py --check
+          python3 tools/build_launcher_polish_preview.py --check
+
       - uses: actions/setup-java@v6
         with:
           distribution: temurin

@@ -2,7 +2,35 @@
 
 An installable, **private-use** Android TV / Google TV HOME launcher experiment. This is not a suite release: it has no `suite.json` entry, store listing, Downloader code, or update feed. The only distribution lane is a dispatch-only GitHub **pre-release** that attaches the debug-signed APK for a `launcher-v*` tag; see [Private pre-release lane](#private-pre-release-lane).
 
-**Supported Android: 11 (API 30) to the latest.** `minSdk` is 30 and `targetSdk` 37. Home opens with a focused card on API 30, 31, 32, 33, 34 and 35 under Robolectric. No device has run 0.2 yet; see [the device checklist](#required-physical-device-validation-merge-gate).
+**Supported Android: 11 (API 30) to the latest.** `minSdk` is 30 and `targetSdk` 37. Home opens with a focused card on API 30, 31, 32, 33, 34 and 35 under Robolectric. No device has run 0.4 yet; the 0.2/0.3 hardware checklists were also never completed. See [the device checklist](#required-physical-device-validation-merge-gate).
+
+## What 0.4 adds
+
+On 2026-11-06 the repository owner explicitly asked to use extra Android permissions **for the application**. 0.4 therefore expands the 0.2/0.3 zero-permission boundary with a connected-TV set, while keeping the private sideload-only distribution lane. The exact set and rationale are in [`docs/CORE_LAUNCHER_POLISH_RESEARCH.md`](../docs/CORE_LAUNCHER_POLISH_RESEARCH.md#04-connected-tv-permission-expansion-2026-11-06).
+
+- **`QUERY_ALL_PACKAGES` — broader app discovery.** The catalog still prefers the two narrow launcher-intent queries, then falls back to installed packages that publish a launchable HOME activity but were hidden by Android 11 package-visibility filters. Permission-guarded entries are still skipped. This permission is scrutinised on Google Play; this prototype is not a Play release.
+- **`PACKAGE_USAGE_STATS` — smarter ranking.** **Customise › Usage access** reports Granted / Not granted and hands off to Android's `ACTION_USAGE_ACCESS_SETTINGS`. If the owner grants it, `UsageStatsManager` foreground minutes from the last 30 days feed the Suggested row and Most used order. Without it, the 0.3 bounded local launch history remains the fallback. No statistics leave the TV.
+- **`INTERNET` and `ACCESS_NETWORK_STATE` — one bounded network wallpaper.** **Customise › Network wallpaper** accepts only an owner-typed HTTP/HTTPS URL, checks a validated internet connection, downloads at most 8 MB on a background executor, scales for a 1920×1080 TV and refuses other schemes. The application opts into cleartext for owner-typed LAN URLs; HTTPS is recommended. There is no default endpoint, gallery, account, telemetry or automatic refresh.
+- **`SET_WALLPAPER` — apply the wallpaper.** A decoded image is handed to Android's `WallpaperManager`; failures leave the current wallpaper alone.
+- **`RECEIVE_BOOT_COMPLETED` — Launch on boot.** A receiver checks the saved setting and whether the system already resolves HOME to this package, then tries a `FLAG_ACTIVITY_NEW_TASK` start. It never changes the default HOME role; Android's background-activity restrictions may still block it on some TVs.
+- **`POST_NOTIFICATIONS` — status notification.** On Android 13+ the launcher requests this at runtime only when **Customise › Status notification** is pressed. A dismissible, low-importance notification is posted only after the owner grants it.
+- **Copy and boundaries.** About states that network access is user-entered URLs only. The seven declared permissions are pinned by Python source/manifest tests; privileged `WRITE_SECURE_SETTINGS`, accessibility-service HOME overrides, `RoleManager`, uninstall/kill and web views remain out of scope.
+
+Recommendation/channel providers, Watch Next, weather/sports widgets, HDMI-input switching, profiles/PIN locks, remote-button remapping and vendor-specific HOME-key workarounds remain out of scope. 0.4 adds network wallpaper, usage access, boot fallback and notifications; it does not add a feed, account or cloud sync.
+
+## What 0.3 added
+
+0.3 keeps 0.2's immersive 16:9 home screen and adds a local-first polish pass. The market comparison, official TV/performance guidance, adopted features and deliberate deferrals are recorded in [`docs/CORE_LAUNCHER_POLISH_RESEARCH.md`](../docs/CORE_LAUNCHER_POLISH_RESEARCH.md). It is a design and source implementation, **not** a measured speed or accessibility result.
+
+- **One motion system.** Full, Calm and Off apply to focus, information reveal, row scrolling, backdrop cross-fades and side sheets. Android's `ANIMATOR_DURATION_SCALE` also multiplies every duration, so the TV's "Remove animations" setting is respected; every transition is finite and scroll work stops when Home pauses. Focus still uses shape, glow, legible text and a ring, not colour alone.
+- **Smarter local suggestions.** The Suggested row can use up to 96 launch events from the last 30 days plus a small recency/frequency/time-of-day score. All of it stays in `SharedPreferences`; 0.3 had no UsageStats permission, account, cloud sync or recommendation feed. 0.4 adds optional owner-granted system usage stats; switching Smart suggestions off still returns to the exact last-five recents.
+- **Search and ordering.** Search (remote Search key or **Customise › Find an app**) ranks installed, visible apps by exact, prefix, word, initials, package and subsequence matches, with up to eight results. All apps can be ordered A–Z, Most used, TV first or Newest install. All ranks use only this launcher's local data.
+- **Current-value settings and quick settings.** Every Customise row states its current choice, selected options are announced, and motion/sort/suggestion pages explain the effect before it is changed. Quick settings hands off to public Android Wi-Fi, Bluetooth, display, sound, accessibility, apps and Home screens.
+- **Bounded backup/restore.** **Customise › Back up layout** writes a versioned JSON file through Android's document picker; **Restore layout** accepts only the `core-builds-launcher-layout` format, version 1, at most 256 KB, and restores a known-key allowlist. Imported custom-art image files stay on the TV and are not copied into the backup; unreferenced files are pruned after a restore.
+- **Bounded art memory.** Card art is cached per app version, pack version and custom-art choice in a 24 MB `byteCount`-bounded `LruCache`, rather than an unmeasured number of bitmaps. A custom-art key for an uninstalled app is pruned during a scan.
+- **Copy that says what OK does.** Panel rows, search results, quick settings and toasts use short verbs, explicit D-pad hints and actions that state whether data is local. 0.3 added no continuous animation, network image, video wallpaper or remote key remapper; 0.4 adds one bounded, user-entered network wallpaper.
+
+Wallpaper galleries, recommendations/channels, weather/scores, TV inputs, remote setup, profiles/PIN locks, widgets, accessibility-service HOME overrides and vendor-specific HOME-key workarounds remain out of scope. 0.3's local search, smart suggestions, sorting, backup/restore and quick settings did not reverse the zero-permission boundary; 0.4 explicitly does, with the seven connected-TV permissions listed above.
 
 ## What 0.2 is
 
@@ -30,27 +58,34 @@ An installable, **private-use** Android TV / Google TV HOME launcher experiment.
   - **Hidden apps:** hide an app from All apps and Recently opened; Customise › Hidden apps lists them to bring back.
   - **Set as Home app** hands off to Android's settings, and **Reset home screen** asks twice.
 - **Stays current.** Installing, removing or updating an app while Home is showing refreshes it.
-- **Local and permission-free.** The manifest declares no permission at all. App discovery uses three narrow `<queries>` intents: the two launcher categories, plus `org.adw.launcher.THEMES` for icon packs. Favourites, hidden apps, settings and history stay in local `SharedPreferences`. 0.1's unordered favourites migrate once, in the A-Z order 0.1 showed them. A favourite that is uninstalled is remembered and comes back where it was if the app returns.
+- **0.2 was local and permission-free.** Its manifest declared no permission at all. App discovery used three narrow `<queries>` intents: the two launcher categories, plus `org.adw.launcher.THEMES` for icon packs. Favourites, hidden apps, settings and history stay in local `SharedPreferences`. 0.1's unordered favourites migrate once, in the A-Z order 0.1 showed them. A favourite that is uninstalled is remembered and comes back where it was if the app returns.
 
-Wallpaper galleries, recommendations/channels, search, weather/scores, TV inputs, remote setup, and vendor-specific HOME-key workarounds remain out of scope.
+Wallpaper galleries, recommendations/channels, network search, weather/scores, TV inputs, remote setup, and vendor-specific HOME-key workarounds were out of scope for 0.2. 0.3 added the deliberately local-only features listed above; 0.4 adds a bounded network wallpaper, usage access, boot fallback and notifications, but still no recommendation feed or cloud sync.
 
 ### Implementation
 
 - [LauncherActivity.kt](app/src/main/java/tv/corebuilds/launcher/LauncherActivity.kt): the home screen. Layout, the coalesced catalog scan, every arrow, move mode, and the panel pages.
 - [HomeViews.kt](app/src/main/java/tv/corebuilds/launcher/HomeViews.kt): the cards with their lift and ring, the Add card, the background, and the Customise pill.
 - [SidePanel.kt](app/src/main/java/tv/corebuilds/launcher/SidePanel.kt): the right-hand sheet. Stacked pages, rows, and focus kept inside.
-- [LauncherApps.kt](app/src/main/java/tv/corebuilds/launcher/LauncherApps.kt): launchable activities (TV entry preferred, permission-guarded entries skipped), with card art cached per app version.
+- [Motion.kt](app/src/main/java/tv/corebuilds/launcher/Motion.kt): the Full/Calm/Off motion scale, system animator-scale factor, and finite focus/reveal/scroll/sheet/backdrop helpers.
+- [SearchPanel.kt](app/src/main/java/tv/corebuilds/launcher/SearchPanel.kt): the local ranked app search and its TV D-pad result list.
+- [LauncherBackup.kt](app/src/main/java/tv/corebuilds/launcher/LauncherBackup.kt): versioned JSON export, bounded reads and a known-key restore allowlist.
+- [LauncherUsage.kt](app/src/main/java/tv/corebuilds/launcher/LauncherUsage.kt): owner-granted `UsageStatsManager` foreground minutes with a local-history fallback.
+- [NetworkWallpaper.kt](app/src/main/java/tv/corebuilds/launcher/NetworkWallpaper.kt): URL validation, connectivity check, byte/dimension-bounded HTTP fetch and `WallpaperManager` apply.
+- [LauncherNotification.kt](app/src/main/java/tv/corebuilds/launcher/LauncherNotification.kt): runtime `POST_NOTIFICATIONS` gate, notification channel and one-off status notification.
+- [BootReceiver.kt](app/src/main/java/tv/corebuilds/launcher/BootReceiver.kt): `BOOT_COMPLETED` fallback that checks both the saved setting and the current HOME resolution.
+- [LauncherApps.kt](app/src/main/java/tv/corebuilds/launcher/LauncherApps.kt): launchable activities (TV entry preferred, permission-guarded entries skipped), installed-package fallback with `QUERY_ALL_PACKAGES`, install times, custom-art cache keys, and a 24 MB byte-bounded art cache.
 - [CardArt.kt](app/src/main/java/tv/corebuilds/launcher/CardArt.kt): card art drawn once at card size (banners rounded, icons on a tinted plate), plus the 48 × 27 softened copy the background scales up.
 - [IconPacks.kt](app/src/main/java/tv/corebuilds/launcher/IconPacks.kt): icon packs through the open appfilter contract. It reads `res/xml/appfilter.xml` (or `assets/appfilter.xml`) once per installed version, matching components first and then by package, and lists every drawable a pack maps to an app as its suggestions.
 - [CustomArt.kt](app/src/main/java/tv/corebuilds/launcher/CustomArt.kt): per-app artwork. It covers pack references and imported images, reads a pack browser's result (resource reference first, else the bitmap it sent), and imports and deletes image files.
-- [LauncherPreferences.kt](app/src/main/java/tv/corebuilds/launcher/LauncherPreferences.kt): ordered favourites with the 0.1 migration, hidden apps, bounded history, and the Customise settings.
-- [LauncherUi.kt](app/src/main/java/tv/corebuilds/launcher/LauncherUi.kt): Outfit type, the focus lift, API 30-safe package queries, and immersive mode that is safe before `setContentView()`.
+- [LauncherPreferences.kt](app/src/main/java/tv/corebuilds/launcher/LauncherPreferences.kt): ordered favourites with the 0.1 migration, hidden apps, 30-day/96-event local history, connected wallpaper/boot settings, motion/sort/suggestion settings, and the Customise settings.
+- [LauncherUi.kt](app/src/main/java/tv/corebuilds/launcher/LauncherUi.kt): Outfit type, the motion-aware focus lift, API 30-safe package queries, and immersive mode that is safe before `setContentView()`.
 
 ### Tests
 
 The launcher CI job runs `:app:testDebugUnitTest` before lint and assemble. These tests run the real activity under Robolectric at 1920 × 1080, with invented apps whose icons and banners are drawn by the test; they prove behaviour on the platform's own framework code, not on a TV.
 
-- [HomeScreenTest.kt](app/src/test/java/tv/corebuilds/launcher/HomeScreenTest.kt), 17 tests (API 35). It checks:
+- [HomeScreenTest.kt](app/src/test/java/tv/corebuilds/launcher/HomeScreenTest.kt), 19 tests (API 35). It checks:
   - what Home opens on, and that every card and Customise is reachable by remote;
   - that row ends hold, and Up from the top goes to Customise and back;
   - that every focused card shows whole on screen, lift included, and that text fits, including a 57-character app name;
@@ -59,24 +94,29 @@ The launcher CI job runs `:app:testDebugUnitTest` before lint and assemble. Thes
   - that Hide takes an app out of All apps and Hidden apps brings it back;
   - that Recently opened is right and its setting turns it off, card size changes the row and is saved, and background and clock apply at once;
   - that Home on Home returns to the first card, a newly installed app appears, and OK starts the TV entry;
-  - that an image picked from the TV's storage becomes that app's card, is listed in Custom artwork, and resets with its file deleted.
+  - that an image picked from the TV's storage becomes that app's card, is listed in Custom artwork, and resets with its file deleted;
+  - that motion, app order and smart-suggestion settings apply and persist, and that local search ranks and launches an app.
 
   Renders land in `app/build/screens`.
 - `HomeOpensTest`, in the same file: Home opens with a focused card on API 30–35.
-- [ModelTest.kt](app/src/test/java/tv/corebuilds/launcher/ModelTest.kt), 9 tests. It checks:
+- [ModelTest.kt](app/src/test/java/tv/corebuilds/launcher/ModelTest.kt), 14 tests. It checks:
   - first-run seeding and the 0.1 migration;
   - that reordering keeps an uninstalled favourite's slot;
   - recent history rules, and settings round trip and reset;
   - appfilter parsing with package fallback, and every drawable a pack maps to an app;
   - banner versus icon art;
-  - custom-art storage, and both kinds of pack-browser result.
+  - custom-art storage, and both kinds of pack-browser result;
+  - polished settings round trip, versioned backup/restore with a known-key allowlist, and local app-search ranking;
+  - connected TV settings/backup round trip and network-wallpaper URL scheme validation.
 - [tests/test_gradle_envelope.py](../tests/test_gradle_envelope.py) pins the source and manifest invariants:
   - the HOME and launcher entry points;
-  - zero permissions and narrow queries;
-  - no uninstall, kill or network code, and no forced Home role;
-  - the Android 11 floor, the coalesced off-main-thread scan, the icon-pack contract, branding, and the release lane.
+  - the exact seven-permission connected-TV set plus narrow launcher/icon-pack queries;
+  - bounded, owner-typed network wallpaper code, and no uninstall, kill, feed, cloud sync or forced Home role;
+  - the Android 11 floor, the coalesced off-main-thread scan, the icon-pack contract, branding, and the release lane;
+  - system animation-scale handling, bounded local history/search/backup/art cache, and the new Robolectric/Python test coverage;
+  - the exact seven-permission connected-TV manifest set, the `BOOT_COMPLETED` receiver, owner-granted usage access, typed-URL wallpaper fetch, runtime notification permission and no privileged HOME override.
 
-The 1920×1080 design illustrations and the [single-file offline HTML preview](../docs/mockups/core-launcher-offline.html) in [`docs/mockups`](../docs/mockups/README.md) are 0.1-era concepts, clearly labelled as such; the renders from `HomeScreenTest` show 0.2 itself.
+The 1920×1080 design illustrations and the original [single-file offline HTML preview](../docs/mockups/core-launcher-offline.html) in [`docs/mockups`](../docs/mockups/README.md) are 0.1-era concepts, clearly labelled as such. The [0.4 interactive preview](../docs/mockups/core-launcher-polish.html) illustrates the motion, search, connected-TV settings and permission copy; it is a design mockup, not an APK capture. The renders from `HomeScreenTest` remain the source-level 0.4 screen evidence, and none of these is a physical-TV screenshot.
 
 ## Build and install
 
@@ -99,10 +139,10 @@ For the PR head, open a successful [Build and lint private launcher Actions run]
 Tagged builds go through [core-launcher-release.yml](../.github/workflows/core-launcher-release.yml). It is **dispatch-only** by design: `tools/check_suite_truth.py` requires every workflow `tags:` glob to match a `tagPrefix` declared in `suite.json`, and the launcher deliberately has no entry there. Publish with:
 
 ```bash
-git tag launcher-v0.2.0 <commit>
-git push origin launcher-v0.2.0
+git tag launcher-v0.4.0 <commit>
+git push origin launcher-v0.4.0
 gh workflow run core-launcher-release.yml \
-  -f tag=launcher-v0.2.0 -f publish=true
+  -f tag=launcher-v0.4.0 -f publish=true
 ```
 
 The workflow rebuilds the debug APK from that tag, re-runs the suite-truth, Gradle-envelope and launcher contract gates, writes `BUILD_COMMIT.txt`, and creates a **pre-release** whose assets are the APK copied to `core-builds-launcher-<version>-debug.apk` (a release asset takes its name from the file, not from a `path#label` suffix) plus `BUILD_COMMIT.txt`; the release body also records that APK's SHA-256. Re-running the job repairs an existing release with `gh release upload --clobber` rather than failing on it.
@@ -112,7 +152,7 @@ A client that holds `contents: write` but not `actions: write` can start the sam
 ```bash
 gh api -X POST repos/brevityA/CoreBuildsApps/dispatches \
   -f event_type=launcher-release \
-  -f 'client_payload[tag]=launcher-v0.2.0' \
+  -f 'client_payload[tag]=launcher-v0.4.0' \
   -f 'client_payload[publish]=true'
 ```
 
@@ -124,7 +164,7 @@ Some televisions restrict third-party HOME selection. Google TV is one: a Chrome
 
 ## Required physical-device validation: merge gate
 
-**Current sign-off for 0.2: NOT RUN.** No device has run 0.2. This README section is the single source of truth for hardware-validation status and results.
+**Current sign-off for 0.4: NOT RUN.** No device has run 0.4. The 0.2/0.3 checklists were also never completed and are superseded by these 0.4 checks. This README section is the single source of truth for hardware-validation status and results.
 
 **History: the 0.1 record.** The repository owner reported all eight 0.1 checks as PASS on a **Chromecast with Google TV** on 2026-11-04 (PR #435 review), against the `f01b5194bc71c3fd917b79ce5e6b02e19150d4e6` debug artifact, with no logs, screenshots, OS build, remote model or APK SHA-256 captured.
 
@@ -134,7 +174,7 @@ Some televisions restrict third-party HOME selection. Google TV is one: a Chrome
 
 **Validation owner:** Repository owner.
 
-**Target completion date:** Before `launcher-v0.2.0` is tagged.
+**Target completion date:** Before `launcher-v0.4.0` is tagged.
 
 **Estimated effort:** About 45 minutes per device after the APK and device are set up.
 
@@ -148,7 +188,7 @@ Record the actual target, exact installed build, owner, date, and results below;
 
 Record the exact APK installed, preferably its version and full source commit SHA or APK SHA-256; the current PR head is not evidence that a device was tested. Add one row per target device. If Fire TV or another vendor is an intended target, test and record it separately; otherwise do not claim compatibility for it.
 
-### Results (0.2)
+### Results (0.4)
 
 Use **NOT RUN**, **PASS**, **FAIL**, or **BLOCKED** in the status column.
 
@@ -166,6 +206,18 @@ Use **NOT RUN**, **PASS**, **FAIL**, or **BLOCKED** in the status column.
 | 9 | Install and uninstall an app (for example with `adb`) while Home is showing. | The new app appears and the removed one disappears without leaving Home. | NOT RUN | |
 | 10 | Enable TalkBack; walk cards, the options panel and Customise. | Each card announces its name and the hold-OK hint once; panel rows announce their title, value and selected state. | NOT RUN | |
 
-Persisting the exact focused card across process recreation is **not currently promised**; if required, add it to scope and record it as a separate check.
+| 11 | In Customise › Motion, try Full, Calm and Off; enable Android's Remove animations; move focus, scroll, open a panel and change the backdrop. | Motion is progressively shorter and never blocks D-pad input; the OS setting turns transitions off; focus remains visible. | NOT RUN | |
+| 12 | Press the remote's Search key, or Customise › Find an app; type a prefix, initials and no match; arrow through results, press OK and Back. | Search ranks installed apps, shows no network result, opens the picked app, and Back returns to the card you left. | NOT RUN | |
+| 13 | Launch a few apps at different times; turn Suggested row off/on; try A–Z, Most used, TV first and Newest install. | The row and order change as described, no favourite is duplicated, and changes survive a restart. | NOT RUN | |
+| 14 | Open Quick settings; back up and restore a layout file through the document picker; open About. | Android settings screens open where the TV offers them; a versioned local file restores only recognised launcher settings; About states the local-data boundary. | NOT RUN | |
+| 15 | With TalkBack, walk cards, search results, motion/sort/suggestion pages and backup/restore. | Names, current values, selected states and key hints are announced once; no result relies on colour alone. | NOT RUN | |
+
+| 16 | Inspect Android's permission screen for this app; confirm exactly the seven declared connected-TV permissions and no secure-settings or accessibility-service grant. | No unexpected permission appears; the About page says network access is user-entered URLs only. | NOT RUN | |
+| 17 | Open Customise › Usage access, grant it in Android Settings, then return and refresh suggestions. | The row changes to Granted; Suggested and Most used respond; denying access still leaves local history working. | NOT RUN | |
+| 18 | Enter a valid HTTP/HTTPS wallpaper URL on a connected TV; enter a `file` URL and an 8 MB-plus response; disconnect and try again. | Only the valid URL is fetched and applied; unsafe schemes, oversized responses and offline state explain themselves without a hang. | NOT RUN | |
+| 19 | Enable Launch on boot, set this app as HOME where the TV permits, reboot, then disable the setting and reboot again. | The receiver never changes the HOME role; Android's own boot/background-start rules are recorded. | NOT RUN | |
+| 20 | On Android 13+, press Status notification, grant/deny the runtime prompt, and check the one-off notification and its channel. | Denial posts nothing; grant shows one dismissible low-importance notification; no persistent foreground service appears. | NOT RUN | |
+
+Persisting the exact focused card across process recreation is **not currently promised**; if required, add it to scope and record it as a separate check. Cold start/resume time, frame latency, idle CPU and memory, GPU overdraw, network wallpaper latency, boot-start behaviour, notification delivery and TalkBack still need a physical device before any "faster", "smoother" or "best on market" claim.
 
 The launcher CI gate is separate from this table. It checks that the debug APK builds and lints, and that the screen tests above pass under Robolectric. It does not check that the UI works with a physical remote or TalkBack, and nothing here claims coverage of other vendors, other Android TV OS versions, or the unused release variant.

@@ -125,6 +125,12 @@ internal object CustomArtStore {
         if (art is CustomArt.Image) File(dir(context), art.fileName).delete()
     }
 
+    /** After a layout restore, removes image files that no saved app references. */
+    fun prune(context: Context, used: Map<String, CustomArt>) {
+        val names = used.values.filterIsInstance<CustomArt.Image>().map { it.fileName }.toSet()
+        dir(context).listFiles()?.filterNot { it.name in names }?.forEach { it.delete() }
+    }
+
     fun clearAll(context: Context) {
         dir(context).listFiles()?.forEach { it.delete() }
     }

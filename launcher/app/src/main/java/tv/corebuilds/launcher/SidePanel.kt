@@ -5,7 +5,6 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.StateListDrawable
 import android.view.Gravity
 import android.view.View
-import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -67,6 +66,11 @@ internal class SidePanel(context: Context) : FrameLayout(context) {
         sheet.setPadding(context.dp(32), context.dp(36), context.dp(32), context.dp(27))
         sheet.background = GradientDrawable().apply {
             setColor(context.getColor(R.color.cb_night))
+            cornerRadii = floatArrayOf(
+                context.dp(24).toFloat(), context.dp(24).toFloat(),
+                0f, 0f, 0f, 0f,
+                context.dp(24).toFloat(), context.dp(24).toFloat(),
+            )
         }
         eyebrow = context.text("", 12f, context.getColor(R.color.cb_cyan), weight = 600, tracking = 0.12f)
         title = context.text("", 26f, context.getColor(R.color.cb_text), weight = 600, maxLines = 2)
@@ -105,8 +109,7 @@ internal class SidePanel(context: Context) : FrameLayout(context) {
         visibility = VISIBLE
         show(focus = 0)
         if (!wasOpen) {
-            sheet.translationX = context.dp(SHEET_WIDTH_DP).toFloat()
-            sheet.animate().translationX(0f).setDuration(200).setInterpolator(DecelerateInterpolator()).start()
+            Motion.sheetIn(sheet, context.dp(SHEET_WIDTH_DP).toFloat())
         }
     }
 
@@ -232,6 +235,7 @@ internal class SidePanel(context: Context) : FrameLayout(context) {
             item.value,
             if (item.selected) context.getString(R.string.selected_state) else null,
         ).joinToString(". ")
+        setOnFocusChangeListener { view, focused -> Motion.panelFocus(view, focused) }
         setOnClickListener { item.onSelect() }
     }
 
