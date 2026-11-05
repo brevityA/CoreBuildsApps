@@ -237,10 +237,13 @@ run_device_tests() {
       echo "::notice title=Core EQ on-device tests::${passed}"
       return 0
     fi
-    # A framework restart under the run (storage locked again, a service gone)
-    # earns one more run once the device is ready. Any other failure, or the
+    # A framework restart under the run earns one more run once the device is
+    # ready: storage locked again, a service gone, or the activity manager
+    # dying under `am instrument` itself (DeadObjectException from
+    # startInstrumentation, PR #455's second 37.0 run, before any test began;
+    # "System has crashed" when it dies mid-run). Any other failure, or the
     # same one twice, is the code's.
-    if (( attempt == 1 )) && printf '%s\n' "$out" | grep -qE 'not available until after user|Can.t find service|DeadSystemException'; then
+    if (( attempt == 1 )) && printf '%s\n' "$out" | grep -qE 'not available until after user|Can.t find service|DeadSystemException|DeadObjectException|System has crashed'; then
       crash_report "on-device tests, first run"
       echo "::warning title=Core EQ on-device tests::the first run met a framework restart on this emulator; running once more"
       continue

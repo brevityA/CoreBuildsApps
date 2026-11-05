@@ -132,6 +132,8 @@ class OnDeviceTestRuns(unittest.TestCase):
         # locked and credential-encrypted SharedPreferences throw (PR #455, first run).
         self.assertIn("am get-started-user-state 0", script)
         self.assertIn("RUNNING_UNLOCKED", script)
+        # The activity manager dying under `am instrument` is a restart, not a test failure.
+        self.assertIn("DeadObjectException", script)
         run = script[script.index("run_device_tests() {"):]
         self.assertLess(run.index('wait_for_user_unlocked "before the on-device tests'), run.index("am instrument -w"))
 
