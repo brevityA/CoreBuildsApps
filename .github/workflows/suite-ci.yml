@@ -338,6 +338,7 @@ jobs:
           python tests/test_core_eq_release_contract.py
           python tests/test_core_eq_companion_focus.py
           python tests/test_core_eq_route_stability.py
+          python tests/test_core_eq_phone_pairing.py
           python tests/test_navigation_graph.py
           python tests/test_tv_scale.py
           python tests/test_mapping_hygiene.py

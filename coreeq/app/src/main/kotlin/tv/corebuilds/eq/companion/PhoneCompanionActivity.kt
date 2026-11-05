@@ -744,10 +744,16 @@ class PhoneCompanionActivity : AppCompatActivity() {
         thread(name = "CoreEqPhonePair") {
             val saved = try {
                 val token = CompanionCrypto.randomKey()
+                val credentials = PhoneCredentials(host, port, token)
+                // Encrypted before the TV is asked: the TV spends its one-time key and records
+                // this phone as soon as it accepts the token, so a phone that cannot keep the
+                // token has to stop here, not after.
+                val sealed = credentialStore.seal(credentials)
                 val clientName = "${Build.MANUFACTURER} ${Build.MODEL}".trim().take(60).ifBlank { "Android phone" }
                 val response = CompanionClient(host, port, pairingKey).pair(pairingKey, token, clientName)
                 requireOk(response)
-                PhoneCredentials(host, port, token).also { credentialStore.save(it) }
+                credentialStore.commit(sealed)
+                credentials
             } catch (e: Exception) {
                 val unreachable = e is java.net.ConnectException ||
                     e is java.net.SocketTimeoutException ||
@@ -763,7 +769,12 @@ class PhoneCompanionActivity : AppCompatActivity() {
                         pairWithTv(replaceConfirmed = true)
                     } else {
                         fallbackHosts = emptyList()
-                        setStatus(getString(R.string.phone_pair_failed, readableError(e)), error = true)
+                        val message = if (e is PhoneKeyStorageException) {
+                            getString(R.string.phone_pair_key_store_failed, readableError(e))
+                        } else {
+                            getString(R.string.phone_pair_failed, readableError(e))
+                        }
+                        setStatus(message, error = true)
                     }
                 }
                 return@thread

@@ -8,6 +8,44 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+## [1.13.1] — 2026-11-05
+
+versionCode 28. Android build, lint and Robolectric pass: 876 unit tests, lint
+0 errors. The Keystore check below runs on the API 30 and API 37 emulators in
+CI. Pairing on a physical phone has not been re-run yet.
+
+### Fixed
+
+- **Phone pairing works.** 1.13.0 could not pair any phone: pairing stopped at
+  "Pairing failed: Caller-provided IV not permitted" (reported on a Pixel 9
+  Pro XL). The phone encrypts its pairing token with an Android Keystore key
+  that chooses its own IV; Core EQ passed one in, and the Keystore refuses
+  that. Core EQ now lets the Keystore choose and stores the IV it picked.
+- **A phone that cannot store the token no longer leaves the TV paired.** The
+  phone used to encrypt the token after the TV had accepted it, so the TV
+  spent its one-time code and showed "Paired to <phone>" while the phone had
+  nothing saved. The token is now encrypted before the TV is asked. If that
+  fails, the phone says the Keystore could not store it and that the TV was
+  not asked, so the TV's code still works.
+- **After updating, pair again.** A phone that tried to pair on 1.13.0 saved
+  nothing. On the TV choose Start pairing, then scan the code; the new
+  pairing replaces the old one.
+
+### Internal
+
+- `PhoneCredentialStore` takes its key from a provider, so
+  `PhoneCredentialStoreTest` runs 7 round-trip, tamper, wrong-key and
+  rediscovery cases on a software AES key.
+- First on-device tests (`coreeq/app/src/androidTest`).
+  `PhoneCredentialStoreKeystoreTest` first proves the device's Keystore refuses
+  a caller IV, then seals, stores and loads a pairing with the real key. The
+  `apk` job builds them as the `CoreEQ-androidTest` artifact, and
+  `tools/install_core_eq_on_emulator.sh` runs them on both emulators. A run
+  fails unless `am instrument` reports `OK` with at least one test.
+- `tests/test_core_eq_phone_pairing.py` holds three rules: no IV is passed to
+  Keystore encryption, sealing happens before the TV is asked, and CI still
+  runs the device tests.
+
 ## [1.13.0] — 2026-11-05
 
 versionCode 27. Android build, lint and Robolectric pass: 869 unit tests, lint

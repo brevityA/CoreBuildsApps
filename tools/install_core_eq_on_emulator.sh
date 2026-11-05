@@ -189,6 +189,36 @@ install_one() { # installs $APK and proves $PACKAGE is on the device
   printf 'Installed %s as %s\n' "$APK" "$PACKAGE"
 }
 
+# On-device tests (coreeq/app/src/androidTest), on the runs that built them:
+# pull requests and main pushes, never a tag. They cover what only a real
+# Android Keystore enforces; 1.13.0's phone pairing passed every JVM test and
+# failed on every phone with "Caller-provided IV not permitted".
+TEST_APK=androidtest/coreeq-debug-androidTest.apk
+TEST_RUNNER=tv.corebuilds.eq.debug.test/androidx.test.runner.AndroidJUnitRunner
+run_device_tests() {
+  local out passed
+  APK="$TEST_APK"
+  wait_for_package_service "before installing the on-device tests" || return 1
+  if ! install_apk "on-device tests, streaming" -r -t; then
+    # The same preview-image fallback the app installs use, in one step.
+    adb shell settings put global verifier_verify_adb_installs 0 || true
+    adb shell settings put global package_verifier_enable 0 || true
+    wait_for_package_service "before the on-device tests' second install" || return 1
+    install_apk "on-device tests, no-streaming" --no-streaming -r -t || return 1
+  fi
+  out=$(timeout 600 adb shell am instrument -w "$TEST_RUNNER" 2>&1 || true)
+  printf '%s\n' "$out"
+  # am instrument exits 0 whether or not a test failed; its summary line says
+  # which, and "OK (0 tests)" would mean the runner found nothing to run.
+  passed=$(printf '%s\n' "$out" | grep -oE 'OK \([1-9][0-9]* tests?\)' | tail -n 1 || true)
+  if [[ -n "$passed" ]] && ! printf '%s\n' "$out" | grep -qE 'FAILURES!!!|INSTRUMENTATION_FAILED|Process crashed'; then
+    echo "::notice title=Core EQ on-device tests::${passed}"
+    return 0
+  fi
+  echo "::error title=Core EQ on-device tests::$(escape "$(printf '%s\n' "$out" | grep -m6 -E 'FAILURES!!!|INSTRUMENTATION_FAILED|Process crashed|Exception|Error|^[0-9]+\) ' || printf 'no OK line in the am instrument output')")"
+  return 1
+}
+
 failed=()
 for APK in "${APKS[@]}"; do
   # A plain header, not a ::group::, because the crash dump below opens its
@@ -201,4 +231,12 @@ done
 if (( ${#failed[@]} )); then
   echo "::error title=Core EQ install smoke::did not install: ${failed[*]}"
   exit 1
+fi
+
+if [[ -f "$TEST_APK" ]]; then
+  echo "=== on-device tests ==="
+  if ! run_device_tests; then
+    echo "::error title=Core EQ on-device tests::the tests in coreeq/app/src/androidTest did not pass on this emulator"
+    exit 1
+  fi
 fi

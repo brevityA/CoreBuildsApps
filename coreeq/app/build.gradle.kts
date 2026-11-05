@@ -37,8 +37,8 @@ android {
         applicationId = "tv.corebuilds.eq"
         minSdk = 30
         targetSdk = 37
-        versionCode = 27
-        versionName = "1.13.0"
+        versionCode = 28
+        versionName = "1.13.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Read by the updater: the release feed it polls and the FileProvider
@@ -140,4 +140,10 @@ dependencies {
     testImplementation("org.robolectric:robolectric:4.17")
     testImplementation("androidx.test:core:1.6.1")
     testImplementation("androidx.test.ext:junit:1.2.1")
+
+    // On-device tests, run by the emulator jobs: the few rules only a real Android
+    // Keystore enforces (1.13.0 phone pairing broke on one Robolectric cannot see).
+    androidTestImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test:runner:1.7.0")
+    androidTestImplementation("androidx.test.ext:junit:1.3.0")
 }

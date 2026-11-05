@@ -216,6 +216,36 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
 
+      # The on-device tests (coreeq/app/src/androidTest) run on both emulators
+      # after the installs: the rules only a real Android Keystore enforces.
+      # 1.13.0's phone pairing passed every JVM test and failed on every phone
+      # with "Caller-provided IV not permitted". A separate artifact, so the
+      # CoreEQ-debug download stays the app and nothing else.
+      - name: Assemble on-device test APK
+        if: ${{ !startsWith(github.ref, 'refs/tags/coreeq-v') }}
+        # Signed like the debug APK it tests (instrumentation needs the same
+        # certificate): the release key on main pushes, the debug key on PRs.
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          (cd coreeq && ./gradlew :app:assembleDebugAndroidTest --no-daemon --stacktrace)
+          APK=$(find coreeq/app/build/outputs/apk/androidTest/debug -maxdepth 1 -type f -name '*.apk' -print -quit)
+          test -n "$APK" || { echo "::error::No on-device test APK was produced."; exit 1; }
+          mkdir -p androidtest
+          cp "$APK" androidtest/coreeq-debug-androidTest.apk
+          ls -lh androidtest/
+
+      - name: Upload on-device test APK
+        if: ${{ !startsWith(github.ref, 'refs/tags/coreeq-v') }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: CoreEQ-androidTest
+          path: androidtest/coreeq-debug-androidTest.apk
+          if-no-files-found: error
+
       # Fail closed if the repository key has drifted. This runs for both
       # production releases and main candidate checks, against the APK users
       # currently install from the floating stable release.
@@ -357,6 +387,12 @@ jobs:
         with:
           name: CoreEQ-${{ startsWith(github.ref, 'refs/tags/coreeq-v') && 'release' || 'debug' }}
           path: dist
+
+      - uses: actions/download-artifact@v7
+        if: ${{ !startsWith(github.ref, 'refs/tags/coreeq-v') }}
+        with:
+          name: CoreEQ-androidTest
+          path: androidtest
 
       # The emulator runner installs the platform without a channel flag, so
       # the canary-channel packages are installed here first; a package that is
