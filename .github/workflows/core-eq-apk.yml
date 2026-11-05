@@ -216,6 +216,36 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
 
+      # The on-device tests (coreeq/app/src/androidTest) run on both emulators
+      # after the installs: the rules only a real Android Keystore enforces.
+      # 1.13.0's phone pairing passed every JVM test and failed on every phone
+      # with "Caller-provided IV not permitted". A separate artifact, so the
+      # CoreEQ-debug download stays the app and nothing else.
+      - name: Assemble on-device test APK
+        if: ${{ !startsWith(github.ref, 'refs/tags/coreeq-v') }}
+        # Signed like the debug APK it tests (instrumentation needs the same
+        # certificate): the release key on main pushes, the debug key on PRs.
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          (cd coreeq && ./gradlew :app:assembleDebugAndroidTest --no-daemon --stacktrace)
+          APK=$(find coreeq/app/build/outputs/apk/androidTest/debug -maxdepth 1 -type f -name '*.apk' -print -quit)
+          test -n "$APK" || { echo "::error::No on-device test APK was produced."; exit 1; }
+          mkdir -p androidtest
+          cp "$APK" androidtest/coreeq-debug-androidTest.apk
+          ls -lh androidtest/
+
+      - name: Upload on-device test APK
+        if: ${{ !startsWith(github.ref, 'refs/tags/coreeq-v') }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: CoreEQ-androidTest
+          path: androidtest/coreeq-debug-androidTest.apk
+          if-no-files-found: error
+
       # Fail closed if the repository key has drifted. This runs for both
       # production releases and main candidate checks, against the APK users
       # currently install from the floating stable release.
@@ -331,6 +361,14 @@ jobs:
           - api-level: '30'
             channel: stable
             emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+            # The on-device tests (coreeq/app/src/androidTest) run here only.
+            # The 37.0 preview image's system server crash-loops under
+            # swiftshader: on PR #455 it restarted 25 times in about 6 minutes
+            # (sys.system_server.start_count=25), so six runs in a row failed
+            # before or under the tests while its install check, which
+            # finishes between crashes, still passed. The Keystore rule the
+            # tests hold has been the same since Android 6.
+            device-tests: true
           # The 37.0 preview image boots far slower than a stable one under
           # swiftshader; give it the machine's cores and more RAM, and the boot
           # wait below the time it needs rather than the 600 s default.
@@ -357,6 +395,20 @@ jobs:
         with:
           name: CoreEQ-${{ startsWith(github.ref, 'refs/tags/coreeq-v') && 'release' || 'debug' }}
           path: dist
+
+      - uses: actions/download-artifact@v7
+        if: ${{ !startsWith(github.ref, 'refs/tags/coreeq-v') && matrix.device-tests }}
+        with:
+          name: CoreEQ-androidTest
+          path: androidtest
+
+      - name: Say the on-device tests run on API 30 only
+        if: ${{ !startsWith(github.ref, 'refs/tags/coreeq-v') && !matrix.device-tests }}
+        # A block scalar on purpose: in a plain one-line `run:` YAML reads
+        # " #" as the start of a comment, and the first version of this step
+        # lost its closing quote that way ("unexpected EOF", cdcbc75cf).
+        run: |
+          echo "::notice title=Core EQ on-device tests::not run on API ${{ matrix.api-level }}; its system server crash-loops on this runner (25 restarts in about 6 minutes on PR 455). They run on API 30; this job checks the install."
 
       # The emulator runner installs the platform without a channel flag, so
       # the canary-channel packages are installed here first; a package that is

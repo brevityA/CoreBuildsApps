@@ -181,12 +181,146 @@ install_one() { # installs $APK and proves $PACKAGE is on the device
     fi
   fi
 
-  wait_for_package_service "before checking the package" || return 1
-  if ! PATH_OUT=$(adb shell pm path "$PACKAGE" 2>&1); then
-    echo "::error title=package not installed::${PACKAGE} is not on the device after installing ${APK}: $(escape "$PATH_OUT")"
-    return 1
+  # The check itself can meet the 37.0 framework restart: PR #455's
+  # 03e3a43c3 run installed the release-shape APK ("Success") and then read
+  # "Failure calling service package: Broken pipe (32)" from `pm path`. A
+  # package service that failed to answer is asked again, up to 3 times; a
+  # package it reports missing is a failure at once.
+  local check
+  for check in 1 2 3; do
+    wait_for_package_service "before checking the package" || return 1
+    if PATH_OUT=$(adb shell pm path "$PACKAGE" 2>&1); then
+      printf 'Installed %s as %s\n' "$APK" "$PACKAGE"
+      return 0
+    fi
+    if (( check < 3 )) && printf '%s\n' "$PATH_OUT" | grep -qE 'Broken pipe|Can.t find service|DeadObjectException'; then
+      echo "::warning title=package check met a restart::$(escape "$PATH_OUT"); asking again"
+      continue
+    fi
+    break
+  done
+  echo "::error title=package not installed::${PACKAGE} is not on the device after installing ${APK}: $(escape "$PATH_OUT")"
+  return 1
+}
+
+# On-device tests (coreeq/app/src/androidTest), on the runs that built them:
+# pull requests and main pushes, never a tag. They cover what only a real
+# Android Keystore enforces; 1.13.0's phone pairing passed every JVM test and
+# failed on every phone with "Caller-provided IV not permitted".
+TEST_APK=androidtest/coreeq-debug-androidTest.apk
+TEST_RUNNER=tv.corebuilds.eq.debug.test/androidx.test.runner.AndroidJUnitRunner
+
+# A started user is not an unlocked one. When the 37.0 image restarts its
+# framework (above), user 0 comes back RUNNING_LOCKED for a while, and every
+# SharedPreferences read in credential-encrypted storage throws "not available
+# until after user (id 0) is unlocked": PR #455's first run failed both tests
+# that way after the package service had already answered.
+wait_for_user_unlocked() { # <label>
+  local label="$1" deadline=$((SECONDS + 300)) state=""
+  while (( SECONDS < deadline )); do
+    state=$(timeout 60 adb shell am get-started-user-state 0 2>/dev/null | tr -d '\r' || true)
+    if [[ "$state" == *RUNNING_UNLOCKED* ]]; then
+      return 0
+    fi
+    sleep 5
+  done
+  echo "::error title=user not unlocked (${label})::user 0 did not reach RUNNING_UNLOCKED within 300 s (last state: $(escape "${state:-none}"))"
+  return 1
+}
+
+# The 37.0 image does not restart its framework once: on PR #455 it restarted
+# under the test install ("Broken pipe"), under `am instrument` itself
+# (DeadObjectException) and mid-run ("System has crashed"), each well after
+# boot_completed. A package service that answers is not enough; the system
+# server has to go 30 s without restarting before a run starts.
+#
+# Its generation is read from `sys.system_server.start_count`, which the system
+# server raises each time it starts (init holds properties, so getprop answers
+# even while it is down). `pidof` is the fallback, then `ps`: on 84e5e1ff0 the
+# 37.0 image answered `pidof system_server` with nothing for 300 s, so a pid
+# alone failed the job on a device that was otherwise ready. When none of the
+# three answers for 60 s the wait says so and lets the run go ahead.
+system_server_generation() {
+  local value
+  value=$(timeout 30 adb shell getprop sys.system_server.start_count 2>/dev/null | tr -d '\r' || true)
+  if [[ -n "$value" ]]; then
+    printf 'start_count=%s' "$value"
+    return 0
   fi
-  printf 'Installed %s as %s\n' "$APK" "$PACKAGE"
+  value=$(timeout 30 adb shell pidof system_server 2>/dev/null | tr -d '\r' || true)
+  if [[ -z "$value" ]]; then
+    value=$(timeout 30 adb shell ps -A -o PID,NAME 2>/dev/null | tr -d '\r' \
+      | awk '$2 == "system_server" { print $1; exit }' || true)
+  fi
+  if [[ -n "$value" ]]; then
+    printf 'pid=%s' "$value"
+  fi
+}
+
+wait_for_stable_system_server() { # <label>
+  local label="$1" started=$SECONDS deadline=$((SECONDS + 300)) gen="" last="" steady=0 seen=0
+  while (( SECONDS < deadline )); do
+    gen=$(system_server_generation)
+    if [[ -n "$gen" ]]; then
+      seen=1
+      if [[ "$gen" == "$last" ]]; then
+        steady=$((steady + 5))
+        if (( steady >= 30 )); then
+          return 0
+        fi
+      else
+        steady=0
+      fi
+    elif (( ! seen && SECONDS - started >= ${UNREADABLE_AFTER_S:-60} )); then
+      echo "::warning title=system server not readable (${label})::no answer from sys.system_server.start_count, pidof or ps for ${UNREADABLE_AFTER_S:-60} s; running without the stability wait"
+      return 0
+    fi
+    last="$gen"
+    sleep 5
+  done
+  echo "::error title=system server not stable (${label})::the system server did not go 30 s without restarting within 300 s (last: ${gen:-none})"
+  return 1
+}
+
+run_device_tests() {
+  local out passed attempt
+  APK="$TEST_APK"
+  wait_for_package_service "before installing the on-device tests" || return 1
+  if ! install_apk "on-device tests, streaming" -r -t; then
+    # The same preview-image fallback the app installs use, in one step.
+    adb shell settings put global verifier_verify_adb_installs 0 || true
+    adb shell settings put global package_verifier_enable 0 || true
+    wait_for_package_service "before the on-device tests' second install" || return 1
+    install_apk "on-device tests, no-streaming" --no-streaming -r -t || return 1
+  fi
+  for attempt in 1 2 3; do
+    wait_for_package_service "before the on-device tests, run ${attempt}" || return 1
+    wait_for_stable_system_server "before the on-device tests, run ${attempt}" || return 1
+    wait_for_user_unlocked "before the on-device tests, run ${attempt}" || return 1
+    out=$(timeout 600 adb shell am instrument -w "$TEST_RUNNER" 2>&1 || true)
+    printf '%s\n' "$out"
+    # am instrument exits 0 whether or not a test failed; its summary line says
+    # which, and "OK (0 tests)" would mean the runner found nothing to run.
+    passed=$(printf '%s\n' "$out" | grep -oE 'OK \([1-9][0-9]* tests?\)' | tail -n 1 || true)
+    if [[ -n "$passed" ]] && ! printf '%s\n' "$out" | grep -qE 'FAILURES!!!|INSTRUMENTATION_FAILED|Process crashed'; then
+      echo "::notice title=Core EQ on-device tests::${passed}"
+      return 0
+    fi
+    # A framework restart under the run earns another run, up to three in
+    # all, once the device is ready again: storage locked again, a service
+    # gone, the activity manager dying under `am instrument` itself
+    # (DeadObjectException from startInstrumentation, before any test began)
+    # or mid-run ("System has crashed"). None of these can come from a test
+    # body. Any other failure, an assertion above all, is the code's at once.
+    if (( attempt < 3 )) && printf '%s\n' "$out" | grep -qE 'not available until after user|Can.t find service|DeadSystemException|DeadObjectException|System has crashed'; then
+      crash_report "on-device tests, run ${attempt}"
+      echo "::warning title=Core EQ on-device tests::run ${attempt} met a framework restart on this emulator; running again once the system server is stable"
+      continue
+    fi
+    break
+  done
+  echo "::error title=Core EQ on-device tests::$(escape "$(printf '%s\n' "$out" | grep -m6 -E 'FAILURES!!!|INSTRUMENTATION_FAILED|Process crashed|Exception|Error|^[0-9]+\) ' || printf 'no OK line in the am instrument output')")"
+  return 1
 }
 
 failed=()
@@ -201,4 +335,12 @@ done
 if (( ${#failed[@]} )); then
   echo "::error title=Core EQ install smoke::did not install: ${failed[*]}"
   exit 1
+fi
+
+if [[ -f "$TEST_APK" ]]; then
+  echo "=== on-device tests ==="
+  if ! run_device_tests; then
+    echo "::error title=Core EQ on-device tests::the tests in coreeq/app/src/androidTest did not pass on this emulator"
+    exit 1
+  fi
 fi

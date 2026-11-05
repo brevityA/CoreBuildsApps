@@ -136,25 +136,72 @@ internal class CompanionClient(
     }
 }
 
-/** Keeps a phone's paired token encrypted by a device-keystore AES key. */
-internal class PhoneCredentialStore(context: Context) {
+/** A pairing token already encrypted under this phone's key, waiting for the TV to accept it. */
+internal class SealedPhoneCredentials(
+    val host: String,
+    val port: Int,
+    val nonce: ByteArray,
+    val encrypted: ByteArray
+)
+
+/** The phone could not encrypt the pairing token, so it must not ask the TV to pair. */
+internal class PhoneKeyStorageException(cause: Throwable) :
+    Exception(cause.message?.trim()?.takeIf(String::isNotEmpty) ?: cause.javaClass.simpleName, cause)
+
+/** The TV accepted the token, but the phone could not write it to its own storage. */
+internal class PhonePairingNotSavedException :
+    Exception("the paired token could not be written to this phone's storage")
+
+/**
+ * Keeps a phone's paired token encrypted by a device-keystore AES key.
+ *
+ * Pairing is two steps, [seal] and then [commit], because the TV spends its one-time pairing
+ * key and records the phone the moment it accepts a token. Sealing first means a phone that
+ * cannot keep the token stops before the TV pairs, instead of leaving the TV paired to a
+ * phone that has nothing saved (the 1.13.0 failure). [keyProvider] is the Android Keystore
+ * key in the app; tests pass a software AES key.
+ */
+internal class PhoneCredentialStore(
+    context: Context,
+    private val keyProvider: () -> SecretKey = { androidKeystoreKey() }
+) {
 
     private val prefs = context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
-    fun save(credentials: PhoneCredentials) {
-        val key = getOrCreateKey()
-        val nonce = ByteArray(NONCE_BYTES).also(java.security.SecureRandom()::nextBytes)
-        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-        cipher.init(Cipher.ENCRYPT_MODE, key, GCMParameterSpec(TAG_BITS, nonce))
+    /**
+     * Encrypts [credentials] without storing them. Every failure is a [PhoneKeyStorageException].
+     *
+     * Android Keystore AES keys are made with randomized encryption required, so the Keystore
+     * chooses the GCM IV and refuses one passed in ("Caller-provided IV not permitted"). The
+     * cipher is initialised with the key alone and the IV it chose is read back and stored.
+     */
+    fun seal(credentials: PhoneCredentials): SealedPhoneCredentials = try {
+        val cipher = Cipher.getInstance(TRANSFORMATION)
+        cipher.init(Cipher.ENCRYPT_MODE, keyProvider())
+        val nonce = cipher.iv
+        check(nonce != null && nonce.size == NONCE_BYTES) {
+            "the key store chose a ${nonce?.size ?: 0}-byte GCM IV; Core EQ stores $NONCE_BYTES-byte IVs"
+        }
         cipher.updateAAD(AAD)
-        val encrypted = cipher.doFinal(credentials.token)
-        prefs.edit()
-            .putString(KEY_HOST, credentials.host)
-            .putInt(KEY_PORT, credentials.port)
-            .putString(KEY_NONCE, Base64.getEncoder().encodeToString(nonce))
-            .putString(KEY_CIPHER, Base64.getEncoder().encodeToString(encrypted))
-            .apply()
+        SealedPhoneCredentials(credentials.host, credentials.port, nonce.copyOf(), cipher.doFinal(credentials.token))
+    } catch (e: PhoneKeyStorageException) {
+        throw e
+    } catch (e: Exception) {
+        throw PhoneKeyStorageException(e)
     }
+
+    /**
+     * Stores a token [seal] encrypted, once the TV has accepted it. Written synchronously
+     * (pairing runs off the main thread) so a failed write is reported, not lost: `apply()`
+     * never says whether the disk write happened. Returns whether it did.
+     */
+    fun commit(sealed: SealedPhoneCredentials): Boolean =
+        prefs.edit()
+            .putString(KEY_HOST, sealed.host)
+            .putInt(KEY_PORT, sealed.port)
+            .putString(KEY_NONCE, Base64.getEncoder().encodeToString(sealed.nonce))
+            .putString(KEY_CIPHER, Base64.getEncoder().encodeToString(sealed.encrypted))
+            .commit()
 
     fun load(): PhoneCredentials? {
         return try {
@@ -163,8 +210,9 @@ internal class PhoneCredentialStore(context: Context) {
             val nonce = Base64.getDecoder().decode(prefs.getString(KEY_NONCE, null) ?: return null)
             val encrypted = Base64.getDecoder().decode(prefs.getString(KEY_CIPHER, null) ?: return null)
             if (port !in 1..65535 || nonce.size != NONCE_BYTES) return null
-            val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-            cipher.init(Cipher.DECRYPT_MODE, getOrCreateKey(), GCMParameterSpec(TAG_BITS, nonce))
+            val cipher = Cipher.getInstance(TRANSFORMATION)
+            // Decryption is the one direction where the IV is passed in: it is the stored one.
+            cipher.init(Cipher.DECRYPT_MODE, keyProvider(), GCMParameterSpec(TAG_BITS, nonce))
             cipher.updateAAD(AAD)
             val token = cipher.doFinal(encrypted)
             if (token.size != CompanionCrypto.TOKEN_BYTES) return null
@@ -186,23 +234,6 @@ internal class PhoneCredentialStore(context: Context) {
         prefs.edit().clear().apply()
     }
 
-    private fun getOrCreateKey(): SecretKey {
-        val store = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
-        (store.getKey(ALIAS, null) as? SecretKey)?.let { return it }
-        val generator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
-        generator.init(
-            KeyGenParameterSpec.Builder(
-                ALIAS,
-                KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
-            )
-                .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
-                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
-                .setRandomizedEncryptionRequired(true)
-                .build()
-        )
-        return generator.generateKey()
-    }
-
     companion object {
         private const val PREFS = "core_eq_phone_pairing"
         private const val ALIAS = "coreeq-phone-pairing-v1"
@@ -212,6 +243,32 @@ internal class PhoneCredentialStore(context: Context) {
         private const val KEY_CIPHER = "token_cipher"
         private const val NONCE_BYTES = 12
         private const val TAG_BITS = 128
+        private const val TRANSFORMATION = "AES/GCM/NoPadding"
         private val AAD = "tv.corebuilds.eq.phone-token.v1".toByteArray(StandardCharsets.UTF_8)
+
+        /**
+         * The phone's pairing key, created on first use. Synchronized: two first pairings at
+         * once could both miss the alias, and the second generateKey() would replace the key
+         * that sealed the first token.
+         */
+        @Synchronized
+        private fun androidKeystoreKey(): SecretKey {
+            val store = KeyStore.getInstance(ANDROID_KEYSTORE).apply { load(null) }
+            (store.getKey(ALIAS, null) as? SecretKey)?.let { return it }
+            val generator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEYSTORE)
+            generator.init(
+                KeyGenParameterSpec.Builder(
+                    ALIAS,
+                    KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+                )
+                    .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                    .setRandomizedEncryptionRequired(true)
+                    .build()
+            )
+            return generator.generateKey()
+        }
+
+        private const val ANDROID_KEYSTORE = "AndroidKeyStore"
     }
 }
