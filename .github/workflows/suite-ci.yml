@@ -14,7 +14,7 @@ jobs:
     name: Release/update contracts
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check suite truth
         run: python tools/check_suite_truth.py
@@ -164,7 +164,7 @@ jobs:
             workflow: .github/workflows/core-eq-apk.yml
             artifact: coreeq/app/build/outputs/apk/debug/*.apk
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check suite truth
         run: python tools/check_suite_truth.py
@@ -241,7 +241,7 @@ jobs:
     name: Web/content tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check suite truth
         run: python tools/check_suite_truth.py
@@ -384,7 +384,7 @@ jobs:
     name: Core Line browser (CSP, OLED, rotation)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v7
         with:
