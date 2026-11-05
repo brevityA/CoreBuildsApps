@@ -58,9 +58,10 @@ internal class IconPack(
  */
 internal object IconPacks {
     const val THEMES_ACTION = "org.adw.launcher.THEMES"
-    const val CORE_BUILDS_BANNERS = "tv.corebuilds.iconpack"
-    /** The glyphs flavor and the resource-only companion the icon pack installs. */
-    val CORE_BUILDS_GLYPHS = listOf("tv.corebuilds.glyphs", "tv.corebuilds.iconpack.glyphs")
+    /** The Core Builds Icon Pack: the sideload build, then the Google Play build. Same banners. */
+    val CORE_BUILDS_BANNERS = listOf("tv.corebuilds.iconpack", "tv.corebuilds.iconpack.play")
+    /** The glyphs flavor, the resource-only companion the icon pack installs, and its Play twin. */
+    val CORE_BUILDS_GLYPHS = listOf("tv.corebuilds.glyphs", "tv.corebuilds.iconpack.glyphs", "tv.corebuilds.iconpack.glyphs.play")
 
     private data class CacheKey(val packageName: String, val lastUpdateTime: Long)
 
@@ -84,15 +85,15 @@ internal object IconPacks {
         )
     }
 
-    private fun rank(packageName: String): Int = when (packageName) {
-        CORE_BUILDS_BANNERS -> 0
-        in CORE_BUILDS_GLYPHS -> 1
-        else -> 2
+    private fun rank(packageName: String): Int {
+        CORE_BUILDS_BANNERS.indexOf(packageName).let { if (it >= 0) return it }
+        CORE_BUILDS_GLYPHS.indexOf(packageName).let { if (it >= 0) return 10 + it }
+        return 100
     }
 
     /** The pack a [choice] resolves to on this TV, or null for app artwork. */
     fun resolve(choice: ArtworkChoice, installed: List<IconPackInfo>): IconPackInfo? = when (choice) {
-        ArtworkChoice.Automatic -> installed.firstOrNull { it.packageName == CORE_BUILDS_BANNERS }
+        ArtworkChoice.Automatic -> CORE_BUILDS_BANNERS.firstNotNullOfOrNull { pkg -> installed.firstOrNull { it.packageName == pkg } }
         ArtworkChoice.AppArtwork -> null
         is ArtworkChoice.IconPack -> installed.firstOrNull { it.packageName == choice.packageName }
     }

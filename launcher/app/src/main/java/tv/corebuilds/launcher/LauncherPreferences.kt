@@ -78,12 +78,14 @@ internal object LauncherPreferences {
 
     // On first run, surface the Core Builds apps that are actually installed.
     // After the user edits favourites, their explicit list is the source of truth.
+    // Each entry is one app. Where it ships as a sideload and a Google Play build,
+    // one installed build is seeded (the sideload one first), so a TV with both gets one card.
     private val coreBuildsPackages = listOf(
-        "tv.corebuilds.iconpack",
-        "dev.corebuilds.line",
-        "dev.corebuilds.shift",
-        "tv.corebuilds.eq",
-        "dev.corebuilds.doctor",
+        IconPacks.CORE_BUILDS_BANNERS,
+        listOf("dev.corebuilds.line"),
+        listOf("dev.corebuilds.shift"),
+        listOf("tv.corebuilds.eq"),
+        listOf("dev.corebuilds.doctor"),
     )
 
     private fun prefs(context: Context): SharedPreferences =
@@ -144,7 +146,7 @@ internal object LauncherPreferences {
             preferences.edit().putList(KEY_FAVOURITES, migrated).remove(KEY_LEGACY_PINS).apply()
             return migrated
         }
-        return coreBuildsPackages.filter { it in installedInOrder }
+        return coreBuildsPackages.mapNotNull { builds -> builds.firstOrNull { it in installedInOrder } }
     }
 
     /** The five most recently opened launchable packages that are not favourites or hidden. */

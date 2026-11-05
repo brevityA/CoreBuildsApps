@@ -33,6 +33,26 @@ class ModelTest {
     }
 
     @Test
+    fun theGooglePlayIconPackIsCoreBuildsBannersToo() {
+        // An owner's Google TV (Android 11) had only the Play build, tv.corebuilds.iconpack.play,
+        // and its glyphs companion: 0.2 seeded no icon pack and showed app art by default.
+        val installed = listOf("tv.corebuilds.iconpack.play", "tv.corebuilds.iconpack.glyphs", "tv.corebuilds.eq")
+        assertEquals(listOf("tv.corebuilds.iconpack.play", "tv.corebuilds.eq"), LauncherPreferences.snapshot(context, installed).favourites)
+        val packs = listOf(
+            IconPackInfo("org.example.pack", "A pack"),
+            IconPackInfo("tv.corebuilds.iconpack.glyphs", "Core Builds Glyphs"),
+            IconPackInfo("tv.corebuilds.iconpack.play", "Core Builds Icon Pack"),
+        )
+        assertEquals("tv.corebuilds.iconpack.play", IconPacks.resolve(ArtworkChoice.Automatic, packs)?.packageName)
+        // With both builds installed, the sideload one is the default, and a TV gets one seeded card.
+        val both = packs + IconPackInfo("tv.corebuilds.iconpack", "Core Builds Icon Pack")
+        assertEquals("tv.corebuilds.iconpack", IconPacks.resolve(ArtworkChoice.Automatic, both)?.packageName)
+        LauncherPreferences.reset(context)
+        assertEquals(listOf("tv.corebuilds.iconpack"),
+            LauncherPreferences.snapshot(context, listOf("tv.corebuilds.iconpack.play", "tv.corebuilds.iconpack")).favourites)
+    }
+
+    @Test
     fun a01FavouriteSetMigratesInTheOrder01ShowedItAndKeepsUninstalledOnes() {
         prefs.edit().putStringSet("pinned_packages", setOf("z.app", "b.app", "gone.app")).commit()
         val installed = listOf("b.app", "m.app", "z.app") // A-Z by label

@@ -956,7 +956,25 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
     def test_icon_packs_use_the_open_appfilter_contract(self):
         packs = self.PACKS.read_text(encoding="utf-8")
         self.assertIn('THEMES_ACTION = "org.adw.launcher.THEMES"', packs)
-        self.assertIn('CORE_BUILDS_BANNERS = "tv.corebuilds.iconpack"', packs)
+        # Every build of the icon pack counts as Core Builds banners. The Play build is
+        # a separate package (`.play`), and a Google TV with only that one installed
+        # got app art by default until both ids were listed here.
+        pack_gradle = (ROOT / "app/build.gradle.kts").read_text(encoding="utf-8")
+        glyphs_gradle = (ROOT / "glyphs/build.gradle.kts").read_text(encoding="utf-8")
+        self.assertIn('applicationId = "tv.corebuilds.iconpack"', pack_gradle)
+        self.assertIn('applicationId = "tv.corebuilds.glyphs"', pack_gradle)
+        self.assertIn('applicationIdSuffix = ".play"', pack_gradle)
+        self.assertIn('applicationId = "tv.corebuilds.iconpack.glyphs"', glyphs_gradle)
+        self.assertIn('applicationIdSuffix = ".play"', glyphs_gradle)
+        self.assertIn(
+            'CORE_BUILDS_BANNERS = listOf("tv.corebuilds.iconpack", "tv.corebuilds.iconpack.play")',
+            packs,
+        )
+        self.assertIn(
+            'CORE_BUILDS_GLYPHS = listOf("tv.corebuilds.glyphs", "tv.corebuilds.iconpack.glyphs", '
+            '"tv.corebuilds.iconpack.glyphs.play")',
+            packs,
+        )
         self.assertIn('getIdentifier("appfilter", "xml", packageName)', packs)
         self.assertIn('assets.open("appfilter.xml")', packs)
         # A broken pack never takes the home screen down with it.

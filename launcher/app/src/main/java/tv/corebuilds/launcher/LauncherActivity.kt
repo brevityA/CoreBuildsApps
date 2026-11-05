@@ -916,7 +916,7 @@ class LauncherActivity : Activity() {
     private fun artworkLabel(): String = activePack?.let { packLabel(it) } ?: getString(R.string.artwork_app)
 
     private fun packLabel(pack: IconPackInfo): String = when (pack.packageName) {
-        IconPacks.CORE_BUILDS_BANNERS -> getString(R.string.artwork_core_banners)
+        in IconPacks.CORE_BUILDS_BANNERS -> getString(R.string.artwork_core_banners)
         in IconPacks.CORE_BUILDS_GLYPHS -> getString(R.string.artwork_core_glyphs)
         else -> pack.label
     }
