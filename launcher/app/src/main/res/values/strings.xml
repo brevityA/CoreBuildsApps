@@ -1,63 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Core Builds Launcher · Private</string>
-    <string name="manage_favorites_title">Edit favourites</string>
+    <string name="brand_name">Core Builds</string>
 
-    <string name="brand_name">CORE BUILDS</string>
-    <string name="brand_tagline">YOUR TV  ·  YOUR APPS</string>
-    <string name="home_favourites_title">FAVOURITES</string>
-    <string name="home_favourites_subtitle">Quick access to the apps you choose.</string>
-    <string name="choose_favourites">CHOOSE YOUR FAVOURITES</string>
-    <string name="choose_favourites_description">Choose which apps appear in favourites</string>
-    <string name="edit_favourites">EDIT FAVOURITES</string>
-    <string name="set_as_home">SET AS HOME</string>
-    <string name="recent_title">RECENTLY OPENED</string>
-    <string name="recent_subtitle">Fast access · saved on this TV only.</string>
-    <string name="all_apps_title">ALL APPS</string>
-    <string name="all_apps_subtitle">Select a tile to launch it.</string>
-    <string name="scanning_this_tv">SCANNING THIS TV…</string>
-    <string name="no_apps_found">No apps found. Install an app or check your TV\'s app visibility settings.</string>
-    <string name="private_history_disclosure">PRIVATE  ·  No ads or account; app history stays on this TV.</string>
+    <!-- Top bar -->
+    <string name="customise">Customise</string>
+    <string name="customise_description">Customise your home screen</string>
 
-    <string name="hero_eyebrow">CORE BUILDS HOME</string>
-    <string name="hero_no_apps">NO APPS FOUND</string>
-    <string name="hero_title_empty">Your apps.\nYour space.</string>
-    <string name="hero_title_no_apps">Start with an app.</string>
-    <string name="hero_subtitle_empty">Move with the remote to explore.</string>
-    <string name="hero_subtitle_no_apps">Install an app to get started.</string>
-    <string name="hero_tv_ready">TV APP · READY TO OPEN</string>
-    <string name="hero_app_ready">APP · READY TO OPEN</string>
-    <string name="hero_press_ok">OK to open  ·  Hold OK for app actions.</string>
+    <!-- Info area: follows the focused card -->
+    <string name="info_eyebrow_favourite">FAVOURITE</string>
+    <string name="info_eyebrow_recent">RECENTLY OPENED</string>
+    <string name="info_eyebrow_all_apps">ALL APPS</string>
+    <string name="info_tv_app">TV app</string>
+    <string name="info_app">App</string>
+    <string name="info_hint">OK to open  ·  Hold OK for options</string>
+    <string name="info_meta">%1$s  ·  %2$s</string>
+    <string name="info_add_title">Add favourites</string>
+    <string name="info_add_meta">Pick the apps for your first row</string>
+    <string name="info_customise_title">Customise</string>
+    <string name="info_customise_meta">Artwork, background, card size and hidden apps</string>
+    <string name="info_scanning_title">Finding your apps</string>
+    <string name="info_scanning_meta">Reading the apps on this TV</string>
+    <string name="info_empty_title">No apps yet</string>
+    <string name="info_empty_meta">Install an app and it appears here</string>
+    <string name="info_moving_title">Moving %1$s</string>
+    <string name="info_moving_meta">Left and Right move it  ·  OK or Back to finish</string>
 
-    <string name="app_count_zero">0 APPS</string>
-    <string name="app_count">%1$d APPS</string>
-    <string name="app_no_longer_available">%1$s is no longer available. Refreshing apps…</string>
-    <string name="app_launch_blocked">Android did not allow %1$s to open.</string>
-    <string name="app_actions_title">%1$s actions</string>
-    <string name="app_action_add_favourite">Add to favourites</string>
-    <string name="app_action_remove_favourite">Remove from favourites</string>
-    <string name="app_action_app_info">App info</string>
-    <string name="app_info_unavailable">App info for %1$s is unavailable on this device.</string>
-    <string name="cancel">Cancel</string>
-    <string name="open_home_settings_hint">Open Settings and choose the default Home app.</string>
+    <!-- Shelves -->
+    <string name="row_favourites">Favourites</string>
+    <string name="row_recent">Recently opened</string>
+    <string name="row_all_apps_count">All apps  ·  %1$d</string>
+    <string name="add_card">Add</string>
 
-    <string name="manage_header">CORE BUILDS  /  PERSONALISE</string>
-    <string name="done">DONE</string>
-    <string name="manage_title">Choose your favourites.</string>
-    <string name="manage_description">Your favourites appear in the first row. Press OK to add or remove an app.</string>
-    <string name="loading_apps">LOADING APPS…</string>
-    <string name="local_choices_disclosure">YOUR CHOICES STAY ON THIS DEVICE.</string>
-    <string name="manage_empty">No apps found yet. Install an app, then come back.</string>
-    <string name="manage_summary">%1$d FAVOURITES  ·  %2$d APPS FOUND</string>
-    <string name="favourite_added">Added to favourites</string>
-    <string name="favourite_removed">Removed from favourites</string>
+    <!-- Card accessibility: label, state, and the long-press hint -->
+    <string name="card_description">%1$s. Press OK to open, hold OK for options.</string>
+    <string name="card_description_tv">%1$s, TV app. Press OK to open, hold OK for options.</string>
+    <string name="card_description_moving">%1$s, moving. Left and Right move it, OK to finish.</string>
+    <string name="add_card_description">Add favourites</string>
 
-    <string name="tv_app_label">TV APP</string>
-    <string name="app_label">APP</string>
-    <string name="pin_action_remove">IN FAVOURITES · REMOVE</string>
-    <string name="pin_action_add">ADD TO FAVOURITES</string>
-    <string name="pin_accessibility_pinned">%1$s. In favourites. Select to remove it.</string>
-    <string name="pin_accessibility_unpinned">%1$s. Not in favourites. Select to add it.</string>
-    <string name="open_app_description">Open %1$s. Long-press for app actions.</string>
-    <string name="open_tv_app_description">Open %1$s (TV app). Long-press for app actions.</string>
+    <!-- App options panel -->
+    <string name="options_eyebrow">APP OPTIONS</string>
+    <string name="option_open">Open</string>
+    <string name="option_add_favourite">Add to favourites</string>
+    <string name="option_remove_favourite">Remove from favourites</string>
+    <string name="option_move">Move</string>
+    <string name="option_move_meta">Change its place in Favourites</string>
+    <string name="option_hide">Hide from All apps</string>
+    <string name="option_hide_meta">Find it again in Customise › Hidden apps</string>
+    <string name="option_unhide">Show in All apps</string>
+    <string name="option_app_info">App info</string>
+    <string name="option_app_info_meta">Android\'s settings for this app</string>
+
+    <!-- Customise panel -->
+    <string name="customise_eyebrow">CUSTOMISE</string>
+    <string name="customise_title">Home screen</string>
+    <string name="setting_artwork">Artwork</string>
+    <string name="setting_background">Background</string>
+    <string name="setting_dim">Background dim</string>
+    <string name="setting_card_size">Card size</string>
+    <string name="setting_recent">Recently opened row</string>
+    <string name="setting_clock">Clock</string>
+    <string name="setting_favourites">Favourites</string>
+    <string name="setting_hidden">Hidden apps</string>
+    <string name="setting_hidden_value_none">None</string>
+    <string name="setting_set_home">Set as Home app</string>
+    <string name="setting_set_home_meta">Opens Android\'s default-app settings</string>
+    <string name="setting_reset">Reset home screen</string>
+    <string name="setting_reset_meta">Favourites, hidden apps and settings go back to how they started</string>
+    <string name="setting_reset_confirm">Press OK again to reset</string>
+    <string name="customise_footer">No ads, no account, no network. Your choices and app history stay on this TV.</string>
+
+    <string name="selected_state">Selected</string>
+    <string name="value_on">On</string>
+    <string name="value_off">Off</string>
+
+    <string name="artwork_title">Artwork</string>
+    <string name="artwork_body">Icon packs replace each app\'s card art. Apps a pack does not cover keep their own.</string>
+    <string name="artwork_app">App artwork</string>
+    <string name="artwork_app_meta">Each app\'s own TV banner, or its icon</string>
+    <string name="artwork_core_banners">Core Builds banners</string>
+    <string name="artwork_core_glyphs">Core Builds glyphs</string>
+    <string name="artwork_pack_meta">Icon pack</string>
+    <string name="artwork_missing">%1$s is no longer installed; showing app artwork</string>
+
+    <string name="background_title">Background</string>
+    <string name="background_focused">Follows the focused app</string>
+    <string name="background_focused_meta">The app\'s artwork, softened behind the home screen</string>
+    <string name="background_core">Core Builds</string>
+    <string name="background_core_meta">Void with a cyan and violet glow</string>
+    <string name="background_void">Void</string>
+    <string name="background_void_meta">Plain dark background</string>
+
+    <string name="dim_title">Background dim</string>
+    <string name="dim_light">Light</string>
+    <string name="dim_medium">Medium</string>
+    <string name="dim_strong">Strong</string>
+
+    <string name="card_size_title">Card size</string>
+    <string name="card_size_compact">Compact</string>
+    <string name="card_size_compact_meta">6 cards a row</string>
+    <string name="card_size_standard">Standard</string>
+    <string name="card_size_standard_meta">5 cards a row</string>
+    <string name="card_size_large">Large</string>
+    <string name="card_size_large_meta">4 cards a row</string>
+
+    <string name="favourites_title">Favourites</string>
+    <string name="favourites_body">OK adds or removes an app. New favourites go to the end of the row; hold OK on a favourite and choose Move to change its place.</string>
+    <string name="favourite_state_on">In favourites</string>
+
+    <string name="hidden_title">Hidden apps</string>
+    <string name="hidden_body">Hidden apps are left out of All apps and Recently opened. OK shows an app again.</string>
+    <string name="hidden_empty">No hidden apps. Hold OK on an app and choose Hide.</string>
+    <string name="hidden_state">Hidden</string>
+
+    <!-- Toasts -->
+    <string name="toast_favourite_added">%1$s added to favourites</string>
+    <string name="toast_favourite_removed">%1$s removed from favourites</string>
+    <string name="toast_hidden">%1$s hidden from All apps</string>
+    <string name="toast_shown">%1$s is back in All apps</string>
+    <string name="toast_reset">Home screen reset</string>
+    <string name="app_no_longer_available">%1$s is no longer installed. Refreshing apps.</string>
+    <string name="app_launch_blocked">Android did not let %1$s open.</string>
+    <string name="app_info_unavailable">This TV has no App info screen for %1$s.</string>
+    <string name="open_home_settings_hint">Open Settings, then Apps, then Default apps, and choose the Home app.</string>
+    <plurals name="setting_favourites_value">
+        <item quantity="one">%1$d app</item>
+        <item quantity="other">%1$d apps</item>
+    </plurals>
+    <plurals name="setting_hidden_value">
+        <item quantity="one">%1$d hidden</item>
+        <item quantity="other">%1$d hidden</item>
+    </plurals>
 </resources>

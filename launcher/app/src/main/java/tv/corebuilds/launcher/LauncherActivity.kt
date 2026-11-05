@@ -1,95 +1,98 @@
 package tv.corebuilds.launcher
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.ActivityNotFoundException
+import android.content.BroadcastReceiver
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.graphics.Paint
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.Settings
+import android.text.format.DateFormat
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
-import android.widget.GridLayout
 import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
+import android.widget.TextClock
 import android.widget.TextView
 import android.widget.Toast
 import android.window.OnBackInvokedCallback
 import android.window.OnBackInvokedDispatcher
-import java.text.DateFormat
-import java.util.Date
+import java.util.Locale
 import java.util.concurrent.Executors
 import java.util.concurrent.RejectedExecutionException
 
-/** Main screen and HOME entry point for the private Core Builds launcher prototype. */
+/**
+ * The HOME screen (0.2): a background that follows the focused app, a top bar
+ * with the clock and Customise, an info area naming the focused app, and
+ * shelves below it: Favourites (ordered, with an Add card), Recently opened,
+ * and All apps as a grid. Every arrow is decided here, not by Android's
+ * geometric focus search: Left/Right walk a row and stop at its ends, Up/Down
+ * change row to the nearest card, Up from the first row reaches Customise.
+ */
 class LauncherActivity : Activity() {
-    private companion object {
-        // Each page margin is 54dp. The 420dp content floor preserves three
-        // ~132dp tiles (after margins) on narrow landscape viewports; wider
-        // layouts add a column per 152dp of content, clamped to 3–6 columns.
-        const val PAGE_HORIZONTAL_PADDING_DP = 54
-        const val GRID_MIN_CONTENT_WIDTH_DP = 420
-        const val GRID_COLUMN_WIDTH_THRESHOLD_DP = 152
-        const val GRID_MIN_COLUMNS = 3
-        const val GRID_MAX_COLUMNS = 6
-        const val GRID_CELL_MARGIN_DP = 4
-        const val GRID_CELL_HEIGHT_DP = 118
-    }
 
-    private val mainHandler = Handler(Looper.getMainLooper())
+    /** A shelf as the remote sees it: its cards in order, and the view the scroll lines up. */
+    private class NavRow(val kind: RowKind, val anchor: View, val cards: MutableList<FocusCard>, val scroller: HorizontalScrollView?)
+
     private val appLoader = Executors.newSingleThreadExecutor()
-    private val clockTick = object : Runnable {
-        override fun run() {
-            updateClock()
-            mainHandler.postDelayed(this, 30_000L)
+
+    private var apps = emptyList<LaunchableApp>()
+    private var state = HomeState(emptyList(), emptySet(), emptyList(), HomeSettings())
+    private var packs = emptyList<IconPackInfo>()
+    private var activePack: IconPackInfo? = null
+    private var renderedKey: String? = null
+    private var loaded = false
+    private var scanning = false
+    private var rescanRequested = false
+    private var userInteracted = false
+    private var resetArmed = false
+
+    private lateinit var backdrop: BackdropView
+    private lateinit var topBar: LinearLayout
+    private lateinit var clockColumn: LinearLayout
+    private lateinit var customiseButton: View
+    private lateinit var infoEyebrow: TextView
+    private lateinit var infoTitle: TextView
+    private lateinit var infoMeta: TextView
+    private lateinit var shelves: ScrollView
+    private lateinit var shelvesContent: LinearLayout
+    private lateinit var panel: SidePanel
+
+    private val navRows = ArrayList<NavRow>()
+    private var lastCard: Pair<RowKind, String?>? = null
+    private var moving: AppCard? = null
+    private var movingOrder: MutableList<String>? = null
+    private var receiverRegistered = false
+
+    private val packageReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            // An app was installed, removed or updated while Home was showing.
+            refreshApps()
         }
     }
 
-    private var apps = emptyList<LaunchableApp>()
-    private var renderedAppKeys: List<String>? = null
-    private var renderedPins: Set<String>? = null
-    private var renderedRecentPackages: List<String>? = null
-    private var scanning = false
-    private var rescanRequested = false
-    private var selectedApp: LaunchableApp? = null
-    private var lastFocusedPackage: String? = null
-    private var hasRenderedApps = false
-    private var userInteracted = false
-
-    private lateinit var pageContent: LinearLayout
-    private lateinit var favoritesScroller: HorizontalScrollView
-    private lateinit var favoritesRow: LinearLayout
-    private lateinit var emptyFavorites: TextView
-    private lateinit var recentSection: LinearLayout
-    private lateinit var recentScroller: HorizontalScrollView
-    private lateinit var recentRow: LinearLayout
-    private lateinit var appGrid: GridLayout
-    private lateinit var appCount: TextView
-    private lateinit var scanStatus: TextView
-    private lateinit var heroIcon: ImageView
-    private lateinit var heroEyebrow: TextView
-    private lateinit var heroTitle: TextView
-    private lateinit var heroSubtitle: TextView
-    private lateinit var clockText: TextView
-    private lateinit var dateText: TextView
-    private lateinit var manageButton: TextView
-    private val appTiles = linkedMapOf<String, AppTileView>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(buildHome())
         enterImmersiveMode()
-        setContentView(createHomeScreen())
         registerHomeBackHandler()
+        showInfoText(getString(R.string.info_scanning_title), getString(R.string.info_scanning_meta), eyebrow = "")
+        customiseButton.requestFocus()
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -97,296 +100,202 @@ class LauncherActivity : Activity() {
         if (hasFocus) enterImmersiveMode()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (!receiverRegistered) {
+            val filter = IntentFilter().apply {
+                addAction(Intent.ACTION_PACKAGE_ADDED)
+                addAction(Intent.ACTION_PACKAGE_REMOVED)
+                addAction(Intent.ACTION_PACKAGE_CHANGED)
+                addAction(Intent.ACTION_PACKAGE_REPLACED)
+                addDataScheme("package")
+            }
+            // Package broadcasts come from the system, so the receiver need not be exported.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                registerReceiver(packageReceiver, filter, RECEIVER_NOT_EXPORTED)
+            } else {
+                registerReceiver(packageReceiver, filter)
+            }
+            receiverRegistered = true
+        }
+        refreshApps()
+    }
+
+    override fun onPause() {
+        // Leaving mid-move keeps the order as it stands, like pressing OK.
+        finishMove()
+        if (receiverRegistered) {
+            unregisterReceiver(packageReceiver)
+            receiverRegistered = false
+        }
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        rescanRequested = false
+        // Let any queued preference write finish; never start new work.
+        appLoader.shutdown()
+        super.onDestroy()
+    }
+
+    /** Home pressed while Home is showing: close what is open and go back to the first card. */
+    public override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (intent.hasCategory(Intent.CATEGORY_HOME)) goToTop()
+    }
+
+    // ---------------------------------------------------------------- back
+
     private fun registerHomeBackHandler() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
         onBackInvokedDispatcher.registerOnBackInvokedCallback(
             OnBackInvokedDispatcher.PRIORITY_DEFAULT,
-            OnBackInvokedCallback {
-                // Keep the HOME surface active when Android dispatches a back gesture.
-            },
+            OnBackInvokedCallback { handleBack() },
         )
     }
 
     @SuppressLint("GestureBackNavigation")
     @Suppress("DEPRECATION")
     override fun onBackPressed() {
-        // Android 12 and earlier still use this fallback. On newer Android,
-        // registerHomeBackHandler handles predictive gestures on the HOME surface.
+        // Android 11 and 12 still deliver Back here; newer versions use the callback above.
+        handleBack()
     }
 
-    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-        if (event.action == KeyEvent.ACTION_DOWN) userInteracted = true
-        return super.dispatchKeyEvent(event)
+    /** Back never leaves Home: it closes a panel, ends a move, or returns to the first card. */
+    internal fun handleBack() {
+        when {
+            panel.isOpen -> panel.back()
+            moving != null -> finishMove()
+            else -> goToTop()
+        }
     }
 
-    override fun onResume() {
-        super.onResume()
-        updateClock()
-        mainHandler.removeCallbacks(clockTick)
-        mainHandler.postDelayed(clockTick, 30_000L)
-        refreshApps()
+    private fun goToTop() {
+        if (panel.isOpen) panel.close()
+        finishMove()
+        val first = navRows.firstOrNull()?.cards?.firstOrNull()
+        animateScroll(shelves, "scrollY", 0)
+        navRows.firstOrNull()?.scroller?.let { animateScroll(it, "scrollX", 0) }
+        (first ?: customiseButton).requestFocus()
     }
 
-    override fun onPause() {
-        mainHandler.removeCallbacks(clockTick)
-        super.onPause()
-    }
+    // ---------------------------------------------------------------- layout
 
-    override fun onDestroy() {
-        mainHandler.removeCallbacksAndMessages(null)
-        rescanRequested = false
-        // Let any just-recorded launch history finish its local preferences write.
-        appLoader.shutdown()
-        super.onDestroy()
-    }
+    private fun buildHome(): View {
+        val root = FrameLayout(this)
+        backdrop = BackdropView(this)
+        root.addView(backdrop, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
 
-    private fun createHomeScreen(): View {
-        val frame = FrameLayout(this).apply {
-            setBackgroundColor(getColor(R.color.cb_background))
-        }
-        frame.addView(
-            AmbientBackdropView(this),
-            FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT),
-        )
-
-        val scroll = ScrollView(this).apply {
-            isFillViewport = true
-            isVerticalScrollBarEnabled = false
-            overScrollMode = View.OVER_SCROLL_NEVER
-            clipToPadding = false
-            descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
-        }
-        pageContent = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(dp(PAGE_HORIZONTAL_PADDING_DP), dp(28), dp(PAGE_HORIZONTAL_PADDING_DP), dp(44))
-            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
-        }
-        scroll.addView(
-            pageContent,
-            FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT),
-        )
-        frame.addView(scroll, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
-
-        pageContent.addView(createHeader())
-        pageContent.addView(createHero(), marginLayout(height = dp(196), top = dp(20), bottom = dp(18)))
-
-        pageContent.addView(sectionHeader(
-            getString(R.string.home_favourites_title),
-            getString(R.string.home_favourites_subtitle),
-        ))
-        favoritesRow = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            clipChildren = false
-            clipToPadding = false
-            setPadding(dp(8), dp(5), dp(12), dp(5))
-        }
-        favoritesScroller = HorizontalScrollView(this).apply {
-            isHorizontalScrollBarEnabled = false
-            isFillViewport = false
-            overScrollMode = View.OVER_SCROLL_NEVER
-            clipChildren = false
-            clipToPadding = false
-            setPadding(dp(4), 0, dp(4), 0)
-            addView(favoritesRow, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, dp(122)))
-        }
-        pageContent.addView(favoritesScroller, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(130)))
-        emptyFavorites = actionButton(getString(R.string.choose_favourites)) { openManageFavorites() }.apply {
-            contentDescription = getString(R.string.choose_favourites_description)
-        }
-        pageContent.addView(emptyFavorites, marginLayout(height = dp(48), bottom = dp(10)))
-
-        recentSection = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            visibility = View.GONE
-        }
-        recentSection.addView(sectionHeader(
-            getString(R.string.recent_title),
-            getString(R.string.recent_subtitle),
-        ))
-        recentRow = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            clipChildren = false
-            clipToPadding = false
-            setPadding(dp(8), dp(5), dp(12), dp(5))
-        }
-        recentScroller = HorizontalScrollView(this).apply {
-            isHorizontalScrollBarEnabled = false
-            isFillViewport = false
-            overScrollMode = View.OVER_SCROLL_NEVER
-            clipChildren = false
-            clipToPadding = false
-            setPadding(dp(4), 0, dp(4), 0)
-            addView(recentRow, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, dp(122)))
-        }
-        recentSection.addView(recentScroller, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(130)))
-        pageContent.addView(recentSection, marginLayout(bottom = dp(8)))
-
-        val allAppsHeader = LinearLayout(this).apply {
+        topBar = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
         }
-        val allAppsTitleColumn = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        allAppsTitleColumn.addView(label(getString(R.string.all_apps_title), 17f, getColor(R.color.cb_text), bold = true))
-        allAppsTitleColumn.addView(label(getString(R.string.all_apps_subtitle), 11f, getColor(R.color.cb_muted)).apply {
-            setPadding(0, dp(4), 0, 0)
-        })
-        allAppsHeader.addView(allAppsTitleColumn, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
-        appCount = label("", 11f, getColor(R.color.cb_cyan), bold = true, mono = true)
-        allAppsHeader.addView(appCount)
-        pageContent.addView(allAppsHeader, marginLayout(top = dp(10), bottom = dp(10)))
-
-        scanStatus = label(getString(R.string.scanning_this_tv), 12f, getColor(R.color.cb_muted), mono = true).apply {
-            gravity = Gravity.CENTER_VERTICAL
-            minHeight = dp(52)
-            accessibilityLiveRegion = View.ACCESSIBILITY_LIVE_REGION_POLITE
-        }
-        pageContent.addView(scanStatus)
-
-        appGrid = GridLayout(this).apply {
-            alignmentMode = GridLayout.ALIGN_BOUNDS
-            useDefaultMargins = false
-            clipChildren = false
-            clipToPadding = false
-            setPadding(0, dp(2), 0, dp(8))
-        }
-        pageContent.addView(appGrid, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
-
-        pageContent.addView(label(
-            getString(R.string.private_history_disclosure),
-            10f,
-            getColor(R.color.cb_muted),
-            mono = true,
-        ).apply {
-            setPadding(0, dp(18), 0, 0)
-        })
-
-        return frame
-    }
-
-    private fun createHeader(): View {
-        val row = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-        }
-        row.addView(ImageView(this).apply {
+        topBar.addView(ImageView(this).apply {
             setImageResource(R.drawable.core_builds_mark)
-            scaleType = ImageView.ScaleType.FIT_CENTER
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
-        }, LinearLayout.LayoutParams(dp(40), dp(40)).apply {
-            marginEnd = dp(12)
-        })
-        val brand = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        brand.addView(label(getString(R.string.brand_name), 18f, getColor(R.color.cb_text), bold = true))
-        brand.addView(label(getString(R.string.brand_tagline), 9f, getColor(R.color.cb_cyan), bold = true, mono = true).apply {
-            setPadding(0, dp(5), 0, 0)
-        })
-        row.addView(brand)
-        row.addView(View(this), LinearLayout.LayoutParams(0, 1, 1f))
-
-        val dateTime = LinearLayout(this).apply {
+        }, LinearLayout.LayoutParams(dp(28), dp(28)).apply { marginEnd = dp(10) })
+        topBar.addView(text(getString(R.string.brand_name), 17f, getColor(R.color.cb_text), weight = 600))
+        topBar.addView(View(this), LinearLayout.LayoutParams(0, 1, 1f))
+        clockColumn = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            gravity = Gravity.END or Gravity.CENTER_VERTICAL
-            setPadding(0, 0, dp(20), 0)
-        }
-        clockText = label("--:--", 17f, getColor(R.color.cb_text), bold = true, mono = true).apply { gravity = Gravity.END }
-        dateText = label("", 10f, getColor(R.color.cb_muted), mono = true).apply {
             gravity = Gravity.END
-            setPadding(0, dp(4), 0, 0)
         }
-        dateTime.addView(clockText)
-        dateTime.addView(dateText)
-        row.addView(dateTime)
-
-        manageButton = actionButton(getString(R.string.edit_favourites)) { openManageFavorites() }
-        row.addView(manageButton, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dp(46)).apply {
-            marginStart = dp(8)
+        clockColumn.addView(TextClock(this).apply {
+            isSingleLine = true
+            format12Hour = "h:mm"
+            format24Hour = "HH:mm"
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 22f)
+            setTextColor(getColor(R.color.cb_text))
+            typeface = Type.outfit(context, 600)
+            includeFontPadding = false
+            gravity = Gravity.END
         })
-        val homeButton = actionButton(getString(R.string.set_as_home)) { openHomeSettings() }
-        row.addView(homeButton, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dp(46)).apply {
-            marginStart = dp(8)
+        clockColumn.addView(TextClock(this).apply {
+            isSingleLine = true
+            val pattern = DateFormat.getBestDateTimePattern(Locale.getDefault(), "EEEdMMM")
+            format12Hour = pattern
+            format24Hour = pattern
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+            setTextColor(getColor(R.color.cb_muted))
+            typeface = Type.outfit(context, 500)
+            includeFontPadding = false
+            gravity = Gravity.END
+        }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            topMargin = dp(3)
         })
-        return row
-    }
-
-    private fun createHero(): View {
-        val panel = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            background = heroBackground()
-            setPadding(dp(26), dp(15), dp(30), dp(15))
-            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
-        }
-
-        // Match the pack's banner lockup: the installed mark/art leads, then
-        // the category and readable app name. Never redraw vendor artwork.
-        val artwork = FrameLayout(this).apply {
-            background = android.graphics.drawable.GradientDrawable().apply {
-                shape = android.graphics.drawable.GradientDrawable.RECTANGLE
-                cornerRadius = dp(14).toFloat()
-                setColor(getColor(R.color.cb_night))
-                setStroke(dp(1), getColor(R.color.cb_line))
+        topBar.addView(clockColumn)
+        customiseButton = pillButton(R.drawable.ic_customise, getString(R.string.customise), getString(R.string.customise_description)).apply {
+            setOnClickListener { openCustomise() }
+            setOnFocusChangeListener { view, focused ->
+                view.animateFocus(focused, 1.06f)
+                if (focused) showInfoText(getString(R.string.info_customise_title), getString(R.string.info_customise_meta), eyebrow = "")
             }
-            clipToOutline = true
-            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
         }
-        heroIcon = ImageView(this).apply {
-            scaleType = ImageView.ScaleType.FIT_CENTER
-            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
-            layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-        }
-        artwork.addView(heroIcon)
-        panel.addView(artwork, LinearLayout.LayoutParams(dp(256), dp(144)))
-
-        val copy = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER_VERTICAL
-            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
-                marginStart = dp(30)
-            }
-            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
-        }
-        heroEyebrow = label(getString(R.string.hero_eyebrow), 10f, getColor(R.color.cb_cyan), bold = true, mono = true)
-        copy.addView(heroEyebrow)
-        heroTitle = label(getString(R.string.hero_title_empty), 30f, getColor(R.color.cb_text), bold = true).apply {
-            maxLines = 2
-            ellipsize = android.text.TextUtils.TruncateAt.END
-            setPadding(0, dp(8), 0, dp(7))
-        }
-        copy.addView(heroTitle)
-        heroSubtitle = label(getString(R.string.hero_subtitle_empty), 13f, getColor(R.color.cb_muted)).apply {
-            maxLines = 1
-            ellipsize = android.text.TextUtils.TruncateAt.END
-        }
-        copy.addView(heroSubtitle)
-        panel.addView(copy)
-        return panel
-    }
-
-    private fun sectionHeader(title: String, subtitle: String): View {
-        val column = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(0, dp(3), 0, dp(3))
-        }
-        column.addView(label(title, 15f, getColor(R.color.cb_text), bold = true))
-        column.addView(label(subtitle, 10f, getColor(R.color.cb_muted)).apply {
-            setPadding(0, dp(4), 0, 0)
+        topBar.addView(customiseButton, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dp(44)).apply {
+            marginStart = dp(24)
         })
-        return column
+        root.addView(topBar, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, dp(48)).apply {
+            leftMargin = dp(SAFE_X); rightMargin = dp(SAFE_X); topMargin = dp(SAFE_Y)
+        })
+
+        // The info area sits on the shelves' top edge and grows upward, so a
+        // two-line name never pushes the shelves around.
+        val info = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.BOTTOM
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+        }
+        infoEyebrow = text("", 12f, getColor(R.color.cb_cyan), weight = 600, tracking = 0.12f)
+        infoTitle = text("", TITLE_MAX_SP, getColor(R.color.cb_text), weight = 700, maxLines = 2).apply {
+            setLineSpacing(0f, 0.95f)
+        }
+        infoMeta = text("", 15f, 0xFFB8C2CC.toInt(), weight = 400)
+        info.addView(infoEyebrow)
+        info.addView(infoTitle, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            topMargin = dp(6)
+        })
+        info.addView(infoMeta, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            topMargin = dp(8)
+        })
+        root.addView(info, FrameLayout.LayoutParams(dp(INFO_WIDTH_DP), dp(SHELVES_TOP_DP - INFO_TOP_DP - 8)).apply {
+            leftMargin = dp(SAFE_X); topMargin = dp(INFO_TOP_DP)
+        })
+
+        shelvesContent = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            clipChildren = false
+            clipToPadding = false
+            // The fade band sits above the first row, so a row's title is never faded.
+            setPadding(0, dp(FADE_DP), 0, dp(40))
+        }
+        shelves = ScrollView(this).apply {
+            isVerticalScrollBarEnabled = false
+            // A row scrolled half under the info area fades out instead of ending in a hard cut.
+            isVerticalFadingEdgeEnabled = true
+            setFadingEdgeLength(dp(FADE_DP))
+            overScrollMode = View.OVER_SCROLL_NEVER
+            clipChildren = false
+            isFocusable = false
+            descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
+            addView(shelvesContent, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT))
+        }
+        root.addView(shelves, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT).apply {
+            topMargin = dp(SHELVES_TOP_DP)
+        })
+
+        panel = SidePanel(this).apply {
+            returnFocus = { cardFor(lastCard) ?: navRows.firstOrNull()?.cards?.firstOrNull() ?: customiseButton }
+            onClosed = {
+                resetArmed = false
+                shelves.descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
+                topBar.descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
+            }
+        }
+        root.addView(panel, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
+        return root
     }
 
-    private fun marginLayout(
-        height: Int = LinearLayout.LayoutParams.WRAP_CONTENT,
-        top: Int = 0,
-        bottom: Int = 0,
-    ): LinearLayout.LayoutParams = LinearLayout.LayoutParams(
-        LinearLayout.LayoutParams.MATCH_PARENT,
-        height,
-    ).apply {
-        topMargin = top
-        bottomMargin = bottom
-    }
+    // ---------------------------------------------------------------- catalog
 
     /** Loads one catalog snapshot and coalesces refreshes requested while it is running. */
     private fun refreshApps() {
@@ -399,38 +308,33 @@ class LauncherActivity : Activity() {
             return
         }
         scanning = true
-        if (renderedAppKeys == null) scanStatus.text = getString(R.string.scanning_this_tv)
-        val focusToRestore = focusedPackage() ?: lastFocusedPackage
-
         try {
             appLoader.execute {
-                val loaded = LauncherAppCatalog.load(applicationContext)
-                val installed = loaded.mapTo(linkedSetOf()) { it.packageName }
-                val pins = LauncherPreferences.pinnedPackages(applicationContext, installed)
-                val recentPackages = LauncherPreferences.recentPackages(applicationContext, installed)
-                    .filterNot { it in pins }
+                val settings = LauncherPreferences.readSettings(applicationContext)
+                val spec = artSpec(settings)
+                val installedPacks = IconPacks.installed(applicationContext)
+                val chosenPack = IconPacks.resolve(settings.artwork, installedPacks)
+                val pack = chosenPack?.let { IconPacks.load(applicationContext, it.packageName) }
+                val loadedApps = LauncherAppCatalog.load(applicationContext, spec.copy(source = pack?.packageName ?: "app"), pack)
+                val snapshot = LauncherPreferences.snapshot(applicationContext, loadedApps.map { it.packageName })
                 runOnUiThread {
                     scanning = false
                     if (isFinishing || isDestroyed) {
                         rescanRequested = false
                         return@runOnUiThread
                     }
-                    val keys = loaded.map {
-                        "${it.packageName}/${it.activityName}:${it.label}:${it.tvOptimized}:${it.lastUpdateTime}"
+                    apps = loadedApps
+                    packs = installedPacks
+                    activePack = chosenPack.takeIf { pack != null }
+                    state = snapshot
+                    loaded = true
+                    applySettings(snapshot.settings)
+                    val key = renderKey()
+                    if (key != renderedKey) {
+                        renderedKey = key
+                        renderShelves()
                     }
-                    val appListChanged = keys != renderedAppKeys
-                    val pinsChanged = pins != renderedPins
-                    val recentsChanged = recentPackages != renderedRecentPackages
-                    apps = loaded
-                    if (appListChanged || pinsChanged || recentsChanged || renderedAppKeys == null) {
-                        val firstRender = !hasRenderedApps
-                        renderedAppKeys = keys
-                        renderedPins = pins
-                        renderedRecentPackages = recentPackages
-                        renderApps(focusToRestore, pins, recentPackages, firstRender)
-                        hasRenderedApps = true
-                    }
-
+                    if (panel.isOpen) panel.refresh()
                     // Render this snapshot before starting the one coalesced follow-up.
                     if (rescanRequested) {
                         rescanRequested = false
@@ -445,251 +349,339 @@ class LauncherActivity : Activity() {
         }
     }
 
-    /** Rebuilds the app shelves while preserving focus and resolving spotlight data from this scan. */
-    private fun renderApps(
-        focusToRestore: String?,
-        pins: Set<String>,
-        recentPackages: List<String>,
-        firstRender: Boolean,
-    ) {
-        val currentFocusPackage = focusedPackage()
-        val focusPackage = currentFocusPackage ?: focusToRestore
-        appTiles.clear()
-        favoritesRow.removeAllViews()
-        recentRow.removeAllViews()
-        recentSection.visibility = View.GONE
-        appGrid.removeAllViews()
+    private fun renderKey(): String = buildString {
+        apps.forEach { append(it.renderKey).append('|') }
+        append(state.favourites).append(state.recents).append(state.hidden.sorted())
+        append(state.settings.cardSize).append(state.settings.showRecents)
+    }
 
-        val favorites = apps.filter { it.packageName in pins }
-        if (favorites.isEmpty()) {
-            favoritesScroller.visibility = View.GONE
-            emptyFavorites.visibility = View.VISIBLE
-        } else {
-            favoritesScroller.visibility = View.VISIBLE
-            emptyFavorites.visibility = View.GONE
-            favorites.forEach { app ->
-                val tile = appTile(app, wideCard = true)
-                favoritesRow.addView(tile, LinearLayout.LayoutParams(dp(220), dp(112)).apply {
-                    marginEnd = dp(12)
-                })
-                appTiles.putIfAbsent(app.packageName, tile)
-            }
+    /** Card and icon pixel sizes for the chosen card size, from this screen's width. */
+    private fun artSpec(settings: HomeSettings): ArtSpec {
+        val (w, h) = cardSizeDp(settings.cardSize)
+        return ArtSpec(dp(w), dp(h), dp(h * 0.42f), source = "", cornerRadius = dp(12).toFloat())
+    }
+
+    private fun cardSizeDp(size: CardSize): Pair<Float, Float> {
+        val usable = resources.configuration.screenWidthDp - SAFE_X * 2
+        val gap = gapDp(size)
+        val width = (usable - gap * (size.perRow - 1)).toFloat() / size.perRow
+        return width to width * 9f / 16f
+    }
+
+    private fun gapDp(size: CardSize): Int = if (size == CardSize.COMPACT) 14 else 16
+
+    private fun applySettings(settings: HomeSettings) {
+        backdrop.mode = settings.backdrop
+        backdrop.dim = settings.dim
+        clockColumn.visibility = if (settings.showClock) View.VISIBLE else View.GONE
+    }
+
+    // ---------------------------------------------------------------- shelves
+
+    private fun renderShelves() {
+        val restore = if (panel.isOpen) null else focusedIdentity() ?: lastCard
+        val firstRender = !userInteracted && navRows.isEmpty()
+        navRows.clear()
+        shelvesContent.removeAllViews()
+
+        val (cardW, cardH) = cardSizeDp(state.settings.cardSize).let { dp(it.first) to dp(it.second) }
+        val gap = dp(gapDp(state.settings.cardSize))
+        val byPackage = apps.associateBy { it.packageName }
+
+        // Favourites, then the Add card.
+        val favouriteCards = state.favourites.mapNotNull { byPackage[it] }.map { appCard(it, RowKind.FAVOURITES) }
+        val addCard = AddCard(this).apply {
+            setOnClickListener { openFavouritesPicker(asRoot = true) }
+            setOnFocusChangeListener { view, focused -> onCardFocus(view as FocusCard, focused) }
+        }
+        addShelf(getString(R.string.row_favourites), RowKind.FAVOURITES, favouriteCards + addCard, cardW, cardH, gap)
+
+        if (state.settings.showRecents && state.recents.isNotEmpty()) {
+            val recentCards = state.recents.mapNotNull { byPackage[it] }.map { appCard(it, RowKind.RECENT) }
+            if (recentCards.isNotEmpty()) addShelf(getString(R.string.row_recent), RowKind.RECENT, recentCards, cardW, cardH, gap)
         }
 
-        val recentApps = recentPackages.mapNotNull { packageName ->
-            apps.firstOrNull { it.packageName == packageName }
-        }
-        if (recentApps.isNotEmpty()) {
-            recentSection.visibility = View.VISIBLE
-            recentApps.forEach { app ->
-                val tile = appTile(app, wideCard = true)
-                recentRow.addView(tile, LinearLayout.LayoutParams(dp(220), dp(112)).apply {
-                    marginEnd = dp(12)
-                })
-                appTiles.putIfAbsent(app.packageName, tile)
-            }
-        }
-
-        appCount.text = if (apps.isEmpty()) {
-            getString(R.string.app_count_zero)
-        } else {
-            getString(R.string.app_count, apps.size)
-        }
-        scanStatus.visibility = if (apps.isEmpty()) View.VISIBLE else View.GONE
-        scanStatus.text = if (apps.isEmpty()) getString(R.string.no_apps_found) else ""
-
-        if (apps.isNotEmpty()) {
-            val usableWidthDp = (resources.configuration.screenWidthDp - PAGE_HORIZONTAL_PADDING_DP * 2)
-                .coerceAtLeast(GRID_MIN_CONTENT_WIDTH_DP)
-            val columns = (usableWidthDp / GRID_COLUMN_WIDTH_THRESHOLD_DP)
-                .coerceIn(GRID_MIN_COLUMNS, GRID_MAX_COLUMNS)
-            appGrid.columnCount = columns
-            val cellWidth = dp(usableWidthDp / columns) - dp(GRID_CELL_MARGIN_DP * 2)
-            apps.forEachIndexed { index, app ->
-                val tile = appTile(app)
-                val row = index / columns
-                val column = index % columns
-                val params = GridLayout.LayoutParams(
-                    GridLayout.spec(row),
-                    GridLayout.spec(column),
-                ).apply {
-                    width = cellWidth
-                    height = dp(GRID_CELL_HEIGHT_DP)
-                    setMargins(
-                        dp(GRID_CELL_MARGIN_DP),
-                        dp(GRID_CELL_MARGIN_DP),
-                        dp(GRID_CELL_MARGIN_DP),
-                        dp(GRID_CELL_MARGIN_DP),
-                    )
+        val visible = apps.filterNot { it.packageName in state.hidden }
+        if (visible.isNotEmpty()) {
+            val title = shelfTitle(getString(R.string.row_all_apps_count, visible.size))
+            shelvesContent.addView(title, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                leftMargin = dp(SAFE_X); topMargin = dp(ROW_GAP_DP)
+            })
+            visible.chunked(state.settings.cardSize.perRow).forEachIndexed { index, chunk ->
+                val row = LinearLayout(this).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    clipChildren = false
+                    clipToPadding = false
+                    setPadding(dp(SAFE_X), dp(CARD_PAD_DP), dp(SAFE_X), dp(CARD_PAD_DP))
                 }
-                appGrid.addView(tile, params)
-                appTiles.putIfAbsent(app.packageName, tile)
+                val cards = chunk.map { appCard(it, RowKind.ALL_APPS) }
+                cards.forEachIndexed { i, card ->
+                    row.addView(card, LinearLayout.LayoutParams(cardW, cardH).apply { if (i > 0) marginStart = gap })
+                }
+                shelvesContent.addView(row, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+                navRows += NavRow(RowKind.ALL_APPS, if (index == 0) title else row, cards.toMutableList(), scroller = null)
             }
         }
 
-        val focusedApp = focusPackage?.let { packageName -> apps.firstOrNull { it.packageName == packageName } }
-        val currentSelectedApp = selectedApp?.packageName?.let { selectedPackage ->
-            apps.firstOrNull { it.packageName == selectedPackage }
+        if (apps.isEmpty()) {
+            showInfoText(getString(R.string.info_empty_title), getString(R.string.info_empty_meta), eyebrow = "")
         }
-        updateHero(focusedApp ?: currentSelectedApp ?: apps.firstOrNull())
 
-        pageContent.post {
-            val target = focusPackage?.let(appTiles::get)
-                ?: appTiles.values.firstOrNull()
-                ?: manageButton
-            if (firstRender && !userInteracted) {
-                target.requestFocus()
-                return@post
-            }
-            if (currentFocus?.isFocused == true && currentFocus?.visibility == View.VISIBLE) return@post
+        if (panel.isOpen) return
+        val target = when {
+            firstRender -> navRows.firstOrNull()?.cards?.firstOrNull()
+            else -> cardFor(restore)
+        } ?: navRows.firstOrNull()?.cards?.firstOrNull() ?: customiseButton
+        val current = window.currentFocus
+        if (firstRender || current == null || !current.isAttachedToWindow || current is FocusCard) {
             target.requestFocus()
         }
     }
 
-    private fun appTile(app: LaunchableApp, wideCard: Boolean = false): AppTileView =
-        AppTileView(this, app, ::onAppFocused, wideCard = wideCard).apply {
-            setOnClickListener { launchApp(app) }
-            setOnLongClickListener {
-                showAppActions(app)
-                true
-            }
+    private fun addShelf(title: String, kind: RowKind, cards: List<FocusCard>, cardW: Int, cardH: Int, gap: Int) {
+        val container = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            clipChildren = false
+            clipToPadding = false
         }
-
-    private fun onAppFocused(app: LaunchableApp) {
-        lastFocusedPackage = app.packageName
-        updateHero(app)
+        container.addView(shelfTitle(title), LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            leftMargin = dp(SAFE_X)
+        })
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            clipChildren = false
+            clipToPadding = false
+            setPadding(dp(SAFE_X), dp(CARD_PAD_DP), dp(SAFE_X), dp(CARD_PAD_DP))
+        }
+        cards.forEachIndexed { i, card ->
+            row.addView(card, LinearLayout.LayoutParams(cardW, cardH).apply { if (i > 0) marginStart = gap })
+        }
+        val scroller = HorizontalScrollView(this).apply {
+            isHorizontalScrollBarEnabled = false
+            overScrollMode = View.OVER_SCROLL_NEVER
+            clipChildren = false
+            clipToPadding = false
+            isFocusable = false
+            addView(row, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT))
+        }
+        container.addView(scroller, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        shelvesContent.addView(container, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            if (navRows.isNotEmpty()) topMargin = dp(ROW_GAP_DP)
+        })
+        navRows += NavRow(kind, container, cards.toMutableList(), scroller)
     }
 
-    /** Updates spotlight text and artwork only when the selected app's current catalog entry changes. */
-    private fun updateHero(app: LaunchableApp?) {
-        val previous = selectedApp
-        if (app != null && previous != null &&
-            app.packageName == previous.packageName &&
-            app.activityName == previous.activityName &&
-            app.label == previous.label &&
-            app.tvOptimized == previous.tvOptimized &&
-            app.lastUpdateTime == previous.lastUpdateTime
-        ) return
+    private fun appCard(app: LaunchableApp, kind: RowKind): AppCard = AppCard(this, app, kind).apply {
+        setOnClickListener { launchApp(app) }
+        setOnLongClickListener {
+            openAppOptions(this)
+            true
+        }
+        setOnFocusChangeListener { view, focused -> onCardFocus(view as FocusCard, focused) }
+    }
 
-        selectedApp = app
-        if (app == null) {
-            heroIcon.setImageResource(R.drawable.core_builds_mark)
-            heroIcon.scaleType = ImageView.ScaleType.FIT_CENTER
-            heroIcon.setPadding(0, 0, 0, 0)
-            heroEyebrow.text = if (apps.isEmpty()) {
-                getString(R.string.hero_no_apps)
-            } else {
-                getString(R.string.hero_eyebrow)
+    private fun onCardFocus(card: FocusCard, focused: Boolean) {
+        if (!focused) return
+        lastCard = card.kind to (card as? AppCard)?.app?.packageName
+        updateInfo(card)
+        revealCard(card)
+    }
+
+    private fun focusedIdentity(): Pair<RowKind, String?>? {
+        val card = window.currentFocus as? FocusCard ?: return null
+        return card.kind to (card as? AppCard)?.app?.packageName
+    }
+
+    /** The card for (row, package) after a re-render: the same row first, then the same app anywhere. */
+    private fun cardFor(identity: Pair<RowKind, String?>?): FocusCard? {
+        identity ?: return null
+        val (kind, packageName) = identity
+        val all = navRows.flatMap { it.cards }
+        return all.firstOrNull { it.kind == kind && (it as? AppCard)?.app?.packageName == packageName && (packageName != null || it is AddCard) }
+            ?: packageName?.let { pkg -> all.firstOrNull { (it as? AppCard)?.app?.packageName == pkg } }
+    }
+
+    // ---------------------------------------------------------------- info + backdrop
+
+    private fun updateInfo(card: FocusCard) {
+        val current = moving
+        when {
+            current != null -> {
+                showInfoText(getString(R.string.info_moving_title, current.app.label), getString(R.string.info_moving_meta), eyebrow = getString(R.string.info_eyebrow_favourite))
+                backdrop.show(current.app.art)
             }
-            heroTitle.text = if (apps.isEmpty()) {
-                getString(R.string.hero_title_no_apps)
-            } else {
-                getString(R.string.hero_title_empty)
+            card is AppCard -> {
+                val eyebrow = getString(when (card.kind) {
+                    RowKind.FAVOURITES -> R.string.info_eyebrow_favourite
+                    RowKind.RECENT -> R.string.info_eyebrow_recent
+                    RowKind.ALL_APPS -> R.string.info_eyebrow_all_apps
+                })
+                val type = getString(if (card.app.tvOptimized) R.string.info_tv_app else R.string.info_app)
+                showInfoText(card.app.label, getString(R.string.info_meta, type, getString(R.string.info_hint)), eyebrow)
+                backdrop.show(card.app.art)
             }
-            heroSubtitle.text = if (apps.isEmpty()) {
-                getString(R.string.hero_subtitle_no_apps)
-            } else {
-                getString(R.string.hero_subtitle_empty)
+            card is AddCard -> showInfoText(getString(R.string.info_add_title), getString(R.string.info_add_meta), eyebrow = getString(R.string.info_eyebrow_favourite))
+        }
+    }
+
+    private fun showInfoText(title: String, meta: String, eyebrow: String) {
+        infoEyebrow.text = eyebrow
+        infoEyebrow.visibility = if (eyebrow.isEmpty()) View.INVISIBLE else View.VISIBLE
+        fitTitle(title)
+        infoMeta.text = meta
+    }
+
+    /**
+     * The focused app's name as large as fits: 44sp on one line, else the
+     * largest size down to 30sp on one line, else two lines at 30sp. Measured,
+     * not auto-sized, so the size is chosen once and never animates.
+     */
+    private fun fitTitle(title: String) {
+        val width = dp(INFO_WIDTH_DP).toFloat()
+        val paint = Paint().apply { typeface = Type.outfit(this@LauncherActivity, 700) }
+        var size = TITLE_MAX_SP
+        while (size > TITLE_MIN_SP) {
+            paint.textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, size, resources.displayMetrics)
+            if (paint.measureText(title) <= width) break
+            size -= 2f
+        }
+        infoTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, size.coerceAtLeast(TITLE_MIN_SP))
+        infoTitle.text = title
+    }
+
+    // ---------------------------------------------------------------- remote
+
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        if (event.action == KeyEvent.ACTION_DOWN) userInteracted = true
+        val direction = direction(event.keyCode)
+        if (panel.isOpen) {
+            if (direction != null) {
+                if (event.action == KeyEvent.ACTION_DOWN) panel.move(direction)
+                return true
             }
+            return super.dispatchKeyEvent(event)
+        }
+        moving?.let {
+            if (direction != null) {
+                if (event.action == KeyEvent.ACTION_DOWN) moveFavourite(direction)
+                return true
+            }
+            if (isSelectKey(event.keyCode)) {
+                if (event.action == KeyEvent.ACTION_UP) finishMove()
+                return true
+            }
+        }
+        if (direction != null) {
+            if (event.action == KeyEvent.ACTION_DOWN) navigate(window.currentFocus, direction)
+            // The home always decides; nothing falls through to Android's geometric search.
+            return true
+        }
+        if (event.keyCode == KeyEvent.KEYCODE_MENU) {
+            if (event.action == KeyEvent.ACTION_UP) (window.currentFocus as? AppCard)?.let { openAppOptions(it) }
+            return true
+        }
+        return super.dispatchKeyEvent(event)
+    }
+
+    private fun direction(keyCode: Int): Int? = when (keyCode) {
+        KeyEvent.KEYCODE_DPAD_LEFT -> View.FOCUS_LEFT
+        KeyEvent.KEYCODE_DPAD_RIGHT -> View.FOCUS_RIGHT
+        KeyEvent.KEYCODE_DPAD_UP -> View.FOCUS_UP
+        KeyEvent.KEYCODE_DPAD_DOWN -> View.FOCUS_DOWN
+        else -> null
+    }
+
+    private fun isSelectKey(keyCode: Int): Boolean =
+        keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER
+
+    /**
+     * One arrow on the home. Left/Right stay in the row and stop at its ends;
+     * Up/Down go to the neighbouring row's card nearest on screen and stop at
+     * the last row; Up from the first row goes to Customise, Down from there
+     * comes back to the card you left.
+     */
+    internal fun navigate(focused: View?, direction: Int) {
+        if (focused === customiseButton) {
+            if (direction == View.FOCUS_DOWN) (cardFor(lastCard) ?: navRows.firstOrNull()?.cards?.firstOrNull())?.requestFocus()
             return
         }
-        heroIcon.setImageDrawable((app.banner ?: app.icon).copyForDisplay())
-        if (app.banner != null) {
-            heroIcon.scaleType = ImageView.ScaleType.CENTER_CROP
-            heroIcon.setPadding(0, 0, 0, 0)
-        } else {
-            heroIcon.scaleType = ImageView.ScaleType.FIT_CENTER
-            heroIcon.setPadding(dp(56), 0, dp(56), 0)
+        val card = focused as? FocusCard
+        val rowIndex = navRows.indexOfFirst { row -> row.cards.any { it === card } }
+        if (card == null || rowIndex < 0) {
+            (navRows.firstOrNull()?.cards?.firstOrNull() ?: customiseButton).requestFocus()
+            return
         }
-        heroEyebrow.text = getString(
-            if (app.tvOptimized) R.string.hero_tv_ready else R.string.hero_app_ready,
-        )
-        heroTitle.text = app.label
-        heroSubtitle.text = getString(R.string.hero_press_ok)
+        val row = navRows[rowIndex]
+        val col = row.cards.indexOf(card)
+        when (direction) {
+            View.FOCUS_LEFT -> row.cards.getOrNull(col - 1)?.requestFocus()
+            View.FOCUS_RIGHT -> row.cards.getOrNull(col + 1)?.requestFocus()
+            View.FOCUS_UP -> if (rowIndex == 0) customiseButton.requestFocus() else nearest(navRows[rowIndex - 1], card)?.requestFocus()
+            View.FOCUS_DOWN -> navRows.getOrNull(rowIndex + 1)?.let { nearest(it, card)?.requestFocus() }
+        }
     }
 
-    private fun focusedPackage(): String? = currentFocus?.tag as? String
+    private fun nearest(row: NavRow, from: View): FocusCard? {
+        val x = centreX(from)
+        return row.cards.minByOrNull { kotlin.math.abs(centreX(it) - x) }
+    }
+
+    private fun centreX(view: View): Int {
+        val location = IntArray(2)
+        view.getLocationInWindow(location)
+        return location[0] + view.width / 2
+    }
+
+    /** Lines the focused card's row up under the info area, and scrolls a shelf so the card shows whole. */
+    private fun revealCard(card: FocusCard) {
+        val row = navRows.firstOrNull { r -> r.cards.any { it === card } } ?: return
+        val rect = Rect()
+        row.anchor.getDrawingRect(rect)
+        shelvesContent.offsetDescendantRectToMyCoords(row.anchor, rect)
+        val maxScroll = (shelvesContent.height - shelves.height).coerceAtLeast(0)
+        // The row's top lands just under the fade band, where the first row sits unscrolled.
+        animateScroll(shelves, "scrollY", (rect.top - dp(FADE_DP)).coerceIn(0, maxScroll))
+
+        val scroller = row.scroller ?: return
+        val margin = dp(SAFE_X)
+        val left = card.left
+        val right = card.right
+        val view = scroller.scrollX
+        val visibleWidth = scroller.width
+        val target = when {
+            left - margin < view -> left - margin
+            right + margin > view + visibleWidth -> right + margin - visibleWidth
+            else -> return
+        }
+        val maxX = ((scroller.getChildAt(0)?.width ?: 0) - visibleWidth).coerceAtLeast(0)
+        animateScroll(scroller, "scrollX", target.coerceIn(0, maxX))
+    }
+
+    private fun animateScroll(view: View, property: String, target: Int) {
+        val current = if (property == "scrollY") view.scrollY else view.scrollX
+        if (current == target) return
+        ObjectAnimator.ofInt(view, property, current, target).apply {
+            duration = 220
+            interpolator = DecelerateInterpolator()
+            start()
+        }
+    }
+
+    // ---------------------------------------------------------------- launch + actions
 
     private fun launchApp(app: LaunchableApp) {
-        val category = if (app.tvOptimized) {
-            Intent.CATEGORY_LEANBACK_LAUNCHER
-        } else {
-            Intent.CATEGORY_LAUNCHER
-        }
         val intent = Intent(Intent.ACTION_MAIN)
-            .addCategory(category)
+            .addCategory(if (app.tvOptimized) Intent.CATEGORY_LEANBACK_LAUNCHER else Intent.CATEGORY_LAUNCHER)
             .setComponent(ComponentName(app.packageName, app.activityName))
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         try {
             startActivity(intent)
-            appLoader.execute {
-                LauncherPreferences.recordLaunch(applicationContext, app.packageName)
-            }
+            LauncherPreferences.recordLaunch(applicationContext, app.packageName)
         } catch (_: ActivityNotFoundException) {
-            Toast.makeText(
-                this,
-                getString(R.string.app_no_longer_available, app.label),
-                Toast.LENGTH_SHORT,
-            ).show()
+            toast(getString(R.string.app_no_longer_available, app.label))
             refreshApps()
         } catch (_: SecurityException) {
-            Toast.makeText(
-                this,
-                getString(R.string.app_launch_blocked, app.label),
-                Toast.LENGTH_SHORT,
-            ).show()
-        }
-    }
-
-    private fun showAppActions(app: LaunchableApp) {
-        val isPinned = app.packageName in renderedPins.orEmpty()
-        val favouriteAction = getString(
-            if (isPinned) R.string.app_action_remove_favourite else R.string.app_action_add_favourite,
-        )
-        AlertDialog.Builder(this)
-            .setTitle(getString(R.string.app_actions_title, app.label))
-            .setItems(
-                arrayOf(favouriteAction, getString(R.string.app_action_app_info)),
-            ) { _, index ->
-                when (index) {
-                    0 -> setFavouriteFromHome(app, pinned = !isPinned)
-                    1 -> openAppInfo(app)
-                }
-            }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
-    }
-
-    /**
-     * Writes the state the menu offered rather than toggling, so a state change made
-     * between opening the dialog and choosing keeps the label and the result aligned.
-     */
-    private fun setFavouriteFromHome(app: LaunchableApp, pinned: Boolean) {
-        val installedPackages = apps.mapTo(linkedSetOf()) { it.packageName }
-        if (app.packageName !in installedPackages) {
-            refreshApps()
-            return
-        }
-        try {
-            appLoader.execute {
-                val nowPinned = LauncherPreferences.setPinned(
-                    applicationContext,
-                    app.packageName,
-                    pinned,
-                    installedPackages,
-                )
-                runOnUiThread {
-                    if (isFinishing || isDestroyed) return@runOnUiThread
-                    Toast.makeText(
-                        this,
-                        getString(if (nowPinned) R.string.favourite_added else R.string.favourite_removed),
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                    refreshApps()
-                }
-            }
-        } catch (_: RejectedExecutionException) {
-            // onDestroy shuts down the local executor; never revive a finishing activity.
+            toast(getString(R.string.app_launch_blocked, app.label))
         }
     }
 
@@ -700,14 +692,10 @@ class LauncherActivity : Activity() {
         try {
             startActivity(intent)
         } catch (_: ActivityNotFoundException) {
-            Toast.makeText(this, getString(R.string.app_info_unavailable, app.label), Toast.LENGTH_LONG).show()
+            toast(getString(R.string.app_info_unavailable, app.label))
         } catch (_: SecurityException) {
-            Toast.makeText(this, getString(R.string.app_info_unavailable, app.label), Toast.LENGTH_LONG).show()
+            toast(getString(R.string.app_info_unavailable, app.label))
         }
-    }
-
-    private fun openManageFavorites() {
-        startActivity(Intent(this, ManageFavoritesActivity::class.java))
     }
 
     private fun openHomeSettings() {
@@ -717,20 +705,331 @@ class LauncherActivity : Activity() {
             try {
                 startActivity(Intent(Settings.ACTION_SETTINGS))
             } catch (_: ActivityNotFoundException) {
-                Toast.makeText(
-                    this,
-                    getString(R.string.open_home_settings_hint),
-                    Toast.LENGTH_LONG,
-                ).show()
+                toast(getString(R.string.open_home_settings_hint))
             }
         }
     }
 
-    private fun updateClock() {
-        if (!::clockText.isInitialized || !::dateText.isInitialized) return
-        val now = Date()
-        clockText.text = DateFormat.getTimeInstance(DateFormat.SHORT).format(now)
-        dateText.text = DateFormat.getDateInstance(DateFormat.MEDIUM).format(now).uppercase()
+    private fun toast(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+
+    private fun installedInOrder(): List<String> = apps.map { it.packageName }
+
+    private fun setFavourite(app: LaunchableApp, favourite: Boolean, announce: Boolean) {
+        LauncherPreferences.setFavourite(applicationContext, app.packageName, favourite, installedInOrder())
+        state = state.copy(favourites = if (favourite) state.favourites - app.packageName + app.packageName else state.favourites - app.packageName)
+        if (announce) toast(getString(if (favourite) R.string.toast_favourite_added else R.string.toast_favourite_removed, app.label))
+        refreshApps()
     }
 
+    private fun setHidden(app: LaunchableApp, hidden: Boolean, announce: Boolean) {
+        LauncherPreferences.setHidden(applicationContext, app.packageName, hidden)
+        state = state.copy(hidden = if (hidden) state.hidden + app.packageName else state.hidden - app.packageName)
+        if (announce) toast(getString(if (hidden) R.string.toast_hidden else R.string.toast_shown, app.label))
+        refreshApps()
+    }
+
+    private fun updateSettings(change: (HomeSettings) -> HomeSettings) {
+        val next = change(state.settings)
+        if (next == state.settings) return
+        LauncherPreferences.saveSettings(applicationContext, next)
+        state = state.copy(settings = next)
+        applySettings(next)
+        panel.refresh()
+        refreshApps()
+    }
+
+    // ---------------------------------------------------------------- move mode
+
+    private fun startMove(card: AppCard) {
+        panel.close()
+        moving = card
+        movingOrder = state.favourites.toMutableList()
+        card.moving = true
+        card.describe()
+        card.requestFocus()
+        updateInfo(card)
+    }
+
+    /** Left/Right swap the moving favourite with its neighbour; the Add card stays last. */
+    private fun moveFavourite(direction: Int) {
+        val card = moving ?: return
+        val order = movingOrder ?: return
+        val row = navRows.firstOrNull { it.kind == RowKind.FAVOURITES } ?: return
+        val index = row.cards.indexOf(card)
+        val target = when (direction) {
+            View.FOCUS_LEFT -> index - 1
+            View.FOCUS_RIGHT -> index + 1
+            else -> return
+        }
+        val neighbour = row.cards.getOrNull(target) as? AppCard ?: return
+        // Move the neighbour, never the focused card, so focus never drops.
+        val parent = card.parent as ViewGroup
+        val gap = dp(gapDp(state.settings.cardSize))
+        parent.removeView(neighbour)
+        parent.addView(neighbour, index)
+        row.cards[index] = neighbour
+        row.cards[target] = card
+        for (i in 0 until parent.childCount) {
+            (parent.getChildAt(i).layoutParams as LinearLayout.LayoutParams).marginStart = if (i == 0) 0 else gap
+        }
+        parent.requestLayout()
+        val a = order.indexOf(card.app.packageName)
+        val b = order.indexOf(neighbour.app.packageName)
+        if (a >= 0 && b >= 0) {
+            order[a] = neighbour.app.packageName
+            order[b] = card.app.packageName
+        }
+        card.post { revealCard(card) }
+    }
+
+    private fun finishMove() {
+        val card = moving ?: return
+        val order = movingOrder
+        moving = null
+        movingOrder = null
+        card.moving = false
+        card.describe()
+        if (order != null && order != state.favourites) {
+            LauncherPreferences.reorderFavourites(applicationContext, order, installedInOrder())
+            state = state.copy(favourites = order.toList())
+            renderedKey = renderKey()
+        }
+        if (card.isFocused) updateInfo(card)
+    }
+
+    // ---------------------------------------------------------------- panels
+
+    private fun openPanel(page: () -> PanelPage) {
+        // Nothing behind the panel can take focus while it is open.
+        shelves.descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
+        topBar.descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
+        panel.open(page)
+    }
+
+    private fun openAppOptions(card: AppCard) {
+        lastCard = card.kind to card.app.packageName
+        val app = card.app
+        val kind = card.kind
+        openPanel {
+            val favourite = app.packageName in state.favourites
+            val hidden = app.packageName in state.hidden
+            val items = buildList {
+                add(PanelItem(getString(R.string.option_open)) { panel.close(); launchApp(app) })
+                if (favourite) {
+                    add(PanelItem(getString(R.string.option_remove_favourite)) { panel.close(); setFavourite(app, false, announce = true) })
+                } else {
+                    add(PanelItem(getString(R.string.option_add_favourite)) { panel.close(); setFavourite(app, true, announce = true) })
+                }
+                if (kind == RowKind.FAVOURITES && state.favourites.size > 1) {
+                    add(PanelItem(getString(R.string.option_move), meta = getString(R.string.option_move_meta)) {
+                        cardFor(RowKind.FAVOURITES to app.packageName)?.let { startMove(it as AppCard) }
+                    })
+                }
+                if (hidden) {
+                    add(PanelItem(getString(R.string.option_unhide)) { panel.close(); setHidden(app, false, announce = true) })
+                } else {
+                    add(PanelItem(getString(R.string.option_hide), meta = getString(R.string.option_hide_meta)) {
+                        panel.close(); setHidden(app, true, announce = true)
+                    })
+                }
+                add(PanelItem(getString(R.string.option_app_info), meta = getString(R.string.option_app_info_meta)) {
+                    panel.close(); openAppInfo(app)
+                })
+            }
+            PanelPage(
+                eyebrow = getString(R.string.options_eyebrow),
+                title = app.label,
+                body = getString(if (app.tvOptimized) R.string.info_tv_app else R.string.info_app),
+                items = items,
+            )
+        }
+    }
+
+    private fun openCustomise() {
+        openPanel { customisePage() }
+    }
+
+    private fun customisePage(): PanelPage {
+        val s = state.settings
+        val hiddenCount = state.hidden.count { pkg -> apps.any { it.packageName == pkg } }
+        return PanelPage(
+            eyebrow = getString(R.string.customise_eyebrow),
+            title = getString(R.string.customise_title),
+            items = listOf(
+                PanelItem(getString(R.string.setting_artwork), value = artworkLabel()) { panel.push { artworkPage() } },
+                PanelItem(getString(R.string.setting_background), value = backgroundLabel(s.backdrop)) { panel.push { backgroundPage() } },
+                PanelItem(getString(R.string.setting_dim), value = dimLabel(s.dim)) { panel.push { dimPage() } },
+                PanelItem(getString(R.string.setting_card_size), value = cardSizeLabel(s.cardSize)) { panel.push { cardSizePage() } },
+                PanelItem(getString(R.string.setting_recent), value = onOff(s.showRecents)) { updateSettings { it.copy(showRecents = !it.showRecents) } },
+                PanelItem(getString(R.string.setting_clock), value = onOff(s.showClock)) { updateSettings { it.copy(showClock = !it.showClock) } },
+                PanelItem(getString(R.string.setting_favourites), value = resources.getQuantityString(R.plurals.setting_favourites_value, state.favourites.size, state.favourites.size)) {
+                    openFavouritesPicker(asRoot = false)
+                },
+                PanelItem(
+                    getString(R.string.setting_hidden),
+                    value = if (hiddenCount == 0) getString(R.string.setting_hidden_value_none) else resources.getQuantityString(R.plurals.setting_hidden_value, hiddenCount, hiddenCount),
+                ) { panel.push { hiddenPage() } },
+                PanelItem(getString(R.string.setting_set_home), meta = getString(R.string.setting_set_home_meta)) {
+                    panel.close(); openHomeSettings()
+                },
+                PanelItem(
+                    getString(R.string.setting_reset),
+                    meta = getString(if (resetArmed) R.string.setting_reset_confirm else R.string.setting_reset_meta),
+                ) {
+                    if (!resetArmed) {
+                        resetArmed = true
+                        panel.refresh()
+                    } else {
+                        LauncherPreferences.reset(applicationContext)
+                        state = HomeState(emptyList(), emptySet(), emptyList(), HomeSettings())
+                        renderedKey = null
+                        panel.close()
+                        toast(getString(R.string.toast_reset))
+                        refreshApps()
+                    }
+                },
+            ),
+            footer = getString(R.string.customise_footer),
+        )
+    }
+
+    private fun artworkLabel(): String = activePack?.let { packLabel(it) } ?: getString(R.string.artwork_app)
+
+    private fun packLabel(pack: IconPackInfo): String = when (pack.packageName) {
+        IconPacks.CORE_BUILDS_BANNERS -> getString(R.string.artwork_core_banners)
+        in IconPacks.CORE_BUILDS_GLYPHS -> getString(R.string.artwork_core_glyphs)
+        else -> pack.label
+    }
+
+    private fun artworkPage(): PanelPage {
+        val chosen = IconPacks.resolve(state.settings.artwork, packs)
+        val items = packs.map { pack ->
+            PanelItem(packLabel(pack), meta = getString(R.string.artwork_pack_meta), selected = chosen?.packageName == pack.packageName) {
+                updateSettings { it.copy(artwork = ArtworkChoice.IconPack(pack.packageName)) }
+            }
+        } + PanelItem(getString(R.string.artwork_app), meta = getString(R.string.artwork_app_meta), selected = chosen == null) {
+            updateSettings { it.copy(artwork = ArtworkChoice.AppArtwork) }
+        }
+        val missing = (state.settings.artwork as? ArtworkChoice.IconPack)?.takeIf { choice -> packs.none { it.packageName == choice.packageName } }
+        return PanelPage(
+            eyebrow = getString(R.string.customise_eyebrow),
+            title = getString(R.string.artwork_title),
+            body = missing?.let { getString(R.string.artwork_missing, it.packageName) } ?: getString(R.string.artwork_body),
+            items = items,
+        )
+    }
+
+    private fun backgroundPage(): PanelPage = choicePage(
+        getString(R.string.background_title),
+        Backdrop.entries.map { mode ->
+            PanelItem(backgroundLabel(mode), meta = backgroundMeta(mode), selected = state.settings.backdrop == mode) {
+                updateSettings { it.copy(backdrop = mode) }
+            }
+        },
+    )
+
+    private fun dimPage(): PanelPage = choicePage(
+        getString(R.string.dim_title),
+        Dim.entries.map { level ->
+            PanelItem(dimLabel(level), selected = state.settings.dim == level) { updateSettings { it.copy(dim = level) } }
+        },
+    )
+
+    private fun cardSizePage(): PanelPage = choicePage(
+        getString(R.string.card_size_title),
+        CardSize.entries.map { size ->
+            PanelItem(cardSizeLabel(size), meta = cardSizeMeta(size), selected = state.settings.cardSize == size) {
+                updateSettings { it.copy(cardSize = size) }
+            }
+        },
+    )
+
+    private fun choicePage(title: String, items: List<PanelItem>) =
+        PanelPage(eyebrow = getString(R.string.customise_eyebrow), title = title, items = items)
+
+    private fun openFavouritesPicker(asRoot: Boolean) {
+        val page = {
+            PanelPage(
+                eyebrow = getString(R.string.customise_eyebrow),
+                title = getString(R.string.favourites_title),
+                body = getString(R.string.favourites_body),
+                items = apps.map { app ->
+                    val favourite = app.packageName in state.favourites
+                    PanelItem(
+                        app.label,
+                        value = if (favourite) getString(R.string.favourite_state_on) else null,
+                        art = app.art,
+                    ) {
+                        setFavourite(app, !favourite, announce = false)
+                        panel.refresh()
+                    }
+                },
+            )
+        }
+        if (asRoot) openPanel(page) else panel.push(page)
+    }
+
+    private fun hiddenPage(): PanelPage {
+        val hidden = apps.filter { it.packageName in state.hidden }
+        return PanelPage(
+            eyebrow = getString(R.string.customise_eyebrow),
+            title = getString(R.string.hidden_title),
+            body = getString(R.string.hidden_body),
+            items = hidden.map { app ->
+                PanelItem(app.label, value = getString(R.string.hidden_state), art = app.art) {
+                    setHidden(app, false, announce = false)
+                    panel.refresh()
+                }
+            },
+            empty = getString(R.string.hidden_empty),
+        )
+    }
+
+    private fun onOff(value: Boolean) = getString(if (value) R.string.value_on else R.string.value_off)
+
+    private fun backgroundLabel(mode: Backdrop) = getString(when (mode) {
+        Backdrop.FOCUSED_APP -> R.string.background_focused
+        Backdrop.CORE_BUILDS -> R.string.background_core
+        Backdrop.VOID -> R.string.background_void
+    })
+
+    private fun backgroundMeta(mode: Backdrop) = getString(when (mode) {
+        Backdrop.FOCUSED_APP -> R.string.background_focused_meta
+        Backdrop.CORE_BUILDS -> R.string.background_core_meta
+        Backdrop.VOID -> R.string.background_void_meta
+    })
+
+    private fun dimLabel(level: Dim) = getString(when (level) {
+        Dim.LIGHT -> R.string.dim_light
+        Dim.MEDIUM -> R.string.dim_medium
+        Dim.STRONG -> R.string.dim_strong
+    })
+
+    private fun cardSizeLabel(size: CardSize) = getString(when (size) {
+        CardSize.COMPACT -> R.string.card_size_compact
+        CardSize.STANDARD -> R.string.card_size_standard
+        CardSize.LARGE -> R.string.card_size_large
+    })
+
+    private fun cardSizeMeta(size: CardSize) = getString(when (size) {
+        CardSize.COMPACT -> R.string.card_size_compact_meta
+        CardSize.STANDARD -> R.string.card_size_standard_meta
+        CardSize.LARGE -> R.string.card_size_large_meta
+    })
+
+    internal companion object {
+        /** The TV overscan-safe margins: 48dp at the sides, 27dp top and bottom. */
+        const val SAFE_X = 48
+        const val SAFE_Y = 27
+        const val INFO_TOP_DP = 76
+        const val INFO_WIDTH_DP = 600
+        const val SHELVES_TOP_DP = 212
+        /** The band at the shelves' top where a row scrolled up fades out. */
+        const val FADE_DP = 24
+        const val ROW_GAP_DP = 6
+        /** Room around each row of cards for the 1.1x focus lift and its ring. */
+        const val CARD_PAD_DP = 12
+        const val TITLE_MAX_SP = 44f
+        const val TITLE_MIN_SP = 30f
+    }
 }

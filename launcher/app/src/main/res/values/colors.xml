@@ -3,14 +3,12 @@
     <!-- Core Builds icon-pack foundations: Void canvas, Night card, Panel Ink. -->
     <color name="cb_background">#04070F</color>
     <color name="cb_night">#0D1117</color>
-    <color name="cb_surface">#0D1117</color>
-    <color name="cb_surface_focus">#151923</color>
     <color name="cb_panel">#151923</color>
     <color name="cb_cyan">#00D4FF</color>
-    <color name="cb_cyan_soft">#7EEEFF</color>
     <color name="cb_text">#E6EDF3</color>
     <color name="cb_muted">#8B949E</color>
     <color name="cb_line">#2B3948</color>
     <color name="cb_violet">#8A4890</color>
-    <color name="cb_ember">#C03A20</color>
+    <!-- The scrim over the home while a panel is open. -->
+    <color name="cb_scrim">#B3000000</color>
 </resources>

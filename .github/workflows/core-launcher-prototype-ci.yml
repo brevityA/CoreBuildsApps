@@ -53,9 +53,10 @@ jobs:
       - id: build
         name: Build, lint and open-the-screens tests
         working-directory: launcher
-        # testDebugUnitTest opens Home and the favourites editor under
-        # Robolectric on API 26, 30 and 35. launcher-v0.1.0 built and linted
-        # clean yet closed on open on Android 11+; nothing had run an activity.
+        # testDebugUnitTest runs the home screen under Robolectric: it opens on
+        # API 30-35, and the remote, panels, Move and settings behave.
+        # launcher-v0.1.0 built and linted clean yet closed on open on
+        # Android 11+; nothing had run an activity.
         run: ./gradlew :app:testDebugUnitTest :app:lintDebug :app:assembleDebug --no-daemon --stacktrace
 
       - id: revision

@@ -12,18 +12,24 @@ android {
         // Distinct from any eventual public package so this can sit beside
         // another launcher build during private testing.
         applicationId = "tv.corebuilds.launcher.prototype"
-        minSdk = 26
+        // Android 11 (API 30) to the latest: the supported range the owner set
+        // for 0.2.0. Every screen is opened on API 30-35 in ScreensOpenTest.
+        minSdk = 30
         targetSdk = 37
-        versionCode = 2
-        versionName = "0.1.1"
+        versionCode = 3
+        versionName = "0.2.0"
     }
 
     testOptions {
         unitTests {
-            // The open-the-screen tests run the real activities under
-            // Robolectric, which needs the merged resources.
+            // The screen tests run the real activities under Robolectric,
+            // which needs the merged resources.
             isIncludeAndroidResources = true
-            all { test -> test.maxHeapSize = "2g" }
+            all { test ->
+                test.maxHeapSize = "2g"
+                // Where the screen tests write their 1920 x 1080 renders.
+                test.systemProperty("launcher.screens.dir", layout.buildDirectory.dir("screens").get().asFile.absolutePath)
+            }
         }
     }
 
