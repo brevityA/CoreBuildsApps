@@ -785,6 +785,14 @@ class PrivateLauncherPrototypeContract(unittest.TestCase):
         # The asset is named for the version, not the tag, and a re-run repairs
         # an existing release instead of failing on it.
         self.assertIn('version="${TAG#launcher-v}"', workflow)
+        # The release body states the build's own version and Android floor, read
+        # from the tagged source, and a tag that disagrees with versionName is refused.
+        # (launcher-v0.1.0's body was hand-written; 0.2 moved the floor to API 30.)
+        self.assertIn('if [ "${TAG#launcher-v}" != "$version_name" ]', workflow)
+        self.assertIn("(version $VERSION_NAME)", workflow)
+        self.assertIn("minSdk $MIN_SDK, targetSdk $TARGET_SDK", workflow)
+        self.assertNotIn("0.1.0-private", workflow)
+        self.assertNotRegex(workflow, r"minSdk \d")
         # gh names an asset from the file itself (`path#label` only sets the
         # display label), so the APK is copied to the version-named file, and the
         # release body records that exact file's hash.

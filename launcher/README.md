@@ -120,7 +120,7 @@ There is no release signing key, no `assembleRelease`, no floating "latest" tag,
 
 To try it as HOME, open **Customise › Set as Home app**, choose the prototype in Android's Home-app settings, then press the remote's Home button. To revert, use the device's **Settings → Apps → Default apps → Home app** screen (wording varies by vendor) and select the previous launcher.
 
-Some televisions restrict third-party HOME selection. This prototype intentionally does not use ADB, `WRITE_SECURE_SETTINGS`, root, or an accessibility service to bypass those restrictions; if the system does not offer it, keep the app as a manually launched dashboard.
+Some televisions restrict third-party HOME selection. Google TV is one: a Chromecast with Google TV on Android 14 has no Home-app picker ([report, January 2026](https://www.celsoazevedo.com/?p=3564)), so **Set as Home app** cannot make the prototype Home there. On Google TV, open the launcher from the app list, or put it on the remote's assignable button where the remote has one. This prototype intentionally does not use ADB, `WRITE_SECURE_SETTINGS`, root, or an accessibility service to bypass those restrictions; if the system does not offer it, keep the app as a manually launched dashboard.
 
 ## Required physical-device validation: merge gate
 
