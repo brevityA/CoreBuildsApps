@@ -32,11 +32,18 @@ the 1080p panel naming which values are invented (focused tile, detected
 launchers, install states, unmapped-app rows), because a mockup that hides its
 fictions ends up quoting them in a release note.
 
-Type: the pack's own Outfit (tools/fonts, SIL OFL) for the sans roles and
-DejaVu Sans Mono for the mono roles, matching what the layouts set
-(fontFamily="monospace" on kickers, counts and components). The device renders
-body copy in Roboto; Outfit Bold is the stand-in here, and the only one - the
-frames are illustrative, not a font-fidelity claim.
+Type: since 2.6.0 the app is set in Outfit, and the frames use the same four
+cuts the APK ships (app/src/main/res/font, SIL OFL) for the role each layout
+names: regular, medium on pills and rail rows, semibold on titles and
+headings, bold on the call to action. The mono roles (counts, components,
+fontFamily="monospace") are DejaVu Sans Mono, standing in for the device's
+monospace. The Glyphs Pack's screen keeps tools/fonts' Outfit Bold as the
+stand-in for its system sans. Icons are the res/drawable vectors themselves,
+tinted as their views tint them and rasterised through resvg.
+
+The 2.6.0 look in short (rail and stage on Home and Wallpapers, one header on
+every other screen, pills, Core EQ's rows and sections) is drawn from the
+drawables' own values: each primitive below names the drawable it paints.
 
 Usage
 -----
@@ -94,6 +101,7 @@ from alternates import is_alternate  # noqa: E402
 from PIL import Image, ImageDraw, ImageFont
 
 import qrcode
+import resvg_py
 from qrcode.constants import ERROR_CORRECT_M
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -275,10 +283,13 @@ def live_loops() -> list[dict]:
 
 LIVE_LOOPS = live_loops()
 
-# Example data, named as such in every caption: the launchers a TV with several
-# installed would be detected as. The list under Apply and the ALSO APPLIES TO
-# chips are drawn from it.
-EXAMPLE_LAUNCHERS = ["Projectivy", "Launchchair", "Nova"]
+# Example data, named as such in every caption: the launchers this TV has, by
+# their ApplyIconPack display names, HOME first. The line under Apply lists
+# them and every one after the first is an ALSO APPLIES TO chip. One, the
+# common case and the one the screen tests open on: since 2.6.0 the rail is a
+# ScrollView, and with two more launchers its foot rows (Support, Settings,
+# About) scroll below the panel - true on a TV, and no screenshot of the rail.
+EXAMPLE_LAUNCHERS = ["Projectivy Launcher"]
 
 
 def components_of(drawable: str) -> list[str]:
@@ -393,40 +404,13 @@ def masked(img: Image.Image, radius: int) -> Image.Image:
     return out
 
 
-def button(img: Image.Image, x: int, y: int, label: str, kind: str,
-           focused: bool = False, min_w_dp: float = 0, size_sp: float = 17,
-           bold: bool = True) -> tuple[int, int]:
-    """kind: 'cta' | 'ghost'. Returns (width, height) in px."""
-    draw = ImageDraw.Draw(img, "RGBA")
-    f = font("sans", size_sp, bold=bold)
-    pad_x, pad_y = dp(DIMENS["cb_space_lg"]), dp(DIMENS["cb_space_sm"])
-    w = text_width(draw, label, f) + 2 * pad_x
-    w = max(w, dp(min_w_dp))
-    h = max(dp(DIMENS["cb_target_min"]), dp(size_sp) + 2 * pad_y)
-    box = [x, y, x + w, y + h]
-    radius = dp(DIMENS["cb_radius_button"])
-    if kind == "cta":
-        img.paste(masked(cta_gradient((w, h)), radius), (x, y),
-                  masked(cta_gradient((w, h)), radius))
-        ink = colour("cb_cta_ink")
-    else:
-        rrect(draw, box, radius, fill=colour("cb_panel") if focused else None,
-              outline=colour("cb_signal_cyan") if focused else (0, 212, 255, 0x59),
-              width=dp(DIMENS["cb_focus_ring"]) if focused else dp(1))
-        ink = colour("cb_ink")
-    if focused and kind == "cta":
-        rrect(draw, box, radius, outline=colour("cb_glow_cyan"),
-              width=dp(DIMENS["cb_focus_ring"]))
-    draw_text(draw, (x + w / 2, y + h / 2), label, f, ink, anchor="mm")
-    return w, h
-
-
 def focus_ring(img: Image.Image, box, glow: bool = True):
-    """bg_card's focused state: 3dp cyan ring, 3dp gap of night, card inside."""
+    """bg_card's focused state: 3dp cyan ring, 3dp gap of night, card inside.
+    The icon and wallpaper tiles keep bg_card in 2.6.0: its 6dp inset is the
+    grid's gutter."""
     draw = ImageDraw.Draw(img, "RGBA")
     x0, y0, x1, y1 = box
     ring = dp(DIMENS["cb_focus_ring"])
-    gap = dp(DIMENS["cb_focus_gap"])
     radius = dp(DIMENS["cb_radius_card"])
     if glow:
         rrect(draw, [x0 - dp(4), y0 - dp(4), x1 + dp(4), y1 + dp(4)],
@@ -448,168 +432,369 @@ def card(img: Image.Image, box):
           outline=(255, 255, 255, 0x0F), width=1)
 
 
-def kicker_chip(img: Image.Image, x: int, y: int, label: str) -> int:
+# ---------------------------------------------------------------------------
+# The 2.6.0 kit: Core EQ 1.12's rail-and-stage grammar, as the app now draws it
+# ---------------------------------------------------------------------------
+
+# The app's own Outfit cuts, one file per weight, because the layouts name a
+# cut per role (textFontWeight needs API 28; the pack's floor is 21): regular
+# body copy, medium on pills and rail rows, semibold on titles and headings,
+# bold on the call to action.
+APP_FONTS = RES / "font"
+DRAWABLES = RES / "drawable"
+
+
+def ofont(size_sp: float, weight: str = "regular") -> ImageFont.FreeTypeFont:
+    px = max(8, dp(size_sp))
+    key = ("outfit-" + weight, px)
+    if key not in _FONT_CACHE:
+        # BASIC for the reason font() gives.
+        _FONT_CACHE[key] = ImageFont.truetype(
+            str(APP_FONTS / f"outfit_{weight}.ttf"), px,
+            layout_engine=ImageFont.Layout.BASIC)
+    return _FONT_CACHE[key]
+
+
+def line_h(f) -> int:
+    """One line of a TextView: ascent plus descent, as includeFontPadding
+    lays it out."""
+    ascent, descent = f.getmetrics()
+    return ascent + descent
+
+
+def fit(draw, s: str, f, width: int) -> str:
+    """maxLines="1" ellipsize="end"."""
+    if text_width(draw, s, f) <= width:
+        return s
+    while s and text_width(draw, s + "…", f) > width:
+        s = s[:-1]
+    return s.rstrip() + "…"
+
+
+def tracked(draw, xy, s: str, f, fill, tracking: float) -> int:
+    """A label with Android's letterSpacing (in em), drawn glyph by glyph.
+    Returns its width."""
+    RECORD.append("S|{}|{}|{}|{}|{}|{}".format(
+        tuple(xy), s, f.size, Path(f.path).name, tuple(fill), tracking))
+    x, y = xy
+    for ch in s:
+        draw.text((x, y), ch, font=f, fill=fill)
+        x += draw.textlength(ch, font=f) + tracking * f.size
+    return int(x - xy[0])
+
+
+def eyebrow(draw, x: int, y: int, s: str, size_sp: float | None = None) -> int:
+    """CoreBuilds.Eyebrow: cyan caps, semibold, 0.14em. Returns its bottom."""
+    f = ofont(size_sp or DIMENS["cb_text_kicker"], "semibold")
+    tracked(draw, (x, y), s.upper(), f, colour("cb_signal_cyan"), 0.14)
+    return y + line_h(f)
+
+
+def menu_heading(draw, x: int, y: int, s: str) -> int:
+    """CoreBuilds.MenuHeading: slate caps, semibold, 0.12em. Returns its bottom."""
+    f = ofont(DIMENS["cb_text_kicker"], "semibold")
+    tracked(draw, (x, y), s.upper(), f, colour("cb_slate"), 0.12)
+    return y + line_h(f)
+
+
+def _android_alpha(value: str | None) -> int:
+    hexed = (value or "").lstrip("#")
+    if not hexed:
+        return 0
+    return int(hexed[:2], 16) if len(hexed) == 8 else 255
+
+
+def vector(img: Image.Image, name: str, box, tint) -> None:
+    """A res/drawable vector icon in `box`, tinted as its view tints it.
+
+    Every icon the screens draw is a monoline path set in white that the view
+    recolours (drawableTint, tint), so the tint replaces each painted path's
+    colour and an unpainted one stays unpainted. resvg rasterises it, the
+    renderer tools/requirements.txt already pins; the record carries the
+    drawable, its box and its tint, which is the machine-independent part."""
+    root = _xml(DRAWABLES / f"{name}.xml")
+    r, g, b = tint[:3]
+    paths = []
+    for p in root.iter("path"):
+        def paint(attr: str) -> str:
+            return f"rgb({r},{g},{b})" if _android_alpha(p.get(ANDROID + attr)) else "none"
+        paths.append(
+            '<path d="{}" fill="{}" stroke="{}" stroke-width="{}" '
+            'stroke-linecap="{}" stroke-linejoin="{}"/>'.format(
+                p.get(ANDROID + "pathData"), paint("fillColor"), paint("strokeColor"),
+                p.get(ANDROID + "strokeWidth", "0"),
+                p.get(ANDROID + "strokeLineCap", "butt"),
+                p.get(ANDROID + "strokeLineJoin", "miter")))
+    x0, y0, x1, y1 = (int(v) for v in box)
+    w, h = x1 - x0, y1 - y0
+    svg = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {} {}" '
+           'width="{}" height="{}">{}</svg>').format(
+        root.get(ANDROID + "viewportWidth"), root.get(ANDROID + "viewportHeight"),
+        w, h, "".join(paths))
+    png = resvg_py.svg_to_bytes(svg_string=svg, width=w, height=h, skip_system_fonts=True)
+    art = Image.open(io.BytesIO(bytes(png))).convert("RGBA")
+    img.paste(art, (x0, y0), art)
+    RECORD.append(f"V|{name}|{(x0, y0, x1, y1)}|{tuple(tint)}")
+
+
+def vector_dp(name: str) -> float:
+    """A vector's intrinsic width: the size a drawableStart draws it at."""
+    return float(_xml(DRAWABLES / f"{name}.xml").get(ANDROID + "width")[:-2])
+
+
+# Label colour per pill kind: color/cta_text, color/pill_ghost_text,
+# color/ghost_text (enabled).
+PILL_INK = {"cta": "cb_cta_ink", "ghost": "cb_signal_cyan", "plain": "cb_ink"}
+
+
+def _pill_font(kind: str):
+    return ofont(DIMENS["cb_text_button"], "bold" if kind == "cta" else "medium")
+
+
+def pill_width(draw, label: str, kind: str = "plain", icon=None,
+               pad_start: float | None = None) -> int:
+    start = DIMENS["cb_pill_padding"] if pad_start is None else pad_start
+    extra = dp(vector_dp(icon[0])) + dp(icon[1]) if icon else 0
+    return (dp(start) + extra + text_width(draw, label, _pill_font(kind))
+            + dp(DIMENS["cb_pill_padding"]))
+
+
+def pill(img: Image.Image, box, label: str, kind: str = "plain", focused: bool = False,
+         activated: bool = False, icon=None, pad_start: float | None = None) -> None:
+    """Widget.CoreBuilds.Pill in the state a frame shows it: kind 'cta'
+    (bg_pill_cta), 'ghost' (bg_pill_ghost) or 'plain' (bg_pill). `icon` is
+    (drawable, drawablePadding dp): a TextView's drawableStart sits at the
+    start padding at its own size, and the label centres in what is left."""
     draw = ImageDraw.Draw(img, "RGBA")
-    f = font("mono", DIMENS["cb_text_kicker"], bold=True)
-    pad = dp(DIMENS["cb_space_sm"])
-    w = text_width(draw, label, f) + 2 * pad + dp(7)
-    h = dp(DIMENS["cb_text_kicker"]) + 2 * dp(7)
-    rrect(draw, [x, y, x + w, y + h], dp(DIMENS["cb_radius_field"]),
-          fill=(0x14, 0x20, 0x2B), outline=(0x00, 0xD4, 0xFF, 0x33), width=dp(1))
-    draw_text(draw, (x + pad, y + h / 2 - dp(1)), label, f, colour("cb_signal_cyan"))
-    return w
-
-
-def header(img: Image.Image, kick: str, title: str, sub: str | None = None) -> int:
-    """The pinned header grammar: kicker chip + title, Back on the right."""
-    gutter = dp(DIMENS["cb_gutter_side"])
-    y = dp(24)
-    kw = kicker_chip(img, gutter, y, kick)
-    draw = ImageDraw.Draw(img, "RGBA")
-    f = font("sans", DIMENS["cb_text_title"], bold=True)
-    draw_text(draw, (gutter + kw + dp(DIMENS["cb_space_md"]), y - dp(4)), title, f,
-              colour("cb_ink"))
-    bw, bh = button(img, W - gutter - dp(150), y - dp(6), STRINGS["action_back"], "ghost",
-                    min_w_dp=150)
-    if sub:
-        fs = font("sans", DIMENS["cb_text_data"])
-        draw_text(draw, (gutter, y + dp(34)), sub, fs, colour("cb_slate"))
-    return y + dp(64)
-
-
-def chip_pill(img: Image.Image, x: int, y: int, label: str, active: bool,
-              focused: bool = False) -> int:
-    draw = ImageDraw.Draw(img, "RGBA")
-    f = font("sans", DIMENS["cb_text_label"], bold=True)
-    pad = dp(DIMENS["cb_space_md"])
-    w = text_width(draw, label, f) + 2 * pad
-    h = max(dp(DIMENS["cb_target_min"]), dp(DIMENS["cb_text_label"]) + 2 * pad)
-    box = [x, y, x + w, y + h]
-    radius = dp(DIMENS["cb_radius_pill"]) if DIMENS["cb_radius_pill"] < 100 else h // 2
-    if active:
-        grad = masked(cta_gradient((w, h)), radius)
-        img.paste(grad, (x, y), grad)
-        ink = colour("cb_cta_ink")
+    x0, y0, x1, y1 = box
+    r = (y1 - y0) // 2
+    ring = dp(DIMENS["cb_focus_ring"])
+    if kind == "cta":
+        grad = masked(cta_gradient((x1 - x0, y1 - y0)), r)
+        img.paste(grad, (x0, y0), grad)
+        if focused:
+            rrect(draw, box, r, outline=colour("cb_glow_cyan"), width=ring)
+    elif focused:
+        rrect(draw, box, r, fill=colour("cb_selected_fill" if activated else "cb_panel"),
+              outline=colour("cb_focus_ring"), width=ring)
+    elif kind == "ghost":
+        rrect(draw, box, r, outline=colour("cb_ghost_edge"), width=dp(1))
+    elif activated:
+        rrect(draw, box, r, fill=colour("cb_selected_fill"),
+              outline=colour("cb_selected_edge"), width=dp(1))
     else:
-        rrect(draw, box, radius, fill=(0x14, 0x20, 0x2B),
-              outline=(0x00, 0xD4, 0xFF, 0x33), width=dp(1))
-        ink = colour("cb_ink")
-    if focused:
-        rrect(draw, [x - dp(3), y - dp(3), x + w + dp(3), y + h + dp(3)],
-              radius + dp(3), outline=colour("cb_signal_cyan"),
-              width=dp(DIMENS["cb_focus_ring"]))
-    draw_text(draw, (x + w / 2, y + h / 2), label, f, ink, anchor="mm")
+        rrect(draw, box, r, fill=colour("cb_card_surface"),
+              outline=colour("cb_divider"), width=dp(1))
+    ink = colour(PILL_INK[kind])
+    left = x0 + dp(DIMENS["cb_pill_padding"] if pad_start is None else pad_start)
+    cy = (y0 + y1) // 2
+    if icon:
+        s = dp(vector_dp(icon[0]))
+        vector(img, icon[0], [left, cy - s // 2, left + s, cy - s // 2 + s], ink)
+        left += s + dp(icon[1])
+    right = x1 - dp(DIMENS["cb_pill_padding"])
+    draw_text(draw, ((left + right) / 2, cy), label, _pill_font(kind), ink, anchor="mm")
+
+
+def chip_width(draw, label: str) -> int:
+    return (text_width(draw, label, ofont(DIMENS["cb_text_button"], "medium"))
+            + 2 * dp(DIMENS["cb_space_md"]))
+
+
+def chip(img: Image.Image, x: int, y: int, label: str, active: bool = False,
+         focused: bool = False) -> int:
+    """item_chip on bg_chip_toggle: the chosen filter is the CTA gradient,
+    every other chip the card colour with a hairline, focus the 3dp ring.
+    Returns its width."""
+    draw = ImageDraw.Draw(img, "RGBA")
+    w, h = chip_width(draw, label), dp(DIMENS["cb_target_min"])
+    box = [x, y, x + w, y + h]
+    r, ring = h // 2, dp(DIMENS["cb_focus_ring"])
+    if active:
+        grad = masked(cta_gradient((w, h)), r)
+        img.paste(grad, (x, y), grad)
+        if focused:
+            rrect(draw, box, r, outline=colour("cb_glow_cyan"), width=ring)
+    elif focused:
+        rrect(draw, box, r, fill=colour("cb_panel"), outline=colour("cb_signal_cyan"),
+              width=ring)
+    else:
+        rrect(draw, box, r, fill=colour("cb_card"), outline=colour("cb_hairline"),
+              width=dp(1))
+    draw_text(draw, (x + w / 2, y + h / 2), label, ofont(DIMENS["cb_text_button"], "medium"),
+              colour("cb_cta_ink" if active else "cb_ink"), anchor="mm")
     return w
+
+
+def tag(img: Image.Image, right: int, cy: int, label: str, pad_x: float = 10,
+        pad_y: float = 3) -> int:
+    """A bg_chip status label (the auditor's action, a launcher's apply
+    mode): cyan semibold on a cyan-tinted pill, right-aligned at `right`.
+    It only labels, so it has no focus state. Returns its width."""
+    draw = ImageDraw.Draw(img, "RGBA")
+    f = ofont(DIMENS["cb_text_kicker"], "semibold")
+    w = text_width(draw, label, f) + 2 * dp(pad_x)
+    h = line_h(f) + 2 * dp(pad_y)
+    box = [right - w, cy - h // 2, right, cy - h // 2 + h]
+    rrect(draw, box, h // 2, fill=colour("cb_selected_fill"),
+          outline=colour("cb_selected_edge"), width=dp(1))
+    draw_text(draw, ((box[0] + box[2]) / 2, cy), label, f, colour("cb_signal_cyan"),
+              anchor="mm")
+    return w
+
+
+def row(img: Image.Image, box, focused: bool = False) -> None:
+    """bg_row: the surface with a hairline at rest; focused, the panel inside
+    the 3dp ring. It draws to its bounds (no inset, unlike bg_card)."""
+    draw = ImageDraw.Draw(img, "RGBA")
+    r = dp(DIMENS["cb_radius_card"])
+    if focused:
+        rrect(draw, box, r, fill=colour("cb_panel"), outline=colour("cb_focus_ring"),
+              width=dp(DIMENS["cb_focus_ring"]))
+    else:
+        rrect(draw, box, r, fill=colour("cb_card_surface"), outline=colour("cb_hairline"),
+              width=dp(1))
+
+
+def section(img: Image.Image, box) -> None:
+    """bg_section: the surface inside a divider-coloured edge."""
+    rrect(ImageDraw.Draw(img, "RGBA"), box, dp(DIMENS["cb_radius_section"]),
+          fill=colour("cb_card_surface"), outline=colour("cb_divider"), width=dp(1))
+
+
+def rail_body(img: Image.Image, box, focused: bool = False, activated: bool = False,
+              choice: bool = False) -> None:
+    """bg_rail_item (choice: bg_rail_choice). Nothing at rest; the ring under
+    focus; the current screen a panel body, a chosen series cyan on a tint."""
+    draw = ImageDraw.Draw(img, "RGBA")
+    r, ring = dp(DIMENS["cb_radius_rail_item"]), dp(DIMENS["cb_focus_ring"])
+    if focused:
+        fill = colour("cb_selected_fill" if choice and activated else "cb_panel")
+        rrect(draw, box, r, fill=fill, outline=colour("cb_focus_ring"), width=ring)
+    elif activated and choice:
+        rrect(draw, box, r, fill=colour("cb_selected_fill"),
+              outline=colour("cb_selected_edge"), width=dp(1))
+    elif activated:
+        rrect(draw, box, r, fill=colour("cb_panel"))
+
+
+def draw_switch(draw, sx: int, sy: int, on: bool) -> None:
+    """ic_switch / sw_track + sw_thumb: a 40x22dp track, cyan with a dark
+    knob at the end when on, the card-focus grey with a slate knob at the
+    start when off."""
+    track = [sx, sy, sx + dp(40), sy + dp(22)]
+    if on:
+        rrect(draw, track, dp(11), fill=colour("cb_signal_cyan"))
+    else:
+        rrect(draw, track, dp(11), fill=colour("cb_card_focus"), outline=colour("cb_divider"),
+              width=dp(1))
+    knob = sx + (dp(21) if on else dp(3))
+    draw.ellipse([knob, sy + dp(3), knob + dp(16), sy + dp(19)],
+                 fill=colour("cb_cta_ink" if on else "cb_slate"))
+    RECORD.append(f"W|{(sx, sy)}|{on}")
+
+
+def count_badge(img: Image.Image, right: int, cy: int, label: str) -> int:
+    """missing_entry_count on bg_count_badge: 24dp tall, at least 32dp wide,
+    a cyan mono count. Right-aligned at `right`; returns its width."""
+    draw = ImageDraw.Draw(img, "RGBA")
+    f = font("mono", DIMENS["cb_text_data"], bold=True)
+    w = max(dp(32), text_width(draw, label, f) + 2 * dp(DIMENS["cb_space_xs"]))
+    h = dp(24)
+    box = [right - w, cy - h // 2, right, cy - h // 2 + h]
+    rrect(draw, box, h // 2, fill=colour("cb_selected_fill"),
+          outline=colour("cb_selected_edge"), width=dp(1))
+    draw_text(draw, ((box[0] + box[2]) / 2, cy), label, f, colour("cb_signal_cyan"),
+              anchor="mm")
+    return w
+
+
+BACK_ICON = ("ic_chevron_start", 6)
+
+
+def header(img: Image.Image, kick: str, title: str, x0: int | None = None,
+           x1: int | None = None, top: int | None = None,
+           back: str | None = None) -> int:
+    """The 2.6.0 header on every screen: the eyebrow over the title, and a
+    compact ghost Back pill with its chevron at the right. Returns the y
+    under it."""
+    draw = ImageDraw.Draw(img, "RGBA")
+    x0 = dp(DIMENS["cb_gutter_side"]) if x0 is None else x0
+    x1 = W - dp(DIMENS["cb_gutter_side"]) if x1 is None else x1
+    y = dp(24) if top is None else top
+    label = back or STRINGS["action_back"]
+    bw = pill_width(draw, label, "ghost", icon=BACK_ICON, pad_start=12)
+    bh = dp(DIMENS["cb_pill_compact"])
+    pill(img, [x1 - bw, y, x1, y + bh], label, "ghost", icon=BACK_ICON, pad_start=12)
+    title_top = eyebrow(draw, x0, y, kick) + dp(4)
+    f = ofont(DIMENS["cb_text_stage_title"], "semibold")
+    draw_text(draw, (x0, title_top),
+              fit(draw, title, f, x1 - bw - dp(DIMENS["cb_space_md"]) - x0), f,
+              colour("cb_ink"))
+    return max(title_top + line_h(f), y + bh)
+
+
+def search_pill(img: Image.Image, box, hint: str) -> None:
+    """bg_search at rest: a pill with the magnifier (slate) and the hint
+    MainActivity sets (search_hint_fmt)."""
+    draw = ImageDraw.Draw(img, "RGBA")
+    x0, y0, x1, y1 = box
+    rrect(draw, box, (y1 - y0) // 2, fill=colour("cb_card_surface"),
+          outline=colour("cb_divider"), width=dp(1))
+    s = dp(vector_dp("ic_search"))
+    left = x0 + dp(DIMENS["cb_pill_padding"])
+    cy = (y0 + y1) // 2
+    vector(img, "ic_search", [left, cy - s // 2, left + s, cy - s // 2 + s], colour("cb_slate"))
+    draw_text(draw, (left + s + dp(DIMENS["cb_space_sm"]), cy), hint,
+              ofont(DIMENS["cb_text_label"]), colour("cb_slate"), anchor="lm")
+
+
+def rail_and_stage(img: Image.Image) -> tuple[int, int, int, int]:
+    """The full-height void rail and the hairline beside it. Returns (rail
+    content left, rail content right, stage left, stage right)."""
+    draw = ImageDraw.Draw(img, "RGBA")
+    rw = dp(DIMENS["cb_nav_rail_width"])
+    draw.rectangle([0, 0, rw - 1, H - 1], fill=colour("cb_void"))
+    draw.rectangle([rw, 0, rw + dp(1) - 1, H - 1], fill=colour("cb_divider"))
+    return (dp(DIMENS["cb_rail_pad_start"]), rw - dp(DIMENS["cb_rail_pad_end"]),
+            rw + dp(1) + dp(DIMENS["cb_stage_start"]), W - dp(DIMENS["cb_stage_end"]))
+
+
+def clip(img: Image.Image, box, paint) -> None:
+    """Draws paint(scratch) on a copy of the frame and keeps only `box`: a
+    scrolled list or grid cut at its viewport's edges, the way the
+    ScrollView or RecyclerView cuts it. A copy rather than a transparent
+    layer, so translucent fills blend over the real background."""
+    scratch = img.copy()
+    paint(scratch)
+    box = [int(v) for v in box]
+    img.paste(scratch.crop(box), (box[0], box[1]))
+
+
+def screen_box() -> tuple[int, int, int]:
+    """(left, right, bottom) of the screens with the house gutters (48dp
+    sides, 24dp top, 16dp bottom)."""
+    g = dp(DIMENS["cb_gutter_side"])
+    return g, W - g, H - dp(16)
 
 
 def live_badge(img: Image.Image, draw: ImageDraw.ImageDraw, box, inset: int) -> None:
     """The LIVE chip from item_wallpaper.xml over a motion-loop tile: a
-    near-opaque night pill with a cyan hairline and the kicker label in signal
-    cyan, over the thumb's top-left corner. A label, never a control, so it
-    carries no focus state the way the chip row's pills do."""
-    f = font("sans", DIMENS["cb_text_kicker"], bold=True)
+    near-opaque night pill with a cyan hairline and the label in signal cyan,
+    over the thumb's top-left corner. A label, never a control, so it carries
+    no focus state."""
+    f = ofont(DIMENS["cb_text_kicker"], "semibold")
     label = STRINGS["wp_live_badge"]
     pad = dp(DIMENS["cb_space_sm"])
-    h = dp(DIMENS["cb_text_kicker"]) + 2 * dp(2)
+    h = line_h(f) + 2 * dp(2)
     w = text_width(draw, label, f) + 2 * pad
     x = box[0] + inset + dp(DIMENS["cb_space_sm"])
     y = box[1] + inset + dp(DIMENS["cb_space_sm"])
     rrect(draw, [x, y, x + w, y + h], dp(DIMENS["cb_radius_field"]),
           fill=colour("cb_night", alpha=0xE6),
           outline=colour("cb_signal_cyan"), width=dp(1))
-    draw_text(draw, (x + pad, y + h / 2), label, f, colour("cb_signal_cyan"),
-              anchor="lm")
-
-
-def search_field(img: Image.Image, x: int, y: int, w_dp: float,
-                hint: str | None = None) -> None:
-    """The field. `hint` is what MainActivity sets at runtime (search_hint_fmt);
-    the layout's static hint is only what a screenshot before binding shows."""
-    draw = ImageDraw.Draw(img, "RGBA")
-    w, h = dp(w_dp), dp(DIMENS["cb_target_min"])
-    rrect(draw, [x, y, x + w, y + h], dp(DIMENS["cb_radius_field"]),
-          fill=(0x14, 0x20, 0x2B), outline=(0x00, 0xD4, 0xFF, 0x33), width=dp(1))
-    f = font("sans", DIMENS["cb_text_label"])
-    draw_text(draw, (x + dp(DIMENS["cb_space_md"]), y + h / 2),
-              hint or STRINGS["search_hint"], f, colour("cb_slate"), anchor="lm")
-
-
-# Width a SwitchCompat takes at the end of a row, text column to the switch.
-SWITCH_SLOT_DP = 56
-
-
-def draw_switch(draw, sx: int, sy: int, on: bool) -> None:
-    """A SwitchCompat at (sx, sy), track 46x22dp, as the build renders it."""
-    rrect(draw, [sx, sy, sx + dp(46), sy + dp(22)], dp(11),
-          fill=colour("cb_signal_cyan") if on else colour("cb_panel"),
-          outline=(0x00, 0xD4, 0xFF, 0x33), width=dp(1))
-    knob = sx + dp(24) if on else sx + dp(4)
-    draw.ellipse([knob, sy + dp(3), knob + dp(16), sy + dp(19)],
-                 fill=colour("cb_ink") if on else colour("cb_slate"))
-
-
-def entry_row_lines(sub: str, with_switch: bool = False) -> list[str]:
-    """The rail card's subtitle, wrapped to the rail's text width - the same
-    wrap the match_parent TextView does on the device, less the switch's slot
-    on the Art style row, whose text column is weighted beside it."""
-    inset = dp(DIMENS["cb_card_padding"])
-    probe = ImageDraw.Draw(Image.new("RGBA", (8, 8)))
-    slot = dp(SWITCH_SLOT_DP) if with_switch else 0
-    f = font("mono", DIMENS["cb_text_data"])
-    width = dp(DIMENS["cb_rail_width"]) - 2 * inset - slot
-    lines = wrap(probe, sub, f, width)
-    # Since 2.1.3 every rail subtitle is maxLines="1" ellipsize="end", so the
-    # rail keeps its rows when a fifth one (Missing icons) joins them.
-    if len(lines) > 1:
-        line = lines[0]
-        while line and text_width(probe, line + "\u2026", f) > width:
-            line = line[:-1]
-        lines = [line.rstrip() + "\u2026"]
-    return lines
-
-
-def entry_row_height(sub: str, with_switch: bool = False) -> int:
-    lines = entry_row_lines(sub, with_switch)
-    inset = dp(DIMENS["cb_card_padding"])
-    return 2 * inset + dp(20) + dp(3) + len(lines) * dp(17)
-
-
-def entry_row(img: Image.Image, box, title: str, sub: str, focused: bool = False,
-              switch: bool | None = None, badge: str | None = None) -> None:
-    """One of the rail's entry cards: title over subtitle, as the sheet draws
-    them - the rail is the one place with the height for both lines. `switch`
-    is the Art style row's state; None for the plain rows."""
-    draw = ImageDraw.Draw(img, "RGBA")
-    if focused:
-        focus_ring(img, box)
-    else:
-        card(img, box)
-    inset = dp(DIMENS["cb_card_padding"])
-    draw_text(draw, (box[0] + inset, box[1] + inset), title,
-              font("sans", DIMENS["cb_text_body"], bold=True), colour("cb_ink"))
-    for i, line in enumerate(entry_row_lines(sub, switch is not None or badge is not None)):
-        draw_text(draw, (box[0] + inset, box[1] + inset + dp(23) + i * dp(17)),
-                  line, font("mono", DIMENS["cb_text_data"]), colour("cb_slate"))
-    if switch is not None:
-        draw_switch(draw, box[2] - inset - dp(46), (box[1] + box[3]) // 2 - dp(11), switch)
-    if badge is not None:
-        # missing_entry_count: a cyan mono count in a chip, right-aligned.
-        fb = font("mono", DIMENS["cb_text_label"], bold=True)
-        bw = max(dp(36), text_width(draw, badge, fb) + 2 * dp(DIMENS["cb_space_xs"]))
-        bh = dp(DIMENS["cb_text_label"]) + dp(12)
-        bx, by = box[2] - inset - bw, (box[1] + box[3]) // 2 - bh // 2
-        rrect(draw, [bx, by, bx + bw, by + bh], bh // 2, fill=(0x14, 0x20, 0x2B),
-              outline=(0x00, 0xD4, 0xFF, 0x55), width=dp(1))
-        draw_text(draw, (bx + bw / 2, by + bh / 2), badge, fb, colour("cb_signal_cyan"),
-                  anchor="mm")
-
-
-def rail_box() -> tuple[int, int, int]:
-    """(rail left, rail right, pane left) for the two-pane screens."""
-    g = dp(DIMENS["cb_gutter_side"])
-    rail = dp(DIMENS["cb_rail_width"])
-    gap = dp(DIMENS["cb_space_md"])
-    return g, g + rail, g + rail + gap
+    draw_text(draw, (x + w / 2, y + h / 2), label, f, colour("cb_signal_cyan"),
+              anchor="mm")
 
 
 # Every raster a frame pastes, recorded so --check can prove whether the inputs
@@ -657,7 +842,11 @@ def caption(img: Image.Image, text: str) -> Image.Image:
 
 
 def new_frame() -> Image.Image:
-    return Image.new("RGBA", (W, H), colour("cb_night"))
+    # RGB, not RGBA: Pillow blends a translucent fill into the image only when
+    # an RGBA-mode Draw paints on an RGB image. On an RGBA canvas it writes the
+    # colour as given, so the 6% hairlines, 8% dividers and 16% selection
+    # tints the drawables use came out at full strength.
+    return Image.new("RGB", (W, H), colour("cb_night")[:3])
 
 
 # ---------------------------------------------------------------------------
@@ -690,175 +879,209 @@ def category_counts() -> list[tuple[str, str, int]]:
 
 
 def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
-    """The home screen as built: docs/design/app-ui-apply-wallpapers.png as a
-    landscape two-pane TV screen - the sheet's vertical stack in a fixed left
-    rail, the glyph grid owning the right pane - drawn at 960x540dp with the
-    real strings, dimens and bundled art.
-    """
+    """Home as built since 2.6.0: activity_main.xml's rail and stage at
+    960x540dp with the real strings, dimens, colours, icons and bundled art.
+    The rail holds the wordmark, Apply and its launchers, the three rows and
+    the foot rows; the stage holds the update bar when there is one, the
+    search pill, the category chips and the grid."""
     img = new_frame()
     draw = ImageDraw.Draw(img, "RGBA")
-    g, rail_r, pane_l = rail_box()
-    right = W - g
-    gap = dp(DIMENS["cb_space_xs"])
-    row_h = dp(DIMENS["cb_target_min"])
-    y = dp(DIMENS["cb_gutter_top"])
-    f_data = font("mono", DIMENS["cb_text_data"])
+    rx0, rx1, sx0, sx1 = rail_and_stage(img)
+    top = dp(DIMENS["cb_stage_top"])
+    bottom = H - dp(DIMENS["cb_stage_bottom"])
+    # A rail row's paddingStart: the wordmark, count, launcher line and
+    # headings carry the same 12dp, so every rail label starts on one line.
+    inner = dp(12)
 
-    # The update bar spans both panes: wider than the rail, more urgent than
-    # the grid.
-    top = y
-    if with_update_bar:
-        bar_h = dp(58)
-        pad = dp(DIMENS["cb_space_md"])
-        rrect(draw, [g, top, right, top + bar_h], dp(DIMENS["cb_radius_card"]),
-              fill=(0x10, 0x1A, 0x26), outline=colour("cb_signal_cyan"), width=dp(1))
-        draw_text(draw, (g + pad, top + dp(9)),
-                  fmt(STRINGS["update_available_fmt"], VERSION["versionName"],
-                      VERSION["iconCount"]),
-                  font("sans", DIMENS["cb_text_label"], bold=True), colour("cb_ink"))
-        f_btn = font("sans", DIMENS["cb_text_body"], bold=True)
-        pad_x = dp(DIMENS["cb_space_lg"])
-        dl = fmt(STRINGS["update_download"], VERSION["versionName"])
-        dl_w = text_width(draw, dl, f_btn) + 2 * pad_x
-        later_w = text_width(draw, STRINGS["update_later"], f_btn) + 2 * pad_x
-        bx = right - pad - later_w - dp(DIMENS["cb_space_sm"]) - dl_w
-        by = top + (bar_h - row_h) // 2
-        line = "\u2022  " + VERSION["highlights"][0]
-        limit = bx - dp(DIMENS["cb_space_md"])
-        while text_width(draw, line + "\u2026", f_data) > limit - (g + pad):
-            line = line[:-1]
-        draw_text(draw, (g + pad, top + dp(31)), line + "\u2026", f_data,
+    # ---- RAIL -------------------------------------------------------------
+    y = eyebrow(draw, rx0 + inner, top, STRINGS["kicker"], DIMENS["cb_text_rail_brand"])
+    if not with_update_bar:
+        # MainActivity.showUpdateAvailable hides the count, the launcher line
+        # and ALSO APPLIES TO while the bar is up: the bar states the new
+        # release's count, and Later gives them back.
+        # autoSize, 13sp down to the 12sp floor in 1sp steps, as the layout
+        # shrinks it: DejaVu's mono is wider than the device's.
+        count = fmt(STRINGS["pack_stats_fmt"], ICON_COUNT, COMPONENT_COUNT)
+        size = DIMENS["cb_text_count"]
+        while (size > DIMENS["cb_text_fit_min"]
+               and text_width(draw, count, font("mono", size)) > rx1 - rx0 - inner):
+            size -= 1
+        f_count = font("mono", size)
+        y += dp(6)
+        draw_text(draw, (rx0 + inner, y), fit(draw, count, f_count, rx1 - rx0 - inner),
+                  f_count, colour("cb_slate"))
+        y += line_h(f_count)
+    y += dp(DIMENS["cb_space_md"])
+    # Home opens on Apply (FocusChainTest holds it); with the bar up the
+    # cursor is on Download instead.
+    pill(img, [rx0, y, rx1, y + dp(DIMENS["cb_pill"])], STRINGS["cta_apply"], "cta",
+         focused=not with_update_bar)
+    y += dp(DIMENS["cb_pill"])
+    if not with_update_bar:
+        f_lede = ofont(DIMENS["cb_text_data"])
+        y += dp(DIMENS["cb_space_xs"])
+        for line in wrap(draw, " - ".join(EXAMPLE_LAUNCHERS), f_lede,
+                         rx1 - rx0 - inner - dp(4)):
+            draw_text(draw, (rx0 + inner, y), line, f_lede, colour("cb_slate"))
+            y += line_h(f_lede) + dp(3)
+        y -= dp(3)
+        if EXAMPLE_LAUNCHERS[1:]:
+            # The ALSO APPLIES TO band: GONE with one launcher.
+            y += dp(DIMENS["cb_space_md"])
+            y = menu_heading(draw, rx0 + inner, y, STRINGS["cta_also_applies"])
+            y += dp(DIMENS["cb_space_xs"])
+            cx = rx0
+            for name in EXAMPLE_LAUNCHERS[1:]:
+                if cx + chip_width(draw, name) > rx1:
+                    break
+                cx += chip(img, cx, y, name) + dp(DIMENS["cb_space_sm"])
+            y += dp(DIMENS["cb_target_min"])
+    y += dp(DIMENS["cb_space_md"])
+
+    # The three rows with a state line, in activity_main.xml's order. Art
+    # style shows the shipped default, Banners (switch on); Missing icons an
+    # example count (a real scan counts this TV's apps).
+    f_title = ofont(DIMENS["cb_text_label"], "medium")
+    f_sub = ofont(DIMENS["cb_text_kicker"])
+    text_h = line_h(f_title) + dp(2) + line_h(f_sub)
+    tall = max(dp(DIMENS["cb_rail_item_tall"]), dp(16) + text_h)
+    icon = dp(DIMENS["cb_rail_icon"])
+    for drawable, title, sub, trailing in (
+        ("ic_nav_style", STRINGS["art_style_label"], STRINGS["art_style_banners"], "switch"),
+        ("ic_nav_missing", STRINGS["missing_entry"], STRINGS["missing_entry_sub"],
+         str(len(AUDIT_EXAMPLES))),
+        ("ic_nav_wallpapers", STRINGS["wp_entry"], wallpapers_entry_sub(), None),
+    ):
+        y += dp(2)
+        rail_body(img, [rx0, y, rx1, y + tall])
+        cy = y + tall // 2
+        ix = rx0 + inner
+        vector(img, drawable, [ix, cy - icon // 2, ix + icon, cy - icon // 2 + icon],
+               colour("cb_slate"))
+        tx = ix + icon + dp(12)
+        end = rx1 - dp(8)
+        if trailing == "switch":
+            draw_switch(draw, end - dp(40), cy - dp(11), True)
+            end -= dp(40) + dp(DIMENS["cb_space_xs"])
+        elif trailing:
+            end -= count_badge(img, end, cy, trailing) + dp(DIMENS["cb_space_xs"])
+        ty = cy - text_h // 2
+        draw_text(draw, (tx, ty), fit(draw, title, f_title, end - tx), f_title,
                   colour("cb_ink"))
-        top += bar_h + gap
-        button(img, bx, by, dl, "cta", focused=True)
-        button(img, bx + dl_w + dp(DIMENS["cb_space_sm"]), by,
-               STRINGS["update_later"], "ghost")
+        draw_text(draw, (tx, ty + line_h(f_title) + dp(2)), fit(draw, sub, f_sub, end - tx),
+                  f_sub, colour("cb_slate"))
+        y += tall
 
-    body_top = top
+    # Support, Settings and About at the rail's foot (the GitHub build; the
+    # Play build has no Support row). A spacer takes what is left above them.
+    foot = [("ic_nav_support", "support_label"), ("ic_nav_settings", "settings_label"),
+            ("ic_nav_about", "about_label")]
+    step = dp(2) + dp(DIMENS["cb_rail_item"])
+    fy = max(y + dp(DIMENS["cb_space_md"]), bottom - len(foot) * step)
+    f_foot = ofont(DIMENS["cb_text_label"], "medium")
+    for drawable, key in foot:
+        fy += dp(2)
+        rail_body(img, [rx0, fy, rx1, fy + dp(DIMENS["cb_rail_item"])])
+        cy = fy + dp(DIMENS["cb_rail_item"]) // 2
+        s = dp(vector_dp(drawable))
+        vector(img, drawable, [rx0 + inner, cy - s // 2, rx0 + inner + s, cy - s // 2 + s],
+               colour("cb_slate"))
+        draw_text(draw, (rx0 + inner + s + dp(12), cy), STRINGS[key], f_foot,
+                  colour("cb_ink"), anchor="lm")
+        fy += dp(DIMENS["cb_rail_item"])
 
-    # ---- LEFT RAIL -------------------------------------------------------
-    ry = body_top
-    draw_text(draw, (g, ry + dp(2)), STRINGS["kicker"],
-              font("mono", DIMENS["cb_text_label"], bold=True),
-              colour("cb_signal_cyan"))
+    # ---- STAGE ------------------------------------------------------------
+    sy = top
     if with_update_bar:
-        # MainActivity.showUpdateAvailable hides the count while the bar is up
-        # (the bar states the new release's count), so the rail's last row fits.
-        ry += dp(24)
-    else:
-        draw_text(draw, (g, ry + dp(26)),
-                  fmt(STRINGS["pack_stats_fmt"], ICON_COUNT, COMPONENT_COUNT),
-                  f_data, colour("cb_slate"))
-        ry += dp(48)
-    button(img, g, ry, STRINGS["cta_apply"], "cta", min_w_dp=DIMENS["cb_rail_width"])
-    ry += row_h + gap
-    if not with_update_bar:
-        for i, line in enumerate(wrap(draw, " - ".join(EXAMPLE_LAUNCHERS), f_data,
-                                      dp(DIMENS["cb_rail_width"]))[:2]):
-            draw_text(draw, (g, ry + i * dp(18)), line, f_data, colour("cb_slate"))
-        ry += dp(20)
-    ry += gap
-    tile_h = dp(DIMENS["cb_tile_icon"]) + 2 * dp(DIMENS["cb_card_padding"])
-    # (title, subtitle, switch state or None), in activity_main.xml's order.
-    # The Art style row shows the shipped default, Banners (switch on).
-    # Missing icons shows an example count (a real scan counts this TV's apps).
-    missing = len(AUDIT_EXAMPLES)
-    rows = [
-        (STRINGS["art_style_label"], STRINGS["art_style_banners"], True, None),
-        (STRINGS["missing_entry"], STRINGS["missing_entry_sub"], None, str(missing)),
-        (STRINGS["wp_entry"], wallpapers_entry_sub(), None, None),
-    ]
-    for index, (title, sub_text, state, badge) in enumerate(rows):
-        h = entry_row_height(sub_text, state is not None or badge is not None)
-        entry_row(img, [g, ry, rail_r, ry + h], title, sub_text,
-                  focused=(index == 0 and not with_update_bar), switch=state, badge=badge)
-        # The rows sit cb_space_xs apart, as the layout's margins space them.
-        ry += h + dp(DIMENS["cb_space_xs"])
-    # Support | Settings | About: one row of three single-line cards (Support
-    # leads since 2.4.0; the version suffix About carried left with the third
-    # card - it is the About screen's first fact). Labels centred since 2.4.3,
-    # as activity_main.xml lays them out.
-    half = (rail_r - g - 2 * dp(DIMENS["cb_space_xs"])) // 3
-    inset = dp(DIMENS["cb_space_xs"])
-    f_title = font("sans", DIMENS["cb_text_body"], bold=True)
-    for i, (title, suffix) in enumerate((
-        (STRINGS["support_label"], None),
-        (STRINGS["settings_label"], None),
-        (STRINGS["about_label"], None),
-    )):
-        x0 = g + i * (half + dp(DIMENS["cb_space_xs"]))
-        box = [x0, ry, x0 + half, ry + row_h]
-        card(img, box)
-        draw_text(draw, (x0 + half / 2, ry + row_h / 2), title, f_title, colour("cb_ink"),
-                  anchor="mm")
-        if suffix:
-            draw_text(draw, (x0 + half - inset, ry + row_h / 2), suffix, f_data,
-                      colour("cb_slate"), anchor="rm")
-    ry += row_h + dp(DIMENS["cb_space_xs"])
-    ry += gap - dp(DIMENS["cb_space_xs"])
-    if not with_update_bar:
-        draw_text(draw, (g, ry + dp(4)), STRINGS["cta_also_applies"],
-                  font("mono", DIMENS["cb_text_kicker"], bold=True),
-                  colour("cb_signal_cyan"))
-        ry += dp(24)
-        cx = g
-        for name in EXAMPLE_LAUNCHERS[1:]:
-            w = chip_pill(img, cx, ry, name, active=False)
-            cx += w + gap
-            if cx > rail_r:
+        f_label = ofont(DIMENS["cb_text_label"], "semibold")
+        f_line = ofont(DIMENS["cb_text_data"])
+        pad_v = dp(DIMENS["cb_space_xs"])
+        text_h = line_h(f_label) + dp(2) + line_h(f_line)
+        bar_h = max(dp(DIMENS["cb_pill_compact"]), text_h) + 2 * pad_v
+        section(img, [sx0, sy, sx1, sy + bar_h])
+        bh = dp(DIMENS["cb_pill_compact"])
+        by = sy + (bar_h - bh) // 2
+        later = STRINGS["update_later"]
+        download = fmt(STRINGS["update_download"], VERSION["versionName"])
+        later_w = pill_width(draw, later, "ghost")
+        dl_w = pill_width(draw, download, "cta")
+        lx = sx1 - dp(DIMENS["cb_space_xs"]) - later_w
+        dx = lx - dp(DIMENS["cb_space_xs"]) - dl_w
+        pill(img, [dx, by, dx + dl_w, by + bh], download, "cta", focused=True)
+        pill(img, [lx, by, lx + later_w, by + bh], later, "ghost")
+        tx = sx0 + dp(DIMENS["cb_space_md"])
+        limit = dx - dp(DIMENS["cb_space_md"]) - tx
+        ty = sy + (bar_h - text_h) // 2
+        draw_text(draw, (tx, ty),
+                  fit(draw, fmt(STRINGS["update_available_fmt"], VERSION["versionName"],
+                                VERSION["iconCount"]), f_label, limit),
+                  f_label, colour("cb_ink"))
+        # The first release highlight, one line, ellipsised.
+        draw_text(draw, (tx, ty + line_h(f_label) + dp(2)),
+                  fit(draw, "•  " + VERSION["highlights"][0], f_line, limit),
+                  f_line, colour("cb_ink"))
+        sy += bar_h + dp(DIMENS["cb_space_sm"])
+
+    search_h = dp(DIMENS["cb_target_min"])
+    search_pill(img, [sx0, sy, sx1, sy + search_h], fmt(STRINGS["search_hint_fmt"], ICON_COUNT))
+    sy += search_h + dp(DIMENS["cb_space_sm"])
+
+    # The category chips run off the stage's edge and are cut there, as the
+    # RecyclerView cuts them.
+    def chips(canvas):
+        x = sx0
+        for index, (_key, label, count) in enumerate(category_counts()):
+            if x > sx1:
                 break
-        ry += row_h
+            x += chip(canvas, x, sy, fmt(STRINGS["chip_count_fmt"], label, count),
+                      active=index == 0) + dp(DIMENS["cb_space_sm"])
+    clip(img, [sx0 - dp(4), sy - dp(4), sx1, sy + dp(DIMENS["cb_target_min"]) + dp(4)], chips)
+    sy += dp(DIMENS["cb_target_min"]) + dp(DIMENS["cb_space_sm"])
 
-    # ---- RIGHT PANE ------------------------------------------------------
-    search_field(img, pane_l, body_top, (right - pane_l) / SCALE,
-                 hint=fmt(STRINGS["search_hint_fmt"], ICON_COUNT))
-    py = body_top + row_h + gap
-    x = pane_l
-    f_chip = font("sans", DIMENS["cb_text_label"], bold=True)
-    for index, (_key, label, count) in enumerate(category_counts()):
-        label_text = fmt(STRINGS["chip_count_fmt"], label, count)
-        chip_w = text_width(draw, label_text, f_chip) + 2 * dp(DIMENS["cb_space_md"])
-        if x + chip_w > right:
-            break
-        x += chip_pill(img, x, py, label_text, active=index == 0) + dp(DIMENS["cb_space_sm"])
-    py += row_h + gap
-
-    # Grid: columns are pane width over tile pitch, exactly as MainActivity
-    # derives them; rows run past the panel edge and clip, as the RecyclerView
-    # does.
-    pane_w = right - pane_l
-    spans = max(2, int(pane_w // tile_h))
+    # The grid: columns from the stage width over the tile pitch, exactly as
+    # MainActivity.spanForScreen derives them; rows run past the grid's foot
+    # and are cut there.
+    pane_w = sx1 - sx0
+    pitch = max(dp(DIMENS["cb_tile_icon"]) + 2 * dp(DIMENS["cb_card_padding"]),
+                dp(DIMENS["cb_tile_min_width"]))
+    spans = max(2, pane_w // pitch)
     tile_w = pane_w // spans
-    focused_index = -1 if with_update_bar else 2
-    row = 0
-    while py < H:
-        for col in range(spans):
-            index = row * spans + col
-            if index >= len(PACK):
-                break
-            box = [pane_l + col * tile_w, py, pane_l + (col + 1) * tile_w,
-                   py + tile_h]
-            if index == focused_index:
-                focus_ring(img, box)
-            else:
-                card(img, box)
-            # The catalogue opens on the shipped art style, Banners: the
-            # tile's ImageView is the card's width by cb_tile_icon tall,
-            # fitCenter, so a 16:9 banner spans the card.
-            icon = dp(DIMENS["cb_tile_icon"])
-            pad = dp(DIMENS["cb_card_padding"])
-            cy = (box[1] + box[3]) // 2
-            paste_art(img, art_path(ICONS_DIR, f"{PACK[index]}_banner", ALIASES),
-                      [box[0] + pad, cy - icon // 2, box[2] - pad, cy + icon // 2])
-        py += tile_h
-        row += 1
+    tile_h = dp(DIMENS["cb_tile_icon"]) + 2 * dp(DIMENS["cb_card_padding"])
+    pad = dp(DIMENS["cb_card_padding"])
+    art_h = dp(DIMENS["cb_tile_icon"])
+    dot = dp(DIMENS["cb_brandmark_dot"])
+    grid_top = sy
 
-    extra = ("update bar: first highlight from version.json, launcher list, icon "
-             "count and ALSO APPLIES TO reclaimed while it is up; " if with_update_bar
-             else "")
-    note = ("MOCKUP - catalogue from activity_main.xml + strings/dimens/colors + "
-            f"appfilter ({COMPONENT_COUNT} components); {extra}"
-            "example: launchers, focus")
+    def grid(canvas):
+        d = ImageDraw.Draw(canvas, "RGBA")
+        gy, index = grid_top, 0
+        while gy < bottom and index < len(PACK):
+            for col in range(spans):
+                if index >= len(PACK):
+                    break
+                box = [sx0 + col * tile_w, gy, sx0 + (col + 1) * tile_w, gy + tile_h]
+                card(canvas, box)
+                # The catalogue opens on the shipped art style, Banners: the
+                # ImageView is the tile's width by cb_tile_icon, fitCenter.
+                paste_art(canvas, art_path(ICONS_DIR, f"{PACK[index]}_banner", ALIASES),
+                          [box[0] + pad, box[1] + pad, box[2] - pad, box[1] + pad + art_h])
+                if BESPOKE[index]:
+                    # icon_brandmark: the dot in the artwork's top-end corner.
+                    d.ellipse([box[2] - pad - dot, box[1] + pad, box[2] - pad,
+                               box[1] + pad + dot], fill=colour("cb_ink"))
+                index += 1
+            gy += tile_h
+    clip(img, [sx0, grid_top, sx1, bottom], grid)
+
+    # The caption band holds ~150 characters before it ellipsizes, and the
+    # example clause at the end is the one that must survive.
+    if with_update_bar:
+        note = ("MOCKUP - Home, update bar up: activity_main.xml + version.json + "
+                f"appfilter ({COMPONENT_COUNT} components); example: missing count, focus")
+    else:
+        note = ("MOCKUP - Home from activity_main.xml + strings/dimens/colors + "
+                f"appfilter ({COMPONENT_COUNT} components); example: launcher, missing "
+                "count, focus")
     return img, note
 
 
@@ -867,29 +1090,20 @@ def version_key(v: str) -> tuple:
 
 
 def wallpapers_frame() -> tuple[Image.Image, str]:
-    """The wallpapers browser as built: landscape two-pane. Header across the
-    top, series chips and the export foot in the left rail, the named-thumb
-    grid owning the right pane. The motion loops ride the same grid, badged."""
+    """The wallpaper browser as built since 2.6.0: the series as rail rows
+    under SERIES with Export at the rail's foot, and the stage's header over
+    the named-thumb grid. The motion loops ride the same grid, badged."""
     walls = WALLPAPERS + LIVE_LOOPS
     img = new_frame()
     draw = ImageDraw.Draw(img, "RGBA")
-    g, rail_r, pane_l = rail_box()
-    right = W - g
-    gap = dp(DIMENS["cb_space_xs"])
-    y = dp(DIMENS["cb_gutter_top"])
-    f_data = font("mono", DIMENS["cb_text_data"])
+    rx0, rx1, sx0, sx1 = rail_and_stage(img)
+    top = dp(DIMENS["cb_stage_top"])
+    bottom = H - dp(DIMENS["cb_stage_bottom"])
+    inner = dp(12)
 
-    draw_text(draw, (g, y + dp(2)), STRINGS["wp_kicker"],
-              font("mono", DIMENS["cb_text_label"], bold=True),
-              colour("cb_signal_cyan"))
-    draw_text(draw, (g, y + dp(26)), fmt(STRINGS["wp_sub_fmt"], len(walls)),
-              f_data, colour("cb_slate"))
-    button(img, right - dp(150), y, STRINGS["wp_back"], "ghost", min_w_dp=150)
-    body_top = y + dp(DIMENS["cb_target_min"]) + dp(DIMENS["cb_space_md"])
-
-    # ---- LEFT RAIL: series chips, then the export foot.
+    # ---- RAIL: SERIES, the series, then the export foot.
     # WallpapersActivity: All, New (N), Live, then the still series in
-    # catalogue order - the loops' own key is not a series chip.
+    # catalogue order - the loops' own key is not a series.
     series: list[str] = []
     for wall in walls:
         if not wall.get("live") and wall["series"] not in series:
@@ -903,71 +1117,91 @@ def wallpapers_frame() -> tuple[Image.Image, str]:
                  for part in s.removeprefix("series-").split("-", 1)[1].split("-"))
         for s in series
     ]
-    foot_h = dp(DIMENS["cb_target_min"]) + gap
-    f_para = font("sans", DIMENS["cb_text_data"])
-    para = wrap(draw, STRINGS["wp_export_sub"], f_para, dp(DIMENS["cb_rail_width"]))
-    foot_h += len(para) * dp(19)
-    fy = H - dp(DIMENS["cb_gutter_bottom"]) - foot_h
-    # The weighted chip list scrolls in the rail, so chips run to the foot's top
-    # edge and clip there, exactly as the RecyclerView does.
-    chips_bottom = fy - dp(DIMENS["cb_space_md"])
-    layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    ry = body_top
-    for index, label in enumerate(labels):
-        chip_pill(layer, g, ry, label, active=index == 0, focused=index == 0)
-        ry += dp(DIMENS["cb_target_min"]) + gap
-        if ry > chips_bottom + dp(DIMENS["cb_target_min"]):
-            break
-    mask = Image.new("L", (W, H), 0)
-    ImageDraw.Draw(mask).rectangle([0, body_top, rail_r, chips_bottom], fill=255)
-    img.paste(layer, (0, 0), Image.composite(
-        layer.split()[3], Image.new("L", (W, H), 0), mask))
-    f_pill = font("sans", DIMENS["cb_text_label"], bold=True)
-    pill_label = STRINGS["wp_export"].upper()
-    rrect(draw, [g, fy, rail_r, fy + dp(DIMENS["cb_target_min"])],
-          dp(DIMENS["cb_radius_button"]), outline=(0, 212, 255, 0x59), width=dp(1))
-    draw_text(draw, ((g + rail_r) / 2, fy + dp(DIMENS["cb_target_min"]) / 2),
-              pill_label, f_pill, colour("cb_signal_cyan"), anchor="mm")
-    for i, line in enumerate(para):
-        draw_text(draw, (g, fy + dp(DIMENS["cb_target_min"]) + gap + i * dp(19)),
-                  line, f_para, colour("cb_slate"))
+    y = menu_heading(draw, rx0 + inner, top, STRINGS["wp_series_heading"])
+    list_top = y + dp(DIMENS["cb_space_xs"])
 
-    # ---- RIGHT PANE: the thumb grid, full height.
-    pane_w = right - pane_l
-    thumb = dp(DIMENS["cb_wp_thumb"])
-    tile_h = thumb + dp(52)
-    spans = max(2, int(pane_w // tile_h))
-    tile_w = pane_w // spans
-    f_tile = font("sans", DIMENS["cb_text_label"])
-    row = 0
-    py = body_top
-    while py < H:
-        for col in range(spans):
-            index = row * spans + col
-            if index >= len(walls):
+    # The foot is laid out from the bottom: the Export pill, then its note.
+    f_note = ofont(DIMENS["cb_text_kicker"])
+    note_lines = wrap(draw, STRINGS["wp_export_sub"], f_note, rx1 - rx0 - dp(8))
+    note_h = len(note_lines) * (line_h(f_note) + dp(3))
+    pill_h = dp(DIMENS["cb_pill"])
+    ny = bottom - note_h
+    py = ny - dp(DIMENS["cb_space_xs"]) - pill_h
+    pill(img, [rx0, py, rx1, py + pill_h], STRINGS["wp_export_rail"], "ghost",
+         icon=("ic_export", 10))
+    for i, line in enumerate(note_lines):
+        draw_text(draw, (rx0 + dp(4), ny + i * (line_h(f_note) + dp(3))), line, f_note,
+                  colour("cb_slate"))
+
+    # The list takes the height between the heading and the pill, and scrolls:
+    # rows past its foot are cut there. Wallpapers opens on the series, on All.
+    list_bottom = py - dp(DIMENS["cb_space_md"])
+    f_row = ofont(DIMENS["cb_text_label"], "medium")
+
+    def rows(canvas):
+        ry = list_top + dp(4)
+        for index, label in enumerate(labels):
+            ry += dp(2)
+            box = [rx0, ry, rx1, ry + dp(DIMENS["cb_rail_item"])]
+            rail_body(canvas, box, focused=index == 0, activated=index == 0, choice=True)
+            draw_text(ImageDraw.Draw(canvas, "RGBA"),
+                      (rx0 + inner, ry + dp(DIMENS["cb_rail_item"]) // 2), label, f_row,
+                      colour("cb_signal_cyan" if index == 0 else "cb_ink"), anchor="lm")
+            ry += dp(DIMENS["cb_rail_item"])
+            if ry > list_bottom:
                 break
-            box = [pane_l + col * tile_w, py, pane_l + (col + 1) * tile_w,
-                   py + tile_h - dp(2)]
-            if index == 0:
-                focus_ring(img, box)
-            else:
-                card(img, box)
-            inset = dp(DIMENS["cb_focus_inset"]) + dp(6)
-            wall = walls[index]
-            stem = wall["url"].split("/")[-1].rsplit(".", 1)[0] + ".jpg"
-            # Motion loops keep their still frame with the motion art; the
-            # stills' thumbs are bundled under assets/.
-            thumb_path = (LIVE_THUMBS if wall.get("live") else THUMBS_DIR) / stem
-            paste_art(img, thumb_path,
-                      [box[0] + inset, box[1] + inset, box[2] - inset,
-                       box[1] + inset + thumb], radius=dp(6))
-            if wall.get("live"):
-                live_badge(img, draw, box, inset)
-            title = wall["name"].split("\u00b7 ", 1)[-1]
-            draw_text(draw, ((box[0] + box[2]) / 2, box[1] + inset + thumb + dp(10)),
-                      title, f_tile, colour("cb_ink"), anchor="ma")
-        py += tile_h
-        row += 1
+    clip(img, [rx0 - dp(6), list_top, rx1 + dp(6), list_bottom], rows)
+
+    # ---- STAGE: the header, then the grid.
+    sy = header(img, STRINGS["wp_kicker"], STRINGS["wp_entry"], x0=sx0, x1=sx1, top=top,
+                back=STRINGS["wp_back"])
+    # wp_count sits under the title, in the header's left column.
+    f_count = font("mono", DIMENS["cb_text_kicker"])
+    title_bottom = (top + line_h(ofont(DIMENS["cb_text_kicker"], "semibold")) + dp(4)
+                    + line_h(ofont(DIMENS["cb_text_stage_title"], "semibold")))
+    draw_text(draw, (sx0, title_bottom + dp(2)), fmt(STRINGS["wp_sub_fmt"], len(walls)),
+              f_count, colour("cb_slate"))
+    grid_top = max(sy, title_bottom + dp(2) + line_h(f_count)) + dp(DIMENS["cb_space_md"])
+
+    # Columns as WallpapersActivity.spanForScreen derives them: the stage over
+    # the thumb, its padding, the gap and the title line.
+    pane_w = sx1 - sx0
+    thumb = dp(DIMENS["cb_wp_thumb"])
+    pad = dp(DIMENS["cb_card_padding"])
+    pitch = (thumb + 2 * pad + dp(DIMENS["cb_space_sm"])
+             + dp(DIMENS["cb_text_label"] * 1.2))
+    spans = max(2, int(pane_w // pitch))
+    tile_w = pane_w // spans
+    f_tile = ofont(DIMENS["cb_text_label"], "semibold")
+    tile_h = pad + thumb + dp(DIMENS["cb_space_sm"]) + line_h(f_tile) + pad
+
+    def grid(canvas):
+        d = ImageDraw.Draw(canvas, "RGBA")
+        gy, index = grid_top, 0
+        while gy < bottom and index < len(walls):
+            for col in range(spans):
+                if index >= len(walls):
+                    break
+                box = [sx0 + col * tile_w, gy, sx0 + (col + 1) * tile_w, gy + tile_h]
+                card(canvas, box)
+                wall = walls[index]
+                stem = wall["url"].split("/")[-1].rsplit(".", 1)[0] + ".jpg"
+                # Motion loops keep their still frame with the motion art; the
+                # stills' thumbs are bundled under assets/.
+                thumb_path = (LIVE_THUMBS if wall.get("live") else THUMBS_DIR) / stem
+                paste_art(canvas, thumb_path,
+                          [box[0] + pad, box[1] + pad, box[2] - pad, box[1] + pad + thumb],
+                          radius=dp(6))
+                if wall.get("live"):
+                    live_badge(canvas, d, box, 0)
+                title = wall["name"].split("· ", 1)[-1]
+                draw_text(d, ((box[0] + box[2]) / 2,
+                              box[1] + pad + thumb + dp(DIMENS["cb_space_sm"])),
+                          fit(d, title, f_tile, box[2] - box[0] - 2 * pad), f_tile,
+                          colour("cb_ink"), anchor="ma")
+                index += 1
+            gy += tile_h
+    clip(img, [sx0, grid_top, sx1, bottom], grid)
 
     # The caption band ellipsizes rather than overflow the panel, so this line
     # has to stay short enough to survive whole: the LIVE badge and the counts
@@ -975,7 +1209,7 @@ def wallpapers_frame() -> tuple[Image.Image, str]:
     # no fiction at all. Counts are interpolated, never typed.
     note = ("MOCKUP - wallpapers: activity_wallpapers.xml + strings.xml + "
             f"{len(WALLPAPERS)} stills + {len(LIVE_LOOPS)} live loops "
-            "(LiveLoop.kt, CoreViewsLoop.kt); example: focus, chip")
+            "(LiveLoop.kt, CoreViewsLoop.kt); example: focus")
     return img, note
 
 
@@ -1012,60 +1246,50 @@ def settings_order() -> list:
 def paint_settings_viewport(img, order, focused_row):
     """One viewportful of the settings list, already scrolled: rows above the
     scroll point were popped by the caller, the first visible entry leads,
-    and the footer lands only if the list ends inside the viewport."""
+    and rows past the ScrollView's foot are cut there. The header above and
+    the footer under the list stay put, as activity_settings.xml pins them."""
     draw = ImageDraw.Draw(img, "RGBA")
+    g, right, bottom = screen_box()
     top = header(img, STRINGS["settings_kicker"], STRINGS["settings_title"])
-    g = dp(DIMENS["cb_gutter_side"])
-    y = top + dp(6)
-    f_group = font("mono", DIMENS["cb_text_kicker"], bold=True)
-    f_title = font("sans", DIMENS["cb_text_body"], bold=True)
-    f_sub = font("sans", DIMENS["cb_text_data"])
-    def row_height(entry) -> int:
-        sub_lines = wrap(draw, STRINGS[entry[2]], f_sub, W - 2 * g - dp(160))[:2]
-        return dp(16) + dp(24) + len(sub_lines) * dp(19) + dp(10)
+    f_title = ofont(DIMENS["cb_text_body"], "semibold")
+    f_sub = ofont(DIMENS["cb_text_data"])
+    f_foot = ofont(DIMENS["cb_text_data"])
+    foot_y = bottom - line_h(f_foot)
+    draw_text(draw, (g, foot_y), STRINGS["settings_footer"], f_foot, colour("cb_slate"))
+    view_bottom = foot_y - dp(DIMENS["cb_space_xs"])
+    pad = dp(DIMENS["cb_card_padding"])
+    text_w = right - g - 2 * pad - dp(160)
 
-    for position, entry in enumerate(order):
-        # A group kicker whose first row would not fit is a dangling label at
-        # the bottom of the viewport; stop before it, the way a real scroll
-        # position would never park half a row on screen.
-        if entry[0] == "group":
-            nxt = order[position + 1] if position + 1 < len(order) else None
-            if nxt is None or y + dp(26) + row_height(nxt) > H - dp(44):
+    def rows(canvas):
+        d = ImageDraw.Draw(canvas, "RGBA")
+        y = top
+        for entry in order:
+            if y > view_bottom:
                 break
-        elif y + row_height(entry) > H - dp(44):
-            break
-        if entry[0] == "group":
-            draw_text(draw, (g, y), STRINGS[entry[1]], f_group, colour("cb_signal_cyan"))
-            y += dp(26)
-            continue
-        title, sub = STRINGS[entry[1]], STRINGS[entry[2]]
-        sub_lines = wrap(draw, sub, f_sub, W - 2 * g - dp(160))[:2]
-        row_h = row_height(entry)
-        focused = entry[1] == focused_row
-        if focused:
-            focus_ring(img, [g, y, W - g, y + row_h])
-            inner = dp(DIMENS["cb_focus_inset"])
-        else:
-            card(img, [g, y, W - g, y + row_h])
-            inner = dp(DIMENS["cb_focus_inset"])
-        draw_text(draw, (g + inner + dp(8), y + inner + dp(2)), title, f_title,
-                  colour("cb_ink"))
-        for i, line in enumerate(sub_lines):
-            draw_text(draw, (g + inner + dp(8), y + inner + dp(26) + i * dp(19)), line,
-                      f_sub, colour("cb_slate"))
-        if entry[0] == "switch":
-            draw_switch(draw, W - g - dp(56), y + row_h // 2 - dp(11), entry[3])
-        elif entry[3]:
-            label = STRINGS[entry[3]]
-            f_btn = font("sans", DIMENS["cb_text_label"], bold=True)
-            bw = text_width(draw, label, f_btn) + 2 * dp(DIMENS["cb_space_lg"])
-            button(img, W - g - dp(DIMENS["cb_focus_inset"]) - dp(8) - bw,
-                   y + row_h // 2 - dp(24), label, "ghost",
-                   size_sp=DIMENS["cb_text_label"])
-        y += row_h + dp(8)
-    if y < H - dp(40):
-        draw_text(draw, (g, H - dp(28)), STRINGS["settings_footer"], f_sub,
-                  colour("cb_slate"))
+            if entry[0] == "group":
+                y = menu_heading(d, g, y + dp(DIMENS["cb_space_md"]), STRINGS[entry[1]])
+                continue
+            sub_lines = wrap(d, STRINGS[entry[2]], f_sub, text_w)
+            text_h = line_h(f_title) + dp(4) + len(sub_lines) * line_h(f_sub)
+            y += dp(6)
+            row_h = 2 * pad + max(text_h, dp(DIMENS["cb_pill"]) if entry[0] == "row" and entry[3] else 0)
+            row(canvas, [g, y, right, y + row_h], focused=entry[1] == focused_row)
+            ty = y + (row_h - text_h) // 2
+            draw_text(d, (g + pad, ty), STRINGS[entry[1]], f_title, colour("cb_ink"))
+            for i, line in enumerate(sub_lines):
+                draw_text(d, (g + pad, ty + line_h(f_title) + dp(4) + i * line_h(f_sub)),
+                          line, f_sub, colour("cb_slate"))
+            cy = y + row_h // 2
+            if entry[0] == "switch":
+                draw_switch(d, right - pad - dp(40), cy - dp(11), entry[3])
+            elif entry[3]:
+                label = STRINGS[entry[3]]
+                bw = pill_width(d, label, "ghost")
+                bh = dp(DIMENS["cb_pill"])
+                pill(canvas, [right - pad - bw, cy - bh // 2, right - pad, cy - bh // 2 + bh],
+                     label, "ghost")
+            y += row_h
+    clip(img, [g - dp(4), top, right + dp(4), view_bottom], rows)
 
 
 def settings_frame() -> tuple[Image.Image, str]:
@@ -1098,24 +1322,27 @@ def settings_display_frame() -> tuple[Image.Image, str]:
 
 def faq_frame() -> tuple[Image.Image, str]:
     img = new_frame()
-    draw = ImageDraw.Draw(img, "RGBA")
+    g, right, bottom = screen_box()
     top = header(img, STRINGS["faq_kicker"], STRINGS["faq_title"])
-    g = dp(DIMENS["cb_gutter_side"])
-    y = top + dp(6)
-    f_title = font("sans", DIMENS["cb_text_body"], bold=True)
-    f_body = font("sans", DIMENS["cb_text_data"])
-    for key in ("cache", "override", "monet", "projectivy", "unmapped"):
-        title = STRINGS[f"faq_{key}_title"]
-        body = STRINGS[f"faq_{key}_body"]
-        lines = wrap(draw, body, f_body, W - 2 * g - dp(40))
-        row_h = dp(24) + len(lines) * dp(19) + dp(16)
-        card(img, [g, y, W - g, y + row_h])
-        inner = dp(DIMENS["cb_focus_inset"])
-        draw_text(draw, (g + inner + dp(8), y + inner), title, f_title, colour("cb_ink"))
-        for i, line in enumerate(lines):
-            draw_text(draw, (g + inner + dp(8), y + inner + dp(24) + i * dp(19)), line,
-                      f_body, colour("cb_slate"))
-        y += row_h + dp(10)
+    f_title = ofont(DIMENS["cb_text_body"], "semibold")
+    f_body = ofont(DIMENS["cb_text_data"])
+    pad = dp(DIMENS["cb_card_padding"])
+
+    def rows(canvas):
+        d = ImageDraw.Draw(canvas, "RGBA")
+        y = top + dp(DIMENS["cb_space_md"])
+        for key in ("cache", "override", "monet", "projectivy", "unmapped"):
+            lines = wrap(d, STRINGS[f"faq_{key}_body"], f_body, right - g - 2 * pad)
+            row_h = 2 * pad + line_h(f_title) + dp(6) + len(lines) * (line_h(f_body) + dp(3))
+            y += dp(6)
+            row(canvas, [g, y, right, y + row_h])
+            draw_text(d, (g + pad, y + pad), STRINGS[f"faq_{key}_title"], f_title,
+                      colour("cb_ink"))
+            for i, line in enumerate(lines):
+                draw_text(d, (g + pad, y + pad + line_h(f_title) + dp(6)
+                              + i * (line_h(f_body) + dp(3))), line, f_body, colour("cb_slate"))
+            y += row_h
+    clip(img, [g - dp(4), top, right + dp(4), bottom], rows)
     note = ("MOCKUP - FAQ frame from activity_faq.xml + strings.xml; bodies are the "
             "shipped strings, which paraphrase the repo docs")
     return img, note
@@ -1141,99 +1368,99 @@ def app_icon_placeholder(img: Image.Image, box, label: str) -> None:
     not reproducible here): a neutral tile with the label's initial."""
     draw = ImageDraw.Draw(img, "RGBA")
     rrect(draw, box, dp(8), fill=(0x22, 0x2C, 0x3A))
-    f = font("sans", DIMENS["cb_text_body"], bold=True)
-    draw_text(draw, ((box[0] + box[2]) / 2, (box[1] + box[3]) / 2), label[:1], f,
-              colour("cb_slate"), anchor="mm")
+    draw_text(draw, ((box[0] + box[2]) / 2, (box[1] + box[3]) / 2), label[:1],
+              ofont(DIMENS["cb_text_body"], "semibold"), colour("cb_slate"), anchor="mm")
 
 
 def audit_row(img: Image.Image, y: int, example, focused: bool) -> int:
+    """item_audit: the app's icon, its name and tags, the component, and
+    what the pack maps instead when the pack's icon is not applying; the
+    action as a bg_chip label at the end."""
     label, component, kind, tv, system, mapped_as = example
     draw = ImageDraw.Draw(img, "RGBA")
-    g = dp(DIMENS["cb_gutter_side"])
-    lines = 3 if kind == "not_applying" else 2
-    row_h = dp(20) + lines * dp(19) + dp(4)
-    box = [g, y, W - g, y + row_h]
-    (focus_ring if focused else card)(img, box)
+    g, right, _ = screen_box()
     pad = dp(DIMENS["cb_card_padding"])
-    icon = dp(40)
-    app_icon_placeholder(img, [g + pad, y + (row_h - icon) // 2,
-                               g + pad + icon, y + (row_h - icon) // 2 + icon], label)
-    tx = g + pad + icon + dp(DIMENS["cb_space_sm"])
-    f_label = font("sans", DIMENS["cb_text_body"], bold=True)
+    f_label = ofont(DIMENS["cb_text_body"], "semibold")
     f_tag = font("mono", DIMENS["cb_text_kicker"])
     f_pkg = font("mono", DIMENS["cb_text_data"])
-    ty = y + dp(10)
+    lines = 2 if kind == "not_applying" else 1
+    text_h = line_h(f_label) + lines * (dp(2) + line_h(f_pkg))
+    row_h = dp(10) * 2 + max(dp(40), text_h)
+    row(img, [g, y, right, y + row_h], focused=focused)
+    icon = dp(40)
+    iy = y + (row_h - icon) // 2
+    app_icon_placeholder(img, [g + pad, iy, g + pad + icon, iy + icon], label)
+    tx = g + pad + icon + dp(DIMENS["cb_space_sm"])
+    ty = y + (row_h - text_h) // 2
     draw_text(draw, (tx, ty), label, f_label, colour("cb_ink"))
     tags = [STRINGS["audit_tag_tv"] if tv else STRINGS["audit_tag_phone"]]
     if system:
         tags.append(STRINGS["audit_tag_system"])
     draw_text(draw, (tx + text_width(draw, label, f_label) + dp(DIMENS["cb_space_sm"]),
-                     ty + dp(5)), " \u00b7 ".join(tags), f_tag, colour("cb_slate"))
-    draw_text(draw, (tx, ty + dp(23)), component, f_pkg, colour("cb_slate"))
+                     ty + line_h(f_label) // 2), " · ".join(tags), f_tag,
+              colour("cb_slate"), anchor="lm")
+    py = ty + line_h(f_label) + dp(2)
+    draw_text(draw, (tx, py), component, f_pkg, colour("cb_slate"))
     if kind == "not_applying":
-        draw_text(draw, (tx, ty + dp(42)), fmt(STRINGS["audit_mapped_as_fmt"], mapped_as),
-                  f_pkg, colour("cb_warning"))
+        draw_text(draw, (tx, py + line_h(f_pkg) + dp(2)),
+                  fmt(STRINGS["audit_mapped_as_fmt"], mapped_as), f_pkg, colour("cb_warning"))
     action = STRINGS["audit_action_report" if kind == "not_applying" else "audit_action_request"]
-    fa = font("mono", DIMENS["cb_text_kicker"], bold=True)
-    aw = text_width(draw, action, fa) + 2 * dp(DIMENS["cb_space_sm"])
-    ah = dp(DIMENS["cb_text_kicker"]) + dp(14)
-    ax, ay = W - g - pad - aw, y + (row_h - ah) // 2
-    rrect(draw, [ax, ay, ax + aw, ay + ah], ah // 2, fill=(0x14, 0x20, 0x2B),
-          outline=(0x00, 0xD4, 0xFF, 0x55), width=dp(1))
-    draw_text(draw, (ax + aw / 2, ay + ah / 2), action, fa, colour("cb_signal_cyan"),
-              anchor="mm")
+    tag(img, right - pad, y + row_h // 2, action, pad_x=10, pad_y=4)
     return row_h
 
 
 def audit_section(draw, y: int, title: str, sub: str) -> int:
-    g = dp(DIMENS["cb_gutter_side"])
-    y += dp(DIMENS["cb_space_md"])
-    draw_text(draw, (g, y), title, font("mono", DIMENS["cb_text_kicker"], bold=True),
-              colour("cb_signal_cyan"))
-    draw_text(draw, (g, y + dp(18)), sub, font("sans", DIMENS["cb_text_data"]),
-              colour("cb_slate"))
-    return dp(DIMENS["cb_space_md"]) + dp(40)
+    """item_audit_header: a menu heading over its slate line. Returns its
+    height."""
+    g, _, _ = screen_box()
+    top = y + dp(DIMENS["cb_space_md"])
+    hy = menu_heading(draw, g, top, title)
+    f = ofont(DIMENS["cb_text_data"])
+    draw_text(draw, (g, hy + dp(3)), sub, f, colour("cb_slate"))
+    return hy + dp(3) + line_h(f) - y
 
 
 def audit_launcher_line(img, y: int, draw) -> int:
-    """The detected-launcher line the auditor shows before the list (a ghost
-    chip, focusable in the layout): which launcher this TV is on and what
-    art it applies. The mockup shows the detected-home case, Projectivy -
-    the same one the launcher-compat frame focuses."""
-    g = dp(DIMENS["cb_gutter_side"])
-    pad_x, pad_y = dp(DIMENS["cb_space_md"]), dp(DIMENS["cb_space_xs"])
+    """audit_launcher_note: a wide ghost pill, one line, naming the launcher
+    this TV is on and the art it applies. The mockup shows the detected-home
+    case, Projectivy - the one the launcher-compat frame focuses."""
+    g, right, _ = screen_box()
     text = fmt(STRINGS["launcher_compat_here_fmt"], "Projectivy Launcher",
                art_sentence("BANNERS"))
-    f = font("sans", DIMENS["cb_text_data"])
-    h = dp(DIMENS["cb_text_data"]) + 2 * pad_y
-    box = [g, y, W - g, y + h]
-    draw = ImageDraw.Draw(img, "RGBA")
-    rrect(draw, box, dp(DIMENS["cb_radius_card"]),
-          fill=colour("cb_card"), outline=(255, 255, 255, 0x0F), width=1)
-    draw_text(draw, (g + pad_x, y + pad_y), text, f, colour("cb_slate"))
-    return y + h + dp(DIMENS["cb_space_sm"])
+    h = dp(DIMENS["cb_pill"])
+    label = fit(draw, text, _pill_font("ghost"), right - g - 2 * dp(DIMENS["cb_pill_padding"]))
+    pill(img, [g, y, right, y + h], label, "ghost")
+    return y + h
 
 
 def auditor_frames() -> list[tuple[Image.Image, str]]:
     checked = 41
     img = new_frame()
     draw = ImageDraw.Draw(img, "RGBA")
-    top = header(img, STRINGS["audit_kicker"], STRINGS["audit_title"],
-                 fmt(STRINGS["audit_count_fmt"], checked))
-    y = audit_launcher_line(img, top + dp(6), draw)
-    first = True
-    for kind, title_key, sub_key in (
-        ("not_applying", "audit_section_not_applying_fmt", "audit_section_not_applying_sub"),
-        ("no_icon", "audit_section_no_icon_fmt", "audit_section_no_icon_sub"),
-    ):
-        rows = [e for e in AUDIT_EXAMPLES if e[2] == kind]
-        y += audit_section(draw, y, fmt(STRINGS[title_key], len(rows)), STRINGS[sub_key])
-        for example in rows:
-            y += audit_row(img, y, example, focused=first) + dp(6)
-            first = False
-    list_note = ("MOCKUP - auditor frame from activity_auditor.xml + item_audit*.xml + "
-                 "strings.xml; example rows and count (a real scan lists this TV's apps; "
-                 "the tile stands in for each app's own launcher icon)")
+    g, right, bottom = screen_box()
+    top = header(img, STRINGS["audit_kicker"], STRINGS["audit_title"])
+    f_count = ofont(DIMENS["cb_text_data"])
+    draw_text(draw, (g, top + dp(DIMENS["cb_space_xs"])), fmt(STRINGS["audit_count_fmt"], checked),
+              f_count, colour("cb_slate"))
+    line_top = top + dp(DIMENS["cb_space_xs"]) + line_h(f_count) + dp(DIMENS["cb_space_sm"])
+    list_top = audit_launcher_line(img, line_top, draw)
+
+    def rows(canvas):
+        d = ImageDraw.Draw(canvas, "RGBA")
+        y, first = list_top + dp(DIMENS["cb_space_sm"]), True
+        for kind, title_key, sub_key in (
+            ("not_applying", "audit_section_not_applying_fmt", "audit_section_not_applying_sub"),
+            ("no_icon", "audit_section_no_icon_fmt", "audit_section_no_icon_sub"),
+        ):
+            examples = [e for e in AUDIT_EXAMPLES if e[2] == kind]
+            y += audit_section(d, y, fmt(STRINGS[title_key], len(examples)), STRINGS[sub_key])
+            for example in examples:
+                y += dp(6)
+                y += audit_row(canvas, y, example, focused=first)
+                first = False
+    clip(img, [g - dp(4), list_top, right + dp(4), bottom], rows)
+    list_note = ("MOCKUP - auditor: activity_auditor.xml + item_audit*.xml + "
+                 "strings.xml; example: rows, count, and tiles for each app's own icon")
     frames = [(img, list_note)]
 
     # QR panel: the same generated deep link the screen builds, really
@@ -1251,45 +1478,52 @@ def auditor_frames() -> list[tuple[Image.Image, str]]:
     img = new_frame()
     draw = ImageDraw.Draw(img, "RGBA")
     top = header(img, STRINGS["audit_kicker"], STRINGS["audit_title"])
-    g = dp(DIMENS["cb_gutter_side"])
     size = dp(DIMENS["cb_qr_size"])
-    qx = W - g - size
+    qx = right - size
     # The launcher line stays up in the QR state (only the count goes away),
     # so the panel clears it.
-    panel_top = audit_launcher_line(img, top + dp(6), draw)
-    panel_h = H - dp(16) - panel_top
-    qy = panel_top + (panel_h - size) // 2
+    panel_top = audit_launcher_line(img, top + dp(DIMENS["cb_space_sm"]), draw) + dp(DIMENS["cb_space_md"])
+    qy = panel_top + (bottom - panel_top - size) // 2
     qr = qrcode.QRCode(error_correction=ERROR_CORRECT_M, box_size=8, border=4)
     qr.add_data(url)
     qr.make(fit=True)
     qr_img = qr.make_image(fill_color="black", back_color="white").convert("RGB")
     img.paste(qr_img.resize((size, size), Image.NEAREST), (qx, qy))
     col_w = qx - dp(DIMENS["cb_space_lg"]) - g
-    ly = qy + dp(10)
-    draw_text(draw, (g, ly), STRINGS["audit_qr_kind_request"].upper(),
-              font("mono", DIMENS["cb_text_kicker"], bold=True), colour("cb_signal_cyan"))
-    ly += dp(26)
+    ly = eyebrow(draw, g, qy + dp(10), STRINGS["audit_qr_kind_request"]) + dp(DIMENS["cb_space_sm"])
     pad = dp(DIMENS["cb_card_padding"])
-    card_h = 2 * pad + dp(64)
-    card(img, [g, ly, g + col_w, ly + card_h])
-    app_icon_placeholder(img, [g + pad, ly + pad, g + pad + dp(64), ly + pad + dp(64)], label)
-    tx = g + pad + dp(64) + dp(DIMENS["cb_space_sm"])
-    draw_text(draw, (tx, ly + pad + dp(6)), label,
-              font("sans", DIMENS["cb_text_section"], bold=True), colour("cb_ink"))
+    f_name = ofont(DIMENS["cb_text_section"], "semibold")
     f_data = font("mono", DIMENS["cb_text_data"])
-    for i, line in enumerate(wrap(draw, component, f_data, g + col_w - pad - tx)[:2]):
-        draw_text(draw, (tx, ly + pad + dp(32) + i * dp(18)), line, f_data, colour("cb_slate"))
+    tx = g + pad + dp(64) + dp(DIMENS["cb_space_sm"])
+    comp_lines = wrap(draw, component, f_data, g + col_w - pad - tx)[:2]
+    text_h = line_h(f_name) + len(comp_lines) * (dp(3) + line_h(f_data))
+    card_h = 2 * pad + max(dp(64), text_h)
+    row(img, [g, ly, g + col_w, ly + card_h])
+    app_icon_placeholder(img, [g + pad, ly + (card_h - dp(64)) // 2, g + pad + dp(64),
+                               ly + (card_h - dp(64)) // 2 + dp(64)], label)
+    ty = ly + (card_h - text_h) // 2
+    draw_text(draw, (tx, ty), label, f_name, colour("cb_ink"))
+    for i, line in enumerate(comp_lines):
+        draw_text(draw, (tx, ty + line_h(f_name) + dp(3) + i * (dp(3) + line_h(f_data))), line,
+                  f_data, colour("cb_slate"))
     ly += card_h + dp(DIMENS["cb_space_md"])
-    f_hint = font("sans", DIMENS["cb_text_data"])
-    for i, line in enumerate(wrap(draw, STRINGS["audit_qr_hint"], f_hint, col_w)):
-        draw_text(draw, (g, ly + i * dp(21)), line, f_hint, colour("cb_ink"))
-        last = ly + i * dp(21)
-    ly = last + dp(21) + dp(DIMENS["cb_space_sm"])
+    f_hint = ofont(DIMENS["cb_text_data"])
+    for line in wrap(draw, STRINGS["audit_qr_hint"], f_hint, col_w):
+        draw_text(draw, (g, ly), line, f_hint, colour("cb_ink"))
+        ly += line_h(f_hint) + dp(3)
+    ly += dp(DIMENS["cb_space_sm"])
     f_url = font("mono", DIMENS["cb_text_kicker"])
-    url_lines = wrap(draw, url, f_url, col_w)
+    # One "word" longer than the column: a TextView breaks it at the character.
+    url_lines, current = [], ""
+    for ch in url:
+        if current and text_width(draw, current + ch, f_url) > col_w:
+            url_lines.append(current)
+            current = ""
+        current += ch
+    url_lines.append(current)
     shown = url_lines[:2]
     if len(url_lines) > 2:
-        shown[-1] = shown[-1][:-1] + "\u2026"
+        shown[-1] = shown[-1][:-1] + "…"
     for i, line in enumerate(shown):
         draw_text(draw, (g, ly + i * dp(16)), line, f_url, colour("cb_slate"))
     qr_note = ("MOCKUP panel with a REAL scannable QR of an EXAMPLE prefilled issue URL "
@@ -1303,35 +1537,32 @@ def inspector_frame() -> tuple[Image.Image, str]:
     drawable = PACK[index]
     img = new_frame()
     draw = ImageDraw.Draw(img, "RGBA")
+    g, right, _ = screen_box()
     top = header(img, STRINGS["inspector_kicker"], NAMES[index])
-    g = dp(DIMENS["cb_gutter_side"])
-    y = top + dp(10)
+    y = top + dp(DIMENS["cb_space_md"])
     comps = components_of(drawable)[:4]
-    row_h = dp(40) + dp(160) + dp(20)
-    card(img, [g, y, W - g, y + row_h])
-    inner = dp(DIMENS["cb_focus_inset"]) + dp(DIMENS["cb_card_padding"])
+    pad = dp(DIMENS["cb_card_padding"])
+    art = dp(160)
+    row_h = 2 * pad + art
+    row(img, [g, y, right, y + row_h])
     paste_art(img, art_path(ICONS_DIR, drawable, ALIASES),
-              [g + inner, y + inner, g + inner + dp(160), y + inner + dp(160)])
-    f_meta = font("sans", DIMENS["cb_text_data"])
+              [g + pad, y + pad, g + pad + art, y + pad + art])
+    f_meta = ofont(DIMENS["cb_text_data"])
     f_mono = font("mono", DIMENS["cb_text_data"])
-    tx = g + inner + dp(160) + dp(DIMENS["cb_space_md"])
-    draw_text(draw, (tx, y + inner + dp(4)),
-              fmt(STRINGS["inspector_meta_fmt"], CATS[index], drawable), f_meta,
-              colour("cb_slate"))
+    tx = g + pad + art + dp(DIMENS["cb_space_md"])
+    draw_text(draw, (tx, y + pad), fmt(STRINGS["inspector_meta_fmt"], CATS[index], drawable),
+              f_meta, colour("cb_slate"))
+    cy = y + pad + line_h(f_meta) + dp(DIMENS["cb_space_sm"])
     for i, comp in enumerate(comps):
-        draw_text(draw, (tx, y + inner + dp(34) + i * dp(20)), comp, f_mono,
-                  colour("cb_ink"))
-    # Actions sit under the card, right-aligned, as in activity_inspector.xml.
+        draw_text(draw, (tx, cy + i * line_h(f_mono)), comp, f_mono, colour("cb_ink"))
+    # The actions sit under the card, right-aligned: Export, then Launch.
     by = y + row_h + dp(DIMENS["cb_space_md"])
-    f_launch = font("sans", DIMENS["cb_text_body"], bold=True)
-    launch_w = max(dp(150), text_width(draw, STRINGS["inspector_launch"], f_launch)
-                   + 2 * dp(DIMENS["cb_space_lg"]))
-    f_export = font("sans", DIMENS["cb_text_body"], bold=True)
-    export_w = text_width(draw, STRINGS["inspector_export"], f_export) + 2 * dp(DIMENS["cb_space_lg"])
-    button(img, W - g - launch_w, by, STRINGS["inspector_launch"], "cta",
-           min_w_dp=150)
-    button(img, W - g - launch_w - dp(DIMENS["cb_space_md"]) - export_w, by,
-           STRINGS["inspector_export"], "ghost")
+    bh = dp(DIMENS["cb_pill"])
+    launch_w = pill_width(draw, STRINGS["inspector_launch"], "cta")
+    export_w = pill_width(draw, STRINGS["inspector_export"], "ghost")
+    pill(img, [right - launch_w, by, right, by + bh], STRINGS["inspector_launch"], "cta")
+    ex = right - launch_w - dp(DIMENS["cb_space_sm"]) - export_w
+    pill(img, [ex, by, ex + export_w, by + bh], STRINGS["inspector_export"], "ghost")
     note = ("MOCKUP - inspector frame from activity_inspector.xml + strings.xml + "
             "appfilter.xml; mark, category and components are the shipped ones")
     return img, note
@@ -1339,36 +1570,36 @@ def inspector_frame() -> tuple[Image.Image, str]:
 
 def suite_frame() -> tuple[Image.Image, str]:
     img = new_frame()
-    draw = ImageDraw.Draw(img, "RGBA")
+    g, right, bottom = screen_box()
     top = header(img, STRINGS["suite_kicker"], STRINGS["suite_title"])
-    g = dp(DIMENS["cb_gutter_side"])
-    y = top + dp(10)
-    f_name = font("sans", DIMENS["cb_text_body"], bold=True)
-    f_state = font("sans", DIMENS["cb_text_data"])
-    f_code = font("sans", DIMENS["cb_text_data"])
+    f_name = ofont(DIMENS["cb_text_body"], "semibold")
+    f_state = ofont(DIMENS["cb_text_data"])
+    f_code = font("mono", DIMENS["cb_text_data"])
+    pad = dp(DIMENS["cb_card_padding"])
     states = [False, True, False, True, False, True]  # example install states
     names = SUITE["suite_hub_names"]
     codes = SUITE["suite_hub_codes"]
-    for index, name in enumerate(names):
-        row_h = dp(70)
-        if index == len(names) - 1:
-            focus_ring(img, [g, y, W - g, y + row_h])
-            inner = dp(DIMENS["cb_focus_inset"])
-        else:
-            card(img, [g, y, W - g, y + row_h])
-            inner = dp(DIMENS["cb_focus_inset"])
-        draw_text(draw, (g + inner + dp(8), y + inner), name, f_name, colour("cb_ink"))
-        state = (fmt(STRINGS["suite_installed_fmt"], "2.0.0") if states[index]
-                 else STRINGS["suite_not_installed"])
-        draw_text(draw, (g + inner + dp(8), y + inner + dp(22)), state, f_state,
-                  colour("cb_slate"))
-        code = codes[index] if index < len(codes) else ""
-        draw_text(draw, (g + inner + dp(8), y + inner + dp(38)),
-                  fmt(STRINGS["suite_code_fmt"], code) if code else STRINGS["suite_no_code"],
-                  f_code, colour("cb_signal_cyan"))
-        y += row_h + dp(6)
-    note = ("MOCKUP - suite frame from activity_suite.xml + strings.xml + generated "
-            "suite_hub.xml; example: install states; codes are the registry's")
+
+    def rows(canvas):
+        d = ImageDraw.Draw(canvas, "RGBA")
+        y = top + dp(DIMENS["cb_space_md"])
+        for index, name in enumerate(names):
+            row_h = 2 * pad + line_h(f_name) + dp(4) + line_h(f_state) + dp(2) + line_h(f_code)
+            y += dp(6)
+            row(canvas, [g, y, right, y + row_h], focused=index == len(names) - 1)
+            draw_text(d, (g + pad, y + pad), name, f_name, colour("cb_ink"))
+            sy = y + pad + line_h(f_name) + dp(4)
+            state = (fmt(STRINGS["suite_installed_fmt"], "2.0.0") if states[index % len(states)]
+                     else STRINGS["suite_not_installed"])
+            draw_text(d, (g + pad, sy), state, f_state, colour("cb_slate"))
+            code = codes[index] if index < len(codes) else ""
+            draw_text(d, (g + pad, sy + line_h(f_state) + dp(2)),
+                      fmt(STRINGS["suite_code_fmt"], code) if code else STRINGS["suite_no_code"],
+                      f_code, colour("cb_signal_cyan"))
+            y += row_h
+    clip(img, [g - dp(4), top, right + dp(4), bottom], rows)
+    note = ("MOCKUP - suite frame from activity_suite.xml + item_suite.xml + strings.xml + "
+            "generated suite_hub.xml; example: install states; codes are the registry's")
     return img, note
 
 
@@ -1418,71 +1649,63 @@ def launcher_entries() -> list[dict]:
 def launcher_compat_frame() -> tuple[Image.Image, str]:
     img = new_frame()
     draw = ImageDraw.Draw(img, "RGBA")
-    top = header(img, STRINGS["launcher_compat_kicker"],
-                 STRINGS["launcher_compat_title"])
-    g = dp(DIMENS["cb_gutter_side"])
-    y = top + dp(6)
+    g, right, bottom = screen_box()
+    top = header(img, STRINGS["launcher_compat_kicker"], STRINGS["launcher_compat_title"])
 
     # The detected-launcher line and the count, as the screen builds them.
     entries = launcher_entries()
     home = next(e for e in entries if e["display"].startswith("Projectivy"))
-    fs = font("sans", DIMENS["cb_text_data"])
-    draw_text(draw, (g, y), fmt(STRINGS["launcher_compat_here_fmt"],
-                                home["display"],
-                                art_sentence(home["art"])), fs,
-              colour("cb_signal_cyan"))
-    y += dp(20)
-    draw_text(draw, (g, y), fmt(STRINGS["launcher_compat_sub_fmt"],
-                                len(entries)), fs, colour("cb_slate"))
-    # The RecyclerView's top padding plus room for the focus ring's glow.
-    y += dp(24)
+    fs = ofont(DIMENS["cb_text_data"])
+    y = top + dp(DIMENS["cb_space_xs"])
+    draw_text(draw, (g, y), fmt(STRINGS["launcher_compat_here_fmt"], home["display"],
+                                art_sentence(home["art"])), fs, colour("cb_signal_cyan"))
+    y += line_h(fs) + dp(3)
+    draw_text(draw, (g, y), fmt(STRINGS["launcher_compat_sub_fmt"], len(entries)), fs,
+              colour("cb_slate"))
+    list_top = y + line_h(fs)
 
-    f_name = font("sans", DIMENS["cb_text_body"], bold=True)
-    f_mono = font("mono", DIMENS["cb_text_kicker"], bold=True)
-    f_line = font("sans", DIMENS["cb_text_data"])
+    f_name = ofont(DIMENS["cb_text_body"], "semibold")
+    f_status = ofont(DIMENS["cb_text_kicker"], "semibold")
     pad = dp(DIMENS["cb_card_padding"])
-    inset = dp(DIMENS["cb_focus_inset"])
     mode_strings = {"AUTO": STRINGS["launcher_compat_mode_auto"],
                     "WALK": STRINGS["launcher_compat_mode_walk"],
                     "PER_APP": STRINGS["launcher_compat_mode_per_app"],
                     "NONE": STRINGS["launcher_compat_mode_none"]}
-    bottom = H - CAPTION_H - dp(16)
     shown = 0
-    for entry in entries:
-        note_lines = wrap(draw, entry["note"], f_line,
-                          W - 2 * g - 2 * pad - 2 * dp(8)) if entry["note"] else []
-        # name (17sp) + art (14sp) + the note's wrapped lines.
-        row_h = (2 * pad + dp(22) + dp(16)
-                 + (dp(3) + len(note_lines) * dp(19) if note_lines else 0))
-        if y + row_h > bottom:
-            break
-        active = entry is home
-        (focus_ring if active else card)(img, [g, y, W - g, y + row_h])
-        x = g + inset + dp(8)
-        draw_text(draw, (x, y + pad), entry["display"], f_name, colour("cb_ink"))
-        mode_w = text_width(draw, mode_strings[entry["mode"]], f_mono)
-        if active:
-            status_w = text_width(draw, STRINGS["launcher_compat_active"], f_mono)
-            draw_text(draw, (W - g - inset - dp(8) - mode_w - dp(16) - status_w,
-                             y + pad + dp(2)),
-                      STRINGS["launcher_compat_active"], f_mono,
-                      colour("cb_signal_cyan"))
-        draw_text(draw, (W - g - inset - dp(8) - mode_w, y + pad + dp(2)),
-                  mode_strings[entry["mode"]], f_mono, colour("cb_signal_cyan"))
-        draw_text(draw, (x, y + pad + dp(22)), art_sentence(entry["art"]),
-                  f_line, colour("cb_slate"))
-        for i, line in enumerate(note_lines):
-            draw_text(draw, (x, y + pad + dp(38) + i * dp(19)), line, f_line,
-                      colour("cb_slate"))
-        y += row_h + dp(6)
-        shown += 1
-    if shown < len(entries):
-        draw_text(draw, (g, y), f"… {len(entries) - shown} more", fs,
-                  colour("cb_slate", 0x88))
-    note = (f"MOCKUP - launcher-compat frame from activity_launcher_compat.xml + "
-            f"item_launcher_compat.xml + strings.xml + ApplyIconPack.kt; {shown} of "
-            f"{len(entries)} rows fit the panel, focus on this TV's launcher "
-            "(Projectivy), the detected-home case")
+
+    def rows(canvas):
+        nonlocal shown
+        d = ImageDraw.Draw(canvas, "RGBA")
+        y = list_top + dp(DIMENS["cb_space_sm"])
+        for entry in entries:
+            if y > bottom:
+                break
+            note_lines = wrap(d, entry["note"], fs, right - g - 2 * pad) if entry["note"] else []
+            row_h = (2 * pad + line_h(f_name) + dp(4) + line_h(fs)
+                     + (dp(3) + len(note_lines) * line_h(fs) if note_lines else 0))
+            y += dp(6)
+            active = entry is home
+            row(canvas, [g, y, right, y + row_h], focused=active)
+            draw_text(d, (g + pad, y + pad), entry["display"], f_name, colour("cb_ink"))
+            cy = y + pad + line_h(f_name) // 2
+            tag(canvas, right - pad, cy, mode_strings[entry["mode"]], pad_x=10, pad_y=3)
+            if active:
+                # launcher_compat_item_status: caps at 0.12em, 12dp after the name.
+                sx = g + pad + text_width(d, entry["display"], f_name) + dp(DIMENS["cb_space_sm"])
+                tracked(d, (sx, cy - line_h(f_status) // 2),
+                        STRINGS["launcher_compat_active"].upper(), f_status,
+                        colour("cb_slate"), 0.12)
+            ay = y + pad + line_h(f_name) + dp(4)
+            draw_text(d, (g + pad, ay), art_sentence(entry["art"]), fs, colour("cb_slate"))
+            for i, line in enumerate(note_lines):
+                draw_text(d, (g + pad, ay + line_h(fs) + dp(3) + i * line_h(fs)), line, fs,
+                          colour("cb_slate"))
+            y += row_h
+            if y <= bottom:
+                shown += 1
+    clip(img, [g - dp(4), list_top, right + dp(4), bottom], rows)
+    note = (f"MOCKUP - launcher compat: activity_launcher_compat.xml + ApplyIconPack.kt; "
+            f"{shown} of {len(entries)} rows whole; example: focus on Projectivy, the home")
     return img, note
 
 
@@ -1611,6 +1834,8 @@ INPUT_GLOBS = (
     "app/src/main/assets/manifest/wallpapers.json",
     "app/src/main/res/layout/*.xml",
     "app/src/main/res/values/*.xml",
+    "app/src/main/res/drawable/ic_*.xml",
+    "app/src/main/res/font/*.ttf",
     "tools/fonts/*.ttf",
     "glyphs/src/main/res/layout/*.xml",
     "glyphs/src/main/res/values/*.xml",
