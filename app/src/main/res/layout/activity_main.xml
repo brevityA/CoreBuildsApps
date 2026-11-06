@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  TV-first catalogue, laid out to the approved design sheet
-  (docs/design/app-ui-apply-wallpapers.png) as a landscape two-pane screen,
-  because a TV is 16:9 and the sheet's panel is portrait.
+  Home (2.6.0, rail and stage), Core EQ 1.12's grammar on the catalogue.
 
-  LEFT RAIL (cb_rail_width, fixed): the sheet's vertical stack - cyan caps
-  wordmark and the icon/component count, the Apply CTA with the detected
-  launchers under it, the entry rows with one-line subtitles, and the
-  ALSO APPLIES TO kicker over its launcher chips. The rail has the panel's full
-  height to spend, so the rows carry title over subtitle exactly as drawn.
+  RAIL (cb_nav_rail_width, full height, the void colour): the wordmark and the
+  icon/component count, the Apply pill with the detected launchers under it and
+  the ALSO APPLIES TO chips, then the rows - Art style, Missing icons and
+  Wallpapers, each with the line that says its state - and at the rail's foot
+  Support, Settings and About. A hairline separates it from the stage.
 
-  RIGHT PANE (the remainder): picker hint in icon-picker mode, the full-width
-  search field, the category chips and the glyph grid, which takes every dp the
-  chrome above it leaves - two rows of square-ish tiles on a 1080p panel. The
-  grid's column count is derived in MainActivity from the pane width and
-  cb_tile_icon, so a 4K panel that reports a larger dp box gets the same
-  proportions (values-sw720dp doubles the metrics; the ratio holds).
+  STAGE (the remainder): the update bar when a newer build exists, the picker
+  hint in icon-picker mode, the search pill, the category chips and the glyph
+  grid, which takes every dp the chrome above it leaves. The grid's column
+  count is derived in MainActivity from the stage width, the tile pitch and
+  cb_tile_min_width, so a 4K panel keeps the proportions (TvActivity
+  normalises every panel to the 960x540dp box first).
 
-  The update bar spans both panes at the top: it is the one thing on the screen
-  that is wider than the rail and more urgent than the grid.
+  The update bar used to span both panes above the rail; on the stage it takes
+  its height from the grid, never from the rail, so the rail no longer has to
+  give rows up while it is shown.
 
-  Focus: one vertical chain, apply_button -> update_bar -> the rail's rows
-  (art style, missing icons, wallpapers, then support | settings | about on one row) ->
-  the band -> search -> chip_row -> grid, with LEFT/RIGHT crossing between rail
-  and pane geometrically. update_bar and apply_targets_band are GONE unless
+  Focus: two columns. The rail, top to bottom: apply_button -> apply_targets
+  (when shown) -> style_entry -> missing_entry -> wallpapers_entry ->
+  support_entry -> settings_entry -> about_entry. The stage, top to bottom:
+  update_bar (when shown) -> search -> chip_row -> grid. LEFT/RIGHT cross
+  between them geometrically. update_bar and apply_targets_band are GONE unless
   something shows them and focusable="false" while hidden, because
   isFocusable() ignores visibility and a hidden focusable stop strands the
   cursor - see MainActivity.syncFocusChain(), which rewrites every edge that
@@ -35,129 +35,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/cb_night"
-    android:paddingStart="@dimen/cb_gutter_side"
-    android:paddingEnd="@dimen/cb_gutter_side"
-    android:paddingTop="@dimen/cb_gutter_top"
-    android:paddingBottom="@dimen/cb_gutter_bottom">
-
-    <LinearLayout
-        android:id="@+id/update_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/cb_space_xs"
-        android:background="@drawable/bg_update"
-        android:descendantFocusability="afterDescendants"
-        android:focusable="false"
-        android:gravity="center_vertical"
-        android:nextFocusUp="@id/apply_button"
-        android:nextFocusDown="@id/style_entry"
-        android:orientation="horizontal"
-        android:paddingStart="@dimen/cb_space_md"
-        android:paddingEnd="@dimen/cb_space_md"
-        android:paddingTop="@dimen/cb_space_xs"
-        android:paddingBottom="@dimen/cb_space_xs"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/update_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_label"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/update_sub"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@string/update_sub_download"
-                android:textColor="@color/cb_slate"
-                android:textSize="@dimen/cb_text_data" />
-
-            <!--
-                The first release highlight from version.json, one line,
-                ellipsised. Gone unless the manifest carries highlights, and
-                mutually exclusive with update_sub: MainActivity shows one or
-                the other, never both.
-
-                That is a height rule, not a styling one. This bar is fixed
-                chrome on a screen whose grid is the weighted remainder of
-                540dp, and the full bullet list (version.json currently carries
-                eight) is ~160dp on its own - shown in full it pushed the grid
-                to zero height, which is the "lists disappeared" symptom with a
-                network callback as the trigger. One line keeps the bar at
-                ~61dp, and the whole list is on the release page the Download
-                button is fetching from.
-            -->
-            <TextView
-                android:id="@+id/update_highlights"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_data"
-                android:visibility="gone" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/update_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minHeight="@dimen/cb_target_min"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/cb_space_md"
-            android:background="@drawable/bg_cta"
-            android:clickable="true"
-            android:focusable="true"
-            android:nextFocusUp="@id/apply_button"
-            android:nextFocusDown="@id/style_entry"
-            android:paddingStart="@dimen/cb_space_lg"
-            android:paddingEnd="@dimen/cb_space_lg"
-            android:paddingTop="@dimen/cb_space_sm"
-            android:paddingBottom="@dimen/cb_space_sm"
-            android:text="@string/update_download"
-            android:textColor="@color/cb_cta_ink"
-            android:textSize="@dimen/cb_text_body"
-            android:textStyle="bold" />
-
-        <!-- Dismiss for this session. Not decoration: while the bar is up it
-             also hides the header's launcher list and the ALSO APPLIES TO band
-             (see showUpdateAvailable), because on a 540dp panel the bar, the
-             band and a full row of tiles do not all fit, and the tiles are the
-             screen. This is the press that gives them back. -->
-        <TextView
-            android:id="@+id/update_later"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minHeight="@dimen/cb_target_min"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/cb_space_sm"
-            android:background="@drawable/bg_ghost"
-            android:clickable="true"
-            android:focusable="true"
-            android:nextFocusUp="@id/apply_button"
-            android:nextFocusDown="@id/style_entry"
-            android:paddingStart="@dimen/cb_space_lg"
-            android:paddingEnd="@dimen/cb_space_lg"
-            android:paddingTop="@dimen/cb_space_sm"
-            android:paddingBottom="@dimen/cb_space_sm"
-            android:text="@string/update_later"
-            android:textColor="@color/cb_ink"
-            android:textSize="@dimen/cb_text_body"
-            android:textStyle="bold" />
-    </LinearLayout>
+    android:background="@color/cb_night">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -166,26 +44,24 @@
         android:baselineAligned="false"
         android:orientation="horizontal">
 
-        <!-- LEFT RAIL. A ScrollView, because the rail's height depends on
-             what the device shows: the launcher note under Apply runs to
-             three lines with no supported launcher, and ALSO APPLIES TO adds
-             a band with a second one. On a 540dp panel that pushed the last
-             row past the bottom edge with no way to reach it. A ScrollView
-             scrolls to whatever takes focus, so D-pad DOWN always lands on
-             a visible row; when everything fits it is inert.
+        <!-- RAIL. A ScrollView, because the rail's height depends on what the
+             device shows: the launcher note under Apply runs to five lines
+             with no supported launcher, and ALSO APPLIES TO adds a band with a
+             second one. A ScrollView scrolls to whatever takes focus, so D-pad
+             DOWN always lands on a visible row; when everything fits it is
+             inert, and fillViewport lets the foot rows sit at the bottom.
 
              Large system text makes it scroll too (2.4.0 at the TV's largest
-             text size: the wordmark and count each wrapped to two lines and the
-             rail ran ~20dp past the bottom). So the wordmark and count stay on
-             one line and shrink to the rail's width, the edges fade where the
-             rail is cut instead of slicing a line in half, and
-             MainActivity.bindRailScroll returns it to the top when focus
-             leaves, so the header is not left half-hidden under the update bar. -->
+             text size: the wordmark and count each wrapped to two lines). So
+             the wordmark, the count and the foot rows stay on one line and
+             shrink to the rail's width, the edges fade where the rail is cut
+             instead of slicing a line in half, and MainActivity.bindRailScroll
+             returns it to the top when focus leaves. -->
         <ScrollView
             android:id="@+id/rail"
-            android:layout_width="@dimen/cb_rail_width"
+            android:layout_width="@dimen/cb_nav_rail_width"
             android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/cb_space_md"
+            android:background="@color/cb_void"
             android:fadingEdgeLength="@dimen/cb_space_lg"
             android:fillViewport="true"
             android:overScrollMode="never"
@@ -195,21 +71,24 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/cb_rail_pad_start"
+            android:paddingEnd="@dimen/cb_rail_pad_end"
+            android:paddingTop="@dimen/cb_stage_top"
+            android:paddingBottom="@dimen/cb_stage_bottom">
 
             <TextView
                 android:id="@+id/kicker"
+                style="@style/CoreBuilds.Eyebrow"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="monospace"
-                android:letterSpacing="0.18"
+                android:paddingStart="12dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="@string/kicker"
-                android:textColor="@color/cb_signal_cyan"
-                android:textSize="@dimen/cb_text_label"
-                android:textStyle="bold"
-                app:autoSizeMaxTextSize="@dimen/cb_text_label"
+                android:textSize="@dimen/cb_text_rail_brand"
+                app:autoSizeMaxTextSize="@dimen/cb_text_rail_brand"
                 app:autoSizeMinTextSize="@dimen/cb_text_fit_min"
                 app:autoSizeStepGranularity="1sp"
                 app:autoSizeTextType="uniform" />
@@ -218,322 +97,35 @@
                 android:id="@+id/count"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/cb_space_xs"
+                android:layout_marginTop="6dp"
+                android:paddingStart="12dp"
                 android:fontFamily="monospace"
                 android:ellipsize="end"
-                android:letterSpacing="0.02"
                 android:maxLines="1"
                 android:textColor="@color/cb_slate"
-                android:textSize="@dimen/cb_text_data"
-                app:autoSizeMaxTextSize="@dimen/cb_text_data"
+                android:textSize="@dimen/cb_text_count"
+                app:autoSizeMaxTextSize="@dimen/cb_text_count"
                 app:autoSizeMinTextSize="@dimen/cb_text_fit_min"
                 app:autoSizeStepGranularity="1sp"
                 app:autoSizeTextType="uniform" />
 
             <TextView
                 android:id="@+id/apply_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="@dimen/cb_target_min"
+                style="@style/Widget.CoreBuilds.Pill.Cta.Wide"
                 android:layout_marginTop="@dimen/cb_space_md"
-                android:background="@drawable/bg_cta"
-                android:clickable="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:gravity="center"
-                android:nextFocusDown="@id/update_bar"
-                android:paddingStart="@dimen/cb_space_lg"
-                android:paddingTop="@dimen/cb_space_sm"
-                android:paddingEnd="@dimen/cb_space_lg"
-                android:paddingBottom="@dimen/cb_space_sm"
-                android:text="@string/cta_apply"
-                android:textColor="@color/cb_cta_ink"
-                android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:nextFocusDown="@id/style_entry"
+                android:text="@string/cta_apply" />
 
             <TextView
                 android:id="@+id/apply_sub"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/CoreBuilds.Lede"
                 android:layout_marginTop="@dimen/cb_space_xs"
-                android:textColor="@color/cb_slate"
-                android:textSize="@dimen/cb_text_data" />
+                android:paddingStart="12dp"
+                android:paddingEnd="4dp" />
 
-            <!-- The sheet's three entry rows, title over subtitle: the rail is
-                 the one place on a 540dp panel with the height for it. The
-                 wrapper is what icon-picker mode hides in one go. -->
-            <LinearLayout
-                android:id="@+id/wallpapers_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/cb_space_md"
-                android:orientation="vertical">
-
-                <!-- Art style, on the home screen rather than in Settings:
-                     the switch decides what every app on the launcher looks
-                     like, so it sits next to Apply. Same switch row as
-                     Settings' set_banner_row, and the two read one pref. -->
-                <LinearLayout
-                    android:id="@+id/style_entry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_card"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:gravity="center_vertical"
-                    android:minHeight="@dimen/cb_target_min"
-                    android:nextFocusUp="@id/update_bar"
-                    android:nextFocusDown="@id/missing_entry"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/cb_card_padding">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/art_style_label"
-                            android:textColor="@color/cb_ink"
-                            android:textSize="@dimen/cb_text_body"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/style_entry_sub"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"
-                            android:ellipsize="end"
-                            android:maxLines="1"
-                            android:textColor="@color/cb_slate"
-                            android:textSize="@dimen/cb_text_data" />
-                    </LinearLayout>
-
-                    <androidx.appcompat.widget.SwitchCompat
-                        android:id="@+id/style_switch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:duplicateParentState="true"
-                        android:focusable="false" />
-                </LinearLayout>
-
-                <!-- Missing icons, on the home screen rather than only in
-                     Settings: the scan is how a person gets an app added, so
-                     it sits under Art style with this TV's count on it. The
-                     count comes from the same AppAudit scan the screen lists,
-                     run off the main thread on every resume, so it is right
-                     after an install without a restart. -->
-                <LinearLayout
-                    android:id="@+id/missing_entry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/cb_space_xs"
-                    android:background="@drawable/bg_card"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:gravity="center_vertical"
-                    android:minHeight="@dimen/cb_target_min"
-                    android:nextFocusUp="@id/style_entry"
-                    android:nextFocusDown="@id/wallpapers_entry"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/cb_card_padding">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/missing_entry"
-                            android:textColor="@color/cb_ink"
-                            android:textSize="@dimen/cb_text_body"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/missing_entry_sub"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"
-                            android:ellipsize="end"
-                            android:maxLines="1"
-                            android:text="@string/missing_entry_scanning"
-                            android:textColor="@color/cb_slate"
-                            android:textSize="@dimen/cb_text_data" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/missing_entry_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/cb_space_sm"
-                        android:background="@drawable/bg_chip"
-                        android:fontFamily="monospace"
-                        android:gravity="center"
-                        android:minWidth="36dp"
-                        android:paddingStart="@dimen/cb_space_xs"
-                        android:paddingEnd="@dimen/cb_space_xs"
-                        android:paddingTop="4dp"
-                        android:paddingBottom="4dp"
-                        android:textColor="@color/cb_signal_cyan"
-                        android:textSize="@dimen/cb_text_label"
-                        android:textStyle="bold"
-                        android:visibility="gone" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/wallpapers_entry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_card"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:layout_marginTop="@dimen/cb_space_xs"
-                    android:minHeight="@dimen/cb_target_min"
-                    android:nextFocusUp="@id/missing_entry"
-                    android:nextFocusDown="@id/support_entry"
-                    android:orientation="vertical"
-                    android:padding="@dimen/cb_card_padding">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/wp_entry"
-                        android:textColor="@color/cb_ink"
-                        android:textSize="@dimen/cb_text_body"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/wallpapers_entry_sub"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:textColor="@color/cb_slate"
-                        android:textSize="@dimen/cb_text_data" />
-                </LinearLayout>
-
-                <!-- Support, Settings and About share one row: each is a
-                     single word that says what it opens, and the rail needs the
-                     height for Missing icons. Support leads the row since 2.4.0
-                     so the Ko-fi/Discord screen is one press from the home
-                     screen instead of two hops through About. LEFT/RIGHT moves
-                     along the three. The version used to ride on About as a
-                     mono suffix; at a third of the rail it collided with the
-                     word, and it is the first fact on the About screen.
-
-                     A third of the rail is ~95dp. At the TV's largest text size
-                     "Settings" no longer fits it, and 2.4.0 broke the word over
-                     two lines ("Setting / s"). So each label stays on one line,
-                     centred with a narrow inset, and shrinks (autoSize, never
-                     below cb_text_fit_min); MainActivity.matchRowTextSizes then
-                     gives all three the smallest size so the row reads as one. -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/cb_space_xs"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/support_entry"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="@dimen/cb_space_xs"
-                        android:background="@drawable/bg_card"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:gravity="center"
-                        android:minHeight="@dimen/cb_target_min"
-                        android:nextFocusUp="@id/wallpapers_entry"
-                        android:nextFocusDown="@id/apply_targets"
-                        android:nextFocusRight="@id/settings_entry"
-                        android:paddingStart="@dimen/cb_space_xs"
-                        android:paddingEnd="@dimen/cb_space_xs"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:text="@string/support_label"
-                        android:textColor="@color/cb_ink"
-                        android:textSize="@dimen/cb_text_body"
-                        android:textStyle="bold"
-                        app:autoSizeMaxTextSize="@dimen/cb_text_body"
-                        app:autoSizeMinTextSize="@dimen/cb_text_fit_min"
-                        app:autoSizeStepGranularity="1sp"
-                        app:autoSizeTextType="uniform" />
-
-                    <TextView
-                        android:id="@+id/settings_entry"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="@dimen/cb_space_xs"
-                        android:background="@drawable/bg_card"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:gravity="center"
-                        android:minHeight="@dimen/cb_target_min"
-                        android:nextFocusUp="@id/wallpapers_entry"
-                        android:nextFocusDown="@id/apply_targets"
-                        android:nextFocusLeft="@id/support_entry"
-                        android:nextFocusRight="@id/about_entry"
-                        android:paddingStart="@dimen/cb_space_xs"
-                        android:paddingEnd="@dimen/cb_space_xs"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:text="@string/settings_label"
-                        android:textColor="@color/cb_ink"
-                        android:textSize="@dimen/cb_text_body"
-                        android:textStyle="bold"
-                        app:autoSizeMaxTextSize="@dimen/cb_text_body"
-                        app:autoSizeMinTextSize="@dimen/cb_text_fit_min"
-                        app:autoSizeStepGranularity="1sp"
-                        app:autoSizeTextType="uniform" />
-
-                    <TextView
-                        android:id="@+id/about_entry"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/bg_card"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:gravity="center"
-                        android:minHeight="@dimen/cb_target_min"
-                        android:nextFocusUp="@id/wallpapers_entry"
-                        android:nextFocusDown="@id/apply_targets"
-                        android:nextFocusLeft="@id/settings_entry"
-                        android:paddingStart="@dimen/cb_space_xs"
-                        android:paddingEnd="@dimen/cb_space_xs"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:text="@string/about_label"
-                        android:textColor="@color/cb_ink"
-                        android:textSize="@dimen/cb_text_body"
-                        android:textStyle="bold"
-                        app:autoSizeMaxTextSize="@dimen/cb_text_body"
-                        app:autoSizeMinTextSize="@dimen/cb_text_fit_min"
-                        app:autoSizeStepGranularity="1sp"
-                        app:autoSizeTextType="uniform" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- ALSO APPLIES TO: kicker over its chips, as drawn. Gone as a unit
-                 with nothing to show; in icon-picker mode the same band carries
-                 the banner/square shape chips with picker_hint as their label.
+            <!-- ALSO APPLIES TO: heading over its chips, under the Apply it
+                 belongs to. Gone as a unit with nothing to show; in icon-picker
+                 mode the same band carries the banner/square shape chips.
                  focusable="false" so the hidden band can never hold the cursor;
                  afterDescendants on the list so a shown band hands focus to its
                  first chip. -->
@@ -542,52 +134,340 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/cb_space_md"
+                android:clipChildren="false"
                 android:focusable="false"
                 android:orientation="vertical"
                 android:visibility="gone">
 
                 <TextView
                     android:id="@+id/apply_targets_label"
+                    style="@style/CoreBuilds.MenuHeading"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="monospace"
-                    android:letterSpacing="0.18"
-                    android:text="@string/cta_also_applies"
-                    android:textColor="@color/cb_signal_cyan"
-                    android:textSize="@dimen/cb_text_kicker"
-                    android:textStyle="bold" />
+                    android:paddingStart="12dp"
+                    android:text="@string/cta_also_applies" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/apply_targets"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/cb_space_xs"
+                    android:clipChildren="false"
                     android:clipToPadding="false"
                     android:descendantFocusability="afterDescendants"
                     android:focusable="false"
-                    android:nextFocusUp="@id/support_entry"
-                    android:nextFocusDown="@id/search"
+                    android:nextFocusUp="@id/apply_button"
+                    android:nextFocusDown="@id/style_entry"
                     android:orientation="horizontal" />
+            </LinearLayout>
+
+            <!-- The rows, and at the rail's foot Support | Settings | About.
+                 The wrapper is what icon-picker mode hides in one go; it takes
+                 the rail's leftover height so the spacer can push the foot rows
+                 down to the bottom edge, and wraps them when the rail scrolls. -->
+            <LinearLayout
+                android:id="@+id/wallpapers_group"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="@dimen/cb_space_md"
+                android:clipChildren="false"
+                android:orientation="vertical">
+
+                <!-- Art style, on the home screen rather than only in Settings:
+                     the switch decides what every app on the launcher looks
+                     like, so it sits next to Apply. Settings' set_banner_row
+                     reads the same pref. The switch is drawn, not a widget:
+                     MainActivity sets it activated, and the row says the state
+                     in words on its second line. -->
+                <LinearLayout
+                    android:id="@+id/style_entry"
+                    style="@style/Widget.CoreBuilds.RailItem.Tall"
+                    android:gravity="center_vertical"
+                    android:nextFocusUp="@id/apply_button"
+                    android:nextFocusDown="@id/missing_entry">
+
+                    <ImageView
+                        style="@style/CoreBuilds.RailIcon"
+                        android:src="@drawable/ic_nav_style" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/CoreBuilds.RailTitle"
+                            android:text="@string/art_style_label" />
+
+                        <TextView
+                            android:id="@+id/style_entry_sub"
+                            style="@style/CoreBuilds.RailSub" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/style_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/cb_space_xs"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_switch" />
+                </LinearLayout>
+
+                <!-- Missing icons: the scan is how a person gets an app added,
+                     so it sits under Art style with this TV's count on it. The
+                     count comes from the same AppAudit scan the screen lists,
+                     run off the main thread on every resume. -->
+                <LinearLayout
+                    android:id="@+id/missing_entry"
+                    style="@style/Widget.CoreBuilds.RailItem.Tall"
+                    android:gravity="center_vertical"
+                    android:nextFocusUp="@id/style_entry"
+                    android:nextFocusDown="@id/wallpapers_entry">
+
+                    <ImageView
+                        style="@style/CoreBuilds.RailIcon"
+                        android:src="@drawable/ic_nav_missing" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/CoreBuilds.RailTitle"
+                            android:text="@string/missing_entry" />
+
+                        <TextView
+                            android:id="@+id/missing_entry_sub"
+                            style="@style/CoreBuilds.RailSub"
+                            android:text="@string/missing_entry_scanning" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/missing_entry_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="@dimen/cb_space_xs"
+                        android:background="@drawable/bg_count_badge"
+                        android:fontFamily="monospace"
+                        android:gravity="center"
+                        android:minWidth="32dp"
+                        android:paddingStart="@dimen/cb_space_xs"
+                        android:paddingEnd="@dimen/cb_space_xs"
+                        android:textColor="@color/cb_signal_cyan"
+                        android:textSize="@dimen/cb_text_data"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/wallpapers_entry"
+                    style="@style/Widget.CoreBuilds.RailItem.Tall"
+                    android:gravity="center_vertical"
+                    android:nextFocusUp="@id/missing_entry"
+                    android:nextFocusDown="@id/support_entry">
+
+                    <ImageView
+                        style="@style/CoreBuilds.RailIcon"
+                        android:src="@drawable/ic_nav_wallpapers" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/CoreBuilds.RailTitle"
+                            android:text="@string/wp_entry" />
+
+                        <TextView
+                            android:id="@+id/wallpapers_entry_sub"
+                            style="@style/CoreBuilds.RailSub" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Takes what the rail has left, so the foot rows sit at its
+                     bottom edge; nothing when the rail scrolls. -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:minHeight="@dimen/cb_space_md" />
+
+                <!-- Support, Settings and About: one word each, at the rail's
+                     foot like a launcher's own. Support leads (2.4.0) so the
+                     Ko-fi/Discord screen is one press from Home. Each label
+                     stays on one line and shrinks (autoSize, never below
+                     cb_text_fit_min) at the TV's largest text size;
+                     MainActivity.matchRowTextSizes then gives all three the
+                     smallest size so the group reads as one. -->
+                <TextView
+                    android:id="@+id/support_entry"
+                    style="@style/Widget.CoreBuilds.RailItem"
+                    android:nextFocusUp="@id/wallpapers_entry"
+                    android:nextFocusDown="@id/settings_entry"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/support_label"
+                    android:textSize="@dimen/cb_text_label"
+                    app:autoSizeMaxTextSize="@dimen/cb_text_label"
+                    app:autoSizeMinTextSize="@dimen/cb_text_fit_min"
+                    app:autoSizeStepGranularity="1sp"
+                    app:autoSizeTextType="uniform"
+                    app:drawableStartCompat="@drawable/ic_nav_support" />
+
+                <TextView
+                    android:id="@+id/settings_entry"
+                    style="@style/Widget.CoreBuilds.RailItem"
+                    android:nextFocusUp="@id/support_entry"
+                    android:nextFocusDown="@id/about_entry"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/settings_label"
+                    android:textSize="@dimen/cb_text_label"
+                    app:autoSizeMaxTextSize="@dimen/cb_text_label"
+                    app:autoSizeMinTextSize="@dimen/cb_text_fit_min"
+                    app:autoSizeStepGranularity="1sp"
+                    app:autoSizeTextType="uniform"
+                    app:drawableStartCompat="@drawable/ic_nav_settings" />
+
+                <TextView
+                    android:id="@+id/about_entry"
+                    style="@style/Widget.CoreBuilds.RailItem"
+                    android:nextFocusUp="@id/settings_entry"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/about_label"
+                    android:textSize="@dimen/cb_text_label"
+                    app:autoSizeMaxTextSize="@dimen/cb_text_label"
+                    app:autoSizeMinTextSize="@dimen/cb_text_fit_min"
+                    app:autoSizeStepGranularity="1sp"
+                    app:autoSizeTextType="uniform"
+                    app:drawableStartCompat="@drawable/ic_nav_about" />
             </LinearLayout>
         </LinearLayout>
         </ScrollView>
 
-        <!-- RIGHT PANE -->
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/cb_divider" />
+
+        <!-- STAGE -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingStart="@dimen/cb_stage_start"
+            android:paddingEnd="@dimen/cb_stage_end"
+            android:paddingTop="@dimen/cb_stage_top"
+            android:paddingBottom="@dimen/cb_stage_bottom">
 
-    <TextView
-        android:id="@+id/picker_hint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/cb_space_xs"
-        android:text="@string/picker_hint"
-        android:textColor="@color/cb_signal_cyan"
-        android:textSize="@dimen/cb_text_label"
-        android:visibility="gone" />
+            <LinearLayout
+                android:id="@+id/update_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/cb_space_sm"
+                android:background="@drawable/bg_section"
+                android:clipChildren="false"
+                android:descendantFocusability="afterDescendants"
+                android:focusable="false"
+                android:gravity="center_vertical"
+                android:nextFocusDown="@id/search"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/cb_space_md"
+                android:paddingEnd="@dimen/cb_space_xs"
+                android:paddingTop="@dimen/cb_space_xs"
+                android:paddingBottom="@dimen/cb_space_xs"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/update_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/outfit_semibold"
+                        android:textColor="@color/cb_ink"
+                        android:textSize="@dimen/cb_text_label" />
+
+                    <TextView
+                        android:id="@+id/update_sub"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@string/update_sub_download"
+                        android:textColor="@color/cb_slate"
+                        android:textSize="@dimen/cb_text_data" />
+
+                    <!--
+                        The first release highlight from version.json, one line,
+                        ellipsised. Gone unless the manifest carries highlights,
+                        and mutually exclusive with update_sub: MainActivity shows
+                        one or the other, never both.
+
+                        That is a height rule, not a styling one. This bar is
+                        fixed chrome above a grid that is the weighted remainder
+                        of 540dp, and the full bullet list (version.json carries
+                        eight) is ~160dp on its own - shown in full it pushed the
+                        grid to zero height, which is the "lists disappeared"
+                        symptom with a network callback as the trigger. One line
+                        keeps the bar short, and the whole list is on the release
+                        page the Download button is fetching from.
+                    -->
+                    <TextView
+                        android:id="@+id/update_highlights"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="@color/cb_ink"
+                        android:textSize="@dimen/cb_text_data"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/update_button"
+                    style="@style/Widget.CoreBuilds.Pill.Cta"
+                    android:layout_height="@dimen/cb_pill_compact"
+                    android:layout_marginStart="@dimen/cb_space_md"
+                    android:nextFocusDown="@id/search"
+                    android:nextFocusRight="@id/update_later"
+                    android:text="@string/update_download" />
+
+                <!-- Dismiss for this session: the bar's height comes out of the
+                     grid, and this is the press that gives it back. -->
+                <TextView
+                    android:id="@+id/update_later"
+                    style="@style/Widget.CoreBuilds.Pill.Ghost"
+                    android:layout_height="@dimen/cb_pill_compact"
+                    android:layout_marginStart="@dimen/cb_space_xs"
+                    android:nextFocusDown="@id/search"
+                    android:nextFocusLeft="@id/update_button"
+                    android:text="@string/update_later" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/picker_hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/cb_space_sm"
+                android:text="@string/picker_hint"
+                android:textColor="@color/cb_signal_cyan"
+                android:textSize="@dimen/cb_text_label"
+                android:visibility="gone" />
 
             <EditText
                 android:id="@+id/search"
@@ -595,118 +475,91 @@
                 android:layout_height="wrap_content"
                 android:minHeight="@dimen/cb_target_min"
                 android:background="@drawable/bg_search"
+                android:drawablePadding="@dimen/cb_space_sm"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:hint="@string/search_hint"
                 android:imeOptions="actionSearch"
                 android:importantForAutofill="no"
                 android:inputType="text"
-                android:nextFocusUp="@id/apply_targets"
+                android:maxLines="1"
                 android:nextFocusDown="@id/chip_row"
-                android:paddingStart="@dimen/cb_space_md"
-                android:paddingEnd="@dimen/cb_space_md"
+                android:paddingStart="@dimen/cb_pill_padding"
+                android:paddingEnd="@dimen/cb_pill_padding"
                 android:paddingTop="@dimen/cb_space_sm"
                 android:paddingBottom="@dimen/cb_space_sm"
                 android:textColor="@color/cb_ink"
                 android:textColorHint="@color/cb_slate"
-                android:textSize="@dimen/cb_text_label" />
+                android:textSize="@dimen/cb_text_label"
+                app:drawableStartCompat="@drawable/ic_search"
+                app:drawableTint="@color/cb_slate" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/chip_row"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/cb_space_xs"
+                android:layout_marginTop="@dimen/cb_space_sm"
+                android:clipChildren="false"
                 android:clipToPadding="false"
                 android:nextFocusUp="@id/search"
                 android:nextFocusDown="@id/grid"
                 android:orientation="horizontal" />
 
-    <!-- No-results state. Without this a filter with no match renders an empty
-         grid and gives the user nothing to undo. -->
-    <LinearLayout
-        android:id="@+id/empty_state"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="@dimen/cb_space_xl"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/empty_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/cb_ink"
-            android:textSize="@dimen/cb_text_section"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/empty_body"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/cb_space_xs"
-            android:gravity="center"
-            android:lineSpacingExtra="3dp"
-            android:maxWidth="620dp"
-            android:textColor="@color/cb_slate"
-            android:textSize="@dimen/cb_text_label" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/cb_space_md"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/empty_clear_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="@dimen/cb_target_min"
+            <!-- No-results state. Without this a filter with no match renders an
+                 empty grid and gives the user nothing to undo. -->
+            <LinearLayout
+                android:id="@+id/empty_state"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="@dimen/cb_space_xl"
                 android:gravity="center"
-                android:layout_marginEnd="@dimen/cb_space_sm"
-                android:background="@drawable/bg_cta"
-                android:clickable="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:paddingStart="@dimen/cb_space_lg"
-                android:paddingEnd="@dimen/cb_space_lg"
-                android:paddingTop="@dimen/cb_space_sm"
-                android:paddingBottom="@dimen/cb_space_sm"
-                android:text="@string/empty_clear_search"
-                android:textColor="@color/cb_cta_ink"
-                android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:orientation="vertical"
+                android:visibility="gone">
 
-            <TextView
-                android:id="@+id/empty_clear_filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="@dimen/cb_target_min"
-                android:gravity="center"
-                android:background="@drawable/bg_ghost"
-                android:clickable="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:paddingStart="@dimen/cb_space_lg"
-                android:paddingEnd="@dimen/cb_space_lg"
-                android:paddingTop="@dimen/cb_space_sm"
-                android:paddingBottom="@dimen/cb_space_sm"
-                android:text="@string/empty_clear_filter"
-                android:textColor="@color/cb_slate"
-                android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/empty_title"
+                    style="@style/CoreBuilds.Section" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/grid"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/cb_space_md"
-        android:layout_weight="1"
-        android:clipToPadding="false"
-        android:nextFocusUp="@id/chip_row" />
+                <TextView
+                    android:id="@+id/empty_body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/cb_space_xs"
+                    android:gravity="center"
+                    android:lineSpacingExtra="3dp"
+                    android:maxWidth="560dp"
+                    android:textColor="@color/cb_slate"
+                    android:textSize="@dimen/cb_text_label" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/cb_space_md"
+                    android:clipChildren="false"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/empty_clear_search"
+                        style="@style/Widget.CoreBuilds.Pill.Cta"
+                        android:layout_marginEnd="@dimen/cb_space_sm"
+                        android:text="@string/empty_clear_search" />
+
+                    <TextView
+                        android:id="@+id/empty_clear_filter"
+                        style="@style/Widget.CoreBuilds.Pill.Ghost"
+                        android:text="@string/empty_clear_filter" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/grid"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="@dimen/cb_space_sm"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:nextFocusUp="@id/chip_row" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

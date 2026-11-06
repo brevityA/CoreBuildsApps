@@ -43,6 +43,11 @@ android {
             "\"tv.corebuilds.iconpack.glyphs\"",
         )
         manifestPlaceholders["glyphsPackage"] = "tv.corebuilds.iconpack.glyphs"
+        // Only the unit-test manifests read this: onVariants (below) replaces it
+        // for every installable variant with a UUID named after its application
+        // id. The Variant API cannot reach a unit-test component's manifest, and
+        // without a value its merge fails on the uuid meta-data.
+        manifestPlaceholders["wallsProviderUuid"] = "00000000-0000-0000-0000-000000000000"
         // github: self-updates from GitHub releases. play: see the play
         // build type below and Distribution.kt.
         buildConfigField("String", "DISTRIBUTION", "\"github\"")
@@ -217,6 +222,11 @@ android {
         getByName("candidate").kotlin.srcDir("src/github/java")
     }
 
+    testOptions {
+        // Robolectric screen tests inflate the real layouts, styles and fonts.
+        unitTests.isIncludeAndroidResources = true
+    }
+
     androidResources {
         // Already-compressed formats; don't re-crunch.
         noCompress += listOf("png", "webp")
@@ -267,4 +277,9 @@ dependencies {
     // Plain JVM tests for logic with no Android behind it (DayNightTest). The
     // same JUnit the other suite apps use; CI already runs the unit-test task.
     testImplementation("junit:junit:4.13.2")
+    // Screen tests: real layouts, real focus search and renders on the JVM,
+    // the harness Core EQ's screens use (there is no TV emulator in the PR gate).
+    testImplementation("org.robolectric:robolectric:4.17")
+    testImplementation("androidx.test:core:1.6.1")
+    testImplementation("androidx.test.ext:junit:1.2.1")
 }

@@ -5,12 +5,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 /**
- * Category chips for the wallpaper browser. Same look as [ChipAdapter] but
- * keyed by a nullable String (null = "All") so it can't be confused with the
- * icon-pack adapter's non-null contract.
+ * The series on the wallpaper browser's rail (rail rows since 2.6.0,
+ * item_rail_choice), keyed by a nullable String (null = "All") so it can't be
+ * confused with the icon-pack chip adapter's non-null contract.
  *
  * Selection is applied with targeted notifyItemChanged calls rather than
  * notifyDataSetChanged(). A full rebind here cancels the chip row's item
@@ -37,7 +38,7 @@ class WallpaperChipAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         val v = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_chip, parent, false) as TextView
+            .inflate(R.layout.item_rail_choice, parent, false) as TextView
         return VH(v)
     }
 
@@ -61,15 +62,20 @@ class WallpaperChipAdapter(
         val key = keys[position]
         holder.view.text = labels[position]
         bindSelection(holder, position)
-        // item_chip.xml is shared with the icon grid and points nextFocus at
-        // apply_button / grid, which do not exist on this screen. Override so
-        // Up collapses through the (often GONE) selection bar to Back, and
-        // Down lands on the wallpaper grid.
+        // UP off the top of the list collapses through the (often GONE)
+        // selection bar to Back. DOWN off the bottom names nothing: the export
+        // pill sits right under the list, and geometry finds it.
         holder.view.nextFocusUpId = R.id.wp_selection_bar
-        holder.view.nextFocusDownId = R.id.wp_grid
         holder.view.setOnClickListener { select(key) }
         holder.view.setOnKeyListener { view, keyCode, event ->
             if (event.action != KeyEvent.ACTION_DOWN) return@setOnKeyListener false
+            // LEFT/RIGHT walk a horizontal row of chips. The rail's list is
+            // vertical, where UP/DOWN already walk it and RIGHT has to reach
+            // the grid: before 2.6.0 RIGHT moved one series down instead.
+            val list = view.parent as? RecyclerView
+            val horizontal = (list?.layoutManager as? LinearLayoutManager)?.orientation ==
+                RecyclerView.HORIZONTAL
+            if (!horizontal) return@setOnKeyListener false
             val direction = when (keyCode) {
                 KeyEvent.KEYCODE_DPAD_LEFT -> -1
                 KeyEvent.KEYCODE_DPAD_RIGHT -> 1
@@ -78,7 +84,7 @@ class WallpaperChipAdapter(
             if (direction == 0) return@setOnKeyListener false
             val positionNow = holder.bindingAdapterPosition
             if (positionNow == RecyclerView.NO_POSITION) return@setOnKeyListener false
-            val target = (view.parent as? RecyclerView)
+            val target = list
                 ?.layoutManager
                 ?.findViewByPosition(positionNow + direction)
             if (target != null) {

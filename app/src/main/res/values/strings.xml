@@ -16,7 +16,7 @@
     <string name="pack_stats_fmt">%1$d icons - %2$d components</string>
     <string name="search_hint_fmt">Search %1$d icons</string>
     <string name="cta_also_applies">ALSO APPLIES TO</string>
-    <string name="wp_sub_fmt">%1$d walls - series chips filter the grid</string>
+    <string name="wp_sub_fmt">%1$d walls</string>
 
     <!-- Empty state. Without it a filter with no match renders a blank grid
          and gives the user nothing to undo. -->
@@ -54,7 +54,7 @@
     <string name="cta_apply_also_fmt">Also %1$s</string>
     <string name="cta_sub_apply_fmt">Sets Core Builds as the icon pack in %1$s. Reversible — pick another pack any time.</string>
     <string name="cta_sub_home_fmt">%1$s is your Home launcher. Other installed launchers are listed below.</string>
-    <string name="cta_no_launcher">No supported launcher found</string>
+    <string name="cta_no_launcher">No supported launcher</string>
     <string name="cta_sub_no_launcher">Google TV Home does not accept third-party packs directly. Install Projectivy or another supported launcher to apply CoreBuilds.</string>
     <string name="apply_handed_off_fmt">Sent to %1$s. If the icons don\'t change, restart the launcher.</string>
     <string name="apply_not_installed_fmt">%1$s is not installed.</string>
@@ -134,12 +134,16 @@
     <!-- No resolution claim here on purpose. 40 walls are 3840x2160 and the 10
          series-6 walls are 1376x768; a blanket "4K" was false for a fifth of
          the collection. Each preview states its own real resolution. -->
-    <string name="wp_entry_sub_fmt">%1$d walls · export to Pictures</string>
-    <string name="wp_entry_sub_new_fmt">%1$d walls · %2$d new in this release</string>
+    <string name="wp_entry_sub_fmt">%1$d walls · set or export</string>
+    <string name="wp_entry_sub_new_fmt">%1$d walls · %2$d new</string>
     <string name="wp_downloading_fmt">Downloading… %1$d KB</string>
     <string name="wp_downloading_of_fmt">Downloading… %1$d of %2$d KB</string>
     <string name="wp_download_failed_fmt">Download failed: %1$s</string>
     <string name="wp_back">Back</string>
+    <!-- The Wallpapers rail (2.6.0): the heading over the series, and the
+         export pill at its foot (the paragraph under it names the folder). -->
+    <string name="wp_series_heading">Series</string>
+    <string name="wp_export_rail">Export to Pictures</string>
     <string name="wp_position_fmt">%1$d of %2$d</string>
     <string name="wp_set_wallpaper">Set wallpaper</string>
     <string name="wp_applying">Applying…</string>
@@ -458,10 +462,24 @@
          build's one-time unlock. The GitHub builds never show these: their
          PlusStore is not AVAILABLE. -->
     <string name="plus_name">Core Premium</string>
+    <!-- The Core Premium screen's list (2.6.0): the six extras, one row each,
+         the same six plus_for_sale named in one sentence before 2.6.0. -->
+    <string name="plus_feature_priority_title">Priority requests</string>
+    <string name="plus_feature_priority_sub">Filed and drawn first: one app, or up to 10 missing apps at once.</string>
+    <string name="plus_feature_tracker_title">My requests</string>
+    <string name="plus_feature_tracker_sub">How far each request you filed has got.</string>
+    <string name="plus_feature_rotation_title">Loop rotation</string>
+    <string name="plus_feature_rotation_sub">The live wallpaper rotates through your loops.</string>
+    <string name="plus_feature_night_title">Night loop</string>
+    <string name="plus_feature_night_sub">A second loop plays during night hours.</string>
+    <string name="plus_feature_projectivy_title">Projectivy by day and night</string>
+    <string name="plus_feature_projectivy_sub">You pick what it rotates: favourites, one series, Spectra or Aurum.</string>
+    <string name="plus_feature_walls_title">Spectra and Aurum</string>
+    <string name="plus_feature_walls_sub">24 Premium wallpapers, yours to set and to save.</string>
     <string name="plus_loading">Asking Google Play\u2026</string>
     <string name="plus_loading_button">Premium</string>
     <string name="plus_buy_fmt">Get Premium \u00b7 %1$s</string>
-    <string name="plus_for_sale">One purchase, no subscription: priority icon requests, one app or up to 10 missing apps at once, My requests, live loop rotation, a night loop, your choice of what Projectivy rotates, and the 24 Spectra and Aurum wallpapers.</string>
+    <string name="plus_for_sale">One purchase, no subscription.</string>
     <string name="plus_owned">Core Premium is active on this Google account: priority requests, Request all under Missing icons, and in Settings My requests, loop rotation, the night loop and Projectivy walls; Spectra and Aurum are under Premium in Wallpapers. Thank you.</string>
     <string name="plus_owned_button">Premium is active</string>
     <string name="plus_pending">Payment pending. Premium switches on when Google Play confirms it.</string>

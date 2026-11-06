@@ -25,6 +25,6 @@
     android:paddingEnd="@dimen/cb_space_md"
     android:paddingTop="@dimen/cb_space_sm"
     android:paddingBottom="@dimen/cb_space_sm"
+    android:fontFamily="@font/outfit_medium"
     android:textColor="@color/cb_chip_text"
-    android:textSize="@dimen/cb_text_label"
-    android:textStyle="bold" />
+    android:textSize="@dimen/cb_text_button" />

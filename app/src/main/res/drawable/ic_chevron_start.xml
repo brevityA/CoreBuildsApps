@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Back: a monoline chevron pointing to the start edge, 20 units, tinted by the view. Mirrors in RTL. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="20dp" android:height="20dp"
+    android:viewportWidth="24" android:viewportHeight="24"
+    android:autoMirrored="true">
+    <path android:pathData="M14.5,6.5L9,12L14.5,17.5" android:fillColor="#00000000" android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2" android:strokeLineCap="round" android:strokeLineJoin="round" />
+</vector>

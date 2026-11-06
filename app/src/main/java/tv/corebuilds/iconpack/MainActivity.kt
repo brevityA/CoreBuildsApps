@@ -17,7 +17,6 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.doOnLayout
 import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.GridLayoutManager
@@ -181,10 +180,11 @@ class MainActivity : TvActivity() {
         // focusable still takes the cursor.
         if (Distribution.PLAY) {
             findViewById<View>(R.id.support_entry).visibility = View.GONE
-            // Nothing is left of Settings, so LEFT falls back to geometry
-            // (stays put) instead of walking to a view nobody can see.
-            findViewById<View>(R.id.settings_entry).setNextFocusLeftId(View.NO_ID)
-            // The wallpaper card steps DOWN onto the row's first entry.
+            // Nothing is left above Settings in the foot group, so UP goes
+            // back to the wallpaper row instead of walking to a view nobody
+            // can see.
+            findViewById<View>(R.id.settings_entry).setNextFocusUpId(R.id.wallpapers_entry)
+            // The wallpaper row steps DOWN onto the foot group's first entry.
             findViewById<View>(R.id.wallpapers_entry).setNextFocusDownId(railHead)
         }
 
@@ -309,26 +309,28 @@ class MainActivity : TvActivity() {
     }
 
     /**
-     * Rewrite the vertical D-pad chain around the containers that come and go,
-     * at the moment their visibility changes.
+     * Rewrite the D-pad chains around the containers that come and go, at the
+     * moment their visibility changes.
      *
-     * The sheet's screen order is apply_button -> update_bar -> style_entry ->
-     * missing_entry -> wallpapers_entry -> support_entry | settings_entry |
-     * about_entry (one row) -> apply_targets ->
-     * search -> chip_row ->
-     * grid, and three of those stops are conditional: the update bar only when a
-     * newer manifest exists, the ALSO APPLIES TO row only with a second launcher
-     * installed, the grid only while a filter matches anything. A GONE view that
-     * is focusable still takes the cursor - `isFocusable()` ignores visibility -
-     * so UP from the search field used to park the ring on the invisible bar and
-     * the next UP on the invisible target row, after which UP/DOWN ping-ponged
-     * between two views nobody can see and the chips and the grid read as dead:
-     * "the lists disappeared". The conditional containers are focusable="false"
-     * in the layout so a hidden one can never hold the cursor; this does the
-     * other half, naming the nearest VISIBLE stop for every edge that routes
-     * through them. `update_button` is named rather than its bar on purpose: a
-     * child of a GONE parent still reports itself VISIBLE, so the bar's own flag
-     * is what decides, and it is read here.
+     * Since 2.6.0 the screen is two columns, each its own vertical chain. The
+     * rail: apply_button -> apply_targets -> style_entry -> missing_entry ->
+     * wallpapers_entry -> support_entry -> settings_entry -> about_entry. The
+     * stage: update_bar -> search -> chip_row -> grid. LEFT and RIGHT cross
+     * between them geometrically. Three stops are conditional: the update bar
+     * only when a newer manifest exists, the ALSO APPLIES TO row only with a
+     * second launcher installed (or in icon-picker mode, for the shape chips),
+     * the grid only while a filter matches anything. A GONE view that is
+     * focusable still takes the cursor - `isFocusable()` ignores visibility -
+     * so UP from the search field used to park the ring on the invisible bar
+     * and the next UP on the invisible target row, after which UP/DOWN
+     * ping-ponged between two views nobody can see and the chips and the grid
+     * read as dead: "the lists disappeared". The conditional containers are
+     * focusable="false" in the layout so a hidden one can never hold the
+     * cursor; this does the other half, naming the nearest VISIBLE stop for
+     * every edge that routes through them, or none (the column's end, where
+     * the cursor stays). `update_button` is named rather than its bar on
+     * purpose: a child of a GONE parent still reports itself VISIBLE, so the
+     * bar's own flag is what decides, and it is read here.
      */
     private fun syncFocusChain() {
         val bar = findViewById<View>(R.id.update_bar)
@@ -343,34 +345,36 @@ class MainActivity : TvActivity() {
         // A shown target row can be a named stop: focusable only while shown
         // (set below), and afterDescendants hands the cursor to its first chip.
         targets.isFocusable = targetsShown
-        // In icon-picker mode the CTA and the entry rows are hidden, so there is
-        // nothing focusable above the band at all: name the picker's hint, which
-        // is not focusable, and let the cursor stay where it is rather than
-        // naming a GONE button.
+        // In icon-picker mode the CTA and the rows are hidden; the band (the
+        // shape chips) is then the rail's only stop, and its edges name nothing.
         val applyShown = findViewById<View>(R.id.apply_button).visibility == View.VISIBLE
+
+        // The rail.
         val aboveRows = when {
-            barShown -> R.id.update_button
+            targetsShown -> R.id.apply_targets
             applyShown -> R.id.apply_button
-            else -> R.id.picker_hint
+            else -> View.NO_ID
         }
-        val belowRows = if (targetsShown) R.id.apply_targets else R.id.search
         findViewById<View>(R.id.style_entry).nextFocusUpId = aboveRows
-        val aboveBar = if (applyShown) R.id.apply_button else R.id.picker_hint
-        for (id in intArrayOf(R.id.update_button, R.id.update_later)) {
-            findViewById<View>(id).nextFocusUpId = aboveBar
-            findViewById<View>(id).nextFocusDownId =
-                if (groupShown) R.id.style_entry else R.id.search
+        findViewById<View>(R.id.apply_button).nextFocusDownId = when {
+            targetsShown -> R.id.apply_targets
+            groupShown -> R.id.style_entry
+            else -> View.NO_ID
         }
-        // Support, Settings and About share the rail's last row: all step down.
-        // On Play there is no Support entry, so [railHead] is Settings.
-        findViewById<View>(R.id.support_entry).nextFocusDownId = belowRows
-        findViewById<View>(R.id.settings_entry).nextFocusDownId = belowRows
-        findViewById<View>(R.id.about_entry).nextFocusDownId = belowRows
-        findViewById<View>(R.id.apply_targets).nextFocusUpId =
-            if (groupShown) railHead else aboveRows
-        findViewById<View>(R.id.apply_targets).nextFocusDownId = R.id.search
-        findViewById<View>(R.id.search).nextFocusUpId = belowRows.takeIf { targetsShown }
-            ?: if (groupShown) railHead else aboveRows
+        targets.nextFocusUpId = if (applyShown) R.id.apply_button else View.NO_ID
+        targets.nextFocusDownId = if (groupShown) R.id.style_entry else View.NO_ID
+        // On Play there is no Support entry, so [railHead] is Settings; About
+        // ends the column.
+        findViewById<View>(R.id.wallpapers_entry).nextFocusDownId = railHead
+        findViewById<View>(R.id.about_entry).nextFocusDownId = View.NO_ID
+
+        // The stage.
+        for (id in intArrayOf(R.id.update_button, R.id.update_later)) {
+            findViewById<View>(id).nextFocusUpId = View.NO_ID
+            findViewById<View>(id).nextFocusDownId = R.id.search
+        }
+        findViewById<View>(R.id.search).nextFocusUpId =
+            if (barShown) R.id.update_button else View.NO_ID
         findViewById<View>(R.id.chip_row).nextFocusUpId = R.id.search
         // Down from the category row: the grid, or the empty state's undo when
         // the grid is the container that just went GONE. The search field always
@@ -1368,7 +1372,9 @@ class MainActivity : TvActivity() {
 
     private fun showStyle() {
         val banners = Prefs.pickerPrefersBanners(this)
-        findViewById<SwitchCompat>(R.id.style_switch).isChecked = banners
+        // The switch is drawn (ic_switch follows activated); the line under the
+        // row's name says the state in words, which is what TalkBack reads.
+        findViewById<View>(R.id.style_switch).isActivated = banners
         findViewById<TextView>(R.id.style_entry_sub).text = getString(
             if (banners) R.string.art_style_banners else R.string.art_style_glyphs
         )
@@ -1533,24 +1539,27 @@ class MainActivity : TvActivity() {
     }
 
     /**
-     * Columns for the glyph grid: the right pane's width over one tile's pitch.
+     * Columns for the glyph grid: the stage's width over one tile's pitch.
      *
-     * The pane is what the panel leaves after the gutters, the rail and the gap
-     * between them; the pitch is cb_tile_icon plus the tile's vertical padding
-     * twice - the tile's real height, and the width its near-square card wants.
-     * Both come from dimens, and TvActivity normalises every panel to the
-     * 960x540dp box before this runs, so the column count is the same on a
-     * 1080p set and a 4K one: the proportions travel, the arithmetic does not
-     * care which panel it runs on.
+     * The stage is what the panel leaves after the rail, its 1dp edge and the
+     * stage's own padding; the pitch is cb_tile_icon plus the tile's padding
+     * twice - the tile's real height, and the width its near-square card wants -
+     * but never narrower than cb_tile_min_width, so the wider 2.6.0 stage keeps
+     * three columns and a banner keeps its 16:9 card large. All dimens, and
+     * TvActivity normalises every panel to the 960x540dp box before this runs,
+     * so the column count is the same on a 1080p set and a 4K one.
      */
     private fun spanForScreen(): Int {
         val density = resources.displayMetrics.density
         fun dpOf(id: Int) = resources.getDimensionPixelSize(id) / density
-        val pane = resources.configuration.screenWidthDp -
-            2 * dpOf(R.dimen.cb_gutter_side) -
-            dpOf(R.dimen.cb_rail_width) - dpOf(R.dimen.cb_space_md)
-        val pitch = dpOf(R.dimen.cb_tile_icon) + 2 * dpOf(R.dimen.cb_card_padding)
-        return max(2, floor(pane / pitch).toInt())
+        val stage = resources.configuration.screenWidthDp -
+            dpOf(R.dimen.cb_nav_rail_width) - 1 -
+            dpOf(R.dimen.cb_stage_start) - dpOf(R.dimen.cb_stage_end)
+        val pitch = max(
+            dpOf(R.dimen.cb_tile_icon) + 2 * dpOf(R.dimen.cb_card_padding),
+            dpOf(R.dimen.cb_tile_min_width)
+        )
+        return max(2, floor(stage / pitch).toInt())
     }
 
     private fun toast(msg: String) =

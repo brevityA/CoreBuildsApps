@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Wallpapers: a frame, a horizon and a sun. Monoline, 24 units, tinted by the view. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:pathData="M4.5,4.5L19.5,4.5Q21.5,4.5 21.5,6.5L21.5,17.5Q21.5,19.5 19.5,19.5L4.5,19.5Q2.5,19.5 2.5,17.5L2.5,6.5Q2.5,4.5 4.5,4.5Z" android:fillColor="#00000000" android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.8" android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:pathData="M5.5,16.5L9.5,12L13,15.5L15.5,13L18.5,16.5" android:fillColor="#00000000" android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.8" android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:pathData="M14,8.5A1.5,1.5 0,1 0,17 8.5A1.5,1.5 0,1 0,14 8.5Z" android:fillColor="#00000000" android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="1.8" android:strokeLineCap="round" android:strokeLineJoin="round" />
+</vector>

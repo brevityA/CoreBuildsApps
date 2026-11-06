@@ -42,6 +42,9 @@ class SupportActivity : TvActivity() {
         if (PlusStore.AVAILABLE) {
             findViewById<View>(R.id.support_codes).visibility = View.GONE
             findViewById<View>(R.id.support_plus).visibility = View.VISIBLE
+            findViewById<View>(R.id.support_mode).visibility = View.GONE
+            findViewById<View>(R.id.support_mode_card).visibility = View.VISIBLE
+            bindFeatures()
             if (getString(R.string.audit_request_endpoint).isBlank()) {
                 render(null)
             } else {
@@ -112,6 +115,10 @@ class SupportActivity : TvActivity() {
         if (!buyable && button.hasFocus()) back.requestFocus()
         button.isFocusable = buyable
         button.isClickable = buyable
+        // Only an item on sale is drawn as the screen's primary action; every
+        // other state (loading, pending, owned, unavailable) is a quiet pill
+        // that says where things stand.
+        button.isEnabled = buyable
         button.setOnClickListener(if (buyable) View.OnClickListener { plus?.buy() } else null)
         if (buyable) button.requestFocus()
 
@@ -130,6 +137,40 @@ class SupportActivity : TvActivity() {
                            Toast.LENGTH_LONG).show()
         }
         render(lastState)
+    }
+
+    /**
+     * Core Premium's six extras as a list beside the card (2.6.0), the same six
+     * the card's status line used to name in one sentence. Each row is an
+     * include of item_plus_feature, so its views are found inside the row.
+     */
+    private fun bindFeatures() {
+        findViewById<View>(R.id.support_features).visibility = View.VISIBLE
+        for ((row, icon, title, sub) in FEATURES) {
+            val view = findViewById<View>(row)
+            view.findViewById<ImageView>(R.id.plus_feature_icon).setImageResource(icon)
+            view.findViewById<TextView>(R.id.plus_feature_title).setText(title)
+            view.findViewById<TextView>(R.id.plus_feature_sub).setText(sub)
+        }
+    }
+
+    private data class Feature(val row: Int, val icon: Int, val title: Int, val sub: Int)
+
+    private companion object {
+        val FEATURES = listOf(
+            Feature(R.id.plus_feature_priority, R.drawable.ic_plus_priority,
+                    R.string.plus_feature_priority_title, R.string.plus_feature_priority_sub),
+            Feature(R.id.plus_feature_tracker, R.drawable.ic_plus_requests,
+                    R.string.plus_feature_tracker_title, R.string.plus_feature_tracker_sub),
+            Feature(R.id.plus_feature_rotation, R.drawable.ic_plus_rotation,
+                    R.string.plus_feature_rotation_title, R.string.plus_feature_rotation_sub),
+            Feature(R.id.plus_feature_night, R.drawable.ic_plus_night,
+                    R.string.plus_feature_night_title, R.string.plus_feature_night_sub),
+            Feature(R.id.plus_feature_projectivy, R.drawable.ic_plus_projectivy,
+                    R.string.plus_feature_projectivy_title, R.string.plus_feature_projectivy_sub),
+            Feature(R.id.plus_feature_walls, R.drawable.ic_plus_walls,
+                    R.string.plus_feature_walls_title, R.string.plus_feature_walls_sub),
+        )
     }
 
     private fun show(qrId: Int, urlId: Int, url: String, side: Int) {

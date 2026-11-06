@@ -182,11 +182,13 @@ class PlayBuild(unittest.TestCase):
         main = read(KT / "MainActivity.kt")
         self.assertIn(
             "if (Distribution.PLAY) R.id.settings_entry else R.id.support_entry", main)
-        self.assertIn("findViewById<View>(R.id.settings_entry).setNextFocusLeftId(View.NO_ID)", main)
+        # Since 2.6.0 the foot rows are a column (Support, Settings, About), so
+        # Settings' UP is the edge that would have named the hidden entry.
+        self.assertIn("findViewById<View>(R.id.settings_entry).setNextFocusUpId(R.id.wallpapers_entry)", main)
         self.assertIn("findViewById<View>(R.id.wallpapers_entry).setNextFocusDownId(railHead)", main)
         chain = main.split("private fun syncFocusChain()", 1)[1].split("\n    }\n", 1)[0]
-        self.assertIn("if (groupShown) railHead else aboveRows", chain)
-        self.assertNotIn("if (groupShown) R.id.support_entry else aboveRows", chain)
+        self.assertIn("findViewById<View>(R.id.wallpapers_entry).nextFocusDownId = railHead", chain)
+        self.assertNotIn("= R.id.support_entry", chain)
 
     def test_suite_screen_names_no_way_off_play(self):
         # The Suite screen was the last place the Play build still told users

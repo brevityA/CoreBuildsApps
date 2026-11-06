@@ -2,6 +2,8 @@ package tv.corebuilds.iconpack
 
 import android.content.Context
 import android.content.res.Configuration
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import kotlin.math.abs
 
@@ -46,6 +48,24 @@ abstract class TvActivity : AppCompatActivity() {
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(normalizeDpBox(newBase))
+    }
+
+    /**
+     * Reduce motion (Settings) turns the 2.6.0 focus lift off. The pills and
+     * rail rows rise and scale through a StateListAnimator in their style,
+     * which only Android's own animator scale reaches; with the setting on,
+     * every animator in the screen just inflated is removed, so focus moves
+     * the ring and nothing else. Rows a RecyclerView binds later (chips,
+     * tiles, series) animate in their adapters, which read the setting there.
+     */
+    override fun onContentChanged() {
+        super.onContentChanged()
+        if (Prefs.reduceMotion(this)) dropFocusLift(window.decorView)
+    }
+
+    private fun dropFocusLift(view: View) {
+        if (view.stateListAnimator != null) view.stateListAnimator = null
+        if (view is ViewGroup) for (i in 0 until view.childCount) dropFocusLift(view.getChildAt(i))
     }
 
     companion object {

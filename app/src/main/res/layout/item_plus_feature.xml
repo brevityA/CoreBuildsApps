@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One Core Premium extra on the Premium screen's list (2.6.0): its icon, its
+     name, and the line that says what it does. Bound by SupportActivity. Not
+     focusable: the list is read, the card beside it is what a remote presses. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    android:focusable="false"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/plus_feature_icon"
+        style="@style/CoreBuilds.FeatureIcon" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/plus_feature_title"
+            style="@style/CoreBuilds.FeatureTitle" />
+
+        <TextView
+            android:id="@+id/plus_feature_sub"
+            style="@style/CoreBuilds.FeatureSub" />
+    </LinearLayout>
+</LinearLayout>
