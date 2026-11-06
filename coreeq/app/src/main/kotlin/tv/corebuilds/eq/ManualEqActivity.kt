@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
 import android.provider.OpenableColumns
 import android.os.Bundle
 import android.os.Handler
@@ -236,7 +235,7 @@ class ManualEqActivity : TvActivity() {
             timestampMs = now,
             target = "flat",
             micType = "not measured",
-            deviceName = "${Build.MANUFACTURER} ${Build.MODEL}".trim(),
+            deviceName = DeviceName.current(),
             stimulus = "manual_eq",
             captureSeconds = 0.0,
             outputKind = OutputRoute.keyFor(output),
