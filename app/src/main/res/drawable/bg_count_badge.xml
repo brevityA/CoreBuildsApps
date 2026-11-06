@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A count on a rail row (Missing icons): a small cyan-tinted pill, never focusable. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="@color/cb_selected_fill" />
+    <stroke android:width="1dp" android:color="@color/cb_selected_edge" />
+    <corners android:radius="@dimen/cb_radius_pill" />
+</shape>

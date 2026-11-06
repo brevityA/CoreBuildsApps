@@ -61,7 +61,7 @@ class SuiteActivity : TvActivity() {
             // Play: a row for an app this TV does not have would be a dead end
             // whose only other information is how to install it off Play.
             if (onPlay && !installed) continue
-            val row = inflater.inflate(R.layout.item_suite, column, false)
+            val row = TvActivity.honourReduceMotion(inflater.inflate(R.layout.item_suite, column, false))
             row.findViewById<TextView>(R.id.suite_item_name).text = names[i]
             val version = if (installed) {
                 runCatching { packageManager.getPackageInfo(pkg, 0).versionName }

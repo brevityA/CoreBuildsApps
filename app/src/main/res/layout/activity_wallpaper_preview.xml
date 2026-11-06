@@ -40,12 +40,9 @@
 
             <TextView
                 android:id="@+id/preview_title"
+                style="@style/CoreBuilds.Title"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:letterSpacing="-0.02"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_title"
-                android:textStyle="bold" />
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/preview_sub"
@@ -145,89 +142,53 @@
 
         <TextView
             android:id="@+id/preview_back"
+            style="@style/Widget.CoreBuilds.Pill.Ghost"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/cb_space_sm"
-            android:background="@drawable/bg_ghost"
-            android:minHeight="@dimen/cb_target_min"
-            android:gravity="center"
             android:clickable="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:nextFocusRight="@id/preview_save"
-            android:paddingStart="@dimen/cb_space_lg"
-            android:paddingTop="@dimen/cb_space_sm"
-            android:paddingEnd="@dimen/cb_space_lg"
-            android:paddingBottom="@dimen/cb_space_sm"
             android:text="@string/wp_back"
-            android:textColor="@color/cb_slate"
-            android:textSize="@dimen/cb_text_body"
-            android:textStyle="bold" />
+            android:layout_height="@dimen/cb_pill" />
 
         <TextView
             android:id="@+id/preview_save"
+            style="@style/Widget.CoreBuilds.Pill.Ghost"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/cb_space_sm"
-            android:background="@drawable/bg_ghost"
-            android:minHeight="@dimen/cb_target_min"
-            android:gravity="center"
             android:clickable="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:nextFocusRight="@id/preview_fav"
-            android:paddingStart="@dimen/cb_space_lg"
-            android:paddingTop="@dimen/cb_space_sm"
-            android:paddingEnd="@dimen/cb_space_lg"
-            android:paddingBottom="@dimen/cb_space_sm"
             android:text="@string/wp_save"
-            android:textColor="@color/cb_slate"
-            android:textSize="@dimen/cb_text_body"
-            android:textStyle="bold" />
+            android:layout_height="@dimen/cb_pill" />
 
         <!-- Favourite: a toggle, so it is a ghost like Save; its label carries
              the state (hollow star off, filled on). WallpaperPreviewActivity
              relinks the row's focus edges when Save leaves it for a loop. -->
         <TextView
             android:id="@+id/preview_fav"
+            style="@style/Widget.CoreBuilds.Pill.Ghost"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/cb_space_sm"
-            android:background="@drawable/bg_ghost"
-            android:minHeight="@dimen/cb_target_min"
-            android:gravity="center"
             android:clickable="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:nextFocusLeft="@id/preview_save"
             android:nextFocusRight="@id/preview_set"
-            android:paddingStart="@dimen/cb_space_lg"
-            android:paddingTop="@dimen/cb_space_sm"
-            android:paddingEnd="@dimen/cb_space_lg"
-            android:paddingBottom="@dimen/cb_space_sm"
             android:text="@string/wp_fav_add"
-            android:textColor="@color/cb_slate"
-            android:textSize="@dimen/cb_text_body"
-            android:textStyle="bold" />
+            android:layout_height="@dimen/cb_pill" />
 
         <TextView
             android:id="@+id/preview_set"
+            style="@style/Widget.CoreBuilds.Pill.Cta"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_cta"
-            android:minHeight="@dimen/cb_target_min"
-            android:gravity="center"
             android:clickable="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:nextFocusLeft="@id/preview_fav"
-            android:paddingStart="@dimen/cb_space_lg"
-            android:paddingTop="@dimen/cb_space_sm"
-            android:paddingEnd="@dimen/cb_space_lg"
-            android:paddingBottom="@dimen/cb_space_sm"
             android:text="@string/wp_set_wallpaper"
-            android:textColor="@color/cb_cta_ink"
-            android:textSize="@dimen/cb_text_body"
-            android:textStyle="bold" />
+            android:layout_height="@dimen/cb_pill" />
     </LinearLayout>
 </FrameLayout>

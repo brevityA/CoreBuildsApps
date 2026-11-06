@@ -11,18 +11,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/bg_card"
         android:orientation="vertical"
-        android:padding="@dimen/cb_space_xl">
+        android:padding="@dimen/cb_space_xl"
+        android:background="@drawable/bg_row">
 
         <TextView
             android:id="@+id/export_title"
+            style="@style/CoreBuilds.Title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:letterSpacing="-0.02"
-            android:textColor="@color/cb_ink"
-            android:textSize="@dimen/cb_text_title"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/export_state"
@@ -71,23 +68,14 @@
 
             <TextView
                 android:id="@+id/export_cancel"
+                style="@style/Widget.CoreBuilds.Pill.Ghost"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/cb_space_sm"
-                android:background="@drawable/bg_ghost"
-                android:minHeight="@dimen/cb_target_min"
-                android:gravity="center"
                 android:clickable="true"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:paddingStart="@dimen/cb_space_lg"
-                android:paddingTop="@dimen/cb_space_sm"
-                android:paddingEnd="@dimen/cb_space_lg"
-                android:paddingBottom="@dimen/cb_space_sm"
                 android:text="@string/wp_cancel"
-                android:textColor="@color/cb_slate"
-                android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:layout_height="@dimen/cb_pill" />
 
             <TextView
                 android:id="@+id/export_retry"
@@ -104,31 +92,22 @@
                 android:paddingTop="@dimen/cb_space_sm"
                 android:paddingEnd="@dimen/cb_space_lg"
                 android:paddingBottom="@dimen/cb_space_sm"
-                android:text="@string/wp_export_failed_fmt"
+                android:text="@string/wp_retry_failed"
                 android:textColor="@color/cb_warning"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:id="@+id/export_done"
+                style="@style/Widget.CoreBuilds.Pill.Cta"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_cta"
-                android:minHeight="@dimen/cb_target_min"
-                android:gravity="center"
                 android:clickable="true"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:paddingStart="@dimen/cb_space_lg"
-                android:paddingTop="@dimen/cb_space_sm"
-                android:paddingEnd="@dimen/cb_space_lg"
-                android:paddingBottom="@dimen/cb_space_sm"
                 android:text="@string/wp_done"
-                android:textColor="@color/cb_cta_ink"
-                android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:layout_height="@dimen/cb_pill" />
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>

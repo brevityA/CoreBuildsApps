@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- One My requests row: the app and its component on the left, the
      issue's state and number on the right. -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="6dp"
-    android:background="@drawable/bg_card"
     android:baselineAligned="false"
     android:focusable="true"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="@dimen/cb_card_padding">
+    android:padding="@dimen/cb_card_padding"
+    android:background="@drawable/bg_row"
+    android:stateListAnimator="@animator/focus_raise">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -26,7 +28,7 @@
             android:maxLines="1"
             android:textColor="@color/cb_ink"
             android:textSize="@dimen/cb_text_body"
-            android:textStyle="bold" />
+            android:fontFamily="@font/outfit_semibold" />
 
         <TextView
             android:id="@+id/request_component"
@@ -52,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/cb_text_label"
-            android:textStyle="bold" />
+            android:fontFamily="@font/outfit_semibold" />
 
         <TextView
             android:id="@+id/request_issue"

@@ -81,8 +81,6 @@
     <!-- Support shows two codes side by side, so each is smaller. Its URLs
          encode at 29 modules, about 6dp a module here. -->
     <dimen name="cb_support_qr">220dp</dimen>
-    <!-- The Plus card (Google Play build): wide enough for two lines of status. -->
-    <dimen name="cb_support_plus_width">380dp</dimen>
 
     <!-- Stacked action buttons share a minimum width so they align as a column
          instead of jagging to their text length. -->
@@ -103,5 +101,48 @@
          Support | Settings | About). The floor above, not below it: being sp, it
          grows with the user's setting too, so large text still reads larger. -->
     <dimen name="cb_text_fit_min">12sp</dimen>
+
+    <!-- Rail and stage (2.6.0), ported from Core EQ 1.12. The rail is the
+         full-height void column on Home and Wallpapers; the stage is the rest
+         of the 960dp box. The rail's start padding keeps its labels 40dp in
+         from the panel edge (28 + a row's 12), inside an overscanning set's
+         crop, where Core EQ's sit at 22dp. -->
+    <dimen name="cb_nav_rail_width">264dp</dimen>
+    <dimen name="cb_rail_pad_start">28dp</dimen>
+    <!-- The rail's wordmark and count. Both shrink to fit at large system text
+         (autoSize), so both start above the 12sp floor: AppCompat refuses an
+         autoSize range whose top is its bottom, and the screen would not
+         inflate. 264dp leaves the count's 28 monospace characters room at 12sp. -->
+    <dimen name="cb_text_rail_brand">14sp</dimen>
+    <dimen name="cb_text_count">13sp</dimen>
+    <dimen name="cb_rail_pad_end">16dp</dimen>
+    <dimen name="cb_rail_item">40dp</dimen>
+    <!-- A rail row with a second line under its name (Art style, Missing
+         icons, Wallpapers): the line carries a count or a state. -->
+    <dimen name="cb_rail_item_tall">56dp</dimen>
+    <dimen name="cb_rail_icon">20dp</dimen>
+    <dimen name="cb_stage_start">28dp</dimen>
+    <dimen name="cb_stage_end">44dp</dimen>
+    <dimen name="cb_stage_top">28dp</dimen>
+    <dimen name="cb_stage_bottom">20dp</dimen>
+    <!-- Icon tiles stay three across on the wider stage: a column never goes
+         narrower than this, so a banner keeps a 16:9 card ~180dp wide. -->
+    <dimen name="cb_tile_min_width">192dp</dimen>
+    <!-- Pills: the standard control is 48dp, the dense one 40dp. -->
+    <dimen name="cb_pill">48dp</dimen>
+    <dimen name="cb_pill_compact">40dp</dimen>
+    <dimen name="cb_pill_padding">18dp</dimen>
+    <dimen name="cb_radius_section">16dp</dimen>
+    <dimen name="cb_radius_rail_item">12dp</dimen>
+    <!-- How far a focused control rises (its shadow is tinted cyan on API 28+). -->
+    <dimen name="cb_lift_z">6dp</dimen>
+    <dimen name="cb_text_button">15sp</dimen>
+    <dimen name="cb_text_stage_title">28sp</dimen>
+    <!-- Core Premium's feature list: one row per extra, icon then two lines. -->
+    <dimen name="cb_feature_icon">22dp</dimen>
+    <dimen name="cb_support_plus_card">340dp</dimen>
+    <!-- About's links column. A fixed width, not wrap_content: a two-line row
+         in a wrap_content column was measured at one line and cut. -->
+    <dimen name="cb_about_links_width">300dp</dimen>
 
 </resources>

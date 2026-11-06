@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Outfit, the Core Builds brand face (SIL OFL 1.1; licence in
+  assets/licenses/Outfit-OFL.txt), the same four static cuts Core EQ ships.
+
+  minSdk is 21 here, not Core EQ's 30, which changes two things:
+   * every font carries the app: attributes as well as the android: ones,
+     because before API 26 only AppCompat reads a font-family resource;
+   * android:textFontWeight does nothing before API 28, so a family cannot be
+     asked for 500 or 600 on most Fire TV sticks. textStyle="bold" still picks
+     700 on every API level. Text that needs 500 or 600 names the cut directly
+     (@font/outfit_medium, @font/outfit_semibold), which works from API 21 up.
+-->
+<font-family xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <font android:fontStyle="normal" android:fontWeight="400" android:font="@font/outfit_regular"
+        app:fontStyle="normal" app:fontWeight="400" app:font="@font/outfit_regular" />
+    <font android:fontStyle="normal" android:fontWeight="500" android:font="@font/outfit_medium"
+        app:fontStyle="normal" app:fontWeight="500" app:font="@font/outfit_medium" />
+    <font android:fontStyle="normal" android:fontWeight="600" android:font="@font/outfit_semibold"
+        app:fontStyle="normal" app:fontWeight="600" app:font="@font/outfit_semibold" />
+    <font android:fontStyle="normal" android:fontWeight="700" android:font="@font/outfit_bold"
+        app:fontStyle="normal" app:fontWeight="700" app:font="@font/outfit_bold" />
+</font-family>

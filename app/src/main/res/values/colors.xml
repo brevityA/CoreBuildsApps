@@ -31,4 +31,28 @@
     <color name="cb_ripple">#2E00D4FF</color>
     <!-- Resting border on cards and fields: 1dp at 6% white. -->
     <color name="cb_hairline">#0FFFFFFF</color>
+
+    <!-- Rail and stage (2.6.0), the roles Core EQ 1.12 introduced, at Core EQ's
+         values so the two apps draw one control the same way. Interaction
+         state and structure only, like the three above. -->
+    <!-- The resting body of a pill, a section and a rail row's panel. -->
+    <color name="cb_card_surface">#161B22</color>
+    <!-- An off switch's track. -->
+    <color name="cb_card_focus">#30363D</color>
+    <!-- The 3dp focus ring (Brand Guide §05): signal cyan, named for its role. -->
+    <color name="cb_focus_ring">#00D4FF</color>
+    <!-- Lines between regions: the rail's edge, a section's border. White at 8%. -->
+    <color name="cb_divider">#14FFFFFF</color>
+    <!-- A chosen row, segment or filter: cyan at 16% with a 60% cyan edge. -->
+    <color name="cb_selected_fill">#2900D4FF</color>
+    <color name="cb_selected_edge">#9900D4FF</color>
+    <!-- A secondary pill's resting edge: cyan at 35%. -->
+    <color name="cb_ghost_edge">#5900D4FF</color>
+    <!-- Text on a control that cannot be pressed. Slate at full strength, not
+         faded: a disabled pill can still carry a status ("Saving…" on a
+         wallpaper's Save), and slate at 40% read at about 2:1. Opaque it is
+         5.3:1 on the panel and better on every other surface, and the state
+         still reads as off: enabled pill text is ink or cyan, and a disabled
+         pill keeps only its hairline. -->
+    <color name="cb_text_disabled">#FF8B949E</color>
 </resources>

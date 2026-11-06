@@ -98,6 +98,20 @@ to claim official approval. The pack's light-ink fallback is a readability
 treatment for dark cards, not a brand-colour change. Source/reference materials
 are distinguished from the Core Builds-authored output throughout the catalog
 and fidelity notes.
+## Bundled font: Outfit (app interface)
+
+Since 2.6.0 the app's screens are set in **Outfit**, Copyright 2021 The Outfit
+Project Authors (<https://github.com/Outfitio/Outfit-Fonts>), under the **SIL
+Open Font License 1.1**; the licence ships in the APK as
+`app/src/main/assets/licenses/Outfit-OFL.txt`. Four static cuts are bundled in
+`app/src/main/res/font/` and are byte-identical to Core EQ's (SHA-256:
+regular `4d17202023801dd6d8345bbf6551ad524700021ffb3c61d5305c81a4613edd1e`,
+medium `9068e78c85bb456d528406f13f07e35e0e84b4997677379f4c585cc0c41afac4`,
+semibold `937d75a21c15ca5ab0b95797bc59c20dc29926a19a8aa9fbae91734605e68391`,
+bold `56b76e1976dd8f5ffe04dc2c57c4b57f81c3737da338a69ea0360030cafb0910`).
+This is interface type only: no icon draws Outfit letters
+(`tests/test_wordmark_type.py`).
+
 ## Vendored code: Nayuki QR Code generator (Java)
 
 `app/src/main/java/io/nayuki/qrcodegen/QrCode.java`,

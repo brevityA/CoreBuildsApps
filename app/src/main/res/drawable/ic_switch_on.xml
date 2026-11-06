@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- On: a filled cyan track, dark knob at the end, 40 x 22dp (Core EQ's
+     switch). Sized with <size> and placed with insets, not a layer's
+     width/height/gravity, which only API 23 reads: the pack's minSdk is 21,
+     and on a Fire OS 5 stick the switch would have had no size at all. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <size android:width="40dp" android:height="22dp" />
+            <solid android:color="@color/cb_signal_cyan" />
+            <corners android:radius="11dp" />
+        </shape>
+    </item>
+    <item android:left="21dp" android:top="3dp" android:right="3dp" android:bottom="3dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/cb_cta_ink" />
+        </shape>
+    </item>
+</layer-list>

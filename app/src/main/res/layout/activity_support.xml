@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Support. Opened from About. Why and what it unlocks on the left, two codes
-  on the right, side by side because a TV is wide and short.
+  Support (2.6.0, the stage grammar). Opened from Home, Settings and About.
+  What it is on the left, the way to act on it on the right, side by side
+  because a TV is wide and short.
 
-  Nothing in the codes takes focus: a QR code is something a phone reads,
-  not a control a remote presses, so Back is the screen's one stop there.
+  GitHub builds: two codes a phone reads. Nothing in them takes focus: a QR
+  code is something a phone reads, not a control a remote presses, so Back is
+  the screen's one stop there.
 
-  The Google Play build shows the Core Premium card (Plus in code) instead
-  of the codes (Play's Payments policy keeps a Play app's tips inside Play
-  Billing). Its buy button is a stop only while Premium is on sale, and its
-  trial button only until the trial is used: SupportActivity moves the
-  cursor to Back before either stops being focusable.
+  The Google Play build is Core Premium (Plus in code) instead of the codes
+  (Play's Payments policy keeps a Play app's payments inside Play Billing): the
+  six extras as a list on the left, the purchase card on the right. The list
+  is a stop so a remote can scroll it at large text sizes. The buy button is
+  a stop only while Premium is on sale, and the trial button only until the
+  trial is used: SupportActivity moves the cursor to Back before either stops
+  being focusable.
 -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/cb_night"
+    android:clipChildren="false"
+    android:clipToPadding="false"
     android:paddingStart="@dimen/cb_gutter_side"
     android:paddingEnd="@dimen/cb_gutter_side"
     android:paddingTop="@dimen/cb_gutter_top"
@@ -27,8 +34,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="top">
+        android:clipChildren="false"
+        android:gravity="top"
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -37,46 +45,23 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_chip"
-                android:fontFamily="monospace"
-                android:paddingStart="@dimen/cb_space_sm"
-                android:paddingEnd="@dimen/cb_space_sm"
-                android:paddingTop="7dp"
-                android:paddingBottom="7dp"
-                android:letterSpacing="0.18"
-                android:text="@string/support_kicker"
-                android:textColor="@color/cb_signal_cyan"
-                android:textSize="@dimen/cb_text_kicker"
-                android:textStyle="bold" />
+                style="@style/CoreBuilds.Eyebrow"
+                android:text="@string/support_kicker" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/cb_space_md"
-                android:letterSpacing="-0.025"
-                android:text="@string/support_title"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_title"
-                android:textStyle="bold" />
+                style="@style/CoreBuilds.Title"
+                android:text="@string/support_title" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/support_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="@dimen/cb_button_min_width"
-            android:minHeight="@dimen/cb_target_min"
-            android:background="@drawable/bg_ghost"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:paddingStart="@dimen/cb_space_lg"
-            android:paddingEnd="@dimen/cb_space_lg"
+            style="@style/Widget.CoreBuilds.Pill.Ghost"
+            android:layout_height="@dimen/cb_pill_compact"
+            android:drawablePadding="6dp"
+            android:paddingStart="12dp"
             android:text="@string/action_back"
-            android:textColor="@color/cb_ink"
-            android:textSize="@dimen/cb_text_body" />
+            app:drawableStartCompat="@drawable/ic_chevron_start"
+            app:drawableTint="@color/pill_ghost_text" />
     </LinearLayout>
 
     <!-- BODY -->
@@ -84,51 +69,95 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="@dimen/cb_space_lg"
+        android:layout_marginTop="@dimen/cb_space_md"
         android:baselineAligned="false"
         android:orientation="horizontal">
 
-        <!-- LEFT: what this is and what it is not -->
-        <LinearLayout
+        <!-- LEFT: what this is and what it is not. A ScrollView, as About's
+             facts column is: at the TV's largest text the six extras run past
+             the panel, and the list is focusable so a remote can reach it -
+             DOWN on a list taller than the column scrolls it before focus
+             moves on. When everything fits the ScrollView is inert. -->
+        <ScrollView
+            android:id="@+id/support_scroll"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginEnd="@dimen/cb_space_lg"
+            android:fillViewport="true"
+            android:overScrollMode="never"
+            android:scrollbars="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/support_body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:lineSpacingExtra="3dp"
                 android:text="@string/support_body"
                 android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_body" />
+                android:textSize="@dimen/cb_text_label" />
 
-            <TextView
+            <!-- Core Premium's six extras (Google Play build). One row each:
+                 icon, name, the line that says what it does. Focusable, with
+                 the ring, so the column above can scroll to its last row. -->
+            <LinearLayout
+                android:id="@+id/support_features"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/cb_space_md"
+                android:background="@drawable/bg_row"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:stateListAnimator="@animator/focus_raise"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/cb_space_md"
+                android:paddingEnd="@dimen/cb_space_md"
+                android:paddingTop="14dp"
+                android:paddingBottom="14dp"
+                android:visibility="gone">
+
+                <include layout="@layout/item_plus_feature"
+                    android:id="@+id/plus_feature_priority" />
+                <include layout="@layout/item_plus_feature"
+                    android:id="@+id/plus_feature_tracker" />
+                <include layout="@layout/item_plus_feature"
+                    android:id="@+id/plus_feature_rotation" />
+                <include layout="@layout/item_plus_feature"
+                    android:id="@+id/plus_feature_night" />
+                <include layout="@layout/item_plus_feature"
+                    android:id="@+id/plus_feature_projectivy" />
+                <include layout="@layout/item_plus_feature"
+                    android:id="@+id/plus_feature_walls" />
+            </LinearLayout>
+
+            <!-- What is optional. Under the list on GitHub builds; on Google
+                 Play the list fills this column, so the line moves under the
+                 card (support_mode_card) and this one goes. -->
+            <TextView
+                android:id="@+id/support_mode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_sm"
                 android:lineSpacingExtra="3dp"
                 android:text="@string/support_mode"
                 android:textColor="@color/cb_slate"
                 android:textSize="@dimen/cb_text_data" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="monospace"
-                android:text="@string/support_footer"
-                android:textColor="@color/cb_slate"
-                android:textSize="@dimen/cb_text_kicker" />
         </LinearLayout>
+        </ScrollView>
 
-        <!-- RIGHT (GitHub builds): the two codes. White quiet zones come from
-             the bitmaps (QrBitmap), so the dark card behind them cannot eat one. -->
+        <!-- RIGHT: the way to act on it, and the line that says what it sends. -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        <!-- GitHub builds: the two codes. White quiet zones come from the
+             bitmaps (QrBitmap), so the dark section behind them cannot eat one. -->
         <LinearLayout
             android:id="@+id/support_codes"
             android:layout_width="wrap_content"
@@ -138,7 +167,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_card"
+            android:background="@drawable/bg_section"
             android:orientation="vertical"
             android:padding="@dimen/cb_card_padding">
 
@@ -151,13 +180,9 @@
                 android:scaleType="fitCenter" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/CoreBuilds.Section"
                 android:layout_marginTop="@dimen/cb_space_sm"
-                android:text="@string/support_sponsors_label"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_section"
-                android:textStyle="bold" />
+                android:text="@string/support_sponsors_label" />
 
             <TextView
                 android:id="@+id/support_sponsors_url"
@@ -174,7 +199,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/cb_space_md"
-            android:background="@drawable/bg_card"
+            android:background="@drawable/bg_section"
             android:orientation="vertical"
             android:padding="@dimen/cb_card_padding">
 
@@ -187,13 +212,9 @@
                 android:scaleType="fitCenter" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/CoreBuilds.Section"
                 android:layout_marginTop="@dimen/cb_space_sm"
-                android:text="@string/support_kofi_label"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_section"
-                android:textStyle="bold" />
+                android:text="@string/support_kofi_label" />
 
             <TextView
                 android:id="@+id/support_kofi_url"
@@ -207,73 +228,74 @@
         </LinearLayout>
         </LinearLayout>
 
-        <!-- RIGHT (Google Play build): Core Premium (Plus in code). The status
-             line says where the purchase and the trial stand; the first
-             button buys, the second starts the one 24-hour trial. -->
+        <!-- Google Play build: the Core Premium card (Plus in code). The status
+             line says where the purchase and the trial stand; the first button
+             buys, the second starts the one 24-hour trial. -->
         <LinearLayout
             android:id="@+id/support_plus"
-            android:layout_width="@dimen/cb_support_plus_width"
+            android:layout_width="@dimen/cb_support_plus_card"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_card"
+            android:background="@drawable/bg_section"
+            android:clipChildren="false"
             android:orientation="vertical"
-            android:padding="@dimen/cb_card_padding"
+            android:padding="@dimen/cb_space_md"
             android:visibility="gone">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/plus_name"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_section"
-                android:textStyle="bold" />
+                style="@style/CoreBuilds.Section"
+                android:text="@string/plus_name" />
 
             <TextView
                 android:id="@+id/support_plus_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/cb_space_sm"
-                android:lineSpacingExtra="3dp"
-                android:text="@string/plus_loading"
-                android:textColor="@color/cb_slate"
-                android:textSize="@dimen/cb_text_data" />
+                style="@style/CoreBuilds.Lede"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:text="@string/plus_loading" />
 
             <TextView
                 android:id="@+id/support_plus_buy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/Widget.CoreBuilds.Pill.Cta.Wide"
                 android:layout_marginTop="@dimen/cb_space_md"
-                android:minHeight="@dimen/cb_target_min"
-                android:gravity="center"
-                android:background="@drawable/bg_cta"
                 android:clickable="false"
                 android:focusable="false"
-                android:paddingStart="@dimen/cb_space_lg"
-                android:paddingEnd="@dimen/cb_space_lg"
-                android:paddingTop="@dimen/cb_space_sm"
-                android:paddingBottom="@dimen/cb_space_sm"
-                android:text="@string/plus_loading_button"
-                android:textColor="@color/cb_cta_ink"
-                android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:focusableInTouchMode="false"
+                android:text="@string/plus_loading_button" />
 
             <TextView
                 android:id="@+id/support_plus_trial"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/cb_space_sm"
-                android:minHeight="@dimen/cb_target_min"
-                android:gravity="center"
-                android:background="@drawable/bg_ghost"
-                android:clickable="true"
-                android:focusable="true"
-                android:paddingStart="@dimen/cb_space_lg"
-                android:paddingEnd="@dimen/cb_space_lg"
-                android:paddingTop="@dimen/cb_space_sm"
-                android:paddingBottom="@dimen/cb_space_sm"
+                style="@style/Widget.CoreBuilds.Pill.Ghost.Wide"
+                android:layout_marginTop="@dimen/cb_space_xs"
                 android:text="@string/plus_trial_button"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_body"
                 android:visibility="gone" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/support_mode_card"
+            android:layout_width="@dimen/cb_support_plus_card"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/cb_space_md"
+            android:lineSpacingExtra="3dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:text="@string/support_mode"
+            android:textColor="@color/cb_slate"
+            android:textSize="@dimen/cb_text_data"
+            android:visibility="gone" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/cb_space_sm"
+            android:fontFamily="monospace"
+            android:lineSpacingExtra="2dp"
+            android:maxWidth="@dimen/cb_support_plus_card"
+            android:text="@string/support_footer"
+            android:textColor="@color/cb_slate"
+            android:textSize="@dimen/cb_text_kicker" />
         </LinearLayout>
     </LinearLayout>
 

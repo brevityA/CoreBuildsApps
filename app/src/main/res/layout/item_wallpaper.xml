@@ -51,7 +51,7 @@
             android:maxLines="1"
             android:textColor="@color/cb_ink"
             android:textSize="@dimen/cb_text_label"
-            android:textStyle="bold" />
+            android:fontFamily="@font/outfit_semibold" />
     </LinearLayout>
 
     <!-- LIVE badge for the motion loops. Over the thumb corner, above the
@@ -74,8 +74,8 @@
         android:text="@string/wp_live_badge"
         android:textColor="@color/cb_signal_cyan"
         android:textSize="@dimen/cb_text_kicker"
-        android:textStyle="bold"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:fontFamily="@font/outfit_semibold" />
 
     <!-- Favourite star, the opposite corner from LIVE/PLUS so a starred loop
          carries both. Visibility toggled by the adapter. -->
@@ -97,8 +97,8 @@
         android:text="@string/wp_fav_badge"
         android:textColor="@color/cb_signal_cyan"
         android:textSize="@dimen/cb_text_kicker"
-        android:textStyle="bold"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:fontFamily="@font/outfit_semibold" />
 
     <!-- Selection-mode frame. Drawn on top; visibility toggled by the adapter.
          Inset to the card edge so it never coincides with the focus ring. -->

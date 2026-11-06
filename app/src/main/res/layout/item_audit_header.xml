@@ -16,13 +16,8 @@
 
     <TextView
         android:id="@+id/audit_header_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="monospace"
-        android:letterSpacing="0.18"
-        android:textColor="@color/cb_signal_cyan"
-        android:textSize="@dimen/cb_text_kicker"
-        android:textStyle="bold" />
+        style="@style/CoreBuilds.MenuHeading"
+        android:layout_width="match_parent" />
 
     <TextView
         android:id="@+id/audit_header_sub"

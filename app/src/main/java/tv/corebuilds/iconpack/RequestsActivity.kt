@@ -57,7 +57,8 @@ class RequestsActivity : TvActivity() {
 
         val states = HashMap<Int, RequestStatus.State>()
         val rows = entries.map { entry ->
-            val row = LayoutInflater.from(this).inflate(R.layout.item_request, list, false)
+            val row = TvActivity.honourReduceMotion(
+                LayoutInflater.from(this).inflate(R.layout.item_request, list, false))
             row.findViewById<TextView>(R.id.request_app).text = entry.appName
             row.findViewById<TextView>(R.id.request_component).text = entry.component
             row.findViewById<TextView>(R.id.request_issue).text = getString(

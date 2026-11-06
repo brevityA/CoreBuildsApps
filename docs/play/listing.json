@@ -149,12 +149,12 @@
     "wallpapers_json": "0bc4f85d2ff7d2e2c646088cd450957c5e7a58c0519be85923207356dafb3490",
     "live_loop_kt": "00e56ef0764c460c81526d97b4b4a57085caf1e489a905c57d0d553ba4248b51",
     "frames": {
-      "app-ui-wallpapers.png": "40bf9468ada495126be9ea14ffa1e154cbc7b69592f354f69ddd061b67f5af23",
-      "app-ui-catalogue.png": "4d478d3c76dd80b72dabb5ff595b738b97888e70d517032508fbf781496228df",
-      "app-ui-inspector.png": "d5378f5082edd66813901240608b0c94d6a2cb8fc1f6d7c24fc4dec0518699e8",
-      "app-ui-auditor.png": "b0ed4c209362841cc5b2f75dacb3ab1b87f7651034f16ed024b90c70a287f964",
-      "app-ui-launcher-compat.png": "df1ca2cfab3fcdf91cae315ef31b2ddb9e1a32e4b59b26fe7e6bd2a1ee65ab68",
-      "app-ui-suite.png": "98f7585d22b481c1390d5ed1e8692024cd2b1cc2168bd313ec9318fe542e57cb"
+      "app-ui-wallpapers.png": "3e6800c8aca041aa312d2049caa7ef68cc02a90333c0babbca1a4ab151fb0c3d",
+      "app-ui-catalogue.png": "c0a9c1b588ef032b7f6566566f48bc93babd93670b511c9bae65ff406693d1ab",
+      "app-ui-inspector.png": "6b7a8c01330474b277b591b7ad335f136499194b04339433a9624460e5afca6c",
+      "app-ui-auditor.png": "a3efa03143d8bb71ebcadb0c28d054130228f250e35032425886fc41104471e2",
+      "app-ui-launcher-compat.png": "bd90e9e6a7414ea4936b74fb25118dea951f741b073ed6d8b35c765127faa49c",
+      "app-ui-suite.png": "b8ad7266f5f6f8715b720a1bb1b608b8aee25506c1516565705e32b6ba55a68c"
     }
   }
 }

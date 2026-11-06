@@ -335,18 +335,18 @@ class WallpapersActivity : TvActivity() {
     }
 
     /**
-     * Columns for the thumb grid: the right pane's width over one tile's pitch,
-     * the same arithmetic as MainActivity.spanForScreen - pane from the panel
-     * minus gutters, rail and gap; pitch from cb_wp_thumb plus the tile's
-     * padding, label gap and label line. Dimens all the way down, so a 4K panel
-     * reporting a larger dp box keeps the sheet's three columns.
+     * Columns for the thumb grid: the stage's width over one tile's pitch, the
+     * same arithmetic as MainActivity.spanForScreen - the stage from the panel
+     * minus the rail, its 1dp edge and the stage padding; pitch from
+     * cb_wp_thumb plus the tile's padding, label gap and label line. Dimens all
+     * the way down, so a 4K panel keeps the sheet's three columns.
      */
     private fun spanForScreen(): Int {
         val density = resources.displayMetrics.density
         fun dpOf(id: Int) = resources.getDimensionPixelSize(id) / density
         val pane = resources.configuration.screenWidthDp -
-            2 * dpOf(R.dimen.cb_gutter_side) -
-            dpOf(R.dimen.cb_rail_width) - dpOf(R.dimen.cb_space_md)
+            dpOf(R.dimen.cb_nav_rail_width) - 1 -
+            dpOf(R.dimen.cb_stage_start) - dpOf(R.dimen.cb_stage_end)
         val pitch = dpOf(R.dimen.cb_wp_thumb) + 2 * dpOf(R.dimen.cb_card_padding) +
             dpOf(R.dimen.cb_space_sm) + dpOf(R.dimen.cb_text_label) * 1.2f
         return max(2, floor(pane / pitch).toInt())

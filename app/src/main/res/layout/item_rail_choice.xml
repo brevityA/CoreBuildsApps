@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  One series on the Wallpapers rail (2.6.0): a rail row, chosen = cyan on a
+  cyan tint (bg_rail_choice), the ring under focus. The lift is the adapter's,
+  so it can honour Reduce motion; the style's animator is switched off here.
+-->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/chip_label"
+    style="@style/Widget.CoreBuilds.RailItem.Choice"
+    android:stateListAnimator="@null" />

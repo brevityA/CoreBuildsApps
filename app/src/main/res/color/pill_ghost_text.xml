@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A secondary (ghost) pill's label: cyan, dimmed while it cannot be used. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false" android:color="@color/cb_text_disabled" />
+    <item android:color="@color/cb_signal_cyan" />
+</selector>

@@ -5,6 +5,15 @@
   AppCompat, not MaterialComponents: the app has no Material dependency and
   adding one to theme seven layouts would be a bigger change than the theme
   warrants. Focus and selection are handled by the drawable selectors.
+
+  2.6.0 ports Core EQ 1.12's look ("rail and stage"): Outfit throughout,
+  monospace only for numbers, counts and commands; pills for controls,
+  sections for groups, a void rail for navigation. Every focusable control
+  keeps the 3dp cyan ring; compact controls also lift (scale 1.04, 6dp) and
+  wide ones only rise. The styles below are Core EQ's, renamed, with two
+  differences, both from minSdk 21 (Core EQ's is 30): android:textFontWeight
+  does nothing before API 28, so a weight other than 400 or bold names its
+  Outfit cut directly; and the cyan-tinted lift shadow (API 28) is left out.
 -->
 <resources>
     <style name="Theme.CoreBuilds" parent="Theme.AppCompat.NoActionBar">
@@ -12,6 +21,14 @@
         <item name="android:colorBackground">@color/cb_night</item>
         <item name="android:textColorPrimary">@color/cb_ink</item>
         <item name="android:textColorSecondary">@color/cb_slate</item>
+
+        <!-- Outfit on every view that names no face of its own. Platform
+             attribute only: AppCompat's app:fontFamily set on a theme would
+             override android:fontFamily="monospace" on the views that ask for
+             it, and the counts and versions would lose their monospace face.
+             AppCompat still loads the font resource on API 21-25, where the
+             framework TextView cannot. -->
+        <item name="android:fontFamily">@font/outfit</item>
 
         <!-- Brand-cyan press feedback. Without these the shared layouts'
              ?attr/selectableItemBackground resolves to the platform's grey
@@ -25,5 +42,239 @@
              control that falls back to framework drawing still shows cyan. -->
         <item name="colorAccent">@color/cb_signal_cyan</item>
         <item name="android:colorAccent">@color/cb_signal_cyan</item>
+        <item name="colorControlActivated">@color/cb_signal_cyan</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.CoreBuilds.Dialog</item>
+        <item name="android:alertDialogTheme">@style/ThemeOverlay.CoreBuilds.Dialog</item>
+        <!-- Settings' four switches (and any other SwitchCompat) draw Core
+             EQ's switch, the one Home's Art style row draws by hand. -->
+        <item name="switchStyle">@style/Widget.CoreBuilds.Switch</item>
+    </style>
+
+    <style name="Widget.CoreBuilds.Switch" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:thumb">@drawable/sw_thumb</item>
+        <item name="track">@drawable/sw_track</item>
+        <item name="thumbTint">@null</item>
+        <item name="trackTint">@null</item>
+        <item name="switchMinWidth">40dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="showText">false</item>
+    </style>
+
+    <!-- Dialogs, should one appear: a rounded panel in Outfit, buttons that show the ring. -->
+    <style name="ThemeOverlay.CoreBuilds.Dialog" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/bg_dialog</item>
+        <item name="android:fontFamily">@font/outfit</item>
+        <item name="android:textColorPrimary">@color/cb_ink</item>
+        <item name="android:textColorSecondary">@color/cb_slate</item>
+        <item name="colorAccent">@color/cb_signal_cyan</item>
+        <item name="colorControlActivated">@color/cb_signal_cyan</item>
+        <item name="colorControlHighlight">@color/cb_ripple</item>
+        <item name="buttonBarButtonStyle">@style/Widget.CoreBuilds.DialogButton</item>
+        <item name="android:buttonBarButtonStyle">@style/Widget.CoreBuilds.DialogButton</item>
+    </style>
+
+    <style name="Widget.CoreBuilds.DialogButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:background">@drawable/bg_dialog_button</item>
+        <item name="android:textColor">@color/cb_signal_cyan</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textSize">@dimen/cb_text_button</item>
+        <item name="android:fontFamily">@font/outfit_semibold</item>
+        <item name="android:minHeight">44dp</item>
+        <item name="android:paddingStart">18dp</item>
+        <item name="android:paddingEnd">18dp</item>
+    </style>
+
+    <!--
+      A pill: the app's standard control. Every control in this app is a
+      TextView or a LinearLayout made clickable, so this is a style the layouts
+      name, not the theme's buttonStyle. Compact controls lift under focus.
+    -->
+    <style name="Widget.CoreBuilds.Pill" parent="">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/cb_pill</item>
+        <item name="android:background">@drawable/bg_pill</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:paddingStart">@dimen/cb_pill_padding</item>
+        <item name="android:paddingEnd">@dimen/cb_pill_padding</item>
+        <item name="android:textColor">@color/ghost_text</item>
+        <item name="android:textSize">@dimen/cb_text_button</item>
+        <item name="android:fontFamily">@font/outfit_medium</item>
+        <item name="android:stateListAnimator">@animator/focus_lift</item>
+    </style>
+
+    <!-- Secondary: a cyan edge and label, no body. -->
+    <style name="Widget.CoreBuilds.Pill.Ghost">
+        <item name="android:background">@drawable/bg_pill_ghost</item>
+        <item name="android:textColor">@color/pill_ghost_text</item>
+    </style>
+
+    <!-- The one primary action on a screen. -->
+    <style name="Widget.CoreBuilds.Pill.Cta">
+        <item name="android:background">@drawable/bg_pill_cta</item>
+        <item name="android:textColor">@color/cta_text</item>
+        <item name="android:fontFamily">@font/outfit_bold</item>
+    </style>
+
+    <!-- A pill that spans its column (the rail's Apply, a card's buy button):
+         rises under focus but does not scale, so it is never cut off at the
+         column's edge. -->
+    <style name="Widget.CoreBuilds.Pill.Cta.Wide">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:stateListAnimator">@animator/focus_raise</item>
+    </style>
+
+    <style name="Widget.CoreBuilds.Pill.Ghost.Wide">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:stateListAnimator">@animator/focus_raise</item>
+    </style>
+
+    <!--
+      A rail row: icon, then name, single line. No body at rest, a panel body
+      when it is the current screen (activated), the ring under focus. The rows
+      built as LinearLayouts (a second line, a switch, a badge) take
+      Widget.CoreBuilds.RailItem.Tall and set their children by hand.
+    -->
+    <style name="Widget.CoreBuilds.RailItem" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/cb_rail_item</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:background">@drawable/bg_rail_item</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">@color/cb_ink</item>
+        <item name="android:textSize">@dimen/cb_text_label</item>
+        <item name="android:fontFamily">@font/outfit_medium</item>
+        <item name="android:drawablePadding">12dp</item>
+        <item name="drawableTint">@color/rail_icon</item>
+        <item name="android:stateListAnimator">@animator/focus_lift</item>
+    </style>
+
+    <!-- A rail row that is one choice of several (Wallpapers' series): the
+         chosen one reads cyan on a cyan tint, like a chosen segment. -->
+    <style name="Widget.CoreBuilds.RailItem.Choice">
+        <item name="android:background">@drawable/bg_rail_choice</item>
+        <item name="android:textColor">@color/rail_choice_text</item>
+    </style>
+
+    <style name="Widget.CoreBuilds.RailItem.Tall">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">@dimen/cb_rail_item_tall</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+
+    <!-- A rail row's icon, in a row built as a LinearLayout: follows the row's
+         state (ink under focus, slate at rest). -->
+    <style name="CoreBuilds.RailIcon" parent="">
+        <item name="android:layout_width">@dimen/cb_rail_icon</item>
+        <item name="android:layout_height">@dimen/cb_rail_icon</item>
+        <item name="android:layout_marginEnd">12dp</item>
+        <item name="android:duplicateParentState">true</item>
+        <item name="android:importantForAccessibility">no</item>
+        <item name="tint">@color/rail_icon</item>
+    </style>
+
+    <!-- A rail row's name, over its second line. -->
+    <style name="CoreBuilds.RailTitle" parent="android:Widget.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">@color/cb_ink</item>
+        <item name="android:textSize">@dimen/cb_text_label</item>
+        <item name="android:fontFamily">@font/outfit_medium</item>
+    </style>
+
+    <style name="CoreBuilds.RailSub" parent="android:Widget.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">@color/cb_slate</item>
+        <item name="android:textSize">@dimen/cb_text_kicker</item>
+    </style>
+
+    <!-- A group heading: in the rail, and above groups on the stage. -->
+    <style name="CoreBuilds.MenuHeading" parent="android:Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/cb_slate</item>
+        <item name="android:textSize">@dimen/cb_text_kicker</item>
+        <item name="android:fontFamily">@font/outfit_semibold</item>
+        <item name="android:letterSpacing">0.12</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <!-- The small line above a stage title: the screen's place in the app. -->
+    <style name="CoreBuilds.Eyebrow" parent="CoreBuilds.MenuHeading">
+        <item name="android:textColor">@color/cb_signal_cyan</item>
+        <item name="android:letterSpacing">0.14</item>
+    </style>
+
+    <!-- A stage title. -->
+    <style name="CoreBuilds.Title" parent="android:Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:textColor">@color/cb_ink</item>
+        <item name="android:textSize">@dimen/cb_text_stage_title</item>
+        <item name="android:fontFamily">@font/outfit_semibold</item>
+    </style>
+
+    <!-- A section's heading inside a stage. -->
+    <style name="CoreBuilds.Section" parent="android:Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/cb_ink</item>
+        <item name="android:textSize">@dimen/cb_text_section</item>
+        <item name="android:fontFamily">@font/outfit_semibold</item>
+    </style>
+
+    <!-- The sentence under a title. -->
+    <style name="CoreBuilds.Lede" parent="android:Widget.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/cb_slate</item>
+        <item name="android:textSize">@dimen/cb_text_data</item>
+        <item name="android:lineSpacingExtra">3dp</item>
+    </style>
+
+    <!-- A Core Premium extra on the card's list: icon, name, one line. -->
+    <style name="CoreBuilds.FeatureIcon" parent="">
+        <item name="android:layout_width">@dimen/cb_feature_icon</item>
+        <item name="android:layout_height">@dimen/cb_feature_icon</item>
+        <item name="android:layout_marginEnd">14dp</item>
+        <item name="android:importantForAccessibility">no</item>
+        <item name="tint">@color/cb_signal_cyan</item>
+    </style>
+
+    <style name="CoreBuilds.FeatureTitle" parent="android:Widget.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/cb_ink</item>
+        <item name="android:textSize">@dimen/cb_text_label</item>
+        <item name="android:fontFamily">@font/outfit_medium</item>
+    </style>
+
+    <style name="CoreBuilds.FeatureSub" parent="android:Widget.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:textColor">@color/cb_slate</item>
+        <item name="android:textSize">@dimen/cb_text_data</item>
     </style>
 </resources>

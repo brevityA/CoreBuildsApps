@@ -24,6 +24,27 @@ class ChipAdapter(
 
     private var selectedKey: String = selected
 
+    // Where UP and DOWN go from a chip. item_chip.xml names the category row's
+    // neighbours, the search field and the grid; Home's rail reuses the chip
+    // for ALSO APPLIES TO, where those would leap across to the stage, so
+    // that row names its own through [setVerticalEdges].
+    private var upId = R.id.search
+    private var downId = R.id.grid
+
+    /**
+     * Routes UP and DOWN from every chip of [list] to [up] and [down]
+     * (View.NO_ID: the nearest view that way). Chips already bound take it
+     * now, and chips bound later take it in [onBindViewHolder].
+     */
+    fun setVerticalEdges(list: RecyclerView, up: Int, down: Int) {
+        upId = up
+        downId = down
+        for (i in 0 until list.childCount) {
+            list.getChildAt(i).nextFocusUpId = up
+            list.getChildAt(i).nextFocusDownId = down
+        }
+    }
+
     class VH(val view: TextView) : RecyclerView.ViewHolder(view)
 
     init {
@@ -45,6 +66,8 @@ class ChipAdapter(
         holder.view.isActivated = selected
         holder.view.isSelected = selected
         holder.view.contentDescription = "${labels[position]}, filter${if (selected) ", selected" else ""}"
+        holder.view.nextFocusUpId = upId
+        holder.view.nextFocusDownId = downId
         holder.view.setOnClickListener { select(key) }
         holder.view.setOnKeyListener { view, keyCode, event ->
             if (event.action != KeyEvent.ACTION_DOWN) return@setOnKeyListener false

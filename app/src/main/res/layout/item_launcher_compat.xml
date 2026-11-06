@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   One launcher in the compatibility list: its name, whether this TV is on it
-  (active/installed), what art it applies, how the pack reaches it, and the
-  first of its notes. Not focusable - a compatibility row is read, not
+  (active/installed), what art it applies, how the pack reaches it (a cyan
+  chip since 2.6.0), and the first of its notes. Not focusable - a compatibility row is read, not
   pressed; the RecyclerView owns the D-pad.
 -->
 <LinearLayout
@@ -11,9 +11,9 @@
     android:layout_height="wrap_content"
     android:focusable="false"
     android:layout_marginTop="6dp"
-    android:background="@drawable/bg_card"
     android:orientation="vertical"
-    android:padding="@dimen/cb_card_padding">
+    android:padding="@dimen/cb_card_padding"
+    android:background="@drawable/bg_row">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,18 +30,18 @@
             android:maxLines="1"
             android:textColor="@color/cb_ink"
             android:textSize="@dimen/cb_text_body"
-            android:textStyle="bold" />
+            android:fontFamily="@font/outfit_semibold" />
 
         <TextView
             android:id="@+id/launcher_compat_item_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/cb_space_sm"
-            android:fontFamily="monospace"
-            android:letterSpacing="0.18"
+            android:fontFamily="@font/outfit_semibold"
+            android:letterSpacing="0.12"
+            android:textAllCaps="true"
             android:textColor="@color/cb_slate"
             android:textSize="@dimen/cb_text_kicker"
-            android:textStyle="bold"
             android:visibility="gone" />
 
         <TextView
@@ -49,11 +49,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/cb_space_md"
-            android:fontFamily="monospace"
-            android:letterSpacing="0.18"
+            android:background="@drawable/bg_chip"
+            android:fontFamily="@font/outfit_semibold"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
             android:textColor="@color/cb_signal_cyan"
-            android:textSize="@dimen/cb_text_kicker"
-            android:textStyle="bold" />
+            android:textSize="@dimen/cb_text_kicker" />
     </LinearLayout>
 
     <TextView

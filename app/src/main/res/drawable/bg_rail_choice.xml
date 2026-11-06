@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A rail row that is one choice of several (Wallpapers' series, 2.6.0):
+     no body at rest; the chosen one cyan at 16% with a 60% cyan edge, as a
+     chosen segment; the 3dp ring under focus, over the tint when chosen. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_activated="true" android:state_focused="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/cb_selected_fill" />
+            <stroke android:width="@dimen/cb_focus_ring" android:color="@color/cb_focus_ring" />
+            <corners android:radius="@dimen/cb_radius_rail_item" />
+        </shape>
+    </item>
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/cb_panel" />
+            <stroke android:width="@dimen/cb_focus_ring" android:color="@color/cb_focus_ring" />
+            <corners android:radius="@dimen/cb_radius_rail_item" />
+        </shape>
+    </item>
+    <item android:state_activated="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/cb_selected_fill" />
+            <stroke android:width="1dp" android:color="@color/cb_selected_edge" />
+            <corners android:radius="@dimen/cb_radius_rail_item" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <corners android:radius="@dimen/cb_radius_rail_item" />
+        </shape>
+    </item>
+</selector>

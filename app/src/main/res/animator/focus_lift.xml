@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Focus lift for compact controls (pills, chips, rail items): 1.04 and a
+  6dp lift over 150 ms. Scale is drawn, not laid out, so focus never moves a
+  neighbour. With animations off in Android's developer options the duration
+  scale is 0 and the lift is instant.
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <set>
+            <objectAnimator android:propertyName="scaleX" android:valueTo="1.04"
+                android:duration="150" android:interpolator="@android:interpolator/fast_out_slow_in" />
+            <objectAnimator android:propertyName="scaleY" android:valueTo="1.04"
+                android:duration="150" android:interpolator="@android:interpolator/fast_out_slow_in" />
+            <objectAnimator android:propertyName="translationZ" android:valueTo="@dimen/cb_lift_z"
+                android:duration="150" android:interpolator="@android:interpolator/fast_out_slow_in" />
+        </set>
+    </item>
+    <item>
+        <set>
+            <objectAnimator android:propertyName="scaleX" android:valueTo="1.0"
+                android:duration="150" android:interpolator="@android:interpolator/fast_out_slow_in" />
+            <objectAnimator android:propertyName="scaleY" android:valueTo="1.0"
+                android:duration="150" android:interpolator="@android:interpolator/fast_out_slow_in" />
+            <objectAnimator android:propertyName="translationZ" android:valueTo="0dp"
+                android:duration="150" android:interpolator="@android:interpolator/fast_out_slow_in" />
+        </set>
+    </item>
+</selector>

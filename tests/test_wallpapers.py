@@ -225,12 +225,13 @@ class PlusCollectionTests(unittest.TestCase):
             self.assertEqual(series.count(name), 12, name)
 
     def test_the_copy_names_the_count(self):
-        # The purchase card and Settings say how many walls Premium adds.
+        # The Premium screen says how many walls Premium adds. Since 2.6.0 its
+        # six extras are a list (plus_feature_*), and the walls' row names them.
         n = len(self.walls)
         main = _read(ROOT / "app/src/main/res/values/strings.xml")
         play = _read(ROOT / "app/src/play/res/values/strings.xml")
-        self.assertIn(f"the {n} Spectra and Aurum wallpapers", main)
-        self.assertIn(f"Spectra and Aurum, {n} wallpapers, are yours", play)
+        self.assertIn('<string name="plus_feature_walls_title">Spectra and Aurum</string>', main)
+        self.assertIn(f'<string name="plus_feature_walls_sub">{n} Premium wallpapers', main)
         self.assertIn("<string name=\"support_title\">Core Premium</string>", play)
         self.assertNotIn("Core Builds Plus</string>", play)
 

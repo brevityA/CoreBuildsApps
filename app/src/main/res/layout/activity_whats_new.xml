@@ -15,27 +15,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/cb_night"
+    android:clipToPadding="false"
     android:orientation="vertical"
-    android:padding="@dimen/cb_card_padding">
+    android:paddingStart="@dimen/cb_gutter_side"
+    android:paddingEnd="@dimen/cb_gutter_side"
+    android:paddingTop="@dimen/cb_gutter_top"
+    android:paddingBottom="@dimen/cb_gutter_bottom">
 
     <TextView
+        style="@style/CoreBuilds.Eyebrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="monospace"
-        android:letterSpacing="0.16"
-        android:text="@string/whats_new_kicker"
-        android:textColor="@color/cb_signal_cyan"
-        android:textSize="@dimen/cb_text_kicker"
-        android:textStyle="bold" />
+        android:text="@string/whats_new_kicker" />
 
     <TextView
         android:id="@+id/whats_new_title"
+        style="@style/CoreBuilds.Title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/cb_space_xs"
-        android:textColor="@color/cb_ink"
-        android:textSize="@dimen/cb_text_title"
-        android:textStyle="bold" />
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/whats_new_count"
@@ -59,23 +56,30 @@
             android:orientation="vertical" />
     </ScrollView>
 
+    <!-- Done: the screen's one action, a pill (2.6.0). A LinearLayout around
+         its label because WhatsNewActivity finds it as one. -->
     <LinearLayout
         android:id="@+id/whats_new_done"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/cb_pill"
         android:layout_marginTop="@dimen/cb_space_md"
-        android:background="@drawable/bg_card"
+        android:background="@drawable/bg_pill_cta"
         android:clickable="true"
         android:focusable="true"
+        android:focusableInTouchMode="true"
         android:gravity="center"
-        android:padding="@dimen/cb_card_padding">
+        android:minWidth="@dimen/cb_button_min_width"
+        android:paddingStart="@dimen/cb_pill_padding"
+        android:paddingEnd="@dimen/cb_pill_padding"
+        android:stateListAnimator="@animator/focus_lift">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:fontFamily="@font/outfit_bold"
             android:text="@string/whats_new_done"
-            android:textColor="@color/cb_ink"
-            android:textSize="@dimen/cb_text_body"
-            android:textStyle="bold" />
+            android:textColor="@color/cta_text"
+            android:textSize="@dimen/cb_text_button" />
     </LinearLayout>
 </LinearLayout>

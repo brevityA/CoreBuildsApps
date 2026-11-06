@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A full-width row or section (2.6.0, Core EQ 1.12's bg_card): the surface at
+  rest with a hairline; focused, the panel colour inside the 3dp Brand Guide
+  §05 ring. It draws to its bounds, unlike bg_card, whose 6dp focus inset is
+  the grid's gutter and stays on the icon and wallpaper tiles.
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/cb_panel" />
+            <stroke android:width="@dimen/cb_focus_ring" android:color="@color/cb_focus_ring" />
+            <corners android:radius="@dimen/cb_radius_card" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/cb_card_surface" />
+            <stroke android:width="1dp" android:color="@color/cb_hairline" />
+            <corners android:radius="@dimen/cb_radius_card" />
+        </shape>
+    </item>
+</selector>

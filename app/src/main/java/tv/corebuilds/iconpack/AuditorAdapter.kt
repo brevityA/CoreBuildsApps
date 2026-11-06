@@ -65,7 +65,7 @@ class AuditorAdapter(
         return if (viewType == TYPE_HEADER) {
             HeaderVH(inflater.inflate(R.layout.item_audit_header, parent, false))
         } else {
-            RowVH(inflater.inflate(R.layout.item_audit, parent, false))
+            RowVH(TvActivity.honourReduceMotion(inflater.inflate(R.layout.item_audit, parent, false)))
         }
     }
 
