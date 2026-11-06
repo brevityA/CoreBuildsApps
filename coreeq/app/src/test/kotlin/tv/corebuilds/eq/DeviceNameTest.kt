@@ -27,6 +27,8 @@ class DeviceNameTest {
     fun `the maker is dropped only when it is a whole word at the start`() {
         assertEquals("LG LGTV", DeviceName.of("LG", "LGTV"))
         assertEquals("Sony Sonyx 9", DeviceName.of("Sony", "Sonyx 9"))
+        // A combining accent continues the word it follows; it is not a boundary.
+        assertEquals("A A\u0301 Model", DeviceName.of("A", "A\u0301 Model"))
     }
 
     @Test

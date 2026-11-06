@@ -46,6 +46,20 @@ class DeviceNames(unittest.TestCase):
             with self.subTest(relative):
                 self.assertIn(needle, (SOURCES / relative).read_text(encoding="utf-8"))
 
+    def test_every_profile_writer_stores_the_helper_name(self) -> None:
+        # The TV measurement, Manual EQ and phone-measurement profiles: a writer that built
+        # the name some other way would pass the joined-pattern scan and still save "onn onn".
+        writers = {
+            "tv/corebuilds/eq/MeasureActivity.kt": 1,
+            "tv/corebuilds/eq/ManualEqActivity.kt": 1,
+            "tv/corebuilds/eq/companion/CompanionServer.kt": 1,
+        }
+        for relative, count in writers.items():
+            with self.subTest(relative):
+                source = (SOURCES / relative).read_text(encoding="utf-8")
+                self.assertEqual(source.count("deviceName = DeviceName.current(),"), count)
+                self.assertNotRegex(source, r"deviceName = (?!DeviceName\.current\(\)|\"REW\")")
+
     def test_brand_detection_still_reads_the_manufacturer_itself(self) -> None:
         setup = (SOURCES / "tv/corebuilds/eq/SetupActivity.kt").read_text(encoding="utf-8")
         self.assertIn("DeviceIdentity.detect(\n            Build.MANUFACTURER,", setup)
@@ -53,7 +67,8 @@ class DeviceNames(unittest.TestCase):
     def test_the_helper_drops_the_maker_only_as_a_whole_word(self) -> None:
         helper = HELPER.read_text(encoding="utf-8")
         self.assertIn("ignoreCase = true", helper)
-        self.assertIn("!name[word.length].isLetterOrDigit()", helper)
+        self.assertIn("!next.isLetterOrDigit()", helper)
+        self.assertIn("Character.NON_SPACING_MARK", helper)
 
 
 if __name__ == "__main__":
