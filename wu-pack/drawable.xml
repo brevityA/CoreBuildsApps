@@ -181,6 +181,7 @@
     <item drawable="dream_player_tv" />
     <item drawable="gridstreamr" />
     <item drawable="janky" />
+    <item drawable="jellywatch" />
     <item drawable="justplayer" />
     <item drawable="maxplayer" />
     <item drawable="mediaspelare" />
@@ -233,6 +234,7 @@
     <item drawable="pocketcasts" />
     <item drawable="podcastaddict" />
     <item drawable="poweramp_eq" />
+    <item drawable="prism" />
     <item drawable="music" />
     <item drawable="radio_france" />
     <item drawable="radio_on_tv" />
@@ -408,6 +410,7 @@
     <item drawable="tv_manager" />
     <item drawable="tvquickactions" />
     <item drawable="tv_quick_actions" />
+    <item drawable="tvcalendar" />
     <item drawable="universalmanager" />
     <item drawable="virtualhere_usb_server" />
     <item drawable="booster" />

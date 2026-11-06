@@ -1,0 +1,27 @@
+{
+  "usage": "reference-only: brand cues and colour sampling for an original Core monoline redraw; never shipped as art",
+  "source": "https://github.com/Yigder/Prism (app/src/main/res/drawable-xhdpi/tv_banner.png, the TV launcher banner the TvActivity declares)",
+  "captured": "2026-11-06",
+  "references": [
+    {
+      "path": "tv-banner-320x180.png",
+      "sha256": "276668a85469af95a24de58961a5c51f382f9f42a0b044741478b77588331e9a",
+      "size": [
+        320,
+        180
+      ],
+      "note": "the app's own TV banner from its source repository, copied unchanged at 320x180 for evidence only"
+    }
+  ],
+  "color_sample": {
+    "part": "centre (tallest) spectrum bar",
+    "box": [
+      69,
+      72,
+      72,
+      96
+    ],
+    "path": "tv-banner-320x180.png",
+    "color": "#3DDC97"
+  }
+}

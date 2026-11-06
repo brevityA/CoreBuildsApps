@@ -10,6 +10,13 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
+- **Prism, TVcalendar and JellyWatch Player get icons, and Shizuku+ gets
+  Shizuku's.** Four requests from the Missing icons scanner (#458, #446,
+  #424, #425), each with the component a TV reported: three new monoline
+  marks drawn after each app's own art (a spectrum in a triangle, a wall
+  calendar with one day picked out, a one-eyed jellyfish), and Shizuku+'s TV
+  entry on the Shizuku shield, because the fork keeps upstream's art.
+  1028 → 1031 icons, 1972 → 1979 components.
 - **`app/src/test` renders and presses every screen.** `PreviewRenderTest`
   and `AllScreensRenderTest` render all 15 screens at 1920 × 1080 in both the
   GitHub and Play builds; `FocusChainTest` presses the D-pad through Home's
@@ -72,6 +79,12 @@ All notable changes to the Core Builds Icon Pack. Format follows
   retry", instead of "Retry failed".
 - **Settings on Google Play no longer shows an empty UPDATES heading.** The
   Play build hid the update-checks row but left its heading.
+- **Missing icons' line fits beside its count.** Home's rail cut "Apps here
+  with no icon yet" to "Apps here with no ico…" whenever the count badge
+  showed; it now reads "Apps with no icon yet", which fits. The Play
+  listing's catalogue screenshot is drawn from the Play build's rail too
+  (`docs/play/tv-2-catalogue-play`), where it used to show the GitHub
+  build's Support row.
 
 ## [2.5.4] — 2026-10-31
 

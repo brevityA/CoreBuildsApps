@@ -350,7 +350,7 @@
     <string name="missing_entry_scanning">Checking the apps on this TV…</string>
     <string name="missing_entry_none">Every app on this TV is covered</string>
     <string name="missing_entry_failed">Open to scan the apps on this TV</string>
-    <string name="missing_entry_sub">Apps here with no icon yet</string>
+    <string name="missing_entry_sub">Apps with no icon yet</string>
     <string name="missing_entry_count_cd_fmt">%1$d apps without an icon</string>
     <string name="audit_scanning">Scanning the apps on this TV…</string>
     <string name="audit_scan_failed_fmt">The scan stopped before it finished (%1$s). Nothing was sent. Press Back and open it again; if it stops the same way, report this message.</string>

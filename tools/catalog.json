@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 1028
+    "count": 1031
   },
   "icons": [
     {
@@ -9956,10 +9956,11 @@
       "glyph": "shield_key",
       "components": [
         "moe.shizuku.privileged.api/rikka.shizuku.manager.MainActivity",
-        "moe.shizuku.privileged.api/moe.shizuku.manager.MainActivity"
+        "moe.shizuku.privileged.api/moe.shizuku.manager.MainActivity",
+        "af.shizuku.plus.api/af.shizuku.manager.TvActivity"
       ],
       "category": "TOOL",
-      "mapping_source": "Projectivy Icon Pack 1.1.9 (moe.shizuku.privileged.api/moe.shizuku.manager.MainActivity); moe.shizuku.privileged.api/rikka.shizuku.manager.MainActivity pre-provenance, first committed in ecaa0d231 (2026-08-18, v1.3.0)",
+      "mapping_source": "Projectivy Icon Pack 1.1.9 (moe.shizuku.privileged.api/moe.shizuku.manager.MainActivity); moe.shizuku.privileged.api/rikka.shizuku.manager.MainActivity pre-provenance, first committed in ecaa0d231 (2026-08-18, v1.3.0); af.shizuku.plus.api/af.shizuku.manager.TvActivity from issue #425 (device-reported via the pack's Missing icons scanner on Box R 4K Plus, Android 14, pack 2.5.4): Shizuku+, a fork of Shizuku whose source (github.com/thejaustin/ShizukuPlus, manager/src/main/AndroidManifest.xml at 8033070) declares .TvActivity in namespace af.shizuku.manager as its LEANBACK_LAUNCHER alias. It keeps upstream Shizuku's launcher art with a small plus badge, so it takes Shizuku's mark",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for moe.shizuku.privileged.api (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #4C5CBD, replacing an accent that did not match it (2026-09-28)",
       "color_reviewed": "2026-09-28"
     },
@@ -15079,6 +15080,69 @@
         "#E6EDF3"
       ],
       "gradient_source": "the launcher icon in the #394 scanner photo is flat two-colour, an amber stem over a white ring; the gradient carries both top to bottom: the stem's sampled amber #F9C05E, then the ring's white as Core light ink #E6EDF3 (2026-10-31)"
+    },
+    {
+      "name": "Prism",
+      "drawable": "prism",
+      "color": "#3DDC97",
+      "glyph": "prism_spectrum",
+      "style": "core_monoline",
+      "components": [
+        "com.prism.music/com.prism.music.TvActivity"
+      ],
+      "category": "MUSIC",
+      "mapping_source": "issue #458 (device-reported via the pack's Missing icons scanner on BRAVIA 4K AE2, Android 14, pack 2.5.4): com.prism.music/com.prism.music.TvActivity is the reported launcher component; the app's source (github.com/Yigder/Prism, app/src/main/AndroidManifest.xml at d068196) declares .TvActivity in namespace com.prism.music as its LEANBACK_LAUNCHER entry",
+      "color_source": "sampled from the app's own TV banner (github.com/Yigder/Prism, res/drawable-xhdpi/tv_banner.png): the centre, tallest spectrum bar #3DDC97, which is also that bar's stroke in the repository's icon.svg. Pixel sample and hashed reference in tools/reference/prism/visual-references.json (2026-11-06)",
+      "color_reviewed": "2026-11-06",
+      "glyph_source": "original Core rounded-monoline interpretation of the launcher art's rounded point-up triangle around seven spectrum bars, tallest in the middle; not a trace. Reference: https://github.com/Yigder/Prism; hashed visual reference in tools/reference/prism/ (2026-11-06)",
+      "name_source": "request #458 spells Prism, as the app's TV banner does (2026-11-06)",
+      "secondary": {
+        "color": "#E6EDF3",
+        "parts": [
+          0
+        ],
+        "source": "the white triangle around the bars in the app's TV banner and launcher art; white renders as Core light ink (2026-11-06)"
+      }
+    },
+    {
+      "name": "TVcalendar",
+      "drawable": "tvcalendar",
+      "color": "#FD7B54",
+      "glyph": "tvcalendar_page",
+      "style": "core_monoline",
+      "components": [
+        "clapps.be.tvcalendar/clapps.be.tvcalendar.ui.MainActivity"
+      ],
+      "category": "TOOL",
+      "mapping_source": "issue #446 (device-reported via the pack's Missing icons scanner on a Smart TV, Android 12, pack 2.5.4, Monet Launcher): clapps.be.tvcalendar/clapps.be.tvcalendar.ui.MainActivity is the reported launcher component",
+      "color_source": "sampled from the Google Play launcher icon for clapps.be.tvcalendar: the header band #FD7B54. Pixel sample and hashed reference in tools/reference/tvcalendar/visual-references.json (2026-11-06)",
+      "color_reviewed": "2026-11-06",
+      "glyph_source": "original Core rounded-monoline wall calendar after the launcher icon: an orange header band with two binder rings over a white page whose week grid picks out one day; not a trace. Reference: https://play.google.com/store/apps/details?id=clapps.be.tvcalendar; hashed visual reference in tools/reference/tvcalendar/ (2026-11-06)",
+      "name_source": "request #446 spells TVcalendar, as the Google Play listing does (2026-11-06)",
+      "secondary": {
+        "color": "#E6EDF3",
+        "parts": [
+          2,
+          3
+        ],
+        "source": "the white page and its grid under the orange header in the Google Play launcher icon for clapps.be.tvcalendar; white renders as Core light ink (2026-11-06)"
+      }
+    },
+    {
+      "name": "JellyWatch Player",
+      "drawable": "jellywatch",
+      "color": "#7751C9",
+      "glyph": "jellywatch_jelly",
+      "style": "core_monoline",
+      "components": [
+        "com.jellywatch.tv/com.jellywatch.tv.MainActivity"
+      ],
+      "category": "PLAYER",
+      "mapping_source": "issue #424 (device-reported via the pack's Missing icons scanner on Box R 4K Plus, Android 14, pack 2.5.4): com.jellywatch.tv/com.jellywatch.tv.MainActivity is the reported launcher component",
+      "color_source": "sampled from the Google Play launcher icon for com.jellywatch.tv: the jellyfish's bell #7751C9. Pixel sample and hashed reference in tools/reference/jellywatch/visual-references.json (2026-11-06)",
+      "color_reviewed": "2026-11-06",
+      "glyph_source": "original Core rounded-monoline jellyfish after the launcher icon: a scalloped bell with one eye and four tentacles, the outer two curling outward; the icon's tilted TV frame is left out. Not a trace. Reference: https://play.google.com/store/apps/details?id=com.jellywatch.tv; hashed visual reference in tools/reference/jellywatch/ (2026-11-06)",
+      "name_source": "request #424 spells JellyWatch Player; the Google Play listing titles it JellyWatch: Jellyfin Player (2026-11-06)"
     }
   ],
   "artwork": {

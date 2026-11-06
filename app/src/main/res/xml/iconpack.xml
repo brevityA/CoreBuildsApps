@@ -384,6 +384,7 @@
     <item drawable="box" />
     <item drawable="janky" />
     <item drawable="jellyfin" />
+    <item drawable="jellywatch" />
     <item drawable="jiohotstar" />
     <item drawable="jiotvplus" />
     <item drawable="joyn" />
@@ -634,6 +635,7 @@
     <item drawable="premiumize" />
     <item drawable="premiumize_tv" />
     <item drawable="primevideo" />
+    <item drawable="prism" />
     <item drawable="privado_vpn" />
     <item drawable="privateinternetaccess" />
     <item drawable="projectivy_blueprint" />
@@ -892,6 +894,7 @@
     <item drawable="tv360" />
     <item drawable="tv4_play" />
     <item drawable="tvaplus" />
+    <item drawable="tvcalendar" />
     <item drawable="tvi_player" />
     <item drawable="tving" />
     <item drawable="tvlok" />

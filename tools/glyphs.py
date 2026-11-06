@@ -9598,3 +9598,72 @@ def blackout_power(c):
 
 
 GLYPHS.update({"aurora_player_a": aurora_player_a, "blackout_power": blackout_power})
+
+
+# Issue batch 2026-11-06 (2.6.0): three requests from the Missing icons
+# scanner. Original Core constructions after each app's own launcher art, not
+# traces.
+def prism_spectrum(c):
+    """Prism: seven spectrum bars, tallest in the middle, inside a rounded
+    point-up triangle.
+
+    The app's mark is a white rounded triangle over rainbow bars. A monoline
+    glyph takes one accent, so the bars carry the centre bar's green and the
+    triangle (primitive 0) takes light ink through the catalog secondary. The
+    bars are what separate it from play_store_tri, freshdrama_tri and
+    jellyfin_chevrons' nested triangles.
+    """
+    return ('<path d="M 284.5 122.5 L 423.5 369.5 Q 452 420 394 420 L 118 420 '
+            'Q 60 420 88.5 369.5 L 227.5 122.5 Q 256 72 284.5 122.5 Z" '
+            f'{_s(c, 32)}/>'
+            '<path d="M 154 322 L 154 342 M 188 310 L 188 354 M 222 295 L 222 369 '
+            'M 256 279 L 256 385 M 290 295 L 290 369 M 324 310 L 324 354 '
+            f'M 358 322 L 358 342" {_s(c, 20)}/>')
+
+
+def tvcalendar_page(c):
+    """TVcalendar: a wall calendar with an orange header band, two binder
+    rings and a week grid with one day picked out.
+
+    The launcher icon is a white page under an orange header. Primitives 2
+    and 3 (the page and its grid) take light ink through the catalog
+    secondary; the band, the rings and the picked day keep the accent. The
+    grid and the picked day are what separate it from series_calendar, which
+    is one colour and carries a tick.
+    """
+    days = []
+    for row, y in enumerate((262, 318, 374)):
+        for col, x in enumerate((130, 202, 274, 346)):
+            if (row, col) != (1, 2):
+                days.append(f"M {x} {y} L {x + 36} {y}")
+    return ('<path d="M 72 204 L 72 158 Q 72 118 112 118 L 400 118 Q 440 118 440 158 '
+            f'L 440 204 Z" {_s(c, 32)}/>'
+            f'<path d="M 168 80 L 168 152 M 344 80 L 344 152" {_s(c, 26)}/>'
+            '<path d="M 72 204 L 72 386 Q 72 426 112 426 L 400 426 Q 440 426 440 386 '
+            f'L 440 204" {_s(c, 32)}/>'
+            f'<path d="{" ".join(days)}" {_s(c, 20)}/>'
+            f'<rect x="266" y="296" width="54" height="44" rx="14" {_s(c, 20)}/>')
+
+
+def jellywatch_jelly(c):
+    """JellyWatch: a one-eyed jellyfish, its bell rimmed in scallops, two
+    straight tentacles between two that curl outward.
+
+    The launcher icon sets the jellyfish in a tilted TV frame; the frame is
+    left out so the creature holds the tile. Nothing here is shared with
+    jellyfin_chevrons or the fin marks of the other Jellyfin clients.
+    """
+    return ('<path d="M 112 274 C 112 150 176 76 256 76 C 336 76 400 150 400 274 '
+            'Q 376 302 352 278 Q 328 254 304 280 Q 280 306 256 282 '
+            'Q 232 258 208 282 Q 184 306 160 278 Q 136 252 112 274 Z" '
+            f'{_s(c, 32)}/>'
+            f'<circle cx="256" cy="186" r="50" {_s(c, 26)}/>'
+            f'<path d="M 252 186 L 260 186" {_s(c, 20)}/>'
+            '<path d="M 168 300 C 152 340 196 368 176 404 C 166 422 148 424 138 412 '
+            'M 228 300 C 220 350 250 380 236 440 M 284 300 C 292 350 262 380 276 440 '
+            'M 344 300 C 360 340 316 368 336 404 C 346 422 364 424 374 412" '
+            f'{_s(c, 26)}/>')
+
+
+GLYPHS.update({"prism_spectrum": prism_spectrum, "tvcalendar_page": tvcalendar_page,
+               "jellywatch_jelly": jellywatch_jelly})

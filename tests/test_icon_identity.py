@@ -93,7 +93,7 @@ class IdentityTests(unittest.TestCase):
 
     def test_request_references_are_hash_pinned_and_not_runtime_art(self):
         for directory in ("sportfm-tv", "tvlok", "plezy", "streamfc", "radio-france",
-                          "aurora-player", "blackout"):
+                          "aurora-player", "blackout", "prism", "tvcalendar", "jellywatch"):
             root = ROOT / "tools/reference" / directory
             evidence = json.loads((root / "visual-references.json").read_text())
             self.assertTrue(evidence["usage"].startswith("reference-only"))
@@ -173,6 +173,54 @@ class IdentityTests(unittest.TestCase):
                     colour = "#{:02X}{:02X}{:02X}".format(*Counter(pixels).most_common(1)[0][0])
                     self.assertEqual(colour, sample["color"])
                 self.assertEqual([s["color"] for s in samples], gradient[:sampled])
+
+    def test_november_requests_are_reviewed_monoline_marks(self):
+        # 6 November (2.6.0): three Missing-icons scanner requests. Each accent
+        # is a pixel sample from the app's own art; Prism and TVcalendar carry
+        # their white parts as Core light ink through a declared secondary.
+        expected = {
+            "prism": ("prism_spectrum", "#3DDC97", [0], "prism",
+                      "com.prism.music/com.prism.music.TvActivity"),
+            "tvcalendar": ("tvcalendar_page", "#FD7B54", [2, 3], "tvcalendar",
+                           "clapps.be.tvcalendar/clapps.be.tvcalendar.ui.MainActivity"),
+            "jellywatch": ("jellywatch_jelly", "#7751C9", None, "jellywatch",
+                           "com.jellywatch.tv/com.jellywatch.tv.MainActivity"),
+        }
+        from collections import Counter
+        for drawable, (glyph, accent, parts, ref, component) in expected.items():
+            with self.subTest(drawable=drawable):
+                icon = BY_ID[drawable]
+                self.assertEqual(icon["glyph"], glyph)
+                self.assertEqual(icon["style"], CORE_MONOLINE)
+                self.assertEqual(icon["color"], accent)
+                self.assertEqual(icon["components"], [component])
+                self.assertNotIn("unverified", icon)
+                self.assertEqual(icon["color_reviewed"], "2026-11-06")
+                self.assertNotIn("mark", icon)
+                self.assertNotIn("gradient", icon)
+                if parts is None:
+                    self.assertNotIn("secondary", icon)
+                else:
+                    self.assertEqual(icon["secondary"]["color"], LIGHT_INK)
+                    self.assertEqual(icon["secondary"]["parts"], parts)
+                    self.assertFalse(secondary_errors(icon))
+                self.assertIn(f"tools/reference/{ref}/", icon["glyph_source"])
+                sample = json.loads((ROOT / "tools/reference" / ref
+                                     / "visual-references.json").read_text())["color_sample"]
+                with Image.open(ROOT / "tools/reference" / ref / sample["path"]) as image:
+                    pixels = [p for p in image.convert("RGB").crop(tuple(sample["box"])).getdata()
+                              if not min(p) > 200 and max(p) > 60]
+                colour = "#{:02X}{:02X}{:02X}".format(*Counter(pixels).most_common(1)[0][0])
+                self.assertEqual(colour, sample["color"])
+                self.assertEqual(sample["color"], accent)
+
+    def test_shizuku_plus_takes_shizukus_mark(self):
+        # #425: Shizuku+ keeps upstream Shizuku's launcher art with a plus
+        # badge, so its TV component joins Shizuku rather than a new icon.
+        icon = BY_ID["shizuku"]
+        self.assertIn("af.shizuku.plus.api/af.shizuku.manager.TvActivity", icon["components"])
+        self.assertIn("issue #425", icon["mapping_source"])
+        self.assertNotIn("unverified", icon)
 
     def test_requested_accents_reproduce_the_recorded_pixel_samples(self):
         from collections import Counter
