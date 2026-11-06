@@ -181,6 +181,7 @@
     <item drawable="dream_player_tv_banner" />
     <item drawable="gridstreamr_banner" />
     <item drawable="janky_banner" />
+    <item drawable="jellywatch_banner" />
     <item drawable="justplayer_banner" />
     <item drawable="maxplayer_banner" />
     <item drawable="mediaspelare_banner" />
@@ -233,6 +234,7 @@
     <item drawable="pocketcasts_banner" />
     <item drawable="podcastaddict_banner" />
     <item drawable="poweramp_eq_banner" />
+    <item drawable="prism_banner" />
     <item drawable="music_banner" />
     <item drawable="radio_france_banner" />
     <item drawable="radio_on_tv_banner" />
@@ -408,6 +410,7 @@
     <item drawable="tv_manager_banner" />
     <item drawable="tvquickactions_banner" />
     <item drawable="tv_quick_actions_banner" />
+    <item drawable="tvcalendar_banner" />
     <item drawable="universalmanager_banner" />
     <item drawable="virtualhere_usb_server_banner" />
     <item drawable="booster_banner" />

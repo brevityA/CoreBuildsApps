@@ -1,6 +1,6 @@
 # Supported applications
 
-`1028` icons · `1256` mapped components · pack v2.5.4
+`1031` icons · `1260` mapped components · pack v2.6.0
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -392,6 +392,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | İnat Box | `box` | `#E86830` | `#E86830` | `com.bp.box/com.bp.box.activities.SplashActivity` |
 | Janky Player | `janky` | `#1E88E5` | `#1E88E5` | `com.player.janky/.MainActivity` |
 | Jellyfin | `jellyfin` | `#00A4DC` | `#00A4DC` | `org.jellyfin.androidtv/.ui.startup.StartupActivity`<br>`org.jellyfin.mobile/.MainActivity` |
+| JellyWatch Player | `jellywatch` | `#7751C9` | `#7751C9` | `com.jellywatch.tv/com.jellywatch.tv.MainActivity` |
 | Jiohotstar | `jiohotstar` | `#C95CFF` | `#C95CFF` | `in.startv.hotstar/com.hotstar.MainActivity` |
 | JioTV+ | `jiotvplus` | `#BE1220` | `#C01220` | `com.jio.media.jiotvplus/com.jio.media.stb.ondemand.patchwall.views.MainActivity` |
 | Joyn | `joyn` | `#005766` | `#006A7C` | `de.prosiebensat1digital.seventv/de.joyn.mobile.app.splash.SplashActivity` |
@@ -642,6 +643,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Premiumize | `premiumize` | `#F5A623` | `#F5A623` | `me.premiumize.app/.MainActivity` |
 | Premiumize TV | `premiumize_tv` | `#A80808` | `#C20909` | `me.premiumize.pmtvfire/me.premiumize.pmtvandroid.MainActivity` |
 | Prime Video | `primevideo` | `#00A8E1` | `#00A8E1` | `com.amazon.amazonvideo.livingroom/com.amazon.ignition.IgnitionActivity`<br>`com.amazon.amazonvideo.livingroom/.ui.LauncherActivity`<br>`com.amazon.avod.thirdpartyclient/.LauncherActivity` |
+| Prism | `prism` | `#3DDC97` | `#3DDC97` | `com.prism.music/com.prism.music.TvActivity` |
 | Privado VPN | `privado_vpn` | `#494EB6` | `#5055B9` | `io.privado.android/io.privado.android.ui.splash.SplashActivity` |
 | Private Internet Access | `privateinternetaccess` | `#1E811F` | `#1E811F` | `com.privateinternetaccess.android/com.kape.vpn.MainActivity` |
 | Projectivy Blueprint | `projectivy_blueprint` | `#00E5FF` | `#00E5FF` | `dev.projectivy.blueprint.app/.MainActivity` |
@@ -733,7 +735,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Shadow | `shadowcloudgaming` | `#3848D0` | `#4151D2` | `com.blade.shadowcloudgaming/com.blade.shadow.dispatcher.DispatcherActivity` |
 | Shahid | `shahid` | `#A366FF` | `#A366FF` | `net.mbc.shahidTV/net.mbc.shahidTV.MainActivity` |
 | Shark TV | `sharktvthree` | `#40B0B8` | `#40B0B8` | `com.nathnetwork.sharktvthree/com.nathnetwork.sharktvthree.SplashVideoActivity` |
-| Shizuku | `shizuku` | `#4C5CBD` | `#4C5CBD` | `moe.shizuku.privileged.api/rikka.shizuku.manager.MainActivity`<br>`moe.shizuku.privileged.api/moe.shizuku.manager.MainActivity` |
+| Shizuku | `shizuku` | `#4C5CBD` | `#4C5CBD` | `moe.shizuku.privileged.api/rikka.shizuku.manager.MainActivity`<br>`moe.shizuku.privileged.api/moe.shizuku.manager.MainActivity`<br>`af.shizuku.plus.api/af.shizuku.manager.TvActivity` |
 | Shout! TV | `shout_tv` | `#E81820` | `#E81820` | `com.shoutfactory.app/com.shoutfactory.app.MainActivity` |
 | Showmax | `showmax` | `#FF5CA8` | `#FF5CA8` | `com.showmax.showmax.google/com.peacock.peacocktv.GoogleMainActivity` |
 | Shudder | `dramafever` | `#D40000` | `#D40000` | `com.dramafever.shudder/amcsvod.shudder.view.activity.LauncherActivity` |
@@ -900,6 +902,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | TV360 | `tv360` | `#DB2332` | `#DB2332` | `com.viettel.tv360.tv/com.viettel.tv360.tv.screen.splash.SplashActivity` |
 | TV4 Play | `tv4_play` | `#D80018` | `#D80018` | `se.tv4.tv4playtab/se.tv4.tv4play.ui.mobile.main.BottomNavigationActivity`<br>`se.tv4.tv4playtab/se.tv4.tv4play.ui.tv.navigation.TvHubActivity` |
 | TVA+ | `tvaplus` | `#FFB020` | `#FFB020` | `com.numeriq.tvaplus/ade.tv.main.ui.splash.SplashActivity` |
+| TVcalendar | `tvcalendar` | `#FD7B54` | `#FD7B54` | `clapps.be.tvcalendar/clapps.be.tvcalendar.ui.MainActivity` |
 | Tvi Player | `tvi_player` | `#00D4FF` | `#00D4FF` | `pt.iol.tviplayer.androidtv/pt.iol.tviplayer.androidtv.MainActivity` |
 | TVING | `tving` | `#FF153C` | `#FF153C` | `net.cj.cjhv.gs.tving/net.cj.cjhv.gs.tving.view.scaleup.ScaleupIntroActivity` |
 | TVLok | `tvlok` | `#17A5DF` | `#17A5DF` | `com.tvlok.app/com.tvlok.app.ui.MainActivity`<br>`com.tvlok.app/com.tvlok.app.ui.TvLauncherActivity` |

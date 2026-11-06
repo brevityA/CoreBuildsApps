@@ -92,7 +92,9 @@ MAX_SHOTS = 8
 # must exist in docs/ as a 1920x1144 frame (panel + 64px caption band).
 SCREENSHOTS = [
     ("wallpapers", "every series, thumbnails bundled so the grid works offline"),
-    ("catalogue", "the icon catalogue, searchable and sorted by category"),
+    # The Play build's Home: its rail has no Support row (catalogue_frame's
+    # `play`), and the listing must show the build it sells.
+    ("catalogue-play", "the icon catalogue, searchable and sorted by category"),
     ("inspector", "any app's unfiltered icon, and the file the pack would draw"),
     ("auditor", "which installed apps are covered, and one-press icon requests"),
     ("launcher-compat", "which launchers on this TV can apply the pack"),

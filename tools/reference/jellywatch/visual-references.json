@@ -1,0 +1,27 @@
+{
+  "usage": "reference-only: brand cues and colour sampling for an original Core monoline redraw; never shipped as art",
+  "source": "https://play.google.com/store/apps/details?id=com.jellywatch.tv",
+  "captured": "2026-11-06",
+  "references": [
+    {
+      "path": "launcher-icon-128.png",
+      "sha256": "48cd67f0a3af5f63db91d933fce4abc2fbec2ca690460de5e7209a589f193a61",
+      "size": [
+        128,
+        128
+      ],
+      "note": "Google Play launcher icon (og:image), downsized from 256 px to 128 px for evidence only"
+    }
+  ],
+  "color_sample": {
+    "part": "the jellyfish's bell, right of the eye",
+    "box": [
+      76,
+      44,
+      90,
+      60
+    ],
+    "path": "launcher-icon-128.png",
+    "color": "#7751C9"
+  }
+}

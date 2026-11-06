@@ -1125,6 +1125,9 @@
     <item component="ComponentInfo{org.jellyfin.androidtv/.ui.startup.StartupActivity}" drawable="jellyfin"/>
     <item component="ComponentInfo{org.jellyfin.mobile/org.jellyfin.mobile.MainActivity}" drawable="jellyfin"/>
     <item component="ComponentInfo{org.jellyfin.mobile/.MainActivity}" drawable="jellyfin"/>
+    <!-- JellyWatch Player -->
+    <item component="ComponentInfo{com.jellywatch.tv/com.jellywatch.tv.MainActivity}" drawable="jellywatch"/>
+    <item component="ComponentInfo{com.jellywatch.tv/.MainActivity}" drawable="jellywatch"/>
     <!-- Jiohotstar -->
     <item component="ComponentInfo{in.startv.hotstar/com.hotstar.MainActivity}" drawable="jiohotstar"/>
     <!-- JioTV+ -->
@@ -1855,6 +1858,9 @@
     <item component="ComponentInfo{com.amazon.amazonvideo.livingroom/.ui.LauncherActivity}" drawable="primevideo"/>
     <item component="ComponentInfo{com.amazon.avod.thirdpartyclient/com.amazon.avod.thirdpartyclient.LauncherActivity}" drawable="primevideo"/>
     <item component="ComponentInfo{com.amazon.avod.thirdpartyclient/.LauncherActivity}" drawable="primevideo"/>
+    <!-- Prism -->
+    <item component="ComponentInfo{com.prism.music/com.prism.music.TvActivity}" drawable="prism"/>
+    <item component="ComponentInfo{com.prism.music/.TvActivity}" drawable="prism"/>
     <!-- Privado VPN -->
     <item component="ComponentInfo{io.privado.android/io.privado.android.ui.splash.SplashActivity}" drawable="privado_vpn"/>
     <item component="ComponentInfo{io.privado.android/.ui.splash.SplashActivity}" drawable="privado_vpn"/>
@@ -2138,6 +2144,7 @@
     <!-- Shizuku -->
     <item component="ComponentInfo{moe.shizuku.privileged.api/rikka.shizuku.manager.MainActivity}" drawable="shizuku"/>
     <item component="ComponentInfo{moe.shizuku.privileged.api/moe.shizuku.manager.MainActivity}" drawable="shizuku"/>
+    <item component="ComponentInfo{af.shizuku.plus.api/af.shizuku.manager.TvActivity}" drawable="shizuku"/>
     <!-- Shout! TV -->
     <item component="ComponentInfo{com.shoutfactory.app/com.shoutfactory.app.MainActivity}" drawable="shout_tv"/>
     <item component="ComponentInfo{com.shoutfactory.app/.MainActivity}" drawable="shout_tv"/>
@@ -2614,6 +2621,9 @@
     <item component="ComponentInfo{se.tv4.tv4playtab/se.tv4.tv4play.ui.tv.navigation.TvHubActivity}" drawable="tv4_play"/>
     <!-- TVA+ -->
     <item component="ComponentInfo{com.numeriq.tvaplus/ade.tv.main.ui.splash.SplashActivity}" drawable="tvaplus"/>
+    <!-- TVcalendar -->
+    <item component="ComponentInfo{clapps.be.tvcalendar/clapps.be.tvcalendar.ui.MainActivity}" drawable="tvcalendar"/>
+    <item component="ComponentInfo{clapps.be.tvcalendar/.ui.MainActivity}" drawable="tvcalendar"/>
     <!-- Tvi Player -->
     <item component="ComponentInfo{pt.iol.tviplayer.androidtv/pt.iol.tviplayer.androidtv.MainActivity}" drawable="tvi_player"/>
     <item component="ComponentInfo{pt.iol.tviplayer.androidtv/.MainActivity}" drawable="tvi_player"/>

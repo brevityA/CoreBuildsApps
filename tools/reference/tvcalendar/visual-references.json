@@ -1,0 +1,27 @@
+{
+  "usage": "reference-only: brand cues and colour sampling for an original Core monoline redraw; never shipped as art",
+  "source": "https://play.google.com/store/apps/details?id=clapps.be.tvcalendar",
+  "captured": "2026-11-06",
+  "references": [
+    {
+      "path": "launcher-icon-128.png",
+      "sha256": "7d50fe6a3727f6f3e545cd931019b5eeef62ea43279716d15a8db05170a94ee8",
+      "size": [
+        128,
+        128
+      ],
+      "note": "Google Play launcher icon (og:image), downsized from 256 px to 128 px for evidence only"
+    }
+  ],
+  "color_sample": {
+    "part": "header band",
+    "box": [
+      44,
+      34,
+      84,
+      40
+    ],
+    "path": "launcher-icon-128.png",
+    "color": "#FD7B54"
+  }
+}

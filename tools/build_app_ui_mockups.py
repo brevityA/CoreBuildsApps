@@ -878,12 +878,17 @@ def category_counts() -> list[tuple[str, str, int]]:
     return out
 
 
-def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
+def catalogue_frame(with_update_bar: bool, play: bool = False) -> tuple[Image.Image, str]:
     """Home as built since 2.6.0: activity_main.xml's rail and stage at
     960x540dp with the real strings, dimens, colours, icons and bundled art.
     The rail holds the wordmark, Apply and its launchers, the three rows and
     the foot rows; the stage holds the update bar when there is one, the
-    search pill, the category chips and the grid."""
+    search pill, the category chips and the grid.
+
+    `play` draws the Google Play build's rail, which has no Support row
+    (MainActivity hides support_entry when Distribution.PLAY). That frame is
+    the Play listing's catalogue screenshot: the store page must show the
+    build it sells, not the GitHub one."""
     img = new_frame()
     draw = ImageDraw.Draw(img, "RGBA")
     rx0, rx1, sx0, sx1 = rail_and_stage(img)
@@ -975,7 +980,7 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
     # Support, Settings and About at the rail's foot (the GitHub build; the
     # Play build has no Support row). A spacer takes what is left above them.
     foot = [("ic_nav_support", "support_label"), ("ic_nav_settings", "settings_label"),
-            ("ic_nav_about", "about_label")]
+            ("ic_nav_about", "about_label")][1 if play else 0:]
     step = dp(2) + dp(DIMENS["cb_rail_item"])
     fy = max(y + dp(DIMENS["cb_space_md"]), bottom - len(foot) * step)
     f_foot = ofont(DIMENS["cb_text_label"], "medium")
@@ -1081,7 +1086,7 @@ def catalogue_frame(with_update_bar: bool) -> tuple[Image.Image, str]:
     else:
         note = ("MOCKUP - Home from activity_main.xml + strings/dimens/colors + "
                 f"appfilter ({COMPONENT_COUNT} components); example: launcher, missing "
-                "count, focus")
+                "count, focus" + ("; Google Play build, no Support row" if play else ""))
     return img, note
 
 
@@ -1796,6 +1801,7 @@ def glyphs_home_frame() -> tuple[Image.Image, str]:
 FRAMES = [
     ("app-ui-catalogue.png", lambda: catalogue_frame(False)),
     ("app-ui-catalogue-update.png", lambda: catalogue_frame(True)),
+    ("app-ui-catalogue-play.png", lambda: catalogue_frame(False, play=True)),
     ("app-ui-wallpapers.png", wallpapers_frame),
     ("app-ui-settings.png", settings_frame),
     ("app-ui-settings-display.png", settings_display_frame),
