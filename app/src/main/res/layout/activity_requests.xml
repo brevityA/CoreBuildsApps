@@ -1,59 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  My requests, a Core Builds Plus extra (Google Play build). The What's new
+  My requests, a Core Premium extra (Google Play build). The What's new
   grammar: header and summary pinned, the rows in a ScrollView the activity
-  fills from RequestLog, Back pinned below. Rows are focusable so the D-pad
-  can scroll a long list; pressing one does nothing more.
+  fills from RequestLog. Rows are focusable so the D-pad can scroll a long
+  list; pressing one does nothing more. Back is the header's pill (2.6.0), as
+  on every other screen, instead of a full-width row under the list.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/cb_night"
+    android:clipToPadding="false"
     android:orientation="vertical"
-    android:padding="@dimen/cb_card_padding">
+    android:paddingStart="@dimen/cb_gutter_side"
+    android:paddingEnd="@dimen/cb_gutter_side"
+    android:paddingTop="@dimen/cb_gutter_top"
+    android:paddingBottom="@dimen/cb_gutter_bottom">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="monospace"
-        android:letterSpacing="0.16"
-        android:text="@string/requests_kicker"
-        android:textColor="@color/cb_signal_cyan"
-        android:textSize="@dimen/cb_text_kicker"
-        android:textStyle="bold" />
+        android:layout_marginTop="-4dp"
+        android:layout_marginEnd="-4dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:gravity="top"
+        android:orientation="horizontal"
+        android:paddingTop="4dp"
+        android:paddingEnd="4dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/cb_space_xs"
-        android:text="@string/settings_requests_title"
-        android:textColor="@color/cb_ink"
-        android:textSize="@dimen/cb_text_title"
-        android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/CoreBuilds.Eyebrow"
+                android:text="@string/requests_kicker" />
+
+            <TextView
+                style="@style/CoreBuilds.Title"
+                android:text="@string/settings_requests_title" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/requests_back"
+            style="@style/Widget.CoreBuilds.Pill.Ghost"
+            android:layout_height="@dimen/cb_pill_compact"
+            android:drawablePadding="6dp"
+            android:paddingStart="12dp"
+            android:text="@string/action_back"
+            app:drawableStartCompat="@drawable/ic_chevron_start"
+            app:drawableTint="@color/pill_ghost_text" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/requests_summary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/cb_space_xs"
-        android:textColor="@color/cb_slate"
-        android:textSize="@dimen/cb_text_data" />
+        style="@style/CoreBuilds.Lede"
+        android:layout_marginTop="@dimen/cb_space_xs" />
 
     <TextView
         android:id="@+id/requests_empty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/cb_space_md"
+        android:lineSpacingExtra="3dp"
         android:text="@string/requests_empty"
         android:textColor="@color/cb_ink"
-        android:textSize="@dimen/cb_text_body"
+        android:textSize="@dimen/cb_text_label"
         android:visibility="gone" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="@dimen/cb_space_md">
+        android:layout_marginTop="@dimen/cb_space_md"
+        android:clipToPadding="false"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:layout_marginStart="-4dp"
+        android:layout_marginEnd="-4dp">
 
         <LinearLayout
             android:id="@+id/requests_list"
@@ -61,24 +89,4 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" />
     </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/requests_back"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/cb_space_md"
-        android:background="@drawable/bg_card"
-        android:clickable="true"
-        android:focusable="true"
-        android:gravity="center"
-        android:padding="@dimen/cb_card_padding">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/action_back"
-            android:textColor="@color/cb_ink"
-            android:textSize="@dimen/cb_text_body"
-            android:textStyle="bold" />
-    </LinearLayout>
 </LinearLayout>

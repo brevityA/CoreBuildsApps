@@ -48,9 +48,6 @@
     <color name="cb_selected_edge">#9900D4FF</color>
     <!-- A secondary pill's resting edge: cyan at 35%. -->
     <color name="cb_ghost_edge">#5900D4FF</color>
-    <!-- A switch row that is on: cyan-tinted body and edge. -->
-    <color name="cb_toggle_on">#2600D4FF</color>
-    <color name="cb_toggle_on_edge">#9900D4FF</color>
     <!-- Text on a control that cannot be pressed. -->
     <color name="cb_text_disabled">#668B949E</color>
 </resources>

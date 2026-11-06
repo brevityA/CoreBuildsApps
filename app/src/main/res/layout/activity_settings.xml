@@ -34,6 +34,7 @@
 -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -41,76 +42,57 @@
     android:paddingStart="@dimen/cb_gutter_side"
     android:paddingEnd="@dimen/cb_gutter_side"
     android:paddingTop="24dp"
-    android:paddingBottom="16dp">
+    android:paddingBottom="16dp"
+    android:clipToPadding="false">
 
-    <!-- HEADER -->
-    <!--
-        gravity=center_vertical, not top. With the chip stacked above the title
-        the left column was the tall side and top alignment was right; inline,
-        the 48dp Back button is taller than the title, and top alignment left it
-        hanging 10dp below the text it sits beside.
-    -->
+    <!-- HEADER: the eyebrow over the title, Back at the right (2.6.0, as on
+         every screen). The rows below scroll, so the header's 53dp is paid
+         for by the list rather than clipping it. -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="top"
+        android:layout_marginTop="-4dp"
+        android:layout_marginEnd="-4dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="4dp"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
-        <!--
-            Chip beside the title, not stacked above it. About keeps the stacked
-            form; this screen is a dense list and cannot spend 83dp on a header.
-            Inline costs the height of the title alone.
-        -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <TextView
+                style="@style/CoreBuilds.Eyebrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_chip"
-                android:fontFamily="monospace"
-                android:paddingStart="@dimen/cb_space_sm"
-                android:paddingEnd="@dimen/cb_space_sm"
-                android:paddingTop="7dp"
-                android:paddingBottom="7dp"
-                android:letterSpacing="0.18"
-                android:text="@string/settings_kicker"
-                android:textColor="@color/cb_signal_cyan"
-                android:textSize="@dimen/cb_text_kicker"
-                android:textStyle="bold" />
+                android:text="@string/settings_kicker" />
 
             <TextView
+                style="@style/CoreBuilds.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/cb_space_md"
                 android:ellipsize="end"
-                android:letterSpacing="-0.025"
                 android:maxLines="1"
-                android:text="@string/settings_title"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_title"
-                android:textStyle="bold" />
+                android:text="@string/settings_title" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/set_back"
+            style="@style/Widget.CoreBuilds.Pill.Ghost"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="@dimen/cb_button_min_width"
-            android:minHeight="@dimen/cb_target_min"
-            android:background="@drawable/bg_ghost"
             android:clickable="true"
             android:focusable="true"
-            android:gravity="center"
-            android:paddingStart="@dimen/cb_space_lg"
-            android:paddingEnd="@dimen/cb_space_lg"
             android:text="@string/action_back"
-            android:textColor="@color/cb_ink"
-            android:textSize="@dimen/cb_text_body" />
+            android:layout_height="@dimen/cb_pill_compact"
+            android:drawablePadding="6dp"
+            android:paddingStart="12dp"
+            app:drawableStartCompat="@drawable/ic_chevron_start"
+            app:drawableTint="@color/pill_ghost_text" />
     </LinearLayout>
 
     <!--
@@ -140,27 +122,25 @@
 
     <!-- UPDATES -->
     <TextView
+        android:id="@+id/set_updates_heading"
+        style="@style/CoreBuilds.MenuHeading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/cb_space_md"
-        android:fontFamily="monospace"
-        android:letterSpacing="0.16"
-        android:text="@string/settings_group_updates"
-        android:textColor="@color/cb_signal_cyan"
-        android:textSize="@dimen/cb_text_kicker"
-        android:textStyle="bold" />
+        android:text="@string/settings_group_updates" />
 
     <LinearLayout
         android:id="@+id/set_updates_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/bg_card"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/cb_card_padding">
+        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_row"
+        android:stateListAnimator="@animator/focus_raise">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -174,7 +154,7 @@
                 android:text="@string/settings_updates_title"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -196,27 +176,24 @@
 
     <!-- DISPLAY -->
     <TextView
+        style="@style/CoreBuilds.MenuHeading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/cb_space_md"
-        android:fontFamily="monospace"
-        android:letterSpacing="0.16"
-        android:text="@string/settings_group_display"
-        android:textColor="@color/cb_signal_cyan"
-        android:textSize="@dimen/cb_text_kicker"
-        android:textStyle="bold" />
+        android:text="@string/settings_group_display" />
 
     <LinearLayout
         android:id="@+id/set_motion_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/bg_card"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/cb_card_padding">
+        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_row"
+        android:stateListAnimator="@animator/focus_raise">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -230,7 +207,7 @@
                 android:text="@string/settings_motion_title"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -255,12 +232,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/bg_card"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/cb_card_padding">
+        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_row"
+        android:stateListAnimator="@animator/focus_raise">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -274,7 +252,7 @@
                 android:text="@string/settings_amoled_title"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -299,12 +277,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/bg_card"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/cb_card_padding">
+        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_row"
+        android:stateListAnimator="@animator/focus_raise">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -318,7 +297,7 @@
                 android:text="@string/settings_banner_title"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -340,27 +319,24 @@
 
     <!-- LAUNCHER -->
     <TextView
+        style="@style/CoreBuilds.MenuHeading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/cb_space_md"
-        android:fontFamily="monospace"
-        android:letterSpacing="0.16"
-        android:text="@string/settings_group_launcher"
-        android:textColor="@color/cb_signal_cyan"
-        android:textSize="@dimen/cb_text_kicker"
-        android:textStyle="bold" />
+        android:text="@string/settings_group_launcher" />
 
     <LinearLayout
         android:id="@+id/set_refresh_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/bg_card"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/cb_card_padding">
+        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_row"
+        android:stateListAnimator="@animator/focus_raise">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -374,7 +350,7 @@
                 android:text="@string/settings_refresh_title"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -391,12 +367,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/bg_card"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/cb_card_padding">
+        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_row"
+        android:stateListAnimator="@animator/focus_raise">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -410,7 +387,7 @@
                 android:text="@string/settings_appinfo_title"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -424,27 +401,24 @@
 
     <!-- SUITE -->
     <TextView
+        style="@style/CoreBuilds.MenuHeading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/cb_space_md"
-        android:fontFamily="monospace"
-        android:letterSpacing="0.16"
-        android:text="@string/settings_group_suite"
-        android:textColor="@color/cb_signal_cyan"
-        android:textSize="@dimen/cb_text_kicker"
-        android:textStyle="bold" />
+        android:text="@string/settings_group_suite" />
 
     <LinearLayout
         android:id="@+id/set_suite_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/bg_card"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/cb_card_padding">
+        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_row"
+        android:stateListAnimator="@animator/focus_raise">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -458,7 +432,7 @@
                 android:text="@string/settings_suite_title"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -475,12 +449,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/bg_card"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/cb_card_padding">
+        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_row"
+        android:stateListAnimator="@animator/focus_raise">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -494,7 +469,7 @@
                 android:text="@string/settings_whatsnew_title"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -508,24 +483,20 @@
 
     <!-- STORAGE -->
     <TextView
+        style="@style/CoreBuilds.MenuHeading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/cb_space_md"
-        android:fontFamily="monospace"
-        android:letterSpacing="0.16"
-        android:text="@string/settings_group_storage"
-        android:textColor="@color/cb_signal_cyan"
-        android:textSize="@dimen/cb_text_kicker"
-        android:textStyle="bold" />
+        android:text="@string/settings_group_storage" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/bg_card"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/cb_card_padding">
+        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_row">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -539,7 +510,7 @@
                 android:text="@string/settings_cache_title"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -561,18 +532,12 @@
 
         <TextView
             android:id="@+id/set_cache_clear"
+            style="@style/Widget.CoreBuilds.Pill.Ghost"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minHeight="@dimen/cb_target_min"
-            android:background="@drawable/bg_ghost"
             android:clickable="true"
             android:focusable="true"
-            android:gravity="center"
-            android:paddingStart="@dimen/cb_space_lg"
-            android:paddingEnd="@dimen/cb_space_lg"
             android:text="@string/settings_cache_clear"
-            android:textColor="@color/cb_ink"
-            android:textSize="@dimen/cb_text_label" />
+            android:layout_height="@dimen/cb_pill" />
     </LinearLayout>
 
     <!-- CORE BUILDS PLUS (Google Play build only; SettingsActivity shows the
@@ -586,15 +551,11 @@
         android:visibility="gone">
 
     <TextView
+        style="@style/CoreBuilds.MenuHeading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/cb_space_md"
-        android:fontFamily="monospace"
-        android:letterSpacing="0.16"
-        android:text="@string/settings_group_plus"
-        android:textColor="@color/cb_signal_cyan"
-        android:textSize="@dimen/cb_text_kicker"
-        android:textStyle="bold" />
+        android:text="@string/settings_group_plus" />
 
     <!-- The Plus card itself. On Play this group is the only way in: the
          Support doors stay shut there (see MainActivity), so without this
@@ -604,12 +565,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/bg_card"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/cb_card_padding">
+        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_row"
+        android:stateListAnimator="@animator/focus_raise">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -623,7 +585,7 @@
                 android:text="@string/settings_plus_title"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -649,12 +611,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/bg_card"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/cb_card_padding">
+        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_row"
+        android:stateListAnimator="@animator/focus_raise">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -668,7 +631,7 @@
                 android:text="@string/settings_rotate_title"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -696,12 +659,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/bg_card"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/cb_card_padding">
+        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_row"
+        android:stateListAnimator="@animator/focus_raise">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -715,7 +679,7 @@
                 android:text="@string/settings_night_title"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -741,12 +705,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/bg_card"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/cb_card_padding">
+        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_row"
+        android:stateListAnimator="@animator/focus_raise">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -760,7 +725,7 @@
                 android:text="@string/settings_hours_title"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -788,12 +753,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/bg_card"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/cb_card_padding">
+        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_row"
+        android:stateListAnimator="@animator/focus_raise">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -807,7 +773,7 @@
                 android:text="@string/settings_walls_title"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -833,12 +799,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/bg_card"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/cb_card_padding">
+        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_row"
+        android:stateListAnimator="@animator/focus_raise">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -852,7 +819,7 @@
                 android:text="@string/settings_walls_night_title"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -878,12 +845,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/bg_card"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/cb_card_padding">
+        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_row"
+        android:stateListAnimator="@animator/focus_raise">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -897,7 +865,7 @@
                 android:text="@string/settings_requests_title"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -921,27 +889,24 @@
 
     <!-- HELP -->
     <TextView
+        style="@style/CoreBuilds.MenuHeading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/cb_space_md"
-        android:fontFamily="monospace"
-        android:letterSpacing="0.16"
-        android:text="@string/settings_group_help"
-        android:textColor="@color/cb_signal_cyan"
-        android:textSize="@dimen/cb_text_kicker"
-        android:textStyle="bold" />
+        android:text="@string/settings_group_help" />
 
     <LinearLayout
         android:id="@+id/set_audit_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/bg_card"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/cb_card_padding">
+        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_row"
+        android:stateListAnimator="@animator/focus_raise">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -955,7 +920,7 @@
                 android:text="@string/settings_audit_title"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -972,12 +937,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/bg_card"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/cb_card_padding">
+        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_row"
+        android:stateListAnimator="@animator/focus_raise">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -991,7 +957,7 @@
                 android:text="@string/settings_faq_title"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -1010,12 +976,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/bg_card"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/cb_card_padding">
+        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_row"
+        android:stateListAnimator="@animator/focus_raise">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -1029,7 +996,7 @@
                 android:text="@string/settings_about_title"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -1046,12 +1013,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:background="@drawable/bg_card"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/cb_card_padding">
+        android:padding="@dimen/cb_card_padding"
+        android:background="@drawable/bg_row"
+        android:stateListAnimator="@animator/focus_raise">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -1065,7 +1033,7 @@
                 android:text="@string/settings_support_title"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:layout_width="wrap_content"

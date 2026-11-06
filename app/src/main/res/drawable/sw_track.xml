@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Every SwitchCompat's track (2.6.0): Core EQ's 40 x 22dp switch, cyan when on. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true">
+        <shape android:shape="rectangle">
+            <size android:width="40dp" android:height="22dp" />
+            <solid android:color="@color/cb_signal_cyan" />
+            <corners android:radius="11dp" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <size android:width="40dp" android:height="22dp" />
+            <solid android:color="@color/cb_card_focus" />
+            <stroke android:width="1dp" android:color="@color/cb_divider" />
+            <corners android:radius="11dp" />
+        </shape>
+    </item>
+</selector>

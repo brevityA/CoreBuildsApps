@@ -12,6 +12,7 @@
 -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -19,65 +20,55 @@
     android:paddingStart="@dimen/cb_gutter_side"
     android:paddingEnd="@dimen/cb_gutter_side"
     android:paddingTop="24dp"
-    android:paddingBottom="16dp">
+    android:paddingBottom="16dp"
+    android:clipToPadding="false">
 
     <!-- HEADER -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="top"
+        android:layout_marginTop="-4dp"
+        android:layout_marginEnd="-4dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="4dp"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <TextView
+                style="@style/CoreBuilds.Eyebrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_chip"
-                android:fontFamily="monospace"
-                android:paddingStart="@dimen/cb_space_sm"
-                android:paddingEnd="@dimen/cb_space_sm"
-                android:paddingTop="7dp"
-                android:paddingBottom="7dp"
-                android:letterSpacing="0.18"
-                android:text="@string/faq_kicker"
-                android:textColor="@color/cb_signal_cyan"
-                android:textSize="@dimen/cb_text_kicker"
-                android:textStyle="bold" />
+                android:text="@string/faq_kicker" />
 
             <TextView
+                style="@style/CoreBuilds.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/cb_space_md"
                 android:ellipsize="end"
-                android:letterSpacing="-0.025"
                 android:maxLines="1"
-                android:text="@string/faq_title"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_title"
-                android:textStyle="bold" />
+                android:text="@string/faq_title" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/faq_back"
+            style="@style/Widget.CoreBuilds.Pill.Ghost"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="@dimen/cb_button_min_width"
-            android:minHeight="@dimen/cb_target_min"
-            android:background="@drawable/bg_ghost"
             android:clickable="true"
             android:focusable="true"
-            android:gravity="center"
-            android:paddingStart="@dimen/cb_space_lg"
-            android:paddingEnd="@dimen/cb_space_lg"
             android:text="@string/action_back"
-            android:textColor="@color/cb_ink"
-            android:textSize="@dimen/cb_text_body" />
+            android:layout_height="@dimen/cb_pill_compact"
+            android:drawablePadding="6dp"
+            android:paddingStart="12dp"
+            app:drawableStartCompat="@drawable/ic_chevron_start"
+            app:drawableTint="@color/pill_ghost_text" />
     </LinearLayout>
 
     <ScrollView
@@ -100,9 +91,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:background="@drawable/bg_card"
                 android:orientation="vertical"
-                android:padding="@dimen/cb_card_padding">
+                android:padding="@dimen/cb_card_padding"
+                android:background="@drawable/bg_row">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -110,7 +101,7 @@
                     android:text="@string/faq_cache_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_body"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/outfit_semibold" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -126,9 +117,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:background="@drawable/bg_card"
                 android:orientation="vertical"
-                android:padding="@dimen/cb_card_padding">
+                android:padding="@dimen/cb_card_padding"
+                android:background="@drawable/bg_row">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -136,7 +127,7 @@
                     android:text="@string/faq_override_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_body"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/outfit_semibold" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -152,9 +143,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:background="@drawable/bg_card"
                 android:orientation="vertical"
-                android:padding="@dimen/cb_card_padding">
+                android:padding="@dimen/cb_card_padding"
+                android:background="@drawable/bg_row">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -162,7 +153,7 @@
                     android:text="@string/faq_monet_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_body"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/outfit_semibold" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -178,9 +169,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:background="@drawable/bg_card"
                 android:orientation="vertical"
-                android:padding="@dimen/cb_card_padding">
+                android:padding="@dimen/cb_card_padding"
+                android:background="@drawable/bg_row">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -188,7 +179,7 @@
                     android:text="@string/faq_projectivy_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_body"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/outfit_semibold" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -204,9 +195,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:background="@drawable/bg_card"
                 android:orientation="vertical"
-                android:padding="@dimen/cb_card_padding">
+                android:padding="@dimen/cb_card_padding"
+                android:background="@drawable/bg_row">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -214,7 +205,7 @@
                     android:text="@string/faq_unmapped_title"
                     android:textColor="@color/cb_ink"
                     android:textSize="@dimen/cb_text_body"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/outfit_semibold" />
 
                 <TextView
                     android:layout_width="match_parent"

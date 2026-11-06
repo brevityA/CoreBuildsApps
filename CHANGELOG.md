@@ -6,19 +6,53 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Screen tests for every app screen.** `PreviewRenderTest` and
+  `AllScreensRenderTest` render all 15 screens at 1920 × 1080 in both the
+  GitHub and Play builds; `FocusChainTest` presses the D-pad through Home's
+  two columns and Wallpapers' rail; `TextFitTest` fails any label on 13
+  screens that is cut short or taller than its box. It found About's update
+  line cut at two lines and, in the Play build, a network list that no
+  longer fit its column, so About's left column now scrolls. Home crashed on
+  inflate during the work (12sp labels with a 12sp shrink floor, which
+  AppCompat refuses); the renders caught it before it shipped.
+- **The menu audit reads styles.** `tests/test_navigation_graph.py` takes
+  `focusable` and `clickable` from a view's style as well as its attributes,
+  so a styled pill is checked for a press handler and counted as a focus stop.
+
 ### Changed
 
-- **Core Premium is on sale in the Google Play build.** That build now
-  carries the request service's address, so a missing-icon press files the
-  request in one step, Core Premium's card offers the purchase and the
-  24-hour trial, and a buyer's requests are labelled priority. The
-  GitHub / Downloader build is unchanged: it keeps the QR panel and sells
-  nothing. The Play listing's description, Data safety and content rating
-  answers are regenerated to match (`docs/play/listing.json`), and
-  `docs/privacy.html` (effective 30 October 2026) says which build sends a
-  request straight away and how long the Request all count is kept. Nothing
-  has been bought on a TV yet; `docs/PLAY-CONSOLE.md` §8 lists the Console
-  steps and the test.
+- **A new look, the one Core EQ 1.12 introduced, in both builds.** Every
+  one of the 15 screens is set in Outfit (SIL OFL, four cuts, licence in
+  `assets/licenses`), with pill-shaped controls that keep the 3dp cyan focus
+  ring and lift slightly when focused (Reduce motion turns the lift off).
+  Home and Wallpapers are a full-height rail beside a stage: Home's rail
+  holds the wordmark, Apply, the ALSO APPLIES TO launchers, Art style (now a
+  drawn switch), Missing icons and Wallpapers with their state lines, and
+  Support, Settings and About at its foot; the update bar moved onto the
+  stage above the search pill, so the rail no longer gives rows up while it
+  is shown. The icon grid stays three across, with larger 16:9 banners.
+  Wallpapers lists its series as rail rows under a SERIES heading, with
+  Export at the rail's foot. Every other screen takes one header (eyebrow
+  over title, Back at the right) and Core EQ's rows, sections, chips and
+  switches; My requests and What's new gain the screen gutters they lacked.
+- **Core Premium lists what it adds.** The Premium screen (Google Play
+  build) shows the six extras as a list, one row each, beside the purchase
+  card, instead of one 90-word sentence; a state with nothing to buy
+  (loading, pending, owned, unavailable) draws as a quiet pill rather than
+  as the buy button.
+
+### Fixed
+
+- **RIGHT from a wallpaper series reaches the grid.** The series became a
+  vertical list in 1.8.22, but still took LEFT/RIGHT as "previous/next
+  series", so RIGHT moved one series down instead of crossing to the walls.
+- **The export screen names its retry button when storage runs out.** The
+  all-failed path showed the layout's unformatted text, "%1$d failed — tap to
+  retry", instead of "Retry failed".
+- **Settings on Google Play no longer shows an empty UPDATES heading.** The
+  Play build hid the update-checks row but left its heading.
 
 ## [2.5.4] — 2026-10-31
 

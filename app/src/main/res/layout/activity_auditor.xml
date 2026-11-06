@@ -11,6 +11,7 @@
 -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -18,48 +19,41 @@
     android:paddingStart="@dimen/cb_gutter_side"
     android:paddingEnd="@dimen/cb_gutter_side"
     android:paddingTop="24dp"
-    android:paddingBottom="16dp">
+    android:paddingBottom="16dp"
+    android:clipToPadding="false">
 
     <!-- HEADER -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="top"
+        android:layout_marginTop="-4dp"
+        android:layout_marginEnd="-4dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="4dp"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <TextView
+                style="@style/CoreBuilds.Eyebrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_chip"
-                android:fontFamily="monospace"
-                android:paddingStart="@dimen/cb_space_sm"
-                android:paddingEnd="@dimen/cb_space_sm"
-                android:paddingTop="7dp"
-                android:paddingBottom="7dp"
-                android:letterSpacing="0.18"
-                android:text="@string/audit_kicker"
-                android:textColor="@color/cb_signal_cyan"
-                android:textSize="@dimen/cb_text_kicker"
-                android:textStyle="bold" />
+                android:text="@string/audit_kicker" />
 
             <TextView
+                style="@style/CoreBuilds.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/cb_space_md"
                 android:ellipsize="end"
-                android:letterSpacing="-0.025"
                 android:maxLines="1"
-                android:text="@string/audit_title"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_title"
-                android:textStyle="bold" />
+                android:text="@string/audit_title" />
         </LinearLayout>
 
         <!-- Request all (Core Builds Plus, Google Play only): gone until
@@ -67,35 +61,26 @@
              broker baked in and an unrequested missing app. -->
         <TextView
             android:id="@+id/audit_request_all"
+            style="@style/Widget.CoreBuilds.Pill.Ghost"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/cb_space_sm"
-            android:minHeight="@dimen/cb_target_min"
-            android:background="@drawable/bg_ghost"
             android:clickable="true"
             android:focusable="true"
-            android:gravity="center"
-            android:paddingStart="@dimen/cb_space_lg"
-            android:paddingEnd="@dimen/cb_space_lg"
-            android:textColor="@color/cb_signal_cyan"
-            android:textSize="@dimen/cb_text_body"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_height="@dimen/cb_pill" />
 
         <TextView
             android:id="@+id/audit_back"
+            style="@style/Widget.CoreBuilds.Pill.Ghost"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="@dimen/cb_button_min_width"
-            android:minHeight="@dimen/cb_target_min"
-            android:background="@drawable/bg_ghost"
             android:clickable="true"
             android:focusable="true"
-            android:gravity="center"
-            android:paddingStart="@dimen/cb_space_lg"
-            android:paddingEnd="@dimen/cb_space_lg"
             android:text="@string/action_back"
-            android:textColor="@color/cb_ink"
-            android:textSize="@dimen/cb_text_body" />
+            android:layout_height="@dimen/cb_pill_compact"
+            android:drawablePadding="6dp"
+            android:paddingStart="12dp"
+            app:drawableStartCompat="@drawable/ic_chevron_start"
+            app:drawableTint="@color/pill_ghost_text" />
     </LinearLayout>
 
     <TextView
@@ -114,21 +99,13 @@
          reached by the D-pad is a label, not a stop. -->
     <TextView
         android:id="@+id/audit_launcher_note"
+        style="@style/Widget.CoreBuilds.Pill.Ghost.Wide"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/cb_space_sm"
-        android:background="@drawable/bg_ghost"
         android:clickable="true"
         android:contentDescription="@string/launcher_compat_note_cd"
         android:focusable="true"
-        android:gravity="center_vertical"
-        android:minHeight="@dimen/cb_target_min"
-        android:paddingStart="@dimen/cb_space_md"
-        android:paddingEnd="@dimen/cb_space_md"
-        android:paddingTop="@dimen/cb_space_xs"
-        android:paddingBottom="@dimen/cb_space_xs"
-        android:textColor="@color/cb_slate"
-        android:textSize="@dimen/cb_text_data" />
+        android:layout_height="@dimen/cb_pill" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/audit_list"
@@ -175,14 +152,7 @@
 
             <TextView
                 android:id="@+id/audit_qr_kind"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="monospace"
-                android:letterSpacing="0.18"
-                android:textAllCaps="true"
-                android:textColor="@color/cb_signal_cyan"
-                android:textSize="@dimen/cb_text_kicker"
-                android:textStyle="bold" />
+                style="@style/CoreBuilds.Eyebrow" />
 
             <!-- The request's identity, in plain sight and photographable:
                  current launcher icon next to the app name and component.
@@ -192,10 +162,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/cb_space_sm"
-                android:background="@drawable/bg_card"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="@dimen/cb_card_padding">
+                android:padding="@dimen/cb_card_padding"
+                android:background="@drawable/bg_row">
 
                 <ImageView
                     android:id="@+id/audit_qr_icon"
@@ -218,7 +188,7 @@
                         android:maxLines="1"
                         android:textColor="@color/cb_ink"
                         android:textSize="@dimen/cb_text_section"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/outfit_semibold" />
 
                     <TextView
                         android:id="@+id/audit_qr_component"

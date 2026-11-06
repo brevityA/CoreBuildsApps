@@ -45,6 +45,19 @@
         <item name="colorControlActivated">@color/cb_signal_cyan</item>
         <item name="alertDialogTheme">@style/ThemeOverlay.CoreBuilds.Dialog</item>
         <item name="android:alertDialogTheme">@style/ThemeOverlay.CoreBuilds.Dialog</item>
+        <!-- Settings' four switches (and any other SwitchCompat) draw Core
+             EQ's switch, the one Home's Art style row draws by hand. -->
+        <item name="switchStyle">@style/Widget.CoreBuilds.Switch</item>
+    </style>
+
+    <style name="Widget.CoreBuilds.Switch" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:thumb">@drawable/sw_thumb</item>
+        <item name="track">@drawable/sw_track</item>
+        <item name="thumbTint">@null</item>
+        <item name="trackTint">@null</item>
+        <item name="switchMinWidth">40dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="showText">false</item>
     </style>
 
     <!-- Dialogs, should one appear: a rounded panel in Outfit, buttons that show the ring. -->

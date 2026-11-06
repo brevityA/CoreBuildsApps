@@ -63,9 +63,11 @@ class WallpaperChipAdapter(
         holder.view.text = labels[position]
         bindSelection(holder, position)
         // UP off the top of the list collapses through the (often GONE)
-        // selection bar to Back. DOWN off the bottom names nothing: the export
-        // pill sits right under the list, and geometry finds it.
+        // selection bar to Back; RIGHT crosses from the rail to the grid. DOWN
+        // off the bottom names nothing: the export pill sits right under the
+        // list, and geometry finds it.
         holder.view.nextFocusUpId = R.id.wp_selection_bar
+        holder.view.nextFocusRightId = R.id.wp_grid
         holder.view.setOnClickListener { select(key) }
         holder.view.setOnKeyListener { view, keyCode, event ->
             if (event.action != KeyEvent.ACTION_DOWN) return@setOnKeyListener false

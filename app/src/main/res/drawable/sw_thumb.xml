@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Every SwitchCompat's knob (2.6.0): 16dp inside a 22dp box, dark on the cyan
+     track when on, slate when off; SwitchCompat slides it from end to end. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true">
+        <inset android:inset="3dp">
+            <shape android:shape="oval">
+                <size android:width="16dp" android:height="16dp" />
+                <solid android:color="@color/cb_cta_ink" />
+            </shape>
+        </inset>
+    </item>
+    <item>
+        <inset android:inset="3dp">
+            <shape android:shape="oval">
+                <size android:width="16dp" android:height="16dp" />
+                <solid android:color="@color/cb_slate" />
+            </shape>
+        </inset>
+    </item>
+</selector>

@@ -76,6 +76,7 @@ class SettingsActivity : TvActivity() {
         if (Distribution.PLAY) {
             // Google Play updates the Play build; it has no updater to switch.
             findViewById<android.view.View>(R.id.set_updates_row).visibility = android.view.View.GONE
+            findViewById<android.view.View>(R.id.set_updates_heading).visibility = android.view.View.GONE
         } else row(R.id.set_updates_row) {
             val next = !updateSwitch.isChecked
             updateSwitch.isChecked = next

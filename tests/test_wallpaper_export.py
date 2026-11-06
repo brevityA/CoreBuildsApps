@@ -216,7 +216,10 @@ class KotlinWiringTests(unittest.TestCase):
         self.assertIn("notifyItemChanged", code)
         self.assertIn("isSelected", code)
         self.assertIn("KEYCODE_DPAD_LEFT", code)
-        self.assertIn("wp_grid", code)
+        # Since 2.6.0 the series are a vertical rail: LEFT/RIGHT walk chips only
+        # in a horizontal row, and RIGHT from a series names the grid.
+        self.assertIn("RecyclerView.HORIZONTAL", code)
+        self.assertIn("nextFocusRightId = R.id.wp_grid", code)
 
     def test_wallpaper_chip_rebind_is_payload_only(self):
         """A payload-less notifyItemChanged still triggers the default

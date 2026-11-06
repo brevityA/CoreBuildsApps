@@ -108,6 +108,10 @@ class ExportProgressActivity : TvActivity() {
                     progress.isIndeterminate = false
                     progress.progress = 0
                     failed = targets.map { it.cacheName to event.reason }
+                    // Named here as in showResult: the layout's text is a format
+                    // string, and before 2.6.0 this path showed it raw
+                    // ("%1${'$'}d failed — tap to retry") when storage ran out.
+                    retry.text = getString(R.string.wp_retry_failed)
                     retry.visibility = View.VISIBLE
                     retry.requestFocus()
                 }

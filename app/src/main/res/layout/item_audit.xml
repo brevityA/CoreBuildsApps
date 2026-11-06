@@ -13,7 +13,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="6dp"
-    android:background="@drawable/bg_card"
     android:clickable="true"
     android:focusable="true"
     android:gravity="center_vertical"
@@ -22,7 +21,9 @@
     android:paddingStart="@dimen/cb_card_padding"
     android:paddingEnd="@dimen/cb_card_padding"
     android:paddingTop="10dp"
-    android:paddingBottom="10dp">
+    android:paddingBottom="10dp"
+    android:background="@drawable/bg_row"
+    android:stateListAnimator="@animator/focus_raise">
 
     <ImageView
         android:id="@+id/audit_item_icon"
@@ -52,7 +53,7 @@
                 android:maxLines="1"
                 android:textColor="@color/cb_ink"
                 android:textSize="@dimen/cb_text_body"
-                android:textStyle="bold" />
+                android:fontFamily="@font/outfit_semibold" />
 
             <TextView
                 android:id="@+id/audit_item_tags"
@@ -97,13 +98,11 @@
         android:layout_marginStart="@dimen/cb_space_md"
         android:background="@drawable/bg_chip"
         android:duplicateParentState="true"
-        android:fontFamily="monospace"
-        android:letterSpacing="0.12"
-        android:paddingStart="@dimen/cb_space_sm"
-        android:paddingEnd="@dimen/cb_space_sm"
-        android:paddingTop="6dp"
-        android:paddingBottom="6dp"
+        android:fontFamily="@font/outfit_semibold"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         android:textColor="@color/cb_signal_cyan"
-        android:textSize="@dimen/cb_text_kicker"
-        android:textStyle="bold" />
+        android:textSize="@dimen/cb_text_kicker" />
 </LinearLayout>

@@ -81,8 +81,6 @@
     <!-- Support shows two codes side by side, so each is smaller. Its URLs
          encode at 29 modules, about 6dp a module here. -->
     <dimen name="cb_support_qr">220dp</dimen>
-    <!-- The Plus card (Google Play build): wide enough for two lines of status. -->
-    <dimen name="cb_support_plus_width">380dp</dimen>
 
     <!-- Stacked action buttons share a minimum width so they align as a column
          instead of jagging to their text length. -->
@@ -143,5 +141,8 @@
     <!-- Core Premium's feature list: one row per extra, icon then two lines. -->
     <dimen name="cb_feature_icon">22dp</dimen>
     <dimen name="cb_support_plus_card">340dp</dimen>
+    <!-- About's links column. A fixed width, not wrap_content: a two-line row
+         in a wrap_content column was measured at one line and cut. -->
+    <dimen name="cb_about_links_width">300dp</dimen>
 
 </resources>

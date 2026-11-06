@@ -10,6 +10,7 @@
 -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -17,14 +18,21 @@
     android:paddingStart="@dimen/cb_gutter_side"
     android:paddingEnd="@dimen/cb_gutter_side"
     android:paddingTop="@dimen/cb_gutter_top"
-    android:paddingBottom="@dimen/cb_gutter_bottom">
+    android:paddingBottom="@dimen/cb_gutter_bottom"
+    android:clipToPadding="false">
 
     <!-- HEADER -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="top">
+        android:gravity="top"
+        android:layout_marginTop="-4dp"
+        android:layout_marginEnd="-4dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="4dp"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -33,46 +41,31 @@
             android:orientation="vertical">
 
             <TextView
+                style="@style/CoreBuilds.Eyebrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_chip"
-                android:fontFamily="monospace"
-                android:paddingStart="@dimen/cb_space_sm"
-                android:paddingEnd="@dimen/cb_space_sm"
-                android:paddingTop="7dp"
-                android:paddingBottom="7dp"
-                android:letterSpacing="0.18"
-                android:text="@string/about_kicker"
-                android:textColor="@color/cb_signal_cyan"
-                android:textSize="@dimen/cb_text_kicker"
-                android:textStyle="bold" />
+                android:text="@string/about_kicker" />
 
             <TextView
+                style="@style/CoreBuilds.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/cb_space_md"
-                android:letterSpacing="-0.025"
                 android:text="@string/app_name"
-                android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_title"
-                android:textStyle="bold" />
+                android:layout_marginTop="4dp" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/about_back"
+            style="@style/Widget.CoreBuilds.Pill.Ghost"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="@dimen/cb_button_min_width"
-            android:minHeight="@dimen/cb_target_min"
-            android:background="@drawable/bg_ghost"
             android:clickable="true"
             android:focusable="true"
-            android:gravity="center"
-            android:paddingStart="@dimen/cb_space_lg"
-            android:paddingEnd="@dimen/cb_space_lg"
             android:text="@string/action_back"
-            android:textColor="@color/cb_ink"
-            android:textSize="@dimen/cb_text_body" />
+            android:layout_height="@dimen/cb_pill_compact"
+            android:drawablePadding="6dp"
+            android:paddingStart="12dp"
+            app:drawableStartCompat="@drawable/ic_chevron_start"
+            app:drawableTint="@color/pill_ghost_text" />
     </LinearLayout>
 
     <!-- BODY -->
@@ -80,23 +73,34 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="@dimen/cb_space_lg"
+        android:layout_marginTop="@dimen/cb_space_md"
         android:orientation="horizontal">
 
-        <!-- LEFT -->
-        <LinearLayout
+        <!-- LEFT: the build facts and the network list. A ScrollView since
+             2.6.0: the Google Play build lists a fourth request, and with
+             Outfit's taller lines the list no longer fits the column at 1080p.
+             The list is focusable, as Core EQ's information panels are, so
+             the remote can enter it and scroll; LEFT from the links reaches it. -->
+        <ScrollView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:clipToPadding="false"
+            android:fillViewport="true"
+            android:scrollbars="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <!-- Build facts -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_card"
                 android:orientation="horizontal"
-                android:padding="@dimen/cb_card_padding">
+                android:padding="@dimen/cb_card_padding"
+                android:background="@drawable/bg_row">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -105,21 +109,16 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/CoreBuilds.MenuHeading"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="monospace"
-                        android:letterSpacing="0.14"
-                        android:text="@string/about_label_version"
-                        android:textColor="@color/cb_slate"
-                        android:textSize="@dimen/cb_text_kicker" />
+                        android:text="@string/about_label_version" />
 
                     <TextView
                         android:id="@+id/about_version"
+                        style="@style/CoreBuilds.Title"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/cb_ink"
-                        android:textSize="@dimen/cb_text_title"
-                        android:textStyle="bold" />
+                        android:layout_height="wrap_content" />
 
                     <!-- Verdict of the last Check for updates on this screen:
                          "LATEST" in cyan or "2.4.1 AVAILABLE" in the warning amber. GONE
@@ -144,13 +143,10 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/CoreBuilds.MenuHeading"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="monospace"
-                        android:letterSpacing="0.14"
-                        android:text="@string/about_label_build"
-                        android:textColor="@color/cb_slate"
-                        android:textSize="@dimen/cb_text_kicker" />
+                        android:text="@string/about_label_build" />
 
                     <TextView
                         android:id="@+id/about_build"
@@ -168,13 +164,10 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/CoreBuilds.MenuHeading"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="monospace"
-                        android:letterSpacing="0.14"
-                        android:text="@string/about_label_icons"
-                        android:textColor="@color/cb_slate"
-                        android:textSize="@dimen/cb_text_kicker" />
+                        android:text="@string/about_label_icons" />
 
                     <TextView
                         android:id="@+id/about_icons"
@@ -182,7 +175,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/cb_signal_cyan"
                         android:textSize="@dimen/cb_text_section"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/outfit_semibold" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -192,13 +185,10 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/CoreBuilds.MenuHeading"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="monospace"
-                        android:letterSpacing="0.14"
-                        android:text="@string/about_label_wallpapers"
-                        android:textColor="@color/cb_slate"
-                        android:textSize="@dimen/cb_text_kicker" />
+                        android:text="@string/about_label_wallpapers" />
 
                     <TextView
                         android:id="@+id/about_wallpapers"
@@ -206,28 +196,30 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/cb_signal_cyan"
                         android:textSize="@dimen/cb_text_section"
-                        android:textStyle="bold" />
+                        android:fontFamily="@font/outfit_semibold" />
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- The whole network list -->
+            <!-- The whole network list. Its items are 15sp, 6dp apart, since Outfit
+                 (2.6.0) sets taller lines than Roboto and the list must fit the
+                 column at 1080p (TextFitTest holds it). -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/cb_space_md"
-                android:background="@drawable/bg_card"
                 android:orientation="vertical"
-                android:padding="@dimen/cb_card_padding">
+                android:padding="@dimen/cb_card_padding"
+                android:background="@drawable/bg_row"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:stateListAnimator="@animator/focus_raise">
 
                 <TextView
+                    style="@style/CoreBuilds.MenuHeading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="monospace"
-                    android:letterSpacing="0.14"
                     android:text="@string/about_network_header"
-                    android:textColor="@color/cb_success"
-                    android:textSize="@dimen/cb_text_kicker"
-                    android:textStyle="bold" />
+                    android:textColor="@color/cb_success" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -235,15 +227,15 @@
                     android:layout_marginTop="@dimen/cb_space_sm"
                     android:text="@string/about_network_one"
                     android:textColor="@color/cb_ink"
-                    android:textSize="@dimen/cb_text_label" />
+                    android:textSize="@dimen/cb_text_button" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/cb_space_xs"
+                    android:layout_marginTop="6dp"
                     android:text="@string/about_network_two"
                     android:textColor="@color/cb_ink"
-                    android:textSize="@dimen/cb_text_label" />
+                    android:textSize="@dimen/cb_text_button" />
 
                 <!-- The missing-icon report. It is the one request that carries
                      anything about the device, so it gets its own numbered item
@@ -251,10 +243,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/cb_space_xs"
+                    android:layout_marginTop="6dp"
                     android:text="@string/about_network_three"
                     android:textColor="@color/cb_ink"
-                    android:textSize="@dimen/cb_text_label" />
+                    android:textSize="@dimen/cb_text_button" />
 
                 <!-- Google Play build with Core Builds Plus on sale or owned:
                      My requests reads issue states from GitHub. -->
@@ -262,10 +254,10 @@
                     android:id="@+id/about_network_tracker"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/cb_space_xs"
+                    android:layout_marginTop="6dp"
                     android:text="@string/about_network_tracker"
                     android:textColor="@color/cb_ink"
-                    android:textSize="@dimen/cb_text_label"
+                    android:textSize="@dimen/cb_text_button"
                     android:visibility="gone" />
 
                 <TextView
@@ -278,24 +270,21 @@
                     android:textSize="@dimen/cb_text_data" />
             </LinearLayout>
         </LinearLayout>
+        </ScrollView>
 
         <!-- RIGHT: links -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/cb_about_links_width"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/cb_space_lg"
-            android:minWidth="@dimen/cb_button_min_width"
+            android:clipChildren="false"
             android:orientation="vertical">
 
             <TextView
+                style="@style/CoreBuilds.MenuHeading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="monospace"
-                android:letterSpacing="0.16"
-                android:text="@string/about_links"
-                android:textColor="@color/cb_signal_cyan"
-                android:textSize="@dimen/cb_text_kicker"
-                android:textStyle="bold" />
+                android:text="@string/about_links" />
 
             <!-- Check for updates: the same UpdateChecker the home screen runs
                  at startup, but on demand, with its answer written into the
@@ -310,12 +299,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/cb_space_xs"
                 android:minHeight="@dimen/cb_target_min"
-                android:background="@drawable/bg_card"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center_vertical"
                 android:orientation="vertical"
-                android:padding="@dimen/cb_card_padding">
+                android:padding="@dimen/cb_card_padding"
+                android:background="@drawable/bg_row"
+                android:stateListAnimator="@animator/focus_raise">
 
                 <TextView
                     android:id="@+id/about_update_label"
@@ -330,7 +320,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
-                    android:maxLines="2"
+                    android:maxLines="3"
                     android:ellipsize="end"
                     android:text="@string/about_update_sub"
                     android:textColor="@color/cb_slate"
@@ -343,14 +333,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/cb_space_xs"
                 android:minHeight="@dimen/cb_target_min"
-                android:background="@drawable/bg_card"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center_vertical"
                 android:padding="@dimen/cb_card_padding"
                 android:text="@string/about_source_label"
                 android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_label" />
+                android:textSize="@dimen/cb_text_label"
+                android:background="@drawable/bg_row"
+                android:stateListAnimator="@animator/focus_raise" />
 
             <TextView
                 android:id="@+id/about_settings"
@@ -358,14 +349,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/cb_space_xs"
                 android:minHeight="@dimen/cb_target_min"
-                android:background="@drawable/bg_card"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center_vertical"
                 android:padding="@dimen/cb_card_padding"
                 android:text="@string/about_settings_label"
                 android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_label" />
+                android:textSize="@dimen/cb_text_label"
+                android:background="@drawable/bg_row"
+                android:stateListAnimator="@animator/focus_raise" />
 
             <TextView
                 android:id="@+id/about_launcher"
@@ -373,14 +365,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/cb_space_xs"
                 android:minHeight="@dimen/cb_target_min"
-                android:background="@drawable/bg_card"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center_vertical"
                 android:padding="@dimen/cb_card_padding"
                 android:text="@string/about_launcher_label"
                 android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_label" />
+                android:textSize="@dimen/cb_text_label"
+                android:background="@drawable/bg_row"
+                android:stateListAnimator="@animator/focus_raise" />
 
             <TextView
                 android:id="@+id/about_support"
@@ -388,14 +381,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/cb_space_xs"
                 android:minHeight="@dimen/cb_target_min"
-                android:background="@drawable/bg_card"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center_vertical"
                 android:padding="@dimen/cb_card_padding"
                 android:text="@string/about_support_label"
                 android:textColor="@color/cb_ink"
-                android:textSize="@dimen/cb_text_label" />
+                android:textSize="@dimen/cb_text_label"
+                android:background="@drawable/bg_row"
+                android:stateListAnimator="@animator/focus_raise" />
 
             <View
                 android:layout_width="match_parent"

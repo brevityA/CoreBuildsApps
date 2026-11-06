@@ -86,14 +86,51 @@ def manifest_activities(manifest: Path) -> set[str]:
             if a.get(ANDROID + "name", "").endswith("Activity")}
 
 
+THEMES = ROOT / "app/src/main/res/values/themes.xml"
+
+
+def _styles() -> dict[str, tuple[str | None, dict[str, str]]]:
+    """name -> (parent, items) for every style in the app's themes.xml."""
+    out = {}
+    for style in ET.parse(THEMES).getroot().iter("style"):
+        name = style.get("name")
+        parent = style.get("parent")
+        if parent is None and "." in name:
+            parent = name.rsplit(".", 1)[0]      # Widget.CoreBuilds.Pill.Ghost -> .Pill
+        if parent == "" or (parent and parent.startswith(("@android:", "android:"))):
+            parent = None
+        out[name] = (parent, {i.get("name"): (i.text or "").strip() for i in style.iter("item")})
+    return out
+
+
+STYLES = _styles()
+
+
+def styled(el: ET.Element, attr: str) -> str | None:
+    """An attribute's value on the element, else from its style and the style's
+    parents. Since 2.6.0 the pills and rail rows get focusable and clickable
+    from their style (Widget.CoreBuilds.*), so reading the element alone would
+    take a working control for a dead one, or skip it."""
+    value = el.get(ANDROID + attr)
+    if value is not None:
+        return value
+    name = (el.get("style") or "").removeprefix("@style/")
+    while name and name in STYLES:
+        parent, items = STYLES[name]
+        if "android:" + attr in items:
+            return items["android:" + attr]
+        name = parent
+    return None
+
+
 def clickable_ids(path: Path) -> set[str]:
-    """Ids of views declared clickable, in either attribute order."""
-    text = path.read_text(encoding="utf-8")
-    ids = re.findall(r'android:id="@\+id/(\w+)"[^>]*?android:clickable="true"',
-                     text, re.S)
-    ids += re.findall(r'android:clickable="true"[^>]*?android:id="@\+id/(\w+)"',
-                      text, re.S)
-    return set(ids)
+    """Ids of views that are clickable, by attribute or by style."""
+    out = set()
+    for el in ET.parse(path).getroot().iter():
+        raw = el.get(ANDROID + "id")
+        if raw and styled(el, "clickable") == "true":
+            out.add(raw.rsplit("/", 1)[-1])
+    return out
 
 
 def layout_elements(path: Path):
@@ -107,9 +144,9 @@ def layout_elements(path: Path):
 
 
 def is_focus_capable(el: ET.Element) -> bool:
-    if el.get(ANDROID + "focusable") == "true":
+    if styled(el, "focusable") == "true":
         return True
-    if el.get(ANDROID + "clickable") == "true":
+    if styled(el, "clickable") == "true":
         return True
     if el.get(ANDROID + "descendantFocusability") == "afterDescendants":
         return True
