@@ -1834,8 +1834,12 @@ INPUT_GLOBS = (
     "app/src/main/assets/manifest/wallpapers.json",
     "app/src/main/res/layout/*.xml",
     "app/src/main/res/values/*.xml",
-    "app/src/main/res/drawable/ic_*.xml",
-    "app/src/main/res/font/*.ttf",
+    # The primitives paint these drawables' shapes, colours and radii by hand
+    # (bg_pill, bg_row, bg_rail_item, sw_track, ...) and the vectors directly,
+    # so a change to any of them is a change to what the frames depict.
+    "app/src/main/res/drawable/*.xml",
+    "app/src/main/res/color/*.xml",
+    "app/src/main/res/font/*",
     "tools/fonts/*.ttf",
     "glyphs/src/main/res/layout/*.xml",
     "glyphs/src/main/res/values/*.xml",

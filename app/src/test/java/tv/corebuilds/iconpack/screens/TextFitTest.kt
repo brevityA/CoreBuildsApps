@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertTrue
+import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -131,7 +132,7 @@ class TextFitTest {
 
     @Test
     fun myRequests() {
-        if (!PlusStore.AVAILABLE) return
+        assumeTrue("Google Play build only", PlusStore.AVAILABLE)
         Plus.startTrial(app)
         check(RequestsActivity::class.java)
     }

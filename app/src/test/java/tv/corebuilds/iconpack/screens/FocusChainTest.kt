@@ -13,6 +13,7 @@ import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
+import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -135,7 +136,7 @@ class FocusChainTest {
 
     @Test
     fun `at the largest text size a remote scrolls Premium's list to its last extra`() {
-        if (!PlusStore.AVAILABLE) return // the list is the Google Play build's
+        assumeTrue("Google Play build only", PlusStore.AVAILABLE) // the list is the Play build's
         // Android TV's largest system text size.
         RuntimeEnvironment.setFontScale(1.3f)
         on(SupportActivity::class.java) { a ->

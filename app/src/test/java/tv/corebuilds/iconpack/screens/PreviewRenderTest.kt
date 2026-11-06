@@ -8,6 +8,7 @@ import android.view.KeyEvent
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertTrue
+import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -80,7 +81,7 @@ class PreviewRenderTest {
 
     @Test
     fun supportOwned() {
-        if (!PlusStore.AVAILABLE) return
+        assumeTrue("Google Play build only", PlusStore.AVAILABLE)
         shoot(SupportActivity::class.java, "support-play-owned") { renderPlus(it, PlusState.Owned) }
     }
 

@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertTrue
+import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -100,7 +101,7 @@ class AllScreensRenderTest {
     /** My requests exists only where Premium is, and opens only while it is active. */
     @Test
     fun myRequests() {
-        if (!PlusStore.AVAILABLE) return
+        assumeTrue("Google Play build only", PlusStore.AVAILABLE)
         Plus.startTrial(app)
         shoot(RequestsActivity::class.java, "my-requests")
     }
