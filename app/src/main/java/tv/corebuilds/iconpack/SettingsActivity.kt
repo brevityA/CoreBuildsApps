@@ -87,6 +87,10 @@ class SettingsActivity : TvActivity() {
             val next = !motionSwitch.isChecked
             motionSwitch.isChecked = next
             Prefs.set(this, Prefs.KEY_REDUCE_MOTION, next)
+            // This screen was inflated under the old setting: apply the new
+            // one here too, so the next press already moves only the ring.
+            val root = window.decorView
+            if (next) TvActivity.dropFocusLift(root) else TvActivity.restoreFocusLift(root)
         }
 
         row(R.id.set_amoled_row) {

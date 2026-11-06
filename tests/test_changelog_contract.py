@@ -39,7 +39,8 @@ So the shape the stamper depends on is asserted here:
    they did not publish;
 6. `changelog_highlights()` on the current `[Unreleased]` returns between one
    and eight leads, none of them a receipt (a lead starting with a backticked
-   `tests/` or `tools/` path is a receipt, deliberately kept off the card).
+   `tests/`, `tools/` or `app/src/test` path is a receipt, deliberately kept
+   off the card).
 
 Run: `python3 tests/test_changelog_contract.py`
 """

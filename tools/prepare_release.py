@@ -131,8 +131,10 @@ def changelog_highlights(text: str) -> list[str]:
             # headline: the what's-new bar is read by people deciding whether
             # to update, and `tools/build_app_ui_mockups.py` is not a reason.
             # The convention is the backticked path in the lead, so a bullet
-            # opts out of the card by naming its own machinery.
-            if lead.startswith(("`tests/", "`test_", "`tools/", "`.github/")):
+            # opts out of the card by naming its own machinery. `app/src/test`
+            # is the app's own Robolectric suite (the screen renders and the
+            # D-pad and text-fit tests), a receipt the same way `tests/` is.
+            if lead.startswith(("`tests/", "`test_", "`tools/", "`.github/", "`app/src/test")):
                 continue
             if lead:
                 out.append(lead)

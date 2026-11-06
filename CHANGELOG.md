@@ -8,16 +8,18 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
-- **Screen tests for every app screen.** `PreviewRenderTest` and
-  `AllScreensRenderTest` render all 15 screens at 1920 × 1080 in both the
+- **`app/src/test` renders and presses every screen.** `PreviewRenderTest`
+  and `AllScreensRenderTest` render all 15 screens at 1920 × 1080 in both the
   GitHub and Play builds; `FocusChainTest` presses the D-pad through Home's
-  two columns and Wallpapers' rail; `TextFitTest` fails any label on 13
+  two columns, its ALSO APPLIES TO launchers and Wallpapers' rail;
+  `ReduceMotionTest` holds the setting to the screen it is switched on in and
+  to rows built after a screen loads; `TextFitTest` fails any label on 13
   screens that is cut short or taller than its box. It found About's update
   line cut at two lines and, in the Play build, a network list that no
   longer fit its column, so About's left column now scrolls. Home crashed on
   inflate during the work (12sp labels with a 12sp shrink floor, which
   AppCompat refuses); the renders caught it before it shipped.
-- **The menu audit reads styles.** `tests/test_navigation_graph.py` takes
+- **`tests/test_navigation_graph.py` reads styles.** The menu audit takes
   `focusable` and `clickable` from a view's style as well as its attributes,
   so a styled pill is checked for a press handler and counted as a focus stop.
 
@@ -45,6 +47,10 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Fixed
 
+- **UP and DOWN from an ALSO APPLIES TO launcher stay in Home's rail.** The
+  launcher chips reused the category row's chip, which sends UP to the search
+  field and DOWN into the icon grid, so with a second launcher installed the
+  rail could not be walked through them.
 - **RIGHT from a wallpaper series reaches the grid.** The series became a
   vertical list in 1.8.22, but still took LEFT/RIGHT as "previous/next
   series", so RIGHT moved one series down instead of crossing to the walls.

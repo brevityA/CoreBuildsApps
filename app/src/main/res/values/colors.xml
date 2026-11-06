@@ -48,6 +48,11 @@
     <color name="cb_selected_edge">#9900D4FF</color>
     <!-- A secondary pill's resting edge: cyan at 35%. -->
     <color name="cb_ghost_edge">#5900D4FF</color>
-    <!-- Text on a control that cannot be pressed. -->
-    <color name="cb_text_disabled">#668B949E</color>
+    <!-- Text on a control that cannot be pressed. Slate at full strength, not
+         faded: a disabled pill can still carry a status ("Saving…" on a
+         wallpaper's Save), and slate at 40% read at about 2:1. Opaque it is
+         5.3:1 on the panel and better on every other surface, and the state
+         still reads as off: enabled pill text is ink or cyan, and a disabled
+         pill keeps only its hairline. -->
+    <color name="cb_text_disabled">#FF8B949E</color>
 </resources>

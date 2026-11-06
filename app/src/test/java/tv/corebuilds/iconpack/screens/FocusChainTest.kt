@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.view.KeyEvent
 import android.view.View
+import android.widget.ScrollView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -16,12 +17,15 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import tv.corebuilds.iconpack.Distribution
 import tv.corebuilds.iconpack.MainActivity
+import tv.corebuilds.iconpack.PlusStore
 import tv.corebuilds.iconpack.R
+import tv.corebuilds.iconpack.SupportActivity
 import tv.corebuilds.iconpack.WallpapersActivity
 
 /**
@@ -42,7 +46,10 @@ class FocusChainTest {
     @Before
     fun tv() {
         ScreenHarness.prepareTv()
-        val pkg = "com.spocky.projengmenu"
+        install("com.spocky.projengmenu")
+    }
+
+    private fun install(pkg: String) {
         shadowOf(app.packageManager).installPackage(PackageInfo().apply {
             packageName = pkg
             applicationInfo = ApplicationInfo().apply { packageName = pkg }
@@ -103,6 +110,48 @@ class FocusChainTest {
         }
         a.press(KeyEvent.KEYCODE_DPAD_UP)
         a.assertFocus(R.id.apply_button, "UP to the top of the rail")
+    }
+
+    @Test
+    fun `with a second launcher the rail walks through its ALSO APPLIES TO chip`() {
+        // Nova beside Projectivy: the band shows one chip under Apply. The
+        // chip reuses the category row's item_chip.xml, whose UP and DOWN name
+        // the search field and the grid - from the rail that left the column.
+        install("com.teslacoilsw.launcher")
+        on(MainActivity::class.java) { a ->
+            a.assertFocus(R.id.apply_button, "opening Home")
+            a.press(KeyEvent.KEYCODE_DPAD_DOWN)
+            assertTrue("DOWN from Apply lands on the launcher chip, got ${a.name(a.focusedId())}",
+                a.focusInside(R.id.apply_targets))
+            a.press(KeyEvent.KEYCODE_DPAD_DOWN)
+            a.assertFocus(R.id.style_entry, "DOWN from the launcher chip")
+            a.press(KeyEvent.KEYCODE_DPAD_UP)
+            assertTrue("UP from Art style returns to the launcher chip, got ${a.name(a.focusedId())}",
+                a.focusInside(R.id.apply_targets))
+            a.press(KeyEvent.KEYCODE_DPAD_UP)
+            a.assertFocus(R.id.apply_button, "UP from the launcher chip")
+        }
+    }
+
+    @Test
+    fun `at the largest text size a remote scrolls Premium's list to its last extra`() {
+        if (!PlusStore.AVAILABLE) return // the list is the Google Play build's
+        // Android TV's largest system text size.
+        RuntimeEnvironment.setFontScale(1.3f)
+        on(SupportActivity::class.java) { a ->
+            val scroll = a.findViewById<ScrollView>(R.id.support_scroll)
+            val list = a.findViewById<View>(R.id.support_features)
+            val last = a.findViewById<View>(R.id.plus_feature_walls)
+            assertTrue("at 1.3x the column overflows, or this test proves nothing",
+                scroll.getChildAt(0).height > scroll.height)
+            assertTrue("the list takes focus", list.requestFocus())
+            ScreenHarness.idle()
+            // Each DOWN scrolls the focused list until its end is in view.
+            repeat(12) { if (a.focusedId() == R.id.support_features) a.press(KeyEvent.KEYCODE_DPAD_DOWN) }
+            val shown = android.graphics.Rect()
+            assertTrue("the last extra (${a.name(R.id.plus_feature_walls)}) is on screen after scrolling",
+                last.getGlobalVisibleRect(shown) && shown.height() == last.height)
+        }
     }
 
     @Test

@@ -1,5 +1,6 @@
 package tv.corebuilds.iconpack
 
+import android.animation.StateListAnimator
 import android.content.Context
 import android.content.res.Configuration
 import android.view.View
@@ -55,20 +56,56 @@ abstract class TvActivity : AppCompatActivity() {
      * rail rows rise and scale through a StateListAnimator in their style,
      * which only Android's own animator scale reaches; with the setting on,
      * every animator in the screen just inflated is removed, so focus moves
-     * the ring and nothing else. Rows a RecyclerView binds later (chips,
-     * tiles, series) animate in their adapters, which read the setting there.
+     * the ring and nothing else. Rows a screen inflates after this (suite,
+     * request and auditor rows) pass through [honourReduceMotion]; chips,
+     * tiles and series animate in their adapters, which read the setting there.
      */
     override fun onContentChanged() {
         super.onContentChanged()
         if (Prefs.reduceMotion(this)) dropFocusLift(window.decorView)
     }
 
-    private fun dropFocusLift(view: View) {
-        if (view.stateListAnimator != null) view.stateListAnimator = null
-        if (view is ViewGroup) for (i in 0 until view.childCount) dropFocusLift(view.getChildAt(i))
-    }
-
     companion object {
+        /**
+         * Lifts taken off by [dropFocusLift], so [restoreFocusLift] can put
+         * them back when Reduce motion is turned off on the open screen. Weak
+         * keys: a view that leaves the screen leaves the map with it.
+         */
+        private val dropped = java.util.WeakHashMap<View, StateListAnimator>()
+
+        /**
+         * Takes the focus lift off every view under [view] and settles any
+         * view already lifted: the animator is what raised it, and without it
+         * a focused row would stay raised.
+         */
+        fun dropFocusLift(view: View) {
+            view.stateListAnimator?.let { lift ->
+                dropped[view] = lift
+                view.stateListAnimator = null
+                view.scaleX = 1f
+                view.scaleY = 1f
+                view.translationZ = 0f
+            }
+            if (view is ViewGroup) for (i in 0 until view.childCount) dropFocusLift(view.getChildAt(i))
+        }
+
+        /** Gives back what [dropFocusLift] took from the views under [view]. */
+        fun restoreFocusLift(view: View) {
+            dropped.remove(view)?.let { lift ->
+                view.stateListAnimator = lift
+                // Re-reads the state so a focused view rises now, not on its
+                // next focus change.
+                view.refreshDrawableState()
+            }
+            if (view is ViewGroup) for (i in 0 until view.childCount) restoreFocusLift(view.getChildAt(i))
+        }
+
+        /** For a row inflated after the screen: no lift while Reduce motion is on. */
+        fun honourReduceMotion(row: View): View {
+            if (Prefs.reduceMotion(row.context)) dropFocusLift(row)
+            return row
+        }
+
         /** The canvas every layout, dimen and mockup frame is drawn against. */
         const val DESIGN_WIDTH_DP = 960
 

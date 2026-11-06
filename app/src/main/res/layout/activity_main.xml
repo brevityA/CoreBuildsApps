@@ -113,7 +113,7 @@
                 android:id="@+id/apply_button"
                 style="@style/Widget.CoreBuilds.Pill.Cta.Wide"
                 android:layout_marginTop="@dimen/cb_space_md"
-                android:nextFocusDown="@id/style_entry"
+                android:nextFocusDown="@id/apply_targets"
                 android:text="@string/cta_apply" />
 
             <TextView
@@ -183,7 +183,7 @@
                     android:id="@+id/style_entry"
                     style="@style/Widget.CoreBuilds.RailItem.Tall"
                     android:gravity="center_vertical"
-                    android:nextFocusUp="@id/apply_button"
+                    android:nextFocusUp="@id/apply_targets"
                     android:nextFocusDown="@id/missing_entry">
 
                     <ImageView

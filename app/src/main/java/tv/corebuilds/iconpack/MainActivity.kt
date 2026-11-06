@@ -363,6 +363,12 @@ class MainActivity : TvActivity() {
         }
         targets.nextFocusUpId = if (applyShown) R.id.apply_button else View.NO_ID
         targets.nextFocusDownId = if (groupShown) R.id.style_entry else View.NO_ID
+        // The list's edges are only read while the list itself holds focus;
+        // once a chip has it, the chip's own edges decide, and item_chip.xml's
+        // are the category row's (search, grid) - UP from a launcher chip
+        // used to leave the rail for the search field.
+        (targets.adapter as? ChipAdapter)
+            ?.setVerticalEdges(targets, targets.nextFocusUpId, targets.nextFocusDownId)
         // On Play there is no Support entry, so [railHead] is Settings; About
         // ends the column.
         findViewById<View>(R.id.wallpapers_entry).nextFocusDownId = railHead
