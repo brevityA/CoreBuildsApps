@@ -1,14 +1,19 @@
 {
-  "versionCode": 62,
-  "versionName": "2.5.4",
+  "versionCode": 63,
+  "versionName": "2.6.0",
   "iconCount": 1028,
   "componentCount": 1256,
-  "releaseDate": "2026-10-31",
+  "releaseDate": "2026-11-06",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Aurora Player and Blackout",
-    "Kayo applies again"
+    "Core Premium is on sale in the Google Play build",
+    "A new look, the one Core EQ 1.12 introduced, in both builds",
+    "Core Premium lists what it adds",
+    "UP and DOWN from an ALSO APPLIES TO launcher stay in Home's rail",
+    "RIGHT from a wallpaper series reaches the grid",
+    "The export screen names its retry button when storage runs out",
+    "Settings on Google Play no longer shows an empty UPDATES heading"
   ]
 }

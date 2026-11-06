@@ -6,6 +6,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.6.0] — 2026-11-06
+
 ### Added
 
 - **`app/src/test` renders and presses every screen.** `PreviewRenderTest`
