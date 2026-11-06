@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.media.AudioManager
 import android.media.audiofx.AudioEffect
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -1481,7 +1480,7 @@ class MeasureActivity : TvActivity() {
             micType = micName ?: "microphone",
             captureInfo = captureInfo,
             repeatabilityCheck = savedRepeatability,
-            deviceName = "${Build.MANUFACTURER} ${Build.MODEL}".trim(),
+            deviceName = DeviceName.current(),
             stimulus = "sweep_${Sweep.SECONDS.roundToInt()}s",
             captureSeconds = LEAD_SECONDS + Sweep.STIMULUS_SECONDS + SweepAnalysis.TAIL_SECONDS,
             volumeM3 = ROOMS[roomIndex].volumeM3,

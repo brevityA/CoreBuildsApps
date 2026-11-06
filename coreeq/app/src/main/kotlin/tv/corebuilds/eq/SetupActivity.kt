@@ -80,7 +80,7 @@ class SetupActivity : TvActivity() {
         )
         val measured = picked.profile != null
         lastReportDetails = buildList {
-            add("TV: ${Build.MANUFACTURER} ${Build.MODEL}".trim())
+            add("TV: ${DeviceName.current()}")
             add("Android: ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
             val version = packageManager.getPackageInfo(packageName, 0)
             add("Core EQ: ${version.versionName} (${version.longVersionCode})")

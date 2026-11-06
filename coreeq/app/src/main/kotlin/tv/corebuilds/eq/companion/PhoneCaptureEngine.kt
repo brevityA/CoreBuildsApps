@@ -19,6 +19,7 @@ import tv.corebuilds.eq.audioDeviceTypeLabel
 import tv.corebuilds.eq.dsp.MicResponse
 import org.json.JSONObject
 import kotlin.math.max
+import tv.corebuilds.eq.DeviceName
 
 internal data class PhoneCaptureStart(
     val sessionId: String,
@@ -253,7 +254,7 @@ internal class PhoneCaptureEngine(private val context: Context) {
             .put("input_device_name", route?.productName?.toString()?.take(80) ?: JSONObject.NULL)
             .put("input_device_type", route?.let { audioDeviceTypeLabel(it.type) } ?: JSONObject.NULL)
             .put("active_microphone_count", microphones.size)
-            .put("capture_device_model", "${Build.MANUFACTURER} ${Build.MODEL}".trim().take(80))
+            .put("capture_device_model", DeviceName.current().take(80))
             .put("capture_os_version", Build.VERSION.RELEASE.take(40))
             .put("unprocessed_audio_source_supported", unprocessedSupported)
             .put("microphone_descriptions", JSONArray(descriptions.take(MAX_METADATA_STRINGS)))
