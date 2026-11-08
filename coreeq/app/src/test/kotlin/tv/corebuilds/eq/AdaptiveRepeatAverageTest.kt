@@ -89,7 +89,7 @@ class AdaptiveRepeatAverageTest {
             doubleArrayOf(1.0, 1.0, 1.0, 1.0)
         )
         val repeat = result(
-            doubleArrayOf(-6.0, -6.0, -6.0, -6.0),
+            doubleArrayOf(-6.0, -4.0, -2.0, 0.0),
             doubleArrayOf(12.0, 12.0, 12.0, 12.0),
             doubleArrayOf(0.2, 0.2, 0.2, 0.2)
         )
@@ -111,7 +111,7 @@ class AdaptiveRepeatAverageTest {
             doubleArrayOf(40.0, 40.0, 40.0, 40.0)
         )
         val repeat = result(
-            doubleArrayOf(-6.0, -6.0, -6.0, -6.0),
+            doubleArrayOf(-10.0, -6.0, -2.0, 2.0),
             doubleArrayOf(40.0, 40.0, 40.0, 40.0)
         )
         val averaged = AdaptiveRepeatAverage.average(
@@ -121,8 +121,8 @@ class AdaptiveRepeatAverageTest {
             volumeM3 = null
         )
 
-        assertEquals(6.0, averaged.agreementRmsDb, 1e-9)
-        assertEquals(AdaptiveRepeatAverage.MIN_AGREEMENT_FACTOR, averaged.result.confidence[0], 1e-9)
+        assertEquals(4.47213595499958, averaged.agreementRmsDb, 1e-9)
+        assertEquals(0.5, averaged.result.confidence[0], 1e-9)
         assertEquals("The repeat differs from the first sweep; its influence is reduced.", averaged.note)
     }
 
