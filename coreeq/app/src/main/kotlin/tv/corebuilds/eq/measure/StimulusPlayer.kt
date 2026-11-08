@@ -20,7 +20,7 @@ import kotlin.concurrent.thread
  * The whole stimulus is rendered before playback starts, so a slow device
  * cannot starve the track mid-sweep and put a gap in the measurement.
  */
-class StimulusPlayer(private val context: Context) {
+class StimulusPlayer(private val context: Context? = null) {
 
     private var audioTrack: AudioTrack? = null
     private var audioFocusRequest: AudioFocusRequest? = null
@@ -51,7 +51,7 @@ class StimulusPlayer(private val context: Context) {
         stop()
         playing = true
         thread(name = "CoreEqStimulus") {
-            val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
+            val audioManager = context?.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
             val focusRequest = audioManager?.let {
                 AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
                     .setAudioAttributes(
@@ -179,7 +179,7 @@ class StimulusPlayer(private val context: Context) {
     private fun abandonFocus() {
         val request = audioFocusRequest ?: return
         audioFocusRequest = null
-        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
+        val audioManager = context?.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
         try {
             audioManager?.abandonAudioFocusRequest(request)
         } catch (e: RuntimeException) {
