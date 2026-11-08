@@ -8,6 +8,27 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+### Fixed
+
+- **A device's maker is no longer named twice.** The first supporter test of
+  1.13.1 (Samsung SM-S921U with an onn 4K Pro) showed "Connected to onn onn
+  4K Pro Streaming Device" on the phone. Core EQ joined `Build.MANUFACTURER`
+  and `Build.MODEL` in 7 places, and onn's model already starts with "onn".
+  `DeviceName` now drops a maker the model starts with as a whole word, so
+  "Google Pixel 9 Pro XL" and "samsung SM-S921U" read as before. It covers the
+  TV name on the phone, the phone name on the TV ("Paired to"), the recorder in
+  a phone measurement, the device stored in a profile and the setup report.
+  Saved profiles keep the name they were saved with.
+
+### Internal
+
+- `DeviceNameTest` covers whole-word prefixes, all three Unicode combining-mark
+  categories and blank inputs. `PhoneCompanionScreenTest` checks the reported
+  onn label on a narrow phone; `ProfileJsonTest` checks new labels round-trip
+  and older saved labels are not rewritten. `tests/test_core_eq_device_name.py`
+  holds all seven call sites to the helper, including formatting before the
+  pairing/capture length limits, and rejects hand-joined maker/model strings.
+
 ## [1.13.1] — 2026-11-05
 
 versionCode 28. Android build, lint and Robolectric pass: 877 unit tests, lint
