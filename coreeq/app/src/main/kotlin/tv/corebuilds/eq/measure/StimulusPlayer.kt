@@ -66,7 +66,6 @@ class StimulusPlayer(private val context: Context? = null) {
             if (audioManager != null && focusRequest != null) {
                 val focusResult = audioManager.requestAudioFocus(focusRequest)
                 if (focusResult != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                    focusRequest.release()
                     playing = false
                     onError("Another app is using audio. Close it or wait a moment, then measure again.")
                     return@thread
@@ -184,8 +183,6 @@ class StimulusPlayer(private val context: Context? = null) {
             audioManager?.abandonAudioFocusRequest(request)
         } catch (e: RuntimeException) {
             Log.w(TAG, "Could not abandon audio focus", e)
-        } finally {
-            request.release()
         }
     }
 
