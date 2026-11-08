@@ -8,6 +8,60 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+## [1.13.2] — 2026-11-08
+
+versionCode 29. Android build, lint and Robolectric pass: 887 unit tests (877
+before, 10 new), lint 0 errors; the DSP self-test and its 108 parity tests
+pass. Not yet run on a TV: the report this answers (a stream that "lags very
+much" in WuPlay with Core EQ on, and WuPlay closing) came without a device
+model or log, so whether it fixes that TV is unverified until it is played
+there. The WuPlay force close has no log yet and is not claimed fixed.
+
+### Added
+
+- **Mode's diagnostics count Core EQ's background work.** "Background work
+  since Core EQ started" lists route probes, player-discovery dumps, effect
+  writes (and writes skipped as unchanged) and correction pauses. The same
+  line is in the service log next to each route result, so a regression shows
+  up as a number.
+
+### Changed
+
+- **Player discovery dumps at most once every 15 seconds.** With DUMP
+  discovery granted, Core EQ made the audio server write out its state after
+  every playback change, every few seconds on a buffering stream. It now does
+  so at most once per 15 seconds, and looks once more when the window opens,
+  so a new player is still found, up to 15 seconds later.
+- **A re-apply that changes nothing writes nothing.** The service remembers
+  what an effect's bands were computed from (profile, limiter, tone layers,
+  A/B side). It skips the write, 25 bands per channel plus a read-back, when
+  all four are unchanged and the effect is still its own and enabled.
+
+### Fixed
+
+- **Starting or resuming a stream no longer pauses the correction and opens
+  a probe track beside it.** Every time any app started playing, including a
+  stream resuming after buffering, Core EQ paused correction, played its own
+  silent 250 ms probe track next to the player's and re-applied the effect.
+  A player's audio clock can stall on that, and video waits for audio. On
+  Android 13 and later Android names the actual media route, so a start is no
+  longer a route check; a route that really moves still is. On Android 11 and
+  12, where the hint is only the connected devices, a start still verifies the
+  route, but quietly (no pause, and the effect changes only if the output
+  really moved) and at most once every 5 minutes.
+- **No probe track while something else plays.** A probe's answer expired
+  after 2 seconds, so player discovery, a re-apply or a volume key opened
+  another probe track whenever the last one was older. An answer now stands
+  while Android's route hint reads the same as when the probe ran, for up to
+  10 minutes; plugging or unplugging a device still re-probes at once. The
+  answers that pause correction (UNCONFIRMED, AMBIGUOUS) and failed probes
+  keep the 2-second window, because a fresh probe is how they recover.
+- **The volume keys no longer rewrite the effect.** With Low-volume bass or
+  Auto loudness on, every volume key reprogrammed all 25 bands even when the
+  lift had not moved a step. The tone layers held their loudness gains in an
+  array, which Kotlin compares by reference, so two identical layer sets were
+  never equal. They now compare by content.
+
 ## [1.13.1] — 2026-11-05
 
 versionCode 28. Android build, lint and Robolectric pass: 877 unit tests, lint

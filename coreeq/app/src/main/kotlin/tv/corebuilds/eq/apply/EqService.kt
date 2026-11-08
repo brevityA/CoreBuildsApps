@@ -25,6 +25,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.os.SystemClock
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
@@ -102,7 +103,20 @@ class EqService : Service() {
          * written by the caller before the service is told, and the two can
          * disagree in the window between.
          */
-        val side: BandMapping.AbSide = BandMapping.AbSide.CORRECTION
+        val side: BandMapping.AbSide = BandMapping.AbSide.CORRECTION,
+        /**
+         * What these bands were computed from (1.13.2). A re-apply with equal
+         * inputs writes identical bands, so it is skipped ([configureOrReplace]).
+         */
+        val inputs: EffectInputs? = null
+    )
+
+    /** Everything a band write is computed from: equal inputs, identical writes. */
+    private data class EffectInputs(
+        val profile: Profile,
+        val limiter: LimiterSettings,
+        val layers: ToneLayers,
+        val side: BandMapping.AbSide
     )
 
     /** An effect held on one session, and where that session came from. */
@@ -180,6 +194,8 @@ class EqService : Service() {
         override fun onReceive(context: Context, intent: Intent) = onVolumeChanged()
     }
     private val discoveryExecutor = Executors.newSingleThreadExecutor()
+    /** At most one DUMP discovery per 15 s (1.13.2); see [DiscoveryDumpThrottle]. */
+    private val dumpThrottle = DiscoveryDumpThrottle()
     private var discoveryQueued = false
     private var discoveryInFlight = false
     private var discoveryAgain = false
@@ -195,7 +211,13 @@ class EqService : Service() {
         } else {
             discoveryInFlight = true
             discoveryExecutor.execute {
-                val dumpSnapshot = if (DumpsysDiscovery.hasGrant(this@EqService)) try {
+                // The throttle is read and written on this single thread only.
+                val granted = DumpsysDiscovery.hasGrant(this@EqService)
+                val now = SystemClock.elapsedRealtime()
+                val dumpWaitMs = if (granted) dumpThrottle.waitMs(now) else 0L
+                val dumpSnapshot = if (granted && dumpWaitMs == 0L) try {
+                    dumpThrottle.ran(now)
+                    RuntimeCounters.discoveryDump()
                     DumpsysDiscovery.discover(android.os.Process.myUid())
                 } catch (e: Exception) {
                     Log.w(TAG, "DUMP discovery failed; retaining the last known player set", e)
@@ -209,6 +231,10 @@ class EqService : Service() {
                     if (discoveryAgain) {
                         discoveryAgain = false
                         scheduleDiscovery()
+                    } else if (dumpWaitMs > 0L) {
+                        // The dump this request wanted was throttled: look once
+                        // more when the window opens, so a new player is found.
+                        scheduleDiscovery(dumpWaitMs)
                     }
                 }
             }
@@ -229,8 +255,19 @@ class EqService : Service() {
                 playbackActiveHint = audioIsPlaying(configs)
                 publish(configs)
             }
-            val hint = OutputRoute.identity(OutputRoute.indication(this))
-            if (playbackRouteHint.observe(hint, playbackActiveHint)) onOutputsChanged()
+            val indication = OutputRoute.indication(this)
+            val verdict = playbackRouteHint.observe(
+                OutputRoute.identity(indication),
+                playbackActiveHint,
+                // API 33+ reads the actual media route: a moved route changes it.
+                preciseHint = indication?.evidence == OutputRoute.Evidence.ANTICIPATED,
+                nowMs = SystemClock.elapsedRealtime()
+            )
+            when (verdict) {
+                PlaybackRouteHint.Verdict.ROUTE_CHANGED -> onOutputsChanged()
+                PlaybackRouteHint.Verdict.VERIFY_START -> verifyRouteQuietly()
+                PlaybackRouteHint.Verdict.NONE -> Unit
+            }
             scheduleDiscovery()
         }
     }
@@ -335,6 +372,7 @@ class EqService : Service() {
         // Home/status pauses immediately; a brief transition does not spam cards.
         outputPaused = true
         setAllEnabled(false)
+        RuntimeCounters.correctionPause()
         announcePaused(OutputRoute.Output(
             OutputRoute.UNCONFIRMED, OutputRoute.label(OutputRoute.UNCONFIRMED), OutputRoute.Evidence.TRACK_PROBE
         ))
@@ -366,7 +404,7 @@ class EqService : Service() {
     private fun onRouteConfirmed(forceApply: Boolean = false) {
         if (!instanceRunning || !store.correctionEnabled) return
         if (suspended) return
-        if (!OutputRoute.hasFreshProbe()) {
+        if (!OutputRoute.hasFreshProbe(this)) {
             if (routeConfirmRetries < MAX_ROUTE_CONFIRM_RETRIES) {
                 // A device arrived while the last probe played, so no answer
                 // was publishable. Re-arm on the fresh probe rather than
@@ -392,7 +430,7 @@ class EqService : Service() {
         routeConfirmRetries = 0
         val output = OutputRoute.current(this)
         if (!forceApply && OutputRoute.identity(output) == OutputRoute.identity(lastOutput) && !outputPaused) return
-        Log.i(TAG, "Route result: kind=${output?.kind ?: OutputRoute.UNKNOWN}, evidence=${output?.evidence}, wasPaused=$outputPaused")
+        Log.i(TAG, "Route result: kind=${output?.kind ?: OutputRoute.UNKNOWN}, evidence=${output?.evidence}, wasPaused=$outputPaused · ${RuntimeCounters.snapshot().summary()}")
         lastOutput = output
         // Once correction is enabled it follows its measured outputs, including
         // returning from an uncertain/unmeasured route. The first-measurement
@@ -401,9 +439,20 @@ class EqService : Service() {
         if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
     }
 
+    /**
+     * A media start on a coarse route hint (1.13.2): confirm the route without
+     * pausing correction or touching the effect. [onRouteConfirmed] acts only
+     * when the probe names a different output than the one applied.
+     */
+    private fun verifyRouteQuietly() {
+        if (!CorrectionServicePolicy.canApply(instanceRunning, store.correctionEnabled, suspended)) return
+        if (OutputRoute.isHeldUnconfirmed()) return // a held stop waits for a device event
+        OutputRoute.refreshProbeAsync(this) { onRouteConfirmed() }
+    }
+
     private fun reapplyWithConfirmedRoute() {
         if (!CorrectionServicePolicy.canApply(instanceRunning, store.correctionEnabled, suspended)) return
-        val fresh = OutputRoute.hasFreshProbe() && !OutputRoute.isHeldUnconfirmed()
+        val fresh = OutputRoute.hasFreshProbe(this) && !OutputRoute.isHeldUnconfirmed()
         val kind = if (fresh) OutputRoute.current(this)?.kind else OutputRoute.UNCONFIRMED
         if (fresh && kind != OutputRoute.UNCONFIRMED && kind != OutputRoute.AMBIGUOUS) applyAll()
         else OutputRoute.refreshProbeAsync(this) { onRouteConfirmed(forceApply = true) }
@@ -655,7 +704,7 @@ class EqService : Service() {
 
     private fun applyAll() {
         if (!CorrectionServicePolicy.canApply(instanceRunning, store.correctionEnabled, suspended)) return
-        if (!OutputRoute.hasFreshProbe() && !OutputRoute.isHeldUnconfirmed()) {
+        if (!OutputRoute.hasFreshProbe(this) && !OutputRoute.isHeldUnconfirmed()) {
             reapplyWithConfirmedRoute()
             return
         }
@@ -780,8 +829,13 @@ class EqService : Service() {
     }
 
     /** Correction on [session], plus that session's opt-in extras. */
-    private fun createBestEffect(session: Int, profile: Profile): AppliedEffect =
-        createCorrection(session, profile).let { it.copy(extras = attachExtras(session)) }
+    private fun createBestEffect(session: Int, profile: Profile): AppliedEffect {
+        val created = createCorrection(session, profile) // throws when both engines refuse
+        RuntimeCounters.effectWrite()
+        return created.copy(extras = attachExtras(session), inputs = effectInputs(profile))
+    }
+
+    private fun effectInputs(profile: Profile) = EffectInputs(profile, limiter(), activeLayers, side())
 
     /**
      * Which side of the A/B the service is currently playing.
@@ -838,7 +892,19 @@ class EqService : Service() {
     /** Reconfigure a held effect; replace it with the preferred path if it no longer accepts control. */
     private fun configureOrReplace(current: AppliedEffect, session: Int, profile: Profile): AppliedEffect =
         try {
-            configure(current, profile).copy(extras = current.extras?.also { it.setEnabled(true) })
+            val inputs = effectInputs(profile)
+            val configured = if (current.inputs == inputs && current.effect.hasControl() &&
+                EnhancedEffectChain.safeSetEnabled(current.effect, true)
+            ) {
+                // Nothing the bands are computed from has changed, and the
+                // effect is still ours and enabled: it already holds them.
+                RuntimeCounters.effectWriteSkipped()
+                current
+            } else {
+                RuntimeCounters.effectWrite()
+                configure(current, profile).copy(inputs = inputs)
+            }
+            configured.copy(extras = current.extras?.also { it.setEnabled(true) })
         } catch (e: Exception) {
             Log.w(TAG, "${current.engine} reconfiguration failed on session $session; replacing the effect", e)
             releaseApplied(current)
@@ -1079,7 +1145,7 @@ class EqService : Service() {
             return
         }
         if (decision.mode != previousDecision.mode && sessionEqs.isNotEmpty()) applyAll()
-        if (outputPaused || !OutputRoute.hasFreshProbe()) {
+        if (outputPaused || !OutputRoute.hasFreshProbe(this)) {
             // Discovery must not attach an estimate's curve while a probe is
             // pending or correction is paused on an unsafe/unmeasured route.
             applyAll()

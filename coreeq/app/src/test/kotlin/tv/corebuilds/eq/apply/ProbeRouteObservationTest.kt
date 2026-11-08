@@ -1,8 +1,12 @@
 package tv.corebuilds.eq.apply
 
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import tv.corebuilds.eq.apply.PlaybackRouteHint.Verdict.NONE
+import tv.corebuilds.eq.apply.PlaybackRouteHint.Verdict.ROUTE_CHANGED
+import tv.corebuilds.eq.apply.PlaybackRouteHint.Verdict.VERIFY_START
 
 class ProbeRouteObservationTest {
     @Test
@@ -60,22 +64,55 @@ class ProbeRouteObservationTest {
     }
 
     @Test
-    fun `a real media start verifies once even when an older Android hint is coarse`() {
+    fun `a coarse hint's media start verifies quietly, at most once per window`() {
+        // Older Android: the hint is connected devices only, so a start is the
+        // one moment a silent route move could be caught. 1.13.2 keeps that
+        // check but runs it once per START_RECHECK_MS, not on every start.
+        val window = PlaybackRouteHint.START_RECHECK_MS
         val hint = PlaybackRouteHint("hdmi_arc|Soundbar")
-        assertFalse(hint.observe("hdmi_arc|Soundbar", false))
-        assertTrue(hint.observe("hdmi_arc|Soundbar", true))
-        repeat(10) { assertFalse(hint.observe("hdmi_arc|Soundbar", true)) }
-        assertFalse(hint.observe("hdmi_arc|Soundbar", false))
-        assertTrue(hint.observe("hdmi_arc|Soundbar", true))
+        assertEquals(NONE, hint.observe("hdmi_arc|Soundbar", false, preciseHint = false, nowMs = 0L))
+        assertEquals(VERIFY_START, hint.observe("hdmi_arc|Soundbar", true, preciseHint = false, nowMs = 1_000L))
+        repeat(10) { assertEquals(NONE, hint.observe("hdmi_arc|Soundbar", true, preciseHint = false, nowMs = 2_000L)) }
+        // A buffering stream: stop, start, stop, start ... inside the window.
+        var t = 3_000L
+        repeat(20) {
+            assertEquals(NONE, hint.observe("hdmi_arc|Soundbar", false, preciseHint = false, nowMs = t))
+            assertEquals(NONE, hint.observe("hdmi_arc|Soundbar", true, preciseHint = false, nowMs = t + 500L))
+            t += 4_000L
+        }
+        assertEquals(NONE, hint.observe("hdmi_arc|Soundbar", false, preciseHint = false, nowMs = 1_000L + window))
+        assertEquals(VERIFY_START, hint.observe("hdmi_arc|Soundbar", true, preciseHint = false, nowMs = 1_000L + window))
+    }
+
+    @Test
+    fun `a precise hint's media start is no route check at all`() {
+        // API 33+ reports the actual media route: a moved route changes the hint.
+        val hint = PlaybackRouteHint("hdmi_arc|Soundbar")
+        var t = 0L
+        repeat(50) {
+            assertEquals(NONE, hint.observe("hdmi_arc|Soundbar", false, preciseHint = true, nowMs = t))
+            assertEquals(NONE, hint.observe("hdmi_arc|Soundbar", true, preciseHint = true, nowMs = t + 500L))
+            t += PlaybackRouteHint.START_RECHECK_MS
+        }
+    }
+
+    @Test
+    fun `a changed hint is a route change whenever it happens, and resets the start window`() {
+        val hint = PlaybackRouteHint("speaker|TV")
+        assertEquals(ROUTE_CHANGED, hint.observe("hdmi_arc|Soundbar", true, preciseHint = true, nowMs = 0L))
+        assertEquals(ROUTE_CHANGED, hint.observe("speaker|TV", true, preciseHint = false, nowMs = 10L))
+        // The full check just ran: a coarse start right after it adds nothing.
+        assertEquals(NONE, hint.observe("speaker|TV", false, preciseHint = false, nowMs = 20L))
+        assertEquals(NONE, hint.observe("speaker|TV", true, preciseHint = false, nowMs = 30L))
     }
 
     @Test
     fun `a probe that has ended by the coalesced read does not look like a media start`() {
         val idle = PlaybackRouteHint("speaker|TV")
-        repeat(100) { assertFalse(idle.observe("speaker|TV", false)) }
+        repeat(100) { assertEquals(NONE, idle.observe("speaker|TV", false, preciseHint = false, nowMs = it * 1_000_000L)) }
         val playing = PlaybackRouteHint("speaker|TV")
         playing.reset("speaker|TV", true)
-        repeat(100) { assertFalse(playing.observe("speaker|TV", true)) }
+        repeat(100) { assertEquals(NONE, playing.observe("speaker|TV", true, preciseHint = false, nowMs = it * 1_000_000L)) }
     }
 
 }

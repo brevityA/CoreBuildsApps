@@ -57,6 +57,30 @@ data class ToneLayers(
         !dialogue && lowVolumeBassDb <= 0.0 && !stereoDownmix && loudnessBandGains.all { it <= 0.0 }
 
     /**
+     * Content equality (1.13.2). A data class compares a [DoubleArray] by
+     * reference, so two identical layer sets were never equal, not even
+     * `ToneLayers() == ToneLayers()`. EqService's "reprogram only when the lift
+     * moves a step" check was therefore always true: with Low-volume bass or
+     * Auto loudness on, every volume key re-wrote every band of the effect.
+     */
+    override fun equals(other: Any?): Boolean =
+        other is ToneLayers &&
+            dialogue == other.dialogue &&
+            lowVolumeBassDb.compareTo(other.lowVolumeBassDb) == 0 &&
+            stereoDownmix == other.stereoDownmix &&
+            loudnessBandGains.contentEquals(other.loudnessBandGains) &&
+            contentType == other.contentType
+
+    override fun hashCode(): Int {
+        var result = dialogue.hashCode()
+        result = 31 * result + lowVolumeBassDb.hashCode()
+        result = 31 * result + stereoDownmix.hashCode()
+        result = 31 * result + loudnessBandGains.contentHashCode()
+        result = 31 * result + contentType.hashCode()
+        return result
+    }
+
+    /**
      * Dialogue and House targets already carry the same +2 dB presence box
      * ([Targets.presenceDb]); the boost would double it, so it stands aside on
      * a measured profile with either target.
