@@ -35,6 +35,33 @@ Five free apps for Android TV and Google TV, and one for your phone. Each has a 
 
 ---
 
+## Start here
+
+| If you want to… | Install |
+|---|---|
+| Give your Projectivy Launcher a cleaner, consistent look | [Core Builds Icon Pack](#-core-builds-icon-pack) |
+| Add live sports scores and channel information | [Core Line](#-core-line) |
+| Browse and use motion wallpapers or screensavers | [Core Shift](#-core-shift) |
+| Use motion wallpapers in Projectivy Launcher | [Core Motion](#-core-motion), after installing Core Shift |
+| Check streaming, DNS, VPN, and account status | [Core Doctor](#-core-doctor) on your phone |
+| Tune your TV’s sound to your room | [Core EQ](#-core-eq) |
+
+Most people should start with the **Icon Pack**. If you want a more ambient home screen, add **Core Shift** and then **Core Motion**.
+
+## Repository map
+
+| Folder | Belongs to |
+|---|---|
+| `app/` | Core Builds Icon Pack |
+| `ticker/` | Core Line |
+| `shift/` | Core Shift |
+| `motion-plugin/`, `motion-engine/`, `motion-shaders/` | Core Motion and its motion-feed infrastructure |
+| `doctor/` | Core Doctor |
+| `coreeq/` | Core EQ |
+| `docs/` | User guides, app documentation, and shared assets |
+| `tools/`, `tests/`, `patches/`, `gradle/` | Shared build, test, generation, and maintenance tooling |
+| `Wallpapers/`, `glyphs/`, `assets/`, `views/`, `image-search/`, `wu-pack/` | Icon-pack and wallpaper assets or supporting components |
+
 ## Install any app
 
 On a TV:
@@ -55,42 +82,42 @@ Icon Pack, Core Line, Core Shift and Core EQ check for their own updates. Core M
 
 **Transparent icons and 16:9 banners for Projectivy Launcher, plus wallpapers.** Every icon is drawn in one style: original geometry, one accent colour, transparent background. The pack applies banners by default; a square glyph build is one switch away. Home's **Missing icons** row lists the apps on your TV that have no icon yet and prefills the request for you.
 
-**Install:** Downloader **`5270601`** · [permanent APK](https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk) · then press **Apply** in the app. \
+**Install:** Downloader **`5270601`** · [permanent APK](https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk) · then press **Apply** in the app. \\
 **More:** [guide](docs/apps/icon-pack.md) · [every mapped app](docs/IconPackList.md) · [wallpapers](Wallpapers/README.md) ([all 132 at a glance](docs/wallpapers-collection.jpg)) · [changelog](CHANGELOG.md)
 
 ## 🔷 Core Line
 
 **A TV-first sports and channel ticker.** It crawls the listings your channel apps already publish as RSS, with live ESPN, NHL and MLB scores. It is not a player and carries no streams. Pair it from your phone with a QR code, so a Fire TV remote never types a URL.
 
-**Install:** Downloader **`7375676`** · [permanent APK](https://github.com/brevityA/CoreBuildsApps/releases/download/coreline/coreline-release.apk) \
+**Install:** Downloader **`7375676`** · [permanent APK](https://github.com/brevityA/CoreBuildsApps/releases/download/coreline/coreline-release.apk) \\
 **More:** [guide](docs/apps/core-line.md) · [changelog](ticker/CHANGELOG.md)
 
 ## 🔷 Core Shift
 
 **An Android TV screensaver and motion wallpaper browser.** Browse, preview and download MP4 loops for Monet's video picker, or feed them to Projectivy through Core Motion and to Aerial Views as a screensaver. Works offline after the first sync.
 
-**Install:** Downloader **`8829421`** · [permanent APK](https://github.com/brevityA/CoreBuildsApps/releases/download/shift/coreshift-release.apk) \
+**Install:** Downloader **`8829421`** · [permanent APK](https://github.com/brevityA/CoreBuildsApps/releases/download/shift/coreshift-release.apk) \\
 **More:** [guide](docs/apps/core-shift.md)
 
 ## 🔷 Core Motion
 
 **The Projectivy wallpaper plugin for Core Motion loops.** It serves the motion feed and bundled loops to Projectivy Premium as launcher wallpapers.
 
-**Install:** no Downloader code yet · [permanent APK](https://github.com/brevityA/CoreBuildsApps/releases/download/motion/coremotion-release.apk) · then pick **Core Motion** in Projectivy's wallpaper settings. \
+**Install:** no Downloader code yet · [permanent APK](https://github.com/brevityA/CoreBuildsApps/releases/download/motion/coremotion-release.apk) · then pick **Core Motion** in Projectivy's wallpaper settings. \\
 **More:** [guide](docs/apps/core-motion.md)
 
 ## 🔷 Core Doctor
 
 **Streaming diagnostics for your phone.** Six checks: DNS, VPN detection, addon manifest and stream probe, and Real-Debrid and TorBox account status. No backend, nothing stored, no analytics, and shared reports are redacted.
 
-**Install:** Downloader **`8664938`** · [permanent APK](https://github.com/brevityA/CoreBuildsApps/releases/download/doctor/coredoctor-release.apk) \
+**Install:** Downloader **`8664938`** · [permanent APK](https://github.com/brevityA/CoreBuildsApps/releases/download/doctor/coredoctor-release.apk) \\
 **More:** [guide](docs/apps/core-doctor.md)
 
 ## 🔷 Core EQ
 
 **Measure the room you sit in, with the remote you already hold.** A sweep through the remote's microphone builds a room correction for each TV output, with Movie / TV, Everyday and Gaming tone modes on top. Each sweep gets a 0–100 recording score. Android 11 and later.
 
-**Install:** Downloader **`7946159`** · [permanent APK](https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk) \
+**Install:** Downloader **`7946159`** · [permanent APK](https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk) \\
 **More:** [guide](docs/apps/core-eq.md) · [changelog](coreeq/CHANGELOG.md)
 
 ---
