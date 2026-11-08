@@ -1,8 +1,11 @@
 package tv.corebuilds.eq.measure
 
+import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioDeviceInfo
+import android.media.AudioFocusRequest
 import android.media.AudioFormat
+import android.media.AudioManager
 import android.media.AudioTrack
 import android.os.Build
 import android.util.Log
@@ -17,11 +20,20 @@ import kotlin.concurrent.thread
  * The whole stimulus is rendered before playback starts, so a slow device
  * cannot starve the track mid-sweep and put a gap in the measurement.
  */
-class StimulusPlayer {
+class StimulusPlayer(private val context: Context) {
 
     private var audioTrack: AudioTrack? = null
+    private var audioFocusRequest: AudioFocusRequest? = null
     @Volatile
     private var playing = false
+
+    private val focusChangeListener = AudioManager.OnAudioFocusChangeListener { focusChange ->
+        when (focusChange) {
+            AudioManager.AUDIOFOCUS_LOSS,
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT,
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> stop()
+        }
+    }
 
     /**
      * @param onRouted the route Android reports for this AudioTrack while it
@@ -39,6 +51,29 @@ class StimulusPlayer {
         stop()
         playing = true
         thread(name = "CoreEqStimulus") {
+            val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
+            val focusRequest = audioManager?.let {
+                AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
+                    .setAudioAttributes(
+                        AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .build()
+                    )
+                    .setOnAudioFocusChangeListener(focusChangeListener)
+                    .build()
+            }
+            if (audioManager != null && focusRequest != null) {
+                val focusResult = audioManager.requestAudioFocus(focusRequest)
+                if (focusResult != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                    focusRequest.release()
+                    playing = false
+                    onError("Another app is using audio. Close it or wait a moment, then measure again.")
+                    return@thread
+                }
+                audioFocusRequest = focusRequest
+            }
+
             val pcm = Sweep.stimulus(DspConstants.FS).let { s ->
                 ShortArray(s.size) { (s[it] * Short.MAX_VALUE).toInt().toShort() }
             }
@@ -63,6 +98,7 @@ class StimulusPlayer {
                 builder.build()
             } catch (e: Exception) {
                 Log.e(TAG, "AudioTrack creation failed", e)
+                abandonFocus()
                 playing = false
                 onError("The TV refused to open a ${DspConstants.FS} Hz audio track: ${e.message ?: e.javaClass.simpleName}")
                 return@thread
@@ -70,6 +106,7 @@ class StimulusPlayer {
             val written = track.write(pcm, 0, pcm.size)
             if (written != pcm.size) {
                 track.release()
+                abandonFocus()
                 playing = false
                 onError("Could not load the sweep into the audio track (AudioTrack.write returned $written).")
                 return@thread
@@ -117,6 +154,10 @@ class StimulusPlayer {
                 reportIfChanged()
             }
             reportIfChanged()
+            if (playing && audioTrack === track) {
+                playing = false
+                abandonFocus()
+            }
         }
     }
 
@@ -130,9 +171,23 @@ class StimulusPlayer {
             Log.w(TAG, "AudioTrack.stop on a track that was not playing", e)
         }
         track.release()
+        abandonFocus()
     }
 
     fun isPlaying(): Boolean = playing
+
+    private fun abandonFocus() {
+        val request = audioFocusRequest ?: return
+        audioFocusRequest = null
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
+        try {
+            audioManager?.abandonAudioFocusRequest(request)
+        } catch (e: RuntimeException) {
+            Log.w(TAG, "Could not abandon audio focus", e)
+        } finally {
+            request.release()
+        }
+    }
 
     private fun hasPendingPlayback(track: AudioTrack, frameCount: Int): Boolean = try {
         playing && audioTrack === track && track.playState == AudioTrack.PLAYSTATE_PLAYING &&
