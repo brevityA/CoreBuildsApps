@@ -1,13 +1,11 @@
 package tv.corebuilds.eq
 
 import tv.corebuilds.eq.dsp.AdaptiveRepeatAverage
-import tv.corebuilds.eq.dsp.PeakingFilter
 import tv.corebuilds.eq.dsp.SweepResult
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
+import org.junit.Test
 
 class AdaptiveRepeatAverageTest {
 
@@ -31,7 +29,7 @@ class AdaptiveRepeatAverageTest {
         floorHz = 40.0,
         snrDb = snrDb.min(),
         latencyMs = 0.0,
-        filters = emptyList<PeakingFilter>(),
+        filters = emptyList(),
         preampDb = 0.0,
         bandSnrDb = snrDb,
         rt60ByOctave = emptyMap(),
@@ -42,7 +40,7 @@ class AdaptiveRepeatAverageTest {
     )
 
     @Test
-    fun `identical clean sweeps preserve the reference curve`() {
+    fun identicalCleanSweepsPreserveTheReferenceCurve() {
         val measured = doubleArrayOf(-3.0, -1.0, 1.0, 3.0)
         val snr = doubleArrayOf(30.0, 30.0, 30.0, 30.0)
         val averaged = AdaptiveRepeatAverage.average(
@@ -61,7 +59,7 @@ class AdaptiveRepeatAverageTest {
     }
 
     @Test
-    fun `a constant repeat offset is removed by median alignment`() {
+    fun aConstantRepeatOffsetIsRemovedByMedianAlignment() {
         val reference = result(
             doubleArrayOf(-3.0, -1.0, 1.0, 3.0),
             doubleArrayOf(30.0, 30.0, 30.0, 30.0)
@@ -84,7 +82,7 @@ class AdaptiveRepeatAverageTest {
     }
 
     @Test
-    fun `a noisy repeat receives less influence than a clean reference`() {
+    fun aNoisyRepeatReceivesLessInfluenceThanACleanReference() {
         val reference = result(
             doubleArrayOf(0.0, 0.0, 0.0, 0.0),
             doubleArrayOf(40.0, 40.0, 40.0, 40.0),
@@ -102,13 +100,12 @@ class AdaptiveRepeatAverageTest {
             volumeM3 = null
         )
 
-        assertNotNull(averaged.result)
         assertTrue(averaged.result.measuredDb[0] > -6.0)
         assertTrue(averaged.result.measuredDb[0] < 0.0)
     }
 
     @Test
-    fun `material disagreement lowers confidence and adds a note`() {
+    fun materialDisagreementLowersConfidenceAndAddsANote() {
         val reference = result(
             doubleArrayOf(0.0, 0.0, 0.0, 0.0),
             doubleArrayOf(40.0, 40.0, 40.0, 40.0)
@@ -130,7 +127,7 @@ class AdaptiveRepeatAverageTest {
     }
 
     @Test
-    fun `mismatched frequency grids are rejected`() {
+    fun mismatchedFrequencyGridsAreRejected() {
         val reference = result(
             doubleArrayOf(0.0, 0.0, 0.0, 0.0),
             doubleArrayOf(40.0, 40.0, 40.0, 40.0)
@@ -140,14 +137,16 @@ class AdaptiveRepeatAverageTest {
             doubleArrayOf(40.0, 40.0, 40.0, 40.0)
         ).copy(centresHz = doubleArrayOf(500.0, 1000.0, 2000.0, 5000.0))
 
-        val error = assertFailsWith<IllegalArgumentException> {
+        try {
             AdaptiveRepeatAverage.average(
                 reference = reference,
                 repeat = repeat,
                 target = "flat",
                 volumeM3 = null
             )
+            fail("Expected mismatched frequency grids to be rejected")
+        } catch (expected: IllegalArgumentException) {
+            assertTrue(expected.message!!.contains("different frequency grids"))
         }
-        assertTrue(error.message!!.contains("different frequency grids"))
     }
 }
