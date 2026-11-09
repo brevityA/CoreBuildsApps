@@ -176,7 +176,7 @@ class MeasureActivity : TvActivity() {
         setContentView(R.layout.activity_measure)
 
         profileStore = ProfileStore(this)
-        stimulusPlayer = StimulusPlayer()
+        stimulusPlayer = StimulusPlayer(this)
         captureEngine = CaptureEngine(this)
 
         graphMeasure = findViewById(R.id.graph_measure)
