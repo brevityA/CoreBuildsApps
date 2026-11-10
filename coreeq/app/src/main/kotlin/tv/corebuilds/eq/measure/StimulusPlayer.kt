@@ -313,7 +313,7 @@ class StimulusPlayer internal constructor(
         } ?: return false
         release(resources)
         val reportError = synchronized(lock) { error != null && attempt.generation == generation }
-        if (reportError) attempt.onError(error)
+        if (reportError && error != null) attempt.onError(error)
         return true
     }
 
