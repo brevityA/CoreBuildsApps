@@ -67,7 +67,16 @@ class RouteStabilityContract(unittest.TestCase):
         for side_effect in ("onOutputsChanged()", "invalidateProbeCache", "refreshProbeAsync"):
             self.assertNotIn(side_effect, body)
         check = self.service.split("private val playbackCheck =", 1)[1].split("private val playbackCallback", 1)[0]
-        self.assertIn("if (playbackRouteHint.observe(hint, playbackActiveHint)) onOutputsChanged()", check)
+        # 1.13.2: only a changed hint is a route change. A media start on a
+        # coarse hint gets a quiet verification; on a precise one, nothing.
+        self.assertIn("PlaybackRouteHint.Verdict.ROUTE_CHANGED -> onOutputsChanged()", check)
+        self.assertIn("PlaybackRouteHint.Verdict.VERIFY_START -> verifyRouteQuietly()", check)
+        self.assertIn("preciseHint = indication?.evidence == OutputRoute.Evidence.ANTICIPATED", check)
+        self.assertEqual(1, check.count("onOutputsChanged()"))
+        quiet = method(self.service, "verifyRouteQuietly")
+        self.assertIn("OutputRoute.refreshProbeAsync(this) { onRouteConfirmed() }", quiet)
+        for side_effect in ("setAllEnabled(false)", "outputPaused = true", "invalidateProbeCache", "applyAll()"):
+            self.assertNotIn(side_effect, quiet)
         wait = int(re.search(r"PLAYBACK_ROUTE_CHECK_MS = (\d+)L", self.service)[1])
         duration = int(re.search(r"PROBE_TRACK_MS = (\d+)", self.route)[1])
         self.assertGreater(wait, duration)
@@ -105,7 +114,7 @@ class RouteStabilityContract(unittest.TestCase):
 
     def test_effect_configuration_waits_for_a_fresh_probe_cache(self) -> None:
         body = method(self.service, "applyAll")
-        self.assertIn("!OutputRoute.hasFreshProbe() && !OutputRoute.isHeldUnconfirmed()", body)
+        self.assertIn("!OutputRoute.hasFreshProbe(this) && !OutputRoute.isHeldUnconfirmed()", body)
         self.assertLess(body.index("reapplyWithConfirmedRoute()"), body.index("resolve()"))
         self.assertIn("CorrectionServicePolicy.canApply(instanceRunning, store.correctionEnabled, suspended)", body)
         self.assertIn("reapplyWithConfirmedRoute()", method(self.service, "onStartCommand"))
@@ -126,9 +135,9 @@ class RouteStabilityContract(unittest.TestCase):
         self.assertIn("OutputRoute.pick(profiles, preferred.id, output?.kind, output?.name)", resolve)
         self.assertNotIn("OutputRoute.Pick(preferred,", resolve)
         discovery = method(self.service, "applyDiscovered")
-        self.assertIn("outputPaused || !OutputRoute.hasFreshProbe()", discovery)
+        self.assertIn("outputPaused || !OutputRoute.hasFreshProbe(this)", discovery)
         self.assertIn("!store.correctionEnabled", discovery)
-        self.assertLess(discovery.index("outputPaused || !OutputRoute.hasFreshProbe()"), discovery.index("createBestEffect("))
+        self.assertLess(discovery.index("outputPaused || !OutputRoute.hasFreshProbe(this)"), discovery.index("createBestEffect("))
 
     def test_probe_publication_is_atomic_with_invalidation(self) -> None:
         self.assertIn("private val probeState = RouteProbeState<ProbeResult>()", self.route)
