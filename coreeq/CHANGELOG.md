@@ -8,6 +8,11 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+- Core EQ: a same-position repeat can now be averaged into the correction when its
+  microphone, output and capture metadata match the first sweep. The average is
+  computed on the analysis worker, path-gated, and the saved profile records it
+  explicitly; refused averages keep the first sweep as the correction.
+
 ## [1.13.1] — 2026-11-05
 
 versionCode 28. Android build, lint and Robolectric pass: 877 unit tests, lint
