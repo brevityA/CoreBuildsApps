@@ -1,15 +1,17 @@
 {
-  "versionCode": 28,
-  "versionName": "1.13.1",
-  "releaseDate": "2026-11-05",
+  "versionCode": 29,
+  "versionName": "1.13.2",
+  "releaseDate": "2026-11-10",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "aad13851b42bfd2f79a02f6059df9f3ae1bceda11713f0efef48a22ef4afec2d",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.13.1",
+  "apkSha256": "6cb5c603b64f6a65112e9f4015907f77004fd9f187d3c0a0fbbb8cce4cb19773",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.13.2",
   "minSdk": 30,
   "highlights": [
-    "Phone pairing works.",
-    "A phone that cannot encrypt the token no longer leaves the TV paired.",
-    "A failed save after the TV accepts is reported.",
-    "After updating, pair again."
+    "Mode's diagnostics count Core EQ's background work.",
+    "A measurement sweep holds audio focus while it plays.",
+    "Player discovery dumps at most once every 15 seconds.",
+    "A re-apply that changes nothing writes nothing.",
+    "No probe track while something else plays.",
+    "The volume keys no longer rewrite the effect."
   ]
 }
