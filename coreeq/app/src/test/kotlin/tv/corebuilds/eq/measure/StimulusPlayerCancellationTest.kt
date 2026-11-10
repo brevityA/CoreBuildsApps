@@ -187,7 +187,7 @@ class StimulusPlayerCancellationTest {
         val allowOld = CountDownLatch(1)
         val oldFocus = FakeFocus()
         val newFocus = FakeFocus()
-        val newTrack = FakeTrack(pending = true)
+        val newTrack = FakeTrack(initialPending = true)
         val backend = FakeBackend().apply {
             focusSequence = mutableListOf(oldFocus, newFocus)
             trackSequence = mutableListOf(newTrack)
@@ -226,7 +226,7 @@ class StimulusPlayerCancellationTest {
         val oldFocus = FakeFocus()
         val newFocus = FakeFocus()
         val oldTrack = FakeTrack()
-        val newTrack = FakeTrack(pending = true)
+        val newTrack = FakeTrack(initialPending = true)
         val backend = FakeBackend().apply {
             focusSequence = mutableListOf(oldFocus, newFocus)
             trackSequence = mutableListOf(oldTrack, newTrack)
@@ -291,7 +291,7 @@ class StimulusPlayerCancellationTest {
         val oldFocus = FakeFocus()
         val newFocus = FakeFocus()
         val oldTrack = FakeTrack()
-        val newTrack = FakeTrack(pending = true)
+        val newTrack = FakeTrack(initialPending = true)
         val backend = FakeBackend().apply {
             focusSequence = mutableListOf(oldFocus, newFocus)
             trackSequence = mutableListOf(oldTrack, newTrack)
