@@ -117,7 +117,13 @@ object OutputRoute {
     data class ProbeResult(
         val output: Output,
         /** API 33+: true when this PCM format can be direct-played, i.e. the route may bypass the mixer and strip an on-device effect. Null below API 33. */
-        val directPlaybackSupported: Boolean?
+        val directPlaybackSupported: Boolean?,
+        /**
+         * The route hint ([identity] of [indication]) read as the probe started
+         * (1.13.2). The answer stands while the hint still reads the same; see
+         * [RouteTrust].
+         */
+        val hint: Pair<String, String>? = null
     )
 
     /**
@@ -139,6 +145,8 @@ object OutputRoute {
      */
     fun probeWithSilentTrack(context: Context): ProbeResult? {
         context.getSystemService(AudioManager::class.java) ?: return null
+        // Read before the track opens: the hint this answer will stand on.
+        val hint = identity(indication(context))
         val format = AudioFormat.Builder()
             .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
             .setSampleRate(PROBE_SAMPLE_RATE_HZ)
@@ -176,6 +184,7 @@ object OutputRoute {
             if (track.write(silence, 0, silence.size) != silence.size) return null
             track.play()
             playbackStarted = true
+            RuntimeCounters.routeProbe()
             val deadline = SystemClock.elapsedRealtime() + PROBE_SETTLE_MS
             var devices: List<AudioDeviceInfo>
             while (true) {
@@ -204,7 +213,7 @@ object OutputRoute {
             val confirmed = if (observed.changed() && output.kind != UNCONFIRMED) {
                 Output(AMBIGUOUS, label(AMBIGUOUS), Evidence.AMBIGUOUS)
             } else output
-            ProbeResult(confirmed, directPlaybackSupport(format))
+            ProbeResult(confirmed, directPlaybackSupport(format), hint)
         } catch (_: InterruptedException) {
             Thread.currentThread().interrupt()
             if (playbackStarted) ProbeResult(unconfirmedOutput(), null) else null
@@ -291,10 +300,11 @@ object OutputRoute {
      */
     fun current(context: Context): Output? {
         // The probe starts and stops a real AudioTrack, and current() is called
-        // several times per apply: cache the answer briefly so one apply does
-        // not open the track repeatedly. Device hot-plug forces a fresh read:
-        // onOutputsChanged -> refreshProbeAsync -> onRouteConfirmed -> applyAll,
-        // all confirming off-thread before anything acts on the route.
+        // several times per apply and on every volume key: a usable answer
+        // stands while the route hint reads the same ([isTrusted], 1.13.2), so
+        // reads during someone else's film open no track. Device hot-plug forces
+        // a fresh read: onOutputsChanged -> refreshProbeAsync -> onRouteConfirmed
+        // -> applyAll, all confirming off-thread before anything acts on the route.
         if (isHeldUnconfirmed()) {
             // Held after a give-up: answer the hard stop directly. No probe is
             // scheduled, so a failed track open can never decay to the
@@ -303,8 +313,8 @@ object OutputRoute {
             return Output(UNCONFIRMED, label(UNCONFIRMED), Evidence.TRACK_PROBE)
         }
         val cached = probeState.snapshot()
-        if (cached != null && SystemClock.elapsedRealtime() - cached.atMs < PROBE_CACHE_MS) {
-            // Fresh probe within its window: trust it. A null result (no track
+        if (cached != null && isTrusted(cached, context)) {
+            // A probe that still stands: trust it. A null result (no track
             // could be opened at all) falls through to the estimate, and that
             // is a decision, not an oversight: if this ROM cannot open the
             // probe track, seeding UNCONFIRMED would make the hard stop
@@ -621,7 +631,6 @@ object OutputRoute {
     private const val PROBE_BUFFER_BYTES = PROBE_SAMPLE_RATE_HZ * PROBE_TRACK_MS / 1000 * 2 * 2
     private const val PROBE_SETTLE_MS = 120L
     private const val PROBE_POLL_MS = 10L
-    private const val PROBE_CACHE_MS = 2_000L
 
     /** How long after a probe's track is released its stop/release reports may still arrive. */
     internal const val OWN_PROBE_ECHO_MS = 500L
@@ -641,9 +650,24 @@ object OutputRoute {
     /** Invalidation and publication use the same lock; stale probes cannot republish over it. */
     fun invalidateProbeCache() = probeState.invalidate()
 
-    internal fun hasFreshProbe(): Boolean = probeState.snapshot()?.let {
-        SystemClock.elapsedRealtime() - it.atMs < PROBE_CACHE_MS
-    } ?: false
+    internal fun hasFreshProbe(context: Context): Boolean =
+        probeState.snapshot()?.let { isTrusted(it, context) } ?: false
+
+    /**
+     * Whether a cached probe still answers for the route (1.13.2): inside the
+     * short window always; after it, only a usable answer whose route hint
+     * still reads the same, up to [RouteTrust.MAX_TRUST_MS]. Reading the hint
+     * costs a couple of calls into the audio system, nothing like opening a
+     * track, and only after the short window.
+     */
+    private fun isTrusted(cached: RouteProbeState.Cached<ProbeResult>, context: Context): Boolean {
+        val ageMs = SystemClock.elapsedRealtime() - cached.atMs
+        if (ageMs in 0 until RouteTrust.SHORT_MS) return true
+        val result = cached.result
+        val usable = result != null && result.output.kind != UNCONFIRMED && result.output.kind != AMBIGUOUS
+        if (!usable) return false
+        return RouteTrust.trusted(ageMs, usable = true, hintAtProbe = result?.hint, hintNow = identity(indication(context)))
+    }
 
     internal fun publishUnconfirmedProbe() = probeState.hold(
         SystemClock.elapsedRealtime(), ProbeResult(unconfirmedOutput(), null)

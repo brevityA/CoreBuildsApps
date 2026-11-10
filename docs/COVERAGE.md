@@ -5,21 +5,21 @@
 
 # Coverage and mapping reliability
 
-Generated: 2026-11-01 · pack v2.5.4 · tracker live since 2026-09-21
+Generated: 2026-11-08 · pack v2.6.0 · tracker live since 2026-09-21
 
 ## Headline
 
-- **100** distinct apps reported since the tracker went live; **80** are in the pack now
+- **112** distinct apps reported since the tracker went live; **85** are in the pack now
 - **24/26** closed not-applying reports have the **exact reported component** shipped now (first-fix rate)
-- Median resolution: **1.1 days** on icon requests, **1.8 days** on not-applying (worst 11.7 days)
-- Open backlog: **2** requests, **0** not-applying
+- Median resolution: **1.2 days** on icon requests, **1.8 days** on not-applying (worst 11.7 days)
+- Open backlog: **5** requests, **3** not-applying
 
 ## Icon requests
 
 | Closed | Count |
 | --- | --- |
-| MAPPED | 69 |
-| NOT-MAPPED | 17 |
+| MAPPED | 73 |
+| NOT-MAPPED | 20 |
 
 A request counts as MAPPED only when its package (from the component, or a Play store link's `id=`) is in the bundled appfilter; a label hit is reported as NAME-MATCH and never counted.
 
@@ -67,5 +67,11 @@ By launcher (the form's Launcher field, device-line fallback):
 
 | # | App | Kind | Age (days) | Component |
 | --- | --- | --- | --- | --- |
-| [420](https://github.com/brevityA/CoreBuildsApps/issues/420) | MAXtv | request | 0 | `` |
-| [421](https://github.com/brevityA/CoreBuildsApps/issues/421) | Xplore TV HR | request | 0 | `` |
+| [460](https://github.com/brevityA/CoreBuildsApps/issues/460) | Files | not applying | 1 | `com.google.android.documentsui/com.android.documentsui.LauncherActivity` |
+| [461](https://github.com/brevityA/CoreBuildsApps/issues/461) | System Tracing | request | 1 | `com.android.traceur/com.android.traceur.MainTvActivity` |
+| [462](https://github.com/brevityA/CoreBuildsApps/issues/462) | VYPN | request | 0 | `net.vypn.app/net.vypn.app.MainActivity` |
+| [463](https://github.com/brevityA/CoreBuildsApps/issues/463) | Nightjar | request | 0 | `com.butterpollo.client/com.limelight.PcView` |
+| [467](https://github.com/brevityA/CoreBuildsApps/issues/467) | wako beta | request | 0 | `github.com/user` |
+| [468](https://github.com/brevityA/CoreBuildsApps/issues/468) | Nuvio | not applying | 0 | `github.com/user` |
+| [469](https://github.com/brevityA/CoreBuildsApps/issues/469) | wako | not applying | 0 | `github.com/user` |
+| [470](https://github.com/brevityA/CoreBuildsApps/issues/470) | Home Theatre 5.0 | request | 0 | `com.zidoo.poster/com.zidoo.poster.main.WelcomeActivity` |
