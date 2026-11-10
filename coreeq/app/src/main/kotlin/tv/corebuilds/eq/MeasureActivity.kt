@@ -21,17 +21,20 @@ import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.apply.DynamicsProcessingEngine
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.OutputRoute
+import tv.corebuilds.eq.apply.ProfileOutputIdentity
 import tv.corebuilds.eq.dsp.Correction
 import tv.corebuilds.eq.dsp.CorrectionReport
 import tv.corebuilds.eq.dsp.CustomTarget
 import tv.corebuilds.eq.dsp.DspConstants
 import tv.corebuilds.eq.dsp.ImportResult
+import tv.corebuilds.eq.dsp.AdaptiveRepeatAverage
 import tv.corebuilds.eq.dsp.AutoApplyPolicy
 import tv.corebuilds.eq.dsp.MeasurementQuality
 import tv.corebuilds.eq.dsp.MeasurementException
 import tv.corebuilds.eq.dsp.CorrectionRefinement
 import tv.corebuilds.eq.dsp.PostCorrectionCheck
 import tv.corebuilds.eq.dsp.RefinementTrust
+import tv.corebuilds.eq.dsp.RepeatAveragePath
 import tv.corebuilds.eq.dsp.RepeatabilityAnalysis
 import tv.corebuilds.eq.dsp.RepeatabilityComparison
 import tv.corebuilds.eq.dsp.RewImport
@@ -84,6 +87,14 @@ class MeasureActivity : TvActivity() {
     /** What a sweep is for: a new measurement, or evidence about the one on screen. */
     private enum class SweepKind { PRIMARY, REPEAT, SEAT, CHECK }
 
+    /** Repeat comparison/average computed on the analysis worker, never on the UI thread. */
+    private data class RepeatAnalysis(
+        val pathMismatch: String?,
+        val comparison: RepeatabilityComparison,
+        val averaged: AdaptiveRepeatAverage.Averaged?,
+        val averageRefusal: String?
+    )
+
     /** Everything a sweep is analysed with, fixed when it starts. */
     private data class SweepPlan(
         val kind: SweepKind,
@@ -97,6 +108,8 @@ class MeasureActivity : TvActivity() {
         val seatsBefore: List<SweepCapture> = emptyList(),
         /** CHECK: the result whose correction the sweep plays through. */
         val checked: SweepResult? = null,
+        /** REPEAT: the first sweep this repeat may be averaged with. */
+        val repeatAgainst: SweepCapture? = null,
         /** The bass budget that correction used, so a refinement obeys the same one. */
         val boostBudgetDb: Double = Correction.boostBudgetDb(1)
     )
@@ -137,12 +150,14 @@ class MeasureActivity : TvActivity() {
     private var micName: String? = null
     private var captureInfo: CaptureInfo? = null
     private var measuredOutput: OutputRoute.Output? = null
-    /** The first sweep remains the saved profile; a repeated sweep is kept separately for comparison. */
+    /** The first sweep keeps the profile provenance; an accepted repeat average replaces only the correction curve. */
     private var repeatBaseline: SweepCapture? = null
     private var repeatCapture: SweepCapture? = null
     private var repeatComparison: RepeatabilityComparison? = null
     private var repeatabilityCheck: RepeatabilityCheck? = null
     private var repeatComparisonClearedDueToSettings = false
+    /** Accepted same-position repeat average; null when the repeat is evidence only. */
+    private var repeatAverage: AdaptiveRepeatAverage.Averaged? = null
     private var activeMicName: String? = null
     private var activeOutput: OutputRoute.Output? = null
     /** The sweep to start once the microphone permission is granted. */
@@ -176,7 +191,7 @@ class MeasureActivity : TvActivity() {
         setContentView(R.layout.activity_measure)
 
         profileStore = ProfileStore(this)
-        stimulusPlayer = StimulusPlayer(this)
+        stimulusPlayer = StimulusPlayer()
         captureEngine = CaptureEngine(this)
 
         graphMeasure = findViewById(R.id.graph_measure)
@@ -228,6 +243,7 @@ class MeasureActivity : TvActivity() {
         btnCeiling.setOnClickListener {
             ceilingIndex = CorrectionLimits.CeilingChoice(ceilingIndex).next().index
             prefs.edit().putInt(KEY_CEILING, ceilingIndex).apply()
+            clearRepeatComparisonForSettingsChange()
             renderCeiling()
             refreshChoices()
         }
@@ -353,11 +369,12 @@ class MeasureActivity : TvActivity() {
     }
 
     private fun clearRepeatComparisonForSettingsChange() {
-        if (repeatCapture == null && repeatabilityCheck == null) return
+        if (repeatCapture == null && repeatabilityCheck == null && repeatAverage == null) return
         repeatBaseline = null
         repeatCapture = null
         repeatComparison = null
         repeatabilityCheck = null
+        repeatAverage = null
         repeatComparisonClearedDueToSettings = true
         renderRepeatabilityText()
     }
@@ -384,7 +401,8 @@ class MeasureActivity : TvActivity() {
         btnAddSeat.visibility = if (sweep && seatCount < SeatAverage.MAX_SEATS) View.VISIBLE else View.GONE
         btnAddSeat.text = getString(R.string.measure_add_seat_button, seatCount + 1, SeatAverage.MAX_SEATS)
         // A same-spot repeat describes one seat; once seats are averaged it has nothing to compare.
-        if (seats.size >= 2) btnRepeat.visibility = View.GONE
+        // An accepted average is a completed single-seat result; start a new sweep to repeat again.
+        if (seats.size >= 2 || repeatAverage != null) btnRepeat.visibility = View.GONE
         val idle = !measuring && !importing && !sweepReanalysisInProgress
         btnAddSeat.isEnabled = idle
         btnCheck.isEnabled = idle
@@ -397,6 +415,13 @@ class MeasureActivity : TvActivity() {
     private fun evidenceLines(): List<String> {
         if (result == null || importResult != null) return emptyList()
         val lines = mutableListOf<String>()
+        repeatAverage?.let { avg ->
+            lines += String.format(
+                Locale.US, getString(R.string.measure_repeat_average_summary),
+                avg.usableBands, avg.levelOffsetDb, avg.agreementRmsDb
+            )
+            avg.note?.let { lines += it }
+        }
         val averaged = seatAverage
         if (averaged != null && seats.size >= 2) {
             lines += String.format(
@@ -537,7 +562,7 @@ class MeasureActivity : TvActivity() {
     }
 
     private fun startRepeatMeasurement() {
-        if (seats.size >= 2) return
+        if (seats.size >= 2 || repeatAverage != null) return
         val baseline = currentCapture() ?: return
         startMeasurement(SweepKind.REPEAT, baseline)
     }
@@ -545,7 +570,11 @@ class MeasureActivity : TvActivity() {
     private fun startMeasurement(kind: SweepKind = SweepKind.PRIMARY, repeatAgainst: SweepCapture? = null) {
         if (measuring || importing || sweepReanalysisInProgress) return
         // Seats and checks add to a sweep on screen; without one there is nothing to add to.
-        val seatsBefore = if (kind == SweepKind.SEAT) seats.ifEmpty { listOfNotNull(currentCapture()) } else emptyList()
+        val seatsBefore = if (kind == SweepKind.SEAT) {
+            // A repeat average is single-seat evidence. Adding another seat starts from the
+            // original first capture so seat re-analysis never averages an average as a seat.
+            seats.ifEmpty { listOfNotNull(if (repeatAverage != null) repeatBaseline ?: currentCapture() else currentCapture()) }
+        } else emptyList()
         if (kind == SweepKind.SEAT && (seatsBefore.isEmpty() || seatsBefore.size >= SeatAverage.MAX_SEATS)) return
         val checked = if (kind == SweepKind.CHECK) (result?.takeIf { importResult == null } ?: return) else null
         if (kind == SweepKind.REPEAT && repeatAgainst == null) return
@@ -581,6 +610,7 @@ class MeasureActivity : TvActivity() {
             repeatCapture = null
             repeatComparison = null
             repeatabilityCheck = null
+            repeatAverage = null
         }
         if (kind == SweepKind.PRIMARY) {
             result = null
@@ -618,6 +648,7 @@ class MeasureActivity : TvActivity() {
             roomIndex = selectedRoomIndex,
             seatsBefore = seatsBefore,
             checked = checked,
+            repeatAgainst = repeatAgainst,
             // The budget the correction on screen was built with: a refinement must not raise it.
             boostBudgetDb = seatAverage?.boostBudgetDb ?: Correction.boostBudgetDb(1)
         )
@@ -648,7 +679,11 @@ class MeasureActivity : TvActivity() {
                 activeOutput = ranked
                 btnStart.postDelayed({
                     if (measuring && measurementGeneration == generation) stimulusPlayer.playSweep(
-                        onError = { msg -> runOnUiThread { fail(msg, kind) } },
+                        onError = { msg ->
+                            runOnUiThread {
+                                if (measuring && measurementGeneration == generation) fail(msg, kind)
+                            }
+                        },
                         onRouted = { devices ->
                             val tagged = OutputRoute.tag(ranked, devices)
                             runOnUiThread {
@@ -676,7 +711,11 @@ class MeasureActivity : TvActivity() {
                 if (measurementGeneration != generation) return
                 val outputAtCapture = activeOutput
                 val micAtCapture = activeMicName
-                runOnUiThread { textStatus.text = getString(R.string.measure_analysing) }
+                runOnUiThread {
+                    if (measuring && measurementGeneration == generation) {
+                        textStatus.text = getString(R.string.measure_analysing)
+                    }
+                }
                 analyse(samples, sampleRate, info, plan, micAtCapture, outputAtCapture, generation)
             }
 
@@ -723,6 +762,7 @@ class MeasureActivity : TvActivity() {
         generation: Int
     ) {
         thread(name = "CoreEqAnalysis") {
+            if (measurementGeneration != generation) return@thread
             val (peakDbfs, _) = SweepAnalysis.levelsDbfs(samples)
             val outcome: Result<SweepResult> = if (peakDbfs > CLIP_DBFS) {
                 Result.failure(MeasurementException(
@@ -747,6 +787,7 @@ class MeasureActivity : TvActivity() {
                     Result.failure(MeasurementException("Analysis failed: ${e.javaClass.simpleName}: ${e.message}"))
                 }
             }
+            if (measurementGeneration != generation) return@thread
             // The average and the comparison refit and re-read whole curves: worker-thread work.
             val analyzed = outcome.getOrNull()
             val averaged = if (plan.kind == SweepKind.SEAT && analyzed != null) {
@@ -772,6 +813,22 @@ class MeasureActivity : TvActivity() {
                     }
                 }
             } else null
+            if (measurementGeneration != generation) return@thread
+            val repeatAnalysis = if (plan.kind == SweepKind.REPEAT && analyzed != null) {
+                plan.repeatAgainst?.let { baseline ->
+                    val repeatCapture = SweepCapture(
+                        result = analyzed,
+                        samples = samples,
+                        rate = rate,
+                        captureInfo = info,
+                        micName = capturedMicName,
+                        output = capturedOutput,
+                        targetIndex = plan.targetIndex,
+                        roomIndex = plan.roomIndex
+                    )
+                    computeRepeatAnalysis(baseline, repeatCapture, plan)
+                }
+            } else null
             runOnUiThread {
                 if (!measuring || measurementGeneration != generation || isFinishing || isDestroyed) return@runOnUiThread
                 outcome.onSuccess { sweep ->
@@ -788,7 +845,7 @@ class MeasureActivity : TvActivity() {
                     )
                     when (plan.kind) {
                         SweepKind.PRIMARY -> installPrimaryCapture(capture)
-                        SweepKind.REPEAT -> completeRepeat(capture)
+                        SweepKind.REPEAT -> completeRepeat(capture, repeatAnalysis)
                         SweepKind.SEAT -> completeSeat(plan.seatsBefore, capture, averaged)
                         SweepKind.CHECK -> completeCheck(capture, comparison, refinement)
                     }
@@ -811,6 +868,7 @@ class MeasureActivity : TvActivity() {
         repeatCapture = null
         repeatComparison = null
         repeatabilityCheck = null
+        repeatAverage = null
         seats = emptyList()
         seatAverage = null
         correctionCheck = null
@@ -873,6 +931,7 @@ class MeasureActivity : TvActivity() {
         repeatCapture = null
         repeatComparison = null
         repeatabilityCheck = null
+        repeatAverage = null
         repeatComparisonClearedDueToSettings = false
         seats = before + capture
         seatAverage = averaged
@@ -964,14 +1023,51 @@ class MeasureActivity : TvActivity() {
         btnSave.requestFocus()
     }
 
-    private fun completeRepeat(capture: SweepCapture) {
+    /** Worker-thread repeat comparison and path-gated averaging. */
+    private fun computeRepeatAnalysis(baseline: SweepCapture, capture: SweepCapture, plan: SweepPlan): RepeatAnalysis {
+        val pathMismatch = repeatPathMismatch(baseline, capture)
+        val identityRefusal = RepeatAveragePath.refusal(
+            repeatAveragePathCapture(baseline),
+            repeatAveragePathCapture(capture)
+        )
+        val comparison = RepeatabilityAnalysis.compare(baseline.result, capture.result)
+        val averageRefusal = pathMismatch ?: identityRefusal
+        val averaged = if (averageRefusal == null) {
+            try {
+                AdaptiveRepeatAverage.average(baseline.result, capture.result, plan.target, plan.volumeM3)
+            } catch (e: IllegalArgumentException) {
+                Log.w(TAG, "Repeat average refused", e)
+                null
+            } catch (e: Exception) {
+                Log.w(TAG, "Repeat average failed", e)
+                null
+            }
+        } else null
+        return RepeatAnalysis(pathMismatch, comparison, averaged, averageRefusal)
+    }
+
+    /** The built-in speaker kind is an identity; external kinds need more than a generic port label. */
+    private fun repeatAveragePathCapture(capture: SweepCapture): RepeatAveragePath.Capture {
+        val output = capture.output
+        val kind = output?.kind
+        val nameSpecific = kind == OutputRoute.SPEAKER ||
+            ProfileOutputIdentity.specificName(OutputRoute.label(kind), output?.name) != null
+        return RepeatAveragePath.Capture(
+            outputKind = kind,
+            outputName = output?.name,
+            outputTrackReported = output?.evidence == OutputRoute.Evidence.TRACK_REPORTED,
+            outputNameSpecific = nameSpecific,
+            info = capture.captureInfo
+        )
+    }
+
+    private fun completeRepeat(capture: SweepCapture, analysis: RepeatAnalysis?) {
         val baseline = repeatBaseline
-        if (baseline == null) {
+        if (baseline == null || analysis == null) {
             fail("The first sweep is no longer available. Measure again.", SweepKind.REPEAT)
             return
         }
-        val pathMismatch = repeatPathMismatch(baseline, capture)
-        val comparison = RepeatabilityAnalysis.compare(baseline.result, capture.result)
+        val pathMismatch = analysis.pathMismatch
         val canCompare = pathMismatch == null
         val inputUnknown = listOf(baseline.captureInfo, capture.captureInfo).any { info ->
             info == null || (info.inputDeviceType.isNullOrBlank() && info.inputDeviceName.isNullOrBlank())
@@ -979,15 +1075,23 @@ class MeasureActivity : TvActivity() {
         val metadataUnknown = inputUnknown || baseline.output == null || capture.output == null ||
             OutputRoute.keyFor(baseline.output) == OutputRoute.UNKNOWN ||
             OutputRoute.keyFor(capture.output) == OutputRoute.UNKNOWN
-        val metrics = if (canCompare) comparison.metrics else null
+        val averageRefusal = analysis.averageRefusal
+        val averaged = analysis.averaged
+        val averageNote = when {
+            averageRefusal != null -> "$averageRefusal Nothing was averaged."
+            averaged == null -> "The repeat could not be averaged safely; the first sweep remains the correction."
+            else -> null
+        }
+        val metrics = if (canCompare) analysis.comparison.metrics else null
         val note = when {
             pathMismatch != null -> "$pathMismatch No same-path repeatability summary was calculated."
-            metrics == null -> comparison.reason ?: "There were not enough comparable bands for a repeatability summary."
+            metrics == null -> analysis.comparison.reason ?: "There were not enough comparable bands for a repeatability summary."
             metadataUnknown -> getString(R.string.measure_repeat_unknown_output)
             else -> null
         }
         repeatCapture = capture
-        repeatComparison = comparison.takeIf { canCompare }
+        repeatComparison = analysis.comparison.takeIf { canCompare }
+        repeatAverage = averaged
         repeatabilityCheck = RepeatabilityCheck(
             metrics = metrics,
             comparisonCurve = capture.result.centresHz.indices.map { index ->
@@ -998,11 +1102,12 @@ class MeasureActivity : TvActivity() {
             outputName = capture.output?.name,
             snrDb = capture.result.snrDb,
             driftPpm = capture.result.driftPpm,
-            note = note
+            note = listOfNotNull(note, averageNote).joinToString(" ").takeIf { it.isNotBlank() }
         )
-        // Keep the first sweep as the profile curve. A repeat is evidence, not
-        // an implicit average or an automatic replacement of the correction.
-        result = baseline.result
+        // An accepted average becomes the correction; a refused average leaves the first sweep
+        // as the correction and keeps the repeat only as evidence.
+        val savedResult = averaged?.result ?: baseline.result
+        result = savedResult
         clearRefinement()
         lastCapture = baseline.samples
         lastRate = baseline.rate
@@ -1012,7 +1117,7 @@ class MeasureActivity : TvActivity() {
         btnStart.setText(R.string.measure_start_new)
         btnRepeat.visibility = View.VISIBLE
         btnRepeat.isEnabled = true
-        showResult(baseline.result, repeatComparison)
+        showResult(savedResult, repeatComparison)
         btnSave.visibility = View.VISIBLE
         btnSave.requestFocus()
     }
@@ -1050,6 +1155,8 @@ class MeasureActivity : TvActivity() {
         }
         val averagedSeats = if (seats.size >= 2) seats.size - (if (seatAverage?.leftOut != null) 1 else 0) else 0
         val title = when {
+            repeatAverage != null ->
+                String.format(Locale.US, "SAME-POSITION REPEAT AVERAGE · FULL CORRECTION BELOW %.0f HZ", r.transitionHz)
             repeatCapture != null ->
                 String.format(Locale.US, "SAME-POSITION REPEAT · FULL CORRECTION BELOW %.0f HZ", r.transitionHz)
             averagedSeats >= 2 ->
@@ -1309,6 +1416,7 @@ class MeasureActivity : TvActivity() {
         repeatCapture = null
         repeatComparison = null
         repeatabilityCheck = null
+        repeatAverage = null
         repeatComparisonClearedDueToSettings = false
         seats = emptyList()
         seatAverage = null
@@ -1358,6 +1466,7 @@ class MeasureActivity : TvActivity() {
                 repeatCapture = null
                 repeatComparison = null
                 repeatabilityCheck = null
+                repeatAverage = null
             }
             btnStart.setText(R.string.measure_start_new)
             btnRepeat.visibility = View.VISIBLE
@@ -1384,6 +1493,7 @@ class MeasureActivity : TvActivity() {
         repeatCapture = null
         repeatComparison = null
         repeatabilityCheck = null
+        repeatAverage = null
         repeatComparisonClearedDueToSettings = false
         seats = emptyList()
         seatAverage = null
@@ -1429,6 +1539,7 @@ class MeasureActivity : TvActivity() {
                 repeatCapture = null
                 repeatComparison = null
                 repeatabilityCheck = null
+                repeatAverage = null
             }
             btnStart.setText(R.string.measure_start_new)
             btnRepeat.visibility = View.VISIBLE
@@ -1501,7 +1612,15 @@ class MeasureActivity : TvActivity() {
             outputName = output?.name,
             measurementNotes = buildList {
                 if (savedRepeatability != null) {
-                    add("Optional same-position repeat retained as a separate trace; captures are never averaged. The comparison is descriptive only, with no qualified pass/fail threshold, and does not generalize to other seats or rooms.")
+                    val repeatAvg = repeatAverage
+                    if (repeatAvg != null) {
+                        add(String.format(Locale.US,
+                            "Same-position repeat average: two identified captures were level-aligned and energy-averaged over %d shared bands (offset %+.1f dB, agreement %.1f dB RMS). The correction uses the weaker trust of the two captures; the first sweep's microphone, output and capture details are retained. Descriptive only; it does not generalize to other seats or rooms.",
+                            repeatAvg.usableBands, repeatAvg.levelOffsetDb, repeatAvg.agreementRmsDb))
+                        repeatAvg.note?.let { add(it) }
+                    } else {
+                        add("Optional same-position repeat retained as a separate trace; captures were not averaged. The comparison is descriptive only, with no qualified pass/fail threshold, and does not generalize to other seats or rooms.")
+                    }
                     savedRepeatability.note?.let { add(it) }
                 }
                 if (averaged != null) {
