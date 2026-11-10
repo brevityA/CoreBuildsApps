@@ -8,17 +8,26 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
-## [1.13.2] — 2026-11-08
+## [1.13.2] — 2026-11-10
 
-versionCode 29. Android build, lint and Robolectric pass: 887 unit tests (877
-before, 10 new), lint 0 errors; the DSP self-test and its 108 parity tests
+versionCode 29. Android build, lint and Robolectric pass: 912 unit tests (877
+before, 35 new), lint 0 errors; the DSP self-test and its 108 parity tests
 pass. Not yet run on a TV: the report this answers (a stream that "lags very
 much" in WuPlay with Core EQ on, and WuPlay closing) came without a device
 model or log, so whether it fixes that TV is unverified until it is played
 there. The WuPlay force close has no log yet and is not claimed fixed.
+The measurement sweep's audio focus and the same-position repeat average
+have not been run on a TV or a phone either; their acceptance record on #466
+is outstanding.
 
 ### Added
 
+- **A same-position repeat in a TV-started measurement can be averaged into
+  the correction.** When its microphone, output and capture metadata match the
+  first sweep, the average is computed on the analysis worker, path-gated, and
+  the saved profile records it explicitly; refused averages keep the first
+  sweep as the correction. Phone-companion repeats are still compared, not
+  averaged.
 - **Mode's diagnostics count Core EQ's background work.** "Background work
   since Core EQ started" lists route probes, player-discovery dumps, effect
   writes (and writes skipped as unchanged) and correction pauses. The same
@@ -27,6 +36,11 @@ there. The WuPlay force close has no log yet and is not claimed fixed.
 
 ### Changed
 
+- **A measurement sweep holds audio focus while it plays.** It asks Android
+  for transient focus that lets other media duck rather than pause. If
+  another app takes focus mid-sweep, the sweep stops with "Audio focus was
+  lost during the sweep. Close the other app and measure again." If focus is
+  refused, the sweep does not start.
 - **Player discovery dumps at most once every 15 seconds.** With DUMP
   discovery granted, Core EQ made the audio server write out its state after
   every playback change, every few seconds on a buffering stream. It now does

@@ -66,7 +66,7 @@ internal class CompanionServer(
     private val preferences = appContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
     private val profileStore = ProfileStore(appContext)
     private val modeStore = ContentModeStore(appContext)
-    private val stimulusPlayer = StimulusPlayer()
+    private val stimulusPlayer = StimulusPlayer(appContext)
     private val mainHandler = Handler(Looper.getMainLooper())
     private val workers = ThreadPoolExecutor(
         WORKER_COUNT,

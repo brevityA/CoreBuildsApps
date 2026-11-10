@@ -136,7 +136,8 @@
     <string name="measure_import_output_unknown"> · Android route unknown; REW output chain is not identified</string>
     <string name="measure_repeat_button">Repeat at same spot</string>
     <string name="measure_repeat_intro">Optional same-position check: keep the phone/remote, output, level and orientation unchanged. The comparison is descriptive, not multi-seat averaging; no physical pass/fail threshold is qualified.</string>
-    <string name="measure_repeat_summary">Same-position repeat · %1$d clean bands (%2$.0f Hz–%3$.1f kHz) · median |Δ| %4$.2f dB · RMS %5$.2f dB · 95th %6$.2f dB · repeat level offset %7$+.1f dB. Descriptive only; no qualified pass/fail threshold. Both traces are retained, never averaged; not a guarantee for other seats.</string>
+    <string name="measure_repeat_summary">Same-position repeat · %1$d clean bands (%2$.0f Hz–%3$.1f kHz) · median |Δ| %4$.2f dB · RMS %5$.2f dB · 95th %6$.2f dB · repeat level offset %7$+.1f dB. Descriptive only; no qualified pass/fail threshold. Both traces are retained; not a guarantee for other seats.</string>
+    <string name="measure_repeat_average_summary">Same-position repeat average: %1$d shared bands, level offset %2$+.1f dB, agreement %3$.1f dB RMS.</string>
     <string name="measure_repeat_uncompared">Repeat captured but not compared: %1$s. The first sweep remains the correction; traces are not averaged, no pass/fail threshold is qualified, and this does not generalize to other seats or rooms.</string>
     <string name="measure_repeat_changed">Measurement choices changed; the repeat comparison was cleared. Repeat again under the new target and room settings.</string>
     <string name="measure_repeat_unknown_output">Android did not report enough input/output route detail for both sweeps; treat this comparison as provisional.</string>
