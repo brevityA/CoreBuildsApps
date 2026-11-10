@@ -10,8 +10,8 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [1.13.2] — 2026-11-10
 
-versionCode 29. Android build, lint and Robolectric pass: 887 unit tests (877
-before, 10 new), lint 0 errors; the DSP self-test and its 108 parity tests
+versionCode 29. Android build, lint and Robolectric pass: 912 unit tests (877
+before, 35 new), lint 0 errors; the DSP self-test and its 108 parity tests
 pass. Not yet run on a TV: the report this answers (a stream that "lags very
 much" in WuPlay with Core EQ on, and WuPlay closing) came without a device
 model or log, so whether it fixes that TV is unverified until it is played
