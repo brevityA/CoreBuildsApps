@@ -136,6 +136,8 @@ class ModeActivity : TvActivity() {
             append("Persisted player snapshot: ").append(if (modeStore.lastActiveSnapshotComplete()) "complete" else "incomplete or unavailable").append("\n")
             append("Freshness: not reported by Android; package/state hints can be stale or omit players.\n")
             append("Identity sources report app/package state only; they do not establish audibility, physical route, or effect coverage.\n")
+            append("Background work since Core EQ started: ")
+                .append(tv.corebuilds.eq.apply.RuntimeCounters.snapshot().summary()).append("\n")
             val rules = modeStore.appRules()
             if (rules.isNotEmpty()) {
                 append("\n\n").append(getString(R.string.mode_rules_app_rules)).append("\n")

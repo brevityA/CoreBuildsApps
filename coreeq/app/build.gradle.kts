@@ -37,8 +37,8 @@ android {
         applicationId = "tv.corebuilds.eq"
         minSdk = 30
         targetSdk = 37
-        versionCode = 28
-        versionName = "1.13.1"
+        versionCode = 29
+        versionName = "1.13.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Read by the updater: the release feed it polls and the FileProvider

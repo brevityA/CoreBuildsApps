@@ -255,4 +255,27 @@ class ToneLayersTest {
         for (hz in listOf(2200.0, 3000.0, 4500.0)) assertEquals(2.0, music.responseDb(profile(), hz), 1e-9)
         assertEquals("stereo: speech +2 dB, bass guard", music.label(profile()))
     }
+
+    @Test
+    fun `identical layers are equal, so a volume key that moves no step reprograms nothing`() {
+        // EqService.onVolumeChanged reapplies only when toneLayers() != activeLayers.
+        // Before 1.13.2 the DoubleArray made every comparison unequal.
+        assertEquals(ToneLayers(), ToneLayers())
+        assertEquals(ToneLayers.NONE, ToneLayers())
+        val a = ToneLayers(lowVolumeBassDb = 1.5, loudnessBandGains = DoubleArray(10) { it * 0.5 })
+        val b = ToneLayers(lowVolumeBassDb = 1.5, loudnessBandGains = DoubleArray(10) { it * 0.5 })
+        assertEquals(a, b)
+        assertEquals(a.hashCode(), b.hashCode())
+    }
+
+    @Test
+    fun `a real step in any layer still reads as a change`() {
+        val base = ToneLayers(lowVolumeBassDb = 1.0)
+        assertFalse(base == base.copy(lowVolumeBassDb = 1.5))
+        assertFalse(base == base.copy(dialogue = true))
+        assertFalse(base == base.copy(stereoDownmix = true))
+        assertFalse(base == base.copy(contentType = ContentType.MUSIC))
+        val gains = DoubleArray(10).also { it[3] = 0.5 }
+        assertFalse(base == base.copy(loudnessBandGains = gains))
+    }
 }
