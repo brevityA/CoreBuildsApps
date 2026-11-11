@@ -244,7 +244,16 @@ data class Profile(
      * against, copied at save time. Built-in targets are rebuilt from their
      * key; an imported one cannot be, because the next import replaces it.
      */
-    val targetPoints: List<Pair<Double, Double>> = emptyList()
+    val targetPoints: List<Pair<Double, Double>> = emptyList(),
+    /**
+     * The build that produced this profile's correction (a measurement, a REW
+     * import or a manual profile). Written once by whatever creates the
+     * profile; carried through rename, duplicate, export and import; null when
+     * not recorded, and never filled in later. See [AppBuild].
+     */
+    val createdBy: AppBuild? = null,
+    /** The build that last saved this profile; null when not recorded. Set by [ProfileStore] only. */
+    val lastSavedBy: AppBuild? = null
 ) {
     /**
      * The target this profile was corrected towards, on [freqs]. Null for an

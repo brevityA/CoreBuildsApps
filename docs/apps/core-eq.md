@@ -25,7 +25,7 @@ Home answers two questions in two lines. The first says what is **applied**, apa
 
 ## Profiles
 
-Choosing a profile in the list shows its curve and, under the list, whether it plays on the output in use (through 1.13.2 this was a toast). **Details** lists what the profile records: kind, date, output, target, microphone, capture, room volume, RT60, signal-to-noise, how high it corrects, the repeat's agreement (agreement only, not a quality grade), manual EQ and notes; a field an older profile never recorded says "not recorded". **Rename** takes up to 48 characters. **Duplicate** makes an independent copy, with its mode overlays, named "(copy)"; the copy is not made active. **Delete** asks first, with Cancel focused, so a second press of OK cannot remove a profile. Back on Measure with an unsaved result asks Save, Discard or Keep it, with Keep it focused.
+Choosing a profile in the list shows its curve and, under the list, whether it plays on the output in use (through 1.13.2 this was a toast). **Details** lists what the profile records: kind, date, output, target, microphone, capture, room volume, RT60, signal-to-noise, how high it corrects, the repeat's agreement (agreement only, not a quality grade), manual EQ and notes, and which Core EQ build measured, imported or created it and which last saved it; a field an older profile never recorded says "not recorded". **Rename** takes up to 48 characters. **Duplicate** makes an independent copy, with its mode overlays, named "(copy)"; the copy is not made active. **Delete** asks first, with Cancel focused, so a second press of OK cannot remove a profile. Back on Measure with an unsaved result asks Save, Discard or Keep it, with Keep it focused.
 
 ## First install and setup
 

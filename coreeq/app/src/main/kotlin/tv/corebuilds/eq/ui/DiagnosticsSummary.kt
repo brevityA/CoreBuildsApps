@@ -31,6 +31,8 @@ object DiagnosticsSummary {
         /** The output the profile was saved for, as a kind label ("TV speakers"). */
         val profileOutput: String?,
         val profileAgeSeconds: Long?,
+        /** "measured with Core EQ 1.14.0 (30)", or null when the profile's origin was not recorded. */
+        val profileOrigin: String? = null,
         /** The output in use as a kind label, and how Android told us. */
         val outputInUse: String?,
         val outputEvidence: String?,
@@ -55,7 +57,8 @@ object DiagnosticsSummary {
                 "none applies or is chosen"
             } else {
                 "${f.profileKind} · for ${f.profileOutput ?: "any output"}" +
-                    (f.profileAgeSeconds?.let { " · saved ${ago(it)}" } ?: "")
+                    (f.profileAgeSeconds?.let { " · saved ${ago(it)}" } ?: "") +
+                    " · " + (f.profileOrigin ?: "origin not recorded")
             }
         )
         appendLine("State: ${f.home.state.name.lowercase().replace('_', ' ')}")

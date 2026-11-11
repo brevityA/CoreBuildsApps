@@ -53,12 +53,22 @@ object ProfileDetails {
             add(Line("Repeat at same spot", repeat(profile)))
         }
         add(Line("Manual EQ", if (profile.manualFilters.isEmpty()) "none" else "${profile.manualFilters.size} filter(s)"))
+        // Provenance: recorded from the build that added it; older profiles say so.
+        add(Line(originLabel(profile), profile.createdBy?.label() ?: NOT_RECORDED))
+        add(Line("Last saved with", profile.lastSavedBy?.label() ?: NOT_RECORDED))
         for (note in profile.measurementNotes) add(Line("Note", note))
         profile.repeatabilityCheck?.note?.takeIf { it.isNotBlank() }?.let { add(Line("Repeat note", it)) }
     }
 
     /** The lines as plain text, one "Label: value" per line, for the dialog and diagnostics. */
     fun text(lines: List<Line>): String = lines.joinToString("\n") { "${it.label}: ${it.value}" }
+
+    /** "Measured with", "Imported with" or "Created with", for [Profile.createdBy]. */
+    fun originLabel(profile: Profile): String = when {
+        profile.manualOnly -> "Created with"
+        profile.stimulus == "rew_import" -> "Imported with"
+        else -> "Measured with"
+    }
 
     /** What kind of profile this is, in words; diagnostics reuse it without the name. */
     fun kindOf(profile: Profile): String = when {

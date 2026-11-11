@@ -36,6 +36,7 @@ import tv.corebuilds.eq.dsp.RoomAwareGuidance
 import tv.corebuilds.eq.dsp.SmartSuggestion
 import tv.corebuilds.eq.dsp.TvSoundEq
 import tv.corebuilds.eq.export.Formats
+import tv.corebuilds.eq.export.AppBuild
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.mode.ContentMode
@@ -241,7 +242,8 @@ class ManualEqActivity : TvActivity() {
             captureSeconds = 0.0,
             outputKind = OutputRoute.keyFor(output),
             outputName = output?.name,
-            manualOnly = true
+            manualOnly = true,
+            createdBy = AppBuild.current()
         ).also { profileStore.saveProfile(it) }
     }
 

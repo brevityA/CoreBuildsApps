@@ -39,7 +39,11 @@ data class EqStatus(
  * a measurement until the room is measured. A separate manual-only profile can
  * exist without pretending that a measurement happened.
  */
-class ProfileStore(context: Context) {
+class ProfileStore(
+    context: Context,
+    /** The build stamped as [Profile.lastSavedBy] when a profile is saved; tests pass their own. */
+    private val build: AppBuild = AppBuild.current()
+) {
 
     private val appContext = context.applicationContext
     private val prefs: SharedPreferences =
@@ -120,10 +124,17 @@ class ProfileStore(context: Context) {
         prefs.edit().putString(KEY_ACTIVE_ID, id).apply()
     }
 
+    /**
+     * Save one profile, stamping only it with this build as [Profile.lastSavedBy].
+     * [Profile.createdBy] is whatever the caller set: the code that creates a
+     * profile records it, an import keeps the file's, and nothing here invents
+     * one. Every other stored profile is rewritten exactly as it was.
+     */
     fun saveProfile(profile: Profile, setAsActive: Boolean = false) {
         val list = getAllProfiles().toMutableList()
         val existingIndex = list.indexOfFirst { it.id == profile.id }
-        if (existingIndex >= 0) list[existingIndex] = profile else list.add(profile)
+        val stamped = profile.copy(lastSavedBy = build)
+        if (existingIndex >= 0) list[existingIndex] = stamped else list.add(stamped)
         persistProfiles(list)
         if (setAsActive) setActiveProfile(profile.id)
     }
@@ -152,7 +163,7 @@ class ProfileStore(context: Context) {
         val list = getAllProfiles().toMutableList()
         val index = list.indexOfFirst { it.id == id }
         if (index < 0) return null
-        val renamed = list[index].copy(name = name)
+        val renamed = list[index].copy(name = name, lastSavedBy = build)
         list[index] = renamed
         persistProfiles(list)
         return renamed
@@ -168,7 +179,8 @@ class ProfileStore(context: Context) {
     fun duplicateProfile(id: String, newId: String = "copy-${UUID.randomUUID()}"): Profile? {
         val list = getAllProfiles().toMutableList()
         val source = list.firstOrNull { it.id == id } ?: return null
-        val copy = source.copy(id = newId, name = copyName(source.name, list.map { it.name }.toSet()))
+        // The copy keeps the original's createdBy (it is the same measurement) and is saved by this build.
+        val copy = source.copy(id = newId, name = copyName(source.name, list.map { it.name }.toSet()), lastSavedBy = build)
         list.add(copy)
         persistProfiles(list)
         val modes = ContentModeStore(appContext)
@@ -671,7 +683,9 @@ class ProfileStore(context: Context) {
                     ?.takeIf { it.isNotBlank() },
                 manualFilters = ManualEq.sanitize(manualFiltersList),
                 manualOnly = obj.optBoolean("manual_only", false),
-                targetPoints = targetPoints
+                targetPoints = targetPoints,
+                createdBy = AppBuild.fromJson(obj.optJSONObject("provenance")?.optJSONObject("created_by")),
+                lastSavedBy = AppBuild.fromJson(obj.optJSONObject("provenance")?.optJSONObject("last_saved_by"))
             )
         }
     }

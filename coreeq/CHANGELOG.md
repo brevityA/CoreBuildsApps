@@ -39,6 +39,11 @@ same sound as before; profiles are unchanged.
   the last service message, how the last measurement ended, and the
   background-work counters. Core EQ sends nothing; recordings, names and
   pairing keys are left out and addresses are masked.
+- **Profiles record which Core EQ build made them and which last saved them.**
+  Details shows "Measured with", "Imported with" or "Created with" and "Last
+  saved with". Profiles saved before this say "not recorded"; nothing is
+  guessed, and opening or browsing a profile writes nothing. Rename and
+  duplicate keep the original build; export and import carry both.
 - **Extra effects has a Reset.** It turns every effect on that screen off and
   leaves room correction, profiles and manual EQ alone.
 

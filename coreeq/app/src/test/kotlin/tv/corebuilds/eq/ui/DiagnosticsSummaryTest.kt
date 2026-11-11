@@ -35,7 +35,7 @@ class DiagnosticsSummaryTest {
         assertEquals("App: 1.13.2 (29, debug)", lines[1])
         assertEquals("Android: 14 (API 34) · Maker Model X", lines[2])
         assertEquals("Output in use: TV speakers (track probe)", lines[3])
-        assertEquals("Profile: room measurement · for TV speakers · saved 2 d ago", lines[4])
+        assertEquals("Profile: room measurement · for TV speakers · saved 2 d ago · origin not recorded", lines[4])
         assertEquals("State: applied", lines[5])
         assertTrue(lines[6], lines[6].startsWith("Applied by DynamicsProcessing"))
         assertEquals("Listening: night light · clarity +2 dB.", lines[7])
@@ -90,5 +90,11 @@ class DiagnosticsSummaryTest {
         assertEquals("2 min ago", DiagnosticsSummary.ago(90))
         assertEquals("2 h ago", DiagnosticsSummary.ago(90 * 60))
         assertEquals("2 d ago", DiagnosticsSummary.ago(36 * 3600))
+    }
+
+    @Test fun `a recorded origin is named, an unrecorded one is said to be unrecorded`() {
+        val withOrigin = DiagnosticsSummary.text(facts.copy(profileOrigin = "measured with Core EQ 1.14.0 (30)"))
+        assertTrue(withOrigin.contains("saved 2 d ago · measured with Core EQ 1.14.0 (30)"))
+        assertTrue(DiagnosticsSummary.text(facts).contains("· origin not recorded"))
     }
 }
