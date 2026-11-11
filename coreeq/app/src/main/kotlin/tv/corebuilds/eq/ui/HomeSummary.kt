@@ -11,7 +11,10 @@ import tv.corebuilds.eq.dsp.NightMode
  * Only facts Core EQ holds are used. Where Android cannot tell (which output
  * is in use, whether a playing stream passes through the effect) the line
  * says unknown or says what is not confirmed; nothing here is a live meter.
- * Android-free so every state is unit-tested (`HomeSummaryTest`).
+ * Android-free so every state is unit-tested (`HomeSummaryTest`, and
+ * `HomeSummaryPrecedenceTest` for conflicting facts and transitions). The
+ * states, the evidence behind each fact and their precedence are written out
+ * in `docs/CORE_EQ_HOME_STATUS.md`; keep the two in step.
  */
 object HomeSummary {
 
@@ -65,12 +68,16 @@ object HomeSummary {
         State.NO_PROFILE -> "Nothing to apply yet. Next: measure this room, or import a profile in Profiles."
         State.NOT_RUNNING -> "Unknown: the correction service is not running. Next: switch Correction off and on."
         State.FAULT -> "Not applied: ${f.faultMessage}"
-        State.OUTPUT_UNKNOWN -> "Unknown: Android has not identified the output in use, so no profile is applied."
+        State.OUTPUT_UNKNOWN ->
+            "Unknown: Android has not identified the output in use" +
+                (f.outputLabel?.let { " ($it)" } ?: "") + ", so no profile is applied."
         State.NO_PROFILE_FOR_OUTPUT ->
             "Paused: nothing measured for ${f.outputLabel ?: "this output"}. Next: measure it, or switch back to a measured output."
         State.APPLIED -> buildString {
             append("Applied by ").append(f.appliedEngine)
             append(if (f.playing) " · media is playing" else " · nothing is playing")
+            // A profile saved for any output can apply while Android names none: say so.
+            if (!f.outputKnown) append(" · output not identified by Android")
             if (f.bypass) append(" · A/B: you are hearing the bypass side")
             append(". Android does not confirm which stream passes through it.")
         }

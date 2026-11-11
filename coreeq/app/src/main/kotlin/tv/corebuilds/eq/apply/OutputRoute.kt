@@ -72,6 +72,15 @@ object OutputRoute {
         val evidence: Evidence = Evidence.CONNECTED_ESTIMATE
     )
 
+    /**
+     * Android has named the output in use: a kind, and not [AMBIGUOUS] or
+     * [UNCONFIRMED]. Those two are kinds only so the route code can carry them;
+     * to a person they mean "Android has not said where audio goes", and no
+     * profile is applied through them. [UNKNOWN] is a real, unrecognised device
+     * and counts as identified: a profile can be measured for it.
+     */
+    fun isIdentified(kind: String?): Boolean = kind != null && kind != AMBIGUOUS && kind != UNCONFIRMED
+
     /** The label a person reads: "TV speakers", "HDMI ARC (soundbar)". */
     fun label(kind: String?): String = when (kind) {
         SPEAKER -> "TV speakers"

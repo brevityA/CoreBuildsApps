@@ -453,7 +453,7 @@ class MainActivity : TvActivity() {
         ).profile
         lastAnyProfile = profiles.isNotEmpty()
         lastProfileForOutput = routed != null
-        lastOutputKnown = output?.kind != null
+        lastOutputKnown = OutputRoute.isIdentified(output?.kind)
         lastOutputLabel = output?.kind?.let { OutputRoute.label(it) }
         val profile = routed?.let { modeStore.effectiveProfile(it, modeStore.currentDecision().mode) }
         if (profile == null) {
@@ -463,7 +463,8 @@ class MainActivity : TvActivity() {
             )
             textProfileSub.text = if (!anotherOutputHasProfile) {
                 getString(R.string.no_profile_sub)
-            } else if (output?.kind == null) {
+            } else if (output == null || !OutputRoute.isIdentified(output.kind)) {
+                // Ambiguous and unconfirmed routes are not outputs a person can measure "for".
                 getString(R.string.output_profile_unknown_sub)
             } else {
                 getString(R.string.output_profile_missing_sub, OutputRoute.label(output.kind))

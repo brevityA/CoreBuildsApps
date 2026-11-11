@@ -31,7 +31,7 @@ object StatusFacts {
                 context, store, status,
                 anyProfile = profiles.isNotEmpty(),
                 profileForOutput = routed != null,
-                outputKnown = output?.kind != null,
+                outputKnown = OutputRoute.isIdentified(output?.kind),
                 outputLabel = output?.kind?.let { OutputRoute.label(it) }
             ),
             routed ?: profiles.firstOrNull { it.id == store.chosenId() },
