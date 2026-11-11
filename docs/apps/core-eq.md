@@ -19,6 +19,14 @@ A detailed source, permission and precedence map is in [Playback identity and mo
 
 Since 1.12.0 every screen except First run, Measure and Display calibration has a rail down the left: Core EQ (Home), then Manual EQ, Extra effects and Content type under **Sound**, and Profiles, Capability, Setup and ADB, Phone companion and Display calibration under **Set up**. The screen you are on is marked. Up and Down walk the rail and stop at its ends; Right goes into the screen, to the control that last had focus; Left from a screen's edge returns to its rail item. Going from one screen to another closes the one you leave, so Back always returns Home. Every control shows a 3dp cyan ring when it has focus. An information panel whose text runs longer than the panel (Extra effects, Mode's rules) takes focus on Right and scrolls with Up and Down.
 
+## Home
+
+Since 1.14.0 Home answers two questions in two lines. The first says what is **applied**, apart from what is switched on: applied by DynamicsProcessing or Equalizer (and whether media is playing), pending, paused while a room is measured, nothing measured for the output in use, output not identified by Android, the correction service not running, or not applied with the reason the TV gave. Where Android cannot tell, it says unknown; it never claims a playing stream passes through the effect, because Android does not report that. The second line lists the listening effects switched on, and says when Night mode cannot run on the engine the TV accepted. The technical status line below is hidden while correction is off or there is nothing to apply, so Off is not said twice.
+
+## Profiles
+
+Choosing a profile in the list shows its curve and, under the list, whether it plays on the output in use (this was a toast before 1.14.0). **Details** lists what the profile records: kind, date, output, target, microphone, capture, room volume, RT60, signal-to-noise, how high it corrects, the repeat's agreement (agreement only, not a quality grade), manual EQ and notes; a field an older profile never recorded says "not recorded". **Rename** takes up to 48 characters. **Duplicate** makes an independent copy, with its mode overlays, named "(copy)"; the copy is not made active. **Delete** asks first, with Cancel focused, so a second press of OK cannot remove a profile. Back on Measure with an unsaved result asks Save, Discard or Keep it, with Keep it focused.
+
 ## First install and setup
 
 On a fresh Android TV install, Core EQ opens a short welcome guide. It shows Android's route indication with its evidence type (anticipated route or connected-output estimate), explains the remote-microphone measurement, and warns that the first GREEN capture-quality measurement for an output type may be applied automatically. Green indicates signal-to-noise only, not calibrated microphone response or acoustic accuracy. You can choose **Start room measurement**, open setup help, or skip the guide; upgrades are not interrupted.
@@ -43,7 +51,22 @@ The Android phone companion can also select a profile/mode and toggle correction
 
 ## Extras and the on-screen card
 
-Optional Extra effects, all off by default: **stereo speakers** (a speech lift and a bass guard for 5.1 on two speakers), dialogue boost, low-volume bass that follows the TV volume, bass boost, loudness enhancer and night mode. **Stereo speakers can also change a system setting.** On Android 12 and later, once you allow Core EQ to "Modify system settings", switching it on sets the TV's *Surround sound* to Never so Android decodes Dolby and DTS and folds 5.1 to stereo where Core EQ can hear it; switching it off puts the old mode back, but only while the setting is still Never. That matters on the outputs that can carry an undecoded bitstream — HDMI, HDMI ARC and optical, judged by the output actually in use rather than any port merely plugged in — because a bitstream is folded by the soundbar, where Core EQ never hears it. Bluetooth, USB and analogue outputs only take PCM, so the setting is left alone there. When a different profile or mode takes effect, a card shows for 4 seconds over whatever is playing: profile, mode, output, engine and extras.
+Optional Extra effects, all off by default: **stereo speakers** (a speech lift and a bass guard for 5.1 on two speakers), **Clarity** (a presence lift from 2.2 to 4.5 kHz: Off, +1, +2 or +3 dB; the Dialogue boost switch before it was +2 dB and carries over as +2), low-volume bass that follows the TV volume, auto loudness, bass boost, loudness enhancer and **Night mode** (Off; Light, −6 dB at 3:1, which brings down only the loudest moments; Strong, −12 dB at 4:1, the night switch from before 1.14.0, carried over unchanged). OK steps a level row through its levels; Left and Right step it down and up. Night mode retunes Core EQ's one limiter and adds no gain; on the Equalizer fallback there is no limiter, and Home says Night is not active. **Reset** at the bottom turns every effect on that screen off and leaves room correction, profiles and manual EQ alone. Clarity, stereo speakers, low-volume bass and auto loudness are paid for out of Core EQ's headroom, so switching one on makes the rest of the sound a little quieter rather than clipping; bass boost and loudness enhancer are Android's own effects and sit outside it. The numbers are in the [headroom and limiter audit](../CORE_EQ_HEADROOM_AUDIT.md). **Stereo speakers can also change a system setting.** On Android 12 and later, once you allow Core EQ to "Modify system settings", switching it on sets the TV's *Surround sound* to Never so Android decodes Dolby and DTS and folds 5.1 to stereo where Core EQ can hear it; switching it off puts the old mode back, but only while the setting is still Never. That matters on the outputs that can carry an undecoded bitstream — HDMI, HDMI ARC and optical, judged by the output actually in use rather than any port merely plugged in — because a bitstream is folded by the soundbar, where Core EQ never hears it. Bluetooth, USB and analogue outputs only take PCM, so the setting is left alone there. When a different profile or mode takes effect, a card shows for 4 seconds over whatever is playing: profile, mode, output, engine and extras.
+
+## TV and phone
+
+| | On the TV | On the phone companion |
+|---|---|---|
+| Measure | Remote microphone; a same-position repeat can be averaged when output and microphone match | Phone microphone; a repeat is compared, never averaged |
+| Correction on/off, profile, listening mode | Yes | Yes, over the paired local connection |
+| Clarity, Night mode, other extra effects | Yes (Extra effects) | No |
+| Rename, duplicate, delete, details | Yes (Profiles) | No |
+| Manual EQ | Yes | No |
+| Diagnostics summary | Yes (Capability) | No |
+
+## Reporting a problem
+
+**Capability → Diagnostics summary** builds a short block of text when pressed and shows all of it before anything else can happen: app version and build, Android version, the TV's maker and model, the output in use and how Android reported it, the kind of profile that applies (not its name), Home's two lines, the last service message, how the last measurement ended, and the background-work counters. **Copy** puts exactly that text on the TV's clipboard; **Show as QR code** puts it in a code for a phone camera. Core EQ sends nothing anywhere. Left out by design: recordings, curves, profile and Bluetooth names, the phone pairing keys; network and hardware addresses in messages are masked.
 
 ## Compatibility
 
