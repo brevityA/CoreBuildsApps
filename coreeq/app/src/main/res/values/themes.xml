@@ -209,7 +209,9 @@
         <item name="android:layout_height">@dimen/cb_menu_row</item>
         <item name="android:layout_marginTop">4dp</item>
         <item name="android:background">@drawable/bg_card</item>
-        <item name="android:textColor">@color/cb_ink</item>
+        <!-- 1.14.0: ink, dimmed while the row cannot be used (was ink always, so a
+             disabled row looked usable). -->
+        <item name="android:textColor">@color/ghost_text</item>
         <item name="android:textSize">@dimen/cb_text_data</item>
         <item name="android:gravity">start|center_vertical</item>
         <item name="android:paddingStart">@dimen/cb_card_padding</item>

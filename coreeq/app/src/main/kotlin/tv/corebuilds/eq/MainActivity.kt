@@ -355,6 +355,12 @@ class MainActivity : TvActivity() {
             )
         )
         textSummary.text = summary.applied + "\n" + summary.listening
+        // The technical line below adds nothing to Off and Nothing-to-apply: say it once.
+        textStatus.visibility = if (summary.state == HomeSummary.State.OFF || summary.state == HomeSummary.State.NO_PROFILE) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
         textSummary.setTextColor(
             ContextCompat.getColor(
                 this,

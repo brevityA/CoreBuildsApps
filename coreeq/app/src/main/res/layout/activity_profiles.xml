@@ -76,6 +76,33 @@
                         android:nestedScrollingEnabled="false"
                         android:overScrollMode="never" />
 
+                    <!-- 1.14.0: whether the chosen profile plays on the output in use
+                         (it was a toast), then what can be done with it. -->
+                    <TextView
+                        android:id="@+id/text_profile_route"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="4dp"
+                        android:paddingEnd="4dp"
+                        android:textColor="@color/cb_ink"
+                        android:textSize="@dimen/cb_text_kicker"
+                        android:layout_marginTop="@dimen/cb_space_xs" />
+
+                    <Button
+                        android:id="@+id/btn_profile_details"
+                        style="@style/CoreEQ.ActionRow"
+                        android:text="@string/action_profile_details" />
+
+                    <Button
+                        android:id="@+id/btn_profile_rename"
+                        style="@style/CoreEQ.ActionRow"
+                        android:text="@string/action_profile_rename" />
+
+                    <Button
+                        android:id="@+id/btn_profile_duplicate"
+                        style="@style/CoreEQ.ActionRow"
+                        android:text="@string/action_profile_duplicate" />
+
                     <TextView
                         style="@style/CoreEQ.MenuHeading"
                         android:paddingStart="4dp"
@@ -182,58 +209,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
                 </FrameLayout>
-
-                <!-- Whether the chosen profile plays on the output in use (1.14.0);
-                     it used to be a toast that vanished. -->
-                <TextView
-                    android:id="@+id/text_profile_route"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/cb_ink"
-                    android:textSize="@dimen/cb_text_kicker"
-                    android:maxLines="3"
-                    android:layout_marginTop="@dimen/cb_space_xs" />
-
-                <!-- Details, Rename and Duplicate (1.14.0) -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:clipChildren="false"
-                    android:layout_marginTop="@dimen/cb_space_xs">
-
-                    <Button
-                        android:id="@+id/btn_profile_details"
-                        style="@style/Widget.CoreEQ.Pill.Ghost"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/cb_pill_compact"
-                        android:layout_weight="1"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:text="@string/action_profile_details" />
-
-                    <Button
-                        android:id="@+id/btn_profile_rename"
-                        style="@style/Widget.CoreEQ.Pill.Ghost"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/cb_pill_compact"
-                        android:layout_weight="1"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:layout_marginStart="@dimen/cb_space_xs"
-                        android:text="@string/action_profile_rename" />
-
-                    <Button
-                        android:id="@+id/btn_profile_duplicate"
-                        style="@style/Widget.CoreEQ.Pill.Ghost"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/cb_pill_compact"
-                        android:layout_weight="1"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:layout_marginStart="@dimen/cb_space_xs"
-                        android:text="@string/action_profile_duplicate" />
-                </LinearLayout>
 
                 <TextView
                     style="@style/CoreEQ.MenuHeading"
