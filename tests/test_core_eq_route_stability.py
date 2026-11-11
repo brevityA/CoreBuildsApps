@@ -33,7 +33,7 @@ class RouteStabilityContract(unittest.TestCase):
         cls.notice = (APPLY / "AppliedNotice.kt").read_text()
 
     def test_finite_silent_pcm_is_queued_before_playback_with_media_attributes(self) -> None:
-        body = method(self.route, "probeWithSilentTrack")
+        body = method(self.route, "probeOnce")
         self.assertIn(".setAudioAttributes(mediaAttributes())", body)
         self.assertIn("AudioTrack.MODE_STATIC", body)
         self.assertIn("ByteArray(PROBE_BUFFER_BYTES)", body)
@@ -46,7 +46,7 @@ class RouteStabilityContract(unittest.TestCase):
         self.assertGreater(settle, 0)
 
     def test_initial_route_callback_is_not_unconditionally_classified_as_a_change(self) -> None:
-        body = method(self.route, "probeWithSilentTrack")
+        body = method(self.route, "probeOnce")
         self.assertIn("ProbeRouteObservation<Int>()", body)
         self.assertIn("observed.observe(devices.map { it.id })", body)
         self.assertIn("observed.changed()", body)
@@ -55,7 +55,7 @@ class RouteStabilityContract(unittest.TestCase):
         self.assertIn("unconfirmedOutput()", body)
 
     def test_a_post_playback_error_cannot_decay_to_an_estimate(self) -> None:
-        body = method(self.route, "probeWithSilentTrack")
+        body = method(self.route, "probeOnce")
         self.assertIn("playbackStarted = true", body)
         self.assertEqual(2, body.count("if (playbackStarted) ProbeResult(unconfirmedOutput(), null) else null"))
         self.assertIn("track.release()", body)
@@ -85,7 +85,7 @@ class RouteStabilityContract(unittest.TestCase):
         # The probe's AudioTrack is reported to Core EQ's own playback callback.
         # Read as playback, it scheduled discovery, whose apply found the probe
         # stale and ran the next one: a probe and a reapply every few seconds.
-        body = method(self.route, "probeWithSilentTrack")
+        body = method(self.route, "probeOnce")
         self.assertLess(body.index("ownProbe.started()"), body.index("track.play()"))
         cleanup = body.split("} finally {", 1)[1]
         self.assertLess(cleanup.index("track.release()"), cleanup.index("ownProbe.ended("))
@@ -96,6 +96,24 @@ class RouteStabilityContract(unittest.TestCase):
         self.assertIn("audioIsPlaying(configs) != playbackActiveHint", recheck)
         self.assertNotIn("scheduleDiscovery", recheck)
         self.assertGreater(int(re.search(r"OWN_PROBE_ECHO_MS = (\d+)L", self.route)[1]), 0)
+
+    def test_the_timed_entry_points_delegate_to_the_guarded_bodies(self) -> None:
+        # Milestone C wraps the probe and the apply in timings; the guarded logic the
+        # tests above read moved into probeOnce/applyAllOnce, and every caller still
+        # goes through the public entry points, which must reach it unchanged.
+        probe = method(self.route, "probeWithSilentTrack")
+        self.assertIn("probeOnce(context)", probe)
+        self.assertIn("RuntimeTimings.Op.ROUTE_PROBE", probe)
+        self.assertNotIn("AudioTrack.Builder", probe)
+        self.assertEqual(1, len(re.findall(r"\bprobeOnce\(", self.route.replace("private fun probeOnce(", ""))))
+        apply = method(self.service, "applyAll")
+        self.assertLess(
+            apply.index("CorrectionServicePolicy.canApply(instanceRunning, store.correctionEnabled, suspended)"),
+            apply.index("RuntimeTimings.start()"),
+        )
+        self.assertIn("outcome = applyAllOnce()", apply)
+        self.assertIn("RuntimeTimings.finish(RuntimeTimings.Op.APPLY, started, outcome)", apply.split("} finally {", 1)[1])
+        self.assertEqual(1, len(re.findall(r"\bapplyAllOnce\(", self.service.replace("private fun applyAllOnce(", ""))))
 
     def test_route_indications_and_identity_do_not_open_playback_tracks(self) -> None:
         body = method(self.route, "indication")
@@ -113,10 +131,10 @@ class RouteStabilityContract(unittest.TestCase):
         self.assertIn("removedDevices.any { it.isSink }", body)
 
     def test_effect_configuration_waits_for_a_fresh_probe_cache(self) -> None:
-        body = method(self.service, "applyAll")
+        body = method(self.service, "applyAllOnce")
         self.assertIn("!OutputRoute.hasFreshProbe(this) && !OutputRoute.isHeldUnconfirmed()", body)
         self.assertLess(body.index("reapplyWithConfirmedRoute()"), body.index("resolve()"))
-        self.assertIn("CorrectionServicePolicy.canApply(instanceRunning, store.correctionEnabled, suspended)", body)
+        self.assertIn("CorrectionServicePolicy.canApply(instanceRunning, store.correctionEnabled, suspended)", method(self.service, "applyAll"))
         self.assertIn("reapplyWithConfirmedRoute()", method(self.service, "onStartCommand"))
 
     def test_already_enabled_correction_recovers_on_its_own_measured_output(self) -> None:
@@ -182,7 +200,7 @@ class RouteStabilityContract(unittest.TestCase):
     def test_unnamed_bluetooth_device_is_not_reported_as_a_deleted_profile(self) -> None:
         resolver = method(self.service, "resolve")
         self.assertIn("pick.profile == null && OutputRoute.needsDeviceName(profiles, output)", resolver)
-        apply = method(self.service, "applyAll")
+        apply = method(self.service, "applyAllOnce")
         self.assertIn("announcePaused(output, resolved.needsDeviceName)", apply)
         self.assertIn("R.string.status_device_name_unconfirmed", apply)
         pause = method(self.service, "announcePaused")
