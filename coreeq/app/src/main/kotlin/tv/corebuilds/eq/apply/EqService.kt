@@ -37,6 +37,7 @@ import tv.corebuilds.eq.MainActivity
 import tv.corebuilds.eq.export.ProfileRouteStore
 import tv.corebuilds.eq.R
 import tv.corebuilds.eq.export.PlatformBand
+import tv.corebuilds.eq.dsp.NightMode
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.mode.ContentModeStore
@@ -1235,11 +1236,14 @@ class EqService : Service() {
     /** Say what the Extra effects screen added, and when night mode cannot run. */
     private fun extrasNote(applied: List<AppliedEffect>, profile: Profile?): String {
         val extras = extrasWords(applied, profile)
-        val night = enhancedPrefs?.nightModeEnabled == true
+        val level = enhancedPrefs?.nightLevel ?: NightMode.Level.OFF
         val nightOnDp = applied.any { it.engine == ENGINE_DYNAMICS_PROCESSING }
         return buildString {
             if (extras.isNotEmpty()) append(" · extras: ").append(extras.joinToString(" / "))
-            if (night) append(if (nightOnDp) " · night mode" else " · night mode needs DynamicsProcessing, not active")
+            if (level != NightMode.Level.OFF) {
+                append(" · ").append(NightMode.describe(level))
+                if (!nightOnDp) append(", not active: it needs DynamicsProcessing")
+            }
         }
     }
 
@@ -1430,8 +1434,9 @@ class EqService : Service() {
             output?.let { OutputRoute.label(it.kind) },
             engineWords(applied)
         ).joinToString(" · ")
-        val night = enhancedPrefs?.nightModeEnabled == true && applied.any { it.engine == ENGINE_DYNAMICS_PROCESSING }
-        val extras = (extrasWords(applied, profile) + listOfNotNull("night mode".takeIf { night }))
+        val level = enhancedPrefs?.nightLevel ?: NightMode.Level.OFF
+        val night = level != NightMode.Level.OFF && applied.any { it.engine == ENGINE_DYNAMICS_PROCESSING }
+        val extras = (extrasWords(applied, profile) + listOfNotNull("night ${level.title.lowercase()}".takeIf { night }))
             .joinToString(" · ") { word -> word.replaceFirstChar { it.uppercaseChar() } }
             .ifEmpty { null }
         val content = AppliedCard.Content(active = true, title = profile.name, detail = detail, extras = extras)
@@ -1544,7 +1549,7 @@ class EqService : Service() {
             ZERO_GAINS
         }
         return ToneLayers(
-            dialogue = prefs.dialogueBoostEnabled,
+            clarityDb = prefs.clarityDb,
             lowVolumeBassDb = bass,
             stereoDownmix = prefs.stereoSpeakersEnabled,
             loudnessBandGains = loudness,

@@ -3,6 +3,7 @@ package tv.corebuilds.eq.ui
 import android.content.Context
 import android.content.SharedPreferences
 import tv.corebuilds.eq.apply.LimiterSettings
+import tv.corebuilds.eq.apply.ToneLayers
 import tv.corebuilds.eq.dsp.NightMode
 
 /**
@@ -29,14 +30,37 @@ class EnhancedAudioPrefs(context: Context) {
         get() = prefs.getBoolean(KEY_LOUDNESS, false)
         set(value) = prefs.edit().putBoolean(KEY_LOUDNESS, value).apply()
 
-    /** Night mode tightens the DynamicsProcessing limiter; it needs the DP engine. */
-    var nightModeEnabled: Boolean
-        get() = prefs.getBoolean(KEY_NIGHT_MODE, false)
-        set(value) = prefs.edit().putBoolean(KEY_NIGHT_MODE, value).apply()
+    /**
+     * Night mode level (1.14.0); it retunes the DynamicsProcessing limiter, so it
+     * needs the DP engine. Before 1.14.0 it was a switch: a stored "on" reads as
+     * [NightMode.Level.STRONG], which has that switch's exact settings.
+     */
+    var nightLevel: NightMode.Level
+        get() = NightMode.Level.fromKey(prefs.getString(KEY_NIGHT_LEVEL, null))
+            ?: if (prefs.getBoolean(KEY_NIGHT_MODE, false)) NightMode.Level.STRONG else NightMode.Level.OFF
+        set(value) = prefs.edit().putString(KEY_NIGHT_LEVEL, value.key).apply()
 
-    var dialogueBoostEnabled: Boolean
-        get() = prefs.getBoolean(KEY_DIALOGUE, false)
-        set(value) = prefs.edit().putBoolean(KEY_DIALOGUE, value).apply()
+    /** Any night level but Off. */
+    val nightModeEnabled: Boolean get() = nightLevel != NightMode.Level.OFF
+
+    /**
+     * Clarity (1.14.0): the speech-band lift in dB, 0 to [CLARITY_MAX_DB] in
+     * [CLARITY_STEP_DB] steps. It replaces the Dialogue boost switch: a stored
+     * "on" reads as +2 dB, which is what the switch applied.
+     */
+    var clarityDb: Double
+        get() {
+            val stored = prefs.getFloat(KEY_CLARITY, Float.NaN)
+            if (stored.isFinite()) return clampClarity(stored.toDouble())
+            return if (prefs.getBoolean(KEY_DIALOGUE, false)) ToneLayers.DIALOGUE_DB else 0.0
+        }
+        set(value) = prefs.edit().putFloat(KEY_CLARITY, clampClarity(value).toFloat()).apply()
+
+    /** Night mode and Clarity back to their defaults; correction and profiles are untouched. */
+    fun resetListening() {
+        nightLevel = NightMode.Level.OFF
+        clarityDb = 0.0
+    }
 
     var lowVolumeBassEnabled: Boolean
         get() = prefs.getBoolean(KEY_LOW_VOLUME_BASS, false)
@@ -93,15 +117,25 @@ class EnhancedAudioPrefs(context: Context) {
         get() = prefs.getBoolean(KEY_SURROUND_PENDING, false)
         set(value) = prefs.edit().putBoolean(KEY_SURROUND_PENDING, value).apply()
 
-    /** The limiter correction should run with: protection-only, or night mode's. */
-    fun limiter(): LimiterSettings = limiterFor(nightModeEnabled)
+    /** The limiter correction should run with: protection-only, or the night level's. */
+    fun limiter(): LimiterSettings = NightMode.limiter(nightLevel)
 
     companion object {
         const val PREFS_NAME = "enhanced_audio_prefs"
         private const val KEY_BASS_BOOST = "bass_boost_v121"
         private const val KEY_LOUDNESS = "loudness_v121"
         private const val KEY_NIGHT_MODE = "night_mode_v121"
+        private const val KEY_NIGHT_LEVEL = "night_level_v1140"
         private const val KEY_DIALOGUE = "dialogue_boost_v130"
+        private const val KEY_CLARITY = "clarity_db_v1140"
+
+        const val CLARITY_MAX_DB = 3.0
+        const val CLARITY_STEP_DB = 1.0
+
+        /** Whole steps from 0 to [CLARITY_MAX_DB]; anything else stored snaps into range. */
+        fun clampClarity(db: Double): Double =
+            if (!db.isFinite()) 0.0
+            else (Math.round(db / CLARITY_STEP_DB) * CLARITY_STEP_DB).coerceIn(0.0, CLARITY_MAX_DB)
         private const val KEY_LOW_VOLUME_BASS = "low_volume_bass_v130"
         private const val KEY_AUTO_LOUDNESS = "auto_loudness_v1110"
         private const val KEY_STEREO_SPEAKERS = "stereo_speakers_v1100"
@@ -110,16 +144,8 @@ class EnhancedAudioPrefs(context: Context) {
         /** Followed by the output's route key: one reference per output. */
         private const val KEY_LOW_VOLUME_REFERENCE = "low_volume_reference_db_v130:"
 
+        /** The pre-1.14.0 switch: on is [NightMode.Level.STRONG]. */
         fun limiterFor(nightMode: Boolean): LimiterSettings =
-            if (nightMode) {
-                LimiterSettings(
-                    attackMs = NightMode.NIGHT_LIMITER_ATTACK_MS,
-                    releaseMs = NightMode.NIGHT_LIMITER_RELEASE_MS,
-                    ratio = NightMode.NIGHT_LIMITER_RATIO,
-                    thresholdDb = NightMode.NIGHT_LIMITER_THRESHOLD_DB
-                )
-            } else {
-                LimiterSettings()
-            }
+            NightMode.limiter(if (nightMode) NightMode.Level.STRONG else NightMode.Level.OFF)
     }
 }

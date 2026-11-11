@@ -107,6 +107,12 @@
                         android:id="@+id/btn_extras_auto_loudness"
                         style="@style/CoreEQ.SwitchRow"
                         tools:text="Auto loudness: Off" />
+
+                    <!-- 1.14.0: every effect on this screen back to off; nothing else. -->
+                    <Button
+                        android:id="@+id/btn_extras_reset"
+                        style="@style/CoreEQ.ActionRow"
+                        android:text="@string/extras_reset" />
                 </LinearLayout>
             </ScrollView>
 

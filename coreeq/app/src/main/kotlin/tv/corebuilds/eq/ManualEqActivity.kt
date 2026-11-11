@@ -378,7 +378,7 @@ class ManualEqActivity : TvActivity() {
         val layers = SmartSuggestion.Layers(
             autoLoudness = enhanced.autoLoudnessEnabled,
             lowVolumeBass = enhanced.lowVolumeBassEnabled,
-            dialogueBoost = enhanced.dialogueBoostEnabled
+            dialogueBoost = enhanced.clarityDb > 0.0
         )
         val pick = SmartSuggestion.suggest(contentType, VolumeLevel.mediaDb(this), shippedId, layers) ?: return null
         if (pick.presetId in declinedSuggestions) return null

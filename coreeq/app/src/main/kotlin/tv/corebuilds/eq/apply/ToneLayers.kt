@@ -27,7 +27,14 @@ import kotlin.math.tanh
  * Kept free of Android types so the curves are unit-tested (`ToneLayersTest`).
  */
 data class ToneLayers(
+    /** The pre-1.14.0 Dialogue boost switch; on means [clarityDb] = [DIALOGUE_DB]. */
     val dialogue: Boolean = false,
+    /**
+     * Clarity (1.14.0): the speech-band lift in dB, in the same 2.2–4.5 kHz box
+     * Dialogue boost used, 0 to 3 dB. Defaults from [dialogue], so a caller that
+     * only knows the old switch gets exactly the old +2 dB.
+     */
+    val clarityDb: Double = if (dialogue) DIALOGUE_DB else 0.0,
     /** Low-volume bass shelf height in dB, 0..[MAX_LOW_VOLUME_BASS_DB]. */
     val lowVolumeBassDb: Double = 0.0,
     /**
@@ -54,7 +61,7 @@ data class ToneLayers(
     val contentType: ContentType = ContentType.GENERAL
 ) {
     val isEmpty: Boolean get() =
-        !dialogue && lowVolumeBassDb <= 0.0 && !stereoDownmix && loudnessBandGains.all { it <= 0.0 }
+        clarityDb <= 0.0 && lowVolumeBassDb <= 0.0 && !stereoDownmix && loudnessBandGains.all { it <= 0.0 }
 
     /**
      * Content equality (1.13.2). A data class compares a [DoubleArray] by
@@ -66,6 +73,7 @@ data class ToneLayers(
     override fun equals(other: Any?): Boolean =
         other is ToneLayers &&
             dialogue == other.dialogue &&
+            clarityDb.compareTo(other.clarityDb) == 0 &&
             lowVolumeBassDb.compareTo(other.lowVolumeBassDb) == 0 &&
             stereoDownmix == other.stereoDownmix &&
             loudnessBandGains.contentEquals(other.loudnessBandGains) &&
@@ -73,6 +81,7 @@ data class ToneLayers(
 
     override fun hashCode(): Int {
         var result = dialogue.hashCode()
+        result = 31 * result + clarityDb.hashCode()
         result = 31 * result + lowVolumeBassDb.hashCode()
         result = 31 * result + stereoDownmix.hashCode()
         result = 31 * result + loudnessBandGains.contentHashCode()
@@ -86,11 +95,11 @@ data class ToneLayers(
      * a measured profile with either target.
      */
     fun dialogueApplies(profile: Profile): Boolean =
-        dialogue && (profile.manualOnly || profile.target !in PRESENCE_TARGETS)
+        clarityDb > 0.0 && (profile.manualOnly || profile.target !in PRESENCE_TARGETS)
 
     /**
-     * The speech-band lift this profile gets, in dB: the larger of Dialogue
-     * boost's +2 and Stereo speakers' [STEREO_PRESENCE_DB] × [presenceScale] for
+     * The speech-band lift this profile gets, in dB: the larger of Clarity's lift (Dialogue
+     * boost's +2 before 1.14.0) and Stereo speakers' [STEREO_PRESENCE_DB] × [presenceScale] for
      * the content type, less the presence a Dialogue or House target already
      * carries. The two never stack: both answer the same complaint, quiet speech.
      * Only the stereo term is content-aware — Dialogue boost is the user asking
@@ -98,7 +107,7 @@ data class ToneLayers(
      */
     fun presenceGainDb(profile: Profile): Double {
         val wanted = max(
-            if (dialogue) DIALOGUE_DB else 0.0,
+            clarityDb.coerceAtLeast(0.0),
             if (stereoDownmix) STEREO_PRESENCE_DB * presenceScale(contentType) else 0.0
         )
         val carried = if (!profile.manualOnly && profile.target in PRESENCE_TARGETS) DIALOGUE_DB else 0.0
@@ -125,7 +134,7 @@ data class ToneLayers(
         val speech = when {
             presence <= 0.0 -> null
             stereoDownmix -> "stereo: speech +%.0f dB, bass guard".format(java.util.Locale.US, presence)
-            else -> "dialogue +%.0f dB".format(java.util.Locale.US, presence)
+            else -> "clarity +%.0f dB".format(java.util.Locale.US, presence)
         } ?: "stereo: bass guard".takeIf { stereoDownmix }
         return listOfNotNull(
             speech,

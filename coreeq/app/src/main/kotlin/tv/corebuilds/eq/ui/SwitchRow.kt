@@ -1,5 +1,7 @@
 package tv.corebuilds.eq.ui
 
+import android.view.KeyEvent
+import android.view.View
 import android.widget.Button
 import androidx.annotation.StringRes
 
@@ -12,4 +14,31 @@ import androidx.annotation.StringRes
 fun Button.showSwitch(on: Boolean, @StringRes onText: Int, @StringRes offText: Int) {
     setText(if (on) onText else offText)
     isActivated = on
+}
+
+/**
+ * A row with levels rather than on/off (1.14.0): the same look as [showSwitch]
+ * (lit while not at its lowest level), the value in words, and a spoken label
+ * that says the value and how to change it.
+ */
+fun Button.showLevel(text: CharSequence, raised: Boolean, spoken: CharSequence) {
+    this.text = text
+    isActivated = raised
+    contentDescription = spoken
+}
+
+/**
+ * Left and right step a level row down and up (1.14.0). At either end the key
+ * is not consumed, so Left still reaches the rail and Right the detail panel:
+ * the row never traps focus.
+ */
+fun View.stepWithLeftRight(canDown: () -> Boolean, down: () -> Unit, canUp: () -> Boolean, up: () -> Unit) {
+    setOnKeyListener { _, keyCode, event ->
+        if (event.action != KeyEvent.ACTION_DOWN) return@setOnKeyListener false
+        when (keyCode) {
+            KeyEvent.KEYCODE_DPAD_LEFT -> if (canDown()) { down(); true } else false
+            KeyEvent.KEYCODE_DPAD_RIGHT -> if (canUp()) { up(); true } else false
+            else -> false
+        }
+    }
 }
