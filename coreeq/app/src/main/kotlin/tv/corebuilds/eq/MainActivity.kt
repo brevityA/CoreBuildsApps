@@ -19,6 +19,8 @@ import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.companion.CompanionActivity
 import tv.corebuilds.eq.companion.PhoneCompanionActivity
 import tv.corebuilds.eq.apply.OutputRoute
+import tv.corebuilds.eq.ui.HomeSummary
+import tv.corebuilds.eq.ui.EnhancedAudioPrefs
 import tv.corebuilds.eq.dsp.DspConstants
 import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.export.EqStatus
@@ -46,6 +48,7 @@ class MainActivity : TvActivity() {
     private lateinit var textProfileName: TextView
     private lateinit var textProfileSub: TextView
     private lateinit var textStatus: TextView
+    private lateinit var textSummary: TextView
     private lateinit var btnToggle: Button
     private lateinit var btnAbBypass: Button
     private lateinit var graphHome: CurveGraphView
@@ -91,6 +94,7 @@ class MainActivity : TvActivity() {
         textProfileName = findViewById(R.id.text_active_profile_name)
         textProfileSub = findViewById(R.id.text_active_profile_sub)
         textStatus = findViewById(R.id.text_eq_status)
+        textSummary = findViewById(R.id.text_home_summary)
         btnToggle = findViewById(R.id.btn_toggle_correction)
         graphHome = findViewById(R.id.graph_home)
         bandsHome = findViewById(R.id.bands_home)
@@ -317,6 +321,52 @@ class MainActivity : TvActivity() {
         btnModes.text = getString(R.string.home_mode_button, decision.mode.title)
     }
 
+    // What loadActiveProfile() last found, for the summary (1.14.0): it always runs first,
+    // so the summary never parses every profile again on each status broadcast.
+    private var lastAnyProfile = false
+    private var lastProfileForOutput = false
+    private var lastOutputKnown = false
+    private var lastOutputLabel: String? = null
+
+    /** The two-line answer: what is applied, and which listening effects are on (1.14.0). */
+    private fun renderSummary(status: EqStatus?) {
+        val prefs = EnhancedAudioPrefs(this)
+        val running = EqService.running
+        val summary = HomeSummary.of(
+            HomeSummary.Facts(
+                correctionOn = profileStore.correctionEnabled,
+                serviceRunning = running,
+                measurementPaused = profileStore.measurementPaused,
+                anyProfile = lastAnyProfile,
+                profileForOutput = lastProfileForOutput,
+                outputKnown = lastOutputKnown,
+                outputLabel = lastOutputLabel,
+                appliedEngine = if (running) profileStore.appliedEngine else null,
+                playing = running && status?.playing == true,
+                faultMessage = status?.message?.takeIf { status.isError },
+                bypass = profileStore.bypassEnabled,
+                night = prefs.nightLevel,
+                clarityDb = prefs.clarityDb,
+                stereoSpeakers = prefs.stereoSpeakersEnabled,
+                lowVolumeBass = prefs.lowVolumeBassEnabled,
+                autoLoudness = prefs.autoLoudnessEnabled,
+                bassBoost = prefs.bassBoostEnabled,
+                loudnessEnhancer = prefs.loudnessEnhancerEnabled
+            )
+        )
+        textSummary.text = summary.applied + "\n" + summary.listening
+        textSummary.setTextColor(
+            ContextCompat.getColor(
+                this,
+                when (summary.state) {
+                    HomeSummary.State.FAULT -> R.color.cb_ember
+                    HomeSummary.State.APPLIED, HomeSummary.State.OFF -> R.color.cb_ink
+                    else -> R.color.cb_warning
+                }
+            )
+        )
+    }
+
     private fun refreshStatus() {
         val on = profileStore.correctionEnabled
         btnToggle.showSwitch(on, R.string.correction_on, R.string.correction_off)
@@ -337,6 +387,7 @@ class MainActivity : TvActivity() {
             ContextCompat.getColor(this, if (status?.isError == true) R.color.cb_ember else R.color.cb_slate)
         )
         renderIndicator(status)
+        renderSummary(status)
         // The status line has carried this caveat since 1.1.1; 1.3.0 also shows
         // it on its own line, because a bitstream output silently undoes everything.
         val passthrough = OutputRoute.mayPassThrough(this, OutputRoute.current(this)?.kind)
@@ -409,6 +460,10 @@ class MainActivity : TvActivity() {
             output?.kind,
             output?.name
         ).profile
+        lastAnyProfile = profiles.isNotEmpty()
+        lastProfileForOutput = routed != null
+        lastOutputKnown = output?.kind != null
+        lastOutputLabel = output?.kind?.let { OutputRoute.label(it) }
         val profile = routed?.let { modeStore.effectiveProfile(it, modeStore.currentDecision().mode) }
         if (profile == null) {
             val anotherOutputHasProfile = profiles.isNotEmpty()

@@ -482,6 +482,9 @@ class EqService : Service() {
         discoveredPackages = modeStore.lastActivePackages()
         discoveredHasUnknownPlayer = modeStore.lastActivePlayerUnknown()
         store.clearRuntimeBands()
+        // A service that has just started holds no effect and is not suspended (1.14.0).
+        store.appliedEngine = null
+        store.measurementPaused = false
         createChannel()
         val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK else 0
         try {
@@ -546,6 +549,7 @@ class EqService : Service() {
         when (intent?.action) {
             ACTION_SUSPEND -> {
                 suspended = true
+                store.measurementPaused = true
                 mainHandler.removeCallbacks(playbackCheck)
                 playbackCheckQueued = false
                 mainHandler.removeCallbacks(ownProbeRecheck)
@@ -557,6 +561,7 @@ class EqService : Service() {
             }
             ACTION_RESUME -> {
                 suspended = false
+                store.measurementPaused = false
                 mediaSessionMonitor.setEnabled(MediaSessionDiscovery.hasAccess(this))
                 reapplyWithConfirmedRoute()
                 if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
@@ -998,6 +1003,7 @@ class EqService : Service() {
         val representative = globalEffect ?: sessionEqs.values.firstOrNull()?.applied
         if (representative == null) store.clearRuntimeBands()
         else store.setRuntimeBands(representative.bands)
+        store.appliedEngine = representative?.engine
     }
 
     private fun setAllEnabled(on: Boolean) {
@@ -1609,6 +1615,8 @@ class EqService : Service() {
         enhancedPrefs = null
         
         store.clearRuntimeBands()
+        store.appliedEngine = null
+        store.measurementPaused = false
         // "Off" is the user's switch, not the service's fate: a service the
         // system stopped is not a correction the user turned off, and the
         // screen must not say so.

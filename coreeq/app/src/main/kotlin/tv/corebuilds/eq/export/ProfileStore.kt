@@ -333,6 +333,20 @@ class ProfileStore(context: Context) {
     }
 
     /** The currently-applied engine layout; transient runtime state, not profile data. */
+    /**
+     * The service is suspended for a room measurement (1.14.0), so Home can say
+     * "paused while measured" instead of guessing from the last message.
+     * Written by [tv.corebuilds.eq.apply.EqService] only.
+     */
+    var measurementPaused: Boolean
+        get() = prefs.getBoolean(KEY_MEASUREMENT_PAUSED, false)
+        set(value) = prefs.edit().putBoolean(KEY_MEASUREMENT_PAUSED, value).apply()
+
+    /** The engine the service last configured ("DynamicsProcessing", "Equalizer"), or null while none is held. */
+    var appliedEngine: String?
+        get() = prefs.getString(KEY_APPLIED_ENGINE, null)
+        set(value) = prefs.edit().apply { if (value == null) remove(KEY_APPLIED_ENGINE) else putString(KEY_APPLIED_ENGINE, value) }.apply()
+
     fun runtimeBands(): List<PlatformBand> {
         val raw = prefs.getString(KEY_RUNTIME_BANDS, null) ?: return emptyList()
         return try {
@@ -395,6 +409,8 @@ class ProfileStore(context: Context) {
         }
 
         private const val TAG = "CoreEqProfiles"
+        private const val KEY_MEASUREMENT_PAUSED = "service_measurement_paused_v1140"
+        private const val KEY_APPLIED_ENGINE = "service_applied_engine_v1140"
         private const val PREFS_NAME = "core_eq_profiles"
         private const val KEY_PROFILES = "profiles_json"
         private const val KEY_ACTIVE_ID = "active_profile_id"
