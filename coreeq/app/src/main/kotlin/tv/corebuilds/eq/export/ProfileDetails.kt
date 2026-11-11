@@ -60,7 +60,8 @@ object ProfileDetails {
     /** The lines as plain text, one "Label: value" per line, for the dialog and diagnostics. */
     fun text(lines: List<Line>): String = lines.joinToString("\n") { "${it.label}: ${it.value}" }
 
-    private fun kindOf(profile: Profile): String = when {
+    /** What kind of profile this is, in words; diagnostics reuse it without the name. */
+    fun kindOf(profile: Profile): String = when {
         profile.manualOnly -> "manual profile (no room measurement)"
         profile.stimulus == "rew_import" -> "imported measurement (REW)"
         else -> "room measurement"

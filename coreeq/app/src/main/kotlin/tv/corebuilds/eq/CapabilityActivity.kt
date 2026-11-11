@@ -1,20 +1,34 @@
 package tv.corebuilds.eq
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.apply.BandMapping
 import tv.corebuilds.eq.dsp.TvSoundEq
 import tv.corebuilds.eq.apply.DumpsysDiscovery
 import tv.corebuilds.eq.apply.EffectLadder
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.OutputRoute
+import tv.corebuilds.eq.apply.RuntimeCounters
 import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.mode.ContentModeStore
+import tv.corebuilds.eq.export.ProfileDetails
+import tv.corebuilds.eq.ui.DiagnosticsSummary
+import tv.corebuilds.eq.ui.HomeSummary
+import tv.corebuilds.eq.ui.QrBitmap
+import tv.corebuilds.eq.ui.StatusFacts
 import tv.corebuilds.eq.ui.showSwitch
 import tv.corebuilds.eq.update.UpdateChecker
 import tv.corebuilds.eq.update.UpdateInstaller
@@ -63,10 +77,121 @@ class CapabilityActivity : TvActivity() {
         findViewById<Button>(R.id.btn_open_support).setOnClickListener {
             startActivity(Intent(this, SupportActivity::class.java))
         }
+        findViewById<Button>(R.id.btn_diagnostics).setOnClickListener { showDiagnostics(it) }
 
         setUpUpdateCard()
         showDiscoveryGrant()
         runCapabilityProbe()
+    }
+
+    private var diagnosticsOpen = false
+
+    /** The diagnostics text for what this TV reports right now (1.14.0); built only on request. */
+    internal fun diagnosticsText(now: Long = System.currentTimeMillis()): String {
+        val store = ProfileStore(this)
+        val snap = StatusFacts.read(this, store)
+        val secondsSince = { ms: Long -> if (ms > 0L) (now - ms) / 1000 else null }
+        val measured = store.lastMeasurement()
+        return DiagnosticsSummary.text(
+            DiagnosticsSummary.Facts(
+                appVersion = BuildConfig.VERSION_NAME,
+                versionCode = BuildConfig.VERSION_CODE,
+                buildType = BuildConfig.BUILD_TYPE,
+                android = Build.VERSION.RELEASE ?: "unknown",
+                sdkInt = Build.VERSION.SDK_INT,
+                device = "${Build.MANUFACTURER} ${Build.MODEL}",
+                profileKind = snap.profile?.let { ProfileDetails.kindOf(it) },
+                profileOutput = snap.profile?.outputKind?.let { OutputRoute.label(it) },
+                profileAgeSeconds = snap.profile?.timestampMs?.let(secondsSince),
+                outputInUse = snap.output?.kind?.let { OutputRoute.label(it) },
+                outputEvidence = snap.output?.evidence?.name?.lowercase()?.replace('_', ' '),
+                home = HomeSummary.of(snap.facts),
+                lastStatus = snap.status?.message,
+                lastStatusAgeSeconds = snap.status?.updatedMs?.let(secondsSince),
+                lastStatusIsError = snap.status?.isError == true,
+                measurement = measured?.let {
+                    DiagnosticsSummary.Measurement(it.outcome, it.stage, it.message, secondsSince(it.atMs))
+                },
+                backgroundWork = RuntimeCounters.snapshot().summary()
+            )
+        )
+    }
+
+    /**
+     * Preview first: the whole text is on screen before Copy or the QR code can
+     * take it anywhere, and Core EQ itself sends nothing.
+     */
+    private fun showDiagnostics(returnFocus: View) {
+        if (diagnosticsOpen) return
+        diagnosticsOpen = true
+        val body = diagnosticsText()
+        val text = TextView(this).apply {
+            this.text = body
+            setTextColor(ContextCompat.getColor(this@CapabilityActivity, R.color.cb_ink))
+            textSize = 14f
+            setLineSpacing(0f, 1.15f)
+        }
+        val note = TextView(this).apply {
+            setText(R.string.diagnostics_note)
+            setTextColor(ContextCompat.getColor(this@CapabilityActivity, R.color.cb_slate))
+            textSize = 13f
+            setPadding(0, 0, 0, 12)
+        }
+        val column = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            addView(note)
+            addView(text)
+        }
+        // Focusable, so the remote scrolls the text line by line before choosing.
+        val scroll = ScrollView(this).apply {
+            isFocusable = true
+            setPadding(48, 16, 48, 8)
+            addView(column)
+            contentDescription = body
+        }
+        val dialog = AlertDialog.Builder(this)
+            .setTitle(R.string.diagnostics_title)
+            .setView(scroll)
+            .setPositiveButton(R.string.diagnostics_qr, null)
+            .setNeutralButton(R.string.diagnostics_copy, null)
+            .setNegativeButton(R.string.diagnostics_close, null)
+            .setOnDismissListener {
+                diagnosticsOpen = false
+                if (returnFocus.isShown) returnFocus.requestFocus()
+            }
+            .create()
+        dialog.show()
+        dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
+            val clipboard = getSystemService(ClipboardManager::class.java)
+            if (clipboard == null) {
+                note.setText(R.string.diagnostics_no_clipboard)
+            } else {
+                clipboard.setPrimaryClip(ClipData.newPlainText("Core EQ diagnostics", body))
+                note.setText(R.string.diagnostics_copied)
+            }
+        }
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener { button ->
+            val side = (resources.displayMetrics.heightPixels * 0.6f).toInt()
+            val qr = runCatching { QrBitmap.render(body, side) }.getOrNull()
+            if (qr == null) {
+                note.setText(R.string.diagnostics_qr_too_long)
+                return@setOnClickListener
+            }
+            column.removeView(text)
+            if (column.findViewWithTag<View>(QR_TAG) == null) {
+                column.addView(ImageView(this).apply {
+                    tag = QR_TAG
+                    setImageBitmap(qr)
+                    adjustViewBounds = true
+                    contentDescription = getString(R.string.diagnostics_qr_note)
+                    layoutParams = LinearLayout.LayoutParams(side, side)
+                })
+            }
+            note.setText(R.string.diagnostics_qr_note)
+            button.isEnabled = false
+            scroll.scrollTo(0, 0)
+        }
+        scroll.requestFocus()
     }
 
     /**
@@ -262,5 +387,6 @@ class CapabilityActivity : TvActivity() {
 
     private companion object {
         const val REQ_INSTALL = 9
+        const val QR_TAG = "diagnostics_qr"
     }
 }

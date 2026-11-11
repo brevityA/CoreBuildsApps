@@ -20,7 +20,7 @@ import tv.corebuilds.eq.companion.CompanionActivity
 import tv.corebuilds.eq.companion.PhoneCompanionActivity
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.ui.HomeSummary
-import tv.corebuilds.eq.ui.EnhancedAudioPrefs
+import tv.corebuilds.eq.ui.StatusFacts
 import tv.corebuilds.eq.dsp.DspConstants
 import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.export.EqStatus
@@ -330,28 +330,13 @@ class MainActivity : TvActivity() {
 
     /** The two-line answer: what is applied, and which listening effects are on (1.14.0). */
     private fun renderSummary(status: EqStatus?) {
-        val prefs = EnhancedAudioPrefs(this)
-        val running = EqService.running
         val summary = HomeSummary.of(
-            HomeSummary.Facts(
-                correctionOn = profileStore.correctionEnabled,
-                serviceRunning = running,
-                measurementPaused = profileStore.measurementPaused,
+            StatusFacts.facts(
+                this, profileStore, status,
                 anyProfile = lastAnyProfile,
                 profileForOutput = lastProfileForOutput,
                 outputKnown = lastOutputKnown,
-                outputLabel = lastOutputLabel,
-                appliedEngine = if (running) profileStore.appliedEngine else null,
-                playing = running && status?.playing == true,
-                faultMessage = status?.message?.takeIf { status.isError },
-                bypass = profileStore.bypassEnabled,
-                night = prefs.nightLevel,
-                clarityDb = prefs.clarityDb,
-                stereoSpeakers = prefs.stereoSpeakersEnabled,
-                lowVolumeBass = prefs.lowVolumeBassEnabled,
-                autoLoudness = prefs.autoLoudnessEnabled,
-                bassBoost = prefs.bassBoostEnabled,
-                loudnessEnhancer = prefs.loudnessEnhancerEnabled
+                outputLabel = lastOutputLabel
             )
         )
         textSummary.text = summary.applied + "\n" + summary.listening

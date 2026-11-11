@@ -347,6 +347,32 @@ class ProfileStore(context: Context) {
         get() = prefs.getString(KEY_APPLIED_ENGINE, null)
         set(value) = prefs.edit().apply { if (value == null) remove(KEY_APPLIED_ENGINE) else putString(KEY_APPLIED_ENGINE, value) }.apply()
 
+    /**
+     * How the last measurement on this TV ended (1.14.0), for the diagnostics
+     * summary: saved, failed or cancelled, the sweep it was on and the message
+     * the screen showed. Words only: no capture, curve or microphone data.
+     */
+    data class MeasurementOutcome(val outcome: String, val stage: String, val message: String, val atMs: Long)
+
+    fun recordMeasurement(outcome: String, stage: String, message: String, atMs: Long = System.currentTimeMillis()) {
+        prefs.edit()
+            .putString(KEY_MEASURE_OUTCOME, outcome)
+            .putString(KEY_MEASURE_STAGE, stage)
+            .putString(KEY_MEASURE_MESSAGE, message.take(MAX_MEASURE_MESSAGE))
+            .putLong(KEY_MEASURE_TIME, atMs)
+            .apply()
+    }
+
+    fun lastMeasurement(): MeasurementOutcome? {
+        val outcome = prefs.getString(KEY_MEASURE_OUTCOME, null) ?: return null
+        return MeasurementOutcome(
+            outcome,
+            prefs.getString(KEY_MEASURE_STAGE, null).orEmpty(),
+            prefs.getString(KEY_MEASURE_MESSAGE, null).orEmpty(),
+            prefs.getLong(KEY_MEASURE_TIME, 0L)
+        )
+    }
+
     fun runtimeBands(): List<PlatformBand> {
         val raw = prefs.getString(KEY_RUNTIME_BANDS, null) ?: return emptyList()
         return try {
@@ -411,6 +437,11 @@ class ProfileStore(context: Context) {
         private const val TAG = "CoreEqProfiles"
         private const val KEY_MEASUREMENT_PAUSED = "service_measurement_paused_v1140"
         private const val KEY_APPLIED_ENGINE = "service_applied_engine_v1140"
+        private const val KEY_MEASURE_OUTCOME = "last_measurement_outcome_v1140"
+        private const val KEY_MEASURE_STAGE = "last_measurement_stage_v1140"
+        private const val KEY_MEASURE_MESSAGE = "last_measurement_message_v1140"
+        private const val KEY_MEASURE_TIME = "last_measurement_time_v1140"
+        private const val MAX_MEASURE_MESSAGE = 240
         private const val PREFS_NAME = "core_eq_profiles"
         private const val KEY_PROFILES = "profiles_json"
         private const val KEY_ACTIVE_ID = "active_profile_id"
