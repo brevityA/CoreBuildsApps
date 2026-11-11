@@ -37,6 +37,7 @@ import tv.corebuilds.eq.dsp.SmartSuggestion
 import tv.corebuilds.eq.dsp.TvSoundEq
 import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.export.AppBuild
+import tv.corebuilds.eq.export.ProfileOrigin
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.mode.ContentMode
@@ -243,7 +244,7 @@ class ManualEqActivity : TvActivity() {
             outputKind = OutputRoute.keyFor(output),
             outputName = output?.name,
             manualOnly = true,
-            createdBy = AppBuild.current()
+            origin = ProfileOrigin.manual(AppBuild.current())
         ).also { profileStore.saveProfile(it) }
     }
 

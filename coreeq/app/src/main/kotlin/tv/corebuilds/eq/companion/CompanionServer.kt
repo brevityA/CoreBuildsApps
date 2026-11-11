@@ -20,6 +20,7 @@ import tv.corebuilds.eq.dsp.Sweep
 import tv.corebuilds.eq.dsp.SweepAnalysis
 import tv.corebuilds.eq.dsp.SweepResult
 import tv.corebuilds.eq.export.AppBuild
+import tv.corebuilds.eq.export.ProfileOrigin
 import tv.corebuilds.eq.export.CaptureInfo
 import tv.corebuilds.eq.export.CurvePoint
 import tv.corebuilds.eq.export.MicrophoneResponsePoint
@@ -952,8 +953,10 @@ internal class CompanionServer(
         val baseName = "Phone measurement · ${java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.MEDIUM, java.text.DateFormat.SHORT).format(java.util.Date(now))}"
         val outputName = output?.name
         return Profile(
-            // This TV build analysed the phone capture and produced the correction.
-            createdBy = AppBuild.current(),
+            // The phone recorded the sweep and this TV build analysed it. The upload
+            // reports the phone's model and Android version, not its Core EQ build,
+            // so that build is left unrecorded rather than assumed to be this one.
+            origin = ProfileOrigin.phoneMeasurement(AppBuild.current(), phoneBuild = null),
             id = "profile-$now",
             name = if (outputName != null) "$baseName · $outputName" else baseName,
             timestampMs = now,

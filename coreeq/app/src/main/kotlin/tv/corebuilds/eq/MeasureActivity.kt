@@ -49,6 +49,7 @@ import tv.corebuilds.eq.dsp.TargetCurveImport
 import tv.corebuilds.eq.ui.FilePicker
 import tv.corebuilds.eq.dsp.Targets
 import tv.corebuilds.eq.export.AppBuild
+import tv.corebuilds.eq.export.ProfileOrigin
 import tv.corebuilds.eq.export.CaptureInfo
 import tv.corebuilds.eq.export.CurvePoint
 import tv.corebuilds.eq.export.PlatformBand
@@ -1627,8 +1628,8 @@ class MeasureActivity : TvActivity() {
         val check = correctionCheck
         val baseName = getString(R.string.measure_profile_name, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(now)))
         return Profile(
-            // This build produced the correction (a TV sweep, or a REW import read here).
-            createdBy = AppBuild.current(),
+            // This TV build played, recorded and analysed the sweep.
+            origin = ProfileOrigin.tvMeasurement(AppBuild.current()),
             id = "profile-$now",
             name = if (output != null) "$baseName · ${output.name}" else baseName,
             timestampMs = now,
@@ -1708,8 +1709,8 @@ class MeasureActivity : TvActivity() {
         val output = importedOutputEstimate
         val baseName = getString(R.string.measure_profile_name, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(now)))
         val profile = Profile(
-            // This build produced the correction (a TV sweep, or a REW import read here).
-            createdBy = AppBuild.current(),
+            // This build read the file; the measurement was made outside Core EQ.
+            origin = ProfileOrigin.rewImport(AppBuild.current()),
             id = "profile-$now",
             name = if (output != null) "$baseName · ${output.name}" else baseName,
             timestampMs = now,

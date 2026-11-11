@@ -36,7 +36,7 @@ object DiagnosticsSummary {
         /** The output the profile was saved for, as a kind label ("TV speakers"). */
         val profileOutput: String?,
         val profileAgeSeconds: Long?,
-        /** "measured with Core EQ 1.14.0 (30)", or null when the profile's origin was not recorded. */
+        /** [tv.corebuilds.eq.export.ProfileOrigin.summary], or null when the profile's origin was not recorded. */
         val profileOrigin: String? = null,
         /** The output in use as a kind label, and how Android told us. */
         val outputInUse: String?,

@@ -225,10 +225,10 @@ object Formats {
         root.put("device", profile.deviceName)
         root.put("manual_only", profile.manualOnly)
         // Omitted when nothing is recorded, so a profile saved before provenance
-        // existed serializes exactly as it did then.
-        if (profile.createdBy != null || profile.lastSavedBy != null) {
+        // existed is written with the same keys as before.
+        if (profile.origin != null || profile.lastSavedBy != null) {
             val provenance = JSONObject()
-            profile.createdBy?.let { provenance.put("created_by", it.toJson()) }
+            profile.origin?.let { provenance.put("origin", it.toJson()) }
             profile.lastSavedBy?.let { provenance.put("last_saved_by", it.toJson()) }
             root.put("provenance", provenance)
         }

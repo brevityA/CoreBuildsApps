@@ -6,18 +6,18 @@ import tv.corebuilds.eq.BuildConfig
 /**
  * The Core EQ build that did something to a profile: version name and code.
  *
- * Profiles carry two of these (`docs/CORE_EQ_SOUND_EDITOR_ROADMAP.md`, milestone
- * C): [Profile.createdBy], the build that produced the profile's correction
- * (a measurement, a REW import or a manual profile), written once; and
- * [Profile.lastSavedBy], the build that last saved that profile. Profiles saved
- * before provenance existed have neither, and nothing ever fills one in after
- * the fact: an unknown origin stays unknown.
+ * A profile's provenance (`docs/CORE_EQ_SOUND_EDITOR_ROADMAP.md`, milestone C)
+ * is built from these: [Profile.origin] names the builds that created the
+ * profile, recorded its sweep and analysed it ([ProfileOrigin]), written once;
+ * [Profile.lastSavedBy] is the build that last wrote it into this TV's profile
+ * list. Profiles saved before provenance existed have neither, and nothing
+ * ever fills one in after the fact: an unknown origin stays unknown.
  *
  * Stored inside a profile's JSON as
- * `"provenance": {"created_by": {...}, "last_saved_by": {...}}`, each
+ * `"provenance": {"origin": {...}, "last_saved_by": {...}}`, each build as
  * `{"app": "Core EQ", "version": "<name>", "code": <int>}`. The object is
- * omitted when both are unknown, so an older profile serializes exactly as
- * it did before.
+ * omitted when neither is known, so an older profile is written with the same
+ * keys as before.
  */
 data class AppBuild(val versionName: String, val versionCode: Int) {
 

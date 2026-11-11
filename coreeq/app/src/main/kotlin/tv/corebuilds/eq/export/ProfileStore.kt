@@ -684,7 +684,7 @@ class ProfileStore(
                 manualFilters = ManualEq.sanitize(manualFiltersList),
                 manualOnly = obj.optBoolean("manual_only", false),
                 targetPoints = targetPoints,
-                createdBy = AppBuild.fromJson(obj.optJSONObject("provenance")?.optJSONObject("created_by")),
+                origin = ProfileOrigin.fromJson(obj.optJSONObject("provenance")?.optJSONObject("origin")),
                 lastSavedBy = AppBuild.fromJson(obj.optJSONObject("provenance")?.optJSONObject("last_saved_by"))
             )
         }

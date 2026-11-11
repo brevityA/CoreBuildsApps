@@ -83,21 +83,39 @@ Separate, each one at a time when scheduled:
 
 ### C: provenance and instrumentation (in progress)
 
-**Provenance.**
-- Two records per profile: **created by** (the app build that produced the
-  profile's correction: a measurement, a REW import or a manual profile;
-  written once) and **last saved by** (the app build that last saved that
-  profile).
-- Never invented. A profile without them shows "not recorded".
-- Opening, listing or viewing a profile writes nothing. Saving one profile
-  never stamps another.
-- Rename keeps "created by" and updates "last saved by". Duplicate copies
-  "created by" and stamps its own "last saved by".
-- Export carries both. Import keeps the file's "created by" when present and
-  sets "last saved by" to this build.
-- A build older than C reads such a file and ignores the new keys; if it
-  saves the profile again, it drops them. That loss on downgrade is accepted
-  and documented.
+**Provenance (as built).** Stored in each profile as
+`provenance: {origin, last_saved_by}`; each build is
+`{"app": "Core EQ", "version", "code"}`. The origin is written once, by the
+code that creates the profile, and says which build did what. It describes
+the *profile's* creation; it does not claim Core EQ measured anything it did
+not measure.
+
+| Created by | `origin.kind` | `created_by` | `captured_by` (recorded the sweep) | `analysed_by` |
+|---|---|---|---|---|
+| TV measurement | `tv_measurement` | this TV build | this TV build | this TV build |
+| Phone capture, analysed on the TV | `phone_measurement` | this TV build | **absent**: the upload reports the phone's model and Android version, not its Core EQ build | this TV build |
+| REW (or other) file imported in Measure | `rew_import` | this TV build ("Imported with") | absent: measured outside Core EQ | absent |
+| Manual-only profile | `manual` | this TV build ("Created with") | absent: nothing measured | absent |
+| Saved before C | none: Details says "Origin: not recorded" | | | |
+
+| Action | `origin` | `last_saved_by` |
+|---|---|---|
+| Save, rename | unchanged | this build |
+| Duplicate | copied as it is (the same measurement) | this build, on the copy only |
+| Export | written as stored | written as stored |
+| Import (Profiles) | the file's, kept as it is; absent stays absent | **this build**: the importing build is the one that saved it into this TV's list. The exporter's value is not kept. |
+| Open, list, choose, view Details | unchanged | unchanged; nothing is written |
+
+A malformed record reads as not recorded, never repaired. A `kind` a newer
+build invents is kept and shown as recorded by a newer build. An imported
+profile's date is the import time (unchanged from 1.13.2); its origin is the
+file's.
+
+**Downgrade.** 1.13.2 and earlier rewrite every profile from the fields they
+know whenever they save any profile, so after a downgrade the first save
+drops provenance (and anything else a newer build added) from every profile.
+Accepted and stated; nothing on the TV can prevent it. `ProfileProvenanceTest`
+(15) pins the table above.
 
 **Instrumentation.** Each timing keeps a count, the last, shortest and longest
 value, and the most recent 32 values for a median. Memory only, cleared when

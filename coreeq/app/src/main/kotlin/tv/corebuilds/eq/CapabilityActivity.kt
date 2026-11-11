@@ -103,9 +103,7 @@ class CapabilityActivity : TvActivity() {
                 profileKind = snap.profile?.let { ProfileDetails.kindOf(it) },
                 profileOutput = snap.profile?.outputKind?.let { OutputRoute.label(it) },
                 profileAgeSeconds = snap.profile?.timestampMs?.let(secondsSince),
-                profileOrigin = snap.profile?.let { p ->
-                    p.createdBy?.let { "${ProfileDetails.originLabel(p).lowercase()} ${it.label()}" }
-                },
+                profileOrigin = snap.profile?.origin?.summary(),
                 outputInUse = snap.output?.kind?.let { OutputRoute.label(it) },
                 outputEvidence = snap.output?.evidence?.name?.lowercase()?.replace('_', ' '),
                 home = HomeSummary.of(snap.facts),

@@ -48,11 +48,14 @@ that asks first.
   saved profiles and reported outputs, addresses and long ids are masked. A
   name Core EQ has never seen cannot be recognised, so the header says to
   read it before sharing.
-- **Profiles record which Core EQ build made them and which last saved them.**
-  Details shows "Measured with", "Imported with" or "Created with" and "Last
-  saved with". Profiles saved before this say "not recorded"; nothing is
-  guessed, and opening or browsing a profile writes nothing. Rename and
-  duplicate keep the original build; export and import carry both.
+- **Profiles record their origin and which build last saved them.** A TV
+  measurement records the build that recorded and analysed the sweep; a
+  phone measurement, the TV build that analysed it (the phone does not
+  report its own build, and Details says so); a REW import, the build that
+  imported it, measured outside Core EQ; a manual profile, the build that
+  created it. Rename and duplicate keep the origin; export carries it; import
+  keeps the file's origin and records the importing build as the last save.
+  Profiles saved before this say "not recorded"; nothing is guessed.
 - **Extra effects has a Reset.** It turns every effect on that screen off and
   leaves room correction, profiles and manual EQ alone.
 

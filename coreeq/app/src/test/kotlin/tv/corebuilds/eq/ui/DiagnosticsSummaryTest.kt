@@ -93,8 +93,9 @@ class DiagnosticsSummaryTest {
     }
 
     @Test fun `a recorded origin is named, an unrecorded one is said to be unrecorded`() {
-        val withOrigin = DiagnosticsSummary.text(facts.copy(profileOrigin = "measured with Core EQ 1.14.0 (30)"))
-        assertTrue(withOrigin.contains("saved 2 d ago · measured with Core EQ 1.14.0 (30)"))
+        val origin = tv.corebuilds.eq.export.ProfileOrigin.tvMeasurement(tv.corebuilds.eq.export.AppBuild("1.14.0", 30))
+        val withOrigin = DiagnosticsSummary.text(facts.copy(profileOrigin = origin.summary()))
+        assertTrue(withOrigin, withOrigin.contains("saved 2 d ago · TV measurement, recorded and analysed by Core EQ 1.14.0 (30)"))
         assertTrue(DiagnosticsSummary.text(facts).contains("· origin not recorded"))
     }
 
