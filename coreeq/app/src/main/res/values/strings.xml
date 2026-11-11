@@ -509,6 +509,8 @@
          equal to it and to the icon pack's. -->
     <string name="support_card_title">Support</string>
     <string name="support_card_note">Every Core Builds app is free. Two QR codes, GitHub Sponsors and Ko-fi, for your phone.</string>
+    <!-- Home's two summary lines: what is applied, then the listening effects switched on. -->
+    <string name="home_summary_lines">%1$s\n%2$s</string>
     <!-- 1.14.0: the diagnostics summary on Capability. Preview first; nothing is sent. -->
     <string name="action_diagnostics">Diagnostics summary</string>
     <string name="diagnostics_title">Diagnostics summary</string>

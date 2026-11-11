@@ -20,6 +20,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import tv.corebuilds.eq.apply.DynamicsProcessingEngine
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.OutputRoute
@@ -268,7 +269,7 @@ class MeasureActivity : TvActivity() {
 
     /** A finished sweep or import that Save has not kept yet (1.14.0). */
     private fun hasUnsavedResult(): Boolean =
-        !measuring && !importing && (result != null || importResult != null) && btnSave.visibility == View.VISIBLE
+        !measuring && !importing && (result != null || importResult != null) && btnSave.isVisible
 
     private var leaveDialogOpen = false
 

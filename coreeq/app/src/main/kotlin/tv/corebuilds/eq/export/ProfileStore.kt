@@ -3,6 +3,7 @@ package tv.corebuilds.eq.export
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.core.content.edit
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -340,12 +341,12 @@ class ProfileStore(context: Context) {
      */
     var measurementPaused: Boolean
         get() = prefs.getBoolean(KEY_MEASUREMENT_PAUSED, false)
-        set(value) = prefs.edit().putBoolean(KEY_MEASUREMENT_PAUSED, value).apply()
+        set(value) = prefs.edit { putBoolean(KEY_MEASUREMENT_PAUSED, value) }
 
     /** The engine the service last configured ("DynamicsProcessing", "Equalizer"), or null while none is held. */
     var appliedEngine: String?
         get() = prefs.getString(KEY_APPLIED_ENGINE, null)
-        set(value) = prefs.edit().apply { if (value == null) remove(KEY_APPLIED_ENGINE) else putString(KEY_APPLIED_ENGINE, value) }.apply()
+        set(value) = prefs.edit { if (value == null) remove(KEY_APPLIED_ENGINE) else putString(KEY_APPLIED_ENGINE, value) }
 
     /**
      * How the last measurement on this TV ended (1.14.0), for the diagnostics
@@ -355,12 +356,12 @@ class ProfileStore(context: Context) {
     data class MeasurementOutcome(val outcome: String, val stage: String, val message: String, val atMs: Long)
 
     fun recordMeasurement(outcome: String, stage: String, message: String, atMs: Long = System.currentTimeMillis()) {
-        prefs.edit()
-            .putString(KEY_MEASURE_OUTCOME, outcome)
-            .putString(KEY_MEASURE_STAGE, stage)
-            .putString(KEY_MEASURE_MESSAGE, message.take(MAX_MEASURE_MESSAGE))
-            .putLong(KEY_MEASURE_TIME, atMs)
-            .apply()
+        prefs.edit {
+            putString(KEY_MEASURE_OUTCOME, outcome)
+            putString(KEY_MEASURE_STAGE, stage)
+            putString(KEY_MEASURE_MESSAGE, message.take(MAX_MEASURE_MESSAGE))
+            putLong(KEY_MEASURE_TIME, atMs)
+        }
     }
 
     fun lastMeasurement(): MeasurementOutcome? {

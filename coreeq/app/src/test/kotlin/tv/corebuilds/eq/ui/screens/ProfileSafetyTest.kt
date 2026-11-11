@@ -214,4 +214,36 @@ class ProfileSafetyTest {
         phaseGate = BooleanArray(4) { true }, confidence = DoubleArray(4) { 1.0 },
         fMaxHz = 8000.0
     )
+
+    @Test fun profileListChangesAreReportedPreciselyNeverAsAFullRefresh() {
+        ActivityScenario.launch(ProfilesActivity::class.java).use { scenario ->
+            scenario.onActivity { activity ->
+                val list = activity.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recycler_profiles)
+                ScreenHarness.idle()
+                var full = 0
+                var inserted = 0
+                var removed = 0
+                var changed = 0
+                list.adapter!!.registerAdapterDataObserver(object : androidx.recyclerview.widget.RecyclerView.AdapterDataObserver() {
+                    override fun onChanged() { full++ }
+                    override fun onItemRangeInserted(positionStart: Int, itemCount: Int) { inserted += itemCount }
+                    override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) { removed += itemCount }
+                    override fun onItemRangeChanged(positionStart: Int, itemCount: Int) { changed += itemCount }
+                    override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) { changed += itemCount }
+                })
+                chooseFirstRow(activity)
+                assertTrue("choosing a row rebinds rows in place", changed >= 2)
+                activity.findViewById<Button>(R.id.btn_profile_duplicate).performClick()
+                ScreenHarness.idle()
+                assertEquals("a duplicate inserts one row", 1, inserted)
+                chooseFirstRow(activity)
+                activity.findViewById<Button>(R.id.btn_delete_profile).performClick()
+                ScreenHarness.idle()
+                latestAlert().getButton(AlertDialog.BUTTON_POSITIVE).performClick()
+                ScreenHarness.idle()
+                assertEquals("a delete removes one row", 1, removed)
+                assertEquals("no full refresh, which drops focus and scroll", 0, full)
+            }
+        }
+    }
 }

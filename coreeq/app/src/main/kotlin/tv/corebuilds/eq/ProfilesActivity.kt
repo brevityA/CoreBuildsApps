@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.dsp.DspConstants
@@ -308,11 +309,7 @@ class ProfilesActivity : TvActivity() {
         selectedProfile = active
         activeProfileId = active?.id
 
-        val existing = adapter
-        if (existing != null) {
-            existing.notifyDataSetChanged()
-        } else adapter = ProfileAdapter(
-            items = profilesList,
+        val list = adapter ?: ProfileAdapter(
             activeId = { activeProfileId },
             modeStore = modeStore,
             onProfileSelected = { profile ->
@@ -335,12 +332,17 @@ class ProfilesActivity : TvActivity() {
                 EqService.send(this, EqService.ACTION_REAPPLY)
                 displayProfile(profile)
                 renderRoute(profile, routeMatch, currentOutput)
-                recyclerProfiles.adapter?.notifyDataSetChanged()
+                // Only the active badge moved: rebind the rows in place.
+                adapter?.refreshRows()
             }
         ).also {
             it.setHasStableIds(true)
             recyclerProfiles.adapter = it
+            adapter = it
         }
+        // The rows that were added, removed or kept, by profile id, so the list keeps
+        // its scroll position and the focused row across a rename, duplicate or delete.
+        list.submit(profilesList)
         setProfileActionsEnabled(active != null)
         renderRoute(active, routeMatch, output)
         if (active != null) {
@@ -609,11 +611,33 @@ class ProfilesActivity : TvActivity() {
     }
 
     private class ProfileAdapter(
-        private val items: List<Profile>,
         private val activeId: () -> String?,
         private val modeStore: ContentModeStore,
         private val onProfileSelected: (Profile) -> Unit
     ) : RecyclerView.Adapter<ProfileViewHolder>() {
+
+        private var items: List<Profile> = emptyList()
+
+        /**
+         * Show [newItems], telling the list exactly which rows were inserted,
+         * removed or kept. Kept rows are always rebound: a row also shows its mode
+         * overlays and the active badge, which live outside [Profile] and may have
+         * changed while another screen was open.
+         */
+        fun submit(newItems: List<Profile>) {
+            val old = items
+            val next = newItems.toList()
+            items = next
+            DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+                override fun getOldListSize(): Int = old.size
+                override fun getNewListSize(): Int = next.size
+                override fun areItemsTheSame(oldPosition: Int, newPosition: Int): Boolean = old[oldPosition].id == next[newPosition].id
+                override fun areContentsTheSame(oldPosition: Int, newPosition: Int): Boolean = false
+            }, false).dispatchUpdatesTo(this)
+        }
+
+        /** Rebind every row where it is; nothing is inserted or removed. */
+        fun refreshRows() = notifyItemRangeChanged(0, itemCount)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileViewHolder {
             val v = LayoutInflater.from(parent.context).inflate(R.layout.item_profile_row, parent, false)
