@@ -25,6 +25,7 @@ import tv.corebuilds.eq.apply.DynamicsProcessingEngine
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.apply.ProfileOutputIdentity
+import tv.corebuilds.eq.apply.RuntimeTimings
 import tv.corebuilds.eq.dsp.Correction
 import tv.corebuilds.eq.dsp.CorrectionReport
 import tv.corebuilds.eq.dsp.CustomTarget
@@ -351,11 +352,11 @@ class MeasureActivity : TvActivity() {
                     if (seatCaptures.size >= 2) {
                         val again = seatCaptures.map {
                             it.copy(
-                                result = SweepAnalysis.analyze(
+                                result = RuntimeTimings.time(RuntimeTimings.Op.MEASUREMENT_ANALYSIS) { SweepAnalysis.analyze(
                                     it.samples, it.rate, target, volume, ceilingHz = ceiling,
                                     micResponse = it.captureInfo?.microphoneResponse ?: emptyList(),
                                     activeMicrophones = it.captureInfo?.activeMicrophoneCount
-                                ),
+                                ) },
                                 targetIndex = selectedTargetIndex,
                                 roomIndex = selectedRoomIndex
                             )
@@ -364,12 +365,12 @@ class MeasureActivity : TvActivity() {
                         Triple(averaged.result, again, averaged)
                     } else {
                         Triple(
-                            SweepAnalysis.analyze(
+                            RuntimeTimings.time(RuntimeTimings.Op.MEASUREMENT_ANALYSIS) { SweepAnalysis.analyze(
                                 capture, lastRate, target, volume, ceilingHz = ceiling,
                                 micResponse = seatCaptures.firstOrNull()?.captureInfo?.microphoneResponse
                                     ?: emptyList(),
                                 activeMicrophones = seatCaptures.firstOrNull()?.captureInfo?.activeMicrophoneCount
-                            ),
+                            ) },
                             emptyList(), null
                         )
                     }
@@ -814,12 +815,12 @@ class MeasureActivity : TvActivity() {
             } else {
                 try {
                     Result.success(
-                        SweepAnalysis.analyze(
+                        RuntimeTimings.time(RuntimeTimings.Op.MEASUREMENT_ANALYSIS) { SweepAnalysis.analyze(
                             samples, rate, plan.target, plan.volumeM3,
                             ceilingHz = plan.ceilingHz,
                             micResponse = info.microphoneResponse,
                             activeMicrophones = info.activeMicrophoneCount
-                        )
+                        ) }
                     )
                 } catch (e: MeasurementException) {
                     Result.failure(e)

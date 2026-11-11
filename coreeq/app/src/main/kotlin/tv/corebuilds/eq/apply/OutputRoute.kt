@@ -153,6 +153,25 @@ object OutputRoute {
      * fallback to "Everyday".
      */
     fun probeWithSilentTrack(context: Context): ProbeResult? {
+        val started = RuntimeTimings.start()
+        val result = try {
+            probeOnce(context)
+        } catch (e: Throwable) {
+            RuntimeTimings.finish(RuntimeTimings.Op.ROUTE_PROBE, started, RuntimeTimings.Outcome.FAILED)
+            throw e
+        }
+        RuntimeTimings.finish(
+            RuntimeTimings.Op.ROUTE_PROBE, started,
+            when {
+                result == null -> RuntimeTimings.Outcome.FAILED // no track could be opened
+                result.output.kind == UNCONFIRMED -> RuntimeTimings.Outcome.NO_ANSWER
+                else -> RuntimeTimings.Outcome.OK // a route, or an ambiguous one: both are answers
+            }
+        )
+        return result
+    }
+
+    private fun probeOnce(context: Context): ProbeResult? {
         context.getSystemService(AudioManager::class.java) ?: return null
         // Read before the track opens: the hint this answer will stand on.
         val hint = identity(indication(context))

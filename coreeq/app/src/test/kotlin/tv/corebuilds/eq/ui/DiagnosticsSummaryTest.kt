@@ -42,7 +42,8 @@ class DiagnosticsSummaryTest {
         assertEquals("Last service message, 40 s ago: Applied 25 bands to the output mix.", lines[8])
         assertEquals("Last measurement: failed (primary), 10 min ago: No sweep was heard.", lines[9])
         assertTrue(lines[10], lines[10].startsWith("Background work since start: 1 route probes"))
-        assertEquals(11, lines.size)
+        assertEquals("Timings since start: none recorded", lines[11])
+        assertEquals(12, lines.size)
     }
 
     @Test fun `nothing recorded is said as nothing recorded`() {

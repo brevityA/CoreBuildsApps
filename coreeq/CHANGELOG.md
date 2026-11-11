@@ -56,6 +56,12 @@ that asks first.
   created it. Rename and duplicate keep the origin; export carries it; import
   keeps the file's origin and records the importing build as the last save.
   Profiles saved before this say "not recorded"; nothing is guessed.
+- **Core EQ times its own work.** Apply, engine configure, player
+  discovery, route probe and measurement analysis, and Home's and Profiles'
+  first draw and readiness, each with a count, median, range and how it
+  ended, since the process started. In memory only; shown in Capability's
+  diagnostics summary and the service's `dumpsys` output, sent nowhere. No
+  figure has been read on a TV yet, and none is a performance claim.
 - **Extra effects has a Reset.** It turns every effect on that screen off and
   leaves room correction, profiles and manual EQ alone.
 

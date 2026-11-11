@@ -52,7 +52,9 @@ object DiagnosticsSummary {
          * saved profile names and the output names Android reported. Masked as
          * "[name]" wherever they appear in a free-text line.
          */
-        val knownNames: List<String> = emptyList()
+        val knownNames: List<String> = emptyList(),
+        /** [tv.corebuilds.eq.apply.RuntimeTimings.summary]: counts and durations only. */
+        val timings: String = "none recorded"
     )
 
     /**
@@ -102,7 +104,8 @@ object DiagnosticsSummary {
                     (m.message.takeIf { it.isNotBlank() }?.let { ": ${clean(it, f.knownNames)}" } ?: "")
             }
         )
-        append("Background work since start: ").append(f.backgroundWork)
+        appendLine("Background work since start: ${f.backgroundWork}")
+        append("Timings since start: ").append(f.timings)
     }
 
     /** "45 s ago", "12 min ago", "3 h ago", "2 d ago". */

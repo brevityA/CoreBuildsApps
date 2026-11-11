@@ -81,7 +81,7 @@ Separate, each one at a time when scheduled:
   E   preset imports (after P)
 ```
 
-### C: provenance and instrumentation (in progress)
+### C: provenance and instrumentation (built locally; device benchmark not run)
 
 **Provenance (as built).** Stored in each profile as
 `provenance: {origin, last_saved_by}`; each build is
@@ -134,18 +134,32 @@ know whenever they save any profile, so after a downgrade the first save
 drops provenance (and anything else a newer build added) from every profile.
 Accepted and stated; nothing on the TV can prevent it.
 
-**Instrumentation.** Each timing keeps a count, the last, shortest and longest
-value, and the most recent 32 values for a median. Memory only, cleared when
-the process ends, nothing per sample in the log.
+**Instrumentation (as built).** `apply/RuntimeTimings.kt`: per kind, a count,
+the last, shortest and longest duration, a count per outcome (ok, not applied,
+deferred, no answer, failed) and the most recent 32 durations for a median.
+Fixed size, one lock per kind (the kinds run on different threads), a
+monotonic clock (`System.nanoTime`, replaceable in tests), memory only,
+nothing per sample in the log, nothing sent anywhere.
 
 | Timing | Starts | Ends |
 |---|---|---|
-| Apply | The service begins applying to a session or the output mix | The effect is configured and read back, or refused |
-| Engine configure | Band and limiter values are handed to Android | The read-back check completes |
-| Player discovery | The discovery request is issued | Its output is parsed |
-| Route probe | A probe track is opened | Android reports a route, or the probe gives up |
-| Measurement analysis | A captured sweep is handed to the analysis worker | The result is ready for the screen |
-| First draw | Home or Profiles is created | Its first frame is drawn |
+| Apply | `EqService.applyAll` begins deciding (a call that may not apply at all is not counted) | its last decision: ok, not applied, deferred to a route probe, or failed |
+| Engine configure | one effect created or reconfigured | read back, or refused |
+| Player discovery | one DUMP discovery request | its result parsed |
+| Route probe | the silent probe track opened | Android's answer; "no answer" when the track named no device; failed when no track opened |
+| Measurement analysis | one captured sweep (TV or phone, first pass or re-analysis) handed to `SweepAnalysis` | its result, or its refusal |
+| Home / Profiles first draw | the activity constructed | its first draw pass |
+| Home ready | the activity constructed | its summary rendered from loaded profiles and status |
+| Profiles ready | the activity constructed | its list laid out with rows, or found empty |
+
+First draw and ready are separate figures and can come in either order.
+Shown in Capability's diagnostics summary ("Timings since start") and in
+`adb shell dumpsys activity service tv.corebuilds.eq/.apply.EqService`.
+`RuntimeTimingsTest` (7, fake clock, 8 threads × 2,000 records) and
+`TimingWiringTest` (5, Robolectric: the screens, diagnostics, the service
+dump and an apply) pin it. Robolectric never draws, so the first-draw wiring
+is driven through the framework's draw dispatch; that a TV's first frame
+reaches it is the benchmark's to show.
 
 **Device benchmark.** An `adb` procedure run from a computer: a fixed number
 of cold and warm starts, frame statistics for Home and Profiles, and the

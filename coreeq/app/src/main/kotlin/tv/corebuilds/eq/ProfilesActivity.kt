@@ -32,11 +32,16 @@ import tv.corebuilds.eq.ui.ProfileRouteLine
 import tv.corebuilds.eq.ui.CurveGraphView
 import tv.corebuilds.eq.ui.OverlayPermission
 import tv.corebuilds.eq.ui.QualityText
+import tv.corebuilds.eq.apply.RuntimeTimings
+import tv.corebuilds.eq.ui.ScreenTiming
 import tv.corebuilds.eq.ui.Series
 import tv.corebuilds.eq.ui.showSwitch
 import java.util.Locale
 
 class ProfilesActivity : TvActivity() {
+
+    /** Profiles' first draw and readiness, kept apart ([ScreenTiming]). */
+    private val screenTiming = ScreenTiming(RuntimeTimings.Op.PROFILES_FIRST_DRAW, RuntimeTimings.Op.PROFILES_READY)
 
     private lateinit var profileStore: ProfileStore
     private lateinit var modeStore: ContentModeStore
@@ -114,6 +119,12 @@ class ProfilesActivity : TvActivity() {
         textRoute = findViewById(R.id.text_profile_route)
 
         recyclerProfiles.layoutManager = LinearLayoutManager(this)
+        screenTiming.watchFirstDraw(window.decorView)
+        // Ready: the list has been laid out with its rows, or found empty.
+        screenTiming.readyAfterLayout(recyclerProfiles) {
+            val count = recyclerProfiles.adapter?.itemCount ?: 0
+            recyclerProfiles.adapter != null && (count == 0 || recyclerProfiles.childCount > 0)
+        }
 
         setupExportChips()
         loadProfiles()

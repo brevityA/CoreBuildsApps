@@ -11,6 +11,7 @@ import org.json.JSONObject
 import tv.corebuilds.eq.BuildConfig
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.OutputRoute
+import tv.corebuilds.eq.apply.RuntimeTimings
 import tv.corebuilds.eq.dsp.Correction
 import tv.corebuilds.eq.dsp.MeasurementQuality
 import tv.corebuilds.eq.dsp.MeasurementException
@@ -746,11 +747,11 @@ internal class CompanionServer(
         }
         val captureInfo = parseCaptureInfo(request.optJSONObject("capture"), rate)
         val result = try {
-            SweepAnalysis.analyze(
+            RuntimeTimings.time(RuntimeTimings.Op.MEASUREMENT_ANALYSIS) { SweepAnalysis.analyze(
                 samples, rate, session.target, session.volumeM3,
                 micResponse = captureInfo.microphoneResponse,
                 activeMicrophones = captureInfo.activeMicrophoneCount
-            )
+            ) }
         } catch (e: MeasurementException) {
             throw e
         } catch (e: Exception) {
