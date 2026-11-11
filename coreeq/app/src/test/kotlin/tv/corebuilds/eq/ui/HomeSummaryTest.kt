@@ -55,7 +55,7 @@ class HomeSummaryTest {
             lowVolumeBass = true, autoLoudness = true, bassBoost = true, loudnessEnhancer = true
         )
         assertEquals(
-            "Listening: night light · clarity +2 dB · stereo speakers · auto loudness · bass boost (Android effect) · loudness (Android effect).",
+            "Listening: night light · clarity +2 dB · stereo speakers · auto loudness (no effect in this version) · bass boost (Android effect) · loudness (Android effect).",
             HomeSummary.listeningLine(busy)
         )
         val onEqualizer = applied.copy(night = NightMode.Level.STRONG, appliedEngine = "Equalizer")

@@ -97,4 +97,20 @@ class DiagnosticsSummaryTest {
         assertTrue(withOrigin.contains("saved 2 d ago · measured with Core EQ 1.14.0 (30)"))
         assertTrue(DiagnosticsSummary.text(facts).contains("· origin not recorded"))
     }
+
+    @Test fun `known names are masked in every free-text line, longest first`() {
+        val names = listOf("Living room", "Living room 2", "Sam's Sonos Roam", "TV")
+        val text = DiagnosticsSummary.text(
+            facts.copy(
+                lastStatus = "Applied Living room 2 · on sam's sonos roam (track reported)",
+                measurement = facts.measurement!!.copy(message = "Saved Living room."),
+                knownNames = names
+            )
+        )
+        assertTrue(text, text.contains("Applied [name] · on [name] (track reported)"))
+        assertTrue(text, text.contains("Saved [name]."))
+        assertFalse(text, text.contains("Living room"))
+        // Names shorter than three characters are left alone rather than masking ordinary words.
+        assertEquals("on TV speakers", DiagnosticsSummary.clean("on TV speakers", names))
+    }
 }

@@ -231,9 +231,9 @@
     <string name="profile_renamed">Renamed to %1$s.</string>
     <string name="profile_duplicated">Saved a copy: %1$s. It is not applied until you choose it.</string>
     <string name="profile_details_title">%1$s</string>
-    <string name="profile_route_applied">Chosen and applied on this output (%1$s).</string>
-    <string name="profile_route_not_here">Chosen, but not applied on this output (%1$s): it belongs to %2$s. It plays when that output is in use.</string>
-    <string name="profile_route_unknown_output">Chosen. Android has not identified the output in use, so whether it applies here is unknown.</string>
+    <string name="profile_route_matches">Chosen, and it is the profile for the output in use (%1$s). Home shows whether correction is applying it now.</string>
+    <string name="profile_route_not_here">Chosen, but it is not the profile for the output in use (%1$s): it belongs to %2$s, and is used when that output is in use.</string>
+    <string name="profile_route_unknown_output">Chosen. Android has not identified the output in use, so whether this profile is the one for it is unknown.</string>
     <string name="profile_route_legacy">Chosen. Saved before outputs were recorded, so it is offered on any output.</string>
     <string name="profile_route_none">No profile chosen.</string>
 
@@ -344,7 +344,7 @@
     <string name="extras_name_auto_loudness">Auto loudness</string>
     <string name="extras_auto_loudness_on">Auto loudness: On</string>
     <string name="extras_auto_loudness_off">Auto loudness: Off</string>
-    <string name="extras_auto_loudness_note" formatted="false">Restores the bass and treble your ears lose at low volume (ISO 226), mapped to the ten EQ bands. Off at reference volume; never above +6 dB per band. Mutually exclusive with Low-volume bass.</string>
+    <string name="extras_auto_loudness_note" formatted="false">Known issue: in this version Auto loudness has no effect on the sound. Its band lookup is wrong, so it adds the same amount to every band, and headroom removes that. A fix is planned; if you have it on, you will be asked before the corrected version changes your sound. Mutually exclusive with Low-volume bass.</string>
     <string name="extras_auto_loudness_unknown">Android does not report this output\'s volume in dB, so there is nothing to compensate.</string>
     <string name="extras_auto_loudness_flat">Nothing added at or above the reference.</string>
     <string name="extras_auto_loudness_status">This output: reference %1$.0f dB, now %2$.0f dB, %3$.1f dB below reference.</string>

@@ -15,6 +15,12 @@ pull request is outstanding. Existing settings carry over: Dialogue boost on
 becomes Clarity +2 dB and the night switch on becomes Night: Strong, both the
 same sound as before; profiles are unchanged.
 
+Known issue, disclosed and not changed here: Auto loudness has had no effect
+on the sound since 1.10.2. Its band lookup gives every band the same gain,
+which the headroom shift removes. Extra effects and Home now say so; the fix
+changes the sound for anyone with the switch on, so it is a separate change
+that asks first.
+
 ### Added
 
 - **Night mode has a Light level.** Night mode is now Off, Light or Strong.
@@ -37,8 +43,11 @@ same sound as before; profiles are unchanged.
   in full before Copy or Show as QR code: versions, TV model, the output and
   how Android reported it, the profile's kind (not its name), Home's two lines,
   the last service message, how the last measurement ended, and the
-  background-work counters. Core EQ sends nothing; recordings, names and
-  pairing keys are left out and addresses are masked.
+  background-work counters. Core EQ sends nothing. Recordings, curves and
+  pairing keys are never included; in the free-text lines, the names of
+  saved profiles and reported outputs, addresses and long ids are masked. A
+  name Core EQ has never seen cannot be recognised, so the header says to
+  read it before sharing.
 - **Profiles record which Core EQ build made them and which last saved them.**
   Details shows "Measured with", "Imported with" or "Created with" and "Last
   saved with". Profiles saved before this say "not recorded"; nothing is
@@ -53,9 +62,11 @@ same sound as before; profiles are unchanged.
   step with OK, and Left and Right step down and up. Clarity does not stack
   with Stereo speakers' speech lift or with a Dialogue or House target's
   presence.
-- **Profiles shows on screen whether the chosen profile plays on the output
-  in use.** It was a toast. The route line and the profile actions sit under
-  the list, so the curve keeps its full height.
+- **Profiles shows on screen whether the chosen profile is the one for the
+  output in use.** It was a toast. The line says only that, or that the
+  output is not identified; whether correction is applying it now is Home's
+  answer. The route line and the profile actions sit under the list, so the
+  curve keeps its full height.
 - **Bass boost and Loudness enhancer say their gain is outside Core EQ's
   headroom.** Android does not report whether its limiter runs after them.
   `docs/CORE_EQ_HEADROOM_AUDIT.md` sets out the whole gain chain.
@@ -71,6 +82,8 @@ same sound as before; profiles are unchanged.
 
 - **Delete asks first.** One press of Delete removed a measured profile with
   no way back. It now asks, with Cancel focused, so a second OK does nothing.
+  After a delete, focus moves to the profile that took its place, or the one
+  above it when the last row went.
 - **Back from an unsaved measurement asks before discarding it.** Save,
   Discard or Keep it, with Keep it focused. A finished sweep used to be lost
   to one press of Back.

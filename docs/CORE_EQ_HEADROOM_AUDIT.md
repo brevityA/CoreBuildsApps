@@ -17,7 +17,7 @@ before this page can go stale.
 | Listening layers (inside headroom) | Clarity (presence box, 2.2 to 4.5 kHz) | `0`, `+1`, `+2`, `+3 dB` | `ListeningLayersTest` |
 | | Stereo speakers (speech lift, bass guard) | speech lift scaled by content type; music gets none | `ToneLayersTest` |
 | | Low-volume bass (shelf below 100 Hz) | `0` to `+3 dB` in half-dB steps | `ToneLayersTest` |
-| | Auto loudness (ISO 226, ten manual bands) | `±6 dB` per band at most; exclusive with Low-volume bass | `LoudnessCompensationTest` |
+| | Auto loudness (ISO 226, ten manual bands) | intended `±6 dB` per band at most; exclusive with Low-volume bass. **Known issue: no effect** since 1.10.2 (see below) | `LoudnessCompensationTest`, `AutoLoudnessKnownIssueTest` |
 | Headroom shift | Every band lowered by the largest positive band | `max(0, peak)` | `DpMappingTest`, `HeadroomAuditTest` |
 | DynamicsProcessing input gain | none | `0 dB`, read back after apply | `DynamicsProcessingEngine` read-back |
 | DynamicsProcessing pre-EQ | The only equalising stage | `25` bands: `24` correction bands from 40 Hz to 8 kHz, one guard band to 20 kHz | `DpMappingTest` |
@@ -35,10 +35,23 @@ assume a hard knee as a model, not as a configured value. (Corrected after
 review on #474; an earlier revision listed "knee 0" as configured. The
 sound is unaffected.)
 
-**Inside Core EQ, nothing boosts.** After the shift, the largest band sits at
-`0 dB` and every other band below it. `ListeningLayersTest` drives every
+**Inside Core EQ, no band gain is above 0 dB.** After the shift, the largest
+band gain is `0 dB` and every other band is below it. This is a statement
+about the configured gains, not the signal level (see the next section). `ListeningLayersTest` drives every
 layer to its maximum at once on a profile already at `+6 dB`, on both A/B
 sides, and finds no band above 0.
+
+**Known issue: Auto loudness has no effect.** Its lookup of the nearest
+manual band compares a band *index* with a frequency in hertz
+(`ToneLayers.responseDb`), so every frequency receives the gain of the last
+manual band, 8 kHz. The result is one uniform positive gain across all bands,
+and the headroom shift removes a uniform positive gain exactly, so the
+configured bands are identical with Auto loudness on or off
+(`AutoLoudnessKnownIssueTest`). The code has been this way since 1.10.2.
+This batch changes no sound: Extra effects and Home now say the switch has no
+effect. Fixing it changes the sound for everyone who has the switch on, so
+the fix is a separate change (roadmap milestone AL) that asks those users
+before it takes effect.
 
 **The A/B bypass side** is flat at the mean of what the correction actually
 applies, so it is never positive and plays at the same average level
@@ -46,11 +59,20 @@ applies, so it is never positive and plays at the same average level
 
 ## What the shift costs
 
-Keeping the peak at 0 dBFS means every boost is paid for by lowering
-everything else. On a flat room, Clarity `+3 dB` is the peak, so the rest of
-the spectrum plays `3 dB` quieter (`HeadroomAuditTest`). A viewer hears this as
-"Clarity made it quieter" and turns the TV up, which is the intended trade:
-the alternative is clipping.
+Keeping the largest band gain at `0 dB` means every boost is paid for by
+lowering everything else. On a flat room, Clarity `+3 dB` is the largest band,
+so the rest of the spectrum plays `3 dB` quieter (`HeadroomAuditTest`). A
+viewer hears this as "Clarity made it quieter" and turns the TV up, which is
+the intended trade.
+
+That keeps the equaliser from adding level; it is not a guarantee about the
+output signal. A band gain of `0 dB` passes material that is already near
+full scale (0 dBFS) at near full scale. The response between band centres,
+filter overshoot and inter-sample peaks are not modelled here. On
+DynamicsProcessing the protection limiter at `−1 dBFS` is what catches peaks;
+the Equalizer fallback has no limiter. Without the shift, a band above `0 dB`
+could push such material into the limiter more often, or past full scale on
+the fallback.
 
 Layers that boost different regions cost the larger of their peaks, not the
 sum: Clarity `+3` (presence) and Low-volume bass `+3` (below 100 Hz) together
