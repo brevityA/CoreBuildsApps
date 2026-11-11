@@ -54,6 +54,35 @@ class Review474Test {
         assertEquals(ProfileRouteLine.Kind.OTHER_OUTPUT, ProfileRouteLine.kindOf(chosen, null, "bluetooth"))
     }
 
+    /** Finding 2: the privacy header promised no profile or Bluetooth names, but service messages carry both. */
+    @Test fun `diagnostics masks the profile and output names the service writes into its messages`() {
+        ScreenSeed.measuredRoom()
+        store.saveProfile(ScreenSeed.livingRoom("seed-bar", "Soundbar room").copy(outputKind = "bluetooth", outputName = "Sam's Sonos Roam"))
+        store.setStatus(
+            "Output-mix effect configured · Everyday · DynamicsProcessing · Living room · 25 bands · on Sam's Sonos Roam (track reported)",
+            isError = false
+        )
+        ActivityScenario.launch(CapabilityActivity::class.java).use { scenario ->
+            scenario.onActivity { activity ->
+                ScreenHarness.idle()
+                activity.findViewById<Button>(R.id.btn_diagnostics).performClick()
+                ScreenHarness.idle()
+                val dialog = ShadowDialog.getLatestDialog() as AlertDialog
+                val texts = mutableListOf<String>()
+                fun walk(v: android.view.View) {
+                    if (v is TextView && v !is Button) texts += v.text.toString()
+                    if (v is android.view.ViewGroup) for (i in 0 until v.childCount) walk(v.getChildAt(i))
+                }
+                walk(dialog.window!!.decorView)
+                val body = texts.first { it.startsWith("Core EQ diagnostics") }
+                assertFalse(body, body.contains("Living room"))
+                assertFalse(body, body.contains("Sonos Roam"))
+                assertFalse(body, body.contains("Soundbar room"))
+                assertTrue(body, body.contains("DynamicsProcessing · [name] · 25 bands · on [name]"))
+            }
+        }
+    }
+
     /** Finding 3: after a delete, focus went to row zero or Import, not to the profile beside the deleted one. */
     @Test fun `delete leaves focus on the nearest surviving profile`() {
         for ((i, name) in listOf("Alpha", "Bravo", "Charlie").withIndex()) {

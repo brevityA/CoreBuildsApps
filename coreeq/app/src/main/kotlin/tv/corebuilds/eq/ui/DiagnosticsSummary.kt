@@ -6,12 +6,17 @@ package tv.corebuilds.eq.ui
  * when asked for, shown in full before anything leaves the screen, and never
  * sent anywhere by Core EQ.
  *
- * Deliberately left out: recordings, curves and filter values, profile and
- * output names (a profile is often named after a Bluetooth device, and a
- * Bluetooth name is often a person's), the phone pairing token and keys,
- * account details and serial numbers. Network and hardware addresses and long
- * hex ids are masked in the free-text lines as well. The device line is the
- * maker and model Android reports, which name a kind of TV, not a unit.
+ * Never read into it: recordings, curves and filter values, the phone pairing
+ * token and keys, account details and serial numbers. The structured lines
+ * carry kinds ("room measurement", "TV speakers"), never a profile or output
+ * name. The free-text lines (Home's applied line, the last service message,
+ * the last measurement message) are written by the service and can carry
+ * names, so [clean] masks every name Core EQ knows ([Facts.knownNames]: a
+ * profile is often named after a Bluetooth device, and a Bluetooth name is
+ * often a person's), network and hardware addresses and long hex ids. A name
+ * Core EQ was never told cannot be recognised, which is why the header says
+ * to read the preview. The device line is the maker and model Android
+ * reports, which name a kind of TV, not a unit.
  *
  * Android-free so its contents are unit-tested (`DiagnosticsSummaryTest`).
  */
@@ -39,11 +44,25 @@ object DiagnosticsSummary {
         val lastStatusAgeSeconds: Long?,
         val lastStatusIsError: Boolean,
         val measurement: Measurement?,
-        val backgroundWork: String
+        val backgroundWork: String,
+        /**
+         * Names Core EQ knows and that service and measurement messages can carry:
+         * saved profile names and the output names Android reported. Masked as
+         * "[name]" wherever they appear in a free-text line.
+         */
+        val knownNames: List<String> = emptyList()
     )
 
-    const val HEADER = "Core EQ diagnostics · no recordings, curves, profile or Bluetooth names, pairing keys or addresses"
+    /**
+     * What the text leaves out, and no more than that. Recordings, curves and pairing
+     * keys are never read. Names are masked only where Core EQ knows them (saved
+     * profiles and reported outputs); a name it has never seen cannot be recognised,
+     * which is why the preview is shown before anything is copied.
+     */
+    const val HEADER = "Core EQ diagnostics · no recordings, curves or pairing keys · known profile and output names, addresses and long ids masked · read before sharing"
     private const val MAX_FREE_TEXT = 240
+    /** Shorter names ("TV", "A") would mask ordinary words. */
+    private const val MIN_NAME_CHARS = 3
 
     fun text(f: Facts): String = buildString {
         appendLine(HEADER)
@@ -59,7 +78,7 @@ object DiagnosticsSummary {
             }
         )
         appendLine("State: ${f.home.state.name.lowercase().replace('_', ' ')}")
-        appendLine(clean(f.home.applied))
+        appendLine(clean(f.home.applied, f.knownNames))
         appendLine(f.home.listening)
         val status = f.lastStatus?.takeIf { it.isNotBlank() }
         appendLine(
@@ -67,7 +86,7 @@ object DiagnosticsSummary {
                 "Last service message: none recorded"
             } else {
                 "Last service message" + (if (f.lastStatusIsError) " (error)" else "") +
-                    (f.lastStatusAgeSeconds?.let { ", ${ago(it)}" } ?: "") + ": " + clean(status)
+                    (f.lastStatusAgeSeconds?.let { ", ${ago(it)}" } ?: "") + ": " + clean(status, f.knownNames)
             }
         )
         val m = f.measurement
@@ -77,7 +96,7 @@ object DiagnosticsSummary {
             } else {
                 "Last measurement: ${m.outcome}" + (if (m.stage.isNotBlank()) " (${m.stage})" else "") +
                     (m.ageSeconds?.let { ", ${ago(it)}" } ?: "") +
-                    (m.message.takeIf { it.isNotBlank() }?.let { ": ${clean(it)}" } ?: "")
+                    (m.message.takeIf { it.isNotBlank() }?.let { ": ${clean(it, f.knownNames)}" } ?: "")
             }
         )
         append("Background work since start: ").append(f.backgroundWork)
@@ -100,9 +119,13 @@ object DiagnosticsSummary {
     private val HEX_ID = Regex("""\b[0-9A-Fa-f]{16,}\b""")
     private val SPACE = Regex("""\s+""")
 
-    /** One line, bounded, with addresses and long hex ids masked. */
-    fun clean(text: String): String {
+    /** One line, bounded, with [names], addresses and long hex ids masked. */
+    fun clean(text: String, names: List<String> = emptyList()): String {
         var t = text
+        // Longest first, so "Living room 2" is masked whole rather than leaving " 2".
+        for (name in names.map { it.trim() }.filter { it.length >= MIN_NAME_CHARS }.distinct().sortedByDescending { it.length }) {
+            t = Regex(Regex.escape(name), RegexOption.IGNORE_CASE).replace(t, "[name]")
+        }
         t = MAC.replace(t, "[address]")
         t = IPV6.replace(t, "[address]")
         t = IPV4.replace(t, "[address]")

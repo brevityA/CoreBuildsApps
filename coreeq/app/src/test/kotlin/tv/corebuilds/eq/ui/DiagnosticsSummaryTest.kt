@@ -91,4 +91,20 @@ class DiagnosticsSummaryTest {
         assertEquals("2 h ago", DiagnosticsSummary.ago(90 * 60))
         assertEquals("2 d ago", DiagnosticsSummary.ago(36 * 3600))
     }
+
+    @Test fun `known names are masked in every free-text line, longest first`() {
+        val names = listOf("Living room", "Living room 2", "Sam's Sonos Roam", "TV")
+        val text = DiagnosticsSummary.text(
+            facts.copy(
+                lastStatus = "Applied Living room 2 · on sam's sonos roam (track reported)",
+                measurement = facts.measurement!!.copy(message = "Saved Living room."),
+                knownNames = names
+            )
+        )
+        assertTrue(text, text.contains("Applied [name] · on [name] (track reported)"))
+        assertTrue(text, text.contains("Saved [name]."))
+        assertFalse(text, text.contains("Living room"))
+        // Names shorter than three characters are left alone rather than masking ordinary words.
+        assertEquals("on TV speakers", DiagnosticsSummary.clean("on TV speakers", names))
+    }
 }

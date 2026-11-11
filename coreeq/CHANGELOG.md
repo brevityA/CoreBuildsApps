@@ -37,8 +37,11 @@ same sound as before; profiles are unchanged.
   in full before Copy or Show as QR code: versions, TV model, the output and
   how Android reported it, the profile's kind (not its name), Home's two lines,
   the last service message, how the last measurement ended, and the
-  background-work counters. Core EQ sends nothing; recordings, names and
-  pairing keys are left out and addresses are masked.
+  background-work counters. Core EQ sends nothing. Recordings, curves and
+  pairing keys are never included; in the free-text lines, the names of
+  saved profiles and reported outputs, addresses and long ids are masked. A
+  name Core EQ has never seen cannot be recognised, so the header says to
+  read it before sharing.
 - **Extra effects has a Reset.** It turns every effect on that screen off and
   leaves room correction, profiles and manual EQ alone.
 

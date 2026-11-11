@@ -112,7 +112,9 @@ class CapabilityActivity : TvActivity() {
                 measurement = measured?.let {
                     DiagnosticsSummary.Measurement(it.outcome, it.stage, it.message, secondsSince(it.atMs))
                 },
-                backgroundWork = RuntimeCounters.snapshot().summary()
+                backgroundWork = RuntimeCounters.snapshot().summary(),
+                knownNames = store.getAllProfiles().flatMap { listOfNotNull(it.name, it.outputName) } +
+                    listOfNotNull(snap.output?.name)
             )
         )
     }
