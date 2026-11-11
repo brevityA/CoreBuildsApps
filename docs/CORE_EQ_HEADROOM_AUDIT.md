@@ -22,9 +22,18 @@ before this page can go stale.
 | DynamicsProcessing input gain | none | `0 dB`, read back after apply | `DynamicsProcessingEngine` read-back |
 | DynamicsProcessing pre-EQ | The only equalising stage | `25` bands: `24` correction bands from 40 Hz to 8 kHz, one guard band to 20 kHz | `DpMappingTest` |
 | MBC, post-EQ | none | disabled, read back | `DynamicsProcessingEngine` read-back |
-| Limiter (protection) | Linked across channels | `−1 dBFS`, `10:1`, `1 ms` / `50 ms`, knee `0`, post-gain `0` | `HeadroomAuditTest` |
+| Limiter (protection) | Linked across channels | `−1 dBFS`, `10:1`, `1 ms` / `50 ms`, post-gain `0`; no knee setting (see below) | `HeadroomAuditTest` |
 | Limiter (Night: Light) | Same limiter, retuned | `−6 dBFS`, `3:1`, `5 ms` / `100 ms`, post-gain `0` | `NightModeTest` |
 | Limiter (Night: Strong) | Same limiter, retuned; the 1.13.2 switch | `−12 dBFS`, `4:1`, `5 ms` / `50 ms`, post-gain `0` | `NightModeTest` |
+
+**The limiter has no knee setting.** Android's DynamicsProcessing limiter
+takes attack, release, ratio, threshold, post-gain and a link group; it has
+no knee parameter, and Core EQ's `LimiterSettings.kneeWidthDb` is never sent
+to it. How sharply a TV's limiter enters gain reduction is the TV maker's
+implementation and is not controllable or known. The static curves below
+assume a hard knee as a model, not as a configured value. (Corrected after
+review on #474; an earlier revision listed "knee 0" as configured. The
+sound is unaffected.)
 
 **Inside Core EQ, nothing boosts.** After the shift, the largest band sits at
 `0 dB` and every other band below it. `ListeningLayersTest` drives every
@@ -80,9 +89,9 @@ counts range-limited bands.
 Night mode retunes the one protection limiter; it never adds a second stage.
 Each level's static curve sits at or below protection for every input from
 `−60` to `+12 dBFS` in 0.25 dB steps (`NightModeTest`). That is a statement
-about the configured hard-knee curve. With a `5 ms` attack (protection uses
-`1 ms`), a fast transient can pass the threshold before gain reduction
-catches it; nothing here measures that.
+about the configured threshold and ratio, modelled with a hard knee. With a
+`5 ms` attack (protection uses `1 ms`), a fast transient can pass the
+threshold before gain reduction catches it; nothing here measures that.
 
 ## Not established by this audit
 
