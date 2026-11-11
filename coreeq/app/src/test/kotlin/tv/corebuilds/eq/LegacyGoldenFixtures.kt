@@ -8,9 +8,11 @@ import tv.corebuilds.eq.mode.ContentType
 
 /**
  * The profiles and listening cases `LegacySoundCompatibilityTest` compares
- * against values captured from Core EQ 1.13.2 (commit 19b8834f). The same
- * source compiled at that commit produced the golden numbers, so the inputs
- * here must stay byte-for-byte what that capture used.
+ * against values captured from Core EQ 1.13.2 (commit 19b8834f). This same file
+ * is compiled at that commit by `tools/regen_core_eq_legacy_golden.py`, which
+ * produces [LegacyGolden113]; it uses only APIs that exist there. Change it only
+ * together with a regeneration, and run the script with `--check` to confirm the
+ * committed values still match a fresh capture.
  */
 object LegacyGoldenFixtures {
 

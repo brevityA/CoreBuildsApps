@@ -25,7 +25,8 @@ import kotlin.math.abs
 /**
  * A user upgrading from 1.13.2 keeps the configured sound they had (review
  * point 1 on #474). Every expected value comes from [LegacyGolden113], computed
- * by the 1.13.2 code itself, not from this branch's own functions.
+ * by the 1.13.2 code itself, not from this branch's own functions; reproduce it
+ * with `python3 tools/regen_core_eq_legacy_golden.py --check`.
  *
  * What this proves: the stored settings 1.13.2 wrote are read into the new
  * model, and the new model configures the same limiter parameters and the
