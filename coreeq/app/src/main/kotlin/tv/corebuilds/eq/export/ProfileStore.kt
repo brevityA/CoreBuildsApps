@@ -53,8 +53,11 @@ class ProfileStore(
         // Builds before this one seeded three demo profiles made from a
         // synthetic room. They were never measurements, so they go.
         if (!prefs.getBoolean(KEY_DEMO_PURGED, false)) {
-            val kept = getAllProfiles().filterNot { it.id in DEMO_IDS }
-            persistProfiles(kept)
+            // Writes the list only when a demo profile is actually there: opening
+            // the store must not rewrite anyone's profiles.
+            val all = getAllProfiles()
+            val kept = all.filterNot { it.id in DEMO_IDS }
+            if (kept.size != all.size) persistProfiles(kept)
             if (prefs.getString(KEY_ACTIVE_ID, null) in DEMO_IDS) {
                 prefs.edit().remove(KEY_ACTIVE_ID).apply()
             }
@@ -92,22 +95,35 @@ class ProfileStore(
         }
     }
 
-    fun getAllProfiles(): List<Profile> {
+    fun getAllProfiles(): List<Profile> =
+        readStored().mapNotNull { it.profile }.sortedByDescending { it.timestampMs }
+
+    /**
+     * One element of the stored list as it was read: its JSON exactly as parsed,
+     * and the profile this build makes of it, or null when this build cannot
+     * read it (a newer build's format, or damage).
+     */
+    private class Stored(val json: Any?, val profile: Profile?)
+
+    /** The stored list in stored order; empty when nothing is stored or the text is not JSON. */
+    private fun readStored(): List<Stored> {
         val raw = prefs.getString(KEY_PROFILES, null) ?: return emptyList()
-        val list = mutableListOf<Profile>()
-        try {
-            val arr = JSONArray(raw)
-            for (i in 0 until arr.length()) {
-                try {
-                    list.add(parseProfile(arr.getJSONObject(i)))
-                } catch (e: JSONException) {
-                    Log.e(TAG, "Skipping unreadable profile #$i", e)
-                }
-            }
+        val arr = try {
+            JSONArray(raw)
         } catch (e: JSONException) {
             Log.e(TAG, "Saved profiles are not valid JSON", e)
+            return emptyList()
         }
-        return list.sortedByDescending { it.timestampMs }
+        return (0 until arr.length()).map { i ->
+            val element = arr.opt(i)
+            val profile = try {
+                parseProfile(element as? JSONObject ?: throw JSONException("not an object"))
+            } catch (e: JSONException) {
+                Log.e(TAG, "Skipping unreadable profile #$i", e)
+                null
+            }
+            Stored(element, profile)
+        }
     }
 
     /** The active room or manual profile, or null until one is created. */
@@ -126,9 +142,9 @@ class ProfileStore(
 
     /**
      * Save one profile, stamping only it with this build as [Profile.lastSavedBy].
-     * [Profile.createdBy] is whatever the caller set: the code that creates a
+     * [Profile.origin] is whatever the caller set: the code that creates a
      * profile records it, an import keeps the file's, and nothing here invents
-     * one. Every other stored profile is rewritten exactly as it was.
+     * one. Every other stored profile keeps its stored JSON (see [persistProfiles]).
      */
     fun saveProfile(profile: Profile, setAsActive: Boolean = false) {
         val list = getAllProfiles().toMutableList()
@@ -179,7 +195,9 @@ class ProfileStore(
     fun duplicateProfile(id: String, newId: String = "copy-${UUID.randomUUID()}"): Profile? {
         val list = getAllProfiles().toMutableList()
         val source = list.firstOrNull { it.id == id } ?: return null
-        // The copy keeps the original's createdBy (it is the same measurement) and is saved by this build.
+        // The copy keeps the original's origin (it is the same measurement) and is saved by this build.
+        // It is a new entry written from the fields this build knows: keys it does not
+        // recognise stay with the original, since what they refer to is unknown.
         val copy = source.copy(id = newId, name = copyName(source.name, list.map { it.name }.toSet()), lastSavedBy = build)
         list.add(copy)
         persistProfiles(list)
@@ -418,9 +436,55 @@ class ProfileStore(
         prefs.edit().remove(KEY_RUNTIME_BANDS).apply()
     }
 
+    /**
+     * Write [list] as the stored profile list, changing no more than [list] changed.
+     *
+     * - A profile equal to what is stored for it is **untouched**: its stored JSON
+     *   object is written back as it was read, every key and value in the same
+     *   order, including keys this build does not know and values it would
+     *   write differently today (an older `gain_limits_db`, say).
+     * - A profile that differs is **edited**: only the fields the change
+     *   affected are replaced (compared as this build writes them, recursing
+     *   into nested objects); every other key keeps its stored value.
+     * - An element this build cannot read is kept as it is, in place.
+     * - A profile not stored before is written in full; a stored one missing
+     *   from [list] is removed.
+     * - When no profile was edited, added or removed, nothing is written, so
+     *   the stored text stays byte-for-byte what it was.
+     *
+     * The guarantee is the JSON value, not the bytes: an untouched entry is
+     * re-serialized by Android's JSON writer, which reproduces what Core EQ
+     * itself wrote but may reformat text written by anything else.
+     */
     private fun persistProfiles(list: List<Profile>, synchronous: Boolean = false): Boolean {
+        val stored = readStored()
+        val pending = LinkedHashMap<String, ArrayDeque<Profile>>()
+        for (p in list) pending.getOrPut(p.id) { ArrayDeque() }.addLast(p)
         val arr = JSONArray()
-        for (p in list) arr.put(JSONObject(Formats.exportProfileJson(p)))
+        var changed = false
+        for (entry in stored) {
+            val was = entry.profile
+            if (was == null) {
+                arr.put(entry.json)
+                continue
+            }
+            val next = pending[was.id]?.removeFirstOrNull()
+            if (next == null) {
+                changed = true
+                continue
+            }
+            val json = entry.json as JSONObject
+            if (next != was) {
+                patchJson(json, JSONObject(Formats.exportProfileJson(was)), JSONObject(Formats.exportProfileJson(next)))
+                changed = true
+            }
+            arr.put(json)
+        }
+        for (queue in pending.values) for (p in queue) {
+            arr.put(JSONObject(Formats.exportProfileJson(p)))
+            changed = true
+        }
+        if (!changed) return true
         val editor = prefs.edit().putString(KEY_PROFILES, arr.toString())
         return if (synchronous) {
             editor.commit()
@@ -431,6 +495,38 @@ class ProfileStore(
     }
 
     companion object {
+        /**
+         * Apply to [target] (a stored profile's JSON) the difference between [old] and
+         * [new], two objects this build wrote for the profile before and after a
+         * change: keys whose written value changed are replaced or removed, nested
+         * objects are patched key by key, and every other key of [target], known to
+         * this build or not, is left exactly as stored. Arrays are replaced whole.
+         */
+        internal fun patchJson(target: JSONObject, old: JSONObject, new: JSONObject) {
+            val keys = LinkedHashSet<String>()
+            old.keys().forEach { keys += it }
+            new.keys().forEach { keys += it }
+            for (key in keys) {
+                val before = old.opt(key)
+                val after = new.opt(key)
+                if (after == null) {
+                    if (before != null) target.remove(key)
+                    continue
+                }
+                // Both sides come from the same writer, so equal values print equally.
+                if (before != null && before.toString() == after.toString()) continue
+                val stored = target.opt(key)
+                // A nested object is patched key by key, so what the stored one holds
+                // beyond this build's fields survives, also when this build adds the
+                // object for the first time (a provenance record on a newer build's entry).
+                if (after is JSONObject && stored is JSONObject && (before == null || before is JSONObject)) {
+                    patchJson(stored, before as? JSONObject ?: JSONObject(), after)
+                } else {
+                    target.put(key, after)
+                }
+            }
+        }
+
         /** The longest profile name Rename keeps; a TV row shows about this much. */
         const val MAX_NAME_LENGTH = 48
 

@@ -83,6 +83,12 @@ that asks first.
 
 ### Fixed
 
+- **Saving one profile leaves the others as they are stored.** Untouched
+  profiles keep every stored field, including ones a newer build added; an
+  edit replaces only the fields it changed; an entry this build cannot read
+  is kept; and opening, listing or choosing a profile writes nothing.
+  Through 1.13.2 every save rewrote every profile from the fields the build
+  knew.
 - **Delete asks first.** One press of Delete removed a measured profile with
   no way back. It now asks, with Cancel focused, so a second OK does nothing.
   After a delete, focus moves to the profile that took its place, or the one

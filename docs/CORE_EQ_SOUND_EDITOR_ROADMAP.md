@@ -111,11 +111,28 @@ build invents is kept and shown as recorded by a newer build. An imported
 profile's date is the import time (unchanged from 1.13.2); its origin is the
 file's.
 
+**What the store keeps (as built).** `ProfileStore.persistProfiles`:
+- an **untouched** profile (equal to what is stored for it) keeps its stored
+  JSON value: every key in the same order, including keys this build does not
+  know and values it would now write differently (an older `gain_limits_db`);
+- an **edited** profile has only the keys its change affected replaced,
+  nested objects patched key by key; other keys keep their stored values;
+- an element this build cannot read stays in place;
+- when nothing was edited, added or removed, nothing is written, so reading
+  never changes the stored text, byte for byte;
+- a **duplicate** is written from the fields this build knows; unknown keys
+  stay with the original, because what they refer to is unknown.
+
+The guarantee is the JSON value, not the bytes, across a write: Android's
+JSON writer reproduces text Core EQ wrote (tested, under Robolectric) but may
+reformat hand-edited text. `ProfilePreservationTest` (10) and
+`ProfileProvenanceTest` (15) pin it; nine of the ten preservation tests fail
+against the 1.13.2 write path.
+
 **Downgrade.** 1.13.2 and earlier rewrite every profile from the fields they
 know whenever they save any profile, so after a downgrade the first save
 drops provenance (and anything else a newer build added) from every profile.
-Accepted and stated; nothing on the TV can prevent it. `ProfileProvenanceTest`
-(15) pins the table above.
+Accepted and stated; nothing on the TV can prevent it.
 
 **Instrumentation.** Each timing keeps a count, the last, shortest and longest
 value, and the most recent 32 values for a median. Memory only, cleared when
