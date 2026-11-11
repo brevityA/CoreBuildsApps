@@ -6,7 +6,6 @@
     <string name="output_profile_missing_name">No profile for this output</string>
     <string name="output_profile_missing_sub">Nothing measured for %1$s. Measure it or connect an output with a saved profile.</string>
     <string name="output_profile_unknown_sub">Android did not name this output, so no saved profile is guessed for it. Measure here or switch to a known output.</string>
-    <string name="profile_not_active_on_output">This profile does not match the current output. It is preview/export only and will not be applied here.</string>
     <string name="action_measure">Measure</string>
     <string name="action_remeasure">Re-measure</string>
     <string name="action_tv_export">Export for TV settings</string>
@@ -134,6 +133,11 @@
     <string name="measure_import_failed">Not imported: %1$s</string>
     <string name="measure_import_output_estimate"> · tagged to route estimate %1$s; confirm it matches the REW measurement</string>
     <string name="measure_import_output_unknown"> · Android route unknown; REW output chain is not identified</string>
+    <string name="measure_discard_title">This measurement is not saved</string>
+    <string name="measure_discard_message">Leaving now discards it. Save keeps it as a profile for this output; nothing else changes.</string>
+    <string name="measure_discard_save">Save</string>
+    <string name="measure_discard_confirm">Discard</string>
+    <string name="measure_discard_keep">Keep it</string>
     <string name="measure_repeat_button">Repeat at same spot</string>
     <string name="measure_repeat_intro">Optional same-position check: keep the phone/remote, output, level and orientation unchanged. The comparison is descriptive, not multi-seat averaging; no physical pass/fail threshold is qualified.</string>
     <string name="measure_repeat_summary">Same-position repeat · %1$d clean bands (%2$.0f Hz–%3$.1f kHz) · median |Δ| %4$.2f dB · RMS %5$.2f dB · 95th %6$.2f dB · repeat level offset %7$+.1f dB. Descriptive only; no qualified pass/fail threshold. Both traces are retained; not a guarantee for other seats.</string>
@@ -213,6 +217,25 @@
     <string name="action_export">Export</string>
     <string name="action_import_profile">Import backup</string>
     <string name="action_delete">Delete</string>
+    <string name="action_profile_details">Details</string>
+    <string name="action_profile_rename">Rename</string>
+    <string name="action_profile_duplicate">Duplicate</string>
+    <string name="profile_delete_title">Delete %1$s?</string>
+    <string name="profile_delete_message">This removes the saved correction and its mode EQ from this TV. It cannot be undone unless you exported it first. Tied to: %1$s.</string>
+    <string name="profile_delete_confirm">Delete profile</string>
+    <string name="profile_deleted">Deleted %1$s.</string>
+    <string name="profile_rename_title">Rename %1$s</string>
+    <string name="profile_rename_hint">Profile name</string>
+    <string name="profile_rename_save">Save name</string>
+    <string name="profile_rename_blank">A name needs at least one letter or digit; the name was not changed.</string>
+    <string name="profile_renamed">Renamed to %1$s.</string>
+    <string name="profile_duplicated">Saved a copy: %1$s. It is not applied until you choose it.</string>
+    <string name="profile_details_title">%1$s</string>
+    <string name="profile_route_applied">Chosen and applied on this output (%1$s).</string>
+    <string name="profile_route_not_here">Chosen, but not applied on this output (%1$s): it belongs to %2$s. It plays when that output is in use.</string>
+    <string name="profile_route_unknown_output">Chosen. Android has not identified the output in use, so whether it applies here is unknown.</string>
+    <string name="profile_route_legacy">Chosen. Saved before outputs were recorded, so it is offered on any output.</string>
+    <string name="profile_route_none">No profile chosen.</string>
 
     <!-- Capability screen -->
     <string name="capability_title">Core EQ · Capability</string>

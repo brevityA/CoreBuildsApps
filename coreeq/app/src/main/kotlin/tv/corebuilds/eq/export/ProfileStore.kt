@@ -141,6 +141,40 @@ class ProfileStore(context: Context) {
         return removed
     }
 
+    /**
+     * Rename one profile (1.14.0). Only the name changes: id, curve, output tag,
+     * notes and the mode EQ keyed by the id stay as they were. Returns the
+     * renamed profile, or null when [id] is unknown or the name is blank.
+     */
+    fun renameProfile(id: String, requestedName: String): Profile? {
+        val name = cleanName(requestedName) ?: return null
+        val list = getAllProfiles().toMutableList()
+        val index = list.indexOfFirst { it.id == id }
+        if (index < 0) return null
+        val renamed = list[index].copy(name = name)
+        list[index] = renamed
+        persistProfiles(list)
+        return renamed
+    }
+
+    /**
+     * An independent copy of one profile (1.14.0): a new id, the same curve,
+     * output tag, notes and manual EQ, and a copy of its per-mode EQ, so
+     * editing either afterwards leaves the other alone. The copy keeps the
+     * original's measurement time (it is the same measurement) and is not made
+     * active: duplicating never changes what plays. Null when [id] is unknown.
+     */
+    fun duplicateProfile(id: String, newId: String = "copy-${UUID.randomUUID()}"): Profile? {
+        val list = getAllProfiles().toMutableList()
+        val source = list.firstOrNull { it.id == id } ?: return null
+        val copy = source.copy(id = newId, name = copyName(source.name, list.map { it.name }.toSet()))
+        list.add(copy)
+        persistProfiles(list)
+        val modes = ContentModeStore(appContext)
+        for ((mode, filters) in modes.allModeFilters(id)) modes.saveModeFilters(newId, mode, filters)
+        return copy
+    }
+
     /** Built-in tone presets, then the shipped hardware presets, then any presets the viewer saved. */
     fun manualEqPresets(): List<ManualEqPreset> = shippedManualEqPresets() + storedManualEqPresets()
 
@@ -344,6 +378,22 @@ class ProfileStore(context: Context) {
     }
 
     companion object {
+        /** The longest profile name Rename keeps; a TV row shows about this much. */
+        const val MAX_NAME_LENGTH = 48
+
+        /** Trimmed, inner whitespace collapsed, at most [MAX_NAME_LENGTH]; null when nothing is left. */
+        fun cleanName(raw: String): String? =
+            raw.trim().replace(Regex("\\s+"), " ").take(MAX_NAME_LENGTH).trim().takeIf { it.isNotEmpty() }
+
+        /** "Living room (copy)", then "(copy 2)", "(copy 3)"…, never a name already in [taken]. */
+        fun copyName(original: String, taken: Set<String>): String {
+            val base = original.take(MAX_NAME_LENGTH - " (copy 99)".length).trimEnd()
+            var candidate = "$base (copy)"
+            var n = 2
+            while (candidate in taken) candidate = "$base (copy ${n++})"
+            return candidate
+        }
+
         private const val TAG = "CoreEqProfiles"
         private const val PREFS_NAME = "core_eq_profiles"
         private const val KEY_PROFILES = "profiles_json"

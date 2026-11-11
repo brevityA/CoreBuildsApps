@@ -17,6 +17,8 @@ import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import tv.corebuilds.eq.apply.DynamicsProcessingEngine
 import tv.corebuilds.eq.apply.EqService
@@ -255,10 +257,46 @@ class MeasureActivity : TvActivity() {
         btnStop.setOnClickListener { cancelMeasurement("Stopped. Nothing was saved.") }
         btnSave.setOnClickListener { saveAndFinish() }
         btnImport.setOnClickListener { pickRewImport() }
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() = leaveOrAsk()
+        })
 
         refreshChoices()
         textStatus.text = getString(R.string.measure_ready)
         focusOnOpen(btnRoom)
+    }
+
+    /** A finished sweep or import that Save has not kept yet (1.14.0). */
+    private fun hasUnsavedResult(): Boolean =
+        !measuring && !importing && (result != null || importResult != null) && btnSave.visibility == View.VISIBLE
+
+    private var leaveDialogOpen = false
+
+    /**
+     * Back used to close this screen and silently throw away a finished,
+     * unsaved measurement (1.14.0). Now it asks, with Save one press away and
+     * Keep focused, so a second Back press cannot discard by accident.
+     */
+    private fun leaveOrAsk() {
+        if (!hasUnsavedResult()) {
+            finish()
+            return
+        }
+        if (leaveDialogOpen) return
+        leaveDialogOpen = true
+        val dialog = AlertDialog.Builder(this)
+            .setTitle(R.string.measure_discard_title)
+            .setMessage(R.string.measure_discard_message)
+            .setPositiveButton(R.string.measure_discard_save) { _, _ -> saveAndFinish() }
+            .setNeutralButton(R.string.measure_discard_confirm) { _, _ -> finish() }
+            .setNegativeButton(R.string.measure_discard_keep, null)
+            .setOnDismissListener {
+                leaveDialogOpen = false
+                if (!isFinishing && btnSave.isShown) btnSave.requestFocus()
+            }
+            .create()
+        dialog.show()
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.let { keep -> keep.post { keep.requestFocus() } }
     }
 
     /**
