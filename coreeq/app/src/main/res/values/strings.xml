@@ -326,10 +326,10 @@
     <string name="extras_subtitle">Optional layers on top of room correction. All off by default; each change applies at once. Your measured correction is never changed here.</string>
     <string name="extras_bass_on">Bass boost: On</string>
     <string name="extras_bass_off">Bass boost: Off</string>
-    <string name="extras_bass_note" formatted="false">Android\'s BassBoost effect. Strength follows the Content type screen: 60% for movies, 30% general, none for news and podcasts.</string>
+    <string name="extras_bass_note" formatted="false">Android\'s BassBoost effect. Strength follows the Content type screen: 60% for movies, 30% general, none for news and podcasts. Its boost is outside Core EQ\'s headroom; Android does not say whether the limiter runs after it.</string>
     <string name="extras_loudness_on">Loudness enhancer: On</string>
     <string name="extras_loudness_off">Loudness enhancer: Off</string>
-    <string name="extras_loudness_note">Android\'s LoudnessEnhancer. Raises quiet content by up to +4 dB (podcasts, news); none for music.</string>
+    <string name="extras_loudness_note">Android\'s LoudnessEnhancer. Raises quiet content by up to +4 dB (podcasts, news); none for music. Outside Core EQ\'s headroom, like Bass boost.</string>
     <string name="extras_night_level">Night mode: %1$s</string>
     <string name="extras_night_spoken">Night mode, %1$s. Left and right change the level.</string>
     <string name="extras_clarity_level">Clarity: +%1$.0f dB</string>
