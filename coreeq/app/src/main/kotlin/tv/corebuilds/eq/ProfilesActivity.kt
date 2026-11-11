@@ -28,6 +28,7 @@ import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.export.ProfileExchange
 import tv.corebuilds.eq.mode.ContentMode
 import tv.corebuilds.eq.mode.ContentModeStore
+import tv.corebuilds.eq.ui.ProfileRouteLine
 import tv.corebuilds.eq.ui.CurveGraphView
 import tv.corebuilds.eq.ui.OverlayPermission
 import tv.corebuilds.eq.ui.QualityText
@@ -479,17 +480,17 @@ class ProfilesActivity : TvActivity() {
      * Whether the chosen profile plays on the output in use, on screen for as
      * long as it is true. It was a toast, gone before it could be read.
      */
-    private fun renderRoute(chosen: Profile?, applied: Profile?, output: OutputRoute.Output?) {
-        textRoute.text = when {
-            chosen == null -> getString(R.string.profile_route_none)
-            chosen.outputKind == null -> getString(R.string.profile_route_legacy)
-            output?.kind == null -> getString(R.string.profile_route_unknown_output)
-            applied?.id == chosen.id -> getString(R.string.profile_route_applied, outputWords(output.kind, output.name))
-            else -> getString(
-                R.string.profile_route_not_here,
-                outputWords(output.kind, output.name),
-                outputWords(chosen.outputKind, chosen.outputName)
+    private fun renderRoute(chosen: Profile?, matched: Profile?, output: OutputRoute.Output?) {
+        val kind = ProfileRouteLine.kindOf(chosen, matched, output?.kind)
+        val res = ProfileRouteLine.stringRes(kind)
+        textRoute.text = when (kind) {
+            ProfileRouteLine.Kind.MATCHES_OUTPUT -> getString(res, outputWords(output?.kind, output?.name))
+            ProfileRouteLine.Kind.OTHER_OUTPUT -> getString(
+                res,
+                outputWords(output?.kind, output?.name),
+                outputWords(chosen?.outputKind, chosen?.outputName)
             )
+            else -> getString(res)
         }
     }
 

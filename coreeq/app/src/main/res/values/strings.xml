@@ -231,9 +231,9 @@
     <string name="profile_renamed">Renamed to %1$s.</string>
     <string name="profile_duplicated">Saved a copy: %1$s. It is not applied until you choose it.</string>
     <string name="profile_details_title">%1$s</string>
-    <string name="profile_route_applied">Chosen and applied on this output (%1$s).</string>
-    <string name="profile_route_not_here">Chosen, but not applied on this output (%1$s): it belongs to %2$s. It plays when that output is in use.</string>
-    <string name="profile_route_unknown_output">Chosen. Android has not identified the output in use, so whether it applies here is unknown.</string>
+    <string name="profile_route_matches">Chosen, and it is the profile for the output in use (%1$s). Home shows whether correction is applying it now.</string>
+    <string name="profile_route_not_here">Chosen, but it is not the profile for the output in use (%1$s): it belongs to %2$s, and is used when that output is in use.</string>
+    <string name="profile_route_unknown_output">Chosen. Android has not identified the output in use, so whether this profile is the one for it is unknown.</string>
     <string name="profile_route_legacy">Chosen. Saved before outputs were recorded, so it is offered on any output.</string>
     <string name="profile_route_none">No profile chosen.</string>
 

@@ -48,9 +48,11 @@ same sound as before; profiles are unchanged.
   step with OK, and Left and Right step down and up. Clarity does not stack
   with Stereo speakers' speech lift or with a Dialogue or House target's
   presence.
-- **Profiles shows on screen whether the chosen profile plays on the output
-  in use.** It was a toast. The route line and the profile actions sit under
-  the list, so the curve keeps its full height.
+- **Profiles shows on screen whether the chosen profile is the one for the
+  output in use.** It was a toast. The line says only that, or that the
+  output is not identified; whether correction is applying it now is Home's
+  answer. The route line and the profile actions sit under the list, so the
+  curve keeps its full height.
 - **Bass boost and Loudness enhancer say their gain is outside Core EQ's
   headroom.** Android does not report whether its limiter runs after them.
   `docs/CORE_EQ_HEADROOM_AUDIT.md` sets out the whole gain chain.
