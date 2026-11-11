@@ -17,7 +17,7 @@ fun Button.showSwitch(on: Boolean, @StringRes onText: Int, @StringRes offText: I
 }
 
 /**
- * A row with levels rather than on/off (1.14.0): the same look as [showSwitch]
+ * A row with levels rather than on/off: the same look as [showSwitch]
  * (lit while not at its lowest level), the value in words, and a spoken label
  * that says the value and how to change it.
  */
@@ -28,7 +28,7 @@ fun Button.showLevel(text: CharSequence, raised: Boolean, spoken: CharSequence) 
 }
 
 /**
- * Left and right step a level row down and up (1.14.0). At either end the key
+ * Left and right step a level row down and up. At either end the key
  * is not consumed, so Left still reaches the rail and Right the detail panel:
  * the row never traps focus.
  */

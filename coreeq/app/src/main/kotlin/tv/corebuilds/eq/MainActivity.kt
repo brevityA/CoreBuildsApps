@@ -321,14 +321,14 @@ class MainActivity : TvActivity() {
         btnModes.text = getString(R.string.home_mode_button, decision.mode.title)
     }
 
-    // What loadActiveProfile() last found, for the summary (1.14.0): it always runs first,
+    // What loadActiveProfile() last found, for the summary: it always runs first,
     // so the summary never parses every profile again on each status broadcast.
     private var lastAnyProfile = false
     private var lastProfileForOutput = false
     private var lastOutputKnown = false
     private var lastOutputLabel: String? = null
 
-    /** The two-line answer: what is applied, and which listening effects are on (1.14.0). */
+    /** The two-line answer: what is applied, and which listening effects are on. */
     private fun renderSummary(status: EqStatus?) {
         val summary = HomeSummary.of(
             StatusFacts.facts(

@@ -267,7 +267,7 @@ class MeasureActivity : TvActivity() {
         focusOnOpen(btnRoom)
     }
 
-    /** A finished sweep or import that Save has not kept yet (1.14.0). */
+    /** A finished sweep or import that Save has not kept yet. */
     private fun hasUnsavedResult(): Boolean =
         !measuring && !importing && (result != null || importResult != null) && btnSave.isVisible
 
@@ -275,7 +275,7 @@ class MeasureActivity : TvActivity() {
 
     /**
      * Back used to close this screen and silently throw away a finished,
-     * unsaved measurement (1.14.0). Now it asks, with Save one press away and
+     * unsaved measurement. Now it asks, with Save one press away and
      * Keep focused, so a second Back press cannot discard by accident.
      */
     private fun leaveOrAsk() {

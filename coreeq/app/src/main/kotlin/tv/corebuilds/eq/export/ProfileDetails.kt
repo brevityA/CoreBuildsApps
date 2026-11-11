@@ -7,7 +7,7 @@ import java.util.Locale
 import java.util.TimeZone
 
 /**
- * What Profiles' Details shows about one saved profile (1.14.0), as labelled
+ * What Profiles' Details shows about one saved profile, as labelled
  * lines: where it came from, what it is tied to, what the room measured, and
  * the notes that travel with the curve.
  *

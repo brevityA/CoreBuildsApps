@@ -281,7 +281,7 @@
             android:visibility="gone"
             android:layout_marginTop="@dimen/cb_space_xs" />
 
-        <!-- 1.14.0: what is actually applied, then which listening effects are on.
+        <!-- What is actually applied, then which listening effects are on.
              Requested and applied are said separately, never as one "Active". -->
         <TextView
             android:id="@+id/text_home_summary"

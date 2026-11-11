@@ -2,7 +2,7 @@ package tv.corebuilds.eq.ui
 
 /**
  * The text a viewer can preview, then copy or show as a QR code, from
- * Capability (1.14.0), for a bug report or a beta question. It is built only
+ * Capability, for a bug report or a beta question. It is built only
  * when asked for, shown in full before anything leaves the screen, and never
  * sent anywhere by Core EQ.
  *

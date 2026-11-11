@@ -143,7 +143,7 @@ class ProfileStore(context: Context) {
     }
 
     /**
-     * Rename one profile (1.14.0). Only the name changes: id, curve, output tag,
+     * Rename one profile. Only the name changes: id, curve, output tag,
      * notes and the mode EQ keyed by the id stay as they were. Returns the
      * renamed profile, or null when [id] is unknown or the name is blank.
      */
@@ -159,7 +159,7 @@ class ProfileStore(context: Context) {
     }
 
     /**
-     * An independent copy of one profile (1.14.0): a new id, the same curve,
+     * An independent copy of one profile: a new id, the same curve,
      * output tag, notes and manual EQ, and a copy of its per-mode EQ, so
      * editing either afterwards leaves the other alone. The copy keeps the
      * original's measurement time (it is the same measurement) and is not made
@@ -335,7 +335,7 @@ class ProfileStore(context: Context) {
 
     /** The currently-applied engine layout; transient runtime state, not profile data. */
     /**
-     * The service is suspended for a room measurement (1.14.0), so Home can say
+     * The service is suspended for a room measurement, so Home can say
      * "paused while measured" instead of guessing from the last message.
      * Written by [tv.corebuilds.eq.apply.EqService] only.
      */
@@ -349,7 +349,7 @@ class ProfileStore(context: Context) {
         set(value) = prefs.edit { if (value == null) remove(KEY_APPLIED_ENGINE) else putString(KEY_APPLIED_ENGINE, value) }
 
     /**
-     * How the last measurement on this TV ended (1.14.0), for the diagnostics
+     * How the last measurement on this TV ended, for the diagnostics
      * summary: saved, failed or cancelled, the sweep it was on and the message
      * the screen showed. Words only: no capture, curve or microphone data.
      */
@@ -436,6 +436,9 @@ class ProfileStore(context: Context) {
         }
 
         private const val TAG = "CoreEqProfiles"
+        // Storage identifiers, not release numbers: the "v1140" suffix follows the
+        // file's convention (announce_applied_v130, card_seconds_v1_6) and does not
+        // fix the next release's number. Once released, these names must not change.
         private const val KEY_MEASUREMENT_PAUSED = "service_measurement_paused_v1140"
         private const val KEY_APPLIED_ENGINE = "service_applied_engine_v1140"
         private const val KEY_MEASURE_OUTCOME = "last_measurement_outcome_v1140"

@@ -60,7 +60,7 @@ class ProfilesActivity : TvActivity() {
     private lateinit var btnDuplicate: Button
     private lateinit var btnImport: Button
     private lateinit var textRoute: TextView
-    /** One adapter for the screen's life, so a refresh keeps the list's scroll and focus (1.14.0). */
+    /** One adapter for the screen's life, so a refresh keeps the list's scroll and focus. */
     private var adapter: ProfileAdapter? = null
     /** A dialog is up: a second press on the button behind it must not open another. */
     private var dialogOpen = false
@@ -477,7 +477,7 @@ class ProfilesActivity : TvActivity() {
 
     /**
      * Whether the chosen profile plays on the output in use, on screen for as
-     * long as it is true (1.14.0). It was a toast, gone before it could be read.
+     * long as it is true. It was a toast, gone before it could be read.
      */
     private fun renderRoute(chosen: Profile?, applied: Profile?, output: OutputRoute.Output?) {
         textRoute.text = when {
@@ -513,7 +513,7 @@ class ProfilesActivity : TvActivity() {
         onShown(dialog)
     }
 
-    /** Delete asks first (1.14.0): one press used to remove a measured profile with no way back. */
+    /** Delete asks first: one press used to remove a measured profile with no way back. */
     private fun confirmDelete() {
         val p = selectedProfile ?: return
         val tiedTo = p.outputKind?.let { outputWords(it, p.outputName) }

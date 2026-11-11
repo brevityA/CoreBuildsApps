@@ -21,13 +21,13 @@ import tv.corebuilds.eq.apply.LimiterSettings
  * statement about the configured hard-knee curve, not about transients: the
  * attack is 5 ms (protection uses 1 ms), and nothing here measures true peak.
  *
- * Levels (1.14.0):
+ * Levels:
  * - [Level.OFF]: the protection limiter alone (−1 dB, 10:1, 1 ms / 50 ms).
  * - [Level.LIGHT]: −6 dB threshold, 3:1. Only the loudest moments (effects
  *   peaks, music swells) are brought down; a 100 ms release so the bass does
  *   not pump.
  * - [Level.STRONG]: −12 dB threshold, 4:1, 5 ms / 50 ms — exactly the night
- *   mode that shipped as an on/off switch before 1.14.0, so a viewer who had it
+ *   mode that shipped as an on/off switch through 1.13.2, so a viewer who had it
  *   on hears no change.
  *
  * Its 1.2.0 dialogue lift (a single 3.2 kHz peak) was never applied; speech
@@ -48,7 +48,7 @@ object NightMode {
         }
     }
 
-    /** The night mode that shipped as a switch until 1.14.0: now [Level.STRONG]. */
+    /** The night mode that shipped as a switch through 1.13.2: now [Level.STRONG]. */
     const val NIGHT_LIMITER_THRESHOLD_DB = -12f
     const val NIGHT_LIMITER_RATIO = 4f
     const val NIGHT_LIMITER_ATTACK_MS = 5f

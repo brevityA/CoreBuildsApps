@@ -27,10 +27,10 @@ import kotlin.math.tanh
  * Kept free of Android types so the curves are unit-tested (`ToneLayersTest`).
  */
 data class ToneLayers(
-    /** The pre-1.14.0 Dialogue boost switch; on means [clarityDb] = [DIALOGUE_DB]. */
+    /** The Dialogue boost switch of 1.13.2 and earlier; on means [clarityDb] = [DIALOGUE_DB]. */
     val dialogue: Boolean = false,
     /**
-     * Clarity (1.14.0): the speech-band lift in dB, in the same 2.2–4.5 kHz box
+     * Clarity: the speech-band lift in dB, in the same 2.2–4.5 kHz box
      * Dialogue boost used, 0 to 3 dB. Defaults from [dialogue], so a caller that
      * only knows the old switch gets exactly the old +2 dB.
      */
@@ -99,7 +99,7 @@ data class ToneLayers(
 
     /**
      * The speech-band lift this profile gets, in dB: the larger of Clarity's lift (Dialogue
-     * boost's +2 before 1.14.0) and Stereo speakers' [STEREO_PRESENCE_DB] × [presenceScale] for
+     * boost's +2 through 1.13.2) and Stereo speakers' [STEREO_PRESENCE_DB] × [presenceScale] for
      * the content type, less the presence a Dialogue or House target already
      * carries. The two never stack: both answer the same complaint, quiet speech.
      * Only the stereo term is content-aware — Dialogue boost is the user asking

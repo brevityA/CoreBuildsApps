@@ -350,7 +350,7 @@
                     android:text="@string/action_support"
                     android:layout_marginTop="@dimen/cb_space_sm" />
 
-                <!-- 1.14.0: a summary for a bug report, built only when pressed,
+                <!-- A summary for a bug report, built only when pressed,
                      shown in full before it can be copied or shown as a QR code.
                      Nothing is sent. -->
                 <Button

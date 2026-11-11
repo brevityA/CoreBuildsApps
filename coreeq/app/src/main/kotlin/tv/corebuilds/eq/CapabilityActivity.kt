@@ -86,7 +86,7 @@ class CapabilityActivity : TvActivity() {
 
     private var diagnosticsOpen = false
 
-    /** The diagnostics text for what this TV reports right now (1.14.0); built only on request. */
+    /** The diagnostics text for what this TV reports right now; built only on request. */
     internal fun diagnosticsText(now: Long = System.currentTimeMillis()): String {
         val store = ProfileStore(this)
         val snap = StatusFacts.read(this, store)

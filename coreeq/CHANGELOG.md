@@ -54,9 +54,13 @@ same sound as before; profiles are unchanged.
 - **Bass boost and Loudness enhancer say their gain is outside Core EQ's
   headroom.** Android does not report whether its limiter runs after them.
   `docs/CORE_EQ_HEADROOM_AUDIT.md` sets out the whole gain chain.
-- **Release notes no longer say same-position repeats are never averaged.**
-  Since 1.13.2 a matching TV-started repeat can be; phone repeats still are
-  not. `tests/test_core_eq_update_contract.py` holds the corrected wording.
+- **Repeat wording now separates the TV from the phone everywhere.** A
+  same-position repeat started on the TV is averaged into the correction when
+  its output and microphone match the first sweep (since 1.13.2); a repeat
+  from the phone companion is compared only, never averaged. The release
+  notes' limits paragraph said no repeat was ever averaged, and the TV
+  Measure screen's repeat intro implied the same; both now say which path
+  does what. `tests/test_core_eq_update_contract.py` holds the release text.
 
 ### Fixed
 

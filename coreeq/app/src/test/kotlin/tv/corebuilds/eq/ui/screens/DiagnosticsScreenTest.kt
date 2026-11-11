@@ -24,7 +24,7 @@ import tv.corebuilds.eq.R
 import tv.corebuilds.eq.export.ProfileStore
 
 /**
- * The diagnostics summary on Capability (1.14.0), under Robolectric: it opens
+ * The diagnostics summary on Capability, under Robolectric: it opens
  * a preview, what is copied is exactly what was shown, and the seeded profile
  * names never appear. A real TV's clipboard and a phone scanning the QR code
  * are not exercised here.

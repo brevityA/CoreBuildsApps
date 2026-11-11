@@ -3,7 +3,7 @@ package tv.corebuilds.eq.ui
 import tv.corebuilds.eq.dsp.NightMode
 
 /**
- * Home's two-line answer (1.14.0): what is actually applied right now, and
+ * Home's two-line answer: what is actually applied right now, and
  * which listening effects are switched on. It separates the two because they
  * differ: "Night: Strong" is a request; whether a limiter runs it depends on
  * the engine the TV accepted.

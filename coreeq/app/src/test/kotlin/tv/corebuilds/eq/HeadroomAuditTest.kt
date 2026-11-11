@@ -15,7 +15,7 @@ import tv.corebuilds.eq.mode.ContentType
 import tv.corebuilds.eq.ui.EnhancedAudioPrefs
 
 /**
- * The numbers `docs/CORE_EQ_HEADROOM_AUDIT.md` states (1.14.0), held here so
+ * The numbers `docs/CORE_EQ_HEADROOM_AUDIT.md` states, held here so
  * the document cannot drift from the code. Configured values only: nothing
  * here plays audio, reads a TV back, or knows where Android places BassBoost
  * and LoudnessEnhancer relative to DynamicsProcessing.

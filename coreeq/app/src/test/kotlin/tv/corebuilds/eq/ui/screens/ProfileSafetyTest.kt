@@ -28,7 +28,7 @@ import tv.corebuilds.eq.mode.ContentMode
 import tv.corebuilds.eq.mode.ContentModeStore
 
 /**
- * Profile and measurement safety (1.14.0), on the real screens under Robolectric.
+ * Profile and measurement safety, on the real screens under Robolectric.
  *
  * These drive the activities and their dialogs; they do not prove how a TV's
  * own dialog theme or remote behaves.

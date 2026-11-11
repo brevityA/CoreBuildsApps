@@ -18,7 +18,7 @@ import tv.corebuilds.eq.dsp.NightMode
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.ui.EnhancedAudioPrefs
 
-/** Home's summary on the real screen (1.14.0); the service itself is not running here. */
+/** Home's summary on the real screen; the service itself is not running here. */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [35], qualifiers = ScreenHarness.TV)
 class HomeSummaryScreenTest {

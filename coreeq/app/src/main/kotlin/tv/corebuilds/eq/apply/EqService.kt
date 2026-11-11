@@ -482,7 +482,7 @@ class EqService : Service() {
         discoveredPackages = modeStore.lastActivePackages()
         discoveredHasUnknownPlayer = modeStore.lastActivePlayerUnknown()
         store.clearRuntimeBands()
-        // A service that has just started holds no effect and is not suspended (1.14.0).
+        // A service that has just started holds no effect and is not suspended.
         store.appliedEngine = null
         store.measurementPaused = false
         createChannel()

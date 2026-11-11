@@ -8,7 +8,7 @@ import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
 
 /**
- * The facts Home's summary and the diagnostics summary are built from (1.14.0),
+ * The facts Home's summary and the diagnostics summary are built from,
  * read in one place so the two can never describe different states.
  */
 object StatusFacts {

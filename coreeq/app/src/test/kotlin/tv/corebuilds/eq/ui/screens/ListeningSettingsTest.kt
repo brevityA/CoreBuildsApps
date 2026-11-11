@@ -23,7 +23,7 @@ import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.ui.EnhancedAudioPrefs
 
 /**
- * Night mode and Clarity as stored settings and as remote-controlled rows (1.14.0).
+ * Night mode and Clarity as stored settings and as remote-controlled rows.
  * Robolectric drives the real screen; the audio these settings produce is not
  * checked here (see NightModeTest / ListeningLayersTest for the configured values).
  */

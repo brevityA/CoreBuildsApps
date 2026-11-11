@@ -31,8 +31,8 @@ class EnhancedAudioPrefs(context: Context) {
         set(value) = prefs.edit().putBoolean(KEY_LOUDNESS, value).apply()
 
     /**
-     * Night mode level (1.14.0); it retunes the DynamicsProcessing limiter, so it
-     * needs the DP engine. Before 1.14.0 it was a switch: a stored "on" reads as
+     * Night mode level; it retunes the DynamicsProcessing limiter, so it
+     * needs the DP engine. Through 1.13.2 it was a switch: a stored "on" reads as
      * [NightMode.Level.STRONG], which has that switch's exact settings.
      */
     var nightLevel: NightMode.Level
@@ -44,7 +44,7 @@ class EnhancedAudioPrefs(context: Context) {
     val nightModeEnabled: Boolean get() = nightLevel != NightMode.Level.OFF
 
     /**
-     * Clarity (1.14.0): the speech-band lift in dB, 0 to [CLARITY_MAX_DB] in
+     * Clarity: the speech-band lift in dB, 0 to [CLARITY_MAX_DB] in
      * [CLARITY_STEP_DB] steps. It replaces the Dialogue boost switch: a stored
      * "on" reads as +2 dB, which is what the switch applied.
      */
@@ -125,6 +125,13 @@ class EnhancedAudioPrefs(context: Context) {
         private const val KEY_BASS_BOOST = "bass_boost_v121"
         private const val KEY_LOUDNESS = "loudness_v121"
         private const val KEY_NIGHT_MODE = "night_mode_v121"
+        // Storage identifiers, not release numbers. These keys were introduced
+        // together on this development line and are named with a "v1140" suffix,
+        // the same convention as the older keys (night_mode_v121,
+        // dialogue_boost_v130). The suffix does not fix the next release's
+        // number, but once any build that writes these keys is released the names
+        // must never change, or upgrading users lose the stored values. The old
+        // keys are only ever read as a fallback, so a downgrade still finds them.
         private const val KEY_NIGHT_LEVEL = "night_level_v1140"
         private const val KEY_DIALOGUE = "dialogue_boost_v130"
         private const val KEY_CLARITY = "clarity_db_v1140"
@@ -144,7 +151,7 @@ class EnhancedAudioPrefs(context: Context) {
         /** Followed by the output's route key: one reference per output. */
         private const val KEY_LOW_VOLUME_REFERENCE = "low_volume_reference_db_v130:"
 
-        /** The pre-1.14.0 switch: on is [NightMode.Level.STRONG]. */
+        /** The switch of 1.13.2 and earlier: on is [NightMode.Level.STRONG]. */
         fun limiterFor(nightMode: Boolean): LimiterSettings =
             NightMode.limiter(if (nightMode) NightMode.Level.STRONG else NightMode.Level.OFF)
     }

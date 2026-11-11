@@ -6,7 +6,7 @@ import org.junit.Test
 import tv.corebuilds.eq.apply.LimiterSettings
 
 /**
- * Night mode's levels (1.14.0) against the protection limiter they replace.
+ * Night mode's levels against the protection limiter they replace.
  *
  * These check the configured static curve (hard knee, steady input), which is
  * what Core EQ controls. They do not measure a device's limiter, its attack
@@ -59,7 +59,7 @@ class NightModeTest {
     }
 
     @Test
-    fun `strong is exactly the night switch that shipped before 1_14_0`() {
+    fun `strong is exactly the night switch that shipped through 1_13_2`() {
         val strong = NightMode.limiter(NightMode.Level.STRONG)
         assertEquals(-12f, strong.thresholdDb, 0f)
         assertEquals(4f, strong.ratio, 0f)

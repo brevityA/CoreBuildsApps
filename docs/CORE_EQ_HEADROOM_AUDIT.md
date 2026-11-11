@@ -24,7 +24,7 @@ before this page can go stale.
 | MBC, post-EQ | none | disabled, read back | `DynamicsProcessingEngine` read-back |
 | Limiter (protection) | Linked across channels | `−1 dBFS`, `10:1`, `1 ms` / `50 ms`, knee `0`, post-gain `0` | `HeadroomAuditTest` |
 | Limiter (Night: Light) | Same limiter, retuned | `−6 dBFS`, `3:1`, `5 ms` / `100 ms`, post-gain `0` | `NightModeTest` |
-| Limiter (Night: Strong) | Same limiter, retuned; the pre-1.14 switch | `−12 dBFS`, `4:1`, `5 ms` / `50 ms`, post-gain `0` | `NightModeTest` |
+| Limiter (Night: Strong) | Same limiter, retuned; the 1.13.2 switch | `−12 dBFS`, `4:1`, `5 ms` / `50 ms`, post-gain `0` | `NightModeTest` |
 
 **Inside Core EQ, nothing boosts.** After the shift, the largest band sits at
 `0 dB` and every other band below it. `ListeningLayersTest` drives every

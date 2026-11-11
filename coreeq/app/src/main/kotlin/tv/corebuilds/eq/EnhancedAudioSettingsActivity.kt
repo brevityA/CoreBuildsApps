@@ -128,7 +128,7 @@ class EnhancedAudioSettingsActivity : TvActivity() {
             if (prefs.stereoSpeakersEnabled) stereoOff() else stereoOn()
             changed()
         }
-        // Clarity (1.14.0, was the Dialogue boost switch): OK cycles 0 → +3 dB, Left/Right step.
+        // Clarity (was the Dialogue boost switch): OK cycles 0 → +3 dB, Left/Right step.
         btnDialogue.setOnClickListener {
             setClarity(if (prefs.clarityDb >= EnhancedAudioPrefs.CLARITY_MAX_DB) 0.0 else prefs.clarityDb + EnhancedAudioPrefs.CLARITY_STEP_DB)
         }
@@ -155,7 +155,7 @@ class EnhancedAudioSettingsActivity : TvActivity() {
             prefs.loudnessEnhancerEnabled = !prefs.loudnessEnhancerEnabled
             changed()
         }
-        // Night mode (1.14.0, was a switch): OK cycles Off → Light → Strong, Left/Right step.
+        // Night mode (was a switch): OK cycles Off → Light → Strong, Left/Right step.
         btnNight.setOnClickListener { setNight(prefs.nightLevel.next()) }
         btnNight.stepWithLeftRight(
             canDown = { prefs.nightLevel != NightMode.Level.OFF },
@@ -273,7 +273,7 @@ class EnhancedAudioSettingsActivity : TvActivity() {
     }
 
     /**
-     * Every effect on this screen back to off (1.14.0), Stereo speakers through
+     * Every effect on this screen back to off, Stereo speakers through
      * its own switch-off so Surround sound is put back. Room correction,
      * profiles and manual EQ are not on this screen and are not touched. No
      * confirmation: each one is a single press to turn back on, and the panel

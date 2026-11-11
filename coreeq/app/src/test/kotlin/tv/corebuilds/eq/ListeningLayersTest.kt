@@ -14,7 +14,7 @@ import tv.corebuilds.eq.ui.EnhancedAudioPrefs
 import kotlin.math.abs
 
 /**
- * Clarity and the headroom it shares with correction (1.14.0), on the
+ * Clarity and the headroom it shares with correction, on the
  * DynamicsProcessing band layout. Configured gains only: nothing here plays
  * audio or reads a device back.
  */
