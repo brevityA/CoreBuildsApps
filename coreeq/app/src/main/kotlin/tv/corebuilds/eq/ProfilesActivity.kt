@@ -13,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.view.isNotEmpty
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -123,7 +124,7 @@ class ProfilesActivity : TvActivity() {
         // Ready: the list has been laid out with its rows, or found empty.
         screenTiming.readyAfterLayout(recyclerProfiles) {
             val count = recyclerProfiles.adapter?.itemCount ?: 0
-            recyclerProfiles.adapter != null && (count == 0 || recyclerProfiles.childCount > 0)
+            recyclerProfiles.adapter != null && (count == 0 || recyclerProfiles.isNotEmpty())
         }
 
         setupExportChips()
