@@ -161,11 +161,12 @@ dump and an apply) pin it. Robolectric never draws, so the first-draw wiring
 is driven through the framework's draw dispatch; that a TV's first frame
 reaches it is the benchmark's to show.
 
-**Device benchmark.** An `adb` procedure run from a computer: a fixed number
-of cold and warm starts, frame statistics for Home and Profiles, and the
-timings above read from the diagnostics summary, written to one file naming
-the TV model, Android build and app build. No performance claim is made
-until such a file exists.
+**Device benchmark (as built).** `tools/core_eq_device_bench.sh` and
+`docs/CORE_EQ_DEVICE_BENCHMARK.md`: cold and warm starts from `am start -W`,
+frame statistics for Home and Profiles from `dumpsys gfxinfo`, and the dump
+above, in one report naming the TV model, Android, firmware and app builds.
+`tests/test_core_eq_device_bench.py` runs it against a stub `adb`. **NOT RUN
+on any device.** No performance claim is made until a report exists.
 
 ### S: companion synchronisation
 

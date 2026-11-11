@@ -62,6 +62,10 @@ that asks first.
   ended, since the process started. In memory only; shown in Capability's
   diagnostics summary and the service's `dumpsys` output, sent nowhere. No
   figure has been read on a TV yet, and none is a performance claim.
+- **`tools/core_eq_device_bench.sh` measures a TV from a computer.** Cold and
+  warm starts, Home and Profiles frame statistics, and the timings above, in
+  one report; `docs/CORE_EQ_DEVICE_BENCHMARK.md` is the procedure. Not yet
+  run on any device.
 - **Extra effects has a Reset.** It turns every effect on that screen off and
   leaves room correction, profiles and manual EQ alone.
 
