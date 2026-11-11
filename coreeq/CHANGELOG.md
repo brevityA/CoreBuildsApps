@@ -15,6 +15,12 @@ pull request is outstanding. Existing settings carry over: Dialogue boost on
 becomes Clarity +2 dB and the night switch on becomes Night: Strong, both the
 same sound as before; profiles are unchanged.
 
+Known issue, disclosed and not changed here: Auto loudness has had no effect
+on the sound since 1.10.2. Its band lookup gives every band the same gain,
+which the headroom shift removes. Extra effects and Home now say so; the fix
+changes the sound for anyone with the switch on, so it is a separate change
+that asks first.
+
 ### Added
 
 - **Night mode has a Light level.** Night mode is now Off, Light or Strong.

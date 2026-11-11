@@ -344,7 +344,7 @@
     <string name="extras_name_auto_loudness">Auto loudness</string>
     <string name="extras_auto_loudness_on">Auto loudness: On</string>
     <string name="extras_auto_loudness_off">Auto loudness: Off</string>
-    <string name="extras_auto_loudness_note" formatted="false">Restores the bass and treble your ears lose at low volume (ISO 226), mapped to the ten EQ bands. Off at reference volume; never above +6 dB per band. Mutually exclusive with Low-volume bass.</string>
+    <string name="extras_auto_loudness_note" formatted="false">Known issue: in this version Auto loudness has no effect on the sound. Its band lookup is wrong, so it adds the same amount to every band, and headroom removes that. A fix is planned; if you have it on, you will be asked before the corrected version changes your sound. Mutually exclusive with Low-volume bass.</string>
     <string name="extras_auto_loudness_unknown">Android does not report this output\'s volume in dB, so there is nothing to compensate.</string>
     <string name="extras_auto_loudness_flat">Nothing added at or above the reference.</string>
     <string name="extras_auto_loudness_status">This output: reference %1$.0f dB, now %2$.0f dB, %3$.1f dB below reference.</string>

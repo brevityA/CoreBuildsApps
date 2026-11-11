@@ -93,7 +93,8 @@ object HomeSummary {
             }
             if (f.clarityDb > 0.0) add(String.format(java.util.Locale.US, "clarity +%.0f dB", f.clarityDb))
             if (f.stereoSpeakers) add("stereo speakers")
-            if (f.autoLoudness) add("auto loudness") else if (f.lowVolumeBass) add("low-volume bass")
+            // Known issue (roadmap AL): Auto loudness configures nothing in this version. Say so.
+            if (f.autoLoudness) add("auto loudness (no effect in this version)") else if (f.lowVolumeBass) add("low-volume bass")
             if (f.bassBoost) add("bass boost (Android effect)")
             if (f.loudnessEnhancer) add("loudness (Android effect)")
         }
