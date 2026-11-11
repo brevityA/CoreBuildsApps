@@ -534,6 +534,7 @@ class ProfilesActivity : TvActivity() {
     }
 
     private fun deleteProfile(p: Profile) {
+        val deletedAt = profilesList.indexOfFirst { it.id == p.id }
         if (!profileStore.deleteProfile(p.id)) return
         if (profileStore.getActiveProfile() == null) {
             EqService.disable(this)
@@ -542,10 +543,13 @@ class ProfilesActivity : TvActivity() {
         }
         Toast.makeText(this, getString(R.string.profile_deleted, p.name), Toast.LENGTH_SHORT).show()
         loadProfiles()
-        // The deleted row is gone: land on the list's first row, or on Import when the list is empty.
+        // Land on the profile that took the deleted row's place (the next one), or on
+        // the one before it when the last row went, or on Import when none are left.
+        val target = if (profilesList.isEmpty()) -1 else deletedAt.coerceIn(0, profilesList.size - 1)
+        if (target >= 0) recyclerProfiles.scrollToPosition(target)
         recyclerProfiles.post {
-            val first = recyclerProfiles.layoutManager?.findViewByPosition(0)
-            if (first != null) first.requestFocus() else btnImport.requestFocus()
+            val row = if (target >= 0) recyclerProfiles.layoutManager?.findViewByPosition(target) else null
+            if (row != null) row.requestFocus() else btnImport.requestFocus()
         }
     }
 
@@ -647,8 +651,14 @@ class ProfilesActivity : TvActivity() {
 
         override fun getItemCount(): Int = items.size
 
-        /** Stable ids keep focus on the same profile across a refresh. */
-        override fun getItemId(position: Int): Long = items[position].id.hashCode().toLong()
+        /**
+         * Stable ids keep focus on the same profile across a refresh. Each profile id
+         * gets its own number for the adapter's life; String.hashCode() collided
+         * ("Aa" and "BB" are both 2112), and a collision moves focus to the wrong row.
+         */
+        private val stableIds = HashMap<String, Long>()
+        private var nextStableId = 1L
+        override fun getItemId(position: Int): Long = stableIds.getOrPut(items[position].id) { nextStableId++ }
 
         override fun onBindViewHolder(holder: ProfileViewHolder, position: Int) {
             val item = items[position]

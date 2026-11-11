@@ -68,6 +68,8 @@ same sound as before; profiles are unchanged.
 
 - **Delete asks first.** One press of Delete removed a measured profile with
   no way back. It now asks, with Cancel focused, so a second OK does nothing.
+  After a delete, focus moves to the profile that took its place, or the one
+  above it when the last row went.
 - **Back from an unsaved measurement asks before discarding it.** Save,
   Discard or Keep it, with Keep it focused. A finished sweep used to be lost
   to one press of Back.
