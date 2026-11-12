@@ -9,6 +9,21 @@ which a TV runs its audio effects. The numbers below are pinned by
 `BandMappingBypassTest` and `NightModeTest`, so a change to the code fails a test
 before this page can go stale.
 
+## Four kinds of statement on this page
+
+They are easy to run together, and only the first two are established here.
+
+| Kind | What it is about | Established by | Not established |
+|---|---|---|---|
+| Configured gain | The band gains Core EQ asks the TV for, after the headroom shift | Unit tests on the mapping; read-back after apply | That the TV's implementation produces them |
+| Static curve | The limiter's output level for a steady input level, from its threshold and ratio, with a hard knee as a model | `NightModeTest`, computed, not played | The knee the TV really uses; Android has no knee setting |
+| Signal peak | The level of the audio itself: material near 0 dBFS, response between band centres, filter overshoot, inter-sample peaks | Nothing here | Any of it; a 0 dB band passes near-full-scale material at near full scale |
+| Transient behaviour | What gets through before gain reduction starts: protection attacks in `1 ms`, Night Light and Strong in `5 ms` | Nothing here | How far a fast transient overshoots on any TV |
+
+"No band above 0 dB" is a configured-gain statement. "Night sits at or below
+protection" is a static-curve statement. Neither says anything about signal
+peaks or transients, which need a measurement on a TV.
+
 ## The chain, in the order Core EQ builds it
 
 | Stage | What it does | Configured value | Pinned by |
@@ -113,7 +128,9 @@ Each level's static curve sits at or below protection for every input from
 `−60` to `+12 dBFS` in 0.25 dB steps (`NightModeTest`). That is a statement
 about the configured threshold and ratio, modelled with a hard knee. With a
 `5 ms` attack (protection uses `1 ms`), a fast transient can pass the
-threshold before gain reduction catches it; nothing here measures that.
+threshold before gain reduction catches it. Protection's `1 ms` attack is
+faster but not instantaneous, and the limiter has no lookahead, so the same
+holds for it to a lesser degree; nothing here measures either.
 
 ## Not established by this audit
 

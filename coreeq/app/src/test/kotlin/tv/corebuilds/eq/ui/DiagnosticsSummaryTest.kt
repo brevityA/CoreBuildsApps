@@ -115,4 +115,17 @@ class DiagnosticsSummaryTest {
         // Names shorter than three characters are left alone rather than masking ordinary words.
         assertEquals("on TV speakers", DiagnosticsSummary.clean("on TV speakers", names))
     }
+
+    @Test fun `the masking gaps the header and changelog admit are real`() {
+        // Pinned so the "best effort" wording stays true: if one of these starts
+        // being masked, update the KDoc on HEADER and the changelog with it.
+        val out = DiagnosticsSummary.text(facts.copy(
+            lastStatus = "Phone fe80::1c2b on Bo, id 0a1b2c3d4e5f",
+            knownNames = listOf("Bo")
+        ))
+        assertTrue(out, out.contains("fe80::1c2b"))
+        assertTrue(out, out.contains("on Bo,"))
+        assertTrue(out, out.contains("0a1b2c3d4e5f"))
+        assertTrue(DiagnosticsSummary.HEADER.contains("not guaranteed"))
+    }
 }

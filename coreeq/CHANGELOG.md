@@ -44,10 +44,12 @@ that asks first.
   how Android reported it, the profile's kind (not its name), Home's two lines,
   the last service message, how the last measurement ended, and the
   background-work counters. Core EQ sends nothing. Recordings, curves and
-  pairing keys are never included; in the free-text lines, the names of
-  saved profiles and reported outputs, addresses and long ids are masked. A
-  name Core EQ has never seen cannot be recognised, so the header says to
-  read it before sharing.
+  pairing keys are never included. Masking in the free-text lines is best
+  effort and the screen says so: the names of saved profiles and reported
+  outputs (3 characters or longer), IPv4 and MAC addresses, IPv6 addresses
+  written in full and hex ids of 16 characters or more are masked. A name
+  Core EQ has never seen, a shortened IPv6 address and a shorter id are not,
+  so the header says to read it before sharing.
 - **Profiles record their origin and which build last saved them.** A TV
   measurement records the build that recorded and analysed the sweep; a
   phone measurement, the TV build that analysed it (the phone does not
@@ -110,6 +112,12 @@ that asks first.
   on every return, losing scroll position and focus.
 - **Disabled menu rows look disabled.** They used the enabled text colour, so
   a row that did nothing looked usable.
+- **A profile made while Android could not confirm the output is saved as
+  "unknown output".** Manual EQ and measurements saved it as "unconfirmed",
+  a key no route ever matches, so a manual-only curve made then was never
+  applied, a repeat sweep counted the route as reported, and a first clean
+  measurement could auto-apply on it. Ambiguous outputs were already saved
+  as unknown. Profiles saved this way before are left as they are.
 - **Home no longer says Off twice.**
 
 ## [1.13.2] — 2026-11-10

@@ -514,7 +514,7 @@
     <!-- The diagnostics summary on Capability. Preview first; nothing is sent. -->
     <string name="action_diagnostics">Diagnostics summary</string>
     <string name="diagnostics_title">Diagnostics summary</string>
-    <string name="diagnostics_note">Everything below is what would be copied. Core EQ sends nothing: copy it, or show it as a QR code for your phone.</string>
+    <string name="diagnostics_note">Everything below is what would be copied. Core EQ sends nothing: copy it, or show it as a QR code for your phone. Masking names and addresses is best effort, so read it before you share it.</string>
     <string name="diagnostics_copy">Copy</string>
     <string name="diagnostics_qr">Show as QR code</string>
     <string name="diagnostics_close">Close</string>

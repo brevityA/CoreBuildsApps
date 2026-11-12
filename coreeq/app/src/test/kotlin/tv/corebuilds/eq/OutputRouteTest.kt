@@ -192,6 +192,25 @@ class OutputRouteTest {
     }
 
     @Test
+    fun aRouteAndroidCouldNotConfirmIsSavedAsUnknownLikeAnAmbiguousOne() {
+        // Neither is an identified output, so neither may become a profile's
+        // output key: "unconfirmed" was saved as-is until 1.13.2, which left a
+        // manual-only curve no route could ever pick, counted the route as
+        // known for repeat-sweep metadata, and let a first clean measurement
+        // auto-apply on it.
+        val unconfirmed = OutputRoute.Output(OutputRoute.UNCONFIRMED, OutputRoute.label(OutputRoute.UNCONFIRMED))
+        val ambiguous = OutputRoute.Output(OutputRoute.AMBIGUOUS, OutputRoute.label(OutputRoute.AMBIGUOUS))
+        assertEquals(OutputRoute.UNKNOWN, OutputRoute.keyFor(unconfirmed))
+        assertEquals(OutputRoute.UNKNOWN, OutputRoute.keyFor(ambiguous))
+        // A profile already saved as "unconfirmed" is left as it is: still
+        // never picked, on an identified route or on an unknown one.
+        val stored = profile("stored", 500, OutputRoute.UNCONFIRMED)
+        assertNull(OutputRoute.pick(listOf(stored), "stored", HDMI_ARC).profile)
+        assertNull(OutputRoute.pick(listOf(stored), "stored", OutputRoute.UNKNOWN).profile)
+        assertNull(OutputRoute.pick(listOf(stored), "stored", OutputRoute.UNCONFIRMED).profile)
+    }
+
+    @Test
     fun aMeasurementOnAnUnnamedOutputAppliesOnlyWhileItStaysUnnamed() {
         // Never saved as null: null means "from before outputs were recorded"
         // and applies everywhere, which would put this curve on a soundbar.
