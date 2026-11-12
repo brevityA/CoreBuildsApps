@@ -17,6 +17,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import org.robolectric.shadows.ShadowBuild
 import org.robolectric.shadows.ShadowDialog
 import tv.corebuilds.eq.BuildConfig
 import tv.corebuilds.eq.CapabilityActivity
@@ -101,6 +102,26 @@ class DiagnosticsScreenTest {
                 first.dismiss()
                 ScreenHarness.idle()
                 assertTrue("focus returns to the button", activity.findViewById<Button>(R.id.btn_diagnostics).isFocused)
+            }
+        }
+    }
+
+    @Test fun `the TV line names its maker once`() {
+        // The onn 4K Pro reports maker "onn" and a model that starts with it (#456, #464).
+        ShadowBuild.setManufacturer("onn")
+        ShadowBuild.setModel("onn 4K Pro Streaming Device")
+        ActivityScenario.launch(CapabilityActivity::class.java).use { scenario ->
+            scenario.onActivity { activity ->
+                val dialog = open(activity)
+                val shown = mutableListOf<String>()
+                fun walk(v: android.view.View) {
+                    if (v is android.widget.TextView && v !is Button) shown += v.text.toString()
+                    if (v is android.view.ViewGroup) for (i in 0 until v.childCount) walk(v.getChildAt(i))
+                }
+                walk(dialog.window!!.decorView)
+                val android = shown.first { it.startsWith("Core EQ diagnostics") }.lines().first { it.startsWith("Android: ") }
+                assertTrue(android, android.endsWith(" · onn 4K Pro Streaming Device"))
+                assertFalse(android, android.contains("onn onn"))
             }
         }
     }

@@ -8,12 +8,16 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
-Not a release: no version number has been chosen or bumped. Android build,
-lint and Robolectric results are listed in the pull request. Nothing below has
-been played or measured on a TV or a phone; the hardware checklist in the
-pull request is outstanding. Existing settings carry over: Dialogue boost on
-becomes Clarity +2 dB and the night switch on becomes Night: Strong, both the
-same sound as before; profiles are unchanged.
+Not a release: no version number has been chosen or bumped. This section
+holds #474 (listening, profiles, Home status, diagnostics), #476
+(provenance, profile-store preservation and locking, instrumentation) and
+#464 (device name). Android build, lint and Robolectric results are listed in
+the pull requests. Nothing below has been played or measured on a TV or a
+phone; the hardware checklist is outstanding. Existing settings carry over:
+Dialogue boost on becomes Clarity +2 dB and the night switch on becomes
+Night: Strong, both the same sound as before; profiles are unchanged, and a
+profile written by this build gains a `provenance` object that 1.13.2 drops
+on its next save after a downgrade.
 
 Known issue, disclosed and not changed here: Auto loudness has had no effect
 on the sound since 1.10.2. Its band lookup gives every band the same gain,
@@ -144,6 +148,28 @@ that asks first.
   still writes nothing, and a list with one damaged entry is handled as
   before: the entry stays in place.
 - **Home no longer says Off twice.**
+- **A device's maker is no longer named twice.** The first supporter test of
+  1.13.1 (Samsung SM-S921U with an onn 4K Pro) showed "Connected to onn onn
+  4K Pro Streaming Device" on the phone. Core EQ joined `Build.MANUFACTURER`
+  and `Build.MODEL` by hand in 8 places, and onn's model already starts with
+  "onn". `DeviceName` now drops a maker the model starts with as a whole
+  word, so "Google Pixel 9 Pro XL" and "samsung SM-S921U" read as before. It
+  covers the TV name on the phone, the phone name on the TV ("Paired to"),
+  the recorder in a phone measurement, the device stored in a new profile,
+  the setup report and the diagnostics summary's TV line. Saved profiles
+  keep the name they were saved with; nothing is rewritten.
+
+### Internal
+
+- `DeviceNameTest` covers whole-word prefixes, all three Unicode
+  combining-mark categories and blank inputs. `PhoneCompanionScreenTest`
+  checks the onn label on a narrow phone; `ProfileJsonTest` checks new labels
+  round-trip and older saved labels are not rewritten;
+  `DiagnosticsScreenTest` checks the diagnostics TV line.
+  `tests/test_core_eq_device_name.py` holds every call site to the helper,
+  including formatting before the pairing and capture length limits, and
+  rejects hand-joined maker and model strings. From #464 (which supersedes
+  #456: the same production change with more tests).
 
 ## [1.13.2] — 2026-11-10
 

@@ -1,7 +1,6 @@
 package tv.corebuilds.eq.companion
 
 import android.content.Context
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
@@ -48,6 +47,7 @@ import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.math.log10
+import tv.corebuilds.eq.DeviceName
 
 /**
  * On-demand Core EQ LAN endpoint. It exists only while the TV user has the
@@ -517,7 +517,7 @@ internal class CompanionServer(
         val status = profileStore.status()
         return JSONObject()
             .put("ok", true)
-            .put("device_name", "${Build.MANUFACTURER} ${Build.MODEL}".trim())
+            .put("device_name", DeviceName.current())
             .put("app_version", BuildConfig.VERSION_NAME)
             .put("output_kind", output?.kind ?: JSONObject.NULL)
             .put("output_name", output?.name ?: JSONObject.NULL)
@@ -965,7 +965,7 @@ internal class CompanionServer(
             micType = captureInfo.captureDeviceModel?.let { "$it microphone" } ?: "phone microphone",
             captureInfo = captureInfo,
             repeatabilityCheck = repeatabilityCheck,
-            deviceName = "${Build.MANUFACTURER} ${Build.MODEL}".trim(),
+            deviceName = DeviceName.current(),
             stimulus = "sweep_${Sweep.SECONDS.toInt()}s_phone_capture",
             captureSeconds = captureSeconds,
             volumeM3 = session.volumeM3,

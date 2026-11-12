@@ -23,7 +23,7 @@ Each entry is the owner's decision, dated, with what it rules out.
 | D3 | 2026-11-11 | **Auto loudness** gets a separate fix with explicit activation for existing users. | No existing user's sound changes without their action. |
 | D4 | 2026-11-11 | **Custom dynamics:** the protection analysis comes first. The proposed ranges are **not approved** for implementation. | The analysis must document the complete static comparison, the gain assumptions and the transient limitations. |
 | D5 | 2026-11-11 | **Order:** documentation correction → provenance and instrumentation → companion synchronisation → validated Custom dynamics → further editor and tone work. One implementation milestone at a time. | Later milestones wait for earlier ones. |
-| D6 | 2026-11-11 | **Knee wording:** a documentation-only correction on #474, pushed only after remote-write approval. No audio change. | Committed locally as `7679ecee`; not pushed at the time of writing. |
+| D6 | 2026-11-11 | **Knee wording:** a documentation-only correction on #474, pushed only after remote-write approval. No audio change. | Pushed to #474 with approval on 2026-11-11 (`7679ecee`, in the range ending `1afab1b8`). |
 | D7 | 2026-11-11 | **Microphone and projector noise:** the full measurement-quality scope (capture-path audit, ambient check, post-sweep noise assessment, calibration and provenance, actionable guidance and recovery). | No always-on microphone. No automatic sound changes driven by noise. |
 
 Standing rules that apply to every milestone: #474 stays a draft; no merge,
@@ -31,6 +31,25 @@ version bump, tag or publication without approval; no force-push; existing
 users keep their profiles and sound; hardware checks stay NOT RUN until
 observed; source-text checks, fake audio and APK installs are not evidence
 that playback works.
+
+## Where things stand (2026-11-12)
+
+Three different claims, kept apart: **implemented** means the code and its
+tests exist on a branch; **released** means a `coreeq-v*` tag shipped it;
+**device-validated** means someone observed it on a TV and recorded it in
+`docs/CORE_EQ_DEVICE_TEST_RECORD.md`. Nothing below is device-validated.
+
+| Work | State | Released | Device-validated |
+|---|---|---|---|
+| Listening model, Night levels, Clarity, Home status, profile safety, diagnostics (#474) | Implemented; draft PR | No | NOT RUN |
+| Provenance, store preservation and locking, instrumentation, benchmark tool (C, #476) | Implemented; draft PR stacked on #474 | No | NOT RUN; benchmark NOT RUN |
+| Device name: maker named once (#464, superseding #456) | Implemented; in the local release candidate with the diagnostics line converted | No | Reported defect seen on one supporter's phone (1.13.1); fix NOT RUN on a device |
+| Release candidate: #474 + #476 + #464 | Local branch `claude/new-session-9upf9g-coreeq-rc`; no version chosen or bumped | No | NOT RUN |
+| S companion synchronisation, K validated Custom dynamics (compressor controls), T Warmth and Brightness, P parametric and advanced EQ, L listening presets, AL Auto loudness fix, N measurement quality (microphone and projector noise), K2, E | Planned; not built | No | — |
+
+The candidate deliberately leaves out compressor controls, Warmth and
+Brightness, advanced EQ, the expanded companion protocol and projector-noise
+algorithms. They stay planned below, in the order D5 sets.
 
 ## What the engine can do
 
@@ -66,10 +85,11 @@ and retargeted to `main` as its parent merges. Only one branch at a time
 changes the profile file format, and only one changes the phone protocol.
 
 ```
-main 19b8834f (1.13.2)
- └─ #474   listening, profiles, status (draft) + 7679ecee knee correction (local, D6)
-     └─ C   provenance + instrumentation       profile format: provenance object
-         └─ S   companion synchronisation      phone protocol: revision, capabilities
+main 19b8834f (1.13.2, released)
+ └─ #474   listening, profiles, status         draft PR, implemented
+     └─ C   #476 provenance + instrumentation  draft PR, implemented; profile format: provenance object
+         ·   release candidate (local branch): #474 + #476 + #464 device name, not a PR
+         └─ S   companion synchronisation      planned; phone protocol: revision, capabilities
              └─ K   validated Custom dynamics  protection analysis first (D4)
                  └─ T   Warmth + Brightness    (D1, D2)
                      └─ P   parametric bands, trim, headroom preview
@@ -81,7 +101,7 @@ Separate, each one at a time when scheduled:
   E   preset imports (after P)
 ```
 
-### C: provenance and instrumentation (built locally; device benchmark not run)
+### C: provenance and instrumentation (draft PR #476; device benchmark not run)
 
 **Provenance (as built).** Stored in each profile as
 `provenance: {origin, last_saved_by}`; each build is
@@ -106,10 +126,15 @@ not measure.
 | Import (Profiles) | the file's, kept as it is; absent stays absent | **this build**: the importing build is the one that saved it into this TV's list. The exporter's value is not kept. |
 | Open, list, choose, view Details | unchanged | unchanged; nothing is written |
 
-A malformed record reads as not recorded, never repaired. A `kind` a newer
-build invents is kept and shown as recorded by a newer build. An imported
-profile's date is the import time (unchanged from 1.13.2); its origin is the
-file's.
+A malformed record reads as not recorded, never repaired. A build's version
+must be up to three dotted numbers with an optional short suffix
+(`1.14.0-rc1`), on one line and untrimmed; anything else (a newline, a
+control or direction character, a name, an address) makes that build not
+recorded. A `kind` a newer build invents is kept and shown in Details as
+recorded by a newer build; the diagnostics summary does not repeat it. An
+imported profile's date is the import time (unchanged from 1.13.2); its
+origin is the file's, which is a claim, not a verified identity: Details
+says every origin is as saved and not verified.
 
 **What the store keeps (as built).** `ProfileStore.persistProfiles`:
 - an **untouched** profile (equal to what is stored for it) keeps its stored
@@ -121,7 +146,15 @@ file's.
 - when nothing was edited, added or removed, nothing is written, so reading
   never changes the stored text, byte for byte;
 - a **duplicate** is written from the fields this build knows; unknown keys
-  stay with the original, because what they refer to is unknown.
+  stay with the original, because what they refer to is unknown;
+- every read-modify-write of the list (save, rename, duplicate, delete, the
+  demo purge, the manual-EQ migration) holds one lock across the process, so
+  the main thread and the companion server's worker cannot lose each
+  other's change (`ProfileStoreConcurrencyTest`: without it, 63 to 67 of 160
+  concurrent saves survived);
+- a stored list that is not JSON at all is never written over: the next save
+  keeps its text under its own key in the same commit, and Profiles and the
+  diagnostics summary say so (`UnreadableProfileListTest`).
 
 The guarantee is the JSON value, not the bytes, across a write: Android's
 JSON writer reproduces text Core EQ wrote (tested, under Robolectric) but may
@@ -162,7 +195,9 @@ is driven through the framework's draw dispatch; that a TV's first frame
 reaches it is the benchmark's to show.
 
 **Device benchmark (as built).** `tools/core_eq_device_bench.sh` and
-`docs/CORE_EQ_DEVICE_BENCHMARK.md`: cold and warm starts from `am start -W`,
+`docs/CORE_EQ_DEVICE_BENCHMARK.md`: starts after force-stop and after the
+Home key from `am start -W`, each keeping the LaunchState Android reported
+and telling a failed or refused launch from missing figures,
 frame statistics for Home and Profiles from `dumpsys gfxinfo`, and the dump
 above, in one report naming the TV model, Android, firmware and app builds.
 `tests/test_core_eq_device_bench.py` runs it against a stub `adb`. **NOT RUN

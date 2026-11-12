@@ -23,6 +23,7 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import org.robolectric.shadows.ShadowDialog
+import tv.corebuilds.eq.DeviceName
 import tv.corebuilds.eq.R
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.ui.screens.ScreenHarness
@@ -143,6 +144,19 @@ class PhoneCompanionScreenTest {
         }
         callBoolean(activity, "setOperationBusy", false)
         assertTrue(activity.findViewById<View>(R.id.phone_mode_everyday).isEnabled)
+    }
+
+    @Test
+    @Config(qualifiers = "en-rUS-w320dp-h640dp-port-mdpi")
+    fun `the reported onn TV name appears once without clipping on a narrow phone`() = withPhone { activity ->
+        val name = DeviceName.of("onn", "onn 4K Pro Streaming Device")
+        connected(activity, snapshot().copy(deviceName = name))
+        val connection = activity.findViewById<TextView>(R.id.phone_connection_state)
+        assertEquals(activity.getString(R.string.phone_connected_device, name), connection.text.toString())
+        assertTrue(ScreenHarness.onScreen(connection, 1.0))
+        val layout = requireNotNull(connection.layout)
+        assertTrue((0 until layout.lineCount).none { layout.getEllipsisCount(it) > 0 })
+        ScreenHarness.render(activity, "phone-onn-device-name-320")
     }
 
     @Test
