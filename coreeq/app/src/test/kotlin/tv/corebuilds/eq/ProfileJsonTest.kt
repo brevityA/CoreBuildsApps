@@ -69,6 +69,40 @@ class ProfileJsonTest {
     }
 
     @Test
+    fun `new device labels survive storage and backup without a duplicate maker`() {
+        val saved = profile(78).copy(
+            deviceName = DeviceName.of("onn", "onn 4K Pro Streaming Device"),
+            captureInfo = CaptureInfo(captureDeviceModel = DeviceName.of("samsung", "SM-S921U"))
+        )
+        val json = JSONObject(Formats.exportProfileJson(saved))
+        assertEquals("onn 4K Pro Streaming Device", json.getString("device"))
+        assertEquals("samsung SM-S921U", json.getJSONObject("capture").getString("capture_device_model"))
+        val back = roundTrip(saved)
+        assertEquals(saved.deviceName, back.deviceName)
+        assertEquals(saved.captureInfo, back.captureInfo)
+    }
+
+    @Test
+    fun `existing profiles keep their saved device label rather than being rewritten`() {
+        // A label is provenance, not a matching key. Updating the formatter must not
+        // silently edit a measurement recorded by an older version or another device.
+        val legacyName = "onn onn 4K Pro Streaming Device"
+        val saved = profile(78).copy(
+            deviceName = legacyName,
+            captureInfo = CaptureInfo(captureDeviceModel = legacyName)
+        )
+        val json = JSONObject(Formats.exportProfileJson(saved))
+        assertEquals(legacyName, json.getString("device"))
+        assertEquals(legacyName, json.getJSONObject("capture").getString("capture_device_model"))
+        // Compare the provenance this change owns. Whole-profile equality also
+        // includes the parser's documented correction-ceiling default for a
+        // legacy profile, which is unrelated to preserving its device label.
+        val back = roundTrip(saved)
+        assertEquals(saved.deviceName, back.deviceName)
+        assertEquals(saved.captureInfo, back.captureInfo)
+    }
+
+    @Test
     fun `capture provenance including Android mic response survives a backup round trip`() {
         val capture = CaptureInfo(
             requestedSampleRateHz = 48_000,

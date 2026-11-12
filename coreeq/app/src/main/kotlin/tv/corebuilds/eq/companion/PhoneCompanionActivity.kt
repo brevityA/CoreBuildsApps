@@ -53,6 +53,7 @@ import java.net.InetAddress
 import java.util.Base64
 import kotlin.concurrent.thread
 import kotlin.math.roundToInt
+import tv.corebuilds.eq.DeviceName
 
 /** Android phone UI for local TV control and a foreground-only phone-mic measurement. */
 class PhoneCompanionActivity : AppCompatActivity() {
@@ -749,7 +750,7 @@ class PhoneCompanionActivity : AppCompatActivity() {
                 // this phone as soon as it accepts the token, so a phone that cannot keep the
                 // token has to stop here, not after.
                 val sealed = credentialStore.seal(credentials)
-                val clientName = "${Build.MANUFACTURER} ${Build.MODEL}".trim().take(60).ifBlank { "Android phone" }
+                val clientName = DeviceName.current().take(60).ifBlank { "Android phone" }
                 val response = CompanionClient(host, port, pairingKey).pair(pairingKey, token, clientName)
                 requireOk(response)
                 if (!credentialStore.commit(sealed)) throw PhonePairingNotSavedException()
