@@ -53,12 +53,60 @@ object ProfileDetails {
             add(Line("Repeat at same spot", repeat(profile)))
         }
         add(Line("Manual EQ", if (profile.manualFilters.isEmpty()) "none" else "${profile.manualFilters.size} filter(s)"))
+        // Provenance: what each build did, recorded when the profile was created;
+        // older profiles say "not recorded" rather than being guessed.
+        addAll(originLines(profile.origin))
+        add(Line("Last saved with", profile.lastSavedBy?.label() ?: NOT_RECORDED))
         for (note in profile.measurementNotes) add(Line("Note", note))
         profile.repeatabilityCheck?.note?.takeIf { it.isNotBlank() }?.let { add(Line("Repeat note", it)) }
     }
 
     /** The lines as plain text, one "Label: value" per line, for the dialog and diagnostics. */
     fun text(lines: List<Line>): String = lines.joinToString("\n") { "${it.label}: ${it.value}" }
+
+    /**
+     * The origin as Details lines. Each line says which build did one thing;
+     * nothing a build did not do is attributed to it, and what is not known
+     * says so.
+     */
+    fun originLines(origin: ProfileOrigin?): List<Line> {
+        if (origin == null) return listOf(Line("Origin", NOT_RECORDED))
+        val built = origin.createdBy.label()
+        return originBody(origin, built) + Line(
+            "Origin record",
+            "as saved with the profile, not verified; an imported file's record is what the file says"
+        )
+    }
+
+    private fun originBody(origin: ProfileOrigin, built: String): List<Line> {
+        return when (origin.kind) {
+            ProfileOrigin.TV_MEASUREMENT -> listOf(
+                Line("Origin", "TV measurement: the TV played and recorded the sweep"),
+                Line("Sweep recorded with", origin.capturedBy?.label() ?: NOT_RECORDED),
+                Line("Analysed with", origin.analysedBy?.label() ?: NOT_RECORDED),
+                Line("Profile created with", built)
+            )
+            ProfileOrigin.PHONE_MEASUREMENT -> listOf(
+                Line("Origin", "phone measurement: the phone recorded the sweep, the TV analysed it"),
+                Line("Sweep recorded with", origin.capturedBy?.label() ?: "phone's Core EQ build not reported"),
+                Line("Analysed with", origin.analysedBy?.label() ?: NOT_RECORDED),
+                Line("Profile created with", built)
+            )
+            ProfileOrigin.REW_IMPORT -> listOf(
+                Line("Origin", "imported REW measurement file"),
+                Line("Measured with", "outside Core EQ; the software and its version are not recorded"),
+                Line("Imported with", built)
+            )
+            ProfileOrigin.MANUAL -> listOf(
+                Line("Origin", "manual EQ, nothing measured"),
+                Line("Created with", built)
+            )
+            else -> listOf(
+                Line("Origin", "\"${origin.kind}\", recorded by a build newer than this one"),
+                Line("Profile created with", built)
+            )
+        }
+    }
 
     /** What kind of profile this is, in words; diagnostics reuse it without the name. */
     fun kindOf(profile: Profile): String = when {

@@ -21,6 +21,7 @@ import tv.corebuilds.eq.apply.EffectLadder
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.apply.RuntimeCounters
+import tv.corebuilds.eq.apply.RuntimeTimings
 import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.mode.ContentModeStore
@@ -103,6 +104,7 @@ class CapabilityActivity : TvActivity() {
                 profileKind = snap.profile?.let { ProfileDetails.kindOf(it) },
                 profileOutput = snap.profile?.outputKind?.let { OutputRoute.label(it) },
                 profileAgeSeconds = snap.profile?.timestampMs?.let(secondsSince),
+                profileOrigin = snap.profile?.origin?.summary(),
                 outputInUse = snap.output?.kind?.let { OutputRoute.label(it) },
                 outputEvidence = snap.output?.evidence?.name?.lowercase()?.replace('_', ' '),
                 home = HomeSummary.of(snap.facts),
@@ -113,6 +115,8 @@ class CapabilityActivity : TvActivity() {
                     DiagnosticsSummary.Measurement(it.outcome, it.stage, it.message, secondsSince(it.atMs))
                 },
                 backgroundWork = RuntimeCounters.snapshot().summary(),
+                timings = RuntimeTimings.summary(),
+                unreadableProfileList = store.hasUnreadableProfileList(),
                 knownNames = store.getAllProfiles().flatMap { listOfNotNull(it.name, it.outputName) } +
                     listOfNotNull(snap.output?.name)
             )

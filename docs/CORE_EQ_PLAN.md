@@ -344,6 +344,9 @@ and `test_tv_layout_fit.py` extended to the new module, and
 | **M4** | `suite.json`, README stamp, dependabot, workflow, release tags | CI |
 | **M5** | Selected Android phone companion: opt-in LAN pairing/control and single-position phone-mic capture; app build and real TV/phone qualification still required | no, not without Android hardware |
 
+Milestones after 1.13.2, and the owner's decisions about them, are in
+[`CORE_EQ_SOUND_EDITOR_ROADMAP.md`](CORE_EQ_SOUND_EDITOR_ROADMAP.md).
+
 M2 is the milestone that matters: it is where the Kotlin has to agree with
 `tools/core_eq_dsp.py` numerically, and it should be proved by feeding both the
 same WAV and asserting the corrections match within a stated tolerance.

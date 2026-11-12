@@ -11,6 +11,7 @@ import org.json.JSONObject
 import tv.corebuilds.eq.BuildConfig
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.OutputRoute
+import tv.corebuilds.eq.apply.RuntimeTimings
 import tv.corebuilds.eq.dsp.Correction
 import tv.corebuilds.eq.dsp.MeasurementQuality
 import tv.corebuilds.eq.dsp.MeasurementException
@@ -19,6 +20,8 @@ import tv.corebuilds.eq.dsp.RepeatabilityComparison
 import tv.corebuilds.eq.dsp.Sweep
 import tv.corebuilds.eq.dsp.SweepAnalysis
 import tv.corebuilds.eq.dsp.SweepResult
+import tv.corebuilds.eq.export.AppBuild
+import tv.corebuilds.eq.export.ProfileOrigin
 import tv.corebuilds.eq.export.CaptureInfo
 import tv.corebuilds.eq.export.CurvePoint
 import tv.corebuilds.eq.export.MicrophoneResponsePoint
@@ -744,11 +747,11 @@ internal class CompanionServer(
         }
         val captureInfo = parseCaptureInfo(request.optJSONObject("capture"), rate)
         val result = try {
-            SweepAnalysis.analyze(
+            RuntimeTimings.time(RuntimeTimings.Op.MEASUREMENT_ANALYSIS) { SweepAnalysis.analyze(
                 samples, rate, session.target, session.volumeM3,
                 micResponse = captureInfo.microphoneResponse,
                 activeMicrophones = captureInfo.activeMicrophoneCount
-            )
+            ) }
         } catch (e: MeasurementException) {
             throw e
         } catch (e: Exception) {
@@ -951,6 +954,10 @@ internal class CompanionServer(
         val baseName = "Phone measurement · ${java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.MEDIUM, java.text.DateFormat.SHORT).format(java.util.Date(now))}"
         val outputName = output?.name
         return Profile(
+            // The phone recorded the sweep and this TV build analysed it. The upload
+            // reports the phone's model and Android version, not its Core EQ build,
+            // so that build is left unrecorded rather than assumed to be this one.
+            origin = ProfileOrigin.phoneMeasurement(AppBuild.current(), phoneBuild = null),
             id = "profile-$now",
             name = if (outputName != null) "$baseName · $outputName" else baseName,
             timestampMs = now,

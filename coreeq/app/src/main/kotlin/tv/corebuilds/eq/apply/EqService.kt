@@ -30,6 +30,8 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import java.io.FileDescriptor
+import java.io.PrintWriter
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
@@ -219,7 +221,7 @@ class EqService : Service() {
                 val dumpSnapshot = if (granted && dumpWaitMs == 0L) try {
                     dumpThrottle.ran(now)
                     RuntimeCounters.discoveryDump()
-                    DumpsysDiscovery.discover(android.os.Process.myUid())
+                    RuntimeTimings.time(RuntimeTimings.Op.DISCOVERY) { DumpsysDiscovery.discover(android.os.Process.myUid()) }
                 } catch (e: Exception) {
                     Log.w(TAG, "DUMP discovery failed; retaining the last known player set", e)
                     DiscoverySnapshot(emptyList(), hasUnidentifiedPlayer = false, complete = false)
@@ -708,17 +710,28 @@ class EqService : Service() {
         return " · on ${output.name} ($evidence)$passthrough"
     }
 
+    /** Timed as [RuntimeTimings.Op.APPLY]; a call that may not apply at all is not counted. */
     private fun applyAll() {
         if (!CorrectionServicePolicy.canApply(instanceRunning, store.correctionEnabled, suspended)) return
+        val started = RuntimeTimings.start()
+        var outcome = RuntimeTimings.Outcome.FAILED
+        try {
+            outcome = applyAllOnce()
+        } finally {
+            RuntimeTimings.finish(RuntimeTimings.Op.APPLY, started, outcome)
+        }
+    }
+
+    private fun applyAllOnce(): RuntimeTimings.Outcome {
         if (!OutputRoute.hasFreshProbe(this) && !OutputRoute.isHeldUnconfirmed()) {
             reapplyWithConfirmedRoute()
-            return
+            return RuntimeTimings.Outcome.DEFERRED
         }
         activeLayers = toneLayers()
         if (store.getAllProfiles().isEmpty()) {
             clearCurrentCard()
             report("No measurement yet. Measure this room to create a correction.", isError = true)
-            return
+            return RuntimeTimings.Outcome.NOT_APPLIED
         }
         val resolved = resolve()
         val (profile, output, switched) = resolved
@@ -742,7 +755,7 @@ class EqService : Service() {
                     "Measure with it playing, or switch back to an output you measured."
             }
             report(pauseMessage, isError = false)
-            return
+            return RuntimeTimings.Outcome.NOT_APPLIED
         }
         val via = if (switched) " (this output's own profile)" else ""
         val modeName = modeStore.currentDecision().mode.title
@@ -774,7 +787,7 @@ class EqService : Service() {
                 announceApplied(profile, modeName, listOf(configured), output)
                 releaseSessions() // avoid applying the same curve twice where the mix effect is accepted
                 if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
-                return
+                return RuntimeTimings.Outcome.OK
             } catch (e: Exception) {
                 Log.w(TAG, "Output-mix correction could not be configured", e)
                 releaseApplied(global)
@@ -794,17 +807,22 @@ class EqService : Service() {
             }
         }
         syncRuntimeBands()
-        when {
-            failed != null -> report(failed, isError = true)
+        return when {
+            failed != null -> {
+                report(failed, isError = true)
+                RuntimeTimings.Outcome.FAILED
+            }
             sessionEqs.isNotEmpty() -> {
                 report(sessionReport(profile, via, output), isError = false)
                 announceApplied(profile, modeName, sessionEqs.values.map { it.applied }, output)
+                RuntimeTimings.Outcome.OK
             }
             else -> {
                 appliedNotice.reset()
                 clearCurrentCard()
                 if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
                 report(waitingStatus(), isError = false)
+                RuntimeTimings.Outcome.NOT_APPLIED
             }
         }
     }
@@ -836,7 +854,8 @@ class EqService : Service() {
 
     /** Correction on [session], plus that session's opt-in extras. */
     private fun createBestEffect(session: Int, profile: Profile): AppliedEffect {
-        val created = createCorrection(session, profile) // throws when both engines refuse
+        // Throws when both engines refuse.
+        val created = RuntimeTimings.time(RuntimeTimings.Op.ENGINE_CONFIGURE) { createCorrection(session, profile) }
         RuntimeCounters.effectWrite()
         return created.copy(extras = attachExtras(session), inputs = effectInputs(profile))
     }
@@ -908,7 +927,7 @@ class EqService : Service() {
                 current
             } else {
                 RuntimeCounters.effectWrite()
-                configure(current, profile).copy(inputs = inputs)
+                RuntimeTimings.time(RuntimeTimings.Op.ENGINE_CONFIGURE) { configure(current, profile) }.copy(inputs = inputs)
             }
             configured.copy(extras = current.extras?.also { it.setEnabled(true) })
         } catch (e: Exception) {
@@ -1633,6 +1652,20 @@ class EqService : Service() {
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
+
+    /**
+     * `adb shell dumpsys activity service tv.corebuilds.eq/.apply.EqService`, for
+     * the device benchmark (`tools/core_eq_device_bench.sh`): the background-work
+     * counters and timings since the process started. Counts and durations only;
+     * no profile, output, player or device names. Android shows it only while
+     * the service runs, which is while correction is on.
+     */
+    override fun dump(fd: FileDescriptor?, writer: PrintWriter, args: Array<out String>?) {
+        writer.println("Core EQ ${tv.corebuilds.eq.BuildConfig.VERSION_NAME} (${tv.corebuilds.eq.BuildConfig.VERSION_CODE}), since the process started")
+        writer.println("Background work: ${RuntimeCounters.snapshot().summary()}")
+        writer.println("Timings:")
+        writer.println(RuntimeTimings.detail())
+    }
 
     private fun stopAfterExplicitOff() {
         createChannel()

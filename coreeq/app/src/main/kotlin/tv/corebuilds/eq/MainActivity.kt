@@ -38,10 +38,15 @@ import tv.corebuilds.eq.ui.showSwitch
 import tv.corebuilds.eq.update.UpdateChecker
 import tv.corebuilds.eq.update.UpdateInstaller
 import tv.corebuilds.eq.update.UpdatePrefs
+import tv.corebuilds.eq.apply.RuntimeTimings
+import tv.corebuilds.eq.ui.ScreenTiming
 import java.util.Locale
 import kotlin.math.roundToInt
 
 class MainActivity : TvActivity() {
+
+    /** Home's first draw and readiness, kept apart ([ScreenTiming]). */
+    private val screenTiming = ScreenTiming(RuntimeTimings.Op.HOME_FIRST_DRAW, RuntimeTimings.Op.HOME_READY)
 
     private lateinit var profileStore: ProfileStore
     private lateinit var modeStore: ContentModeStore
@@ -86,6 +91,7 @@ class MainActivity : TvActivity() {
             return
         }
         setContentView(R.layout.activity_main)
+        screenTiming.watchFirstDraw(window.decorView)
 
         profileStore = ProfileStore(this)
         modeStore = ContentModeStore(this)
@@ -191,6 +197,8 @@ class MainActivity : TvActivity() {
         loadActiveProfile()
         refreshModeButton()
         refreshStatus()
+        // Ready: the summary now reads from the loaded profiles and the service status.
+        screenTiming.ready()
         maybeCheckForUpdate()
     }
 

@@ -36,6 +36,8 @@ object DiagnosticsSummary {
         /** The output the profile was saved for, as a kind label ("TV speakers"). */
         val profileOutput: String?,
         val profileAgeSeconds: Long?,
+        /** [tv.corebuilds.eq.export.ProfileOrigin.summary], or null when the profile's origin was not recorded. */
+        val profileOrigin: String? = null,
         /** The output in use as a kind label, and how Android told us. */
         val outputInUse: String?,
         val outputEvidence: String?,
@@ -50,7 +52,11 @@ object DiagnosticsSummary {
          * saved profile names and the output names Android reported. Masked as
          * "[name]" wherever they appear in a free-text line.
          */
-        val knownNames: List<String> = emptyList()
+        val knownNames: List<String> = emptyList(),
+        /** [tv.corebuilds.eq.apply.RuntimeTimings.summary]: counts and durations only. */
+        val timings: String = "none recorded",
+        /** [tv.corebuilds.eq.export.ProfileStore.hasUnreadableProfileList]. */
+        val unreadableProfileList: Boolean = false
     )
 
     /**
@@ -80,10 +86,16 @@ object DiagnosticsSummary {
             "Profile: " + if (f.profileKind == null) {
                 "none applies or is chosen"
             } else {
-                "${f.profileKind} · for ${f.profileOutput ?: "any output"}" +
-                    (f.profileAgeSeconds?.let { " · saved ${ago(it)}" } ?: "")
+                // The output and origin can come from an imported file, so they are
+                // cleaned like any free text: one line, names and addresses masked.
+                "${f.profileKind} · for ${clean(f.profileOutput ?: "any output", f.knownNames)}" +
+                    (f.profileAgeSeconds?.let { " · saved ${ago(it)}" } ?: "") +
+                    " · " + clean(f.profileOrigin ?: "origin not recorded", f.knownNames)
             }
         )
+        if (f.unreadableProfileList) {
+            appendLine("Saved profiles: a list that could not be read is kept on this TV, unchanged")
+        }
         appendLine("State: ${f.home.state.name.lowercase().replace('_', ' ')}")
         appendLine(clean(f.home.applied, f.knownNames))
         appendLine(f.home.listening)
@@ -106,7 +118,8 @@ object DiagnosticsSummary {
                     (m.message.takeIf { it.isNotBlank() }?.let { ": ${clean(it, f.knownNames)}" } ?: "")
             }
         )
-        append("Background work since start: ").append(f.backgroundWork)
+        appendLine("Background work since start: ${f.backgroundWork}")
+        append("Timings since start: ").append(f.timings)
     }
 
     /** "45 s ago", "12 min ago", "3 h ago", "2 d ago". */
@@ -125,10 +138,13 @@ object DiagnosticsSummary {
     private val MAC = Regex("""\b(?:[0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}\b""")
     private val HEX_ID = Regex("""\b[0-9A-Fa-f]{16,}\b""")
     private val SPACE = Regex("""\s+""")
+    /** Control characters become spaces; format characters (direction overrides, zero-width) go. */
+    private val CONTROL = Regex("""\p{Cc}""")
+    private val FORMAT = Regex("""\p{Cf}""")
 
-    /** One line, bounded, with [names], addresses and long hex ids masked. */
+    /** One line, bounded, with control characters removed and [names], addresses and long hex ids masked. */
     fun clean(text: String, names: List<String> = emptyList()): String {
-        var t = text
+        var t = FORMAT.replace(CONTROL.replace(text, " "), "")
         // Longest first, so "Living room 2" is masked whole rather than leaving " 2".
         for (name in names.map { it.trim() }.filter { it.length >= MIN_NAME_CHARS }.distinct().sortedByDescending { it.length }) {
             t = Regex(Regex.escape(name), RegexOption.IGNORE_CASE).replace(t, "[name]")

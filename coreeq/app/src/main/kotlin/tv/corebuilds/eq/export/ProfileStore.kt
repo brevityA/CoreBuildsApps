@@ -39,7 +39,11 @@ data class EqStatus(
  * a measurement until the room is measured. A separate manual-only profile can
  * exist without pretending that a measurement happened.
  */
-class ProfileStore(context: Context) {
+class ProfileStore(
+    context: Context,
+    /** The build stamped as [Profile.lastSavedBy] when a profile is saved; tests pass their own. */
+    private val build: AppBuild = AppBuild.current()
+) {
 
     private val appContext = context.applicationContext
     private val prefs: SharedPreferences =
@@ -48,9 +52,12 @@ class ProfileStore(context: Context) {
     init {
         // Builds before this one seeded three demo profiles made from a
         // synthetic room. They were never measurements, so they go.
-        if (!prefs.getBoolean(KEY_DEMO_PURGED, false)) {
-            val kept = getAllProfiles().filterNot { it.id in DEMO_IDS }
-            persistProfiles(kept)
+        if (!prefs.getBoolean(KEY_DEMO_PURGED, false)) synchronized(LIST_LOCK) {
+            // Writes the list only when a demo profile is actually there: opening
+            // the store must not rewrite anyone's profiles.
+            val all = getAllProfiles()
+            val kept = all.filterNot { it.id in DEMO_IDS }
+            if (kept.size != all.size) persistProfiles(kept)
             if (prefs.getString(KEY_ACTIVE_ID, null) in DEMO_IDS) {
                 prefs.edit().remove(KEY_ACTIVE_ID).apply()
             }
@@ -61,7 +68,7 @@ class ProfileStore(context: Context) {
     }
 
     /** Move v1 manual trims into the Everyday overlay without losing profile-specific edits. */
-    private fun migrateLegacyManualFiltersToEveryday() {
+    private fun migrateLegacyManualFiltersToEveryday() = synchronized(LIST_LOCK) {
         if (prefs.getBoolean(KEY_MODE_EQ_MIGRATED, false)) return
         val modes = ContentModeStore(appContext)
         val profiles = getAllProfiles()
@@ -88,22 +95,56 @@ class ProfileStore(context: Context) {
         }
     }
 
-    fun getAllProfiles(): List<Profile> {
-        val raw = prefs.getString(KEY_PROFILES, null) ?: return emptyList()
-        val list = mutableListOf<Profile>()
-        try {
-            val arr = JSONArray(raw)
-            for (i in 0 until arr.length()) {
-                try {
-                    list.add(parseProfile(arr.getJSONObject(i)))
-                } catch (e: JSONException) {
-                    Log.e(TAG, "Skipping unreadable profile #$i", e)
-                }
-            }
+    fun getAllProfiles(): List<Profile> =
+        readStored().mapNotNull { it.profile }.sortedByDescending { it.timestampMs }
+
+    /**
+     * One element of the stored list as it was read: its JSON exactly as parsed,
+     * and the profile this build makes of it, or null when this build cannot
+     * read it (a newer build's format, or damage).
+     */
+    private class Stored(val json: Any?, val profile: Profile?)
+
+    /** The stored list in stored order; empty when nothing is stored or the text is not JSON. */
+    private fun readStored(): List<Stored> = readList().entries
+
+    /**
+     * The stored list, plus the stored text itself when it is not a JSON array at all.
+     * [entries] is then empty, and the next write keeps [unreadable] before it starts
+     * a new list (see [persistProfiles]).
+     */
+    private class Read(val entries: List<Stored>, val unreadable: String?)
+
+    private fun readList(): Read {
+        val raw = prefs.getString(KEY_PROFILES, null) ?: return Read(emptyList(), null)
+        val arr = try {
+            JSONArray(raw)
         } catch (e: JSONException) {
             Log.e(TAG, "Saved profiles are not valid JSON", e)
+            return Read(emptyList(), raw)
         }
-        return list.sortedByDescending { it.timestampMs }
+        return Read(readEntries(arr), null)
+    }
+
+    /**
+     * True when a saved profile list could not be read at all: the stored list now,
+     * before anything has been saved over it, or a copy kept when a save started a
+     * new one. The text is never deleted or repaired by Core EQ; Profiles says so.
+     */
+    fun hasUnreadableProfileList(): Boolean =
+        prefs.all.keys.any { it.startsWith(KEY_UNREADABLE_PREFIX) } || readList().unreadable != null
+
+    private fun readEntries(arr: JSONArray): List<Stored> {
+        return (0 until arr.length()).map { i ->
+            val element = arr.opt(i)
+            val profile = try {
+                parseProfile(element as? JSONObject ?: throw JSONException("not an object"))
+            } catch (e: JSONException) {
+                Log.e(TAG, "Skipping unreadable profile #$i", e)
+                null
+            }
+            Stored(element, profile)
+        }
     }
 
     /** The active room or manual profile, or null until one is created. */
@@ -120,25 +161,35 @@ class ProfileStore(context: Context) {
         prefs.edit().putString(KEY_ACTIVE_ID, id).apply()
     }
 
-    fun saveProfile(profile: Profile, setAsActive: Boolean = false) {
+    /**
+     * Save one profile, stamping only it with this build as [Profile.lastSavedBy].
+     * [Profile.origin] is whatever the caller set: the code that creates a
+     * profile records it, an import keeps the file's, and nothing here invents
+     * one. Every other stored profile keeps its stored JSON (see [persistProfiles]).
+     */
+    fun saveProfile(profile: Profile, setAsActive: Boolean = false) = synchronized(LIST_LOCK) {
         val list = getAllProfiles().toMutableList()
         val existingIndex = list.indexOfFirst { it.id == profile.id }
-        if (existingIndex >= 0) list[existingIndex] = profile else list.add(profile)
+        val stamped = profile.copy(lastSavedBy = build)
+        if (existingIndex >= 0) list[existingIndex] = stamped else list.add(stamped)
         persistProfiles(list)
         if (setAsActive) setActiveProfile(profile.id)
     }
 
     fun deleteProfile(id: String): Boolean {
-        val list = getAllProfiles().toMutableList()
-        val removed = list.removeAll { it.id == id }
-        if (removed) {
-            persistProfiles(list)
-            ContentModeStore(appContext).deleteProfileOverlays(id)
-            if (prefs.getString(KEY_ACTIVE_ID, null) == id) {
-                val next = list.firstOrNull()
-                if (next != null) setActiveProfile(next.id) else prefs.edit().remove(KEY_ACTIVE_ID).apply()
+        val removed = synchronized(LIST_LOCK) {
+            val list = getAllProfiles().toMutableList()
+            val removed = list.removeAll { it.id == id }
+            if (removed) {
+                persistProfiles(list)
+                if (prefs.getString(KEY_ACTIVE_ID, null) == id) {
+                    val next = list.firstOrNull()
+                    if (next != null) setActiveProfile(next.id) else prefs.edit().remove(KEY_ACTIVE_ID).apply()
+                }
             }
+            removed
         }
+        if (removed) ContentModeStore(appContext).deleteProfileOverlays(id)
         return removed
     }
 
@@ -149,13 +200,15 @@ class ProfileStore(context: Context) {
      */
     fun renameProfile(id: String, requestedName: String): Profile? {
         val name = cleanName(requestedName) ?: return null
-        val list = getAllProfiles().toMutableList()
-        val index = list.indexOfFirst { it.id == id }
-        if (index < 0) return null
-        val renamed = list[index].copy(name = name)
-        list[index] = renamed
-        persistProfiles(list)
-        return renamed
+        synchronized(LIST_LOCK) {
+            val list = getAllProfiles().toMutableList()
+            val index = list.indexOfFirst { it.id == id }
+            if (index < 0) return null
+            val renamed = list[index].copy(name = name, lastSavedBy = build)
+            list[index] = renamed
+            persistProfiles(list)
+            return renamed
+        }
     }
 
     /**
@@ -166,11 +219,17 @@ class ProfileStore(context: Context) {
      * active: duplicating never changes what plays. Null when [id] is unknown.
      */
     fun duplicateProfile(id: String, newId: String = "copy-${UUID.randomUUID()}"): Profile? {
-        val list = getAllProfiles().toMutableList()
-        val source = list.firstOrNull { it.id == id } ?: return null
-        val copy = source.copy(id = newId, name = copyName(source.name, list.map { it.name }.toSet()))
-        list.add(copy)
-        persistProfiles(list)
+        val copy = synchronized(LIST_LOCK) {
+            val list = getAllProfiles().toMutableList()
+            val source = list.firstOrNull { it.id == id } ?: return null
+            // The copy keeps the original's origin (it is the same measurement) and is saved by this build.
+            // It is a new entry written from the fields this build knows: keys it does not
+            // recognise stay with the original, since what they refer to is unknown.
+            val copy = source.copy(id = newId, name = copyName(source.name, list.map { it.name }.toSet()), lastSavedBy = build)
+            list.add(copy)
+            persistProfiles(list)
+            copy
+        }
         val modes = ContentModeStore(appContext)
         for ((mode, filters) in modes.allModeFilters(id)) modes.saveModeFilters(newId, mode, filters)
         return copy
@@ -406,11 +465,66 @@ class ProfileStore(context: Context) {
         prefs.edit().remove(KEY_RUNTIME_BANDS).apply()
     }
 
-    private fun persistProfiles(list: List<Profile>, synchronous: Boolean = false): Boolean {
+    /**
+     * Write [list] as the stored profile list, changing no more than [list] changed.
+     *
+     * - A profile equal to what is stored for it is **untouched**: its stored JSON
+     *   object is written back as it was read, every key and value in the same
+     *   order, including keys this build does not know and values it would
+     *   write differently today (an older `gain_limits_db`, say).
+     * - A profile that differs is **edited**: only the fields the change
+     *   affected are replaced (compared as this build writes them, recursing
+     *   into nested objects); every other key keeps its stored value.
+     * - An element this build cannot read is kept as it is, in place.
+     * - A profile not stored before is written in full; a stored one missing
+     *   from [list] is removed.
+     * - When no profile was edited, added or removed, nothing is written, so
+     *   the stored text stays byte-for-byte what it was.
+     *
+     * The guarantee is the JSON value, not the bytes: an untouched entry is
+     * re-serialized by Android's JSON writer, which reproduces what Core EQ
+     * itself wrote but may reformat text written by anything else.
+     */
+    private fun persistProfiles(list: List<Profile>, synchronous: Boolean = false): Boolean = synchronized(LIST_LOCK) {
+        val read = readList()
+        val stored = read.entries
+        val pending = LinkedHashMap<String, ArrayDeque<Profile>>()
+        for (p in list) pending.getOrPut(p.id) { ArrayDeque() }.addLast(p)
         val arr = JSONArray()
-        for (p in list) arr.put(JSONObject(Formats.exportProfileJson(p)))
+        var changed = false
+        for (entry in stored) {
+            val was = entry.profile
+            if (was == null) {
+                arr.put(entry.json)
+                continue
+            }
+            val next = pending[was.id]?.removeFirstOrNull()
+            if (next == null) {
+                changed = true
+                continue
+            }
+            val json = entry.json as JSONObject
+            if (next != was) {
+                patchJson(json, JSONObject(Formats.exportProfileJson(was)), JSONObject(Formats.exportProfileJson(next)))
+                changed = true
+            }
+            arr.put(json)
+        }
+        for (queue in pending.values) for (p in queue) {
+            arr.put(JSONObject(Formats.exportProfileJson(p)))
+            changed = true
+        }
+        if (!changed) return true
         val editor = prefs.edit().putString(KEY_PROFILES, arr.toString())
-        return if (synchronous) {
+        if (read.unreadable != null) {
+            // The stored text is not a list at all, and this write would replace it.
+            // Keep it first, under a key of its own that nothing overwrites, in the same
+            // commit, so the new list never exists without the copy.
+            val key = KEY_UNREADABLE_PREFIX + System.currentTimeMillis()
+            Log.e(TAG, "Saved profiles could not be read; keeping the text (${read.unreadable.length} chars) as $key")
+            return editor.putString(key, read.unreadable).commit()
+        }
+        if (synchronous) {
             editor.commit()
         } else {
             editor.apply()
@@ -419,6 +533,50 @@ class ProfileStore(context: Context) {
     }
 
     companion object {
+        /**
+         * Held for every read-modify-write of the profile list, by every ProfileStore
+         * in the process. Screens and the service write on the main thread and the
+         * companion server on its worker; each write reads the whole list and writes
+         * it back, so without this a phone measurement saved during a rename on the TV
+         * could drop one of the two. SharedPreferences.apply() updates the in-memory
+         * copy before it returns, so the next holder reads the previous write.
+         * Core EQ runs in one process (the manifest declares no android:process);
+         * a second process would need a file lock instead.
+         */
+        private val LIST_LOCK = Any()
+
+        /**
+         * Apply to [target] (a stored profile's JSON) the difference between [old] and
+         * [new], two objects this build wrote for the profile before and after a
+         * change: keys whose written value changed are replaced or removed, nested
+         * objects are patched key by key, and every other key of [target], known to
+         * this build or not, is left exactly as stored. Arrays are replaced whole.
+         */
+        internal fun patchJson(target: JSONObject, old: JSONObject, new: JSONObject) {
+            val keys = LinkedHashSet<String>()
+            old.keys().forEach { keys += it }
+            new.keys().forEach { keys += it }
+            for (key in keys) {
+                val before = old.opt(key)
+                val after = new.opt(key)
+                if (after == null) {
+                    if (before != null) target.remove(key)
+                    continue
+                }
+                // Both sides come from the same writer, so equal values print equally.
+                if (before != null && before.toString() == after.toString()) continue
+                val stored = target.opt(key)
+                // A nested object is patched key by key, so what the stored one holds
+                // beyond this build's fields survives, also when this build adds the
+                // object for the first time (a provenance record on a newer build's entry).
+                if (after is JSONObject && stored is JSONObject && (before == null || before is JSONObject)) {
+                    patchJson(stored, before as? JSONObject ?: JSONObject(), after)
+                } else {
+                    target.put(key, after)
+                }
+            }
+        }
+
         /** The longest profile name Rename keeps; a TV row shows about this much. */
         const val MAX_NAME_LENGTH = 48
 
@@ -448,6 +606,8 @@ class ProfileStore(context: Context) {
         private const val MAX_MEASURE_MESSAGE = 240
         private const val PREFS_NAME = "core_eq_profiles"
         private const val KEY_PROFILES = "profiles_json"
+        /** A list that could not be read, kept as it was when a save started a new one; never written over. */
+        private const val KEY_UNREADABLE_PREFIX = "profiles_json_unreadable_"
         private const val KEY_ACTIVE_ID = "active_profile_id"
         private const val KEY_ENABLED = "correction_enabled"
         private const val KEY_ANNOUNCE_APPLIED = "announce_applied_v130"
@@ -671,7 +831,9 @@ class ProfileStore(context: Context) {
                     ?.takeIf { it.isNotBlank() },
                 manualFilters = ManualEq.sanitize(manualFiltersList),
                 manualOnly = obj.optBoolean("manual_only", false),
-                targetPoints = targetPoints
+                targetPoints = targetPoints,
+                origin = ProfileOrigin.fromJson(obj.optJSONObject("provenance")?.optJSONObject("origin")),
+                lastSavedBy = AppBuild.fromJson(obj.optJSONObject("provenance")?.optJSONObject("last_saved_by"))
             )
         }
     }

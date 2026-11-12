@@ -244,7 +244,22 @@ data class Profile(
      * against, copied at save time. Built-in targets are rebuilt from their
      * key; an imported one cannot be, because the next import replaces it.
      */
-    val targetPoints: List<Pair<Double, Double>> = emptyList()
+    val targetPoints: List<Pair<Double, Double>> = emptyList(),
+    /**
+     * How this profile's correction came about and which builds did what:
+     * created, recorded the sweep, analysed it ([ProfileOrigin]). Written once
+     * by whatever creates the profile; carried unchanged through rename,
+     * duplicate, export and import; null when not recorded, and never filled
+     * in later.
+     */
+    val origin: ProfileOrigin? = null,
+    /**
+     * The build that last wrote this profile into this TV's profile list: a
+     * save, rename, duplicate or import. Set by [ProfileStore] only; an
+     * imported file's value is replaced, because the importing build is the one
+     * that saved it here. Null when not recorded.
+     */
+    val lastSavedBy: AppBuild? = null
 ) {
     /**
      * The target this profile was corrected towards, on [freqs]. Null for an

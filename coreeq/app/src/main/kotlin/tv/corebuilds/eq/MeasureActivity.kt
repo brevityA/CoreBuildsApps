@@ -25,6 +25,7 @@ import tv.corebuilds.eq.apply.DynamicsProcessingEngine
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.apply.ProfileOutputIdentity
+import tv.corebuilds.eq.apply.RuntimeTimings
 import tv.corebuilds.eq.dsp.Correction
 import tv.corebuilds.eq.dsp.CorrectionReport
 import tv.corebuilds.eq.dsp.CustomTarget
@@ -48,6 +49,8 @@ import tv.corebuilds.eq.dsp.SweepResult
 import tv.corebuilds.eq.dsp.TargetCurveImport
 import tv.corebuilds.eq.ui.FilePicker
 import tv.corebuilds.eq.dsp.Targets
+import tv.corebuilds.eq.export.AppBuild
+import tv.corebuilds.eq.export.ProfileOrigin
 import tv.corebuilds.eq.export.CaptureInfo
 import tv.corebuilds.eq.export.CurvePoint
 import tv.corebuilds.eq.export.PlatformBand
@@ -349,11 +352,11 @@ class MeasureActivity : TvActivity() {
                     if (seatCaptures.size >= 2) {
                         val again = seatCaptures.map {
                             it.copy(
-                                result = SweepAnalysis.analyze(
+                                result = RuntimeTimings.time(RuntimeTimings.Op.MEASUREMENT_ANALYSIS) { SweepAnalysis.analyze(
                                     it.samples, it.rate, target, volume, ceilingHz = ceiling,
                                     micResponse = it.captureInfo?.microphoneResponse ?: emptyList(),
                                     activeMicrophones = it.captureInfo?.activeMicrophoneCount
-                                ),
+                                ) },
                                 targetIndex = selectedTargetIndex,
                                 roomIndex = selectedRoomIndex
                             )
@@ -362,12 +365,12 @@ class MeasureActivity : TvActivity() {
                         Triple(averaged.result, again, averaged)
                     } else {
                         Triple(
-                            SweepAnalysis.analyze(
+                            RuntimeTimings.time(RuntimeTimings.Op.MEASUREMENT_ANALYSIS) { SweepAnalysis.analyze(
                                 capture, lastRate, target, volume, ceilingHz = ceiling,
                                 micResponse = seatCaptures.firstOrNull()?.captureInfo?.microphoneResponse
                                     ?: emptyList(),
                                 activeMicrophones = seatCaptures.firstOrNull()?.captureInfo?.activeMicrophoneCount
-                            ),
+                            ) },
                             emptyList(), null
                         )
                     }
@@ -812,12 +815,12 @@ class MeasureActivity : TvActivity() {
             } else {
                 try {
                     Result.success(
-                        SweepAnalysis.analyze(
+                        RuntimeTimings.time(RuntimeTimings.Op.MEASUREMENT_ANALYSIS) { SweepAnalysis.analyze(
                             samples, rate, plan.target, plan.volumeM3,
                             ceilingHz = plan.ceilingHz,
                             micResponse = info.microphoneResponse,
                             activeMicrophones = info.activeMicrophoneCount
-                        )
+                        ) }
                     )
                 } catch (e: MeasurementException) {
                     Result.failure(e)
@@ -1626,6 +1629,8 @@ class MeasureActivity : TvActivity() {
         val check = correctionCheck
         val baseName = getString(R.string.measure_profile_name, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(now)))
         return Profile(
+            // This TV build played, recorded and analysed the sweep.
+            origin = ProfileOrigin.tvMeasurement(AppBuild.current()),
             id = "profile-$now",
             name = if (output != null) "$baseName · ${output.name}" else baseName,
             timestampMs = now,
@@ -1705,6 +1710,8 @@ class MeasureActivity : TvActivity() {
         val output = importedOutputEstimate
         val baseName = getString(R.string.measure_profile_name, DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(now)))
         val profile = Profile(
+            // This build read the file; the measurement was made outside Core EQ.
+            origin = ProfileOrigin.rewImport(AppBuild.current()),
             id = "profile-$now",
             name = if (output != null) "$baseName · ${output.name}" else baseName,
             timestampMs = now,

@@ -35,14 +35,15 @@ class DiagnosticsSummaryTest {
         assertEquals("App: 1.13.2 (29, debug)", lines[1])
         assertEquals("Android: 14 (API 34) · Maker Model X", lines[2])
         assertEquals("Output in use: TV speakers (track probe)", lines[3])
-        assertEquals("Profile: room measurement · for TV speakers · saved 2 d ago", lines[4])
+        assertEquals("Profile: room measurement · for TV speakers · saved 2 d ago · origin not recorded", lines[4])
         assertEquals("State: applied", lines[5])
         assertTrue(lines[6], lines[6].startsWith("Applied by DynamicsProcessing"))
         assertEquals("Listening: night light · clarity +2 dB.", lines[7])
         assertEquals("Last service message, 40 s ago: Applied 25 bands to the output mix.", lines[8])
         assertEquals("Last measurement: failed (primary), 10 min ago: No sweep was heard.", lines[9])
         assertTrue(lines[10], lines[10].startsWith("Background work since start: 1 route probes"))
-        assertEquals(11, lines.size)
+        assertEquals("Timings since start: none recorded", lines[11])
+        assertEquals(12, lines.size)
     }
 
     @Test fun `nothing recorded is said as nothing recorded`() {
@@ -92,6 +93,13 @@ class DiagnosticsSummaryTest {
         assertEquals("2 d ago", DiagnosticsSummary.ago(36 * 3600))
     }
 
+    @Test fun `a recorded origin is named, an unrecorded one is said to be unrecorded`() {
+        val origin = tv.corebuilds.eq.export.ProfileOrigin.tvMeasurement(tv.corebuilds.eq.export.AppBuild("1.14.0", 30))
+        val withOrigin = DiagnosticsSummary.text(facts.copy(profileOrigin = origin.summary()))
+        assertTrue(withOrigin, withOrigin.contains("saved 2 d ago · TV measurement, recorded and analysed by Core EQ 1.14.0 (30)"))
+        assertTrue(DiagnosticsSummary.text(facts).contains("· origin not recorded"))
+    }
+
     @Test fun `known names are masked in every free-text line, longest first`() {
         val names = listOf("Living room", "Living room 2", "Sam's Sonos Roam", "TV")
         val text = DiagnosticsSummary.text(
@@ -119,5 +127,12 @@ class DiagnosticsSummaryTest {
         assertTrue(out, out.contains("on Bo,"))
         assertTrue(out, out.contains("0a1b2c3d4e5f"))
         assertTrue(DiagnosticsSummary.HEADER.contains("not guaranteed"))
+    }
+
+    @Test fun `a kept unreadable profile list is mentioned, and only then`() {
+        assertFalse(DiagnosticsSummary.text(facts).contains("Saved profiles:"))
+        val lines = DiagnosticsSummary.text(facts.copy(unreadableProfileList = true)).lines()
+        val at = lines.indexOfFirst { it.startsWith("Saved profiles:") }
+        assertTrue(lines.toString(), at > 0 && lines[at - 1].startsWith("Profile: ") && lines[at + 1].startsWith("State: "))
     }
 }

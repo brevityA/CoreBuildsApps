@@ -13,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.view.isNotEmpty
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -32,11 +33,16 @@ import tv.corebuilds.eq.ui.ProfileRouteLine
 import tv.corebuilds.eq.ui.CurveGraphView
 import tv.corebuilds.eq.ui.OverlayPermission
 import tv.corebuilds.eq.ui.QualityText
+import tv.corebuilds.eq.apply.RuntimeTimings
+import tv.corebuilds.eq.ui.ScreenTiming
 import tv.corebuilds.eq.ui.Series
 import tv.corebuilds.eq.ui.showSwitch
 import java.util.Locale
 
 class ProfilesActivity : TvActivity() {
+
+    /** Profiles' first draw and readiness, kept apart ([ScreenTiming]). */
+    private val screenTiming = ScreenTiming(RuntimeTimings.Op.PROFILES_FIRST_DRAW, RuntimeTimings.Op.PROFILES_READY)
 
     private lateinit var profileStore: ProfileStore
     private lateinit var modeStore: ContentModeStore
@@ -114,6 +120,12 @@ class ProfilesActivity : TvActivity() {
         textRoute = findViewById(R.id.text_profile_route)
 
         recyclerProfiles.layoutManager = LinearLayoutManager(this)
+        screenTiming.watchFirstDraw(window.decorView)
+        // Ready: the list has been laid out with its rows, or found empty.
+        screenTiming.readyAfterLayout(recyclerProfiles) {
+            val count = recyclerProfiles.adapter?.itemCount ?: 0
+            recyclerProfiles.adapter != null && (count == 0 || recyclerProfiles.isNotEmpty())
+        }
 
         setupExportChips()
         loadProfiles()
@@ -483,7 +495,7 @@ class ProfilesActivity : TvActivity() {
     private fun renderRoute(chosen: Profile?, matched: Profile?, output: OutputRoute.Output?) {
         val kind = ProfileRouteLine.kindOf(chosen, matched, output?.kind)
         val res = ProfileRouteLine.stringRes(kind)
-        textRoute.text = when (kind) {
+        val route = when (kind) {
             ProfileRouteLine.Kind.MATCHES_OUTPUT -> getString(res, outputWords(output?.kind, output?.name))
             ProfileRouteLine.Kind.OTHER_OUTPUT -> getString(
                 res,
@@ -491,6 +503,12 @@ class ProfilesActivity : TvActivity() {
                 outputWords(chosen?.outputKind, chosen?.outputName)
             )
             else -> getString(res)
+        }
+        // A list Core EQ could not read is kept, not dropped; say so where the profiles are.
+        textRoute.text = if (profileStore.hasUnreadableProfileList()) {
+            route + "\n" + getString(R.string.profiles_unreadable_kept)
+        } else {
+            route
         }
     }
 

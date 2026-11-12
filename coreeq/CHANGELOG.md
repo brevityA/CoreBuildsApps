@@ -44,12 +44,41 @@ that asks first.
   how Android reported it, the profile's kind (not its name), Home's two lines,
   the last service message, how the last measurement ended, and the
   background-work counters. Core EQ sends nothing. Recordings, curves and
-  pairing keys are never included. Masking in the free-text lines is best
-  effort and the screen says so: the names of saved profiles and reported
+  pairing keys are never included. Free-text lines, the profile's output and
+  origin among them, are one line each with control characters removed.
+  Masking in them is best effort and the screen says so: the names of saved profiles and reported
   outputs (3 characters or longer), IPv4 and MAC addresses, IPv6 addresses
   written in full and hex ids of 16 characters or more are masked. A name
   Core EQ has never seen, a shortened IPv6 address and a shorter id are not,
   so the header says to read it before sharing.
+- **Profiles record their origin and which build last saved them.** A TV
+  measurement records the build that recorded and analysed the sweep; a
+  phone measurement, the TV build that analysed it (the phone does not
+  report its own build, and Details says so); a REW import, the build that
+  imported it, measured outside Core EQ; a manual profile, the build that
+  created it. Rename and duplicate keep the origin; export carries it; import
+  keeps the file's origin and records the importing build as the last save.
+  Profiles saved before this say "not recorded"; nothing is guessed. An
+  origin is a record, not a proof: Details says it is not verified, and an
+  imported file's origin is only what the file says. A build version read
+  from a file must be a short version number on one line ("1.14.0-rc1"),
+  or it reads as not recorded; an origin kind this build does not know is
+  shown in Details but not repeated in diagnostics.
+- **Core EQ times its own work.** Apply, engine configure, player
+  discovery, route probe and measurement analysis, and Home's and Profiles'
+  first draw and readiness, each with a count, median, range and how it
+  ended, since the process started. In memory only; shown in Capability's
+  diagnostics summary and the service's `dumpsys` output, sent nowhere. No
+  figure has been read on a TV yet, and none is a performance claim.
+- **`tools/core_eq_device_bench.sh` measures a TV from a computer.** Starts
+  after force-stop and after the Home key, Home and Profiles frame
+  statistics, and the timings above, in one report;
+  `docs/CORE_EQ_DEVICE_BENCHMARK.md` is the procedure. Each start keeps the
+  LaunchState Android reported (COLD, WARM or HOT); a failed, unfinished or
+  refused launch is reported as such, not as missing figures, and is not a
+  sample. The in-app timings restart with the process, so the report's
+  dump covers only what ran after the last force-stop. Not yet run on any
+  device.
 - **Extra effects has a Reset.** It turns every effect on that screen off and
   leaves room correction, profiles and manual EQ alone.
 
@@ -77,6 +106,12 @@ that asks first.
 
 ### Fixed
 
+- **Saving one profile leaves the others as they are stored.** Untouched
+  profiles keep every stored field, including ones a newer build added; an
+  edit replaces only the fields it changed; an entry this build cannot read
+  is kept; and opening, listing or choosing a profile writes nothing.
+  Through 1.13.2 every save rewrote every profile from the fields the build
+  knew.
 - **Delete asks first.** One press of Delete removed a measured profile with
   no way back. It now asks, with Cancel focused, so a second OK does nothing.
   After a delete, focus moves to the profile that took its place, or the one
@@ -94,6 +129,20 @@ that asks first.
   applied, a repeat sweep counted the route as reported, and a first clean
   measurement could auto-apply on it. Ambiguous outputs were already saved
   as unknown. Profiles saved this way before are left as they are.
+- **Saving profiles from two places at once no longer loses one of them.**
+  Each save, rename, duplicate or delete reads the whole list and writes it
+  back; a phone measurement saved by the companion server while the TV
+  renamed or deleted a profile could drop one change. In a test with four
+  writers saving 160 profiles, 63 to 67 survived. Every such write now holds
+  one lock across the app, and the same test keeps all 160. This was
+  possible in 1.13.2 too.
+- **A saved profile list Core EQ cannot read is kept, not replaced.** If the
+  stored list was not JSON at all, it read as empty and the next save wrote
+  a new list over it. The next save now keeps the old text unchanged under
+  its own key, in the same write, and Profiles and the diagnostics summary
+  say an unreadable list is kept. Nothing repairs or deletes it. Reading
+  still writes nothing, and a list with one damaged entry is handled as
+  before: the entry stays in place.
 - **Home no longer says Off twice.**
 
 ## [1.13.2] — 2026-11-10
