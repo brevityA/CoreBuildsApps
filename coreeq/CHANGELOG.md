@@ -8,12 +8,16 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
-Not a release: no version number has been chosen or bumped. Android build,
-lint and Robolectric results are listed in the pull request. Nothing below has
-been played or measured on a TV or a phone; the hardware checklist in the
-pull request is outstanding. Existing settings carry over: Dialogue boost on
-becomes Clarity +2 dB and the night switch on becomes Night: Strong, both the
-same sound as before; profiles are unchanged.
+Not a release: no version number has been chosen or bumped. This section
+holds #474 (listening, profiles, Home status, diagnostics), #476
+(provenance, profile-store preservation and locking, instrumentation) and
+#464 (device name). Android build, lint and Robolectric results are listed in
+the pull requests. Nothing below has been played or measured on a TV or a
+phone; the hardware checklist is outstanding. Existing settings carry over:
+Dialogue boost on becomes Clarity +2 dB and the night switch on becomes
+Night: Strong, both the same sound as before; profiles are unchanged, and a
+profile written by this build gains a `provenance` object that 1.13.2 drops
+on its next save after a downgrade.
 
 Known issue, disclosed and not changed here: Auto loudness has had no effect
 on the sound since 1.10.2. Its band lookup gives every band the same gain,
