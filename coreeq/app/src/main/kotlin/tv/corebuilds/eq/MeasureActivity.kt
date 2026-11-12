@@ -17,7 +17,10 @@ import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import tv.corebuilds.eq.apply.DynamicsProcessingEngine
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.apply.OutputRoute
@@ -255,10 +258,46 @@ class MeasureActivity : TvActivity() {
         btnStop.setOnClickListener { cancelMeasurement("Stopped. Nothing was saved.") }
         btnSave.setOnClickListener { saveAndFinish() }
         btnImport.setOnClickListener { pickRewImport() }
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() = leaveOrAsk()
+        })
 
         refreshChoices()
         textStatus.text = getString(R.string.measure_ready)
         focusOnOpen(btnRoom)
+    }
+
+    /** A finished sweep or import that Save has not kept yet. */
+    private fun hasUnsavedResult(): Boolean =
+        !measuring && !importing && (result != null || importResult != null) && btnSave.isVisible
+
+    private var leaveDialogOpen = false
+
+    /**
+     * Back used to close this screen and silently throw away a finished,
+     * unsaved measurement. Now it asks, with Save one press away and
+     * Keep focused, so a second Back press cannot discard by accident.
+     */
+    private fun leaveOrAsk() {
+        if (!hasUnsavedResult()) {
+            finish()
+            return
+        }
+        if (leaveDialogOpen) return
+        leaveDialogOpen = true
+        val dialog = AlertDialog.Builder(this)
+            .setTitle(R.string.measure_discard_title)
+            .setMessage(R.string.measure_discard_message)
+            .setPositiveButton(R.string.measure_discard_save) { _, _ -> saveAndFinish() }
+            .setNeutralButton(R.string.measure_discard_confirm) { _, _ -> finish() }
+            .setNegativeButton(R.string.measure_discard_keep, null)
+            .setOnDismissListener {
+                leaveDialogOpen = false
+                if (!isFinishing && btnSave.isShown) btnSave.requestFocus()
+            }
+            .create()
+        dialog.show()
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.let { keep -> keep.post { keep.requestFocus() } }
     }
 
     /**
@@ -1458,6 +1497,7 @@ class MeasureActivity : TvActivity() {
 
     private fun fail(message: String, kind: SweepKind = measurementKind) {
         finishMeasuring()
+        profileStore.recordMeasurement("failed", kind.name.lowercase(), message)
         progressMeasure.progress = 0
         val kept = result
         if (kind != SweepKind.PRIMARY && kept != null) {
@@ -1532,6 +1572,7 @@ class MeasureActivity : TvActivity() {
         if (!measuring) return
         val kind = measurementKind
         finishMeasuring()
+        profileStore.recordMeasurement("cancelled", kind.name.lowercase(), message)
         progressMeasure.progress = 0
         if (kind != SweepKind.PRIMARY && result != null) {
             if (kind == SweepKind.REPEAT) {
@@ -1568,6 +1609,7 @@ class MeasureActivity : TvActivity() {
         val r = result ?: return
         val profile = buildSweepProfile(r, now)
         profileStore.saveProfile(profile, setAsActive = true)
+        profileStore.recordMeasurement("saved", "sweep", "Saved as a profile.", now)
         EqService.send(this, EqService.ACTION_REAPPLY)
         Toast.makeText(this, getString(R.string.measure_saved, profile.name), Toast.LENGTH_SHORT).show()
         finish()
@@ -1696,6 +1738,7 @@ class MeasureActivity : TvActivity() {
         // explicit action that applies it. Its output tag is only the Android
         // route estimate captured at import time; the REW file itself names none.
         profileStore.saveProfile(profile, setAsActive = false)
+        profileStore.recordMeasurement("saved", "rew import", "Imported as a profile (not applied until chosen).", now)
         Toast.makeText(this, getString(R.string.measure_import_saved, profile.name), Toast.LENGTH_SHORT).show()
         finish()
     }

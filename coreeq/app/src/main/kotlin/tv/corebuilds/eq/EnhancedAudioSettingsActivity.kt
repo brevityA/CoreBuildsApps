@@ -25,7 +25,10 @@ import tv.corebuilds.eq.apply.SurroundOutput
 import tv.corebuilds.eq.apply.VolumeLevel
 import tv.corebuilds.eq.dsp.TimeBasedSuggestions
 import tv.corebuilds.eq.ui.EnhancedAudioPrefs
+import tv.corebuilds.eq.dsp.NightMode
+import tv.corebuilds.eq.ui.showLevel
 import tv.corebuilds.eq.ui.showSwitch
+import tv.corebuilds.eq.ui.stepWithLeftRight
 
 /**
  * Extra effects: the opt-in layers on top of room correction.
@@ -57,6 +60,7 @@ class EnhancedAudioSettingsActivity : TvActivity() {
     private lateinit var btnLoudness: Button
     private lateinit var btnNight: Button
     private lateinit var btnAutoLoudness: Button
+    private lateinit var btnReset: Button
     private lateinit var textDetailTitle: TextView
     private lateinit var textDetailBody: TextView
     private lateinit var textDetailStatus: TextView
@@ -69,7 +73,8 @@ class EnhancedAudioSettingsActivity : TvActivity() {
         BASS(R.string.extras_name_bass, R.string.extras_bass_note),
         LOUDNESS(R.string.extras_name_loudness, R.string.extras_loudness_note),
         NIGHT(R.string.extras_name_night, R.string.extras_night_note),
-        AUTO_LOUDNESS(R.string.extras_name_auto_loudness, R.string.extras_auto_loudness_note)
+        AUTO_LOUDNESS(R.string.extras_name_auto_loudness, R.string.extras_auto_loudness_note),
+        RESET(R.string.extras_name_reset, R.string.extras_reset_note)
     }
 
     private var shown = Row.STEREO
@@ -96,6 +101,7 @@ class EnhancedAudioSettingsActivity : TvActivity() {
         btnLoudness = findViewById(R.id.btn_extras_loudness)
         btnNight = findViewById(R.id.btn_extras_night)
         btnAutoLoudness = findViewById(R.id.btn_extras_auto_loudness)
+        btnReset = findViewById(R.id.btn_extras_reset)
         textDetailTitle = findViewById(R.id.text_extras_detail_title)
         textDetailBody = findViewById(R.id.text_extras_detail_body)
         textDetailStatus = findViewById(R.id.text_extras_detail_status)
@@ -107,7 +113,8 @@ class EnhancedAudioSettingsActivity : TvActivity() {
             btnBass to Row.BASS,
             btnLoudness to Row.LOUDNESS,
             btnNight to Row.NIGHT,
-            btnAutoLoudness to Row.AUTO_LOUDNESS
+            btnAutoLoudness to Row.AUTO_LOUDNESS,
+            btnReset to Row.RESET
         )) {
             button.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
@@ -121,10 +128,16 @@ class EnhancedAudioSettingsActivity : TvActivity() {
             if (prefs.stereoSpeakersEnabled) stereoOff() else stereoOn()
             changed()
         }
+        // Clarity (was the Dialogue boost switch): OK cycles 0 → +3 dB, Left/Right step.
         btnDialogue.setOnClickListener {
-            prefs.dialogueBoostEnabled = !prefs.dialogueBoostEnabled
-            changed()
+            setClarity(if (prefs.clarityDb >= EnhancedAudioPrefs.CLARITY_MAX_DB) 0.0 else prefs.clarityDb + EnhancedAudioPrefs.CLARITY_STEP_DB)
         }
+        btnDialogue.stepWithLeftRight(
+            canDown = { prefs.clarityDb > 0.0 },
+            down = { setClarity(prefs.clarityDb - EnhancedAudioPrefs.CLARITY_STEP_DB) },
+            canUp = { prefs.clarityDb < EnhancedAudioPrefs.CLARITY_MAX_DB },
+            up = { setClarity(prefs.clarityDb + EnhancedAudioPrefs.CLARITY_STEP_DB) }
+        )
         btnLowBass.setOnClickListener {
             val on = !prefs.lowVolumeBassEnabled
             // Turning it on starts afresh: this output's volume right now
@@ -142,10 +155,15 @@ class EnhancedAudioSettingsActivity : TvActivity() {
             prefs.loudnessEnhancerEnabled = !prefs.loudnessEnhancerEnabled
             changed()
         }
-        btnNight.setOnClickListener {
-            prefs.nightModeEnabled = !prefs.nightModeEnabled
-            changed()
-        }
+        // Night mode (was a switch): OK cycles Off → Light → Strong, Left/Right step.
+        btnNight.setOnClickListener { setNight(prefs.nightLevel.next()) }
+        btnNight.stepWithLeftRight(
+            canDown = { prefs.nightLevel != NightMode.Level.OFF },
+            down = { setNight(prefs.nightLevel.previous()) },
+            canUp = { prefs.nightLevel != NightMode.Level.STRONG },
+            up = { setNight(prefs.nightLevel.next()) }
+        )
+        btnReset.setOnClickListener { resetAll() }
         btnAutoLoudness.setOnClickListener {
             prefs.autoLoudnessEnabled = !prefs.autoLoudnessEnabled
             // Auto loudness is mutually exclusive with low-volume bass.
@@ -244,6 +262,35 @@ class EnhancedAudioSettingsActivity : TvActivity() {
     private fun bitstreamOutput(): Boolean =
         OutputRoute.mayCarryBitstream(this, OutputRoute.current(this)?.kind)
 
+    private fun setClarity(db: Double) {
+        prefs.clarityDb = db
+        changed()
+    }
+
+    private fun setNight(level: NightMode.Level) {
+        prefs.nightLevel = level
+        changed()
+    }
+
+    /**
+     * Every effect on this screen back to off, Stereo speakers through
+     * its own switch-off so Surround sound is put back. Room correction,
+     * profiles and manual EQ are not on this screen and are not touched. No
+     * confirmation: each one is a single press to turn back on, and the panel
+     * says what was reset.
+     */
+    private fun resetAll() {
+        if (prefs.stereoSpeakersEnabled) stereoOff()
+        prefs.lowVolumeBassEnabled = false
+        prefs.bassBoostEnabled = false
+        prefs.loudnessEnhancerEnabled = false
+        prefs.autoLoudnessEnabled = false
+        prefs.resetListening()
+        changed()
+        textDetailStatus.setText(R.string.extras_reset_done)
+        textDetailStatus.visibility = View.VISIBLE
+    }
+
     private fun changed() {
         refresh()
         if (EqService.running) EqService.send(this, EqService.ACTION_RELOAD_PREFS)
@@ -251,11 +298,21 @@ class EnhancedAudioSettingsActivity : TvActivity() {
 
     private fun refresh() {
         btnStereo.showSwitch(prefs.stereoSpeakersEnabled, R.string.extras_stereo_on, R.string.extras_stereo_off)
-        btnDialogue.showSwitch(prefs.dialogueBoostEnabled, R.string.extras_dialogue_on, R.string.extras_dialogue_off)
+        val clarity = prefs.clarityDb
+        btnDialogue.showLevel(
+            if (clarity > 0.0) getString(R.string.extras_clarity_level, clarity) else getString(R.string.extras_clarity_off),
+            clarity > 0.0,
+            getString(R.string.extras_clarity_spoken, if (clarity > 0.0) getString(R.string.extras_clarity_value, clarity) else getString(R.string.extras_level_off))
+        )
         btnLowBass.showSwitch(prefs.lowVolumeBassEnabled, R.string.extras_low_bass_on, R.string.extras_low_bass_off)
         btnBass.showSwitch(prefs.bassBoostEnabled, R.string.extras_bass_on, R.string.extras_bass_off)
         btnLoudness.showSwitch(prefs.loudnessEnhancerEnabled, R.string.extras_loudness_on, R.string.extras_loudness_off)
-        btnNight.showSwitch(prefs.nightModeEnabled, R.string.extras_night_on, R.string.extras_night_off)
+        val night = prefs.nightLevel
+        btnNight.showLevel(
+            getString(R.string.extras_night_level, night.title),
+            night != NightMode.Level.OFF,
+            getString(R.string.extras_night_spoken, night.title)
+        )
         btnAutoLoudness.showSwitch(prefs.autoLoudnessEnabled, R.string.extras_auto_loudness_on, R.string.extras_auto_loudness_off)
         renderDetail()
     }
@@ -309,6 +366,7 @@ class EnhancedAudioSettingsActivity : TvActivity() {
         Row.LOUDNESS -> btnLoudness
         Row.NIGHT -> btnNight
         Row.AUTO_LOUDNESS -> btnAutoLoudness
+        Row.RESET -> btnReset
     }
 
     /** While Low-volume bass is on: where this output's reference sits and what it adds right now; null while off. */

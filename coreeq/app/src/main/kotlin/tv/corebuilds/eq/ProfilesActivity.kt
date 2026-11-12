@@ -2,15 +2,19 @@ package tv.corebuilds.eq
 
 import android.os.Bundle
 import android.content.Intent
+import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import tv.corebuilds.eq.apply.EqService
 import tv.corebuilds.eq.dsp.DspConstants
@@ -18,11 +22,13 @@ import tv.corebuilds.eq.dsp.ManualEq
 import tv.corebuilds.eq.export.Formats
 import tv.corebuilds.eq.apply.OutputRoute
 import tv.corebuilds.eq.export.Profile
+import tv.corebuilds.eq.export.ProfileDetails
 import tv.corebuilds.eq.export.ProfileRouteStore
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.export.ProfileExchange
 import tv.corebuilds.eq.mode.ContentMode
 import tv.corebuilds.eq.mode.ContentModeStore
+import tv.corebuilds.eq.ui.ProfileRouteLine
 import tv.corebuilds.eq.ui.CurveGraphView
 import tv.corebuilds.eq.ui.OverlayPermission
 import tv.corebuilds.eq.ui.QualityText
@@ -50,6 +56,15 @@ class ProfilesActivity : TvActivity() {
     private lateinit var textPlaybackHud: TextView
     private lateinit var btnAllowOverlay: Button
     private lateinit var btnLearnedPrefs: Button
+    private lateinit var btnDetails: Button
+    private lateinit var btnRename: Button
+    private lateinit var btnDuplicate: Button
+    private lateinit var btnImport: Button
+    private lateinit var textRoute: TextView
+    /** One adapter for the screen's life, so a refresh keeps the list's scroll and focus. */
+    private var adapter: ProfileAdapter? = null
+    /** A dialog is up: a second press on the button behind it must not open another. */
+    private var dialogOpen = false
 
     private var profilesList = mutableListOf<Profile>()
     private var selectedProfile: Profile? = null
@@ -92,6 +107,11 @@ class ProfilesActivity : TvActivity() {
         textPlaybackHud = findViewById(R.id.text_playback_hud)
         btnAllowOverlay = findViewById(R.id.btn_allow_overlay)
         btnLearnedPrefs = findViewById(R.id.btn_learned_prefs)
+        btnDetails = findViewById(R.id.btn_profile_details)
+        btnRename = findViewById(R.id.btn_profile_rename)
+        btnDuplicate = findViewById(R.id.btn_profile_duplicate)
+        btnImport = findViewById(R.id.btn_import_profile)
+        textRoute = findViewById(R.id.text_profile_route)
 
         recyclerProfiles.layoutManager = LinearLayoutManager(this)
 
@@ -99,12 +119,15 @@ class ProfilesActivity : TvActivity() {
         loadProfiles()
 
         btnExport.setOnClickListener { exportCurrentProfile() }
-        findViewById<Button>(R.id.btn_import_profile).setOnClickListener {
+        btnImport.setOnClickListener {
             if (!tv.corebuilds.eq.ui.FilePicker.open(this, REQ_IMPORT_PROFILE)) {
                 Toast.makeText(this, "No file picker is available.", Toast.LENGTH_LONG).show()
             }
         }
-        btnDelete.setOnClickListener { deleteCurrentProfile() }
+        btnDelete.setOnClickListener { confirmDelete() }
+        btnDetails.setOnClickListener { showDetails() }
+        btnRename.setOnClickListener { showRename() }
+        btnDuplicate.setOnClickListener { duplicateSelected() }
         btnAnnounce.setOnClickListener {
             profileStore.announceApplied = !profileStore.announceApplied
             refreshOverlaySettings()
@@ -287,14 +310,12 @@ class ProfilesActivity : TvActivity() {
         selectedProfile = active
         activeProfileId = active?.id
 
-        recyclerProfiles.adapter = ProfileAdapter(
-            items = profilesList,
+        val list = adapter ?: ProfileAdapter(
             activeId = { activeProfileId },
             modeStore = modeStore,
             onProfileSelected = { profile ->
                 selectedProfile = profile
-                btnExport.isEnabled = true
-                btnDelete.isEnabled = true
+                setProfileActionsEnabled(true)
                 profileStore.setActiveProfile(profile.id)
                 // Remember this profile as the user's preference for the current output.
                 val currentOutput = OutputRoute.current(this)
@@ -311,14 +332,20 @@ class ProfilesActivity : TvActivity() {
                 activeProfileId = routeMatch?.id
                 EqService.send(this, EqService.ACTION_REAPPLY)
                 displayProfile(profile)
-                if (routeMatch?.id != profile.id) {
-                    Toast.makeText(this, R.string.profile_not_active_on_output, Toast.LENGTH_LONG).show()
-                }
-                recyclerProfiles.adapter?.notifyDataSetChanged()
+                renderRoute(profile, routeMatch, currentOutput)
+                // Only the active badge moved: rebind the rows in place.
+                adapter?.refreshRows()
             }
-        )
-        btnExport.isEnabled = active != null
-        btnDelete.isEnabled = active != null
+        ).also {
+            it.setHasStableIds(true)
+            recyclerProfiles.adapter = it
+            adapter = it
+        }
+        // The rows that were added, removed or kept, by profile id, so the list keeps
+        // its scroll position and the focused row across a rename, duplicate or delete.
+        list.submit(profilesList)
+        setProfileActionsEnabled(active != null)
+        renderRoute(active, routeMatch, output)
         if (active != null) {
             displayProfile(active)
         } else if (profilesList.isNotEmpty() && output?.kind == null) {
@@ -445,24 +472,177 @@ class ProfilesActivity : TvActivity() {
         Toast.makeText(this, if (result.ok) "${result.message} ($label)" else result.message, Toast.LENGTH_LONG).show()
     }
 
-    private fun deleteCurrentProfile() {
+    private fun setProfileActionsEnabled(on: Boolean) {
+        for (button in listOf(btnExport, btnDelete, btnDetails, btnRename, btnDuplicate)) button.isEnabled = on
+    }
+
+    /**
+     * Whether the chosen profile plays on the output in use, on screen for as
+     * long as it is true. It was a toast, gone before it could be read.
+     */
+    private fun renderRoute(chosen: Profile?, matched: Profile?, output: OutputRoute.Output?) {
+        val kind = ProfileRouteLine.kindOf(chosen, matched, output?.kind)
+        val res = ProfileRouteLine.stringRes(kind)
+        textRoute.text = when (kind) {
+            ProfileRouteLine.Kind.MATCHES_OUTPUT -> getString(res, outputWords(output?.kind, output?.name))
+            ProfileRouteLine.Kind.OTHER_OUTPUT -> getString(
+                res,
+                outputWords(output?.kind, output?.name),
+                outputWords(chosen?.outputKind, chosen?.outputName)
+            )
+            else -> getString(res)
+        }
+    }
+
+    private fun outputWords(kind: String?, name: String?): String {
+        val label = OutputRoute.label(kind)
+        val named = name?.takeIf { it.isNotBlank() && !it.equals(label, ignoreCase = true) }
+        return if (named != null) "$label · $named" else label
+    }
+
+    /** A dialog that cannot be stacked by a second press, with focus put back when it closes. */
+    private fun showGuarded(builder: AlertDialog.Builder, returnFocus: View, onShown: (AlertDialog) -> Unit = {}) {
+        if (dialogOpen) return
+        dialogOpen = true
+        val dialog = builder
+            .setOnDismissListener {
+                dialogOpen = false
+                if (returnFocus.isShown && returnFocus.isEnabled) returnFocus.requestFocus()
+            }
+            .create()
+        dialog.show()
+        onShown(dialog)
+    }
+
+    /** Delete asks first: one press used to remove a measured profile with no way back. */
+    private fun confirmDelete() {
         val p = selectedProfile ?: return
-        profileStore.deleteProfile(p.id)
+        val tiedTo = p.outputKind?.let { outputWords(it, p.outputName) }
+            ?: getString(R.string.profile_route_legacy)
+        showGuarded(
+            AlertDialog.Builder(this)
+                .setTitle(getString(R.string.profile_delete_title, p.name))
+                .setMessage(getString(R.string.profile_delete_message, tiedTo))
+                .setPositiveButton(R.string.profile_delete_confirm) { _, _ -> deleteProfile(p) }
+                .setNegativeButton(android.R.string.cancel, null),
+            returnFocus = btnDelete
+        ) { dialog ->
+            // Cancel takes focus: a second OK press must not delete. Posted, because the
+            // dialog's own first layout otherwise moves focus to its button panel.
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.let { cancel -> cancel.post { cancel.requestFocus() } }
+        }
+    }
+
+    private fun deleteProfile(p: Profile) {
+        val deletedAt = profilesList.indexOfFirst { it.id == p.id }
+        if (!profileStore.deleteProfile(p.id)) return
         if (profileStore.getActiveProfile() == null) {
             EqService.disable(this)
         } else {
             EqService.send(this, EqService.ACTION_REAPPLY)
         }
-        Toast.makeText(this, "Deleted ${p.name}", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.profile_deleted, p.name), Toast.LENGTH_SHORT).show()
         loadProfiles()
+        // Land on the profile that took the deleted row's place (the next one), or on
+        // the one before it when the last row went, or on Import when none are left.
+        val target = if (profilesList.isEmpty()) -1 else deletedAt.coerceIn(0, profilesList.size - 1)
+        if (target >= 0) recyclerProfiles.scrollToPosition(target)
+        recyclerProfiles.post {
+            val row = if (target >= 0) recyclerProfiles.layoutManager?.findViewByPosition(target) else null
+            if (row != null) row.requestFocus() else btnImport.requestFocus()
+        }
+    }
+
+    private fun showDetails() {
+        val p = selectedProfile ?: return
+        val body = ProfileDetails.text(ProfileDetails.lines(p, { OutputRoute.label(it) }))
+        val text = TextView(this).apply {
+            this.text = body
+            setTextColor(ContextCompat.getColor(this@ProfilesActivity, R.color.cb_ink))
+            textSize = 15f
+            setLineSpacing(0f, 1.15f)
+        }
+        // Focusable, so the remote scrolls a long list of notes line by line.
+        val scroll = ScrollView(this).apply {
+            isFocusable = true
+            setPadding(48, 16, 48, 8)
+            addView(text)
+            contentDescription = body
+        }
+        showGuarded(
+            AlertDialog.Builder(this)
+                .setTitle(getString(R.string.profile_details_title, p.name))
+                .setView(scroll)
+                .setPositiveButton(android.R.string.ok, null),
+            returnFocus = btnDetails
+        ) { scroll.requestFocus() }
+    }
+
+    private fun showRename() {
+        val p = selectedProfile ?: return
+        val input = EditText(this).apply {
+            setText(p.name)
+            setSelection(text.length)
+            hint = getString(R.string.profile_rename_hint)
+            isSingleLine = true
+            filters = arrayOf(InputFilter.LengthFilter(ProfileStore.MAX_NAME_LENGTH))
+        }
+        showGuarded(
+            AlertDialog.Builder(this)
+                .setTitle(getString(R.string.profile_rename_title, p.name))
+                .setView(input)
+                .setPositiveButton(R.string.profile_rename_save) { _, _ ->
+                    val renamed = profileStore.renameProfile(p.id, input.text.toString())
+                    if (renamed == null) {
+                        Toast.makeText(this, R.string.profile_rename_blank, Toast.LENGTH_LONG).show()
+                    } else {
+                        selectedProfile = renamed
+                        loadProfiles()
+                        displayProfile(renamed)
+                        EqService.send(this, EqService.ACTION_REAPPLY) // the applied card names it
+                        Toast.makeText(this, getString(R.string.profile_renamed, renamed.name), Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .setNegativeButton(android.R.string.cancel, null),
+            returnFocus = btnRename
+        ) { input.requestFocus() }
+    }
+
+    private fun duplicateSelected() {
+        val p = selectedProfile ?: return
+        val copy = profileStore.duplicateProfile(p.id) ?: return
+        loadProfiles()
+        Toast.makeText(this, getString(R.string.profile_duplicated, copy.name), Toast.LENGTH_LONG).show()
     }
 
     private class ProfileAdapter(
-        private val items: List<Profile>,
         private val activeId: () -> String?,
         private val modeStore: ContentModeStore,
         private val onProfileSelected: (Profile) -> Unit
     ) : RecyclerView.Adapter<ProfileViewHolder>() {
+
+        private var items: List<Profile> = emptyList()
+
+        /**
+         * Show [newItems], telling the list exactly which rows were inserted,
+         * removed or kept. Kept rows are always rebound: a row also shows its mode
+         * overlays and the active badge, which live outside [Profile] and may have
+         * changed while another screen was open.
+         */
+        fun submit(newItems: List<Profile>) {
+            val old = items
+            val next = newItems.toList()
+            items = next
+            DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+                override fun getOldListSize(): Int = old.size
+                override fun getNewListSize(): Int = next.size
+                override fun areItemsTheSame(oldPosition: Int, newPosition: Int): Boolean = old[oldPosition].id == next[newPosition].id
+                override fun areContentsTheSame(oldPosition: Int, newPosition: Int): Boolean = false
+            }, false).dispatchUpdatesTo(this)
+        }
+
+        /** Rebind every row where it is; nothing is inserted or removed. */
+        fun refreshRows() = notifyItemRangeChanged(0, itemCount)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfileViewHolder {
             val v = LayoutInflater.from(parent.context).inflate(R.layout.item_profile_row, parent, false)
@@ -470,6 +650,15 @@ class ProfilesActivity : TvActivity() {
         }
 
         override fun getItemCount(): Int = items.size
+
+        /**
+         * Stable ids keep focus on the same profile across a refresh. Each profile id
+         * gets its own number for the adapter's life; String.hashCode() collided
+         * ("Aa" and "BB" are both 2112), and a collision moves focus to the wrong row.
+         */
+        private val stableIds = HashMap<String, Long>()
+        private var nextStableId = 1L
+        override fun getItemId(position: Int): Long = stableIds.getOrPut(items[position].id) { nextStableId++ }
 
         override fun onBindViewHolder(holder: ProfileViewHolder, position: Int) {
             val item = items[position]

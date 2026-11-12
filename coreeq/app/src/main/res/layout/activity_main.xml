@@ -281,6 +281,18 @@
             android:visibility="gone"
             android:layout_marginTop="@dimen/cb_space_xs" />
 
+        <!-- What is actually applied, then which listening effects are on.
+             Requested and applied are said separately, never as one "Active". -->
+        <TextView
+            android:id="@+id/text_home_summary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/cb_ink"
+            android:textSize="@dimen/cb_text_kicker"
+            android:maxLines="4"
+            android:ellipsize="end"
+            android:layout_marginTop="@dimen/cb_space_xs" />
+
         <!-- What the correction service last did, including every failure -->
         <TextView
             android:id="@+id/text_eq_status"

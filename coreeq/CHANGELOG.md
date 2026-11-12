@@ -8,6 +8,94 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
+Not a release: no version number has been chosen or bumped. Android build,
+lint and Robolectric results are listed in the pull request. Nothing below has
+been played or measured on a TV or a phone; the hardware checklist in the
+pull request is outstanding. Existing settings carry over: Dialogue boost on
+becomes Clarity +2 dB and the night switch on becomes Night: Strong, both the
+same sound as before; profiles are unchanged.
+
+Known issue, disclosed and not changed here: Auto loudness has had no effect
+on the sound since 1.10.2. Its band lookup gives every band the same gain,
+which the headroom shift removes. Extra effects and Home now say so; the fix
+changes the sound for anyone with the switch on, so it is a separate change
+that asks first.
+
+### Added
+
+- **Night mode has a Light level.** Night mode is now Off, Light or Strong.
+  Light (−6 dB, 3:1, 100 ms release) brings down only the loudest moments;
+  Strong is the night switch that shipped before, unchanged. It retunes Core
+  EQ's one limiter, adds no gain, and Home says when the Equalizer fallback
+  cannot run it.
+- **Home says what is applied apart from what is switched on.** A summary
+  line names the state: applied by DynamicsProcessing or Equalizer, pending,
+  paused while a room is measured, nothing measured for this output, output
+  unknown, service not running, or not applied with the TV's reason. A second
+  line lists the listening effects switched on. Neither claims a playing
+  stream passes through the effect.
+- **Profiles can be renamed, duplicated and inspected.** Details lists kind,
+  date, output, target, microphone, capture, room, RT60, signal-to-noise,
+  corrected range, repeat agreement, manual EQ and notes, and says "not
+  recorded" where an older profile lacks a field. A duplicate is independent,
+  keeps its mode overlays, and is not made active.
+- **A diagnostics summary on Capability.** Built only when pressed and shown
+  in full before Copy or Show as QR code: versions, TV model, the output and
+  how Android reported it, the profile's kind (not its name), Home's two lines,
+  the last service message, how the last measurement ended, and the
+  background-work counters. Core EQ sends nothing. Recordings, curves and
+  pairing keys are never included. Masking in the free-text lines is best
+  effort and the screen says so: the names of saved profiles and reported
+  outputs (3 characters or longer), IPv4 and MAC addresses, IPv6 addresses
+  written in full and hex ids of 16 characters or more are masked. A name
+  Core EQ has never seen, a shortened IPv6 address and a shorter id are not,
+  so the header says to read it before sharing.
+- **Extra effects has a Reset.** It turns every effect on that screen off and
+  leaves room correction, profiles and manual EQ alone.
+
+### Changed
+
+- **Dialogue boost is now Clarity, Off to +3 dB in 1 dB steps.** Level rows
+  step with OK, and Left and Right step down and up. Clarity does not stack
+  with Stereo speakers' speech lift or with a Dialogue or House target's
+  presence.
+- **Profiles shows on screen whether the chosen profile is the one for the
+  output in use.** It was a toast. The line says only that, or that the
+  output is not identified; whether correction is applying it now is Home's
+  answer. The route line and the profile actions sit under the list, so the
+  curve keeps its full height.
+- **Bass boost and Loudness enhancer say their gain is outside Core EQ's
+  headroom.** Android does not report whether its limiter runs after them.
+  `docs/CORE_EQ_HEADROOM_AUDIT.md` sets out the whole gain chain.
+- **Repeat wording now separates the TV from the phone everywhere.** A
+  same-position repeat started on the TV is averaged into the correction when
+  its output and microphone match the first sweep (since 1.13.2); a repeat
+  from the phone companion is compared only, never averaged. The release
+  notes' limits paragraph said no repeat was ever averaged, and the TV
+  Measure screen's repeat intro implied the same; both now say which path
+  does what. `tests/test_core_eq_update_contract.py` holds the release text.
+
+### Fixed
+
+- **Delete asks first.** One press of Delete removed a measured profile with
+  no way back. It now asks, with Cancel focused, so a second OK does nothing.
+  After a delete, focus moves to the profile that took its place, or the one
+  above it when the last row went.
+- **Back from an unsaved measurement asks before discarding it.** Save,
+  Discard or Keep it, with Keep it focused. A finished sweep used to be lost
+  to one press of Back.
+- **Profiles keeps its place when you come back to it.** The list was rebuilt
+  on every return, losing scroll position and focus.
+- **Disabled menu rows look disabled.** They used the enabled text colour, so
+  a row that did nothing looked usable.
+- **A profile made while Android could not confirm the output is saved as
+  "unknown output".** Manual EQ and measurements saved it as "unconfirmed",
+  a key no route ever matches, so a manual-only curve made then was never
+  applied, a repeat sweep counted the route as reported, and a first clean
+  measurement could auto-apply on it. Ambiguous outputs were already saved
+  as unknown. Profiles saved this way before are left as they are.
+- **Home no longer says Off twice.**
+
 ## [1.13.2] — 2026-11-10
 
 versionCode 29. Android build, lint and Robolectric pass: 912 unit tests (877

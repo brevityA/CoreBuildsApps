@@ -3,6 +3,7 @@ package tv.corebuilds.eq.export
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.core.content.edit
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -139,6 +140,40 @@ class ProfileStore(context: Context) {
             }
         }
         return removed
+    }
+
+    /**
+     * Rename one profile. Only the name changes: id, curve, output tag,
+     * notes and the mode EQ keyed by the id stay as they were. Returns the
+     * renamed profile, or null when [id] is unknown or the name is blank.
+     */
+    fun renameProfile(id: String, requestedName: String): Profile? {
+        val name = cleanName(requestedName) ?: return null
+        val list = getAllProfiles().toMutableList()
+        val index = list.indexOfFirst { it.id == id }
+        if (index < 0) return null
+        val renamed = list[index].copy(name = name)
+        list[index] = renamed
+        persistProfiles(list)
+        return renamed
+    }
+
+    /**
+     * An independent copy of one profile: a new id, the same curve,
+     * output tag, notes and manual EQ, and a copy of its per-mode EQ, so
+     * editing either afterwards leaves the other alone. The copy keeps the
+     * original's measurement time (it is the same measurement) and is not made
+     * active: duplicating never changes what plays. Null when [id] is unknown.
+     */
+    fun duplicateProfile(id: String, newId: String = "copy-${UUID.randomUUID()}"): Profile? {
+        val list = getAllProfiles().toMutableList()
+        val source = list.firstOrNull { it.id == id } ?: return null
+        val copy = source.copy(id = newId, name = copyName(source.name, list.map { it.name }.toSet()))
+        list.add(copy)
+        persistProfiles(list)
+        val modes = ContentModeStore(appContext)
+        for ((mode, filters) in modes.allModeFilters(id)) modes.saveModeFilters(newId, mode, filters)
+        return copy
     }
 
     /** Built-in tone presets, then the shipped hardware presets, then any presets the viewer saved. */
@@ -299,6 +334,46 @@ class ProfileStore(context: Context) {
     }
 
     /** The currently-applied engine layout; transient runtime state, not profile data. */
+    /**
+     * The service is suspended for a room measurement, so Home can say
+     * "paused while measured" instead of guessing from the last message.
+     * Written by [tv.corebuilds.eq.apply.EqService] only.
+     */
+    var measurementPaused: Boolean
+        get() = prefs.getBoolean(KEY_MEASUREMENT_PAUSED, false)
+        set(value) = prefs.edit { putBoolean(KEY_MEASUREMENT_PAUSED, value) }
+
+    /** The engine the service last configured ("DynamicsProcessing", "Equalizer"), or null while none is held. */
+    var appliedEngine: String?
+        get() = prefs.getString(KEY_APPLIED_ENGINE, null)
+        set(value) = prefs.edit { if (value == null) remove(KEY_APPLIED_ENGINE) else putString(KEY_APPLIED_ENGINE, value) }
+
+    /**
+     * How the last measurement on this TV ended, for the diagnostics
+     * summary: saved, failed or cancelled, the sweep it was on and the message
+     * the screen showed. Words only: no capture, curve or microphone data.
+     */
+    data class MeasurementOutcome(val outcome: String, val stage: String, val message: String, val atMs: Long)
+
+    fun recordMeasurement(outcome: String, stage: String, message: String, atMs: Long = System.currentTimeMillis()) {
+        prefs.edit {
+            putString(KEY_MEASURE_OUTCOME, outcome)
+            putString(KEY_MEASURE_STAGE, stage)
+            putString(KEY_MEASURE_MESSAGE, message.take(MAX_MEASURE_MESSAGE))
+            putLong(KEY_MEASURE_TIME, atMs)
+        }
+    }
+
+    fun lastMeasurement(): MeasurementOutcome? {
+        val outcome = prefs.getString(KEY_MEASURE_OUTCOME, null) ?: return null
+        return MeasurementOutcome(
+            outcome,
+            prefs.getString(KEY_MEASURE_STAGE, null).orEmpty(),
+            prefs.getString(KEY_MEASURE_MESSAGE, null).orEmpty(),
+            prefs.getLong(KEY_MEASURE_TIME, 0L)
+        )
+    }
+
     fun runtimeBands(): List<PlatformBand> {
         val raw = prefs.getString(KEY_RUNTIME_BANDS, null) ?: return emptyList()
         return try {
@@ -344,7 +419,33 @@ class ProfileStore(context: Context) {
     }
 
     companion object {
+        /** The longest profile name Rename keeps; a TV row shows about this much. */
+        const val MAX_NAME_LENGTH = 48
+
+        /** Trimmed, inner whitespace collapsed, at most [MAX_NAME_LENGTH]; null when nothing is left. */
+        fun cleanName(raw: String): String? =
+            raw.trim().replace(Regex("\\s+"), " ").take(MAX_NAME_LENGTH).trim().takeIf { it.isNotEmpty() }
+
+        /** "Living room (copy)", then "(copy 2)", "(copy 3)"…, never a name already in [taken]. */
+        fun copyName(original: String, taken: Set<String>): String {
+            val base = original.take(MAX_NAME_LENGTH - " (copy 99)".length).trimEnd()
+            var candidate = "$base (copy)"
+            var n = 2
+            while (candidate in taken) candidate = "$base (copy ${n++})"
+            return candidate
+        }
+
         private const val TAG = "CoreEqProfiles"
+        // Storage identifiers, not release numbers: the "v1140" suffix follows the
+        // file's convention (announce_applied_v130, card_seconds_v1_6) and does not
+        // fix the next release's number. Once released, these names must not change.
+        private const val KEY_MEASUREMENT_PAUSED = "service_measurement_paused_v1140"
+        private const val KEY_APPLIED_ENGINE = "service_applied_engine_v1140"
+        private const val KEY_MEASURE_OUTCOME = "last_measurement_outcome_v1140"
+        private const val KEY_MEASURE_STAGE = "last_measurement_stage_v1140"
+        private const val KEY_MEASURE_MESSAGE = "last_measurement_message_v1140"
+        private const val KEY_MEASURE_TIME = "last_measurement_time_v1140"
+        private const val MAX_MEASURE_MESSAGE = 240
         private const val PREFS_NAME = "core_eq_profiles"
         private const val KEY_PROFILES = "profiles_json"
         private const val KEY_ACTIVE_ID = "active_profile_id"

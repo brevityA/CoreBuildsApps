@@ -349,6 +349,17 @@
                     android:stateListAnimator="@animator/focus_raise"
                     android:text="@string/action_support"
                     android:layout_marginTop="@dimen/cb_space_sm" />
+
+                <!-- A summary for a bug report, built only when pressed,
+                     shown in full before it can be copied or shown as a QR code.
+                     Nothing is sent. -->
+                <Button
+                    android:id="@+id/btn_diagnostics"
+                    style="@style/Widget.CoreEQ.Pill.Ghost"
+                    android:layout_width="match_parent"
+                    android:stateListAnimator="@animator/focus_raise"
+                    android:text="@string/action_diagnostics"
+                    android:layout_marginTop="@dimen/cb_space_xs" />
             </LinearLayout>
 
         </LinearLayout>

@@ -211,10 +211,10 @@ class ToneLayersTest {
     @Test
     fun `status words name only what is applied`() {
         assertEquals("", ToneLayers.NONE.label(profile()))
-        assertEquals("dialogue +2 dB", ToneLayers(dialogue = true).label(profile()))
+        assertEquals("clarity +2 dB", ToneLayers(dialogue = true).label(profile()))
         assertEquals("", ToneLayers(dialogue = true).label(profile("dialogue")))
         assertEquals(
-            "dialogue +2 dB + low-volume bass +1.5 dB",
+            "clarity +2 dB + low-volume bass +1.5 dB",
             ToneLayers(dialogue = true, lowVolumeBassDb = 1.5).label(profile())
         )
         assertEquals("stereo: speech +3 dB, bass guard", ToneLayers(stereoDownmix = true).label(profile()))

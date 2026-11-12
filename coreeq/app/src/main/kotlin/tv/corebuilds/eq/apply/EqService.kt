@@ -37,6 +37,7 @@ import tv.corebuilds.eq.MainActivity
 import tv.corebuilds.eq.export.ProfileRouteStore
 import tv.corebuilds.eq.R
 import tv.corebuilds.eq.export.PlatformBand
+import tv.corebuilds.eq.dsp.NightMode
 import tv.corebuilds.eq.export.Profile
 import tv.corebuilds.eq.export.ProfileStore
 import tv.corebuilds.eq.mode.ContentModeStore
@@ -481,6 +482,9 @@ class EqService : Service() {
         discoveredPackages = modeStore.lastActivePackages()
         discoveredHasUnknownPlayer = modeStore.lastActivePlayerUnknown()
         store.clearRuntimeBands()
+        // A service that has just started holds no effect and is not suspended.
+        store.appliedEngine = null
+        store.measurementPaused = false
         createChannel()
         val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK else 0
         try {
@@ -545,6 +549,7 @@ class EqService : Service() {
         when (intent?.action) {
             ACTION_SUSPEND -> {
                 suspended = true
+                store.measurementPaused = true
                 mainHandler.removeCallbacks(playbackCheck)
                 playbackCheckQueued = false
                 mainHandler.removeCallbacks(ownProbeRecheck)
@@ -556,6 +561,7 @@ class EqService : Service() {
             }
             ACTION_RESUME -> {
                 suspended = false
+                store.measurementPaused = false
                 mediaSessionMonitor.setEnabled(MediaSessionDiscovery.hasAccess(this))
                 reapplyWithConfirmedRoute()
                 if (playerDiscoveryAvailable()) scheduleDiscovery(0L)
@@ -997,6 +1003,7 @@ class EqService : Service() {
         val representative = globalEffect ?: sessionEqs.values.firstOrNull()?.applied
         if (representative == null) store.clearRuntimeBands()
         else store.setRuntimeBands(representative.bands)
+        store.appliedEngine = representative?.engine
     }
 
     private fun setAllEnabled(on: Boolean) {
@@ -1235,11 +1242,14 @@ class EqService : Service() {
     /** Say what the Extra effects screen added, and when night mode cannot run. */
     private fun extrasNote(applied: List<AppliedEffect>, profile: Profile?): String {
         val extras = extrasWords(applied, profile)
-        val night = enhancedPrefs?.nightModeEnabled == true
+        val level = enhancedPrefs?.nightLevel ?: NightMode.Level.OFF
         val nightOnDp = applied.any { it.engine == ENGINE_DYNAMICS_PROCESSING }
         return buildString {
             if (extras.isNotEmpty()) append(" · extras: ").append(extras.joinToString(" / "))
-            if (night) append(if (nightOnDp) " · night mode" else " · night mode needs DynamicsProcessing, not active")
+            if (level != NightMode.Level.OFF) {
+                append(" · ").append(NightMode.describe(level))
+                if (!nightOnDp) append(", not active: it needs DynamicsProcessing")
+            }
         }
     }
 
@@ -1430,8 +1440,9 @@ class EqService : Service() {
             output?.let { OutputRoute.label(it.kind) },
             engineWords(applied)
         ).joinToString(" · ")
-        val night = enhancedPrefs?.nightModeEnabled == true && applied.any { it.engine == ENGINE_DYNAMICS_PROCESSING }
-        val extras = (extrasWords(applied, profile) + listOfNotNull("night mode".takeIf { night }))
+        val level = enhancedPrefs?.nightLevel ?: NightMode.Level.OFF
+        val night = level != NightMode.Level.OFF && applied.any { it.engine == ENGINE_DYNAMICS_PROCESSING }
+        val extras = (extrasWords(applied, profile) + listOfNotNull("night ${level.title.lowercase()}".takeIf { night }))
             .joinToString(" · ") { word -> word.replaceFirstChar { it.uppercaseChar() } }
             .ifEmpty { null }
         val content = AppliedCard.Content(active = true, title = profile.name, detail = detail, extras = extras)
@@ -1544,7 +1555,7 @@ class EqService : Service() {
             ZERO_GAINS
         }
         return ToneLayers(
-            dialogue = prefs.dialogueBoostEnabled,
+            clarityDb = prefs.clarityDb,
             lowVolumeBassDb = bass,
             stereoDownmix = prefs.stereoSpeakersEnabled,
             loudnessBandGains = loudness,
@@ -1604,6 +1615,8 @@ class EqService : Service() {
         enhancedPrefs = null
         
         store.clearRuntimeBands()
+        store.appliedEngine = null
+        store.measurementPaused = false
         // "Off" is the user's switch, not the service's fate: a service the
         // system stopped is not a correction the user turned off, and the
         // screen must not say so.
