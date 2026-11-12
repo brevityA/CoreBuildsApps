@@ -44,7 +44,14 @@ case "$*" in
   "shell getprop ro.build.fingerprint") echo "maker/model/x:14/AB12/1:user/release-keys";;
   "shell dumpsys package tv.corebuilds.eq") printf '    versionCode=30 minSdk=26\n    versionName=1.14.0\n';;
   "shell am start -W -n tv.corebuilds.eq/.MainActivity")
-    if [ -n "$STUB_NO_TIMES" ]; then echo "Status: ok"; else printf 'Status: ok\nLaunchState: COLD\nTotalTime: 812\nWaitTime: 815\nComplete\n'; fi;;
+    case "${STUB_START:-cold}" in
+      cold) printf 'Status: ok\nLaunchState: COLD\nTotalTime: 812\nWaitTime: 815\nComplete\n';;
+      warm) printf 'Status: ok\nLaunchState: WARM\nTotalTime: 240\nWaitTime: 243\nComplete\n';;
+      none) echo "Status: ok";;
+      error) printf 'Starting: Intent { cmp=tv.corebuilds.eq/.MainActivity }\nError type 3\nError: Activity class {tv.corebuilds.eq/tv.corebuilds.eq.MainActivity} does not exist.\n'; exit 1;;
+      timeout) printf 'Status: timeout\nComplete\n';;
+      front) printf 'Warning: Activity not started, its current task has been brought to the front\nStatus: ok\nLaunchState: HOT\nComplete\n';;
+    esac;;
   "shell dumpsys gfxinfo tv.corebuilds.eq") printf 'Total frames rendered: 120\nJanky frames: 3 (2.50%%)\n50th percentile: 6ms\n90th percentile: 11ms\n';;
   "shell dumpsys activity service tv.corebuilds.eq/.apply.EqService")
     printf 'SERVICE tv.corebuilds.eq/.apply.EqService 1a2b pid=4242\n  Client:\n    Core EQ 1.14.0 (30), since the process started\n    Timings:\n      apply: count=1\n';;
@@ -84,12 +91,15 @@ class DeviceBenchTest(unittest.TestCase):
     def test_report_has_every_section_and_no_serial(self):
         done, report, log = self.run_bench()
         self.assertEqual(0, done.returncode, done.stderr)
-        for heading in ("## Cold starts", "## Warm starts", "## Home frames", "## Profiles frames",
+        for heading in ("## Starts after force-stop", "## Starts after the Home key", "## Home frames", "## Profiles frames",
                         "## Core EQ counters and timings", "## Notes"):
             self.assertIn(heading, report)
         self.assertIn("tv: Maker Model X", report)
         self.assertIn("app: versionName=1.14.0 versionCode=30", report)
-        self.assertEqual(2, len(re.findall(r"^cold \d+: LaunchState: COLD TotalTime: 812", report, re.M)))
+        self.assertEqual(2, len(re.findall(r"^after force-stop \d+: LaunchState: COLD TotalTime: 812 WaitTime: 815$", report, re.M)))
+        self.assertEqual(2, len(re.findall(r"^after Home key \d+: LaunchState: COLD", report, re.M)))
+        self.assertEqual(2, report.count("reported: COLD 2, WARM 0, HOT 0, no LaunchState 0, failed or not started 0"))
+        self.assertIn("clears them, so they cover only what ran after the last start after force-stop", report)
         self.assertIn("Total frames rendered: 120", report)
         self.assertIn("Core EQ 1.14.0 (30), since the process started", report)
         self.assertIn("skipped (SKIP_PROFILES=1)", report)
@@ -100,9 +110,34 @@ class DeviceBenchTest(unittest.TestCase):
         self.assertNotRegex(log, r"\b(install|uninstall|settings put|pm clear)\b")
 
     def test_a_missing_figure_does_not_abort_the_run(self):
-        done, report, _ = self.run_bench(STUB_NO_TIMES="1")
+        done, report, _ = self.run_bench(STUB_START="none")
         self.assertEqual(0, done.returncode, done.stderr)
-        self.assertIn("cold 1: (no start figures reported)", report)
+        self.assertIn("after force-stop 1: launched, no start figures reported", report)
+        self.assertIn("reported: COLD 0, WARM 0, HOT 0, no LaunchState 2, failed or not started 0", report)
+
+    def test_a_failed_launch_is_not_reported_as_missing_figures(self):
+        done, report, _ = self.run_bench(STUB_START="error")
+        self.assertEqual(0, done.returncode, done.stderr)
+        self.assertIn("after force-stop 1: launch failed: Error type 3", report)
+        self.assertNotIn("no start figures", report)
+        self.assertIn("reported: COLD 0, WARM 0, HOT 0, no LaunchState 0, failed or not started 2", report)
+        # The Home frames step launches too; its failure is reported, not fatal.
+        self.assertIn("(Home did not open, so no frames: launch failed: Error type 3)", report)
+        self.assertIn("## Notes", report)
+
+    def test_an_unfinished_or_refused_start_is_not_a_sample(self):
+        _, report, _ = self.run_bench(STUB_START="timeout")
+        self.assertIn("after force-stop 1: launch did not finish: Status: timeout", report)
+        _, report, _ = self.run_bench(STUB_START="front")
+        self.assertIn("after Home key 1: not started: Warning: Activity not started", report)
+        self.assertNotIn("LaunchState: HOT", report)
+
+    def test_android_launch_state_is_kept_whatever_the_section_meant(self):
+        # A start after force-stop that Android reports as WARM did not start a process:
+        # the line says WARM, and the tally counts it as WARM, not cold.
+        _, report, _ = self.run_bench(STUB_START="warm")
+        self.assertIn("after force-stop 1: LaunchState: WARM TotalTime: 240", report)
+        self.assertIn("reported: COLD 0, WARM 2, HOT 0", report)
 
     def test_refuses_without_exactly_one_device(self):
         done, report, _ = self.run_bench(devices="")

@@ -34,9 +34,36 @@ sh_ pm path "$PKG" | grep -q '^package:' || die "$PKG is not installed on this d
 [[ "$RUNS" =~ ^[1-9][0-9]*$ ]] || die "RUNS must be a positive whole number"
 
 start_once() {
-  # TotalTime/WaitTime in ms, and LaunchState (COLD, WARM or HOT) on Android 10+.
-  { sh_ am start -W -n "$HOME_ACTIVITY" | grep -E '^(LaunchState|TotalTime|WaitTime):' | tr '\n' ' '; } || printf '(no start figures reported)'
-  echo
+  # One `am start -W`, reported as one of:
+  #   the figures Android printed: LaunchState (COLD, WARM or HOT, Android 10+),
+  #     TotalTime and WaitTime in ms. LaunchState is Android's own label for the
+  #     start that happened, kept as reported: a start after force-stop that
+  #     says WARM did not start a new process, whatever the section is called;
+  #   "launch failed: <line>" when am printed an error (nothing was started);
+  #   "launch did not finish: <line>" for any Status other than ok (a timeout);
+  #   "not started: <line>" when Android brought an existing task to the front;
+  #   "launched, no start figures reported" when it started but printed none.
+  local out figures problem
+  out=$(sh_ am start -W -n "$HOME_ACTIVITY" 2>&1 || true)
+  problem=$(printf '%s\n' "$out" | grep -m1 -E '^(Error|Exception|java\.)' || true)
+  if [ -n "$problem" ]; then echo "launch failed: $problem"; return; fi
+  problem=$(printf '%s\n' "$out" | grep -m1 -E '^Status: ' | grep -v '^Status: ok$' || true)
+  if [ -n "$problem" ]; then echo "launch did not finish: $problem"; return; fi
+  problem=$(printf '%s\n' "$out" | grep -m1 -E '^Warning: Activity not started' || true)
+  if [ -n "$problem" ]; then echo "not started: $problem"; return; fi
+  figures=$(printf '%s\n' "$out" | grep -E '^(LaunchState|TotalTime|WaitTime):' | tr '\n' ' ' | sed 's/ $//' || true)
+  if [ -n "$figures" ]; then echo "$figures"; else echo "launched, no start figures reported"; fi
+}
+
+# Count what the lines of one section reported, by Android's LaunchState.
+tally() {
+  local lines="$1"
+  printf 'reported: COLD %s, WARM %s, HOT %s, no LaunchState %s, failed or not started %s\n' \
+    "$(grep -c 'LaunchState: COLD' <<<"$lines" || true)" \
+    "$(grep -c 'LaunchState: WARM' <<<"$lines" || true)" \
+    "$(grep -c 'LaunchState: HOT' <<<"$lines" || true)" \
+    "$(grep -E -c ': (TotalTime|WaitTime|launched, no start figures)' <<<"$lines" || true)" \
+    "$(grep -E -c ': (launch failed|launch did not finish|not started)' <<<"$lines" || true)"
 }
 
 frames() {
@@ -53,29 +80,38 @@ frames() {
   echo "runs_per_kind: $RUNS"
   echo
 
-  echo "## Cold starts (force-stop, then am start -W)"
+  # Section names say what the script did; each line keeps what Android reported.
+  echo "## Starts after force-stop (meant to be cold; am start -W)"
+  section=""
   for i in $(seq 1 "$RUNS"); do
     sh_ am force-stop "$PKG"
     sleep 3
-    printf 'cold %s: ' "$i"; start_once
+    line="after force-stop $i: $(start_once)"
+    echo "$line"; section+="$line"$'\n'
     sleep 3
   done
+  tally "$section"
   echo
 
-  echo "## Warm starts (Home key, then am start -W)"
+  echo "## Starts after the Home key (meant to be warm; am start -W)"
+  section=""
   for i in $(seq 1 "$RUNS"); do
     sh_ input keyevent KEYCODE_HOME
     sleep 2
-    printf 'warm %s: ' "$i"; start_once
+    line="after Home key $i: $(start_once)"
+    echo "$line"; section+="$line"$'\n'
     sleep 3
   done
+  tally "$section"
   echo
 
   echo "## Home frames (gfxinfo reset, open Home, wait 5 s)"
   sh_ dumpsys gfxinfo "$PKG" reset >/dev/null
-  sh_ am start -W -n "$HOME_ACTIVITY" >/dev/null
-  sleep 5
-  frames
+  home=$(start_once)
+  case "$home" in
+    "launch failed"*|"launch did not finish"*|"not started"*) echo "(Home did not open, so no frames: $home)";;
+    *) sleep 5; frames;;
+  esac
   echo
 
   echo "## Profiles frames"
@@ -103,7 +139,11 @@ frames() {
   echo "## Notes"
   echo "- One sample on one TV; not a performance claim."
   echo "- Compare runs only on the same TV, firmware and app build."
+  echo "- LaunchState is Android's label for each start, as reported; only COLD lines time a new process."
+  echo "- A failed or unfinished launch is not a sample: leave it out of medians."
   echo "- Home/Profiles 'first draw' and 'ready' count from the activity's construction, after process start."
+  echo "- The service dump's counters and timings are in memory and restart with the process: force-stop"
+  echo "  clears them, so they cover only what ran after the last start after force-stop above."
 } >"$OUT" 2>&1
 
 echo "Wrote $OUT"

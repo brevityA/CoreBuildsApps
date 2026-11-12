@@ -70,10 +70,15 @@ that asks first.
   ended, since the process started. In memory only; shown in Capability's
   diagnostics summary and the service's `dumpsys` output, sent nowhere. No
   figure has been read on a TV yet, and none is a performance claim.
-- **`tools/core_eq_device_bench.sh` measures a TV from a computer.** Cold and
-  warm starts, Home and Profiles frame statistics, and the timings above, in
-  one report; `docs/CORE_EQ_DEVICE_BENCHMARK.md` is the procedure. Not yet
-  run on any device.
+- **`tools/core_eq_device_bench.sh` measures a TV from a computer.** Starts
+  after force-stop and after the Home key, Home and Profiles frame
+  statistics, and the timings above, in one report;
+  `docs/CORE_EQ_DEVICE_BENCHMARK.md` is the procedure. Each start keeps the
+  LaunchState Android reported (COLD, WARM or HOT); a failed, unfinished or
+  refused launch is reported as such, not as missing figures, and is not a
+  sample. The in-app timings restart with the process, so the report's
+  dump covers only what ran after the last force-stop. Not yet run on any
+  device.
 - **Extra effects has a Reset.** It turns every effect on that screen off and
   leaves room correction, profiles and manual EQ alone.
 
