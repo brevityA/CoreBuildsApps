@@ -480,9 +480,13 @@ object OutputRoute {
         )
     }
 
-    /** The key a new measurement is saved under: never null, which is reserved for old profiles. */
+    /**
+     * The key a new measurement is saved under: never null, which is reserved for old profiles.
+     * An output Android did not identify, [AMBIGUOUS] or [UNCONFIRMED], is saved as [UNKNOWN]:
+     * until 1.13.2 an unconfirmed route was saved as "unconfirmed", a key [pick] never matches.
+     */
     fun keyFor(output: Output?): String =
-        output?.kind?.takeUnless { it == AMBIGUOUS } ?: UNKNOWN
+        output?.kind?.takeIf { isIdentified(it) } ?: UNKNOWN
 
     /** Why a profile was, or was not, picked for the current output. */
     data class Pick(val profile: Profile?, val switched: Boolean)
