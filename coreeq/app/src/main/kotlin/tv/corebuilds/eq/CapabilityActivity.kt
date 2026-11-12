@@ -100,7 +100,7 @@ class CapabilityActivity : TvActivity() {
                 buildType = BuildConfig.BUILD_TYPE,
                 android = Build.VERSION.RELEASE ?: "unknown",
                 sdkInt = Build.VERSION.SDK_INT,
-                device = "${Build.MANUFACTURER} ${Build.MODEL}",
+                device = DeviceName.current(),
                 profileKind = snap.profile?.let { ProfileDetails.kindOf(it) },
                 profileOutput = snap.profile?.outputKind?.let { OutputRoute.label(it) },
                 profileAgeSeconds = snap.profile?.timestampMs?.let(secondsSince),
