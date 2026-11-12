@@ -52,7 +52,7 @@ class ProfileStore(
     init {
         // Builds before this one seeded three demo profiles made from a
         // synthetic room. They were never measurements, so they go.
-        if (!prefs.getBoolean(KEY_DEMO_PURGED, false)) {
+        if (!prefs.getBoolean(KEY_DEMO_PURGED, false)) synchronized(LIST_LOCK) {
             // Writes the list only when a demo profile is actually there: opening
             // the store must not rewrite anyone's profiles.
             val all = getAllProfiles()
@@ -68,7 +68,7 @@ class ProfileStore(
     }
 
     /** Move v1 manual trims into the Everyday overlay without losing profile-specific edits. */
-    private fun migrateLegacyManualFiltersToEveryday() {
+    private fun migrateLegacyManualFiltersToEveryday() = synchronized(LIST_LOCK) {
         if (prefs.getBoolean(KEY_MODE_EQ_MIGRATED, false)) return
         val modes = ContentModeStore(appContext)
         val profiles = getAllProfiles()
@@ -106,14 +106,35 @@ class ProfileStore(
     private class Stored(val json: Any?, val profile: Profile?)
 
     /** The stored list in stored order; empty when nothing is stored or the text is not JSON. */
-    private fun readStored(): List<Stored> {
-        val raw = prefs.getString(KEY_PROFILES, null) ?: return emptyList()
+    private fun readStored(): List<Stored> = readList().entries
+
+    /**
+     * The stored list, plus the stored text itself when it is not a JSON array at all.
+     * [entries] is then empty, and the next write keeps [unreadable] before it starts
+     * a new list (see [persistProfiles]).
+     */
+    private class Read(val entries: List<Stored>, val unreadable: String?)
+
+    private fun readList(): Read {
+        val raw = prefs.getString(KEY_PROFILES, null) ?: return Read(emptyList(), null)
         val arr = try {
             JSONArray(raw)
         } catch (e: JSONException) {
             Log.e(TAG, "Saved profiles are not valid JSON", e)
-            return emptyList()
+            return Read(emptyList(), raw)
         }
+        return Read(readEntries(arr), null)
+    }
+
+    /**
+     * True when a saved profile list could not be read at all: the stored list now,
+     * before anything has been saved over it, or a copy kept when a save started a
+     * new one. The text is never deleted or repaired by Core EQ; Profiles says so.
+     */
+    fun hasUnreadableProfileList(): Boolean =
+        prefs.all.keys.any { it.startsWith(KEY_UNREADABLE_PREFIX) } || readList().unreadable != null
+
+    private fun readEntries(arr: JSONArray): List<Stored> {
         return (0 until arr.length()).map { i ->
             val element = arr.opt(i)
             val profile = try {
@@ -146,7 +167,7 @@ class ProfileStore(
      * profile records it, an import keeps the file's, and nothing here invents
      * one. Every other stored profile keeps its stored JSON (see [persistProfiles]).
      */
-    fun saveProfile(profile: Profile, setAsActive: Boolean = false) {
+    fun saveProfile(profile: Profile, setAsActive: Boolean = false) = synchronized(LIST_LOCK) {
         val list = getAllProfiles().toMutableList()
         val existingIndex = list.indexOfFirst { it.id == profile.id }
         val stamped = profile.copy(lastSavedBy = build)
@@ -156,16 +177,19 @@ class ProfileStore(
     }
 
     fun deleteProfile(id: String): Boolean {
-        val list = getAllProfiles().toMutableList()
-        val removed = list.removeAll { it.id == id }
-        if (removed) {
-            persistProfiles(list)
-            ContentModeStore(appContext).deleteProfileOverlays(id)
-            if (prefs.getString(KEY_ACTIVE_ID, null) == id) {
-                val next = list.firstOrNull()
-                if (next != null) setActiveProfile(next.id) else prefs.edit().remove(KEY_ACTIVE_ID).apply()
+        val removed = synchronized(LIST_LOCK) {
+            val list = getAllProfiles().toMutableList()
+            val removed = list.removeAll { it.id == id }
+            if (removed) {
+                persistProfiles(list)
+                if (prefs.getString(KEY_ACTIVE_ID, null) == id) {
+                    val next = list.firstOrNull()
+                    if (next != null) setActiveProfile(next.id) else prefs.edit().remove(KEY_ACTIVE_ID).apply()
+                }
             }
+            removed
         }
+        if (removed) ContentModeStore(appContext).deleteProfileOverlays(id)
         return removed
     }
 
@@ -176,13 +200,15 @@ class ProfileStore(
      */
     fun renameProfile(id: String, requestedName: String): Profile? {
         val name = cleanName(requestedName) ?: return null
-        val list = getAllProfiles().toMutableList()
-        val index = list.indexOfFirst { it.id == id }
-        if (index < 0) return null
-        val renamed = list[index].copy(name = name, lastSavedBy = build)
-        list[index] = renamed
-        persistProfiles(list)
-        return renamed
+        synchronized(LIST_LOCK) {
+            val list = getAllProfiles().toMutableList()
+            val index = list.indexOfFirst { it.id == id }
+            if (index < 0) return null
+            val renamed = list[index].copy(name = name, lastSavedBy = build)
+            list[index] = renamed
+            persistProfiles(list)
+            return renamed
+        }
     }
 
     /**
@@ -193,14 +219,17 @@ class ProfileStore(
      * active: duplicating never changes what plays. Null when [id] is unknown.
      */
     fun duplicateProfile(id: String, newId: String = "copy-${UUID.randomUUID()}"): Profile? {
-        val list = getAllProfiles().toMutableList()
-        val source = list.firstOrNull { it.id == id } ?: return null
-        // The copy keeps the original's origin (it is the same measurement) and is saved by this build.
-        // It is a new entry written from the fields this build knows: keys it does not
-        // recognise stay with the original, since what they refer to is unknown.
-        val copy = source.copy(id = newId, name = copyName(source.name, list.map { it.name }.toSet()), lastSavedBy = build)
-        list.add(copy)
-        persistProfiles(list)
+        val copy = synchronized(LIST_LOCK) {
+            val list = getAllProfiles().toMutableList()
+            val source = list.firstOrNull { it.id == id } ?: return null
+            // The copy keeps the original's origin (it is the same measurement) and is saved by this build.
+            // It is a new entry written from the fields this build knows: keys it does not
+            // recognise stay with the original, since what they refer to is unknown.
+            val copy = source.copy(id = newId, name = copyName(source.name, list.map { it.name }.toSet()), lastSavedBy = build)
+            list.add(copy)
+            persistProfiles(list)
+            copy
+        }
         val modes = ContentModeStore(appContext)
         for ((mode, filters) in modes.allModeFilters(id)) modes.saveModeFilters(newId, mode, filters)
         return copy
@@ -456,8 +485,9 @@ class ProfileStore(
      * re-serialized by Android's JSON writer, which reproduces what Core EQ
      * itself wrote but may reformat text written by anything else.
      */
-    private fun persistProfiles(list: List<Profile>, synchronous: Boolean = false): Boolean {
-        val stored = readStored()
+    private fun persistProfiles(list: List<Profile>, synchronous: Boolean = false): Boolean = synchronized(LIST_LOCK) {
+        val read = readList()
+        val stored = read.entries
         val pending = LinkedHashMap<String, ArrayDeque<Profile>>()
         for (p in list) pending.getOrPut(p.id) { ArrayDeque() }.addLast(p)
         val arr = JSONArray()
@@ -486,7 +516,15 @@ class ProfileStore(
         }
         if (!changed) return true
         val editor = prefs.edit().putString(KEY_PROFILES, arr.toString())
-        return if (synchronous) {
+        if (read.unreadable != null) {
+            // The stored text is not a list at all, and this write would replace it.
+            // Keep it first, under a key of its own that nothing overwrites, in the same
+            // commit, so the new list never exists without the copy.
+            val key = KEY_UNREADABLE_PREFIX + System.currentTimeMillis()
+            Log.e(TAG, "Saved profiles could not be read; keeping the text (${read.unreadable.length} chars) as $key")
+            return editor.putString(key, read.unreadable).commit()
+        }
+        if (synchronous) {
             editor.commit()
         } else {
             editor.apply()
@@ -495,6 +533,18 @@ class ProfileStore(
     }
 
     companion object {
+        /**
+         * Held for every read-modify-write of the profile list, by every ProfileStore
+         * in the process. Screens and the service write on the main thread and the
+         * companion server on its worker; each write reads the whole list and writes
+         * it back, so without this a phone measurement saved during a rename on the TV
+         * could drop one of the two. SharedPreferences.apply() updates the in-memory
+         * copy before it returns, so the next holder reads the previous write.
+         * Core EQ runs in one process (the manifest declares no android:process);
+         * a second process would need a file lock instead.
+         */
+        private val LIST_LOCK = Any()
+
         /**
          * Apply to [target] (a stored profile's JSON) the difference between [old] and
          * [new], two objects this build wrote for the profile before and after a
@@ -556,6 +606,8 @@ class ProfileStore(
         private const val MAX_MEASURE_MESSAGE = 240
         private const val PREFS_NAME = "core_eq_profiles"
         private const val KEY_PROFILES = "profiles_json"
+        /** A list that could not be read, kept as it was when a save started a new one; never written over. */
+        private const val KEY_UNREADABLE_PREFIX = "profiles_json_unreadable_"
         private const val KEY_ACTIVE_ID = "active_profile_id"
         private const val KEY_ENABLED = "correction_enabled"
         private const val KEY_ANNOUNCE_APPLIED = "announce_applied_v130"

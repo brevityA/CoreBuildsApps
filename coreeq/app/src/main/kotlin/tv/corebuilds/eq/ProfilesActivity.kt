@@ -495,7 +495,7 @@ class ProfilesActivity : TvActivity() {
     private fun renderRoute(chosen: Profile?, matched: Profile?, output: OutputRoute.Output?) {
         val kind = ProfileRouteLine.kindOf(chosen, matched, output?.kind)
         val res = ProfileRouteLine.stringRes(kind)
-        textRoute.text = when (kind) {
+        val route = when (kind) {
             ProfileRouteLine.Kind.MATCHES_OUTPUT -> getString(res, outputWords(output?.kind, output?.name))
             ProfileRouteLine.Kind.OTHER_OUTPUT -> getString(
                 res,
@@ -503,6 +503,12 @@ class ProfilesActivity : TvActivity() {
                 outputWords(chosen?.outputKind, chosen?.outputName)
             )
             else -> getString(res)
+        }
+        // A list Core EQ could not read is kept, not dropped; say so where the profiles are.
+        textRoute.text = if (profileStore.hasUnreadableProfileList()) {
+            route + "\n" + getString(R.string.profiles_unreadable_kept)
+        } else {
+            route
         }
     }
 

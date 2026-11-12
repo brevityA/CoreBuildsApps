@@ -116,6 +116,7 @@ class CapabilityActivity : TvActivity() {
                 },
                 backgroundWork = RuntimeCounters.snapshot().summary(),
                 timings = RuntimeTimings.summary(),
+                unreadableProfileList = store.hasUnreadableProfileList(),
                 knownNames = store.getAllProfiles().flatMap { listOfNotNull(it.name, it.outputName) } +
                     listOfNotNull(snap.output?.name)
             )

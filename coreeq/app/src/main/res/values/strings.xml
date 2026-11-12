@@ -236,6 +236,7 @@
     <string name="profile_route_unknown_output">Chosen. Android has not identified the output in use, so whether this profile is the one for it is unknown.</string>
     <string name="profile_route_legacy">Chosen. Saved before outputs were recorded, so it is offered on any output.</string>
     <string name="profile_route_none">No profile chosen.</string>
+    <string name="profiles_unreadable_kept">A saved profile list on this TV could not be read. Its text is kept unchanged, and new profiles go in a new list.</string>
 
     <!-- Capability screen -->
     <string name="capability_title">Core EQ · Capability</string>

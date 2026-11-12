@@ -54,7 +54,9 @@ object DiagnosticsSummary {
          */
         val knownNames: List<String> = emptyList(),
         /** [tv.corebuilds.eq.apply.RuntimeTimings.summary]: counts and durations only. */
-        val timings: String = "none recorded"
+        val timings: String = "none recorded",
+        /** [tv.corebuilds.eq.export.ProfileStore.hasUnreadableProfileList]. */
+        val unreadableProfileList: Boolean = false
     )
 
     /**
@@ -91,6 +93,9 @@ object DiagnosticsSummary {
                     " · " + clean(f.profileOrigin ?: "origin not recorded", f.knownNames)
             }
         )
+        if (f.unreadableProfileList) {
+            appendLine("Saved profiles: a list that could not be read is kept on this TV, unchanged")
+        }
         appendLine("State: ${f.home.state.name.lowercase().replace('_', ' ')}")
         appendLine(clean(f.home.applied, f.knownNames))
         appendLine(f.home.listening)

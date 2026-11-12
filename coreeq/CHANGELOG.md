@@ -124,6 +124,20 @@ that asks first.
   applied, a repeat sweep counted the route as reported, and a first clean
   measurement could auto-apply on it. Ambiguous outputs were already saved
   as unknown. Profiles saved this way before are left as they are.
+- **Saving profiles from two places at once no longer loses one of them.**
+  Each save, rename, duplicate or delete reads the whole list and writes it
+  back; a phone measurement saved by the companion server while the TV
+  renamed or deleted a profile could drop one change. In a test with four
+  writers saving 160 profiles, 63 to 67 survived. Every such write now holds
+  one lock across the app, and the same test keeps all 160. This was
+  possible in 1.13.2 too.
+- **A saved profile list Core EQ cannot read is kept, not replaced.** If the
+  stored list was not JSON at all, it read as empty and the next save wrote
+  a new list over it. The next save now keeps the old text unchanged under
+  its own key, in the same write, and Profiles and the diagnostics summary
+  say an unreadable list is kept. Nothing repairs or deletes it. Reading
+  still writes nothing, and a list with one damaged entry is handled as
+  before: the entry stays in place.
 - **Home no longer says Off twice.**
 
 ## [1.13.2] — 2026-11-10

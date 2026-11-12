@@ -128,4 +128,11 @@ class DiagnosticsSummaryTest {
         assertTrue(out, out.contains("0a1b2c3d4e5f"))
         assertTrue(DiagnosticsSummary.HEADER.contains("not guaranteed"))
     }
+
+    @Test fun `a kept unreadable profile list is mentioned, and only then`() {
+        assertFalse(DiagnosticsSummary.text(facts).contains("Saved profiles:"))
+        val lines = DiagnosticsSummary.text(facts.copy(unreadableProfileList = true)).lines()
+        val at = lines.indexOfFirst { it.startsWith("Saved profiles:") }
+        assertTrue(lines.toString(), at > 0 && lines[at - 1].startsWith("Profile: ") && lines[at + 1].startsWith("State: "))
+    }
 }
