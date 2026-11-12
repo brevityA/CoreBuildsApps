@@ -44,8 +44,9 @@ that asks first.
   how Android reported it, the profile's kind (not its name), Home's two lines,
   the last service message, how the last measurement ended, and the
   background-work counters. Core EQ sends nothing. Recordings, curves and
-  pairing keys are never included. Masking in the free-text lines is best
-  effort and the screen says so: the names of saved profiles and reported
+  pairing keys are never included. Free-text lines, the profile's output and
+  origin among them, are one line each with control characters removed.
+  Masking in them is best effort and the screen says so: the names of saved profiles and reported
   outputs (3 characters or longer), IPv4 and MAC addresses, IPv6 addresses
   written in full and hex ids of 16 characters or more are masked. A name
   Core EQ has never seen, a shortened IPv6 address and a shorter id are not,
@@ -57,7 +58,12 @@ that asks first.
   imported it, measured outside Core EQ; a manual profile, the build that
   created it. Rename and duplicate keep the origin; export carries it; import
   keeps the file's origin and records the importing build as the last save.
-  Profiles saved before this say "not recorded"; nothing is guessed.
+  Profiles saved before this say "not recorded"; nothing is guessed. An
+  origin is a record, not a proof: Details says it is not verified, and an
+  imported file's origin is only what the file says. A build version read
+  from a file must be a short version number on one line ("1.14.0-rc1"),
+  or it reads as not recorded; an origin kind this build does not know is
+  shown in Details but not repeated in diagnostics.
 - **Core EQ times its own work.** Apply, engine configure, player
   discovery, route probe and measurement analysis, and Home's and Profiles'
   first draw and readiness, each with a count, median, range and how it

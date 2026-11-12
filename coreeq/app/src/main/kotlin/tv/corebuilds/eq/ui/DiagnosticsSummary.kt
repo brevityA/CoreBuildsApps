@@ -84,9 +84,11 @@ object DiagnosticsSummary {
             "Profile: " + if (f.profileKind == null) {
                 "none applies or is chosen"
             } else {
-                "${f.profileKind} · for ${f.profileOutput ?: "any output"}" +
+                // The output and origin can come from an imported file, so they are
+                // cleaned like any free text: one line, names and addresses masked.
+                "${f.profileKind} · for ${clean(f.profileOutput ?: "any output", f.knownNames)}" +
                     (f.profileAgeSeconds?.let { " · saved ${ago(it)}" } ?: "") +
-                    " · " + (f.profileOrigin ?: "origin not recorded")
+                    " · " + clean(f.profileOrigin ?: "origin not recorded", f.knownNames)
             }
         )
         appendLine("State: ${f.home.state.name.lowercase().replace('_', ' ')}")
@@ -131,10 +133,13 @@ object DiagnosticsSummary {
     private val MAC = Regex("""\b(?:[0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}\b""")
     private val HEX_ID = Regex("""\b[0-9A-Fa-f]{16,}\b""")
     private val SPACE = Regex("""\s+""")
+    /** Control characters become spaces; format characters (direction overrides, zero-width) go. */
+    private val CONTROL = Regex("""\p{Cc}""")
+    private val FORMAT = Regex("""\p{Cf}""")
 
-    /** One line, bounded, with [names], addresses and long hex ids masked. */
+    /** One line, bounded, with control characters removed and [names], addresses and long hex ids masked. */
     fun clean(text: String, names: List<String> = emptyList()): String {
-        var t = text
+        var t = FORMAT.replace(CONTROL.replace(text, " "), "")
         // Longest first, so "Living room 2" is masked whole rather than leaving " 2".
         for (name in names.map { it.trim() }.filter { it.length >= MIN_NAME_CHARS }.distinct().sortedByDescending { it.length }) {
             t = Regex(Regex.escape(name), RegexOption.IGNORE_CASE).replace(t, "[name]")

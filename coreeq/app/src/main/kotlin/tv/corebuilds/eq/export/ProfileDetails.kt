@@ -72,6 +72,13 @@ object ProfileDetails {
     fun originLines(origin: ProfileOrigin?): List<Line> {
         if (origin == null) return listOf(Line("Origin", NOT_RECORDED))
         val built = origin.createdBy.label()
+        return originBody(origin, built) + Line(
+            "Origin record",
+            "as saved with the profile, not verified; an imported file's record is what the file says"
+        )
+    }
+
+    private fun originBody(origin: ProfileOrigin, built: String): List<Line> {
         return when (origin.kind) {
             ProfileOrigin.TV_MEASUREMENT -> listOf(
                 Line("Origin", "TV measurement: the TV played and recorded the sweep"),

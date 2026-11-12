@@ -18,6 +18,10 @@ import tv.corebuilds.eq.BuildConfig
  * `{"app": "Core EQ", "version": "<name>", "code": <int>}`. The object is
  * omitted when neither is known, so an older profile is written with the same
  * keys as before.
+ *
+ * A build read from an imported file is the file's claim, not a verified
+ * identity: anyone can write any version into a JSON file. [fromJson] only makes
+ * sure the claim is a bounded, single-line version number before it is shown.
  */
 data class AppBuild(val versionName: String, val versionCode: Int) {
 
@@ -33,6 +37,15 @@ data class AppBuild(val versionName: String, val versionCode: Int) {
         const val APP = "Core EQ"
         private const val MAX_VERSION_CHARS = 40
 
+        /**
+         * A version name as Core EQ writes one: up to three dotted numbers and an
+         * optional short suffix ("1.14.0-rc1"). Anything else (spaces, newlines,
+         * control or direction characters, a fourth number, which is the shape
+         * of an IPv4 address, or a colon, the shape of a MAC or IPv6 address)
+         * is not a version, so the record reads as not recorded.
+         */
+        private val VERSION = Regex("""\d{1,4}(?:\.\d{1,4}){0,2}(?:[-+][0-9A-Za-z](?:[0-9A-Za-z.-]{0,18}[0-9A-Za-z])?)?""")
+
         /** This build. */
         fun current(): AppBuild = AppBuild(BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
 
@@ -45,7 +58,8 @@ data class AppBuild(val versionName: String, val versionCode: Int) {
             if (obj == null) return null
             if (obj.has("app") && obj.optString("app") != APP) return null
             val version = obj.opt("version") as? String ?: return null
-            val name = version.trim().takeIf { it.isNotEmpty() && it.length <= MAX_VERSION_CHARS } ?: return null
+            // Not trimmed: a version with a trailing newline or space was not written by Core EQ.
+            val name = version.takeIf { it.length <= MAX_VERSION_CHARS && VERSION.matches(it) } ?: return null
             val code = when (val raw = obj.opt("code")) {
                 is Int -> raw
                 is Long -> raw.takeIf { it in 1..Int.MAX_VALUE }?.toInt()

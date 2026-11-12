@@ -26,6 +26,10 @@ import org.json.JSONObject
  * `{"kind": "...", "created_by": {...}, "captured_by": {...}, "analysed_by": {...}}`,
  * each build as [AppBuild.toJson]. A [kind] this build does not know (written
  * by a newer one) is kept as it is and shown as recorded.
+ *
+ * Every origin is a record, not a proof. One written on this TV says what this
+ * TV's builds did; one that came in with an imported file says what the file
+ * says, and nothing checks it. Details labels it as not verified.
  */
 data class ProfileOrigin(
     val kind: String,
@@ -55,7 +59,9 @@ data class ProfileOrigin(
             " · phone build ${capturedBy?.label() ?: "not reported"}"
         REW_IMPORT -> "measurement file imported by ${createdBy.label()}, measured outside Core EQ"
         MANUAL -> "manual profile created by ${createdBy.label()}"
-        else -> "origin \"$kind\" recorded by ${createdBy.label()}"
+        // The kind itself is not repeated: it came from a file and could be anything
+        // that fits the pattern, a name included. Details shows it on the TV.
+        else -> "origin of a kind this build does not know, recorded by ${createdBy.label()}"
     }
 
     companion object {
