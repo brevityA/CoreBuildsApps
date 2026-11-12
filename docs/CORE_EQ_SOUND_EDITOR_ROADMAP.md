@@ -32,7 +32,7 @@ users keep their profiles and sound; hardware checks stay NOT RUN until
 observed; source-text checks, fake audio and APK installs are not evidence
 that playback works.
 
-## Where things stand (2026-11-12)
+## Where things stand (2026-11-12, Core EQ 1.14.0)
 
 Three different claims, kept apart: **implemented** means the code and its
 tests exist on a branch; **released** means a `coreeq-v*` tag shipped it;
@@ -41,13 +41,12 @@ tests exist on a branch; **released** means a `coreeq-v*` tag shipped it;
 
 | Work | State | Released | Device-validated |
 |---|---|---|---|
-| Listening model, Night levels, Clarity, Home status, profile safety, diagnostics (#474) | Implemented; draft PR | No | NOT RUN |
-| Provenance, store preservation and locking, instrumentation, benchmark tool (C, #476) | Implemented; draft PR stacked on #474 | No | NOT RUN; benchmark NOT RUN |
-| Device name: maker named once (#464, superseding #456) | Implemented; in the local release candidate with the diagnostics line converted | No | Reported defect seen on one supporter's phone (1.13.1); fix NOT RUN on a device |
-| Release candidate: #474 + #476 + #464 | Local branch `claude/new-session-9upf9g-coreeq-rc`; no version chosen or bumped | No | NOT RUN |
+| Listening model, Night levels, Clarity, Home status, profile safety, diagnostics (#474) | Merged (`7c66f595`) | 1.14.0, once tagged | NOT RUN |
+| Provenance, store preservation and locking, instrumentation, benchmark tool (C, #476) | Merged (`efc3822f`) | 1.14.0, once tagged | NOT RUN; benchmark NOT RUN |
+| Device name: maker named once (#464 via #478; #456 superseded) | Merged (`2f28a5e2`) | 1.14.0, once tagged | Reported defect seen on one supporter's phone (1.13.1); fix NOT RUN on a device |
 | S companion synchronisation, K validated Custom dynamics (compressor controls), T Warmth and Brightness, P parametric and advanced EQ, L listening presets, AL Auto loudness fix, N measurement quality (microphone and projector noise), K2, E | Planned; not built | No | — |
 
-The candidate deliberately leaves out compressor controls, Warmth and
+1.14.0 deliberately leaves out compressor controls, Warmth and
 Brightness, advanced EQ, the expanded companion protocol and projector-noise
 algorithms. They stay planned below, in the order D5 sets.
 
@@ -86,10 +85,10 @@ changes the profile file format, and only one changes the phone protocol.
 
 ```
 main 19b8834f (1.13.2, released)
- └─ #474   listening, profiles, status         draft PR, implemented
-     └─ C   #476 provenance + instrumentation  draft PR, implemented; profile format: provenance object
-         ·   release candidate (local branch): #474 + #476 + #464 device name, not a PR
-         └─ S   companion synchronisation      planned; phone protocol: revision, capabilities
+ └─ #474   listening, profiles, status         merged
+     └─ C   #476 provenance + instrumentation  merged; profile format: provenance object
+         ·   #478 device name (from #464)       merged; together these are 1.14.0
+         └─ S   companion synchronisation      planned, next; phone protocol: revision, capabilities
              └─ K   validated Custom dynamics  protection analysis first (D4)
                  └─ T   Warmth + Brightness    (D1, D2)
                      └─ P   parametric bands, trim, headroom preview
@@ -101,7 +100,7 @@ Separate, each one at a time when scheduled:
   E   preset imports (after P)
 ```
 
-### C: provenance and instrumentation (draft PR #476; device benchmark not run)
+### C: provenance and instrumentation (merged in #476, ships in 1.14.0; device benchmark not run)
 
 **Provenance (as built).** Stored in each profile as
 `provenance: {origin, last_saved_by}`; each build is

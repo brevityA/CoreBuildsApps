@@ -8,22 +8,39 @@ must never land there. Releases are `coreeq-v<version>` tags (see
 
 ## [Unreleased]
 
-Not a release: no version number has been chosen or bumped. This section
-holds #474 (listening, profiles, Home status, diagnostics), #476
-(provenance, profile-store preservation and locking, instrumentation) and
-#464 (device name). Android build, lint and Robolectric results are listed in
-the pull requests. Nothing below has been played or measured on a TV or a
-phone; the hardware checklist is outstanding. Existing settings carry over:
-Dialogue boost on becomes Clarity +2 dB and the night switch on becomes
-Night: Strong, both the same sound as before; profiles are unchanged, and a
-profile written by this build gains a `provenance` object that 1.13.2 drops
-on its next save after a downgrade.
+## [1.14.0] — 2026-11-12
 
-Known issue, disclosed and not changed here: Auto loudness has had no effect
-on the sound since 1.10.2. Its band lookup gives every band the same gain,
-which the headroom shift removes. Extra effects and Home now say so; the fix
-changes the sound for anyone with the switch on, so it is a separate change
-that asks first.
+versionCode 30. Holds #474 (listening, profile safety, Home status,
+diagnostics), #476 (profile provenance, profile-store preservation and
+locking, timing instrumentation) and #478, which carries #464's device-name
+fix. Android build, lint and Robolectric pass on the merged tree: 1046 unit
+tests in 111 classes, 0 failures; lint 0 errors; the DSP self-test and its 108
+parity tests pass; CI installed the APK on two Android emulators (API 30 and
+37.0, `google_apis` images, not TV images). **Nothing in this release has been
+played, heard or measured on a TV or a phone yet**: emulator installs are not
+audio validation, and the hardware
+checklist (upgrade, correction and bypass, route switching, Night levels and
+the Equalizer fallback, profile actions with the remote, unsaved
+measurements, phone pairing and measurement, diagnostics and QR,
+cancellation) is outstanding.
+
+**Upgrading from 1.13.2 keeps your sound.** Dialogue boost on becomes Clarity
++2 dB and the night switch on becomes Night: Strong, both with the same bands
+and limiter as before; off stays off. Profiles are not rewritten. A profile
+this version saves gains a `provenance` object; 1.13.2 drops it on its next
+save if you go back.
+
+**Known issue, unchanged:** Auto loudness has had no effect on the sound since
+1.10.2. Its band lookup gives every band the same gain, which the headroom
+shift removes. Extra effects and Home now say so; the fix changes the sound
+for anyone with the switch on, so it is a separate release that asks first.
+
+**What Android does not tell an app:** Core EQ configures an effect, and
+Android accepts it and reads it back; Android does not confirm which stream
+passes through it. Bass boost and Loudness enhancer are Android's own effects,
+outside Core EQ's headroom, and the order Android runs them in relative to
+Core EQ's limiter is unknown on every TV. Dolby or DTS sent undecoded to a
+soundbar (passthrough) reaches no app effect at all.
 
 ### Added
 
@@ -74,15 +91,6 @@ that asks first.
   ended, since the process started. In memory only; shown in Capability's
   diagnostics summary and the service's `dumpsys` output, sent nowhere. No
   figure has been read on a TV yet, and none is a performance claim.
-- **`tools/core_eq_device_bench.sh` measures a TV from a computer.** Starts
-  after force-stop and after the Home key, Home and Profiles frame
-  statistics, and the timings above, in one report;
-  `docs/CORE_EQ_DEVICE_BENCHMARK.md` is the procedure. Each start keeps the
-  LaunchState Android reported (COLD, WARM or HOT); a failed, unfinished or
-  refused launch is reported as such, not as missing figures, and is not a
-  sample. The in-app timings restart with the process, so the report's
-  dump covers only what ran after the last force-stop. Not yet run on any
-  device.
 - **Extra effects has a Reset.** It turns every effect on that screen off and
   leaves room correction, profiles and manual EQ alone.
 
@@ -170,6 +178,15 @@ that asks first.
   including formatting before the pairing and capture length limits, and
   rejects hand-joined maker and model strings. From #464 (which supersedes
   #456: the same production change with more tests).
+- `tools/core_eq_device_bench.sh` measures a TV from a computer, outside the
+  app. Starts after force-stop and after the Home key, Home and Profiles frame
+  statistics, and the timings above, in one report;
+  `docs/CORE_EQ_DEVICE_BENCHMARK.md` is the procedure. Each start keeps the
+  LaunchState Android reported (COLD, WARM or HOT); a failed, unfinished or
+  refused launch is reported as such, not as missing figures, and is not a
+  sample. The in-app timings restart with the process, so the report's
+  dump covers only what ran after the last force-stop. Not yet run on any
+  device.
 
 ## [1.13.2] — 2026-11-10
 
