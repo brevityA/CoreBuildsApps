@@ -55,11 +55,18 @@ object DiagnosticsSummary {
 
     /**
      * What the text leaves out, and no more than that. Recordings, curves and pairing
-     * keys are never read. Names are masked only where Core EQ knows them (saved
-     * profiles and reported outputs); a name it has never seen cannot be recognised,
-     * which is why the preview is shown before anything is copied.
+     * keys are never read. Masking in the free-text lines is best effort, with known gaps:
+     * - names are masked only where Core EQ knows them (saved profiles and reported
+     *   outputs), and only from [MIN_NAME_CHARS] characters; a name it has never seen
+     *   cannot be recognised;
+     * - addresses are recognised by shape: IPv4 (with port), MAC, and IPv6 written out
+     *   in four or more groups. A shortened IPv6 address ("fe80::1") is not;
+     * - hex ids are masked from 16 characters; shorter ids pass;
+     * - the fixed lines (versions, TV maker and model) are not masked: they are the
+     *   point of the summary.
+     * That is why the preview is shown in full before anything is copied.
      */
-    const val HEADER = "Core EQ diagnostics · no recordings, curves or pairing keys · known profile and output names, addresses and long ids masked · read before sharing"
+    const val HEADER = "Core EQ diagnostics · no recordings, curves or pairing keys · names and addresses masked where recognised, not guaranteed · read before sharing"
     private const val MAX_FREE_TEXT = 240
     /** Shorter names ("TV", "A") would mask ordinary words. */
     private const val MIN_NAME_CHARS = 3
