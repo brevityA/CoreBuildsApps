@@ -361,6 +361,7 @@ jobs:
           python tests/test_update_manifest_gate.py
           python tests/test_core_eq_update_contract.py
           python tests/test_core_eq_device_bench.py
+          python tests/test_core_eq_privacy_policy.py
           python tests/test_support_links.py
           python tests/test_wu_pack.py
           # Meta-gate, last: it reads the workflows above and fails if any

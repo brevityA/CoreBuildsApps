@@ -1,9 +1,14 @@
 # Brand references and rights
 
 The code and original Core Builds artwork remain under the repository's MIT
-licence. **That licence does not grant rights to third-party brands or imply
-endorsement.** App names, logos and trademarks belong to their respective
-owners and are used to identify the apps represented by the pack.
+licence ([`LICENSE`](LICENSE)). **That licence does not grant rights to
+third-party brands or imply endorsement.** App names, logos and trademarks
+belong to their respective owners and are used to identify the apps
+represented by the pack. App names, trademarks, and brand colours referenced
+in [`tools/catalog.json`](tools/catalog.json) are the property of their
+respective owners. Third-party brand artwork and source-vector licence
+exceptions are recorded below; the MIT licence does not grant trademark rights
+or imply endorsement.
 
 ## Core Builds renders its own icon language
 
@@ -143,5 +148,34 @@ two files are the encoder's complete Java surface.
 Core EQ carries the same four files, byte-identical (the SHA-256 values above
 hold), under `coreeq/app/src/main/java/io/nayuki/qrcodegen/`, with its own
 copy of the wrapper at `coreeq/app/src/main/kotlin/tv/corebuilds/eq/ui/QrBitmap.kt`.
-Both apps use them for the Support screen's two codes; the icon pack also uses
-them for the auditor's.
+Both apps use them for the Support screen's two codes. The icon pack also uses
+them for the auditor's; Core EQ also uses them for the TV's phone-pairing code
+(Phone companion) and, since 1.14.0, the diagnostics summary's code
+(Capability).
+
+The MIT notice is in the vendored source files. Neither APK yet carries it as
+a separate file, as Outfit's licence is carried; adding it under
+`assets/licenses/` is planned for each app's next release.
+
+## Core EQ runtime libraries
+
+The icon pack ships no runtime libraries. Core EQ does. These are the groups on
+its release runtime classpath (`./gradlew :app:dependencies --configuration
+releaseRuntimeClasspath` in `coreeq/`), with the licence each artifact's own
+Maven POM declares:
+
+| Libraries | Licence (as declared) | Why Core EQ has them |
+|---|---|---|
+| AndroidX (`androidx.core`, `appcompat`, `recyclerview` and what they pull in: `activity`, `fragment`, `lifecycle`, `emoji2`, `savedstate` and others) | Apache License 2.0 | The app's screens and lists |
+| Kotlin standard library and `kotlinx` coroutines (`org.jetbrains.kotlin`, `org.jetbrains.kotlinx`, `org.jetbrains:annotations`) | Apache License 2.0 | The language runtime |
+| Google code scanner (`com.google.android.gms:play-services-code-scanner`) and the ML Kit libraries it brings (`com.google.mlkit`) | ML Kit Terms of Service | The phone's *Scan TV QR* button |
+| Google Play services base, basement and tasks (`com.google.android.gms`), `com.google.android.odml:image` | Android Software Development Kit License | Required by the code scanner |
+| Google data transport and Firebase encoders and components (`com.google.android.datatransport`, `com.google.firebase`) | Apache License 2.0 | Required by ML Kit, which uses them to send Google its diagnostics and usage analytics (see [Core EQ's privacy policy](docs/coreeq-privacy.html)) |
+| `javax.inject` | Apache License 2.0 | Required by Google data transport |
+| Guava `listenablefuture` | none declared in its POM; Guava is Apache License 2.0 | Required by AndroidX |
+
+The Google code scanner and Play services libraries are Google's software
+under Google's terms, not open source. Core EQ declares no analytics, crash
+reporting or advertising library of its own;
+`tests/test_core_eq_privacy_policy.py` holds that against
+`coreeq/app/build.gradle.kts`.
