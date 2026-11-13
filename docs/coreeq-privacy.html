@@ -47,7 +47,8 @@ behaves the same except that it has no update check.</p>
 
 <h2>There is no account, and no profile of you</h2>
 <p>Core EQ has no sign-in and no user identifier. It does not read your
-advertising ID, contacts, location or files. The TV and phone talk to each
+advertising ID, contacts or location, and it opens a file only when you choose
+one to import. The TV and phone talk to each
 other only on your local network, and Core EQ's own code contacts only GitHub,
 and only for updates.</p>
 
@@ -128,6 +129,11 @@ Support screen's codes are shown on screen and leave the TV only if you press
       an optional ADB-granted <code>dumpsys</code> read on the TV, or optional
       Notification access, which checks only whether a notification belongs to
       a media session and never reads its title or text.</li>
+  <li><strong>A file you choose to import</strong>, picked in Android's file
+      picker after you press <em>Import backup</em>, <em>Import REW
+      measurement</em>, <em>Import target file</em> or <em>Import preset or
+      file</em>. Core EQ reads that one file and nothing else in your
+      storage.</li>
 </ul>
 
 <h2>What Core EQ keeps</h2>
@@ -140,9 +146,12 @@ Support screen's codes are shown on screen and leave the TV only if you press
       from it.</li>
   <li><strong>On the phone:</strong> the paired TV's address and a token,
       encrypted with a key in Android's Keystore.</li>
-  <li><strong>Exports:</strong> a profile file in
-      <code>Downloads/CoreEQ</code>, written only when you press
-      <em>Export</em>.</li>
+  <li><strong>Exports:</strong> files in <code>Downloads/CoreEQ</code>,
+      written only when you press <em>Export</em> (a profile as equaliser
+      settings, or as a Core EQ profile file that includes its measurement
+      details), <em>Export for TV settings</em> or <em>Export as a text
+      file</em> (the values to enter in the TV's own sound menu). They are
+      ordinary files in the TV's shared storage, outside Core EQ's own.</li>
   <li><strong>Updates:</strong> a downloaded APK, in the app's cache.</li>
 </ul>
 
@@ -188,8 +197,10 @@ from anyone, including children.</p>
   <li><em>Unpair this phone on the TV</em> revokes a phone; <em>Forget TV on
       this phone</em> removes the phone's saved token.</li>
   <li>Clearing Core EQ's data on either device removes everything it keeps
-      there. Core Builds holds nothing about you off your devices, so there is
-      nothing to request, correct or export.</li>
+      in its own storage. Exports are not removed, even when you uninstall
+      Core EQ: delete them from <code>Downloads/CoreEQ</code> yourself. Core
+      Builds holds nothing about you off your devices, so there is nothing to
+      request, correct or export.</li>
 </ul>
 
 <h2>Changes to this policy</h2>

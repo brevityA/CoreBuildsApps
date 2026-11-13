@@ -16,6 +16,9 @@ about what leaves a device has a counterpart checked here:
     companion stops when its screen closes, pairing data stays out of backups;
   * Google's code scanner is the only third-party data path: no analytics,
     crash or ad SDK is declared, and the scanner's auto-zoom is not enabled;
+  * Core EQ opens a file only one the user picked to import, and its only
+    writes outside its own storage are the exports in Downloads/CoreEQ, which
+    clearing its data does not remove;
   * every on-screen label the page quotes exists in the app's strings.
 
 What it cannot prove: what Google Play services itself sends. The page quotes
@@ -52,6 +55,14 @@ NETWORK_FILES = {
 NETWORK_TOKENS = ("HttpURLConnection", "openConnection", "Socket(", "ServerSocket", "NsdManager",
                   "DatagramSocket", "okhttp", "WebView")
 
+# The only sources that read a file from outside the app, each behind the
+# system file picker, and the only one that writes to shared storage.
+FILE_READERS = {"ProfilesActivity.kt", "MeasureActivity.kt", "ManualEqActivity.kt"}
+FILE_READ_TOKENS = ("openInputStream", "openFileDescriptor")
+SHARED_WRITERS = {"export/Formats.kt"}
+SHARED_WRITE_TOKENS = ("MediaStore", "openOutputStream", "getExternalStoragePublicDirectory(")
+EXPORT_CALLERS = {"ProfilesActivity.kt", "CapabilityActivity.kt", "ManualEqActivity.kt"}
+
 # Every permission the manifest requests, and the words the page uses for it.
 PERMISSION_WORDS = {
     "android.permission.RECORD_AUDIO": "Record audio",
@@ -85,6 +96,13 @@ QUOTED_LABELS = {
     "Copy": "diagnostics_copy",
     "Unpair this phone on the TV": "phone_unpair_button",
     "Forget TV on this phone": "phone_forget_button",
+    "Import backup": "action_import_profile",
+    "Import REW measurement": "measure_import_rew",
+    "Import target file": "measure_target_import_button",
+    "Import preset or file": "manual_eq_import_file",
+    "Export": "action_export",
+    "Export for TV settings": "action_tv_export",
+    "Export as a text file": "manual_eq_tv_values_export",
 }
 
 
@@ -137,6 +155,42 @@ class CoreEqPrivacyPolicy(unittest.TestCase):
                 found.add(str(path.relative_to(KT)))
         self.assertEqual(NETWORK_FILES, found,
                          "a new network path needs a row on docs/coreeq-privacy.html first")
+
+    def test_files_are_read_only_when_the_user_picks_one(self) -> None:
+        readers = set()
+        for path in KT.rglob("*.kt"):
+            source = read(path)
+            if any(token in source for token in FILE_READ_TOKENS):
+                readers.add(str(path.relative_to(KT)))
+        self.assertEqual(FILE_READERS, readers,
+                         "a new file read needs a line on docs/coreeq-privacy.html first")
+        for name in FILE_READERS:
+            with self.subTest(reader=name):
+                self.assertIn("FilePicker.open(", read(KT / name),
+                              "every file Core EQ reads must be one the user picked")
+        self.assertIn("opens a file only when you choose one to import", self.text)
+        self.assertIn("reads that one file and nothing else", self.text)
+
+    def test_exports_are_the_only_shared_storage_writes(self) -> None:
+        writers = set()
+        callers = set()
+        for path in KT.rglob("*.kt"):
+            source = read(path)
+            relative = str(path.relative_to(KT))
+            if any(token in source for token in SHARED_WRITE_TOKENS):
+                writers.add(relative)
+            if "Formats.exportToDevice(" in source:
+                callers.add(relative)
+        self.assertEqual(SHARED_WRITERS, writers,
+                         "a new write outside the app's storage needs a line on the page first")
+        self.assertEqual(EXPORT_CALLERS, callers,
+                         "a new export needs naming under 'What Core EQ keeps' first")
+        formats = read(KT / "export/Formats.kt")
+        self.assertIn('Environment.DIRECTORY_DOWNLOADS + "/CoreEQ"', formats)
+        self.assertIn("MediaStore.Downloads.EXTERNAL_CONTENT_URI", formats)
+        # Shared-storage files outlive the app's data and the app itself.
+        self.assertIn("Exports are not removed, even when you uninstall Core EQ", self.text)
+        self.assertIn("Downloads/CoreEQ", self.text)
 
     def test_every_permission_is_explained_and_none_invented(self) -> None:
         requested = set(re.findall(r'<uses-permission[^>]*android:name="([^"]+)"', read(MANIFEST), re.S))
