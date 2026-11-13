@@ -1,17 +1,19 @@
 {
-  "versionCode": 29,
-  "versionName": "1.13.2",
-  "releaseDate": "2026-11-10",
+  "versionCode": 30,
+  "versionName": "1.14.0",
+  "releaseDate": "2026-11-13",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/coreeq/coreeq-release.apk",
-  "apkSha256": "6cb5c603b64f6a65112e9f4015907f77004fd9f187d3c0a0fbbb8cce4cb19773",
-  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.13.2",
+  "apkSha256": "84310458359a9bd917c632b4c6d349a716c2a2cb854c334f5a060501a070c500",
+  "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases/tag/coreeq-v1.14.0",
   "minSdk": 30,
   "highlights": [
-    "Mode's diagnostics count Core EQ's background work.",
-    "A measurement sweep holds audio focus while it plays.",
-    "Player discovery dumps at most once every 15 seconds.",
-    "A re-apply that changes nothing writes nothing.",
-    "No probe track while something else plays.",
-    "The volume keys no longer rewrite the effect."
+    "Night mode has a Light level.",
+    "Home says what is applied apart from what is switched on.",
+    "Profiles can be renamed, duplicated and inspected.",
+    "A diagnostics summary on Capability.",
+    "Profiles record their origin and which build last saved them.",
+    "Core EQ times its own work.",
+    "Extra effects has a Reset.",
+    "Dialogue boost is now Clarity, Off to +3 dB in 1 dB steps."
   ]
 }
