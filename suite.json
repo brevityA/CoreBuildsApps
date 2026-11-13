@@ -35,8 +35,8 @@
     },
     "shift": {
       "name": "Core Shift",
-      "versionName": "2.3.5",
-      "versionCode": 11,
+      "versionName": "2.3.6",
+      "versionCode": 12,
       "tagPrefix": "shift-v",
       "floatingTag": "shift",
       "downloader": "8829421",
