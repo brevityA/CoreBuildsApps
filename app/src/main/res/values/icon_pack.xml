@@ -99,6 +99,7 @@
         <item>betterxc</item>
         <item>binge</item>
         <item>binged</item>
+        <item>bitchord</item>
         <item>bitdefender</item>
         <item>bit_tv</item>
         <item>blackout</item>
@@ -154,6 +155,7 @@
         <item>coredoctor</item>
         <item>coreeq</item>
         <item>coreline</item>
+        <item>coremotion</item>
         <item>coreshift</item>
         <item>jamal2367</item>
         <item>watchcorridortv</item>
@@ -535,6 +537,7 @@
         <item>nhk_world_japan</item>
         <item>nhk_plus</item>
         <item>nhl</item>
+        <item>nightjar</item>
         <item>nintendo_switch</item>
         <item>njpw_world</item>
         <item>nlziet</item>
@@ -854,6 +857,7 @@
         <item>thundertv</item>
         <item>aspiro</item>
         <item>timvision</item>
+        <item>tivideck</item>
         <item>tivify</item>
         <item>tvplayer</item>
         <item>tizentube</item>
@@ -966,6 +970,7 @@
         <item>zenderapp</item>
         <item>vtvcab_on_tv</item>
         <item>vtvgo_tv</item>
+        <item>vypn</item>
         <item>waipu_tv</item>
         <item>wako</item>
         <item>amcnetworks</item>
@@ -1003,6 +1008,7 @@
         <item>xiaomi_media_player</item>
         <item>mitvplus</item>
         <item>xstream_play</item>
+        <item>xtra_tv</item>
         <item>xumo_play</item>
         <item>xuper_tv</item>
         <item>yacine_tv</item>
@@ -1133,6 +1139,7 @@
         <item>Better xCloud</item>
         <item>Binge</item>
         <item>Binged</item>
+        <item>BitChord TV</item>
         <item>Bitdefender</item>
         <item>BitTV</item>
         <item>Blackout</item>
@@ -1188,6 +1195,7 @@
         <item>Core Doctor</item>
         <item>Core EQ</item>
         <item>Core Line</item>
+        <item>Core Motion</item>
         <item>Core Shift</item>
         <item>CoreELEC Helper</item>
         <item>Corridor</item>
@@ -1569,6 +1577,7 @@
         <item>NHK World-Japan</item>
         <item>NHK+</item>
         <item>NHL</item>
+        <item>Nightjar</item>
         <item>Nintendo Switch</item>
         <item>NJPW World</item>
         <item>NLZIET</item>
@@ -1888,6 +1897,7 @@
         <item>Thunder TV</item>
         <item>TIDAL</item>
         <item>TIMVISION</item>
+        <item>TiviDeck</item>
         <item>Tivify</item>
         <item>TiviMate</item>
         <item>TizenTube</item>
@@ -2000,6 +2010,7 @@
         <item>VTM GO</item>
         <item>VTVcab ON</item>
         <item>VTVgo</item>
+        <item>VYPN</item>
         <item>waipu.tv</item>
         <item>Wako</item>
         <item>Watch Free UK</item>
@@ -2037,6 +2048,7 @@
         <item>Xiaomi Media Player</item>
         <item>Xiaomi TV+</item>
         <item>Xstream Play</item>
+        <item>Xtra TV</item>
         <item>Xumo Play</item>
         <item>Xuper TV</item>
         <item>Yacine TV</item>
@@ -2167,6 +2179,7 @@
         <item>APP</item>
         <item>VOD</item>
         <item>STREAM</item>
+        <item>MUSIC</item>
         <item>VPN</item>
         <item>STREAM</item>
         <item>TOOL</item>
@@ -2216,6 +2229,7 @@
         <item>APP</item>
         <item>BROWSER</item>
         <item>APP</item>
+        <item>CORE</item>
         <item>CORE</item>
         <item>CORE</item>
         <item>CORE</item>
@@ -2604,6 +2618,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>GAMING</item>
+        <item>GAMING</item>
         <item>APP</item>
         <item>APP</item>
         <item>PLAYER</item>
@@ -2922,6 +2937,7 @@
         <item>LIVE</item>
         <item>MUSIC</item>
         <item>APP</item>
+        <item>LIVE</item>
         <item>APP</item>
         <item>LIVE</item>
         <item>VIDEO</item>
@@ -3034,6 +3050,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
+        <item>VPN</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -3071,6 +3088,7 @@
         <item>PLAYER</item>
         <item>LIVE</item>
         <item>APP</item>
+        <item>VIDEO</item>
         <item>APP</item>
         <item>APP</item>
         <item>APP</item>
@@ -3234,6 +3252,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -3496,106 +3515,8 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
         <item>1</item>
         <item>0</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>0</item>
-        <item>1</item>
-        <item>1</item>
-        <item>0</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3649,100 +3570,10 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>0</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
         <item>0</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3872,6 +3703,55 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>0</item>
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -3979,6 +3859,148 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>1</item>
         <item>1</item>
@@ -4077,21 +4099,23 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
-        <item>0</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
-        <item>1</item>
         <item>1</item>
         <item>0</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>1</item>
+        <item>0</item>
+        <item>1</item>
         <item>1</item>
         <item>1</item>
         <item>1</item>
@@ -4137,5 +4161,5 @@
         <item>1</item>
         <item>1</item>
     </integer-array>
-    <integer name="icon_count">1031</integer>
+    <integer name="icon_count">1037</integer>
 </resources>

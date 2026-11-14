@@ -9,24 +9,24 @@
       "structure": "4fc063eec88fdad22293397b1825250bea3564c80ff9ef371b9dc6aab66810ee"
     },
     "app-ui-catalogue-play.png": {
-      "bytes": 121893,
-      "structure": "bf7db80f4e2f86de70e0df614bc7a4e55f7e694aaadbbe8277efd7c3751f3e57"
+      "bytes": 123044,
+      "structure": "ea318540a9b9561aa4fd1de25c16005754c7bf107c14163683eb8b77764b43ec"
     },
     "app-ui-catalogue-update.png": {
-      "bytes": 139390,
-      "structure": "38f553e8a42771483cf5e0de1abe14aeec3810de262b1884957ee9745b069e7c"
+      "bytes": 140848,
+      "structure": "cfed8ffc266d3cd1d0b47d91bb9d25123ca4a1f72c7b80e3d7a9390b02316b39"
     },
     "app-ui-catalogue.png": {
-      "bytes": 124607,
-      "structure": "2d3c48ad8006fa8e0d117d7936ff90d09b0952bf673b44cac008827c5f89ddbd"
+      "bytes": 125870,
+      "structure": "4c00b7dca21b884cc4990dedff1fbb62fcc08b010520f43d33cdda6c1a661872"
     },
     "app-ui-faq.png": {
       "bytes": 135751,
       "structure": "6e0a9b0f1d2d52446ce62406570fdd5c0b76c904f966981834a6372aff305c09"
     },
     "app-ui-glyphs-home.png": {
-      "bytes": 85749,
-      "structure": "038fda7baa4b288f89d4efd568c0aebb37d078f7c93657e365d2d03510b82cef"
+      "bytes": 85726,
+      "structure": "6ab18807802ea6f7e60a207969b8ce3ce2add9f229bfceead1702accf7bedc89"
     },
     "app-ui-inspector.png": {
       "bytes": 113222,
@@ -55,9 +55,9 @@
   },
   "generator": "tools/build_app_ui_mockups.py",
   "inputs": {
-    "app/src/main/assets/appfilter.xml": "a26f1201833916c8526564a66a38cff28ce254c52fb53ab97678fc590abee6ab",
+    "app/src/main/assets/appfilter.xml": "1f6e50f0fc6e8db3890a5cbcae1509ca069f3ee34e2a1a3379d60e87477fb65c",
     "app/src/main/assets/manifest/wallpapers.json": "0bc4f85d2ff7d2e2c646088cd450957c5e7a58c0519be85923207356dafb3490",
-    "app/src/main/assets/version.json": "16979635f5c264d408847810e88b059ef71ff467d7939e6c14b1f8b996619b98",
+    "app/src/main/assets/version.json": "77f738161fd9ec8757b9f3ab3a0d652b01cf2e663e9e214a517c5ddafdc448a9",
     "app/src/main/res/color/cb_chip_text.xml": "6dde35ecabae9189ea8eb025cb08cc480d1fb05b50450a76c0d8d018e8043313",
     "app/src/main/res/color/cta_text.xml": "467d742e872e40ef1e6933371a3534b75a316fd56d8ab305dcf7941c3b47f70e",
     "app/src/main/res/color/ghost_text.xml": "2c8ce26eef3163a20191781f5eb4f4c326fa6bb45e254ae1ec78b2792fb2f6c6",
@@ -139,7 +139,7 @@
     "app/src/main/res/values/banner_aliases.xml": "8a2e4101dd8aa81516f2ead7eb23cbd1bc8a0d9b13ece46304b18b30529fbec4",
     "app/src/main/res/values/colors.xml": "c429b5ca4584d953892209912c20287b4f1c655d5ee6dad35420eb60bcd7ab4d",
     "app/src/main/res/values/dimens.xml": "51e0f1e07e01ed8eda4bd48bd50bc883d588c12027db76e993192c670d854e8d",
-    "app/src/main/res/values/icon_pack.xml": "2f9f01618d01f5ae51da95e84fbc658aa821e74d4b0540e4b0ece56bad6509f7",
+    "app/src/main/res/values/icon_pack.xml": "2c060a845665a29221ead02a53aaa19e932ef30c42265878c50e4a6945621f79",
     "app/src/main/res/values/integers.xml": "11f53fa581807ef4bc77de22cd01c3ad55db7e180b0d13a051a1a6cdbf819c6e",
     "app/src/main/res/values/issue_prefill.xml": "e50f0ccda039fc033c38e0bd332a2f13d85474a0317382e2801b1b16a15b966b",
     "app/src/main/res/values/strings.xml": "b5587f4443ba43f41c9a6099424138c67dc11ef5f5a4569d50a729b1a9d12c89",
@@ -151,16 +151,16 @@
     "glyphs/src/main/res/values/strings.xml": "d95d048d9c4e1c35c373d0cde1d93fa8bff6a11e63e99302cb936fd5b0be0a9a",
     "glyphs/src/main/res/values/strings_home.xml": "17c322a7574c2409827d846ecea92c9c2d2d245c0a8641639ab3025929cc340f",
     "glyphs/src/main/res/values/themes.xml": "9c4df0279da16d795dcbc7b1bfb3bd8bf479d45341edad81fb76e6f002eafe9d",
-    "glyphs/src/main/res/xml/appfilter.xml": "22d3285177e5892a5f366952014edf7c4687695341ff81d03e810ea941d4fcf2",
-    "glyphs/src/main/res/xml/drawable.xml": "9933b620a30b989003ba5e4eae28c7de3a09f1cd685f20f126e831477f7cc144",
+    "glyphs/src/main/res/xml/appfilter.xml": "24e85b9bc16f491d5ee6eea25e628a7175d91d8e8cad745b849f0c72141f97c0",
+    "glyphs/src/main/res/xml/drawable.xml": "6d29c0dc5dacdeb068ee62d553ffdf230ad3686dd46a9d292e3ccd9b74723180",
     "tools/build_app_ui_mockups.py": "d534e71b223ac847f620521933ef03e1827a04236e9ba3d06337ca44bf901f30",
-    "tools/catalog.json": "1ca9f04631cf0cb1792803d741f3897f0dc20160a2c2d921a724b2f05b949fd1",
+    "tools/catalog.json": "a3e7362d8847a9f3147777ab775b057dd0fd4cc5f966882fa9752860c2516aab",
     "tools/fonts/DejaVuSansMono-Bold.ttf": "2964f6dac8e6e9d71613928340f17bf868e9ea51692cca333c79e74962f02233",
     "tools/fonts/DejaVuSansMono.ttf": "0f5db4f1749979d961019838b160bec74abdf7f9eca69553fe1aa856bbff49a4",
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "d9ad30edf8ef96f7550729ba6c04bb98cfd2e667a88416a1f2befd04c1a3b4a3",
+  "inputs_digest": "a3fa4160898120aee01123fe918b89fcaaae4cde81a6dd535c4d71dc08b5dfef",
   "metrics": {
     "mono-bold@28": 544.0,
     "mono@20": 384.0,

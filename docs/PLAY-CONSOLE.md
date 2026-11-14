@@ -269,7 +269,7 @@ it runs, not on the last day:
 | Closed test | Tester engagement: *"whether testers used all available app features"* and *"whether tester usage matched expected production user behavior"* | Every tester had Core Premium through a code, so all six extras were open to them; the feature checklist below; what they actually used, from their reports. |
 | Closed test | *"Summarize the feedback received from testers and describe how feedback was collected"* | About → **Send feedback** (Play build) files a GitHub issue labelled `feedback` with the build and TV filled in; count and summarise those issues, plus Discord and Reddit threads. |
 | Your app | Target audience, *"as specific as possible"* | Android TV and Google TV owners who use Projectivy Launcher (or another launcher that reads icon packs) and want every app's icon and banner in one consistent style. |
-| Your app | How the app provides value | 1031 icons and banners applied in one press, a Missing icons scan that files requests, 132 wallpapers and live loops; Core Premium optional. |
+| Your app | How the app provides value | 1037 icons and banners applied in one press, a Missing icons scan that files requests, 132 wallpapers and live loops; Core Premium optional. |
 | Your app | Estimated installs in the first year | A realistic range. |
 | Readiness | *"Describe any changes made … based on what you learned from your closed test"* | The changelog entries made during the test: 2.7.0 is the first. Name the issue numbers they answer. |
 | Readiness | *"Describe how you determined that your app … was ready for production"* | Feedback issues closed or answered, CI green on the release, no crashes in Play's Android vitals for the test period, and the §8 step 8 purchase test done on a TV. |
@@ -391,8 +391,8 @@ label.
 
 ## 9. Core Builds Glyphs Pack: the second app
 
-The Glyphs Pack (`glyphs/`) is the square companion: the same 1979 launcher
-components, drawn as 1031 square glyphs. On Play, the icon pack's **Art
+The Glyphs Pack (`glyphs/`) is the square companion: the same 1999 launcher
+components, drawn as 1037 square glyphs. On Play, the icon pack's **Art
 style** switch opens this app's listing when the pack is missing
 (`GlyphsCompanion.ensure`), so it has to exist before anyone can pick Square.
 In Console it is a separate app, with its own package, listing, forms and

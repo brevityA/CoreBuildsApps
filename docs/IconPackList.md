@@ -1,6 +1,6 @@
 # Supported applications
 
-`1031` icons · `1260` mapped components · pack v2.6.0
+`1037` icons · `1277` mapped components · pack v2.6.0
 
 Every app below auto-assigns in Projectivy. If one doesn't, the app ships a different launcher activity on your device — open an issue with the component name and it gets added.
 
@@ -105,6 +105,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Better xCloud | `betterxc` | `#3D8BFF` | `#3D8BFF` | `com.redphx.betterxc/com.redphx.betterxc.activity.MainActivity` |
 | Binge | `binge` | `#B80472` | `#BA0473` | `au.com.streamotion.ares/.MainActivity`<br>`au.com.binge.tv/.MainActivity`<br>`au.com.binge.tv/au.com.foxsports.martian.tv.main.MainActivity`<br>`au.com.streamotion.ares/au.com.foxsports.martian.tv.main.MainActivity` |
 | Binged | `binged` | `#E8453C` | `#E8453C` | `net.binged.tv/net.binged.tv.MainActivity` |
+| BitChord TV | `bitchord` | `#FB4E66` | `#FB4E66` | `com.music.bitchord.tv/com.music.bitchord.MainActivity` |
 | Bitdefender | `bitdefender` | `#ED1C24` | `#ED1C24` | `com.bitdefender.vpn/com.bitdefender.vpn.MainActivity` |
 | BitTV | `bit_tv` | `#008FD7` | `#008FD7` | `com.live_streaming_tv.online_tv/com.live_streaming_tv.online_tv.BitTVActivity`<br>`com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.MainActivity`<br>`com.bittv.androiddigitaltvapp/com.bittv.androiddigitaltvapp.ui.MainActivity` |
 | Blackout | `blackout` | `#F9C05E` | `#F9C05E` | `com.blackout.tv/com.blackout.tv.CommandActivity` |
@@ -160,6 +161,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Core Doctor | `coredoctor` | `#00D4FF` | `#00D4FF` | `dev.corebuilds.doctor/.MainActivity` |
 | Core EQ | `coreeq` | `#00D4FF` | `#00D4FF` | `tv.corebuilds.eq/.MainActivity` |
 | Core Line | `coreline` | `#00D4FF` | `#00D4FF` | `dev.corebuilds.line/.MainActivity` |
+| Core Motion | `coremotion` | `#00D4FF` | `#00D4FF` | `tv.corebuilds.motion/tv.corebuilds.motion.SettingsActivity` |
 | Core Shift | `coreshift` | `#00D4FF` | `#00D4FF` | `dev.corebuilds.shift/.MainActivity` |
 | CoreELEC Helper | `jamal2367` | `#E00010` | `#E00010` | `com.jamal2367.coreelec/com.jamal2367.coreelec.MainActivity` |
 | Corridor | `watchcorridortv` | `#F9F120` | `#F9F120` | `com.corridordigital.watchcorridortv/com.corridordigital.watchcorridortv.feature.main.MainActivity` |
@@ -541,6 +543,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | NHK World-Japan | `nhk_world_japan` | `#E60019` | `#E60019` | `jp.or.nhk.nhkworld.tv/jp.or.nhk.nhkworld.tv.ui.MainActivity` |
 | NHK+ | `nhk_plus` | `#0090F8` | `#0090F8` | `jp.nhk.plus/jp.nhk.simul.view.activity.SplashActivity` |
 | NHL | `nhl` | `#000000` | `#E6EDF3` | `com.nhl.tv/com.viewlift.tv.AppCmsTVSplashActivity` |
+| Nightjar | `nightjar` | `#F2A93B` | `#F2A93B` | `com.butterpollo.client/com.limelight.PcView` |
 | Nintendo Switch | `nintendo_switch` | `#E60012` | `#E60012` | `com.nintendo.znba/.MainActivity` |
 | NJPW World | `njpw_world` | `#B89860` | `#B89860` | `com.tvasahi.njpwworld/uk.tva.template.LaunchScreenActivity` |
 | NLZIET | `nlziet` | `#F81058` | `#F81058` | `nl.nlziet/nl.nlziet.tv.app.di.tv.InjectActivity` |
@@ -560,7 +563,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | NPO Start | `npo_start` | `#F86800` | `#F86800` | `nl.uitzendinggemist/nl.uitzendinggemist.tv.presentation.activities.main.MainActivity` |
 | NRK TV | `nrk_tv` | `#B0C8F0` | `#B0C8F0` | `no.nrk.tv/no.nrk.tv.view.MobileSplashScreenActivity`<br>`no.nrk.tv/no.nrk.tv.view.TvSplashScreenActivity` |
 | NT at Home | `ntathome` | `#F04DE0` | `#F04DE0` | `com.ntathome/tv.vhx.LauncherActivity`<br>`com.ntathome/tv.vhx.tv.home.TvHomeActivity` |
-| Nuvio TV | `nuvio` | `#A238F0` | `#A238F0` | `com.nuvio.app/com.nuvio.tv.MainActivity`<br>`com.nuvio.tv/.MainActivity`<br>`com.nuviodebug.com/com.nuvio.tv.MainActivity`<br>`com.nuvio.tv/.launcher.AppIconDefault`<br>`com.nuvio.tv/.launcher.AppIconArcticBlue`<br>`com.nuvio.tv/.launcher.AppIconEmerald`<br>`com.nuvio.tv/.launcher.AppIconRoseGold`<br>`com.nuvio.tv/.launcher.AppIconCopper`<br>`com.nuvio.tv/.launcher.AppIconGraphite`<br>`com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault`<br>`com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconDefault`<br>`com.nuvio.tv.test/com.nuvio.tv.launcher.AppIconDefault` |
+| Nuvio TV | `nuvio` | `#A238F0` | `#A238F0` | `com.nuvio.app/com.nuvio.tv.MainActivity`<br>`com.nuvio.tv/.MainActivity`<br>`com.nuviodebug.com/com.nuvio.tv.MainActivity`<br>`com.nuvio.tv/.launcher.AppIconDefault`<br>`com.nuvio.tv/.launcher.AppIconArcticBlue`<br>`com.nuvio.tv/.launcher.AppIconEmerald`<br>`com.nuvio.tv/.launcher.AppIconRoseGold`<br>`com.nuvio.tv/.launcher.AppIconCopper`<br>`com.nuvio.tv/.launcher.AppIconGraphite`<br>`com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault`<br>`com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconDefault`<br>`com.nuvio.tv.test/com.nuvio.tv.launcher.AppIconDefault`<br>`com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconArcticBlue`<br>`com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconEmerald`<br>`com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconRoseGold`<br>`com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconCopper`<br>`com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconGraphite`<br>`com.nuvio.livetv/com.nuvio.tv.launcher.AppIconDefault`<br>`com.nuvio.livetv/com.nuvio.tv.launcher.AppIconArcticBlue`<br>`com.nuvio.livetv/com.nuvio.tv.launcher.AppIconEmerald`<br>`com.nuvio.livetv/com.nuvio.tv.launcher.AppIconRoseGold`<br>`com.nuvio.livetv/com.nuvio.tv.launcher.AppIconCopper`<br>`com.nuvio.livetv/com.nuvio.tv.launcher.AppIconGraphite` |
 | Nuyo Device Info | `nuyodeviceinfo` | `#2F80ED` | `#2F80ED` | `com.roysolberg.android.deviceinfo/com.roysolberg.android.deviceinfo.ui.MainActivity` |
 | Nuyo WiFi Analyzer | `nuyowifianalyzer` | `#00BCD6` | `#00BCD6` | `com.roysolberg.android.wifianalyzer/com.roysolberg.android.wifianalyzer.tv.TvMainActivity` |
 | NV Player | `nvplayer` | `#50D8F8` | `#50D8F8` | `com.acb.nvplayer/com.ae.video.bplayer.ui.SplashActivity` |
@@ -860,6 +863,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Thunder TV | `thundertv` | `#F8E800` | `#F8E800` | `com.iptv.thundertv/com.iptv.vsaclient.Main` |
 | TIDAL | `aspiro` | `#000000` | `#E6EDF3` | `com.aspiro.tidal/com.aspiro.wamp.tv.TvLauncherActivity` |
 | TIMVISION | `timvision` | `#E80028` | `#E80028` | `it.telecomitalia.cubovision/com.canal.ui.tv.TvMainActivity` |
+| TiviDeck | `tivideck` | `#0DE391` | `#0DE391` | `com.tivideck.app/com.tivideck.app.MainActivity` |
 | Tivify | `tivify` | `#00FFC0` | `#00FFC0` | `com.tvup.tivify.app.tv/com.tvup.tvapp.view.activity.MainActivityTVup` |
 | TiviMate | `tvplayer` | `#97C1FF` | `#97C1FF` | `ar.tvplayer.tv/ar.tvplayer.tv.ui.MainActivity` |
 | TizenTube | `tizentube` | `#47DDFF` | `#47DDFF` | `io.gh.reisxd.tizentube.cobalt/dev.cobalt.app.MainActivity` |
@@ -972,6 +976,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | VTM GO | `zenderapp` | `#F8C0B8` | `#F8C0B8` | `be.vmma.vtm.zenderapp/be.persgroep.vtmgo.presentation.VtmGoMainActivity`<br>`be.vmma.vtm.zenderapp/be.persgroep.vtmgo.VtmGoMainActivity` |
 | VTVcab ON | `vtvcab_on_tv` | `#E02820` | `#E02820` | `com.vtvcab.onTV/com.vtvcab.activities.NewSplashActivity` |
 | VTVgo | `vtvgo_tv` | `#D50808` | `#D50808` | `vn.vtv.vtvgotv/com.vtvcab.activities.NewSplashActivity` |
+| VYPN | `vypn` | `#FF4D4D` | `#FF4D4D` | `net.vypn.app/net.vypn.app.MainActivity` |
 | waipu.tv | `waipu_tv` | `#885CA3` | `#885CA3` | `de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity`<br>`de.exaring.waipu/de.exaring.waipu.MainActivity` |
 | Wako | `wako` | `#3082C4` | `#3082C4` | `app.wako/app.wako.MainActivity` |
 | Watch Free UK | `amcnetworks` | `#7030F8` | `#7030F8` | `com.amcnetworks.cbscatchup/com.simplestream.presentation.startup.StartUpActivity` |
@@ -1008,6 +1013,7 @@ Source accents are retained in the catalog. **On dark** is the shared square/ban
 | Xiaomi Media Player | `xiaomi_media_player` | `#00D4FF` | `#00D4FF` | `com.xiaomi.mitv.mediaexplorer/com.xiaomi.mitv.mediaexplorer.NewScraperMainEntryActivity` |
 | Xiaomi TV+ | `mitvplus` | `#F86800` | `#F86800` | `com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.BannerLogoFree24`<br>`com.mitv.tvhome.mitvplus/com.mitv.tvhome.mitvplus.app.SplashActivity` |
 | Xstream Play | `xstream_play` | `#C80000` | `#C80000` | `tv.airtel.xstream.tvapp/tv.airtel.xstream.login.LoginActivity` |
+| Xtra TV | `xtra_tv` | `#9C68FF` | `#9C68FF` | `com.github.razenfr.xtratv/com.github.andreyasadchy.xtra.ui.main.MainActivity` |
 | Xumo Play | `xumo_play` | `#7C74FF` | `#7C74FF` | `com.xumo.xumo/com.xumo.xumo.activity.SplashActivity` |
 | Xuper TV | `xuper_tv` | `#FF4D4D` | `#FF4D4D` | `com.android.mgstxNF/com.interactive.brasiliptv.ui.activity.WelcomeActivity` |
 | Yacine TV | `yacine_tv` | `#E02828` | `#E02828` | `ver3.ycntivi.off/dev.google.yacinetv.ui.splash.SplashActivity`<br>`ver3.ycntivi.off/dev.google.yacinetv.tvui.splash.SplashActivity` |

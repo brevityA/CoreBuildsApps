@@ -1,0 +1,27 @@
+{
+  "usage": "reference-only: brand cues and colour sampling for an original Core monoline redraw; never shipped as art",
+  "source": "https://github.com/razeNFR/XtraATV (app/src/main/res/drawable-xhdpi/tv_banner.png at 3cd5c8e)",
+  "captured": "2026-11-14",
+  "references": [
+    {
+      "path": "tv-banner-640x360.png",
+      "sha256": "8d8371a8a2b2c71b37b30e29b04f4f087f41d73c5aaebec8b1600e51edb5eb0f",
+      "size": [
+        640,
+        360
+      ],
+      "note": "the app's own TV banner from its source repository, copied unchanged for evidence only"
+    }
+  ],
+  "color_sample": {
+    "part": "the 'TV' of the banner's wordmark",
+    "box": [
+      456,
+      120,
+      468,
+      132
+    ],
+    "path": "tv-banner-640x360.png",
+    "color": "#9C68FF"
+  }
+}

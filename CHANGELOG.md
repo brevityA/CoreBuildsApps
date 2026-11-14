@@ -8,6 +8,17 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
+- **Six new icons, and Nuvio + IPTV's twelve launcher icons mapped.**
+  TiviDeck, Xtra TV, BitChord TV, Core Motion, Nightjar and VYPN: six
+  requests from the Missing icons scanner and the request form (#485, #482,
+  #481, #475, #463, #462), each drawn in the pack's monoline from the app's
+  own art: a TD monogram with a play triangle, an X over two play triangles,
+  three bowed strokes, three waves in the Core hexagon, a nightjar in flight
+  and the VYPN wordmark. Nuvio + IPTV (#484) lets you pick one of twelve
+  launcher icons; all twelve now map to Nuvio TV's. 1031 → 1037 icons, 1979
+  → 1999 components. VYPN's component and ten of Nuvio + IPTV's are read from
+  the request and the app's source, not yet from a TV, and are listed as
+  unverified.
 - **Send feedback, in the Google Play build.** About has a *Send feedback*
   row: a QR for the new GitHub feedback form
   (`.github/ISSUE_TEMPLATE/3.feedback.yml`) with this build and this TV

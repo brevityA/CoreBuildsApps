@@ -1,0 +1,40 @@
+{
+  "usage": "reference-only: brand cues and colour sampling for an original Core monoline redraw; never shipped as art",
+  "source": "https://play.google.com/store/apps/details?id=com.tivideck.mobile",
+  "captured": "2026-11-14",
+  "references": [
+    {
+      "path": "launcher-icon-128.png",
+      "sha256": "3b176875723540daf3605cb26441134adedd9182d6b61dbd25ad9a2162eb02cb",
+      "size": [
+        128,
+        128
+      ],
+      "note": "Google Play launcher icon (og:image) of TiviDeck (Mobile), the same TD mark, downsized from 512 px to 128 px for evidence only"
+    }
+  ],
+  "color_samples": [
+    {
+      "part": "the D's bowl",
+      "box": [
+        96,
+        72,
+        108,
+        84
+      ],
+      "path": "launcher-icon-128.png",
+      "color": "#0DE391"
+    },
+    {
+      "part": "the T",
+      "box": [
+        28,
+        36,
+        40,
+        48
+      ],
+      "path": "launcher-icon-128.png",
+      "color": "#003CCF"
+    }
+  ]
+}
