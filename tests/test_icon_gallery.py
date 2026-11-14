@@ -74,6 +74,11 @@ class IconGallery(unittest.TestCase):
         self.assertNotRegex(page, r'<(script|img|link)[^>]+(src|href)="https?://',
                             "the page must load nothing from another host")
         self.assertNotRegex(page, r"url\(\s*['\"]?https?://")
+        # Search hides cards with the `hidden` attribute. The cards' own
+        # `display: flex` beats the browser's default for it, so the page has
+        # to restate it, or every card stays on screen whatever is typed.
+        self.assertRegex(page, r"\[hidden\]\s*\{\s*display:\s*none\s*!important;\s*\}")
+        self.assertIn("c.li.hidden = !ok", page)
         self.assertIn('download = `${file} banner.png`', page)
         self.assertIn('download = `${file} icon.png`', page)
 

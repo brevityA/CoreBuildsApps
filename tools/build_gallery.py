@@ -155,6 +155,8 @@ TEMPLATE = """<!DOCTYPE html>
     --muted: #8b949e; --cyan: #00d4ff; --blue: #4facfe;
   }}
   * {{ box-sizing: border-box; }}
+  /* Filtering sets `hidden`; an author `display` (the cards' flex) would otherwise beat it. */
+  [hidden] {{ display: none !important; }}
   body {{ margin: 0; background: var(--night); color: var(--text);
          font: 16px/1.5 Outfit, -apple-system, "Segoe UI", Roboto, sans-serif; }}
   a {{ color: var(--blue); }}
