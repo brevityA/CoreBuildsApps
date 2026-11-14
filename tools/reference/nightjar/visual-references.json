@@ -1,0 +1,27 @@
+{
+  "usage": "reference-only: brand cues and colour sampling for an original Core monoline redraw; never shipped as art",
+  "source": "https://github.com/RamazanKara/nightjar (app/src/main/res/drawable-xhdpi/atv_banner.png at b5ceb50)",
+  "captured": "2026-11-14",
+  "references": [
+    {
+      "path": "tv-banner-320x180.png",
+      "sha256": "017980192c2a7d9fdba0517aba4a9ef568500832808a123173f04e8a68d1330a",
+      "size": [
+        320,
+        180
+      ],
+      "note": "the app's own Android TV banner from its source repository, copied unchanged at 320x180 for evidence only"
+    }
+  ],
+  "color_sample": {
+    "part": "the disc behind the bird",
+    "box": [
+      36,
+      32,
+      48,
+      44
+    ],
+    "path": "tv-banner-320x180.png",
+    "color": "#F2A93B"
+  }
+}

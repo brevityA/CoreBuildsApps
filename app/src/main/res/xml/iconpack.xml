@@ -97,6 +97,7 @@
     <item drawable="betterxc" />
     <item drawable="binge" />
     <item drawable="binged" />
+    <item drawable="bitchord" />
     <item drawable="bitdefender" />
     <item drawable="bit_tv" />
     <item drawable="blackout" />
@@ -152,6 +153,7 @@
     <item drawable="coredoctor" />
     <item drawable="coreeq" />
     <item drawable="coreline" />
+    <item drawable="coremotion" />
     <item drawable="coreshift" />
     <item drawable="jamal2367" />
     <item drawable="watchcorridortv" />
@@ -533,6 +535,7 @@
     <item drawable="nhk_world_japan" />
     <item drawable="nhk_plus" />
     <item drawable="nhl" />
+    <item drawable="nightjar" />
     <item drawable="nintendo_switch" />
     <item drawable="njpw_world" />
     <item drawable="nlziet" />
@@ -852,6 +855,7 @@
     <item drawable="thundertv" />
     <item drawable="aspiro" />
     <item drawable="timvision" />
+    <item drawable="tivideck" />
     <item drawable="tivify" />
     <item drawable="tvplayer" />
     <item drawable="tizentube" />
@@ -964,6 +968,7 @@
     <item drawable="zenderapp" />
     <item drawable="vtvcab_on_tv" />
     <item drawable="vtvgo_tv" />
+    <item drawable="vypn" />
     <item drawable="waipu_tv" />
     <item drawable="wako" />
     <item drawable="amcnetworks" />
@@ -1001,6 +1006,7 @@
     <item drawable="xiaomi_media_player" />
     <item drawable="mitvplus" />
     <item drawable="xstream_play" />
+    <item drawable="xtra_tv" />
     <item drawable="xumo_play" />
     <item drawable="xuper_tv" />
     <item drawable="yacine_tv" />

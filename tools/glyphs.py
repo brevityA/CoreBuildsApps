@@ -9667,3 +9667,87 @@ def jellywatch_jelly(c):
 
 GLYPHS.update({"prism_spectrum": prism_spectrum, "tvcalendar_page": tvcalendar_page,
                "jellywatch_jelly": jellywatch_jelly})
+
+
+# ---- 2.7.0 request batch (#485 #482 #481 #475 #463 #462) ------------------
+
+def tivideck_td(c):
+    """TiviDeck: the 'TD' monogram, a play triangle inside the D.
+
+    The launcher art sets a blue T whose stem is the D's own, and a green D
+    with a dark play triangle cut into its bowl. Primitive 0 (the T) takes the
+    blue through the catalog secondary; the D and the triangle keep the green.
+    The shared stem and the triangle are what separate it from the plain
+    letter tiles.
+    """
+    return (f'<path d="M 92 140 L 244 140 M 168 140 L 168 372" {_s(c, 32)}/>'
+            '<path d="M 168 140 L 296 140 A 116 116 0 0 1 296 372 L 168 372" '
+            f'{_s(c, 32)}/>'
+            f'<path d="M 244 206 L 244 306 L 328 256 Z" {_s(c, 26.2)}/>')
+
+
+def xtratv_x(c):
+    """Xtra TV: a long stroke and a short one crossing near the top, over two
+    play triangles.
+
+    The launcher art is a white X, one bar far longer than the other, across a
+    field of purple play triangles. Primitive 0 (the X) takes light ink
+    through the catalog secondary; the triangles keep the purple. The
+    off-centre crossing and the triangles keep it apart from the letter X
+    tiles and from x_tv's framed 'XTV'.
+    """
+    return (f'<path d="M 120 112 L 404 408 M 112 214 L 352 128" {_s(c, 32)}/>'
+            '<path d="M 312 232 L 312 312 L 384 272 Z '
+            f'M 152 296 L 152 376 L 224 336 Z" {_s(c, 26.2)}/>')
+
+
+def bitchord_strokes(c):
+    """BitChord: three bowed strokes stacked, the middle one shortest.
+
+    The launcher art is three thick white curves, each sagging in the middle,
+    on a pink-to-red tile. One accent: the curves carry the tile's red. They
+    sag downward and stand free of any ring, which is what separates them
+    from Spotify's three arcs, which bow upward inside a circle.
+    """
+    return ('<path d="M 136 168 Q 256 226 376 168 '
+            'M 160 256 Q 248 300 336 256 '
+            f'M 112 344 Q 256 414 400 344" {_s(c, 32)}/>')
+
+
+def coremotion_waves(c):
+    """Core Motion: three flowing waves inside the brand hexagon.
+
+    Core Motion plays looping motion wallpapers; its own launcher mark is the
+    plain point-up hexagon. Two earlier inner marks failed the look-alike
+    gate at tile size: a figure-eight read as Core Line's ticker (0.828) and a
+    looping arrow as Dropsync's cube (0.832). Three waves say motion and stay
+    clear of every icon in the pack (nearest, Core EQ, 0.760).
+    """
+    return (f'<polygon points="{_hexpts(256, 256, 196)}" {_s(c, 34)}/>'
+            '<path d="M 136 206 Q 176 176 216 206 T 296 206 T 376 206 '
+            'M 136 256 Q 176 226 216 256 T 296 256 T 376 256 '
+            f'M 136 306 Q 176 276 216 306 T 296 306 T 376 306" {_s(c, 26.2)}/>')
+
+
+def nightjar_bird(c):
+    """Nightjar: a nightjar in flight inside a disc.
+
+    The TV banner sets a dark bird, wings spread and tail down, on an orange
+    disc. Monoline keeps one accent for both: the disc as a ring, the bird as
+    two long wing arcs meeting at the body, a small head above and a tail that
+    forks at the end. Its launcher icon is still Moonlight's wheel, so the
+    bird is the cue that is Nightjar's own.
+    """
+    return (f'<circle cx="256" cy="256" r="196" {_s(c, 32)}/>'
+            f'<path d="M 112 250 Q 186 172 256 236 Q 326 172 400 250" {_s(c, 32)}/>'
+            f'<circle cx="256" cy="200" r="18" {_s(c, 26.2)}/>'
+            f'<path d="M 256 240 L 256 326 M 256 326 L 228 360 M 256 326 L 284 360" {_s(c, 26.2)}/>')
+
+
+_WM6 = {
+    "vypn": ("VYPN", None),   # #462: the app's own mark is its name in white capitals
+}
+GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM6.items()})
+GLYPHS.update({"tivideck_td": tivideck_td, "xtratv_x": xtratv_x,
+               "bitchord_strokes": bitchord_strokes, "coremotion_waves": coremotion_waves,
+               "nightjar_bird": nightjar_bird})

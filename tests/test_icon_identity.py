@@ -93,7 +93,8 @@ class IdentityTests(unittest.TestCase):
 
     def test_request_references_are_hash_pinned_and_not_runtime_art(self):
         for directory in ("sportfm-tv", "tvlok", "plezy", "streamfc", "radio-france",
-                          "aurora-player", "blackout", "prism", "tvcalendar", "jellywatch"):
+                          "aurora-player", "blackout", "prism", "tvcalendar", "jellywatch",
+                          "tivideck", "xtra-tv", "bitchord", "nightjar", "vypn"):
             root = ROOT / "tools/reference" / directory
             evidence = json.loads((root / "visual-references.json").read_text())
             self.assertTrue(evidence["usage"].startswith("reference-only"))
@@ -111,6 +112,79 @@ class IdentityTests(unittest.TestCase):
                                         if r["path"] == reference["source_resource"])
                         self.assertEqual(original["export_sha256"], reference["source_sha256"])
             self.assertFalse(list(root.glob("*.apk")), "vendor APKs must not be committed")
+
+    def test_november_requests_are_reviewed_marks(self):
+        # 2.7.0 (14 November): every accent is the colour its hashed reference
+        # really holds in the recorded box, and so is TiviDeck's blue T.
+        from collections import Counter
+
+        def sampled(ref, sample):
+            with Image.open(ROOT / "tools/reference" / ref / sample["path"]) as image:
+                pixels = [p for p in image.convert("RGB").crop(tuple(sample["box"])).getdata()
+                          if not min(p) > 200 and max(p) > 60]
+            return "#{:02X}{:02X}{:02X}".format(*Counter(pixels).most_common(1)[0][0])
+
+        expected = {
+            "tivideck": ("tivideck_td", "#0DE391", "tivideck", "#003CCF"),
+            "xtra_tv": ("xtratv_x", "#9C68FF", "xtra-tv", LIGHT_INK),
+            "bitchord": ("bitchord_strokes", "#FB4E66", "bitchord", None),
+            "nightjar": ("nightjar_bird", "#F2A93B", "nightjar", None),
+        }
+        for drawable, (glyph, accent, ref, second) in expected.items():
+            with self.subTest(drawable=drawable):
+                icon = BY_ID[drawable]
+                self.assertEqual(icon["glyph"], glyph)
+                self.assertEqual(icon["style"], CORE_MONOLINE)
+                self.assertEqual(icon["color"], accent)
+                self.assertEqual(icon["color_reviewed"], "2026-11-14")
+                self.assertIn(f"tools/reference/{ref}/", icon["glyph_source"])
+                self.assertNotIn("unverified", icon, "a scanner-reported component is verified")
+                evidence = json.loads((ROOT / "tools/reference" / ref
+                                       / "visual-references.json").read_text())
+                samples = evidence.get("color_samples") or [evidence["color_sample"]]
+                self.assertEqual(sampled(ref, samples[0]), accent)
+                self.assertEqual(samples[0]["color"], accent)
+                if second is None:
+                    self.assertNotIn("secondary", icon)
+                else:
+                    self.assertEqual(icon["secondary"]["color"], second)
+                    self.assertEqual(icon["secondary"]["parts"], [0])
+                    self.assertFalse(secondary_errors(icon))
+                    if len(samples) > 1:
+                        self.assertEqual(sampled(ref, samples[1]), second)
+
+        # Core Motion joins the Core family: the suite accent, the hexagon.
+        motion = BY_ID["coremotion"]
+        self.assertEqual((motion["glyph"], motion["color"], motion["category"]),
+                         ("coremotion_waves", "#00D4FF", "CORE"))
+        self.assertEqual(motion["components"], ["tv.corebuilds.motion/tv.corebuilds.motion.SettingsActivity"])
+
+        # VYPN's mark has no colour: the pack palette assigns one, and the
+        # requester's component waits for a TV to confirm it.
+        vypn = BY_ID["vypn"]
+        self.assertEqual(vypn["glyph"], "vypn_wm")
+        self.assertEqual(vypn["color_source"], "core-builds palette (no published brand colour found)")
+        self.assertEqual(vypn["unverified"], vypn["components"])
+
+        # Nuvio + IPTV (#484): all twelve launcher entries map to Nuvio TV, and
+        # each one is in the receipt read from the fork's own manifests, which
+        # is the evidence the original com.nuvio.tv set rests on, so none is
+        # flagged. The receipt is the pin: twelve launchers, exactly the
+        # catalog's twelve, the two device reports named, every file hashed.
+        nuvio = BY_ID["nuvio"]
+        livetv = [c for c in nuvio["components"] if c.startswith("com.nuvio.livetv/")]
+        self.assertEqual(len(livetv), 12)
+        self.assertFalse(set(livetv) & set(nuvio.get("unverified", [])))
+        self.assertIn("tools/reference/nuvio-iptv/", nuvio["mapping_source"])
+        receipt = json.loads((ROOT / "tools/reference/nuvio-iptv/receipt.json").read_text())
+        self.assertEqual((receipt["application_id"], receipt["namespace"], receipt["ref"]),
+                         ("com.nuvio.livetv", "com.nuvio.tv", "e4d3d6e"))
+        self.assertEqual(sorted(l["component"] for l in receipt["launchers"]), sorted(livetv))
+        self.assertEqual({l["component"].rsplit(".", 1)[1]: l["device_reported"]
+                          for l in receipt["launchers"] if "device_reported" in l},
+                         {"IptvIconDefault": "#358", "IptvIconGraphite": "#484"})
+        for f in receipt["files"]:
+            self.assertRegex(f["sha256"], r"^[0-9a-f]{64}$")
 
     def test_late_october_requests_are_reviewed_monoline_marks(self):
         expected = {

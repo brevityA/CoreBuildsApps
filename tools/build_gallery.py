@@ -4,7 +4,7 @@ Builds the Core Builds icon gallery: one searchable page of every icon in
 tools/catalog.json, each with PNG downloads, for GitHub Pages.
 
 The gallery is generated at deploy time (.github/workflows/pages.yml) and never
-committed: 1031 icons are about 2,000 PNGs, and committing them would rewrite
+committed: every icon has two PNGs, over 2,000 in all, and committing them would rewrite
 megabytes of history every time an icon changes.
 
     python3 tools/build_gallery.py --out _site/gallery

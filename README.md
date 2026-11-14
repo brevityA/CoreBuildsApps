@@ -23,7 +23,7 @@ Five free apps for Android TV and Google TV, and one for your phone. Each has a 
 <!-- suite-stamp:start -->
 > | App | Current | What it does | Downloader | Release tag |
 > |---|---:|---|---|---|
-> | **[Core Builds Icon Pack](#-core-builds-icon-pack)** | `v2.6.0` | 1031 transparent icons + 132 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
+> | **[Core Builds Icon Pack](#-core-builds-icon-pack)** | `v2.7.0` | 1037 transparent icons + 132 wallpapers for Projectivy Launcher | `5270601` | [`v*` / `iconpack`](../../releases) |
 > | **[Core Line](#-core-line)** | `v1.4.4` | Sports scores & channel RSS ticker (chyron) | `7375676` | [`coreline-v*` / `coreline`](../../releases) |
 > | **[Core Shift](#-core-shift)** | `v2.3.5` | Android TV screensaver + motion wallpaper browser | `8829421` | [`shift-v*` / `shift`](../../releases) |
 > | **[Core Motion](#-core-motion)** | `v1.0.0` | Projectivy wallpaper-provider plugin for Core Motion loops | none yet | [`motion-v*` / `motion`](../../releases) |
@@ -140,6 +140,7 @@ the reporter — a link can never tick a gate for them.
 |---|---|---|---|---|
 | [🎨 New icon request](https://github.com/brevityA/CoreBuildsApps/issues/new?assignees=&labels=icon+request&projects=&template=1.new_icon_request.yml&title=%5BIcon%5D+) | Request an icon for an app that isn't in the pack yet. | App name\* · Component name · Store or download link\* · Anything else | Device type\* · Confirm | `[Icon]` · `icon request` |
 | [🔧 Icon not auto-assigning](https://github.com/brevityA/CoreBuildsApps/issues/new?assignees=&labels=mapping&projects=&template=2.icon_not_applying.yml&title=%5BNot+applying%5D+) | The app is in the pack, but its icon doesn't appear on your device. | App name\* · The component name on YOUR device\* · Device and OS\* | Launcher\* · Confirm | `[Not applying]` · `mapping` |
+| [💬 Feedback or a problem](https://github.com/brevityA/CoreBuildsApps/issues/new?assignees=&labels=feedback&projects=&template=3.feedback.yml&title=%5BFeedback%5D+) | Tell us what worked, what didn't, or what you'd change. The app's About → Send feedback fills in the build and device for you. | What happened, or what would you change?\* · App version and build\* · Device and Android version\* | Which part of the app?\* | `[Feedback]` · `feedback` |
 
 One app per issue, and check [docs/IconPackList.md](docs/IconPackList.md) by
 name, drawable and package first — a listed app that isn't applying belongs

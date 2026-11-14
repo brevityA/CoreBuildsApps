@@ -293,6 +293,8 @@
     <!-- Binged -->
     <item component="ComponentInfo{net.binged.tv/net.binged.tv.MainActivity}" drawable="binged"/>
     <item component="ComponentInfo{net.binged.tv/.MainActivity}" drawable="binged"/>
+    <!-- BitChord TV -->
+    <item component="ComponentInfo{com.music.bitchord.tv/com.music.bitchord.MainActivity}" drawable="bitchord"/>
     <!-- Bitdefender -->
     <item component="ComponentInfo{com.bitdefender.vpn/com.bitdefender.vpn.MainActivity}" drawable="bitdefender"/>
     <item component="ComponentInfo{com.bitdefender.vpn/.MainActivity}" drawable="bitdefender"/>
@@ -442,6 +444,9 @@
     <!-- Core Line -->
     <item component="ComponentInfo{dev.corebuilds.line/dev.corebuilds.line.MainActivity}" drawable="coreline"/>
     <item component="ComponentInfo{dev.corebuilds.line/.MainActivity}" drawable="coreline"/>
+    <!-- Core Motion -->
+    <item component="ComponentInfo{tv.corebuilds.motion/tv.corebuilds.motion.SettingsActivity}" drawable="coremotion"/>
+    <item component="ComponentInfo{tv.corebuilds.motion/.SettingsActivity}" drawable="coremotion"/>
     <!-- Core Shift -->
     <item component="ComponentInfo{dev.corebuilds.shift/dev.corebuilds.shift.MainActivity}" drawable="coreshift"/>
     <item component="ComponentInfo{dev.corebuilds.shift/.MainActivity}" drawable="coreshift"/>
@@ -1558,6 +1563,8 @@
     <item component="ComponentInfo{jp.nhk.plus/jp.nhk.simul.view.activity.SplashActivity}" drawable="nhk_plus"/>
     <!-- NHL -->
     <item component="ComponentInfo{com.nhl.tv/com.viewlift.tv.AppCmsTVSplashActivity}" drawable="nhl"/>
+    <!-- Nightjar -->
+    <item component="ComponentInfo{com.butterpollo.client/com.limelight.PcView}" drawable="nightjar"/>
     <!-- Nintendo Switch -->
     <item component="ComponentInfo{com.nintendo.znba/com.nintendo.znba.MainActivity}" drawable="nintendo_switch"/>
     <item component="ComponentInfo{com.nintendo.znba/.MainActivity}" drawable="nintendo_switch"/>
@@ -1629,6 +1636,17 @@
     <item component="ComponentInfo{com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault}" drawable="nuvio"/>
     <item component="ComponentInfo{com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconDefault}" drawable="nuvio"/>
     <item component="ComponentInfo{com.nuvio.tv.test/com.nuvio.tv.launcher.AppIconDefault}" drawable="nuvio"/>
+    <item component="ComponentInfo{com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconArcticBlue}" drawable="nuvio"/>
+    <item component="ComponentInfo{com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconEmerald}" drawable="nuvio"/>
+    <item component="ComponentInfo{com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconRoseGold}" drawable="nuvio"/>
+    <item component="ComponentInfo{com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconCopper}" drawable="nuvio"/>
+    <item component="ComponentInfo{com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconGraphite}" drawable="nuvio"/>
+    <item component="ComponentInfo{com.nuvio.livetv/com.nuvio.tv.launcher.AppIconDefault}" drawable="nuvio"/>
+    <item component="ComponentInfo{com.nuvio.livetv/com.nuvio.tv.launcher.AppIconArcticBlue}" drawable="nuvio"/>
+    <item component="ComponentInfo{com.nuvio.livetv/com.nuvio.tv.launcher.AppIconEmerald}" drawable="nuvio"/>
+    <item component="ComponentInfo{com.nuvio.livetv/com.nuvio.tv.launcher.AppIconRoseGold}" drawable="nuvio"/>
+    <item component="ComponentInfo{com.nuvio.livetv/com.nuvio.tv.launcher.AppIconCopper}" drawable="nuvio"/>
+    <item component="ComponentInfo{com.nuvio.livetv/com.nuvio.tv.launcher.AppIconGraphite}" drawable="nuvio"/>
     <!-- Nuyo Device Info -->
     <item component="ComponentInfo{com.roysolberg.android.deviceinfo/com.roysolberg.android.deviceinfo.ui.MainActivity}" drawable="nuyodeviceinfo"/>
     <item component="ComponentInfo{com.roysolberg.android.deviceinfo/.ui.MainActivity}" drawable="nuyodeviceinfo"/>
@@ -2503,6 +2521,9 @@
     <item component="ComponentInfo{com.aspiro.tidal/com.aspiro.wamp.tv.TvLauncherActivity}" drawable="aspiro"/>
     <!-- TIMVISION -->
     <item component="ComponentInfo{it.telecomitalia.cubovision/com.canal.ui.tv.TvMainActivity}" drawable="timvision"/>
+    <!-- TiviDeck -->
+    <item component="ComponentInfo{com.tivideck.app/com.tivideck.app.MainActivity}" drawable="tivideck"/>
+    <item component="ComponentInfo{com.tivideck.app/.MainActivity}" drawable="tivideck"/>
     <!-- Tivify -->
     <item component="ComponentInfo{com.tvup.tivify.app.tv/com.tvup.tvapp.view.activity.MainActivityTVup}" drawable="tivify"/>
     <!-- TiviMate -->
@@ -2829,6 +2850,9 @@
     <item component="ComponentInfo{com.vtvcab.onTV/com.vtvcab.activities.NewSplashActivity}" drawable="vtvcab_on_tv"/>
     <!-- VTVgo -->
     <item component="ComponentInfo{vn.vtv.vtvgotv/com.vtvcab.activities.NewSplashActivity}" drawable="vtvgo_tv"/>
+    <!-- VYPN -->
+    <item component="ComponentInfo{net.vypn.app/net.vypn.app.MainActivity}" drawable="vypn"/>
+    <item component="ComponentInfo{net.vypn.app/.MainActivity}" drawable="vypn"/>
     <!-- waipu.tv -->
     <item component="ComponentInfo{de.exaring.waipu/de.exaring.waipu.ui.login.LoginActivity}" drawable="waipu_tv"/>
     <item component="ComponentInfo{de.exaring.waipu/.ui.login.LoginActivity}" drawable="waipu_tv"/>
@@ -2933,6 +2957,8 @@
     <item component="ComponentInfo{com.mitv.tvhome.mitvplus/.app.SplashActivity}" drawable="mitvplus"/>
     <!-- Xstream Play -->
     <item component="ComponentInfo{tv.airtel.xstream.tvapp/tv.airtel.xstream.login.LoginActivity}" drawable="xstream_play"/>
+    <!-- Xtra TV -->
+    <item component="ComponentInfo{com.github.razenfr.xtratv/com.github.andreyasadchy.xtra.ui.main.MainActivity}" drawable="xtra_tv"/>
     <!-- Xumo Play -->
     <item component="ComponentInfo{com.xumo.xumo/com.xumo.xumo.activity.SplashActivity}" drawable="xumo_play"/>
     <item component="ComponentInfo{com.xumo.xumo/.activity.SplashActivity}" drawable="xumo_play"/>

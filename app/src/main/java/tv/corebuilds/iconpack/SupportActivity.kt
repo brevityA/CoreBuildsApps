@@ -62,6 +62,12 @@ class SupportActivity : TvActivity() {
              getString(R.string.support_kofi_url), side)
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Back from redeeming a code in Google Play (or on a phone): ask again.
+        plus?.recheck()
+    }
+
     override fun onDestroy() {
         plus?.close()
         plus = null
@@ -87,9 +93,10 @@ class SupportActivity : TvActivity() {
                 status.text = when (trial) {
                     is Plus.Trial.Running ->
                         getString(R.string.plus_trial_running_fmt, Plus.trialLeftLabel(this, trial.leftMs))
-                    Plus.Trial.Ended ->
-                        getString(R.string.plus_trial_ended) + " " + getString(R.string.plus_for_sale)
-                    Plus.Trial.Unused -> getString(R.string.plus_for_sale)
+                    Plus.Trial.Ended -> getString(R.string.plus_trial_ended) + " " +
+                        getString(R.string.plus_for_sale) + " " + getString(R.string.plus_code_note)
+                    Plus.Trial.Unused ->
+                        getString(R.string.plus_for_sale) + " " + getString(R.string.plus_code_note)
                 }
                 button.text = getString(R.string.plus_buy_fmt, state.price)
             }

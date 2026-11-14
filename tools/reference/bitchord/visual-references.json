@@ -1,0 +1,27 @@
+{
+  "usage": "reference-only: brand cues and colour sampling for an original Core monoline redraw; never shipped as art",
+  "source": "https://github.com/kushagrasinghx/BitChord (app/src/main/ic_launcher-playstore.png at acf219a)",
+  "captured": "2026-11-14",
+  "references": [
+    {
+      "path": "launcher-icon-128.png",
+      "sha256": "4476f1a1d727cc7f1a2eafab502021f0ec355f8f436f5502ed48d1bfb3c5bee5",
+      "size": [
+        128,
+        128
+      ],
+      "note": "the app's store launcher icon from its source repository, downsized from 512 px to 128 px for evidence only"
+    }
+  ],
+  "color_sample": {
+    "part": "the tile's red, between the strokes",
+    "box": [
+      0,
+      24,
+      12,
+      36
+    ],
+    "path": "launcher-icon-128.png",
+    "color": "#FB4E66"
+  }
+}

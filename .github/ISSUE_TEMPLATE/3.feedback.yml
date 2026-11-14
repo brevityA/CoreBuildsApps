@@ -1,0 +1,48 @@
+name: "💬 Feedback or a problem"
+description: Tell us what worked, what didn't, or what you'd change. The app's About → Send feedback fills in the build and device for you.
+title: "[Feedback] "
+labels: ["feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for testing. Every report is read, and what changes because of it is listed in the next release's changelog.
+
+  - type: textarea
+    id: feedback
+    attributes:
+      label: What happened, or what would you change?
+      description: What you tried, what you expected, and what you saw. One idea or problem per report is easiest to act on.
+      placeholder: "I pressed Apply in Projectivy and three icons didn't change: …"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part of the app?
+      options:
+        - Icons and banners
+        - Missing icons and requests
+        - Wallpapers and live loops
+        - Core Premium
+        - Settings, About or something else
+    validations:
+      required: true
+
+  - type: input
+    id: build
+    attributes:
+      label: App version and build
+      description: Filled in when you open this form from About → Send feedback.
+      placeholder: 2.7.0 (64) · Google Play
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Device and Android version
+      placeholder: onn. 4K Pro · Android 14
+    validations:
+      required: true

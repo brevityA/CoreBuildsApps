@@ -6,18 +6,52 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.7.0] — 2026-11-14
+
 ### Added
 
-- **Every icon is on the web, searchable.** A page of all 1031 icons at
+- **Six new icons, and Nuvio + IPTV's twelve launcher icons mapped.**
+  TiviDeck, Xtra TV, BitChord TV, Core Motion, Nightjar and VYPN: six
+  requests from the Missing icons scanner and the request form (#485, #482,
+  #481, #475, #463, #462), each drawn in the pack's monoline from the app's
+  own art: a TD monogram with a play triangle, an X over two play triangles,
+  three bowed strokes, three waves in the Core hexagon, a nightjar in flight
+  and the VYPN wordmark. Nuvio + IPTV (#484) lets you pick one of twelve
+  launcher icons; all twelve now map to Nuvio TV's. 1031 → 1037 icons, 1979
+  → 1999 components. Nuvio + IPTV's twelve are read from the app's own
+  manifests (`tools/reference/nuvio-iptv/`), the evidence the original Nuvio TV
+  icons rest on, and two of them have been reported by a TV. VYPN's component
+  comes from the request alone and is listed as unverified until a TV reports
+  it, which raises the unverified ceiling from 73 to 74.
+- **Send feedback, in the Google Play build.** About has a *Send feedback*
+  row: a QR for the new GitHub feedback form
+  (`.github/ISSUE_TEMPLATE/3.feedback.yml`) with this build and this TV
+  already filled in. For a phone with no camera it shows the form's short
+  address and the two lines to fill in, each named as the form names it; both
+  stay whole at Android TV's largest text size. The app sends nothing itself.
+  Both links are generated with the other issue links (`feedback_url_fmt`,
+  `feedback_form_url`, `tools/build_issue_prefills.py`), never hand-written.
+- **Every icon is on the web, searchable.** A page of all 1037 icons at
   `brevitya.github.io/CoreBuildsApps/gallery/` (`tools/build_gallery.py`): search by
   app or package name, filter by the app's own category chips, and download
   any banner (1280 × 720) or square icon (512 × 512) as a transparent PNG
-  named after the app. `.github/workflows/pages.yml` renders the 2062 PNGs at
+  named after the app. `.github/workflows/pages.yml` renders the 2074 PNGs at
   deploy time from `tools/catalog.json` and the committed art, so none is
   committed, and publishes `docs/` exactly as the branch deploy built it;
   the build fails rather than publish a site missing any `docs/` page,
   `docs/privacy.html` included. `tests/test_icon_gallery.py` holds the page
   to the catalog and the workflow to `docs/`.
+
+### Changed
+
+- **A Core Premium code counts without restarting the app.** Home asks
+  Google Play again each time it comes back to the screen, at most once a
+  minute, instead of once per app start, and the Premium screen asks again
+  when it is reopened. A promo code redeemed in Google Play on a phone, a
+  purchase made on another TV and a refund now land on a TV that keeps the
+  app running for weeks. The Premium card says how: "Have a code? Redeem it
+  in Google Play, then come back here." `docs/PLAY-CONSOLE.md` §7a covers
+  the codes and the production-access review they are for.
 
 ## [2.6.0] — 2026-11-06
 

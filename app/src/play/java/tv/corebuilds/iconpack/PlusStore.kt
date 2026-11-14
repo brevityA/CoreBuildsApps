@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClient.BillingResponseCode
@@ -58,17 +59,22 @@ object PlusStore {
     fun session(activity: Activity, onState: (PlusState) -> Unit): PlusSession =
         BillingSession(activity, onState).also { it.start() }
 
-    @Volatile private var synced = false
+    /** When the last [sync] asked, on the monotonic clock; null before the first. */
+    @Volatile private var lastSync: Long? = null
 
     /**
-     * Once per process, quietly: ask Play what this account owns and make the
-     * stored token agree. A purchase made on another TV, one that cleared
-     * after being pending, and a refund all land here. Any failure leaves the
-     * token as it was; Support's own refresh is the fallback.
+     * Each time Home comes back to the screen, at most once a minute
+     * ([Plus.recheckDue]), quietly: ask Play what this account owns and make
+     * the stored token agree. A promo code redeemed in the Play Store or on a
+     * phone, a purchase made on another TV, one that cleared after being
+     * pending, and a refund all land here, without restarting an app a TV may
+     * keep running for weeks. Any failure leaves the token as it was;
+     * Support's own refresh is the fallback.
      */
     fun sync(context: Context) {
-        if (synced) return
-        synced = true
+        val now = SystemClock.elapsedRealtime()
+        if (!Plus.recheckDue(lastSync, now)) return
+        lastSync = now
         val app = context.applicationContext
         val client = BillingClient.newBuilder(app)
             .setListener { _, _ -> }
@@ -117,12 +123,20 @@ object PlusStore {
             .build()
         private var details: ProductDetails? = null
         @Volatile private var closed = false
+        /** Set once the first setup answers OK; [recheck] waits for it. */
+        @Volatile private var connected = false
+        private val turns = PlusTurns()
 
         fun start() {
-            emit(PlusState.Loading)
+            emit(PlusState.Loading, turns.next())
             client.startConnection(object : BillingClientStateListener {
                 override fun onBillingSetupFinished(result: BillingResult) {
-                    if (result.responseCode == BillingResponseCode.OK) refresh() else fail(result)
+                    if (result.responseCode == BillingResponseCode.OK) {
+                        connected = true
+                        refresh()
+                    } else {
+                        fail(result, turns.next())
+                    }
                 }
 
                 // enableAutoServiceReconnection reconnects on the next call.
@@ -132,24 +146,27 @@ object PlusStore {
 
         /** Play's list of this account's purchases is the truth; the stored token follows it. */
         private fun refresh() {
+            val turn = turns.next()
             val params = QueryPurchasesParams.newBuilder().setProductType(ProductType.INAPP).build()
             client.queryPurchasesAsync(params) { result, purchases ->
                 if (result.responseCode != BillingResponseCode.OK) {
-                    fail(result)
+                    fail(result, turn)
                     return@queryPurchasesAsync
                 }
                 val plus = purchases.firstOrNull { PRODUCT_ID in it.products }
                 if (plus == null) {
-                    // Never bought, or refunded since: nothing to send with requests.
-                    storeToken(activity, null)
-                    loadPrice()
+                    // Never bought, or refunded since: nothing to send with
+                    // requests. A purchase that lands meanwhile has its own,
+                    // later turn, so this check cannot undo it.
+                    if (turns.isLatest(turn)) storeToken(activity, null)
+                    loadPrice(turn)
                 } else {
-                    apply(plus)
+                    apply(plus, turn)
                 }
             }
         }
 
-        private fun apply(purchase: Purchase) {
+        private fun apply(purchase: Purchase, turn: Int) {
             when (purchase.purchaseState) {
                 Purchase.PurchaseState.PURCHASED -> {
                     storeToken(activity, purchase.purchaseToken)
@@ -159,14 +176,14 @@ object PlusStore {
                             .setPurchaseToken(purchase.purchaseToken).build()
                         client.acknowledgePurchase(ack) { }
                     }
-                    emit(PlusState.Owned)
+                    emit(PlusState.Owned, turn)
                 }
-                Purchase.PurchaseState.PENDING -> emit(PlusState.Pending)
-                else -> loadPrice()
+                Purchase.PurchaseState.PENDING -> emit(PlusState.Pending, turn)
+                else -> loadPrice(turn)
             }
         }
 
-        private fun loadPrice() {
+        private fun loadPrice(turn: Int) {
             val query = QueryProductDetailsParams.Product.newBuilder()
                 .setProductId(PRODUCT_ID)
                 .setProductType(ProductType.INAPP)
@@ -174,18 +191,26 @@ object PlusStore {
             val params = QueryProductDetailsParams.newBuilder().setProductList(listOf(query)).build()
             client.queryProductDetailsAsync(params) { result, found ->
                 if (result.responseCode != BillingResponseCode.OK) {
-                    fail(result)
+                    fail(result, turn)
                     return@queryProductDetailsAsync
                 }
                 val product = found.productDetailsList.firstOrNull { it.productId == PRODUCT_ID }
                 val price = product?.oneTimePurchaseOfferDetails?.formattedPrice
                 details = product
                 if (price == null) {
-                    emit(PlusState.Unavailable("Core Premium is not on sale in this country"))
+                    emit(PlusState.Unavailable("Core Premium is not on sale in this country"), turn)
                 } else {
-                    emit(PlusState.ForSale(price))
+                    emit(PlusState.ForSale(price), turn)
                 }
             }
+        }
+
+        override fun recheck() {
+            // Before setup answers, start() is still connecting and will ask
+            // anyway. After it, ask even while disconnected: the call itself
+            // is what makes enableAutoServiceReconnection reconnect, so
+            // waiting for client.isReady would wait for ever.
+            if (!closed && connected) refresh()
         }
 
         override fun buy() {
@@ -196,30 +221,35 @@ object PlusStore {
                         .setProductDetails(product).build()))
                 .build()
             val result = client.launchBillingFlow(activity, params)
-            if (result.responseCode != BillingResponseCode.OK) fail(result)
+            if (result.responseCode != BillingResponseCode.OK) fail(result, turns.next())
         }
 
         override fun onPurchasesUpdated(result: BillingResult, purchases: MutableList<Purchase>?) {
             when (result.responseCode) {
+                // A purchase result overtakes any check still in flight.
                 BillingResponseCode.OK ->
-                    purchases?.firstOrNull { PRODUCT_ID in it.products }?.let { apply(it) }
+                    purchases?.firstOrNull { PRODUCT_ID in it.products }?.let { apply(it, turns.next()) }
                 // Owned on this account already (another TV): read it back.
                 BillingResponseCode.ITEM_ALREADY_OWNED -> refresh()
                 // Backed out of Google Play's sheet: the screen is as it was.
                 BillingResponseCode.USER_CANCELED -> Unit
-                else -> fail(result)
+                else -> fail(result, turns.next())
             }
         }
 
-        private fun fail(result: BillingResult) {
+        private fun fail(result: BillingResult, turn: Int) {
             val reason = result.debugMessage.takeIf { it.isNotBlank() }
                 ?: "Google Play answered ${result.responseCode}"
-            emit(PlusState.Unavailable(reason))
+            emit(PlusState.Unavailable(reason), turn)
         }
 
-        /** Billing answers on its own threads; the screen hears on the main one. */
-        private fun emit(state: PlusState) {
-            main.post { if (!closed) onState(state) }
+        /**
+         * Billing answers on its own threads; the screen hears on the main
+         * one, and only the newest answer ([PlusTurns]): a check that a later
+         * check or a purchase has overtaken changes nothing.
+         */
+        private fun emit(state: PlusState, turn: Int) {
+            main.post { if (!closed && turns.isLatest(turn)) onState(state) }
         }
 
         override fun close() {

@@ -71,8 +71,15 @@ REFERENCE = ROOT / "tools" / "reference" / "projectivy-1.1.9-appfilter.xml"
 # phone entry and the distinct .ui.TvLauncherActivity TV alias. Both old
 # guesses are removed, not relabelled as verified. The static inspection
 # receipt and APK hash live in tools/reference/tvlok/.
+# 73 -> 74 (2.7.0, owner decision 2026-11-14): VYPN's one component
+# (net.vypn.app/net.vypn.app.MainActivity, #462) comes from the requester, with
+# no device named and no public source to read, and nothing else in the
+# release clears a flag to offset it. Its twelve-launcher neighbour in the
+# same batch, Nuvio + IPTV (#484), is not counted: its ten unreported
+# components rest on the fork's own manifests, receipt in
+# tools/reference/nuvio-iptv/, the same evidence as the original Nuvio TV set.
 # The ceiling may only move back down.
-UNVERIFIED_CEILING = 73
+UNVERIFIED_CEILING = 74
 
 
 def _canonical(component: str) -> str:

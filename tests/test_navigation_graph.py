@@ -57,6 +57,7 @@ ACTIVITY_OWNER = {
     "about": "AboutActivity.kt",
     "support": "SupportActivity.kt",
     "faq": "FaqActivity.kt",
+    "feedback": "FeedbackActivity.kt",
     "auditor": "AuditorActivity.kt",
     "inspector": "InspectorActivity.kt",
     "suite": "SuiteActivity.kt",

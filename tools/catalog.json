@@ -2,11 +2,11 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "2.6.0",
+    "version": "2.7.0",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 1031
+    "count": 1037
   },
   "icons": [
     {
@@ -7704,7 +7704,18 @@
         "com.nuvio.tv/.launcher.AppIconGraphite",
         "com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault",
         "com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconDefault",
-        "com.nuvio.tv.test/com.nuvio.tv.launcher.AppIconDefault"
+        "com.nuvio.tv.test/com.nuvio.tv.launcher.AppIconDefault",
+        "com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconArcticBlue",
+        "com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconEmerald",
+        "com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconRoseGold",
+        "com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconCopper",
+        "com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconGraphite",
+        "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconDefault",
+        "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconArcticBlue",
+        "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconEmerald",
+        "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconRoseGold",
+        "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconCopper",
+        "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconGraphite"
       ],
       "category": "STREAM",
       "color_source": "brand reference — nuvio lockup gradient, violet end (sampled 2026-09-14)",
@@ -7713,7 +7724,7 @@
         "#2FCCE6",
         "#A238F0"
       ],
-      "mapping_source": "existing set per docs/research/community-input-icons-2026-09.md P0 (official com.nuvio.tv manifest, six launcher activities, read 2026-09-14); com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault added from issue #288 (device-reported on Smart TV Pro, Android 14, pack 2.3.0): the com.nuvio.app package variant ships the same AppIconDefault activity, which the P0 pass mapped only under com.nuvio.tv. Not confirmed on a second TV; issue #358 (device-reported via the pack's Missing icons scanner on onn. 4K Plus Streaming, Android 14, pack 2.4.4, 2026-10-19): 'Nuvio + IPTV' (github.com/homelessbrian/NuvioTV) is a fork of Nuvio TV whose launcher alias sits in com.nuvio.tv, so it shares this icon; issue #362 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, Monet Launcher, pack 2.4.4, 2026-10-20): 'Nuvio Arc' (github.com/ysosrs123/NuvioTV-Fork) installs as com.nuvio.tv.test and keeps Nuvio's AppIconDefault launcher alias, so it shares this icon"
+      "mapping_source": "existing set per docs/research/community-input-icons-2026-09.md P0 (official com.nuvio.tv manifest, six launcher activities, read 2026-09-14); com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault added from issue #288 (device-reported on Smart TV Pro, Android 14, pack 2.3.0): the com.nuvio.app package variant ships the same AppIconDefault activity, which the P0 pass mapped only under com.nuvio.tv. Not confirmed on a second TV; issue #358 (device-reported via the pack's Missing icons scanner on onn. 4K Plus Streaming, Android 14, pack 2.4.4, 2026-10-19): 'Nuvio + IPTV' (github.com/homelessbrian/NuvioTV) is a fork of Nuvio TV whose launcher alias sits in com.nuvio.tv, so it shares this icon; issue #362 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, Monet Launcher, pack 2.4.4, 2026-10-20): 'Nuvio Arc' (github.com/ysosrs123/NuvioTV-Fork) installs as com.nuvio.tv.test and keeps Nuvio's AppIconDefault launcher alias, so it shares this icon; issue #484 (device-reported via the pack's Missing icons scanner on onn. Streaming Device 4K pro, Android 14, Monet Launcher, pack 2.6.0, 2026-11-14): Nuvio + IPTV with its Graphite icon chosen runs as com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconGraphite. The fork's source (github.com/homelessbrian/NuvioTV at e4d3d6e, read 2026-11-14) installs its full flavor as com.nuvio.livetv and keeps exactly one launcher entry enabled: one of six '+ IPTV' icons (app/src/full/AndroidManifest.xml, IptvIcon{Default,ArcticBlue,Emerald,RoseGold,Copper,Graphite}) or one of upstream's six (app/src/main/AndroidManifest.xml, .launcher.AppIcon*). All twelve are mapped and, like the original com.nuvio.tv set above, rest on the app's own manifests; the receipt (file hashes, namespace, the com.nuvio.livetv applicationId and all twelve launchers) is tools/reference/nuvio-iptv/. IptvIconDefault (#358) and IptvIconGraphite (#484) are also device-reported; the other ten have not been seen on a TV yet"
     },
     {
       "name": "NV Player",
@@ -15143,6 +15154,116 @@
       "color_reviewed": "2026-11-06",
       "glyph_source": "original Core rounded-monoline jellyfish after the launcher icon: a scalloped bell with one eye and four tentacles, the outer two curling outward; the icon's tilted TV frame is left out. Not a trace. Reference: https://play.google.com/store/apps/details?id=com.jellywatch.tv; hashed visual reference in tools/reference/jellywatch/ (2026-11-06)",
       "name_source": "request #424 spells JellyWatch Player; the Google Play listing titles it JellyWatch: Jellyfin Player (2026-11-06)"
+    },
+    {
+      "name": "TiviDeck",
+      "drawable": "tivideck",
+      "color": "#0DE391",
+      "glyph": "tivideck_td",
+      "style": "core_monoline",
+      "components": [
+        "com.tivideck.app/com.tivideck.app.MainActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "issue #485 (device-reported via the pack's Missing icons scanner on onn. Streaming Device 4K pro, Android 14, pack 2.6.0, 2026-11-14): com.tivideck.app/com.tivideck.app.MainActivity is the reported launcher component. Not confirmed on a second TV",
+      "color_source": "sampled from the Google Play launcher icon of TiviDeck (Mobile), com.tivideck.mobile, which carries the same TD mark: the D's green, #0DE391 at 128 px. Pixel sample and hashed reference in tools/reference/tivideck/visual-references.json (2026-11-14)",
+      "color_reviewed": "2026-11-14",
+      "glyph_source": "original Core rounded-monoline 'TD' monogram after the launcher art: the T's stem is the D's own, and a play triangle sits in the D's bowl. Not a trace. Reference: https://play.google.com/store/apps/details?id=com.tivideck.mobile; hashed visual reference in tools/reference/tivideck/ (2026-11-14)",
+      "name_source": "request #485 spells TiviDeck, as the Google Play listing does (2026-11-14)",
+      "secondary": {
+        "color": "#003CCF",
+        "parts": [
+          0
+        ],
+        "source": "the blue T of the launcher art, sampled at 128 px in tools/reference/tivideck/visual-references.json (2026-11-14)"
+      }
+    },
+    {
+      "name": "Xtra TV",
+      "drawable": "xtra_tv",
+      "color": "#9C68FF",
+      "glyph": "xtratv_x",
+      "style": "core_monoline",
+      "components": [
+        "com.github.razenfr.xtratv/com.github.andreyasadchy.xtra.ui.main.MainActivity"
+      ],
+      "category": "VIDEO",
+      "mapping_source": "issue #482 (device-reported via the pack's Missing icons scanner on BRAVIA 4K VH21, Android 12, Monet Launcher, pack 2.6.0, 2026-11-14): the reported component; the app's source (github.com/razeNFR/XtraATV at 3cd5c8e) sets applicationId com.github.razenfr.xtratv and declares .ui.main.MainActivity in namespace com.github.andreyasadchy.xtra as its LEANBACK_LAUNCHER entry",
+      "color_source": "sampled from the app's own TV banner (github.com/razeNFR/XtraATV, res/drawable-xhdpi/tv_banner.png): the purple 'TV' of its wordmark, #9C68FF, the same purple as the launcher art's play triangles but legible on the card. Pixel sample and hashed reference in tools/reference/xtra-tv/visual-references.json (2026-11-14)",
+      "color_reviewed": "2026-11-14",
+      "glyph_source": "original Core rounded-monoline X after the launcher art: one long stroke and one short one crossing near the top, over two play triangles. Not a trace. Reference: https://github.com/razeNFR/XtraATV; hashed visual reference in tools/reference/xtra-tv/ (2026-11-14)",
+      "name_source": "request #482 spells Xtra TV, as the app's TV banner does (2026-11-14)",
+      "secondary": {
+        "color": "#E6EDF3",
+        "parts": [
+          0
+        ],
+        "source": "the white X of the launcher art and banner; white renders as Core light ink (2026-11-14)"
+      }
+    },
+    {
+      "name": "BitChord TV",
+      "drawable": "bitchord",
+      "color": "#FB4E66",
+      "glyph": "bitchord_strokes",
+      "style": "core_monoline",
+      "components": [
+        "com.music.bitchord.tv/com.music.bitchord.MainActivity"
+      ],
+      "category": "MUSIC",
+      "mapping_source": "issue #481 (device-reported via the pack's Missing icons scanner on BRAVIA 4K VH21, Android 12, Monet Launcher, pack 2.6.0, 2026-11-14): the reported component; the app's source (github.com/kushagrasinghx/BitChord at acf219a) declares .MainActivity in namespace com.music.bitchord",
+      "color_source": "sampled from the app's store launcher icon (github.com/kushagrasinghx/BitChord, app/src/main/ic_launcher-playstore.png): the tile's red, #FB4E66, its most common colour. Pixel sample and hashed reference in tools/reference/bitchord/visual-references.json (2026-11-14)",
+      "color_reviewed": "2026-11-14",
+      "glyph_source": "original Core rounded-monoline after the launcher art: three bowed strokes, each sagging in the middle, the middle one shortest. Not a trace. Reference: https://github.com/kushagrasinghx/BitChord; hashed visual reference in tools/reference/bitchord/ (2026-11-14)",
+      "name_source": "request #481 spells BitChord TV, as the release's APK name does (2026-11-14)"
+    },
+    {
+      "name": "Core Motion",
+      "drawable": "coremotion",
+      "color": "#00D4FF",
+      "glyph": "coremotion_waves",
+      "components": [
+        "tv.corebuilds.motion/tv.corebuilds.motion.SettingsActivity"
+      ],
+      "category": "CORE",
+      "mapping_source": "issue #475 (device-reported via the pack's Missing icons scanner on X96_X4_Pro, Android 11, Projectivy Launcher, pack 2.6.0, 2026-11-14): tv.corebuilds.motion/tv.corebuilds.motion.SettingsActivity; Core Motion's own motion-plugin/app/src/main/AndroidManifest.xml declares .SettingsActivity as the LEANBACK_LAUNCHER activity of tv.corebuilds.motion",
+      "color_source": "brand reference: Core Builds suite accent, same as Core EQ/Line/Shift/Doctor",
+      "color_reviewed": "2026-11-14",
+      "glyph_source": "Core family mark: the brand's point-up hexagon, which is Core Motion's own launcher mark (motion-plugin/app/src/main/res/drawable/ic_launcher_foreground.xml), with three flowing waves inside for the motion wallpapers it plays. A figure-eight and a looping arrow were tried first and failed tools/check_lookalikes.py against Core Line (0.828) and Dropsync (0.832) (2026-11-14)"
+    },
+    {
+      "name": "Nightjar",
+      "drawable": "nightjar",
+      "color": "#F2A93B",
+      "glyph": "nightjar_bird",
+      "style": "core_monoline",
+      "components": [
+        "com.butterpollo.client/com.limelight.PcView"
+      ],
+      "category": "GAMING",
+      "mapping_source": "issue #463 (device-reported via the pack's Missing icons scanner on 4K Android TV Box, Android 14, Monet Launcher, pack 2.6.0, 2026-11-14): the reported component; the app's source (github.com/RamazanKara/nightjar at b5ceb50), a Moonlight fork, installs its nonRoot flavor as com.butterpollo.client and declares .PcView in namespace com.limelight as its LEANBACK_LAUNCHER entry",
+      "color_source": "sampled from the app's own Android TV banner (github.com/RamazanKara/nightjar, res/drawable-xhdpi/atv_banner.png): the disc behind the bird, #F2A93B. Pixel sample and hashed reference in tools/reference/nightjar/visual-references.json (2026-11-14)",
+      "color_reviewed": "2026-11-14",
+      "glyph_source": "original Core rounded-monoline nightjar in flight inside a ring, after the TV banner: two long wing arcs meeting at the body, a small head above, a tail that forks at the end. The launcher icon is still Moonlight's wheel, so the banner's bird is the cue. Not a trace. Reference: https://github.com/RamazanKara/nightjar; hashed visual reference in tools/reference/nightjar/ (2026-11-14)",
+      "name_source": "request #463 spells Nightjar; the TV banner sets Nightjar (2026-11-14)"
+    },
+    {
+      "name": "VYPN",
+      "drawable": "vypn",
+      "color": "#FF4D4D",
+      "glyph": "vypn_wm",
+      "components": [
+        "net.vypn.app/net.vypn.app.MainActivity"
+      ],
+      "category": "VPN",
+      "unverified": [
+        "net.vypn.app/net.vypn.app.MainActivity"
+      ],
+      "mapping_source": "issue #462: the requester's component net.vypn.app/net.vypn.app.MainActivity; the request names no device and does not carry the scanner's device line, so it is listed as unverified until a TV reports it (2026-11-14)",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": "2026-11-14",
+      "glyph_source": "wordmark-derived mark from the Google Play launcher icon: the app's mark is its name, 'VYPN', in white capitals on charcoal, set here in the pack's stroke letters. Hashed visual reference in tools/reference/vypn/ (2026-11-14)",
+      "name_source": "request #462 spells VYPN, as the Google Play listing does (VYPN: VPN + Browser) (2026-11-14)"
     }
   ],
   "artwork": {

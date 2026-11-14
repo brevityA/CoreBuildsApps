@@ -94,9 +94,6 @@ class MainActivity : TvActivity() {
         Prefs.applyChrome(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        // Google Play only (a no-op elsewhere): settle Core Builds Plus with
-        // Play once per process, so its extras follow purchases and refunds.
-        PlusStore.sync(this)
 
         pickMode = IconPicker.isPickRequest(intent)
         if (pickMode) {
@@ -518,6 +515,11 @@ class MainActivity : TvActivity() {
 
     override fun onResume() {
         super.onResume()
+        // Google Play only (a no-op elsewhere): settle Core Premium with Play
+        // each time Home comes back, at most once a minute, so a code
+        // redeemed on a phone, a purchase and a refund all land without a
+        // restart.
+        PlusStore.sync(this)
         // A companion install that finished without its result reaching us
         // (the activity was recreated): apply once the package is really
         // there. A declined install is only ever reported by the installer's

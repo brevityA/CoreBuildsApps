@@ -248,6 +248,11 @@
             android:label="@string/faq_label"
             android:theme="@style/Theme.CoreBuilds" />
         <activity
+            android:name=".FeedbackActivity"
+            android:exported="false"
+            android:label="@string/feedback_title"
+            android:theme="@style/Theme.CoreBuilds" />
+        <activity
             android:name=".AuditorActivity"
             android:exported="false"
             android:label="@string/audit_label"

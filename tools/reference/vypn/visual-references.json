@@ -1,0 +1,16 @@
+{
+  "usage": "reference-only: brand cues and colour sampling for an original Core monoline redraw; never shipped as art",
+  "source": "https://play.google.com/store/apps/details?id=net.vypn.app",
+  "captured": "2026-11-14",
+  "references": [
+    {
+      "path": "launcher-icon-128.png",
+      "sha256": "82cdc037d22458001ce587680e031db4bf48057ced3af302190e3d6a98f156d3",
+      "size": [
+        128,
+        128
+      ],
+      "note": "Google Play launcher icon (og:image), downsized from 512 px to 128 px for evidence only: white capitals on charcoal, no brand colour"
+    }
+  ]
+}

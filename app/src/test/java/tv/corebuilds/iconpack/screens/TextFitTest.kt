@@ -5,24 +5,29 @@ import android.app.Application
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
+import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import tv.corebuilds.iconpack.AboutActivity
 import tv.corebuilds.iconpack.AuditorActivity
 import tv.corebuilds.iconpack.FaqActivity
+import tv.corebuilds.iconpack.FeedbackActivity
 import tv.corebuilds.iconpack.InspectorActivity
 import tv.corebuilds.iconpack.LauncherCompatActivity
 import tv.corebuilds.iconpack.LauncherSetupActivity
@@ -117,6 +122,39 @@ class TextFitTest {
     @Test fun launcherCompat() = check(LauncherCompatActivity::class.java)
     @Test fun suite() = check(SuiteActivity::class.java)
     @Test fun whatsNew() = check(WhatsNewActivity::class.java)
+    @Test fun feedback() = check(FeedbackActivity::class.java)
+
+    /**
+     * Send feedback's fallback is typed by hand, so at Android TV's largest
+     * text size the address and both lines must still be whole and on
+     * screen. 2.7.0's first cut showed the 250-character prefilled link,
+     * capped at four lines, which cut off the device at this size.
+     */
+    @Test
+    fun `feedback's typed fallback stays whole at the largest text size`() {
+        RuntimeEnvironment.setFontScale(1.3f)
+        ActivityScenario.launch<FeedbackActivity>(Intent(app, FeedbackActivity::class.java)).use { scenario ->
+            scenario.onActivity { a ->
+                ScreenHarness.idle()
+                ScreenHarness.render(a, "fit-FeedbackActivity-1.3x")
+                val found = problems(a)
+                assertTrue("FeedbackActivity at 1.3x:\n  " + found.joinToString("\n  "), found.isEmpty())
+                for (id in intArrayOf(R.id.feedback_url, R.id.feedback_details)) {
+                    val view = a.findViewById<TextView>(id)
+                    val shown = Rect()
+                    assertTrue("${a.resources.getResourceEntryName(id)} is whole on screen",
+                        view.getGlobalVisibleRect(shown) && shown.height() == view.height)
+                }
+                // The address to type is the bare form; the QR keeps the prefill.
+                val typed = a.findViewById<TextView>(R.id.feedback_url).text.toString()
+                assertEquals(a.getString(R.string.feedback_form_url), typed)
+                assertFalse("the typed address carries no prefill", "device=" in typed)
+                assertTrue("the QR link still fills in the device", "device=" in FeedbackActivity.url(a))
+                val details = a.findViewById<TextView>(R.id.feedback_details).text.toString()
+                assertTrue(FeedbackActivity.buildLine() in details && FeedbackActivity.deviceLine() in details)
+            }
+        }
+    }
 
     @Test
     fun inspector() = check(InspectorActivity::class.java) {

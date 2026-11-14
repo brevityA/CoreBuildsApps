@@ -17,6 +17,7 @@ import tv.corebuilds.iconpack.AboutActivity
 import tv.corebuilds.iconpack.AuditorActivity
 import tv.corebuilds.iconpack.ExportProgressActivity
 import tv.corebuilds.iconpack.FaqActivity
+import tv.corebuilds.iconpack.FeedbackActivity
 import tv.corebuilds.iconpack.InspectorActivity
 import tv.corebuilds.iconpack.LauncherCompatActivity
 import tv.corebuilds.iconpack.LauncherSetupActivity
@@ -31,7 +32,7 @@ import tv.corebuilds.iconpack.WallpaperPreviewActivity
 import tv.corebuilds.iconpack.WhatsNewActivity
 
 /**
- * The other twelve screens (2.6.0 restyle), rendered on a 1080p TV for review:
+ * The other thirteen screens (2.6.0 restyle, Send feedback in 2.7.0), rendered on a 1080p TV for review:
  * build/screens/<screen>-<play|sideload>.png. PreviewRenderTest has Home,
  * Wallpapers and Core Premium. Each screen opens the way the app opens it,
  * with the extras its caller passes.
@@ -61,6 +62,7 @@ class AllScreensRenderTest {
     @Test fun about() = shoot(AboutActivity::class.java, "about")
     @Test fun missingIcons() = shoot(AuditorActivity::class.java, "missing-icons")
     @Test fun faq() = shoot(FaqActivity::class.java, "faq")
+    @Test fun feedback() = shoot(FeedbackActivity::class.java, "feedback")
     @Test fun launcherCompat() = shoot(LauncherCompatActivity::class.java, "launcher-compat")
     @Test fun suite() = shoot(SuiteActivity::class.java, "suite")
     @Test fun whatsNew() = shoot(WhatsNewActivity::class.java, "whats-new")

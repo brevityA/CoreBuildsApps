@@ -5,7 +5,7 @@
   ],
   "sideload_package": "tv.corebuilds.iconpack",
   "counts": {
-    "icons": 1031,
+    "icons": 1037,
     "walls": 132,
     "series": 11,
     "loops": 48,
@@ -13,8 +13,8 @@
   },
   "copy": {
     "title": "Core Builds Icon Pack",
-    "short_description": "1031 icons and 132 wallpapers built for Android TV. No ads, no account.",
-    "full_description": "An icon and wallpaper pack made for the television, not a phone app stretched onto one.\n\nICONS\n1031 icons, mapped for the apps people actually run on a TV: streaming services, players, launchers, tools. Every app gets two shapes: a 16:9 banner, which this pack applies, and a square glyph, applied by the free Core Builds Glyphs Pack. The Art style switch moves between them, and the first time you pick square it takes you to the Glyphs Pack.\n\nWALLPAPERS\n132 stills across 11 series, from deep space to circuit boards, each with a matching thumbnail bundled in the app. The grid works offline; the full-size image downloads when you pick it, and saves to your own Pictures folder if you would rather set it yourself.\n\nLIVE LOOPS\n48 animated wallpapers, played by the system rather than a video app, so they keep moving while you browse.\n\nHONEST ABOUT YOUR TV\nThe auditor lists which of your installed apps the pack covers, shows the exact icon file it would draw for any app, and can request a missing icon in one press. There is no account and no sign-in. Nothing is analysed in the background.\n\nWORKS WITH\nLaunchers that accept icon packs, including Projectivy, FLauncher, AT4K, Leanback Launcher and Lawnchair variants. Where a launcher cannot be driven directly, the app says so and points you at the manual picker instead of pretending.\n\nCORE PREMIUM\nOptional, one purchase through Google Play, no subscription: your icon requests are filed as priority, one app or up to 10 missing apps at once, My requests shows how far each one has got, the live wallpaper can rotate through your loops and play a second one at night, you choose what Projectivy rotates from this pack (favourites, one series, a night set), and Spectra and Aurum add 24 more wallpapers. Try it free for 24 hours first, once per TV; the trial has everything but priority requests, Request all and saving a Premium wall to Pictures. Every icon, all 132 stills, every loop and every screen ship to everyone either way.\n\nPRIVACY\nNo advertising, no analytics, no tracking, no account. Wallpapers are fetched from a public address; an icon request sends the app name, the component and a device note, and only when you press it. With Core Premium, a request also carries the Google Play purchase token, which is checked with Google and never stored."
+    "short_description": "1037 icons and 132 wallpapers built for Android TV. No ads, no account.",
+    "full_description": "An icon and wallpaper pack made for the television, not a phone app stretched onto one.\n\nICONS\n1037 icons, mapped for the apps people actually run on a TV: streaming services, players, launchers, tools. Every app gets two shapes: a 16:9 banner, which this pack applies, and a square glyph, applied by the free Core Builds Glyphs Pack. The Art style switch moves between them, and the first time you pick square it takes you to the Glyphs Pack.\n\nWALLPAPERS\n132 stills across 11 series, from deep space to circuit boards, each with a matching thumbnail bundled in the app. The grid works offline; the full-size image downloads when you pick it, and saves to your own Pictures folder if you would rather set it yourself.\n\nLIVE LOOPS\n48 animated wallpapers, played by the system rather than a video app, so they keep moving while you browse.\n\nHONEST ABOUT YOUR TV\nThe auditor lists which of your installed apps the pack covers, shows the exact icon file it would draw for any app, and can request a missing icon in one press. There is no account and no sign-in. Nothing is analysed in the background.\n\nWORKS WITH\nLaunchers that accept icon packs, including Projectivy, FLauncher, AT4K, Leanback Launcher and Lawnchair variants. Where a launcher cannot be driven directly, the app says so and points you at the manual picker instead of pretending.\n\nCORE PREMIUM\nOptional, one purchase through Google Play, no subscription: your icon requests are filed as priority, one app or up to 10 missing apps at once, My requests shows how far each one has got, the live wallpaper can rotate through your loops and play a second one at night, you choose what Projectivy rotates from this pack (favourites, one series, a night set), and Spectra and Aurum add 24 more wallpapers. Try it free for 24 hours first, once per TV; the trial has everything but priority requests, Request all and saving a Premium wall to Pictures. Every icon, all 132 stills, every loop and every screen ship to everyone either way.\n\nPRIVACY\nNo advertising, no analytics, no tracking, no account. Wallpapers are fetched from a public address; an icon request sends the app name, the component and a device note, and only when you press it. With Core Premium, a request also carries the Google Play purchase token, which is checked with Google and never stored."
   },
   "assets": {
     "icon": {
@@ -145,12 +145,12 @@
   "sources": {
     "generator": "e35c0614ca944f5fc464c320c76384469935efd9c3f2d635b1820dc94333a103",
     "branding": "4fa4d2dcbac033c4ca1a1651570529bd7cfe82baf0b837b10f491d58c69f22e6",
-    "icon_pack_xml": "2f9f01618d01f5ae51da95e84fbc658aa821e74d4b0540e4b0ece56bad6509f7",
+    "icon_pack_xml": "2c060a845665a29221ead02a53aaa19e932ef30c42265878c50e4a6945621f79",
     "wallpapers_json": "0bc4f85d2ff7d2e2c646088cd450957c5e7a58c0519be85923207356dafb3490",
     "live_loop_kt": "00e56ef0764c460c81526d97b4b4a57085caf1e489a905c57d0d553ba4248b51",
     "frames": {
       "app-ui-wallpapers.png": "3e6800c8aca041aa312d2049caa7ef68cc02a90333c0babbca1a4ab151fb0c3d",
-      "app-ui-catalogue-play.png": "5f3dbdf70f79a11240af25633a4df402e8f9a086ae442f854fca749cf07a0b51",
+      "app-ui-catalogue-play.png": "df278e801b9140aae6d284c548e10726363a83121fcad4365dd82296f995e9bc",
       "app-ui-inspector.png": "6b7a8c01330474b277b591b7ad335f136499194b04339433a9624460e5afca6c",
       "app-ui-auditor.png": "a3efa03143d8bb71ebcadb0c28d054130228f250e35032425886fc41104471e2",
       "app-ui-launcher-compat.png": "bd90e9e6a7414ea4936b74fb25118dea951f741b073ed6d8b35c765127faa49c",
