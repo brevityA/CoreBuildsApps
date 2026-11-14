@@ -132,15 +132,11 @@ Play Console → **Store settings**.
   we want: TV releases then live on their own tracks, and the shared tracks
   stay free for a phone build if one ever ships. Closed testing then has an
   Android TV track (create one with the Android TV form factor if it isn't
-  listed); use it for §7. **Unverified:** Google's help doesn't say whether
-  testers on the TV track count toward the 12-tester / 14-day production
-  gate. Watch the Dashboard's *Production* checklist once testers opt in. If
-  its count stays at 0, the fallback is a phone-compatible Play build on the
-  shared closed track, and `required="false"` alone does not make one. It
-  also needs the Phone form factor on the listing, phone screenshots of the
-  app actually running on a phone (§3 forbids rendering one), and first a
-  phone layout someone has tested, which the app does not have yet. Treat it
-  as a project, not a setting.
+  listed); use it for §7. Testers on the TV track **do count** toward the
+  12-tester / 14-day production gate: on 2026-11-14 the Dashboard's
+  *Production* checklist ticked both *Publish a closed testing release* and
+  *Have at least 12 testers opted in* for this app's Android TV closed track
+  (§7a). No phone build is needed for it.
 
 ## 5. Build the bundle
 
@@ -243,6 +239,75 @@ shared closed track refuses these bundles.
 
 Release notes are per track and per language (500 characters): keep them plain
 and factual — what changed, and anything a user must do.
+
+## 7a. Production access: what Google reviews
+
+**Where this app stands (2026-11-14).** The first application was reviewed on
+14 November 2026 and answered *"Your app requires more testing to access
+Google Play production"*. The checklist kept *Publish a closed testing
+release* and *Have at least 12 testers opted in* ticked, and reset the third
+step to *Run your closed test with at least 12 testers for 14 more days
+starting from the review date*. So: apply again **no earlier than 28 November
+2026**, and only if at least 12 testers stayed opted in on every one of those
+days. Recruit 15 or more, so one tester leaving does not restart the count.
+
+**Why Google says this happens.** Google's help page for new personal
+accounts names two reasons: fewer than 12 opted-in testers, or *"insufficient
+tester engagement during the testing period"*
+([App testing requirements for new personal developer accounts](https://support.google.com/googleplay/android-developer/answer/14151465)).
+The count was met, so engagement is the part to fix. The page recommends
+clear instructions for testers, encouraging them to *"use as many features as
+possible"*, a feedback channel with a record of what was said, fixing what
+testers report, and updating the app in closed testing before production.
+
+**The application asks eight questions.** Draft the answers from the test as
+it runs, not on the last day:
+
+| Part | Question (Google's wording) | What to have ready |
+|---|---|---|
+| Closed test | How easy it was to recruit testers | The honest choice. |
+| Closed test | Tester engagement: *"whether testers used all available app features"* and *"whether tester usage matched expected production user behavior"* | Every tester had Core Premium through a code, so all six extras were open to them; the feature checklist below; what they actually used, from their reports. |
+| Closed test | *"Summarize the feedback received from testers and describe how feedback was collected"* | About → **Send feedback** (Play build) files a GitHub issue labelled `feedback` with the build and TV filled in; count and summarise those issues, plus Discord and Reddit threads. |
+| Your app | Target audience, *"as specific as possible"* | Android TV and Google TV owners who use Projectivy Launcher (or another launcher that reads icon packs) and want every app's icon and banner in one consistent style. |
+| Your app | How the app provides value | 1031 icons and banners applied in one press, a Missing icons scan that files requests, 132 wallpapers and live loops; Core Premium optional. |
+| Your app | Estimated installs in the first year | A realistic range. |
+| Readiness | *"Describe any changes made … based on what you learned from your closed test"* | The changelog entries made during the test: 2.7.0 is the first. Name the issue numbers they answer. |
+| Readiness | *"Describe how you determined that your app … was ready for production"* | Feedback issues closed or answered, CI green on the release, no crashes in Play's Android vitals for the test period, and the §8 step 8 purchase test done on a TV. |
+
+**Give testers Premium without a test build.** Both of Google's routes work
+with the app as it ships; neither needs a button in it.
+
+1. **Promo codes, for testers.** *Monetize with Play → Promotions* (in
+   current Console: *Promo codes*) → **Create promotion** → one-time codes
+   for `core_builds_plus`. Play allows 500 codes a quarter across an app's
+   one-time products, and unused codes do not carry over. Set an end date
+   after the test, download the codes, and send each tester one.
+   - The tester redeems it at `https://play.google.com/redeem`, on a phone
+     or the web, signed in with the Google account their TV uses. It is a
+     real purchase at no cost, on that account.
+   - The TV picks it up without a restart: from 2.7.0, Home asks Google Play
+     again each time it comes back (at most once a minute), and the Premium
+     screen asks again when it is reopened. Before 2.7.0 it asked once per
+     app start.
+   - **Unverified:** redeeming on the TV's own Play Store app. The phone or
+     web route is the one to tell testers.
+2. **License testers, for you and anyone checking the purchase itself.**
+   §8 step 4. They buy through *Get Premium*; Play's sheet offers test cards
+   and nobody is charged.
+
+**What to send testers on day one**: the opt-in link, their code, and this
+checklist, each item one line:
+
+- Apply the pack in Projectivy and check a dozen icons.
+- Run **Missing icons** and request one icon.
+- Open **Wallpapers**, download one, set it.
+- Switch Art style to Glyphs and back.
+- With Premium on: My requests, loop rotation, the night loop, Projectivy
+  walls, Spectra and Aurum.
+- Report anything, good or bad, from About → **Send feedback**.
+
+Then ship an update to the closed track inside the 14 days (2.7.0), reply to
+every report, and send one reminder half-way.
 
 ## 8. Core Premium
 

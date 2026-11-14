@@ -6,6 +6,26 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Send feedback, in the Google Play build.** About has a *Send feedback*
+  row: a QR for the new GitHub feedback form
+  (`.github/ISSUE_TEMPLATE/3.feedback.yml`) with this build and this TV
+  already filled in, and the address to type for a phone with no camera. The
+  app sends nothing itself. The link is generated with the other issue links
+  (`feedback_url_fmt`, `tools/build_issue_prefills.py`), never hand-written.
+
+### Changed
+
+- **A Core Premium code counts without restarting the app.** Home asks
+  Google Play again each time it comes back to the screen, at most once a
+  minute, instead of once per app start, and the Premium screen asks again
+  when it is reopened. A promo code redeemed in Google Play on a phone, a
+  purchase made on another TV and a refund now land on a TV that keeps the
+  app running for weeks. The Premium card says how: "Have a code? Redeem it
+  in Google Play, then come back here." `docs/PLAY-CONSOLE.md` §7a covers
+  the codes and the production-access review they are for.
+
 ## [2.6.0] — 2026-11-06
 
 ### Added
