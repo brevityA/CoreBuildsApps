@@ -140,6 +140,7 @@ the reporter — a link can never tick a gate for them.
 |---|---|---|---|---|
 | [🎨 New icon request](https://github.com/brevityA/CoreBuildsApps/issues/new?assignees=&labels=icon+request&projects=&template=1.new_icon_request.yml&title=%5BIcon%5D+) | Request an icon for an app that isn't in the pack yet. | App name\* · Component name · Store or download link\* · Anything else | Device type\* · Confirm | `[Icon]` · `icon request` |
 | [🔧 Icon not auto-assigning](https://github.com/brevityA/CoreBuildsApps/issues/new?assignees=&labels=mapping&projects=&template=2.icon_not_applying.yml&title=%5BNot+applying%5D+) | The app is in the pack, but its icon doesn't appear on your device. | App name\* · The component name on YOUR device\* · Device and OS\* | Launcher\* · Confirm | `[Not applying]` · `mapping` |
+| [💬 Feedback or a problem](https://github.com/brevityA/CoreBuildsApps/issues/new?assignees=&labels=feedback&projects=&template=3.feedback.yml&title=%5BFeedback%5D+) | Tell us what worked, what didn't, or what you'd change. The app's About → Send feedback fills in the build and device for you. | What happened, or what would you change?\* · App version and build\* · Device and Android version\* | Which part of the app?\* | `[Feedback]` · `feedback` |
 
 One app per issue, and check [docs/IconPackList.md](docs/IconPackList.md) by
 name, drawable and package first — a listed app that isn't applying belongs

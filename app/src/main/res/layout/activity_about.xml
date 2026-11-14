@@ -343,6 +343,24 @@
                 android:background="@drawable/bg_row"
                 android:stateListAnimator="@animator/focus_raise" />
 
+            <!-- Google Play build only (AboutActivity shows it): testers' reports. -->
+            <TextView
+                android:id="@+id/about_feedback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:minHeight="@dimen/cb_target_min"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:padding="@dimen/cb_card_padding"
+                android:text="@string/about_feedback_label"
+                android:textColor="@color/cb_ink"
+                android:textSize="@dimen/cb_text_label"
+                android:background="@drawable/bg_row"
+                android:stateListAnimator="@animator/focus_raise"
+                android:visibility="gone" />
+
             <TextView
                 android:id="@+id/about_settings"
                 android:layout_width="match_parent"

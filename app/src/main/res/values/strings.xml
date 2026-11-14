@@ -436,6 +436,14 @@
     <string name="about_badge_available_fmt">%1$s AVAILABLE</string>
     <string name="about_update_check_failed_sub_fmt">Could not check: %1$s. Press to try again.</string>
     <string name="about_source_label">Source &amp; issues</string>
+    <!-- Google Play build only: opens Send feedback, the feedback form as a QR. -->
+    <string name="about_feedback_label">Send feedback</string>
+    <string name="feedback_kicker">ABOUT</string>
+    <string name="feedback_title">Send feedback</string>
+    <string name="feedback_scan">Scan with your phone</string>
+    <string name="feedback_lede">The form opens on GitHub with this build and this TV already filled in. Say what happened or what you would change. Every report is read, and the next changelog lists what it changed.</string>
+    <string name="feedback_type_it">No camera? Type this address:</string>
+    <string name="feedback_qr_cd">QR code for the feedback form</string>
     <string name="about_settings_label">Settings</string>
     <string name="about_launcher_label">Launcher compatibility</string>
     <string name="about_source_url">https://github.com/brevityA/CoreBuildsApps</string>
@@ -480,6 +488,9 @@
     <string name="plus_loading_button">Premium</string>
     <string name="plus_buy_fmt">Get Premium \u00b7 %1$s</string>
     <string name="plus_for_sale">One purchase, no subscription.</string>
+    <!-- Promo codes (Play Console > Promotions) are redeemed in Google Play, on the TV or a
+         phone; Home and this screen ask Play again when they come back, so no button is needed. -->
+    <string name="plus_code_note">Have a code? Redeem it in Google Play, then come back here.</string>
     <string name="plus_owned">Core Premium is active on this Google account: priority requests, Request all under Missing icons, and in Settings My requests, loop rotation, the night loop and Projectivy walls; Spectra and Aurum are under Premium in Wallpapers. Thank you.</string>
     <string name="plus_owned_button">Premium is active</string>
     <string name="plus_pending">Payment pending. Premium switches on when Google Play confirms it.</string>

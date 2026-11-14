@@ -13,6 +13,10 @@
          activity: the icon exists and is not applying, so it opens
          the not-applying form. Same three arguments, same escaping. -->
     <string name="audit_mapping_url_fmt">https://github.com/brevityA/CoreBuildsApps/issues/new?assignees=&amp;labels=mapping&amp;projects=&amp;template=2.icon_not_applying.yml&amp;title=%%5BNot+applying%%5D+%1$s&amp;app_name=%1$s&amp;component=%2$s&amp;device=%3$s</string>
+    <!-- About -> Send feedback: the feedback form, shown as a QR for
+         a phone. %1$s = version, build and store, %2$s = device and
+         Android version; same encoding and escaping as above. -->
+    <string name="feedback_url_fmt">https://github.com/brevityA/CoreBuildsApps/issues/new?assignees=&amp;labels=feedback&amp;projects=&amp;template=3.feedback.yml&amp;title=%%5BFeedback%%5D+%1$s&amp;build=%1$s&amp;device=%2$s</string>
     <!-- Anonymous-request broker. A row press POSTs to it before
          the QR panel is even offered; empty means not deployed and
          the press goes straight to the QR panel. Bake the deployed

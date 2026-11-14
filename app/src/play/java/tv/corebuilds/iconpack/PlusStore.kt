@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClient.BillingResponseCode
@@ -58,17 +59,22 @@ object PlusStore {
     fun session(activity: Activity, onState: (PlusState) -> Unit): PlusSession =
         BillingSession(activity, onState).also { it.start() }
 
-    @Volatile private var synced = false
+    /** When the last [sync] asked, on the monotonic clock; null before the first. */
+    @Volatile private var lastSync: Long? = null
 
     /**
-     * Once per process, quietly: ask Play what this account owns and make the
-     * stored token agree. A purchase made on another TV, one that cleared
-     * after being pending, and a refund all land here. Any failure leaves the
-     * token as it was; Support's own refresh is the fallback.
+     * Each time Home comes back to the screen, at most once a minute
+     * ([Plus.recheckDue]), quietly: ask Play what this account owns and make
+     * the stored token agree. A promo code redeemed in the Play Store or on a
+     * phone, a purchase made on another TV, one that cleared after being
+     * pending, and a refund all land here, without restarting an app a TV may
+     * keep running for weeks. Any failure leaves the token as it was;
+     * Support's own refresh is the fallback.
      */
     fun sync(context: Context) {
-        if (synced) return
-        synced = true
+        val now = SystemClock.elapsedRealtime()
+        if (!Plus.recheckDue(lastSync, now)) return
+        lastSync = now
         val app = context.applicationContext
         val client = BillingClient.newBuilder(app)
             .setListener { _, _ -> }
@@ -186,6 +192,12 @@ object PlusStore {
                     emit(PlusState.ForSale(price))
                 }
             }
+        }
+
+        override fun recheck() {
+            // Before the first answer the connection is still starting, and
+            // start() will ask anyway.
+            if (!closed && client.isReady) refresh()
         }
 
         override fun buy() {

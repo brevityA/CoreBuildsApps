@@ -62,6 +62,24 @@ object Plus {
         return false
     }
 
+    // ---- Asking Google Play again -------------------------------------------
+
+    /**
+     * How long Home waits before asking Google Play again when it comes back
+     * to the screen ([PlusStore.sync]). A promo code redeemed in the Play Store
+     * or on a phone, a purchase on another TV and a refund all land on the
+     * next return, without restarting the app (which on a TV may never
+     * happen), and switching screens quickly asks once.
+     */
+    const val RECHECK_MS = 60L * 1000
+
+    /**
+     * Whether to ask again, from the last ask's [lastMs] (monotonic clock,
+     * null if never) at [nowMs]. A clock that went backwards asks.
+     */
+    fun recheckDue(lastMs: Long?, nowMs: Long): Boolean =
+        lastMs == null || nowMs < lastMs || nowMs - lastMs >= RECHECK_MS
+
     // ---- The trial ----------------------------------------------------------
 
     const val TRIAL_MS = 24L * 60 * 60 * 1000
@@ -138,5 +156,12 @@ sealed class PlusState {
 /** One screen's connection to the store; [close] it with the screen. */
 interface PlusSession {
     fun buy()
+
+    /**
+     * Ask the store again what this account owns, when the screen comes back:
+     * a code redeemed on a phone meanwhile shows as owned. A no-op until the
+     * first answer.
+     */
+    fun recheck()
     fun close()
 }

@@ -82,6 +82,13 @@ class AboutActivity : TvActivity() {
         if (Distribution.PLAY) {
             findViewById<View>(R.id.about_support).visibility = View.GONE
         }
+        // Google Play build only: testers' reports, with the build and TV
+        // filled in, as Play's production-access review asks how feedback
+        // was collected. Where Support is hidden, this row takes its place.
+        findViewById<View>(R.id.about_feedback).apply {
+            visibility = if (Distribution.PLAY) View.VISIBLE else View.GONE
+            setOnClickListener { startActivity(Intent(this@AboutActivity, FeedbackActivity::class.java)) }
+        }
         // Play builds update through Play only (Device and Network Abuse
         // policy): the row opens this app's listing and never fetches an APK.
         findViewById<View>(R.id.about_update).setOnClickListener {
