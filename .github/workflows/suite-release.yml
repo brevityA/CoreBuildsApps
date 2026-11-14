@@ -142,7 +142,7 @@ jobs:
             git commit -m "chore: sync ${{ needs.select.outputs.app }} updater metadata for ${GITHUB_REF_NAME}"
             git push origin _release-metadata:main
           fi
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: ${{ needs.select.outputs.app }} release checklist artifacts
           path: |
