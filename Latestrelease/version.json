@@ -1,20 +1,16 @@
 {
-  "versionCode": 63,
-  "versionName": "2.6.0",
-  "iconCount": 1031,
-  "componentCount": 1260,
-  "releaseDate": "2026-11-06",
+  "versionCode": 64,
+  "versionName": "2.7.0",
+  "iconCount": 1037,
+  "componentCount": 1277,
+  "releaseDate": "2026-11-14",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Prism, TVcalendar and JellyWatch Player get icons, and Shizuku+ gets Shizuku's",
-    "Core Premium is on sale in the Google Play build",
-    "A new look, the one Core EQ 1.12 introduced, in both builds",
-    "Core Premium lists what it adds",
-    "UP and DOWN from an ALSO APPLIES TO launcher stay in Home's rail",
-    "RIGHT from a wallpaper series reaches the grid",
-    "The export screen names its retry button when storage runs out",
-    "Settings on Google Play no longer shows an empty UPDATES heading"
+    "Six new icons, and Nuvio + IPTV's twelve launcher icons mapped",
+    "Send feedback, in the Google Play build",
+    "Every icon is on the web, searchable",
+    "A Core Premium code counts without restarting the app"
   ]
 }
