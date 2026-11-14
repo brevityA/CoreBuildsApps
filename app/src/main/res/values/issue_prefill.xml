@@ -17,6 +17,10 @@
          a phone. %1$s = version, build and store, %2$s = device and
          Android version; same encoding and escaping as above. -->
     <string name="feedback_url_fmt">https://github.com/brevityA/CoreBuildsApps/issues/new?assignees=&amp;labels=feedback&amp;projects=&amp;template=3.feedback.yml&amp;title=%%5BFeedback%%5D+%1$s&amp;build=%1$s&amp;device=%2$s</string>
+    <!-- The feedback form's own address, without the prefill: what
+         a tester with no camera types, then fills in the build and
+         device lines the screen shows beside it. -->
+    <string name="feedback_form_url">https://github.com/brevityA/CoreBuildsApps/issues/new?template=3.feedback.yml</string>
     <!-- Anonymous-request broker. A row press POSTs to it before
          the QR panel is even offered; empty means not deployed and
          the press goes straight to the QR panel. Bake the deployed

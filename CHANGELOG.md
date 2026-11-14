@@ -26,9 +26,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
 - **Send feedback, in the Google Play build.** About has a *Send feedback*
   row: a QR for the new GitHub feedback form
   (`.github/ISSUE_TEMPLATE/3.feedback.yml`) with this build and this TV
-  already filled in, and the address to type for a phone with no camera. The
-  app sends nothing itself. The link is generated with the other issue links
-  (`feedback_url_fmt`, `tools/build_issue_prefills.py`), never hand-written.
+  already filled in. For a phone with no camera it shows the form's short
+  address and the two lines to fill in, each named as the form names it; both
+  stay whole at Android TV's largest text size. The app sends nothing itself.
+  Both links are generated with the other issue links (`feedback_url_fmt`,
+  `feedback_form_url`, `tools/build_issue_prefills.py`), never hand-written.
 - **Every icon is on the web, searchable.** A page of all 1037 icons at
   `brevitya.github.io/CoreBuildsApps/gallery/` (`tools/build_gallery.py`): search by
   app or package name, filter by the app's own category chips, and download

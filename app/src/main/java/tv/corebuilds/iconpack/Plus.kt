@@ -3,6 +3,7 @@ package tv.corebuilds.iconpack
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Core Premium (called Plus in code, and in the Play product id
@@ -160,8 +161,30 @@ interface PlusSession {
     /**
      * Ask the store again what this account owns, when the screen comes back:
      * a code redeemed on a phone meanwhile shows as owned. A no-op until the
-     * first answer.
+     * connection has first been set up.
      */
     fun recheck()
     fun close()
+}
+
+/**
+ * Which Google Play answer may still change the Premium screen. Each check of
+ * the account and each purchase result takes the [next] turn, and an answer is
+ * shown only while its turn [isLatest].
+ *
+ * Without it a slow answer can overwrite a newer one: Premium is re-checked
+ * when the screen returns, its price is still loading, and the purchase lands
+ * first. `Owned` shows, then the late price puts `ForSale` back and Buy fails
+ * with "already owned". A refund still shows the price: the check that finds
+ * no purchase takes a turn of its own, after the purchase's.
+ *
+ * Billing answers on its own threads, so the counter is atomic, and the
+ * screen compares on the main thread, just before it shows the state.
+ */
+class PlusTurns {
+    private val current = AtomicInteger()
+
+    fun next(): Int = current.incrementAndGet()
+
+    fun isLatest(turn: Int): Boolean = turn == current.get()
 }

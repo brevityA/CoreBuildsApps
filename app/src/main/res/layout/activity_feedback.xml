@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   About -> Send feedback (Google Play build). The feedback form as a QR for a
-  phone, beside what it does and the address to type if the phone has no
-  camera. Same chrome grammar as FAQ: pinned header with the back button.
+  phone, beside what it does and, for a phone with no camera, the form's
+  short address and the two lines the QR would have filled in. Same chrome grammar as FAQ: pinned header with the back button.
   Nothing in the body is focusable: there is nothing to press but Back.
   The QR is drawn on a light card (bg_section), as Support's codes are, so the
   dark night behind it cannot eat a module.
@@ -114,16 +114,25 @@
                 android:textColor="@color/cb_slate"
                 android:textSize="@dimen/cb_text_data" />
 
+            <!-- The form's short address, whole at any text size; the QR
+                 carries the prefilled one. -->
             <TextView
                 android:id="@+id/feedback_url"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:fontFamily="monospace"
-                android:maxLines="4"
-                android:ellipsize="end"
                 android:textColor="@color/cb_slate"
                 android:textSize="@dimen/cb_text_kicker" />
+
+            <!-- What the QR would have filled in, to type into the form. -->
+            <TextView
+                android:id="@+id/feedback_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/cb_space_xs"
+                android:textColor="@color/cb_slate"
+                android:textSize="@dimen/cb_text_data" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

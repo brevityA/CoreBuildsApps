@@ -30,7 +30,12 @@ class FeedbackActivity : TvActivity() {
         back.requestFocus()
 
         val link = url(this)
-        findViewById<TextView>(R.id.feedback_url).text = link
+        // Typed by hand: the short form address and the two lines the QR
+        // fills in. The prefilled link is about 250 characters, too long to
+        // type, and at large text sizes it ran past the screen.
+        findViewById<TextView>(R.id.feedback_url).text = getString(R.string.feedback_form_url)
+        findViewById<TextView>(R.id.feedback_details).text =
+            getString(R.string.feedback_details_fmt, buildLine(), deviceLine())
         // Drawn at the view's own pixel size, as Support's codes are.
         val side = resources.getDimensionPixelSize(R.dimen.cb_support_qr)
         findViewById<ImageView>(R.id.feedback_qr).setImageBitmap(QrBitmap.render(link, side))
