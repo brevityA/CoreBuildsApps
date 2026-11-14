@@ -18,7 +18,7 @@ jobs:
     if: contains(github.event.issue.labels.*.name, 'icon request') || contains(github.event.issue.labels.*.name, 'mapping') || startsWith(github.event.issue.title, '[Icon]') || startsWith(github.event.issue.title, '[Not applying]')
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
       - name: Check the request and reply if it is incomplete
