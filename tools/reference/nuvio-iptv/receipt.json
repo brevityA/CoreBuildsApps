@@ -1,0 +1,148 @@
+{
+  "app_name": "Nuvio + IPTV",
+  "source_repository": "https://github.com/homelessbrian/NuvioTV",
+  "ref": "e4d3d6e",
+  "ref_note": "Short commit id as resolved by raw.githubusercontent.com; the per-file sha256 below is the pin.",
+  "retrieved_at": "2026-11-14T15:05:42+00:00",
+  "files": [
+    {
+      "path": "app/src/full/AndroidManifest.xml",
+      "bytes": 7118,
+      "sha256": "27929e9d6711a0f4faa5c6368aaf54313ede1a0c34c29fc0f61eed38b3b5f47b"
+    },
+    {
+      "path": "app/src/main/AndroidManifest.xml",
+      "bytes": 12019,
+      "sha256": "6918bea055c23aded1fcd78cd46f958b2c2fe6659830ca006113b529895e531e"
+    },
+    {
+      "path": "app/build.gradle.kts",
+      "bytes": 35123,
+      "sha256": "b3c28ef40ddb21bb1980236accbce6dc7cc5dfa6a9a60fd1eca16105f61acc90"
+    }
+  ],
+  "namespace": "com.nuvio.tv",
+  "application_id": "com.nuvio.livetv",
+  "application_id_source": "app/build.gradle.kts androidComponents.onVariants: every non-playstore release variant sets applicationId com.nuvio.livetv (com.nuvio.livetv.test only with -PlivetvTestBuild=true); debug non-playstore builds also use com.nuvio.livetv",
+  "verification": "Static source inspection of the fork's own manifests at the pinned commit; not built, installed or device-tested here. Two of the twelve launchers are also device-reported.",
+  "launcher_overrides": [
+    {
+      "activity": "com.nuvio.tv.launcher.AppIconDefault",
+      "source": "app/src/full/AndroidManifest.xml",
+      "enabled": "false",
+      "tools_replace": "android:enabled"
+    }
+  ],
+  "launchers": [
+    {
+      "component": "com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconDefault",
+      "source": "app/src/full/AndroidManifest.xml",
+      "enabled_in_source": true,
+      "categories": [
+        "android.intent.category.LAUNCHER",
+        "android.intent.category.LEANBACK_LAUNCHER"
+      ],
+      "device_reported": "#358"
+    },
+    {
+      "component": "com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconArcticBlue",
+      "source": "app/src/full/AndroidManifest.xml",
+      "enabled_in_source": false,
+      "categories": [
+        "android.intent.category.LAUNCHER",
+        "android.intent.category.LEANBACK_LAUNCHER"
+      ]
+    },
+    {
+      "component": "com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconEmerald",
+      "source": "app/src/full/AndroidManifest.xml",
+      "enabled_in_source": false,
+      "categories": [
+        "android.intent.category.LAUNCHER",
+        "android.intent.category.LEANBACK_LAUNCHER"
+      ]
+    },
+    {
+      "component": "com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconRoseGold",
+      "source": "app/src/full/AndroidManifest.xml",
+      "enabled_in_source": false,
+      "categories": [
+        "android.intent.category.LAUNCHER",
+        "android.intent.category.LEANBACK_LAUNCHER"
+      ]
+    },
+    {
+      "component": "com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconCopper",
+      "source": "app/src/full/AndroidManifest.xml",
+      "enabled_in_source": false,
+      "categories": [
+        "android.intent.category.LAUNCHER",
+        "android.intent.category.LEANBACK_LAUNCHER"
+      ]
+    },
+    {
+      "component": "com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconGraphite",
+      "source": "app/src/full/AndroidManifest.xml",
+      "enabled_in_source": false,
+      "categories": [
+        "android.intent.category.LAUNCHER",
+        "android.intent.category.LEANBACK_LAUNCHER"
+      ],
+      "device_reported": "#484"
+    },
+    {
+      "component": "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconDefault",
+      "source": "app/src/main/AndroidManifest.xml",
+      "enabled_in_source": true,
+      "categories": [
+        "android.intent.category.LAUNCHER",
+        "android.intent.category.LEANBACK_LAUNCHER"
+      ]
+    },
+    {
+      "component": "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconArcticBlue",
+      "source": "app/src/main/AndroidManifest.xml",
+      "enabled_in_source": false,
+      "categories": [
+        "android.intent.category.LAUNCHER",
+        "android.intent.category.LEANBACK_LAUNCHER"
+      ]
+    },
+    {
+      "component": "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconEmerald",
+      "source": "app/src/main/AndroidManifest.xml",
+      "enabled_in_source": false,
+      "categories": [
+        "android.intent.category.LAUNCHER",
+        "android.intent.category.LEANBACK_LAUNCHER"
+      ]
+    },
+    {
+      "component": "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconRoseGold",
+      "source": "app/src/main/AndroidManifest.xml",
+      "enabled_in_source": false,
+      "categories": [
+        "android.intent.category.LAUNCHER",
+        "android.intent.category.LEANBACK_LAUNCHER"
+      ]
+    },
+    {
+      "component": "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconCopper",
+      "source": "app/src/main/AndroidManifest.xml",
+      "enabled_in_source": false,
+      "categories": [
+        "android.intent.category.LAUNCHER",
+        "android.intent.category.LEANBACK_LAUNCHER"
+      ]
+    },
+    {
+      "component": "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconGraphite",
+      "source": "app/src/main/AndroidManifest.xml",
+      "enabled_in_source": false,
+      "categories": [
+        "android.intent.category.LAUNCHER",
+        "android.intent.category.LEANBACK_LAUNCHER"
+      ]
+    }
+  ]
+}

@@ -8,6 +8,7 @@
     <item drawable="coredoctor" />
     <item drawable="coreeq" />
     <item drawable="coreline" />
+    <item drawable="coremotion" />
     <item drawable="coreshift" />
     <category title="Wu · Streaming" />
     <item drawable="androidtv_3" />
@@ -166,6 +167,7 @@
     <item drawable="telly" />
     <item drawable="tellyplayer" />
     <item drawable="thundertv" />
+    <item drawable="tivideck" />
     <item drawable="tvplayer" />
     <item drawable="tcl_tv" />
     <item drawable="uyaniktv" />
@@ -214,6 +216,7 @@
     <item drawable="tizentube" />
     <item drawable="twitch" />
     <item drawable="videoland" />
+    <item drawable="xtra_tv" />
     <item drawable="youtube" />
     <item drawable="youtube_2" />
     <item drawable="tvunplugged" />
@@ -222,6 +225,7 @@
     <item drawable="ard_sounds" />
     <item drawable="audiomack" />
     <item drawable="launchsounds" />
+    <item drawable="bitchord" />
     <item drawable="deezer" />
     <item drawable="dsaudio" />
     <item drawable="eclipse" />
@@ -315,6 +319,7 @@
     <item drawable="moonlight" />
     <item drawable="gametime" />
     <item drawable="nflgamecenter" />
+    <item drawable="nightjar" />
     <item drawable="nintendo_switch" />
     <item drawable="pac_man_256" />
     <item drawable="playstation" />
@@ -467,6 +472,7 @@
     <item drawable="tailscale" />
     <item drawable="torguard" />
     <item drawable="vpn_unlimited" />
+    <item drawable="vypn" />
     <item drawable="wireguard" />
     <category title="Wu · Browsers" />
     <item drawable="arc_browser" />

@@ -2,7 +2,7 @@
   "$schema": "./catalog.schema.json",
   "meta": {
     "pack": "Core Builds Icon Pack",
-    "version": "2.6.0",
+    "version": "2.7.0",
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
@@ -7724,19 +7724,7 @@
         "#2FCCE6",
         "#A238F0"
       ],
-      "mapping_source": "existing set per docs/research/community-input-icons-2026-09.md P0 (official com.nuvio.tv manifest, six launcher activities, read 2026-09-14); com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault added from issue #288 (device-reported on Smart TV Pro, Android 14, pack 2.3.0): the com.nuvio.app package variant ships the same AppIconDefault activity, which the P0 pass mapped only under com.nuvio.tv. Not confirmed on a second TV; issue #358 (device-reported via the pack's Missing icons scanner on onn. 4K Plus Streaming, Android 14, pack 2.4.4, 2026-10-19): 'Nuvio + IPTV' (github.com/homelessbrian/NuvioTV) is a fork of Nuvio TV whose launcher alias sits in com.nuvio.tv, so it shares this icon; issue #362 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, Monet Launcher, pack 2.4.4, 2026-10-20): 'Nuvio Arc' (github.com/ysosrs123/NuvioTV-Fork) installs as com.nuvio.tv.test and keeps Nuvio's AppIconDefault launcher alias, so it shares this icon; issue #484 (device-reported via the pack's Missing icons scanner on onn. Streaming Device 4K pro, Android 14, Monet Launcher, pack 2.6.0, 2026-11-14): Nuvio + IPTV with its Graphite icon chosen runs as com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconGraphite. The fork's source (github.com/homelessbrian/NuvioTV at e4d3d6e, read 2026-11-14) installs its full flavor as com.nuvio.livetv and keeps exactly one launcher entry enabled: one of six '+ IPTV' icons (app/src/full/AndroidManifest.xml, IptvIcon{Default,ArcticBlue,Emerald,RoseGold,Copper,Graphite}) or one of upstream's six (app/src/main/AndroidManifest.xml, .launcher.AppIcon*). All twelve are mapped; the ten no TV has reported yet are listed as unverified",
-      "unverified": [
-        "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconArcticBlue",
-        "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconCopper",
-        "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconDefault",
-        "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconEmerald",
-        "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconGraphite",
-        "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconRoseGold",
-        "com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconArcticBlue",
-        "com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconCopper",
-        "com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconEmerald",
-        "com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconRoseGold"
-      ]
+      "mapping_source": "existing set per docs/research/community-input-icons-2026-09.md P0 (official com.nuvio.tv manifest, six launcher activities, read 2026-09-14); com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault added from issue #288 (device-reported on Smart TV Pro, Android 14, pack 2.3.0): the com.nuvio.app package variant ships the same AppIconDefault activity, which the P0 pass mapped only under com.nuvio.tv. Not confirmed on a second TV; issue #358 (device-reported via the pack's Missing icons scanner on onn. 4K Plus Streaming, Android 14, pack 2.4.4, 2026-10-19): 'Nuvio + IPTV' (github.com/homelessbrian/NuvioTV) is a fork of Nuvio TV whose launcher alias sits in com.nuvio.tv, so it shares this icon; issue #362 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, Monet Launcher, pack 2.4.4, 2026-10-20): 'Nuvio Arc' (github.com/ysosrs123/NuvioTV-Fork) installs as com.nuvio.tv.test and keeps Nuvio's AppIconDefault launcher alias, so it shares this icon; issue #484 (device-reported via the pack's Missing icons scanner on onn. Streaming Device 4K pro, Android 14, Monet Launcher, pack 2.6.0, 2026-11-14): Nuvio + IPTV with its Graphite icon chosen runs as com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconGraphite. The fork's source (github.com/homelessbrian/NuvioTV at e4d3d6e, read 2026-11-14) installs its full flavor as com.nuvio.livetv and keeps exactly one launcher entry enabled: one of six '+ IPTV' icons (app/src/full/AndroidManifest.xml, IptvIcon{Default,ArcticBlue,Emerald,RoseGold,Copper,Graphite}) or one of upstream's six (app/src/main/AndroidManifest.xml, .launcher.AppIcon*). All twelve are mapped and, like the original com.nuvio.tv set above, rest on the app's own manifests; the receipt (file hashes, namespace, the com.nuvio.livetv applicationId and all twelve launchers) is tools/reference/nuvio-iptv/. IptvIconDefault (#358) and IptvIconGraphite (#484) are also device-reported; the other ten have not been seen on a TV yet"
     },
     {
       "name": "NV Player",

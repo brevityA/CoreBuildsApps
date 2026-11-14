@@ -8,6 +8,7 @@
     <item drawable="coredoctor_banner" />
     <item drawable="coreeq_banner" />
     <item drawable="coreline_banner" />
+    <item drawable="coremotion_banner" />
     <item drawable="coreshift_banner" />
     <category title="Wu Banners · Streaming" />
     <item drawable="androidtv_3_banner" />
@@ -166,6 +167,7 @@
     <item drawable="telly_banner" />
     <item drawable="tellyplayer_banner" />
     <item drawable="thundertv_banner" />
+    <item drawable="tivideck_banner" />
     <item drawable="tvplayer_banner" />
     <item drawable="tcl_tv_banner" />
     <item drawable="uyaniktv_banner" />
@@ -214,6 +216,7 @@
     <item drawable="tizentube_banner" />
     <item drawable="twitch_banner" />
     <item drawable="videoland_banner" />
+    <item drawable="xtra_tv_banner" />
     <item drawable="youtube_banner" />
     <item drawable="youtube_2_banner" />
     <item drawable="tvunplugged_banner" />
@@ -222,6 +225,7 @@
     <item drawable="ard_sounds_banner" />
     <item drawable="audiomack_banner" />
     <item drawable="launchsounds_banner" />
+    <item drawable="bitchord_banner" />
     <item drawable="deezer_banner" />
     <item drawable="dsaudio_banner" />
     <item drawable="eclipse_banner" />
@@ -315,6 +319,7 @@
     <item drawable="moonlight_banner" />
     <item drawable="gametime_banner" />
     <item drawable="nflgamecenter_banner" />
+    <item drawable="nightjar_banner" />
     <item drawable="nintendo_switch_banner" />
     <item drawable="pac_man_256_banner" />
     <item drawable="playstation_banner" />
@@ -467,6 +472,7 @@
     <item drawable="tailscale_banner" />
     <item drawable="torguard_banner" />
     <item drawable="vpn_unlimited_banner" />
+    <item drawable="vypn_banner" />
     <item drawable="wireguard_banner" />
     <category title="Wu Banners · Browsers" />
     <item drawable="arc_browser_banner" />

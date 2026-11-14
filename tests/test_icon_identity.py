@@ -166,14 +166,25 @@ class IdentityTests(unittest.TestCase):
         self.assertEqual(vypn["color_source"], "core-builds palette (no published brand colour found)")
         self.assertEqual(vypn["unverified"], vypn["components"])
 
-        # Nuvio + IPTV (#484): all twelve launcher entries map to Nuvio TV;
-        # the two a TV has reported are verified, the ten read from source wait.
+        # Nuvio + IPTV (#484): all twelve launcher entries map to Nuvio TV, and
+        # each one is in the receipt read from the fork's own manifests, which
+        # is the evidence the original com.nuvio.tv set rests on, so none is
+        # flagged. The receipt is the pin: twelve launchers, exactly the
+        # catalog's twelve, the two device reports named, every file hashed.
         nuvio = BY_ID["nuvio"]
         livetv = [c for c in nuvio["components"] if c.startswith("com.nuvio.livetv/")]
         self.assertEqual(len(livetv), 12)
-        reported = {"com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconDefault",
-                    "com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconGraphite"}
-        self.assertEqual(set(livetv) - set(nuvio.get("unverified", [])), reported)
+        self.assertFalse(set(livetv) & set(nuvio.get("unverified", [])))
+        self.assertIn("tools/reference/nuvio-iptv/", nuvio["mapping_source"])
+        receipt = json.loads((ROOT / "tools/reference/nuvio-iptv/receipt.json").read_text())
+        self.assertEqual((receipt["application_id"], receipt["namespace"], receipt["ref"]),
+                         ("com.nuvio.livetv", "com.nuvio.tv", "e4d3d6e"))
+        self.assertEqual(sorted(l["component"] for l in receipt["launchers"]), sorted(livetv))
+        self.assertEqual({l["component"].rsplit(".", 1)[1]: l["device_reported"]
+                          for l in receipt["launchers"] if "device_reported" in l},
+                         {"IptvIconDefault": "#358", "IptvIconGraphite": "#484"})
+        for f in receipt["files"]:
+            self.assertRegex(f["sha256"], r"^[0-9a-f]{64}$")
 
     def test_late_october_requests_are_reviewed_monoline_marks(self):
         expected = {

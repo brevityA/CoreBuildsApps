@@ -6,6 +6,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.7.0] — 2026-11-14
+
 ### Added
 
 - **Six new icons, and Nuvio + IPTV's twelve launcher icons mapped.**
@@ -16,9 +18,11 @@ All notable changes to the Core Builds Icon Pack. Format follows
   three bowed strokes, three waves in the Core hexagon, a nightjar in flight
   and the VYPN wordmark. Nuvio + IPTV (#484) lets you pick one of twelve
   launcher icons; all twelve now map to Nuvio TV's. 1031 → 1037 icons, 1979
-  → 1999 components. VYPN's component and ten of Nuvio + IPTV's are read from
-  the request and the app's source, not yet from a TV, and are listed as
-  unverified.
+  → 1999 components. Nuvio + IPTV's twelve are read from the app's own
+  manifests (`tools/reference/nuvio-iptv/`), the evidence the original Nuvio TV
+  icons rest on, and two of them have been reported by a TV. VYPN's component
+  comes from the request alone and is listed as unverified until a TV reports
+  it, which raises the unverified ceiling from 73 to 74.
 - **Send feedback, in the Google Play build.** About has a *Send feedback*
   row: a QR for the new GitHub feedback form
   (`.github/ISSUE_TEMPLATE/3.feedback.yml`) with this build and this TV
