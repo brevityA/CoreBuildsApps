@@ -1,0 +1,134 @@
+name: Pages
+
+# Publishes brevityA.github.io/CoreBuildsApps: docs/ exactly as the branch
+# deploy built it (default Jekyll), plus the icon gallery at /gallery/.
+#
+# The gallery's ~2,000 PNGs are rendered here from tools/catalog.json and the
+# committed art (tools/build_gallery.py) and never committed: 55 MB that would
+# be rewritten in git history every time an icon changes.
+#
+# docs/privacy.html is the Google Play listing's privacy-policy URL, so the
+# build refuses to upload a site that lacks any page docs/ serves today, and
+# the deploy job reads the live policy back.
+#
+# One-time setting, after this workflow is on main: Settings → Pages → Build
+# and deployment → Source: "GitHub Actions", then run this workflow
+# (Actions → Pages → Run workflow). Whatever the deploy job does before that
+# switch, it can only publish a superset of what the branch deploy serves:
+# the build step fails rather than upload a site missing any docs/ page.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'tools/catalog.json'
+      - 'assets/banners/**'
+      - 'app/src/main/res/drawable-nodpi/**'
+      - 'app/src/main/res/values/aliases.xml'
+      - 'app/src/main/res/values/banner_aliases.xml'
+      - 'app/src/main/res/font/**'
+      - 'app/src/main/java/tv/corebuilds/iconpack/MainActivity.kt'
+      - 'tools/build_gallery.py'
+      - 'tools/svg_renderer.py'
+      - 'tools/drawable_art.py'
+      - '.github/workflows/pages.yml'
+  # Pull requests build the whole site, docs/ check included, and deploy nothing.
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'tools/catalog.json'
+      - 'assets/banners/**'
+      - 'app/src/main/res/drawable-nodpi/**'
+      - 'app/src/main/res/values/aliases.xml'
+      - 'app/src/main/res/values/banner_aliases.xml'
+      - 'app/src/main/res/font/**'
+      - 'app/src/main/java/tv/corebuilds/iconpack/MainActivity.kt'
+      - 'tools/build_gallery.py'
+      - 'tools/svg_renderer.py'
+      - 'tools/drawable_art.py'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Deploys queue one at a time; a pull request's build only waits for its own.
+concurrency:
+  group: pages-${{ github.event_name == 'pull_request' && github.ref || 'deploy' }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/configure-pages@v6
+
+      - name: Build docs/ as the branch deploy did
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./docs
+          destination: ./_site
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      # The same pins as tools/requirements.txt (tests/test_icon_gallery.py
+      # holds them equal), without the wallpaper tools' heavier dependencies.
+      - name: Install the renderer
+        run: pip install --quiet "resvg-py==0.4.0" "Pillow==10.4.0"
+
+      - name: Build the icon gallery
+        run: |
+          sudo chown -R "$(id -u):$(id -g)" _site
+          python tools/build_gallery.py --out _site/gallery
+
+      - name: Every page docs/ serves is in the site
+        run: |
+          missing=0
+          while IFS= read -r page; do
+            rel="${page#docs/}"
+            if [ ! -s "_site/$rel" ]; then
+              echo "::error::_site/$rel is missing; the live site serves it today"
+              missing=1
+            fi
+          done < <(find docs -name '*.html' -not -path 'docs/_*')
+          test -s _site/gallery/index.html || { echo "::error::gallery not built"; missing=1; }
+          exit "$missing"
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v5
+
+      - name: The privacy policy and the gallery answer live
+        env:
+          BASE: ${{ steps.deploy.outputs.page_url }}
+        run: |
+          for path in privacy.html gallery/ gallery/icons.json; do
+            for attempt in 1 2 3 4 5 6; do
+              code=$(curl -s -o /dev/null -w '%{http_code}' "${BASE}${path}")
+              [ "$code" = 200 ] && break
+              sleep 10
+            done
+            echo "${path}: HTTP ${code}"
+            [ "$code" = 200 ] || { echo "::error::${BASE}${path} answered ${code}"; exit 1; }
+          done

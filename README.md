@@ -83,7 +83,7 @@ Icon Pack, Core Line, Core Shift and Core EQ check for their own updates. Core M
 **Transparent icons and 16:9 banners for Projectivy Launcher, plus wallpapers.** Every icon is drawn in one style: original geometry, one accent colour, transparent background. The pack applies banners by default; a square glyph build is one switch away. Home's **Missing icons** row lists the apps on your TV that have no icon yet and prefills the request for you.
 
 **Install:** Downloader **`5270601`** · [permanent APK](https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk) · then press **Apply** in the app. \\
-**More:** [guide](docs/apps/icon-pack.md) · [every mapped app](docs/IconPackList.md) · [wallpapers](Wallpapers/README.md) ([all 132 at a glance](docs/wallpapers-collection.jpg)) · [changelog](CHANGELOG.md)
+**More:** [browse and download every icon](https://brevitya.github.io/CoreBuildsApps/gallery/) · [guide](docs/apps/icon-pack.md) · [every mapped app](docs/IconPackList.md) · [wallpapers](Wallpapers/README.md) ([all 132 at a glance](docs/wallpapers-collection.jpg)) · [changelog](CHANGELOG.md)
 
 ## 🔷 Core Line
 
