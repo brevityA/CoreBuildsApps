@@ -25,6 +25,16 @@ All notable changes to the Core Builds Icon Pack. Format follows
   already filled in, and the address to type for a phone with no camera. The
   app sends nothing itself. The link is generated with the other issue links
   (`feedback_url_fmt`, `tools/build_issue_prefills.py`), never hand-written.
+- **Every icon is on the web, searchable.** A page of all 1037 icons at
+  `brevitya.github.io/CoreBuildsApps/gallery/` (`tools/build_gallery.py`): search by
+  app or package name, filter by the app's own category chips, and download
+  any banner (1280 × 720) or square icon (512 × 512) as a transparent PNG
+  named after the app. `.github/workflows/pages.yml` renders the 2074 PNGs at
+  deploy time from `tools/catalog.json` and the committed art, so none is
+  committed, and publishes `docs/` exactly as the branch deploy built it;
+  the build fails rather than publish a site missing any `docs/` page,
+  `docs/privacy.html` included. `tests/test_icon_gallery.py` holds the page
+  to the catalog and the workflow to `docs/`.
 
 ### Changed
 
