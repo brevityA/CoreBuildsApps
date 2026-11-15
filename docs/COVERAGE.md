@@ -5,21 +5,21 @@
 
 # Coverage and mapping reliability
 
-Generated: 2026-11-08 · pack v2.6.0 · tracker live since 2026-09-21
+Generated: 2026-11-15 · pack v2.7.0 · tracker live since 2026-09-21
 
 ## Headline
 
-- **112** distinct apps reported since the tracker went live; **85** are in the pack now
-- **24/26** closed not-applying reports have the **exact reported component** shipped now (first-fix rate)
-- Median resolution: **1.2 days** on icon requests, **1.8 days** on not-applying (worst 11.7 days)
-- Open backlog: **5** requests, **3** not-applying
+- **119** distinct apps reported since the tracker went live; **91** are in the pack now
+- **24/27** closed not-applying reports have the **exact reported component** shipped now (first-fix rate)
+- Median resolution: **1.2 days** on icon requests, **1.7 days** on not-applying (worst 11.7 days)
+- Open backlog: **13** requests, **4** not-applying
 
 ## Icon requests
 
 | Closed | Count |
 | --- | --- |
-| MAPPED | 73 |
-| NOT-MAPPED | 20 |
+| MAPPED | 74 |
+| NOT-MAPPED | 19 |
 
 A request counts as MAPPED only when its package (from the component, or a Play store link's `id=`) is in the bundled appfilter; a label hit is reported as NAME-MATCH and never counted.
 
@@ -53,12 +53,13 @@ A request counts as MAPPED only when its package (from the component, or a Play 
 | [403](https://github.com/brevityA/CoreBuildsApps/issues/403) | YouTube TV | `com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.ChrobaltMainActivity` | EXACT | 2.5 |
 | [406](https://github.com/brevityA/CoreBuildsApps/issues/406) | ABC iview | `au.net.abc.iview/au.net.abc.iview.ui.router.TvLauncherActivity` | EXACT | 1.9 |
 | [409](https://github.com/brevityA/CoreBuildsApps/issues/409) | Kayo Sports | `au.com.kayosports.tv/com.dazn.MainActivity` | EXACT | 1.1 |
+| [483](https://github.com/brevityA/CoreBuildsApps/issues/483) | Plex | `com.plexapp.android/com.plexapp.android.MainActivityStars` | PKG-ONLY | 0.0 |
 
 By launcher (the form's Launcher field, device-line fallback):
 
 | Launcher | Closed | Exact component fixed |
 | --- | --- | --- |
-| Monet | 5 | 5 |
+| Monet | 6 | 5 |
 | Other | 5 | 5 |
 | Projectivy | 14 | 14 |
 | Unstated | 2 | 0 |
@@ -67,11 +68,20 @@ By launcher (the form's Launcher field, device-line fallback):
 
 | # | App | Kind | Age (days) | Component |
 | --- | --- | --- | --- | --- |
-| [460](https://github.com/brevityA/CoreBuildsApps/issues/460) | Files | not applying | 1 | `com.google.android.documentsui/com.android.documentsui.LauncherActivity` |
-| [461](https://github.com/brevityA/CoreBuildsApps/issues/461) | System Tracing | request | 1 | `com.android.traceur/com.android.traceur.MainTvActivity` |
-| [462](https://github.com/brevityA/CoreBuildsApps/issues/462) | VYPN | request | 0 | `net.vypn.app/net.vypn.app.MainActivity` |
-| [463](https://github.com/brevityA/CoreBuildsApps/issues/463) | Nightjar | request | 0 | `com.butterpollo.client/com.limelight.PcView` |
-| [467](https://github.com/brevityA/CoreBuildsApps/issues/467) | wako beta | request | 0 | `github.com/user` |
-| [468](https://github.com/brevityA/CoreBuildsApps/issues/468) | Nuvio | not applying | 0 | `github.com/user` |
-| [469](https://github.com/brevityA/CoreBuildsApps/issues/469) | wako | not applying | 0 | `github.com/user` |
-| [470](https://github.com/brevityA/CoreBuildsApps/issues/470) | Home Theatre 5.0 | request | 0 | `com.zidoo.poster/com.zidoo.poster.main.WelcomeActivity` |
+| [460](https://github.com/brevityA/CoreBuildsApps/issues/460) | Files | not applying | 8 | `com.google.android.documentsui/com.android.documentsui.LauncherActivity` |
+| [461](https://github.com/brevityA/CoreBuildsApps/issues/461) | System Tracing | request | 8 | `com.android.traceur/com.android.traceur.MainTvActivity` |
+| [462](https://github.com/brevityA/CoreBuildsApps/issues/462) | VYPN | request | 7 | `net.vypn.app/net.vypn.app.MainActivity` |
+| [463](https://github.com/brevityA/CoreBuildsApps/issues/463) | Nightjar | request | 7 | `com.butterpollo.client/com.limelight.PcView` |
+| [467](https://github.com/brevityA/CoreBuildsApps/issues/467) | wako beta | request | 7 | `github.com/user` |
+| [468](https://github.com/brevityA/CoreBuildsApps/issues/468) | Nuvio | not applying | 7 | `github.com/user` |
+| [469](https://github.com/brevityA/CoreBuildsApps/issues/469) | wako | not applying | 7 | `github.com/user` |
+| [470](https://github.com/brevityA/CoreBuildsApps/issues/470) | Home Theatre 5.0 | request | 7 | `com.zidoo.poster/com.zidoo.poster.main.WelcomeActivity` |
+| [472](https://github.com/brevityA/CoreBuildsApps/issues/472) | Niro Player | request | 4 | `` |
+| [473](https://github.com/brevityA/CoreBuildsApps/issues/473) | tinyCam PRO | request | 4 | `com.alexvas.dvr.pro/com.alexvas.dvr.activity.TvMainActivity` |
+| [475](https://github.com/brevityA/CoreBuildsApps/issues/475) | Core Motion | request | 3 | `tv.corebuilds.motion/tv.corebuilds.motion.SettingsActivity` |
+| [477](https://github.com/brevityA/CoreBuildsApps/issues/477) | +SBT | request | 3 | `br.com.sbt.mais/tv.accedo.xdk.app.MainActivity` |
+| [481](https://github.com/brevityA/CoreBuildsApps/issues/481) | BitChord TV | request | 2 | `com.music.bitchord.tv/com.music.bitchord.MainActivity` |
+| [482](https://github.com/brevityA/CoreBuildsApps/issues/482) | Xtra TV | request | 2 | `com.github.razenfr.xtratv/com.github.andreyasadchy.xtra.ui.main.MainActivity` |
+| [484](https://github.com/brevityA/CoreBuildsApps/issues/484) | Nuvio + IPTV | not applying | 1 | `com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconGraphite` |
+| [485](https://github.com/brevityA/CoreBuildsApps/issues/485) | TiviDeck | request | 1 | `com.tivideck.app/com.tivideck.app.MainActivity` |
+| [488](https://github.com/brevityA/CoreBuildsApps/issues/488) | Electric Eel | request | 0 | `org.cygnusx1.electriceel.stable/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity` |
