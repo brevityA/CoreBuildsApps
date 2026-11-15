@@ -63,8 +63,8 @@ Plugin identity (in `AndroidManifest.xml` + `strings.xml`): `uuid =
 | `LiveAdapter.kt` | RecyclerView rows (thumb/title/preview/download) |
 | `LiveEntry.kt` / `LiveCatalog.kt` | parse bundled `assets/manifest/live-feed.json` |
 | `LiveDownloader.kt` | https-only + GitHub allowlist → `Movies/CoreBuilds` |
-| `app/src/main/assets/manifest/live-feed.json` | bundled copy of `Motion/live-feed.json` |
-| `app/src/main/assets/live_thumbs/*.jpg` | 10 bundled poster thumbs |
+| `app/src/main/assets/manifest/live-feed.json` | bundled copy of `Motion/live-feed.json`, written by `tools/build_motion_feed.py` |
+| `app/src/main/assets/live_thumbs/*.jpg` | one bundled poster per live loop (48), written by `tools/build_motion_feed.py` |
 
 ### Content + tools
 
@@ -115,12 +115,10 @@ python tools/build_motion_feed.py
 python tools/validate_motion_feed.py     # expect "OK: 13 live wallpapers"
 ```
 
-Then re-copy the feed into the app bundle:
-
-```bash
-cp Motion/live-feed.json shift/app/src/main/assets/manifest/live-feed.json
-cp Motion/live/thumbs/*.jpg shift/app/src/main/assets/live_thumbs/
-```
+`build_motion_feed.py` also writes Core Shift's bundled copy (the feed and one
+poster per row). Do not copy it by hand: Shift lists its live set from the APK
+alone, and `tests/test_core_shift_content.py` fails when the copy drifts. A hand
+copy is how 2.3.5 shipped 2.4.0's set as ten dead rows and no posters.
 
 ### 3.5 Render the shaders (needs GL — CI or a dev machine)
 

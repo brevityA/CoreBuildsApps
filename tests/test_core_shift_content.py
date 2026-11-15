@@ -132,6 +132,38 @@ def test_feed_and_asset_hosts_are_not_arbitrary_relays():
         assert "ALLOWED_" in source
         assert "protocol == \"https\"" in source
         assert "allowlisted" in source
+
+
+def test_bundled_live_set_is_the_shipped_feed():
+    """Core Shift lists its live set from the APK alone (LiveCatalog.load), so
+    its copy of the feed has to be the feed. 2.3.5 still carried the 1.9.x
+    copy after 2.4.0 replaced the set: ten rows (01-10) whose MP4s are gone,
+    21 rows with no bundled poster, and none of loops 32-58.
+    tools/build_motion_feed.py writes this copy; nothing else should."""
+    bundled = SHIFT / "assets" / "manifest" / "live-feed.json"
+    source = ROOT / "Motion" / "live-feed.json"
+    assert bundled.read_bytes() == source.read_bytes(), (
+        "shift's bundled live-feed.json differs from Motion/live-feed.json - "
+        "run python tools/build_motion_feed.py"
+    )
+    feed = json.loads(source.read_text(encoding="utf-8"))
+    live = ROOT / "Motion" / "live"
+    thumbs = SHIFT / "assets" / "live_thumbs"
+    posters = set()
+    for entry in feed:
+        clip = entry["url_1080p"].rsplit("/", 1)[1]
+        assert (live / clip).is_file(), f"feed row {clip} has no MP4 in Motion/live/"
+        poster = entry["url_img"].rsplit("/", 1)[1]
+        posters.add(poster)
+        bundled_poster = thumbs / poster
+        assert bundled_poster.is_file(), f"shift has no bundled poster for {clip}"
+        assert bundled_poster.read_bytes() == (live / "thumbs" / poster).read_bytes(), (
+            f"shift's bundled poster {poster} is not the current one"
+        )
+    strays = sorted(p.name for p in thumbs.glob("*") if p.name not in posters)
+    assert not strays, f"shift bundles posters for loops the feed no longer lists: {strays}"
+
+
 def main() -> int:
     """Run every ``test_*`` in this module and report.
 
