@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Core EQ — Privacy Policy</title>
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0 auto; max-width: 46rem; padding: 2.5rem 1.25rem 5rem;
+    background: #0d1117; color: #e6edf3;
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  h1 { font-size: 1.6rem; line-height: 1.25; margin: 0 0 .35rem; }
+  h2 { font-size: 1.05rem; margin: 2.4rem 0 .6rem; color: #00d4ff; }
+  p, li { color: #c3ccd6; }
+  .kicker { font: 700 .72rem/1 ui-monospace, monospace; letter-spacing: .14em;
+            color: #00d4ff; text-transform: uppercase; margin-bottom: .9rem; }
+  .lede { color: #e6edf3; font-size: 1.02rem; }
+  .table-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; margin: .8rem 0 0; }
+  th, td { text-align: left; padding: .55rem .6rem; border-bottom: 1px solid #26303c;
+           vertical-align: top; }
+  th { font-size: .8rem; letter-spacing: .04em; text-transform: uppercase; color: #8b949e; }
+  code { font: .88em ui-monospace, monospace; color: #e6edf3; }
+  .note { border-left: 2px solid #00d4ff; padding: .1rem 0 .1rem .9rem; margin: 1rem 0; }
+  a { color: #4facfe; }
+  footer { margin-top: 3rem; color: #8b949e; font-size: .85rem; }
+</style>
+</head>
+<body>
+
+<p class="kicker">Core Builds</p>
+<h1>Core EQ — Privacy Policy</h1>
+<p class="lede">Core EQ has no account, no analytics, no advertising and no
+crash reporting of its own. Your measurements are analysed on your TV. This
+page is the complete account of what leaves your devices, when, and where it
+goes, including the one part that is Google's rather than Core EQ's: the
+phone's QR scanner.</p>
+
+<p><strong>Applies to:</strong> Core EQ, package <code>tv.corebuilds.eq</code>
+(GitHub / Downloader release), on the TV and on an Android phone used as its
+companion, and the test package <code>tv.corebuilds.eq.debug</code>, which
+behaves the same except that it has no update check.</p>
+
+<p><strong>Effective:</strong> 13 November 2026.</p>
+
+<h2>There is no account, and no profile of you</h2>
+<p>Core EQ has no sign-in and no user identifier. It does not read your
+advertising ID, contacts or location, and it opens a file only when you choose
+one to import. The TV and phone talk to each
+other only on your local network, and Core EQ's own code contacts only GitHub,
+and only for updates.</p>
+
+<h2>What is sent, and only when</h2>
+<div class="table-wrap">
+<table>
+<tr><th>When</th><th>What is sent</th><th>To</th></tr>
+<tr>
+  <td>The update check: once each time the app opens, while
+      <em>Check for updates on open</em> is On (the default; switch it off on
+      Capability), and when you press <em>Check for updates</em></td>
+  <td>A request for one small version file. Your IP address is visible to the
+      server, as with any download. The test package has no update check.</td>
+  <td><code>raw.githubusercontent.com</code> (GitHub)</td>
+</tr>
+<tr>
+  <td>You press <em>Update</em></td>
+  <td>A request for the release APK. Core EQ follows a redirect only to
+      GitHub's own download hosts, and checks the file's hash, package and
+      signature before offering to install it.</td>
+  <td><code>github.com</code>, then <code>objects.githubusercontent.com</code>,
+      <code>release-assets.githubusercontent.com</code> or
+      <code>github-releases.githubusercontent.com</code></td>
+</tr>
+<tr>
+  <td>The TV's <em>Phone companion</em> screen is open</td>
+  <td>The TV announces itself on your local network as a
+      <code>_coreeq._tcp.</code> service named after its model, and listens for
+      a phone. Both stop when the screen closes.</td>
+  <td>Devices on your local network</td>
+</tr>
+<tr>
+  <td>You pair, control or measure from the phone</td>
+  <td>Phone to TV: a pairing token, the phone's name, your commands and, for a
+      phone measurement, <strong>the recording itself</strong> (16-bit audio)
+      with its capture details: the phone's model and Android version, the
+      microphone descriptions and response Android publishes, the audio source
+      and sample rates. TV to phone: the TV's name, its status, and your
+      profiles' names and outputs. Every request is encrypted and
+      authenticated (AES-GCM) with the one-time pairing code or the paired
+      token; only an empty "are you there" probe is not.</td>
+  <td>Your TV and phone only, over your local network</td>
+</tr>
+<tr>
+  <td>You tap <em>Scan TV QR</em> on the phone to pair (optional: you can type the
+      TV's address and code instead)</td>
+  <td>The scanner is Google's code scanner, which runs in Google Play
+      services; Core EQ receives only the text of the code. Google's ML Kit
+      documentation says the barcode-scanning libraries send Google device
+      information (manufacturer, model, OS version), app information (package
+      name and version), installation identifiers "not intended to uniquely
+      identify a user or physical device", performance metrics and API
+      configuration, "used for diagnostics and usage analytics", over HTTPS. It
+      does not say the image or the code's content is sent. Core EQ does not
+      turn on the scanner's optional auto-zoom, which collects more.</td>
+  <td>Google (see
+      <a href="https://developers.google.com/ml-kit/android-data-disclosure">ML Kit's
+      Android data disclosure</a>)</td>
+</tr>
+</table>
+</div>
+
+<div class="note">
+<p>Nothing else is sent. The <em>Diagnostics summary</em> on Capability and the
+Support screen's codes are shown on screen and leave the TV only if you press
+<em>Copy</em> or scan the code yourself. Core EQ sends neither anywhere.</p>
+</div>
+
+<h2>What Core EQ reads on your devices</h2>
+<ul>
+  <li><strong>The microphone</strong>, only during a measurement you start: on
+      the TV through the remote's microphone, on the phone through its own. The
+      recording is analysed in memory and is not saved on either device. Core
+      EQ never listens in the background.</li>
+  <li><strong>Which audio output is in use</strong>, as Android reports it,
+      so each output gets its own correction.</li>
+  <li><strong>Which apps are playing</strong>, only if you allow it: through
+      an optional ADB-granted <code>dumpsys</code> read on the TV, or optional
+      Notification access, which checks only whether a notification belongs to
+      a media session and never reads its title or text.</li>
+  <li><strong>A file you choose to import</strong>, picked in Android's file
+      picker after you press <em>Import backup</em>, <em>Import REW
+      measurement</em>, <em>Import target file</em> or <em>Import preset or
+      file</em>. Core EQ reads that one file and nothing else in your
+      storage.</li>
+</ul>
+
+<h2>What Core EQ keeps</h2>
+<ul>
+  <li><strong>On the TV:</strong> your profiles (the measured response curve,
+      the correction, and measurement details such as the microphone and
+      recording device, and which Core EQ builds made and last saved them),
+      your listening settings, and the paired phone's name and pairing token. Android
+      backup can include profiles and settings; the pairing files are excluded
+      from it.</li>
+  <li><strong>On the phone:</strong> the paired TV's address and a token,
+      encrypted with a key in Android's Keystore.</li>
+  <li><strong>Exports:</strong> files in <code>Downloads/CoreEQ</code>,
+      written only when you press <em>Export</em> (a profile as equaliser
+      settings, or as a Core EQ profile file that includes its measurement
+      details), <em>Export for TV settings</em> or <em>Export as a text
+      file</em> (the values to enter in the TV's own sound menu). They are
+      ordinary files in the TV's shared storage, outside Core EQ's own.</li>
+  <li><strong>Updates:</strong> a downloaded APK, in the app's cache.</li>
+</ul>
+
+<h2>Permissions, and why each exists</h2>
+<ul>
+  <li><strong>Record audio</strong>: for the measurement sweep you start.</li>
+  <li><strong>Modify audio settings</strong>: to apply the correction.</li>
+  <li><strong>Dump</strong> (optional, granted only over ADB, and refused by
+      many TVs): to identify which apps are playing.</li>
+  <li><strong>Modify system settings</strong> (optional, asked only when you
+      switch Stereo speakers on): to set and restore the TV's Surround sound
+      mode.</li>
+  <li><strong>Foreground service</strong> and <strong>media-playback
+      foreground service</strong>: to keep correction running while you
+      watch.</li>
+  <li><strong>Run at startup</strong>: to restore correction after the TV
+      restarts.</li>
+  <li><strong>Display over other apps</strong> (optional): for the card that
+      says which profile is applied.</li>
+  <li><strong>Post notifications</strong>: for the status notification.</li>
+  <li><strong>Internet</strong> and <strong>network state</strong>: for the
+      update check, the update download and the phone link.</li>
+  <li><strong>Local network access</strong>: for the phone link, on Android
+      versions that require it.</li>
+  <li><strong>Install unknown apps</strong>: to install an update you
+      chose.</li>
+  <li><strong>Write external storage</strong>: declared only for Android 9
+      and older, which Core EQ does not run on; exports use Android's Downloads
+      store instead.</li>
+</ul>
+<p>The phone does not need the camera permission: Google's scanner uses the
+camera itself.</p>
+
+<h2>Children</h2>
+<p>Core EQ is a sound-correction tool. It has no social features, no user
+content, no chat and no advertising, and it collects no personal information
+from anyone, including children.</p>
+
+<h2>Your control</h2>
+<ul>
+  <li>Switch <em>Check for updates on open</em> off on Capability.</li>
+  <li>Type the TV's address and code on the phone instead of scanning.</li>
+  <li><em>Unpair this phone on the TV</em> revokes a phone; <em>Forget TV on
+      this phone</em> removes the phone's saved token.</li>
+  <li>Clearing Core EQ's data on either device removes everything it keeps
+      in its own storage. Exports are not removed, even when you uninstall
+      Core EQ: delete them from <code>Downloads/CoreEQ</code> yourself. Core
+      Builds holds nothing about you off your devices, so there is nothing to
+      request, correct or export.</li>
+</ul>
+
+<h2>Changes to this policy</h2>
+<p>If a future version sends anything the table above does not list, this
+page grows a row for it before that version ships, and the effective date
+changes.</p>
+
+<h2>Contact</h2>
+<p>Questions, or a correction to this page:
+<a href="https://github.com/brevityA/CoreBuildsApps/issues">open an issue</a>.</p>
+
+<footer>
+  <p>Core EQ. This policy describes the app as built from the published
+  source; that source is the authority on what the app sends.
+  <code>tests/test_core_eq_privacy_policy.py</code> holds this page to it.</p>
+</footer>
+
+</body>
+</html>
