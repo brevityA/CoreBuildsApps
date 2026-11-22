@@ -5,21 +5,21 @@
 
 # Coverage and mapping reliability
 
-Generated: 2026-11-15 · pack v2.7.0 · tracker live since 2026-09-21
+Generated: 2026-11-22 · pack v2.7.0 · tracker live since 2026-09-21
 
 ## Headline
 
-- **119** distinct apps reported since the tracker went live; **91** are in the pack now
-- **24/27** closed not-applying reports have the **exact reported component** shipped now (first-fix rate)
-- Median resolution: **1.2 days** on icon requests, **1.7 days** on not-applying (worst 11.7 days)
-- Open backlog: **13** requests, **4** not-applying
+- **132** distinct apps reported since the tracker went live; **95** are in the pack now
+- **25/31** closed not-applying reports have the **exact reported component** shipped now (first-fix rate)
+- Median resolution: **1.5 days** on icon requests, **2.3 days** on not-applying (worst 11.7 days)
+- Open backlog: **10** requests, **6** not-applying
 
 ## Icon requests
 
 | Closed | Count |
 | --- | --- |
-| MAPPED | 74 |
-| NOT-MAPPED | 19 |
+| MAPPED | 80 |
+| NOT-MAPPED | 25 |
 
 A request counts as MAPPED only when its package (from the component, or a Play store link's `id=`) is in the bundled appfilter; a label hit is reported as NAME-MATCH and never counted.
 
@@ -53,35 +53,44 @@ A request counts as MAPPED only when its package (from the component, or a Play 
 | [403](https://github.com/brevityA/CoreBuildsApps/issues/403) | YouTube TV | `com.google.android.youtube.tvunplugged/com.google.android.apps.youtube.tvunplugged.activity.ChrobaltMainActivity` | EXACT | 2.5 |
 | [406](https://github.com/brevityA/CoreBuildsApps/issues/406) | ABC iview | `au.net.abc.iview/au.net.abc.iview.ui.router.TvLauncherActivity` | EXACT | 1.9 |
 | [409](https://github.com/brevityA/CoreBuildsApps/issues/409) | Kayo Sports | `au.com.kayosports.tv/com.dazn.MainActivity` | EXACT | 1.1 |
+| [460](https://github.com/brevityA/CoreBuildsApps/issues/460) | Files | `com.google.android.documentsui/com.android.documentsui.LauncherActivity` | PKG-ONLY | 9.8 |
+| [468](https://github.com/brevityA/CoreBuildsApps/issues/468) | Nuvio | `github.com/user` | NOT-IN-PACK | 8.0 |
+| [469](https://github.com/brevityA/CoreBuildsApps/issues/469) | wako | `github.com/user` | NOT-IN-PACK | 8.0 |
 | [483](https://github.com/brevityA/CoreBuildsApps/issues/483) | Plex | `com.plexapp.android/com.plexapp.android.MainActivityStars` | PKG-ONLY | 0.0 |
+| [484](https://github.com/brevityA/CoreBuildsApps/issues/484) | Nuvio + IPTV | `com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconGraphite` | EXACT | 2.3 |
 
 By launcher (the form's Launcher field, device-line fallback):
 
 | Launcher | Closed | Exact component fixed |
 | --- | --- | --- |
-| Monet | 6 | 5 |
+| Monet | 7 | 6 |
 | Other | 5 | 5 |
 | Projectivy | 14 | 14 |
-| Unstated | 2 | 0 |
+| Unstated | 4 | 0 |
+| _not supplied — device-side auditor report_
+
+_Filed by the Core Builds request broker from the in-app auditor's
+one-press request — the pack maps this app under a different activity, so this
+device's component is the fix. Anonymous device report; no GitHub
+account on the reporter side._ | 1 | 0 |
 
 ## Open backlog
 
 | # | App | Kind | Age (days) | Component |
 | --- | --- | --- | --- | --- |
-| [460](https://github.com/brevityA/CoreBuildsApps/issues/460) | Files | not applying | 8 | `com.google.android.documentsui/com.android.documentsui.LauncherActivity` |
-| [461](https://github.com/brevityA/CoreBuildsApps/issues/461) | System Tracing | request | 8 | `com.android.traceur/com.android.traceur.MainTvActivity` |
-| [462](https://github.com/brevityA/CoreBuildsApps/issues/462) | VYPN | request | 7 | `net.vypn.app/net.vypn.app.MainActivity` |
-| [463](https://github.com/brevityA/CoreBuildsApps/issues/463) | Nightjar | request | 7 | `com.butterpollo.client/com.limelight.PcView` |
-| [467](https://github.com/brevityA/CoreBuildsApps/issues/467) | wako beta | request | 7 | `github.com/user` |
-| [468](https://github.com/brevityA/CoreBuildsApps/issues/468) | Nuvio | not applying | 7 | `github.com/user` |
-| [469](https://github.com/brevityA/CoreBuildsApps/issues/469) | wako | not applying | 7 | `github.com/user` |
-| [470](https://github.com/brevityA/CoreBuildsApps/issues/470) | Home Theatre 5.0 | request | 7 | `com.zidoo.poster/com.zidoo.poster.main.WelcomeActivity` |
-| [472](https://github.com/brevityA/CoreBuildsApps/issues/472) | Niro Player | request | 4 | `` |
-| [473](https://github.com/brevityA/CoreBuildsApps/issues/473) | tinyCam PRO | request | 4 | `com.alexvas.dvr.pro/com.alexvas.dvr.activity.TvMainActivity` |
-| [475](https://github.com/brevityA/CoreBuildsApps/issues/475) | Core Motion | request | 3 | `tv.corebuilds.motion/tv.corebuilds.motion.SettingsActivity` |
-| [477](https://github.com/brevityA/CoreBuildsApps/issues/477) | +SBT | request | 3 | `br.com.sbt.mais/tv.accedo.xdk.app.MainActivity` |
-| [481](https://github.com/brevityA/CoreBuildsApps/issues/481) | BitChord TV | request | 2 | `com.music.bitchord.tv/com.music.bitchord.MainActivity` |
-| [482](https://github.com/brevityA/CoreBuildsApps/issues/482) | Xtra TV | request | 2 | `com.github.razenfr.xtratv/com.github.andreyasadchy.xtra.ui.main.MainActivity` |
-| [484](https://github.com/brevityA/CoreBuildsApps/issues/484) | Nuvio + IPTV | not applying | 1 | `com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconGraphite` |
-| [485](https://github.com/brevityA/CoreBuildsApps/issues/485) | TiviDeck | request | 1 | `com.tivideck.app/com.tivideck.app.MainActivity` |
-| [488](https://github.com/brevityA/CoreBuildsApps/issues/488) | Electric Eel | request | 0 | `org.cygnusx1.electriceel.stable/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity` |
+| [488](https://github.com/brevityA/CoreBuildsApps/issues/488) | Electric Eel | request | 7 | `org.cygnusx1.electriceel.stable/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity` |
+| [489](https://github.com/brevityA/CoreBuildsApps/issues/489) | ITVX | not applying | 6 | `air.ITVMobilePlayer/com.itv.tenft.itvhub.ItvActivity` |
+| [490](https://github.com/brevityA/CoreBuildsApps/issues/490) | Beeb | request | 6 | `org.beebplayer.android/org.beebplayer.android.MainActivity` |
+| [494](https://github.com/brevityA/CoreBuildsApps/issues/494) | RealJF | request | 5 | `dev.realjf.tv/dev.realjf.tv.MainActivity` |
+| [495](https://github.com/brevityA/CoreBuildsApps/issues/495) | Fandango | not applying | 5 | `air.com.vudu.air.DownloaderTablet/com.vudu.android.app.TvMainActivity` |
+| [496](https://github.com/brevityA/CoreBuildsApps/issues/496) | Xbox | request | 4 | `gamepass.fire.tv/gamepass.fire.tv.MainActivity` |
+| [497](https://github.com/brevityA/CoreBuildsApps/issues/497) | Immich Wallpaper Provider | request | 4 | `tv.projectivy.plugin.wallpaperprovider.immich/tv.projectivy.plugin.wallpaperprovider.immich.SettingsActivity` |
+| [498](https://github.com/brevityA/CoreBuildsApps/issues/498) | Nuvio Legacy | request | 3 | `space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_original` |
+| [499](https://github.com/brevityA/CoreBuildsApps/issues/499) | Haven TV | request | 3 | `app.haventv/app.haventv.TvLauncher` |
+| [500](https://github.com/brevityA/CoreBuildsApps/issues/500) | BBC iPlayer | not applying | 1 | `bbc.iplayer.android/external.androidtv.psbwrapper.deeplinking.DeepLinkActivity` |
+| [501](https://github.com/brevityA/CoreBuildsApps/issues/501) | ITVX | not applying | 1 | `air.ITVMobilePlayer/com.itv.tenft.itvhub.ItvActivity` |
+| [502](https://github.com/brevityA/CoreBuildsApps/issues/502) | Mullvad VPN | not applying | 1 | `net.mullvad.mullvadvpn/net.mullvad.mullvadvpn.feature.appearance.impl.obfuscation.MainActivityAltDefault` |
+| [503](https://github.com/brevityA/CoreBuildsApps/issues/503) | BBC Sounds | request | 1 | `uk.co.bbc.sounds/external.androidtv.psbwrapper.deeplinking.DeepLinkActivity` |
+| [504](https://github.com/brevityA/CoreBuildsApps/issues/504) | APKPure | not applying | 0 | `com.apkpure.aegon/com.apkpure.aegon.main.activity.FirstSeemPageActivity` |
+| [505](https://github.com/brevityA/CoreBuildsApps/issues/505) | FILMBOX+ Stream | request | 0 | `com.spiintl.tv.filmbox/tv.solocoo.htmlapp.FullscreenActivity` |
+| [506](https://github.com/brevityA/CoreBuildsApps/issues/506) | STV | request | 0 | `com.uniqcast.uniqtv.sattrakttv/com.uniqcast.uniqtv.sattrakttv.UniqTV` |
