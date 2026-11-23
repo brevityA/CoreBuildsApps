@@ -137,7 +137,7 @@ dependencies {
     testImplementation("org.json:json:20260814")
     // Screen tests: real layouts, real FocusFinder, real click handlers, and
     // renders, all on the JVM; there is no TV emulator in the PR gate.
-    testImplementation("org.robolectric:robolectric:4.17")
+    testImplementation("org.robolectric:robolectric:4.18")
     testImplementation("androidx.test:core:1.6.1")
     testImplementation("androidx.test.ext:junit:1.2.1")
 
