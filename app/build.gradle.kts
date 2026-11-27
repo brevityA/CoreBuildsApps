@@ -273,13 +273,13 @@ dependencies {
     // Play only. 8.0.0 is the last release that declares minSdk 21: 8.1.0
     // through 9.x declare 23, and Fire TV needs 21. Play accepts 8.x until
     // 2027-08-31.
-    "playImplementation"("com.android.billingclient:billing:8.0.0")
+    "playImplementation"("com.android.billingclient:billing:9.1.0")
     // Plain JVM tests for logic with no Android behind it (DayNightTest). The
     // same JUnit the other suite apps use; CI already runs the unit-test task.
     testImplementation("junit:junit:4.13.2")
     // Screen tests: real layouts, real focus search and renders on the JVM,
     // the harness Core EQ's screens use (there is no TV emulator in the PR gate).
-    testImplementation("org.robolectric:robolectric:4.17")
+    testImplementation("org.robolectric:robolectric:4.18")
     testImplementation("androidx.test:core:1.6.1")
     testImplementation("androidx.test.ext:junit:1.2.1")
 }
