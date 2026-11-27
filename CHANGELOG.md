@@ -6,6 +6,31 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Seven new icons from your requests.** Linkstreams, IPVIO Stream, Haven,
+  ST TV, FILMBOX+ Stream, RealJF and Electric Eel (#511, #508, #507 and #499,
+  #506, #505, #494, #488), each drawn in the pack's monoline from the app's
+  own art: a play triangle cut into three bands, the IPVIO name with a play
+  cue, an H with a rising ribbon, ST with a play triangle at its foot,
+  FILMBOX+ on two lines, an R around a play triangle, and a blue play mark
+  with a spark and a wave. 1037 → 1044 icons, 1999 → 2051 components.
+  ST TV is Sattrakt's app; STV Player keeps its own icon.
+- **Nuvio ReSeq and Nuvio Legacy take Nuvio TV's icon.** Both forks let you
+  choose a launcher icon, and all of them now get Nuvio's: ReSeq's six and
+  Legacy's ten (#509, #498). One of each was reported from a TV; the rest
+  were read from each fork's own source, as Nuvio + IPTV's were.
+
+### Fixed
+
+- **Nine apps that had stopped taking their icon take it again.** Their
+  current builds launch a different activity than the pack mapped, as the
+  Missing icons scanner reported: BBC iPlayer and BBC Sounds (#500, #503),
+  ITVX (#501, #489), Fandango at Home (#495), Mullvad VPN (#502), APKPure
+  (#504), TCL's Works with Alexa (#510), the Xbox app on SHIELD (#496) and
+  the Immich Wallpaper Provider for Projectivy (#497), which takes the Immich
+  icon. The components the pack already mapped stay, for older builds.
+
 ## [2.7.0] — 2026-11-14
 
 ### Added

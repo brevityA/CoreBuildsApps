@@ -227,6 +227,7 @@
     <item drawable="earthcamtv" />
     <item drawable="echogram" />
     <item drawable="eclipse" />
+    <item drawable="electric_eel" />
     <item drawable="elefin" />
     <item drawable="emby" />
     <item drawable="appstore" />
@@ -264,6 +265,7 @@
     <item drawable="files" />
     <item drawable="filesynced" />
     <item drawable="filimo" />
+    <item drawable="filmbox_stream" />
     <item drawable="filmfriend" />
     <item drawable="filmnet_tv" />
     <item drawable="guideplus" />
@@ -331,6 +333,7 @@
     <item drawable="gymondo" />
     <item drawable="hallmarkchannel" />
     <item drawable="androidapp" />
+    <item drawable="haven" />
     <item drawable="haystack" />
     <item drawable="hayu" />
     <item drawable="max" />
@@ -379,6 +382,7 @@
     <item drawable="iptvsmarterstvbox" />
     <item drawable="iptv_smarters_plus" />
     <item drawable="ipvanish" />
+    <item drawable="ipvio_stream" />
     <item drawable="iqiyi" />
     <item drawable="itvmobileplayer" />
     <item drawable="ivysiilani" />
@@ -434,6 +438,7 @@
     <item drawable="androidtv_5" />
     <item drawable="ligaportugal" />
     <item drawable="ligueunpass" />
+    <item drawable="linkstreams" />
     <item drawable="tv" />
     <item drawable="livetv" />
     <item drawable="live_ultra" />
@@ -675,6 +680,7 @@
     <item drawable="americasvoicenews" />
     <item drawable="realdebrid" />
     <item drawable="realdebrid_2" />
+    <item drawable="realjf" />
     <item drawable="realstream_tv" />
     <item drawable="rectv" />
     <item drawable="nousguide" />
@@ -768,6 +774,7 @@
     <item drawable="spotify" />
     <item drawable="srfplayer" />
     <item drawable="sstream" />
+    <item drawable="st_tv" />
     <item drawable="sync_sports" />
     <item drawable="stan" />
     <item drawable="standupcomedytv" />

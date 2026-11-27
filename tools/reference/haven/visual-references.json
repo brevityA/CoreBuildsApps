@@ -1,0 +1,40 @@
+{
+  "usage": "reference-only: brand cues and colour sampling for an original Core monoline redraw; never shipped as art",
+  "source": "https://gethaven.tv/assets/icon-192.png",
+  "captured": "2026-11-27",
+  "references": [
+    {
+      "path": "launcher-icon-192.png",
+      "sha256": "9dd2fbbb5c024fb88718efde83070a51f1df3e13ce41d2795b6be5d4f8825c84",
+      "size": [
+        192,
+        192
+      ],
+      "note": "the site's 192 px app icon, the glowing H, kept at its own size so the sampled strokes stay solid"
+    }
+  ],
+  "color_samples": [
+    {
+      "part": "the warm left stem",
+      "box": [
+        46,
+        68,
+        56,
+        78
+      ],
+      "path": "launcher-icon-192.png",
+      "color": "#FA5F04"
+    },
+    {
+      "part": "the blue right stem",
+      "box": [
+        130,
+        52,
+        140,
+        62
+      ],
+      "path": "launcher-icon-192.png",
+      "color": "#015DFA"
+    }
+  ]
+}

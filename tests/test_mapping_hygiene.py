@@ -281,6 +281,35 @@ class OctoberLauncherReports(unittest.TestCase):
         # Kayo now launches a DAZN activity outside its package's namespace.
         (409, "kayo", "au.com.kayosports.tv/com.dazn.MainActivity",
          ("au.com.kayosports.tv/au.com.foxsports.martian.tv.main.MainActivity",)),
+        # 2.7.1: launch components the scanner reported for apps the pack
+        # already drew. BBC's two apps now launch a shared "psbwrapper"
+        # deep-link activity outside their own namespace.
+        (510, "works_with_alexa", "com.tcl.smartalexa/com.tcl.smartalexa.IconShow",
+         ("com.tcl.smartalexa/com.tcl.smartalexa.view.activity.MainActivity",)),
+        (504, "apkpure", "com.apkpure.aegon/com.apkpure.aegon.main.activity.FirstSeemPageActivity",
+         ("com.apkpure.aegon/com.apkpure.aegon.main.activity.SplashActivity",)),
+        (502, "mullvad_vpn",
+         "net.mullvad.mullvadvpn/"
+         "net.mullvad.mullvadvpn.feature.appearance.impl.obfuscation.MainActivityAltDefault",
+         ("net.mullvad.mullvadvpn/net.mullvad.mullvadvpn.ui.MainActivity",)),
+        (501, "itvmobileplayer", "air.ITVMobilePlayer/com.itv.tenft.itvhub.ItvActivity",
+         ("air.ITVMobilePlayer/com.itv.tenft.itvhub.MainActivity",)),
+        (500, "iplayer", "bbc.iplayer.android/external.androidtv.psbwrapper.deeplinking.DeepLinkActivity",
+         ("bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity",)),
+        (495, "fandango_at_home", "air.com.vudu.air.DownloaderTablet/com.vudu.android.app.TvMainActivity",
+         ("air.com.vudu.air.DownloaderTablet/air.com.vudu.air.DownloaderTablet.SplashActivity",)),
+        (503, "launchsounds", "uk.co.bbc.sounds/external.androidtv.psbwrapper.deeplinking.DeepLinkActivity",
+         ("com.nvidia.bbciplayer.launchsounds/com.nvidia.bbciplayer.LaunchSoundsActivity",)),
+        (496, "xbox", "gamepass.fire.tv/gamepass.fire.tv.MainActivity",
+         ("com.microsoft.xboxone.gamepass/.MainActivity",)),
+        (497, "immich_tv",
+         "tv.projectivy.plugin.wallpaperprovider.immich/"
+         "tv.projectivy.plugin.wallpaperprovider.immich.SettingsActivity",
+         ("nl.giejay.android.tv.immich/nl.giejay.android.tv.immich.MainActivity",)),
+        (509, "nuvio", "io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconDefault",
+         ("com.nuvio.tv/.launcher.AppIconDefault",)),
+        (498, "nuvio", "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_original",
+         ("com.nuvio.tv/.launcher.AppIconDefault",)),
     )
 
     @classmethod

@@ -1,0 +1,20 @@
+{
+  "source_url": "https://www.mediafire.com/file/d9d2lgkw3kewpxc/RealJF.apk/file (from aftv.news/6953509, the link in #494)",
+  "retrieved_at": "2026-11-27",
+  "apk_sha256": "2d3089c2cd29dce93dc936615c4d07d685b364e636aca03c0e2fa760d83ef023",
+  "apk_bytes": 29965385,
+  "app_name": "RealJF",
+  "package": "dev.realjf.tv",
+  "version_name": "0.1.11",
+  "version_code": 12,
+  "verification": "Static badging only (aapt2 dump badging); not installed or run. The component is also device-reported in #494 (SHIELD Android TV, Android 11).",
+  "launchers": [
+    {
+      "component": "dev.realjf.tv/dev.realjf.tv.MainActivity",
+      "categories": [
+        "android.intent.category.LAUNCHER",
+        "android.intent.category.LEANBACK_LAUNCHER"
+      ]
+    }
+  ]
+}

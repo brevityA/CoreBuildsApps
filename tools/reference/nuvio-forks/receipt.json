@@ -1,0 +1,201 @@
+{
+  "usage": "reference-only: evidence for catalog components, not runtime art",
+  "retrieved_at": "2026-11-27T08:16:54+00:00",
+  "verification": "Static source inspection of each fork's own manifest and Gradle file at the pinned commit; not built, installed or device-tested here. One launcher of each is also device-reported.",
+  "forks": [
+    {
+      "app_name": "Nuvio ReSeq",
+      "issue": "#509",
+      "source_repository": "https://github.com/abbaskip/Nuvio-ReSeq",
+      "commit": "50e2e5389f8ffb7b573703fc1d903d75b5be7871",
+      "relation": "README: an independent Android TV fork of Nuvio (NuvioMedia/NuvioTV)",
+      "namespace": "com.nuvio.tv",
+      "application_id": "io.github.abbaskip.nuvioreseq",
+      "application_id_source": "app/build.gradle.kts defaultConfig applicationId",
+      "files": [
+        {
+          "path": "app/src/main/AndroidManifest.xml",
+          "bytes": 10972,
+          "sha256": "ded139b74f73c10ac4422200b4966f827a82870700da2cf5fe54acd7726981a5"
+        },
+        {
+          "path": "app/build.gradle.kts",
+          "bytes": 36022,
+          "sha256": "873ace567ed0675be32bfa8f7c1521c330b1ff760c926e6326f0e684e8c38848"
+        }
+      ],
+      "launchers": [
+        {
+          "component": "io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconDefault",
+          "kind": "activity",
+          "enabled_in_source": true,
+          "categories": [
+            "android.intent.category.LAUNCHER",
+            "android.intent.category.LEANBACK_LAUNCHER"
+          ],
+          "device_reported": "#509"
+        },
+        {
+          "component": "io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconArcticBlue",
+          "kind": "activity",
+          "enabled_in_source": false,
+          "categories": [
+            "android.intent.category.LAUNCHER",
+            "android.intent.category.LEANBACK_LAUNCHER"
+          ]
+        },
+        {
+          "component": "io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconEmerald",
+          "kind": "activity",
+          "enabled_in_source": false,
+          "categories": [
+            "android.intent.category.LAUNCHER",
+            "android.intent.category.LEANBACK_LAUNCHER"
+          ]
+        },
+        {
+          "component": "io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconRoseGold",
+          "kind": "activity",
+          "enabled_in_source": false,
+          "categories": [
+            "android.intent.category.LAUNCHER",
+            "android.intent.category.LEANBACK_LAUNCHER"
+          ]
+        },
+        {
+          "component": "io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconCopper",
+          "kind": "activity",
+          "enabled_in_source": false,
+          "categories": [
+            "android.intent.category.LAUNCHER",
+            "android.intent.category.LEANBACK_LAUNCHER"
+          ]
+        },
+        {
+          "component": "io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconGraphite",
+          "kind": "activity",
+          "enabled_in_source": false,
+          "categories": [
+            "android.intent.category.LAUNCHER",
+            "android.intent.category.LEANBACK_LAUNCHER"
+          ]
+        }
+      ]
+    },
+    {
+      "app_name": "Nuvio Legacy (Nuvio Native Legacy)",
+      "issue": "#498",
+      "source_repository": "https://github.com/iqui27/nuvio-native-legacy",
+      "commit": "7cac4f25d11931b56c41cfefb952e4e183c45c1a",
+      "relation": "README: an unofficial fork of Nuvio, not affiliated with NuvioMedia",
+      "namespace": "space.nuvio.nativelegacy",
+      "application_id": "space.nuvio.nativelegacy",
+      "application_id_source": "android/app/build.gradle.kts defaultConfig applicationId",
+      "files": [
+        {
+          "path": "android/app/src/main/AndroidManifest.xml",
+          "bytes": 12181,
+          "sha256": "aefdb85092d936f87e5d69f8a8fe7dc895cf6ec630aed030292a7451bea00170"
+        },
+        {
+          "path": "android/app/build.gradle.kts",
+          "bytes": 6515,
+          "sha256": "1f5d39607c82309ebf35147a53f559fa039fdf805b85b3233d423fc2a651e96e"
+        }
+      ],
+      "launchers": [
+        {
+          "component": "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_original",
+          "kind": "activity-alias",
+          "enabled_in_source": true,
+          "categories": [
+            "android.intent.category.LAUNCHER",
+            "android.intent.category.LEANBACK_LAUNCHER"
+          ],
+          "device_reported": "#498"
+        },
+        {
+          "component": "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_fenix",
+          "kind": "activity-alias",
+          "enabled_in_source": false,
+          "categories": [
+            "android.intent.category.LAUNCHER",
+            "android.intent.category.LEANBACK_LAUNCHER"
+          ]
+        },
+        {
+          "component": "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_nverde",
+          "kind": "activity-alias",
+          "enabled_in_source": false,
+          "categories": [
+            "android.intent.category.LAUNCHER",
+            "android.intent.category.LEANBACK_LAUNCHER"
+          ]
+        },
+        {
+          "component": "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_tvlaranja",
+          "kind": "activity-alias",
+          "enabled_in_source": false,
+          "categories": [
+            "android.intent.category.LAUNCHER",
+            "android.intent.category.LEANBACK_LAUNCHER"
+          ]
+        },
+        {
+          "component": "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_npixel",
+          "kind": "activity-alias",
+          "enabled_in_source": false,
+          "categories": [
+            "android.intent.category.LAUNCHER",
+            "android.intent.category.LEANBACK_LAUNCHER"
+          ]
+        },
+        {
+          "component": "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_tricolor",
+          "kind": "activity-alias",
+          "enabled_in_source": false,
+          "categories": [
+            "android.intent.category.LAUNCHER",
+            "android.intent.category.LEANBACK_LAUNCHER"
+          ]
+        },
+        {
+          "component": "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_arco",
+          "kind": "activity-alias",
+          "enabled_in_source": false,
+          "categories": [
+            "android.intent.category.LAUNCHER",
+            "android.intent.category.LEANBACK_LAUNCHER"
+          ]
+        },
+        {
+          "component": "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_tvviva",
+          "kind": "activity-alias",
+          "enabled_in_source": false,
+          "categories": [
+            "android.intent.category.LAUNCHER",
+            "android.intent.category.LEANBACK_LAUNCHER"
+          ]
+        },
+        {
+          "component": "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_cluberetro",
+          "kind": "activity-alias",
+          "enabled_in_source": false,
+          "categories": [
+            "android.intent.category.LAUNCHER",
+            "android.intent.category.LEANBACK_LAUNCHER"
+          ]
+        },
+        {
+          "component": "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_arcaden",
+          "kind": "activity-alias",
+          "enabled_in_source": false,
+          "categories": [
+            "android.intent.category.LAUNCHER",
+            "android.intent.category.LEANBACK_LAUNCHER"
+          ]
+        }
+      ]
+    }
+  ]
+}

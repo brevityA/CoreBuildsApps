@@ -29,9 +29,11 @@
     <item drawable="platform" />
     <item drawable="flix_vision" />
     <item drawable="flixed" />
+    <item drawable="haven" />
     <item drawable="androidtv_4" />
     <item drawable="justwatch" />
     <item drawable="androidtv_5" />
+    <item drawable="linkstreams" />
     <item drawable="lumera" />
     <item drawable="moviehd" />
     <item drawable="movieboxpro" />
@@ -44,6 +46,7 @@
     <item drawable="oldmovies" />
     <item drawable="playboxtv" />
     <item drawable="pureflix" />
+    <item drawable="realjf" />
     <item drawable="realstream_tv" />
     <item drawable="rectv" />
     <item drawable="battlelancer" />
@@ -100,6 +103,7 @@
     <item drawable="discovery" />
     <item drawable="discoveryplus" />
     <item drawable="disneyplus" />
+    <item drawable="filmbox_stream" />
     <item drawable="max" />
     <item drawable="heatvod" />
     <item drawable="heatvod_ultra" />
@@ -142,6 +146,7 @@
     <item drawable="iptv_pro" />
     <item drawable="iptvsmarterstvbox" />
     <item drawable="iptv_smarters_plus" />
+    <item drawable="ipvio_stream" />
     <item drawable="kemo_iptv" />
     <item drawable="streamingkemo" />
     <item drawable="la7" />
@@ -159,6 +164,7 @@
     <item drawable="siptv" />
     <item drawable="snrt_live" />
     <item drawable="sparkletv" />
+    <item drawable="st_tv" />
     <item drawable="streamvault" />
     <item drawable="strexo" />
     <item drawable="stv_player" />
@@ -207,6 +213,7 @@
     <item drawable="xiaomi_media_player" />
     <category title="Wu · Video" />
     <item drawable="dailymotion" />
+    <item drawable="electric_eel" />
     <item drawable="ok_video" />
     <item drawable="rumble" />
     <item drawable="s0undtv" />

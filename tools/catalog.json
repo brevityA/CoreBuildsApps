@@ -6,7 +6,7 @@
     "grid": 512,
     "safe_area": 432,
     "note": "Core Builds-authored geometric icons on a shared 512 grid. Reviewed brand glyphs use rounded monoline strokes and one accent, not imported vendor silhouettes. Common Outfit/category/rail banners; artwork is reference-only. Canonical brand colours and the dark-card contrast policy remain shared.",
-    "count": 1037
+    "count": 1044
   },
   "icons": [
     {
@@ -738,10 +738,11 @@
       "color": "#2CCA8C",
       "glyph": "apkpure_d",
       "components": [
-        "com.apkpure.aegon/com.apkpure.aegon.main.activity.SplashActivity"
+        "com.apkpure.aegon/com.apkpure.aegon.main.activity.SplashActivity",
+        "com.apkpure.aegon/com.apkpure.aegon.main.activity.FirstSeemPageActivity"
       ],
       "category": "STORE",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "mapping_source": "Projectivy Icon Pack 1.1.9; issue #504 (device-reported via the pack's Missing icons scanner on MiTV-AFMU0, Android 14, pack 2.7.0, Projectivy, 2026-11-21): com.apkpure.aegon/com.apkpure.aegon.main.activity.FirstSeemPageActivity",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for com.apkpure.aegon (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #2CCA8C, replacing an accent that did not match it (2026-09-28)",
       "color_reviewed": "2026-09-28"
     },
@@ -1109,10 +1110,11 @@
       "color": "#FF4C98",
       "glyph": "iplayer_play",
       "components": [
-        "bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity"
+        "bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity",
+        "bbc.iplayer.android/external.androidtv.psbwrapper.deeplinking.DeepLinkActivity"
       ],
       "category": "VOD",
-      "mapping_source": "Projectivy Icon Pack 1.1.9, as drawable \"bbc_iplayer\"",
+      "mapping_source": "Projectivy Icon Pack 1.1.9 (bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity), as drawable \"bbc_iplayer\"; issue #500 (device-reported via the pack's Missing icons scanner on Smart TV Pro, Android 14, pack 2.7.0, Projectivy, 2026-11-20): bbc.iplayer.android/external.androidtv.psbwrapper.deeplinking.DeepLinkActivity",
       "brand": "bbciplayer",
       "style": "core_monoline",
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -3341,10 +3343,11 @@
       "color": "#419BED",
       "glyph": "fandango_ticket",
       "components": [
-        "air.com.vudu.air.DownloaderTablet/air.com.vudu.air.DownloaderTablet.SplashActivity"
+        "air.com.vudu.air.DownloaderTablet/air.com.vudu.air.DownloaderTablet.SplashActivity",
+        "air.com.vudu.air.DownloaderTablet/com.vudu.android.app.TvMainActivity"
       ],
       "category": "STORE",
-      "mapping_source": "Projectivy Icon Pack 1.1.9, as drawable \"fandangoathome\"",
+      "mapping_source": "Projectivy Icon Pack 1.1.9 (air.com.vudu.air.DownloaderTablet/air.com.vudu.air.DownloaderTablet.SplashActivity), as drawable \"fandangoathome\"; issue #495 (device-reported via the pack's Missing icons scanner on Chromecast HD, Android 14, pack 2.7.0, Monet, 2026-11-17): air.com.vudu.air.DownloaderTablet/com.vudu.android.app.TvMainActivity",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for air.com.vudu.air.DownloaderTablet (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #419BED, replacing an accent that did not match it (2026-09-28)",
       "color_reviewed": "2026-09-28",
       "note": "Renamed from the Vudu entry: the app rebranded in place and keeps the Vudu package, so the mapping carries over."
@@ -5015,10 +5018,11 @@
       "color": "#34EB7A",
       "glyph": "immich_petals",
       "components": [
-        "nl.giejay.android.tv.immich/nl.giejay.android.tv.immich.MainActivity"
+        "nl.giejay.android.tv.immich/nl.giejay.android.tv.immich.MainActivity",
+        "tv.projectivy.plugin.wallpaperprovider.immich/tv.projectivy.plugin.wallpaperprovider.immich.SettingsActivity"
       ],
       "category": "APP",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "mapping_source": "Projectivy Icon Pack 1.1.9; issue #497 (device-reported via the pack's Missing icons scanner on Smart TV Pro, Android 14, pack 2.7.0, Projectivy Launcher, 2026-11-18: Immich Wallpaper Provider (github.com/raizer88/immich-projectivy-provider), a Projectivy plugin that shows an Immich library as the wallpaper; its own launcher art is a stock picture glyph, so it takes the Immich icon): tv.projectivy.plugin.wallpaperprovider.immich/tv.projectivy.plugin.wallpaperprovider.immich.SettingsActivity",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
       "glyph_source": "brand-informed redraw of the official launcher icon (play listing for nl.giejay.android.tv.immich); Core monoline geometry, not a trace (2026-09-26)"
@@ -5196,10 +5200,11 @@
       "color": "#E8F754",
       "glyph": "itv_hub",
       "components": [
-        "air.ITVMobilePlayer/com.itv.tenft.itvhub.MainActivity"
+        "air.ITVMobilePlayer/com.itv.tenft.itvhub.MainActivity",
+        "air.ITVMobilePlayer/com.itv.tenft.itvhub.ItvActivity"
       ],
       "category": "APP",
-      "mapping_source": "Projectivy Icon Pack 1.1.9, as drawable \"itvx\"",
+      "mapping_source": "Projectivy Icon Pack 1.1.9 (air.ITVMobilePlayer/com.itv.tenft.itvhub.MainActivity), as drawable \"itvx\"; issue #501 (device-reported via the pack's Missing icons scanner on Smart TV Pro, Android 14, pack 2.7.0, Projectivy, 2026-11-20, and on MiTV-AFMU0, Android 14, pack 2.6.0 (#489)): air.ITVMobilePlayer/com.itv.tenft.itvhub.ItvActivity",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for air.ITVMobilePlayer (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #E8F754, replacing an accent that did not match it (2026-09-28)",
       "color_reviewed": "2026-09-28",
       "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for air.ITVMobilePlayer (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the ITVX logo for this package (2026-09-27)"
@@ -5814,10 +5819,11 @@
       "color": "#FF4B00",
       "glyph": "launchsounds_wm",
       "components": [
-        "com.nvidia.bbciplayer.launchsounds/com.nvidia.bbciplayer.LaunchSoundsActivity"
+        "com.nvidia.bbciplayer.launchsounds/com.nvidia.bbciplayer.LaunchSoundsActivity",
+        "uk.co.bbc.sounds/external.androidtv.psbwrapper.deeplinking.DeepLinkActivity"
       ],
       "category": "MUSIC",
-      "mapping_source": "Projectivy Icon Pack 1.1.9, as drawable \"bbcsounds\"",
+      "mapping_source": "Projectivy Icon Pack 1.1.9 (com.nvidia.bbciplayer.launchsounds/com.nvidia.bbciplayer.LaunchSoundsActivity), as drawable \"bbcsounds\"; issue #503 (device-reported via the pack's Missing icons scanner on Smart TV Pro, Android 14, pack 2.7.0, Projectivy Launcher, 2026-11-20: BBC's own BBC Sounds app, the same brand as the NVIDIA launcher entry above): uk.co.bbc.sounds/external.androidtv.psbwrapper.deeplinking.DeepLinkActivity",
       "color_source": "sampled from the official launcher icon (Google Play listing for com.nvidia.bbciplayer.launchsounds): dominant brand accent #FF4B00 (2026-09-26)",
       "color_reviewed": "2026-09-26",
       "name_source": "app name from the Projectivy Icon Pack 1.1.9 artwork for com.nvidia.bbciplayer.launchsounds (github.com/SicMundus86/ProjectivyIconPack, used as reference only), which shows the BBC Sounds logo for this package (2026-09-27)",
@@ -6977,10 +6983,11 @@
       "color": "#D2943B",
       "glyph": "mullvad_shield",
       "components": [
-        "net.mullvad.mullvadvpn/net.mullvad.mullvadvpn.ui.MainActivity"
+        "net.mullvad.mullvadvpn/net.mullvad.mullvadvpn.ui.MainActivity",
+        "net.mullvad.mullvadvpn/net.mullvad.mullvadvpn.feature.appearance.impl.obfuscation.MainActivityAltDefault"
       ],
       "category": "VPN",
-      "mapping_source": "Projectivy Icon Pack 1.1.9",
+      "mapping_source": "Projectivy Icon Pack 1.1.9; issue #502 (device-reported via the pack's Missing icons scanner on Smart TV Pro, Android 14, pack 2.7.0, Projectivy, 2026-11-20; the app's alternate launcher icon, which current builds launch): net.mullvad.mullvadvpn/net.mullvad.mullvadvpn.feature.appearance.impl.obfuscation.MainActivityAltDefault",
       "color_source": "colour sweep: sampled from the Projectivy Icon Pack 1.1.9 artwork for net.mullvad.mullvadvpn (github.com/SicMundus86/ProjectivyIconPack, used as reference only), the logo's dominant hue #D2943B, replacing an accent that did not match it (2026-09-28)",
       "color_reviewed": "2026-09-28"
     },
@@ -7715,7 +7722,23 @@
         "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconEmerald",
         "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconRoseGold",
         "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconCopper",
-        "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconGraphite"
+        "com.nuvio.livetv/com.nuvio.tv.launcher.AppIconGraphite",
+        "io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconDefault",
+        "io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconArcticBlue",
+        "io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconEmerald",
+        "io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconRoseGold",
+        "io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconCopper",
+        "io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconGraphite",
+        "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_original",
+        "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_fenix",
+        "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_nverde",
+        "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_tvlaranja",
+        "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_npixel",
+        "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_tricolor",
+        "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_arco",
+        "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_tvviva",
+        "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_cluberetro",
+        "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_arcaden"
       ],
       "category": "STREAM",
       "color_source": "brand reference — nuvio lockup gradient, violet end (sampled 2026-09-14)",
@@ -7724,7 +7747,7 @@
         "#2FCCE6",
         "#A238F0"
       ],
-      "mapping_source": "existing set per docs/research/community-input-icons-2026-09.md P0 (official com.nuvio.tv manifest, six launcher activities, read 2026-09-14); com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault added from issue #288 (device-reported on Smart TV Pro, Android 14, pack 2.3.0): the com.nuvio.app package variant ships the same AppIconDefault activity, which the P0 pass mapped only under com.nuvio.tv. Not confirmed on a second TV; issue #358 (device-reported via the pack's Missing icons scanner on onn. 4K Plus Streaming, Android 14, pack 2.4.4, 2026-10-19): 'Nuvio + IPTV' (github.com/homelessbrian/NuvioTV) is a fork of Nuvio TV whose launcher alias sits in com.nuvio.tv, so it shares this icon; issue #362 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, Monet Launcher, pack 2.4.4, 2026-10-20): 'Nuvio Arc' (github.com/ysosrs123/NuvioTV-Fork) installs as com.nuvio.tv.test and keeps Nuvio's AppIconDefault launcher alias, so it shares this icon; issue #484 (device-reported via the pack's Missing icons scanner on onn. Streaming Device 4K pro, Android 14, Monet Launcher, pack 2.6.0, 2026-11-14): Nuvio + IPTV with its Graphite icon chosen runs as com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconGraphite. The fork's source (github.com/homelessbrian/NuvioTV at e4d3d6e, read 2026-11-14) installs its full flavor as com.nuvio.livetv and keeps exactly one launcher entry enabled: one of six '+ IPTV' icons (app/src/full/AndroidManifest.xml, IptvIcon{Default,ArcticBlue,Emerald,RoseGold,Copper,Graphite}) or one of upstream's six (app/src/main/AndroidManifest.xml, .launcher.AppIcon*). All twelve are mapped and, like the original com.nuvio.tv set above, rest on the app's own manifests; the receipt (file hashes, namespace, the com.nuvio.livetv applicationId and all twelve launchers) is tools/reference/nuvio-iptv/. IptvIconDefault (#358) and IptvIconGraphite (#484) are also device-reported; the other ten have not been seen on a TV yet"
+      "mapping_source": "existing set per docs/research/community-input-icons-2026-09.md P0 (official com.nuvio.tv manifest, six launcher activities, read 2026-09-14); com.nuvio.app/com.nuvio.tv.launcher.AppIconDefault added from issue #288 (device-reported on Smart TV Pro, Android 14, pack 2.3.0): the com.nuvio.app package variant ships the same AppIconDefault activity, which the P0 pass mapped only under com.nuvio.tv. Not confirmed on a second TV; issue #358 (device-reported via the pack's Missing icons scanner on onn. 4K Plus Streaming, Android 14, pack 2.4.4, 2026-10-19): 'Nuvio + IPTV' (github.com/homelessbrian/NuvioTV) is a fork of Nuvio TV whose launcher alias sits in com.nuvio.tv, so it shares this icon; issue #362 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, Monet Launcher, pack 2.4.4, 2026-10-20): 'Nuvio Arc' (github.com/ysosrs123/NuvioTV-Fork) installs as com.nuvio.tv.test and keeps Nuvio's AppIconDefault launcher alias, so it shares this icon; issue #484 (device-reported via the pack's Missing icons scanner on onn. Streaming Device 4K pro, Android 14, Monet Launcher, pack 2.6.0, 2026-11-14): Nuvio + IPTV with its Graphite icon chosen runs as com.nuvio.livetv/com.nuvio.tv.livetv.branding.IptvIconGraphite. The fork's source (github.com/homelessbrian/NuvioTV at e4d3d6e, read 2026-11-14) installs its full flavor as com.nuvio.livetv and keeps exactly one launcher entry enabled: one of six '+ IPTV' icons (app/src/full/AndroidManifest.xml, IptvIcon{Default,ArcticBlue,Emerald,RoseGold,Copper,Graphite}) or one of upstream's six (app/src/main/AndroidManifest.xml, .launcher.AppIcon*). All twelve are mapped and, like the original com.nuvio.tv set above, rest on the app's own manifests; the receipt (file hashes, namespace, the com.nuvio.livetv applicationId and all twelve launchers) is tools/reference/nuvio-iptv/. IptvIconDefault (#358) and IptvIconGraphite (#484) are also device-reported; the other ten have not been seen on a TV yet; issue #509 (device-reported via the pack's Missing icons scanner on Smart TV, Android 12, pack 2.7.0, Monet Launcher, 2026-11-24): Nuvio ReSeq, an independent fork, launches as io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconDefault; issue #498 (device-reported via the pack's Missing icons scanner on Google TV Streamer, Android 14, pack 2.7.0, 2026-11-19): Nuvio Legacy, an unofficial fork, launches as space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_original. Both forks' other launcher entries (ReSeq's five other AppIcon colours, Legacy's nine other Icone_ themes) were read from each fork's own manifest at a pinned commit; receipt in tools/reference/nuvio-forks/"
     },
     {
       "name": "NV Player",
@@ -13396,13 +13419,14 @@
       "color": "#107C10",
       "glyph": "xbox_orb",
       "components": [
-        "com.microsoft.xboxone.gamepass/.MainActivity"
+        "com.microsoft.xboxone.gamepass/.MainActivity",
+        "gamepass.fire.tv/gamepass.fire.tv.MainActivity"
       ],
       "unverified": [
         "com.microsoft.xboxone.gamepass/.MainActivity"
       ],
       "category": "GAMING",
-      "mapping_source": "pre-provenance; first committed in 16edf078e (2026-09-13, v1.8.17)",
+      "mapping_source": "pre-provenance; first committed in 16edf078e (2026-09-13, v1.8.17); issue #496 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.7.0, 2026-11-18, labelled Xbox on the TV): gamepass.fire.tv/gamepass.fire.tv.MainActivity",
       "brand": "xbox",
       "style": "core_monoline",
       "color_source": "brand reference (pre-provenance, unverified)",
@@ -14253,10 +14277,11 @@
       "color": "#1FD19A",
       "glyph": "tool_W",
       "components": [
-        "com.tcl.smartalexa/com.tcl.smartalexa.view.activity.MainActivity"
+        "com.tcl.smartalexa/com.tcl.smartalexa.view.activity.MainActivity",
+        "com.tcl.smartalexa/com.tcl.smartalexa.IconShow"
       ],
       "category": "SYSTEM",
-      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV)",
+      "mapping_source": "owner TV audit 2026-09-21 (Auditor screenshots, TCL Google TV); issue #510 (device-reported via the pack's Missing icons scanner on Smart TV, Android 12, pack 2.7.0, Monet Launcher, 2026-11-24): com.tcl.smartalexa/com.tcl.smartalexa.IconShow",
       "color_source": "core-builds palette (no published brand colour found)",
       "color_reviewed": null,
       "mark": "WA"
@@ -15264,6 +15289,131 @@
       "color_reviewed": "2026-11-14",
       "glyph_source": "wordmark-derived mark from the Google Play launcher icon: the app's mark is its name, 'VYPN', in white capitals on charcoal, set here in the pack's stroke letters. Hashed visual reference in tools/reference/vypn/ (2026-11-14)",
       "name_source": "request #462 spells VYPN, as the Google Play listing does (VYPN: VPN + Browser) (2026-11-14)"
+    },
+    {
+      "name": "Linkstreams",
+      "drawable": "linkstreams",
+      "color": "#DFFF62",
+      "glyph": "linkstreams_bands",
+      "style": "core_monoline",
+      "components": [
+        "st.li.ci/st.li.ci.MainActivity"
+      ],
+      "category": "STREAM",
+      "mapping_source": "issue #511: the requester's component st.li.ci/st.li.ci.MainActivity, confirmed as the LAUNCHER and LEANBACK_LAUNCHER activity of the APK the official download page serves (Linkstreams 1.2.1, versionCode 121), read statically; receipt and APK hash in tools/reference/linkstreams/receipt.json. Not yet reported from a TV (2026-11-27)",
+      "color_source": "sampled from the APK's own adaptive launcher icon: the lime of its three bands, #DFFF62 at 128 px. Pixel sample and hashed reference in tools/reference/linkstreams/visual-references.json (2026-11-27)",
+      "color_reviewed": "2026-11-27",
+      "glyph_source": "original Core rounded-monoline mark after the launcher art: a play triangle cut into a top wedge, a middle bar that runs on to a point, and a bottom wedge, the bar drawn longer than in the art so the mark reads as a forward arrow and not a play triangle. Not a trace. Hashed visual reference in tools/reference/linkstreams/ (2026-11-27)",
+      "name_source": "request #511 and the APK's application label both spell Linkstreams (2026-11-27)"
+    },
+    {
+      "name": "IPVIO Stream",
+      "drawable": "ipvio_stream",
+      "color": "#64FC17",
+      "glyph": "ipvio_stream_wm",
+      "components": [
+        "com.ipvio.stream/com.ipvio.stream.MainActivity"
+      ],
+      "category": "LIVE",
+      "mapping_source": "issue #508 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.7.0, 2026-11-23): com.ipvio.stream/com.ipvio.stream.MainActivity, the only launcher activity in the app's source manifest (github.com/Emrodev/IPVIO-Stream)",
+      "color_source": "sampled from the repository's launcher icon: the green head of its play ribbon, #64FC17 at 128 px. Pixel sample and hashed reference in tools/reference/ipvio-stream/visual-references.json (2026-11-27)",
+      "color_reviewed": "2026-11-27",
+      "glyph_source": "wordmark-derived mark: the launcher art sets 'IPVIO' under a ribbon play triangle; here the name in the pack's stroke letters with a small play cue. Hashed visual reference in tools/reference/ipvio-stream/ (2026-11-27)",
+      "name_source": "request #508 spells IPVIO Stream, as the project's README does (2026-11-27)"
+    },
+    {
+      "name": "Haven",
+      "drawable": "haven",
+      "color": "#FA5F04",
+      "glyph": "haven_h",
+      "style": "core_monoline",
+      "components": [
+        "app.haventv/app.haventv.TvLauncher"
+      ],
+      "category": "STREAM",
+      "mapping_source": "issue #507 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.7.0, 2026-11-23) and issue #499 (device-reported on Google TV Streamer, Android 14, pack 2.7.0, 2026-11-19): both report app.haventv/app.haventv.TvLauncher",
+      "color_source": "sampled from the app icon gethaven.tv publishes (assets/icon-192.png): the warm left stem, #FA5F04 at 192 px. Pixel sample and hashed reference in tools/reference/haven/visual-references.json (2026-11-27)",
+      "color_reviewed": "2026-11-27",
+      "glyph_source": "original Core rounded-monoline 'H' after the launcher art: two stems joined by a crossbar that rises from low on the left to high on the right, as the art's ribbon does. Not a trace. Hashed visual reference in tools/reference/haven/ (2026-11-27)",
+      "name_source": "requests #507 and #499 spell Haven, as gethaven.tv does (2026-11-27)",
+      "secondary": {
+        "color": "#015DFA",
+        "parts": [
+          1
+        ],
+        "source": "the blue right stem of the launcher art, sampled at 192 px in tools/reference/haven/visual-references.json (2026-11-27)"
+      }
+    },
+    {
+      "name": "ST TV",
+      "drawable": "st_tv",
+      "color": "#FF0000",
+      "glyph": "sttv_play",
+      "style": "core_monoline",
+      "components": [
+        "com.uniqcast.uniqtv.sattrakttv/com.uniqcast.uniqtv.sattrakttv.UniqTV"
+      ],
+      "category": "LIVE",
+      "mapping_source": "issue #506 (device-reported via the pack's Missing icons scanner on MiTV-AFMU0, Android 14, pack 2.7.0, 2026-11-21): com.uniqcast.uniqtv.sattrakttv/com.uniqcast.uniqtv.sattrakttv.UniqTV. Sattrakt's ST TV, not STV Player (stv_player)",
+      "color_source": "sampled from the Google Play launcher icon of ST TV (com.sattrakt.strmobiltv), the same red play mark: #FF0000 at 128 px. Pixel sample and hashed reference in tools/reference/st-tv/visual-references.json (2026-11-27)",
+      "color_reviewed": "2026-11-27",
+      "glyph_source": "original Core rounded-monoline mark after the launcher art: 'ST' in the pack's stroke letters with a small play triangle at their foot, where the art's 'tv' sits. Not a trace. Hashed visual reference in tools/reference/st-tv/ (2026-11-27)",
+      "name_source": "the Google Play listing calls it ST TV; the TV labels it STV, as request #506 does (2026-11-27)"
+    },
+    {
+      "name": "FILMBOX+ Stream",
+      "drawable": "filmbox_stream",
+      "color": "#C64171",
+      "glyph": "filmbox_stream_wm",
+      "components": [
+        "com.spiintl.tv.filmbox/tv.solocoo.htmlapp.FullscreenActivity"
+      ],
+      "category": "VOD",
+      "mapping_source": "issue #505 (device-reported via the pack's Missing icons scanner on MiTV-AFMU0, Android 14, pack 2.7.0, 2026-11-21): com.spiintl.tv.filmbox/tv.solocoo.htmlapp.FullscreenActivity",
+      "color_source": "sampled from the Google Play launcher icon of FILMBOX+ Stream (com.spiintl.filmbox): the wordmark runs from orange to violet, and the M mid-way holds #C64171 at 512 px. Pixel sample and hashed reference in tools/reference/filmbox-stream/visual-references.json (2026-11-27)",
+      "color_reviewed": "2026-11-27",
+      "glyph_source": "wordmark-derived mark: the app's mark is its name, 'FILMBOX+', set here in the pack's stroke letters on two lines. Hashed visual reference in tools/reference/filmbox-stream/ (2026-11-27)",
+      "name_source": "request #505 and the Google Play listing spell FILMBOX+ Stream (2026-11-27)"
+    },
+    {
+      "name": "RealJF",
+      "drawable": "realjf",
+      "color": "#FF4D4D",
+      "glyph": "realjf_r",
+      "style": "core_monoline",
+      "components": [
+        "dev.realjf.tv/dev.realjf.tv.MainActivity"
+      ],
+      "category": "STREAM",
+      "mapping_source": "issue #494 (device-reported via the pack's Missing icons scanner on SHIELD Android TV, Android 11, pack 2.7.0, Monet Launcher, 2026-11-17): dev.realjf.tv/dev.realjf.tv.MainActivity, also the launcher activity of the APK the request links (RealJF 0.1.11), read statically; receipt in tools/reference/realjf/receipt.json",
+      "color_source": "core-builds palette (no published brand colour found)",
+      "color_reviewed": "2026-11-27",
+      "glyph_source": "original Core rounded-monoline 'R' with a play triangle in its bowl, after the app's grey 'RealStream' wordmark whose R is drawn around a play triangle. Not a trace. Hashed visual reference in tools/reference/realjf/ (2026-11-27)",
+      "name_source": "request #494 and the APK's application label spell RealJF; its artwork reads RealStream (2026-11-27)"
+    },
+    {
+      "name": "Electric Eel",
+      "drawable": "electric_eel",
+      "color": "#005AFB",
+      "glyph": "electriceel_play",
+      "style": "core_monoline",
+      "components": [
+        "org.cygnusx1.electriceel.stable/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity"
+      ],
+      "category": "VIDEO",
+      "mapping_source": "issue #488 (device-reported via the pack's Missing icons scanner on MiTV-AFMU0, Android 14, pack 2.7.0, Monet Launcher, 2026-11-15): org.cygnusx1.electriceel.stable/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity. A SmartTube fork with its own name and launcher art, so its own icon rather than SmartTube's",
+      "color_source": "sampled from the repository's stable-build launcher icon: the blue play triangle, #005AFB at 320 px. Pixel sample and hashed reference in tools/reference/electric-eel/visual-references.json (2026-11-27)",
+      "color_reviewed": "2026-11-27",
+      "glyph_source": "original Core rounded-monoline mark after the launcher art, an eel crackling with lightning around a blue play triangle: the triangle, a spark through it and a wave under it. Not a trace. Hashed visual reference in tools/reference/electric-eel/ (2026-11-27)",
+      "name_source": "request #488 and the project's README spell Electric Eel (2026-11-27)",
+      "secondary": {
+        "color": "#FFC70C",
+        "parts": [
+          1,
+          2
+        ],
+        "source": "the yellow lightning of the launcher art, sampled at 320 px in tools/reference/electric-eel/visual-references.json (2026-11-27)"
+      }
     }
   ],
   "artwork": {

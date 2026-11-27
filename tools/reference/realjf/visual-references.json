@@ -1,0 +1,16 @@
+{
+  "usage": "reference-only: brand cues and colour sampling for an original Core monoline redraw; never shipped as art",
+  "source": "RealJF 0.1.11 (versionCode 12) APK, the download the request links (aftv.news/6953509, hosted on MediaFire)",
+  "captured": "2026-11-27",
+  "references": [
+    {
+      "path": "launcher-icon-512.png",
+      "sha256": "7f1bd12117a449e6c2941744b83780d00bc4da2887c0c0a746e1f4733c937fe6",
+      "size": [
+        512,
+        512
+      ],
+      "note": "the APK's launcher icon, a grey RealStream wordmark with a play triangle in its R; no colour to sample"
+    }
+  ]
+}

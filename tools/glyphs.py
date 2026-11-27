@@ -9751,3 +9751,85 @@ GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM6.items()})
 GLYPHS.update({"tivideck_td": tivideck_td, "xtratv_x": xtratv_x,
                "bitchord_strokes": bitchord_strokes, "coremotion_waves": coremotion_waves,
                "nightjar_bird": nightjar_bird})
+
+
+# ---- 2.7.1 request batch (#511 #508 #507 #506 #505 #494 #488) --------------
+
+def linkstreams_bands(c):
+    """Linkstreams: a play triangle cut into three bands.
+
+    The launcher art (Linkstreams 1.2.1's own adaptive icon) is a lime play
+    triangle on blue, split by two horizontal cuts into a top wedge, a middle
+    bar that runs past the tip to a point, and a bottom wedge. Monoline keeps
+    the three pieces as outlines with the cuts open between them. Drawn at
+    the art's own proportions the three read as one big play triangle, which
+    the look-alike gate matched to Nuvio TV's (0.839); short wedges and a bar
+    that runs well past them make it a forward arrow (nearest 0.636).
+    """
+    return (f'<path d="M 96 116 L 232 176 L 96 176 Z" {_s(c, 32)}/>'
+            f'<path d="M 96 232 L 384 232 L 428 256 L 384 280 L 96 280 Z" {_s(c, 32)}/>'
+            f'<path d="M 96 336 L 232 336 L 96 396 Z" {_s(c, 32)}/>')
+
+
+def haven_h(c):
+    """Haven: an 'H' whose crossbar is a ribbon rising from left to right.
+
+    The launcher art is a glowing H, warm on the left stem and blue on the
+    right, joined by a crossbar that twists up from low on the left to high
+    on the right. Primitive 1 (the right stem) takes the blue through the
+    catalog secondary. The rising S-curve is what keeps it apart from the
+    plain letter-H tiles.
+    """
+    return (f'<path d="M 152 116 L 152 396" {_s(c, 32)}/>'
+            f'<path d="M 360 116 L 360 396" {_s(c, 32)}/>'
+            f'<path d="M 152 300 C 248 300 264 212 360 212" {_s(c, 32)}/>')
+
+
+def sttv_play(c):
+    """ST TV: 'ST' in the pack's stroke letters, with a small play triangle.
+
+    The Google Play icon is a red play triangle with a white 'ST' across it
+    and a small 'tv' tucked under the tip. A play-triangle ring round the
+    letters matched Nuvio TV's ring at tile size (0.898), so the letters
+    lead and the triangle sits small at their foot, where the art's 'tv'
+    is (nearest 0.556).
+    """
+    return (_stroke_text("ST", c, box=(96, 150, 360, 362), weight=32)
+            + f'<path d="M 372 336 L 372 412 L 432 374 Z" {_s(c, 26.2)}/>')
+
+
+def realjf_r(c):
+    """RealJF: the 'R' of its RealStream wordmark, with a play triangle in it.
+
+    The app's icon and banner are one grey wordmark, 'RealStream', whose R is
+    drawn around a play triangle. Monoline keeps the R and sets the play
+    triangle in its bowl. The art carries no colour of its own, so the accent
+    comes from the pack palette.
+    """
+    return (f'<path d="M 160 112 L 160 400 M 160 112 L 276 112 '
+            f'A 80 80 0 0 1 276 272 L 160 272 M 252 272 L 356 400" {_s(c, 32)}/>'
+            f'<path d="M 200 152 L 200 232 L 264 192 Z" {_s(c, 26.2)}/>')
+
+
+def electriceel_play(c):
+    """Electric Eel: a play triangle with an electric spark across it.
+
+    The launcher art is an eel, crackling with lightning, coiled around a
+    blue play triangle. Monoline keeps the triangle in the blue and draws
+    the eel's charge as a spark through it and a wave under it; primitives 1
+    and 2 take the yellow through the catalog secondary. It is a fork of
+    SmartTube, whose red play mark it does not share.
+    """
+    return (f'<path d="M 132 104 L 132 384 L 380 244 Z" {_s(c, 32)}/>'
+            f'<path d="M 236 168 L 196 252 L 248 244 L 212 324" {_s(c, 26.2)}/>'
+            f'<path d="M 112 432 Q 176 392 240 432 T 368 432 T 424 408" {_s(c, 26.2)}/>')
+
+
+_WM7 = {
+    "ipvio_stream": ("IPVIO", "play"),        # #508: the wordmark under its ribbon play mark
+    "filmbox_stream": ("FILM/BOX+", None),    # #505: FILMBOX+ is the app's whole mark, set on two lines
+}
+GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM7.items()})
+GLYPHS.update({"linkstreams_bands": linkstreams_bands, "haven_h": haven_h,
+               "sttv_play": sttv_play, "realjf_r": realjf_r,
+               "electriceel_play": electriceel_play})
