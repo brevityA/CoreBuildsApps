@@ -1,7 +1,7 @@
 {
   "frames": {
     "app-ui-auditor-qr.png": {
-      "bytes": 105137,
+      "bytes": 105054,
       "structure": "040ab20f722b2ae070743ef4ac256f7feb184324973498bdf9ce931751d01550"
     },
     "app-ui-auditor.png": {
@@ -13,8 +13,8 @@
       "structure": "d8e758e0cdf6b6f38882abdc647f26f5f7b34776ccd34037abe16fed0d84fa49"
     },
     "app-ui-catalogue-update.png": {
-      "bytes": 140415,
-      "structure": "f6e46e8bd41d13e3a20c1eb6d9af63dcf4f3c6952e9ac9947876695badf66911"
+      "bytes": 138037,
+      "structure": "1ba630896b19cfb7c0944866930834624528b53be122da3d2e93cd510d1f402c"
     },
     "app-ui-catalogue.png": {
       "bytes": 125622,
@@ -57,7 +57,7 @@
   "inputs": {
     "app/src/main/assets/appfilter.xml": "c358cc3a1748104a2b3775a77f2ec582569919658d38617823156540d16869ce",
     "app/src/main/assets/manifest/wallpapers.json": "0bc4f85d2ff7d2e2c646088cd450957c5e7a58c0519be85923207356dafb3490",
-    "app/src/main/assets/version.json": "47b7ae8c379fc82efd70fcd7e36ffd42011bfd54a320de93f1bf9f37608ab72d",
+    "app/src/main/assets/version.json": "b5eaaee526ec69f3b00b0ef1c100fb970b2eef0ffb840d64be7df1d4a1dee4bc",
     "app/src/main/res/color/cb_chip_text.xml": "6dde35ecabae9189ea8eb025cb08cc480d1fb05b50450a76c0d8d018e8043313",
     "app/src/main/res/color/cta_text.xml": "467d742e872e40ef1e6933371a3534b75a316fd56d8ab305dcf7941c3b47f70e",
     "app/src/main/res/color/ghost_text.xml": "2c8ce26eef3163a20191781f5eb4f4c326fa6bb45e254ae1ec78b2792fb2f6c6",
@@ -154,13 +154,13 @@
     "glyphs/src/main/res/xml/appfilter.xml": "f637ea6b0d820fbb4035004fea1d13518f90cdac8215f9c21cf15785190201e0",
     "glyphs/src/main/res/xml/drawable.xml": "602a9a3002b9702babbed8bdd1ba9e9e2ec31e8dc4f1aa7e1f31c0b3bbf64652",
     "tools/build_app_ui_mockups.py": "d534e71b223ac847f620521933ef03e1827a04236e9ba3d06337ca44bf901f30",
-    "tools/catalog.json": "33084246cbdd85d75d8d5b7d4348d0e29ee18b63724b4ec7e74ffecc9ee4d7cf",
+    "tools/catalog.json": "e2d7bc49e5e4db4c7c436df30ec8c6ad08d15c975b6942ad203f6a6325d6a383",
     "tools/fonts/DejaVuSansMono-Bold.ttf": "2964f6dac8e6e9d71613928340f17bf868e9ea51692cca333c79e74962f02233",
     "tools/fonts/DejaVuSansMono.ttf": "0f5db4f1749979d961019838b160bec74abdf7f9eca69553fe1aa856bbff49a4",
     "tools/fonts/Outfit-Bold.ttf": "04f7c9705153927058475d6c5e9f75b0a1036ec5f6f63ffb69df046191ea8933",
     "tools/fonts/Outfit-ExtraBold.ttf": "056e8cd5840cea4cfc355f672292f7de00d95f5a42bf9b7cd96d511ca8e2883e"
   },
-  "inputs_digest": "9af9d2ce5601d7b99b18745a7eb3fbf472257983b71701e43ea9ec464cdc5302",
+  "inputs_digest": "95be3c93a8792c5946d48c6ee677221bc876ff2cbe4cc93c7cd528a779532188",
   "metrics": {
     "mono-bold@28": 544.0,
     "mono@20": 384.0,

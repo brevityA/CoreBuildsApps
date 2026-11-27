@@ -6,6 +6,8 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ## [Unreleased]
 
+## [2.7.1] — 2026-11-27
+
 ### Added
 
 - **Eight new icons from your requests.** Linkstreams, IPVIO Stream, Haven,
