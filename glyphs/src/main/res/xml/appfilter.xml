@@ -175,6 +175,8 @@
     <!-- APKPure -->
     <item component="ComponentInfo{com.apkpure.aegon/com.apkpure.aegon.main.activity.SplashActivity}" drawable="apkpure"/>
     <item component="ComponentInfo{com.apkpure.aegon/.main.activity.SplashActivity}" drawable="apkpure"/>
+    <item component="ComponentInfo{com.apkpure.aegon/com.apkpure.aegon.main.activity.FirstSeemPageActivity}" drawable="apkpure"/>
+    <item component="ComponentInfo{com.apkpure.aegon/.main.activity.FirstSeemPageActivity}" drawable="apkpure"/>
     <!-- APKTime -->
     <item component="ComponentInfo{com.apktime.apktime/com.apktime.apktime.tv.SplashActivity}" drawable="apktime"/>
     <item component="ComponentInfo{com.apktime.apktime/.tv.SplashActivity}" drawable="apktime"/>
@@ -260,6 +262,7 @@
     <item component="ComponentInfo{com.basis.app/.MainActivityDefault}" drawable="basis"/>
     <!-- BBC iPlayer -->
     <item component="ComponentInfo{bbc.iplayer.android/external.androidtv.bbciplayer.deeplinking.DeepLinkActivity}" drawable="iplayer"/>
+    <item component="ComponentInfo{bbc.iplayer.android/external.androidtv.psbwrapper.deeplinking.DeepLinkActivity}" drawable="iplayer"/>
     <!-- BBC iPlayer (Freeview) -->
     <item component="ComponentInfo{uk.co.freeview.bbc/uk.co.freeview.templatewrapper.MainActivity}" drawable="bbc_iplayer"/>
     <!-- BBC iPlayer TV -->
@@ -267,6 +270,7 @@
     <item component="ComponentInfo{com.nvidia.bbciplayer/.MainPlayerActivity}" drawable="bbciplayer"/>
     <!-- BBC Sounds -->
     <item component="ComponentInfo{com.nvidia.bbciplayer.launchsounds/com.nvidia.bbciplayer.LaunchSoundsActivity}" drawable="launchsounds"/>
+    <item component="ComponentInfo{uk.co.bbc.sounds/external.androidtv.psbwrapper.deeplinking.DeepLinkActivity}" drawable="launchsounds"/>
     <!-- BeeTV -->
     <item component="ComponentInfo{com.bweather.forecast/com.bweather.forecast.SplashActivity}" drawable="forecast"/>
     <item component="ComponentInfo{com.bweather.forecast/.SplashActivity}" drawable="forecast"/>
@@ -671,6 +675,8 @@
     <!-- Eclipse -->
     <item component="ComponentInfo{com.eclipse.android/com.eclipse.android.tv.TvActivity}" drawable="eclipse"/>
     <item component="ComponentInfo{com.eclipse.android/.tv.TvActivity}" drawable="eclipse"/>
+    <!-- Electric Eel -->
+    <item component="ComponentInfo{org.cygnusx1.electriceel.stable/com.liskovsoft.smartyoutubetv2.tv.ui.main.SplashActivity}" drawable="electric_eel"/>
     <!-- Elefin -->
     <item component="ComponentInfo{com.flex.elefin/com.flex.elefin.MainActivity}" drawable="elefin"/>
     <item component="ComponentInfo{com.flex.elefin/.MainActivity}" drawable="elefin"/>
@@ -746,6 +752,7 @@
     <!-- Fandango at Home -->
     <item component="ComponentInfo{air.com.vudu.air.DownloaderTablet/air.com.vudu.air.DownloaderTablet.SplashActivity}" drawable="fandango_at_home"/>
     <item component="ComponentInfo{air.com.vudu.air.DownloaderTablet/.SplashActivity}" drawable="fandango_at_home"/>
+    <item component="ComponentInfo{air.com.vudu.air.DownloaderTablet/com.vudu.android.app.TvMainActivity}" drawable="fandango_at_home"/>
     <!-- FanDuel Sports -->
     <item component="ComponentInfo{com.foxsports.videogo/com.ballysports.tv.ui.screens.main.TvMainActivity}" drawable="foxsports_2"/>
     <!-- FANE TV -->
@@ -782,6 +789,8 @@
     <item component="ComponentInfo{com.filesynced.app/.SplashActivity}" drawable="filesynced"/>
     <!-- Filimo -->
     <item component="ComponentInfo{com.sabaidea.filimo.tv/com.bluevod.android.tv.ui.activities.MainActivity}" drawable="filimo"/>
+    <!-- FILMBOX+ Stream -->
+    <item component="ComponentInfo{com.spiintl.tv.filmbox/tv.solocoo.htmlapp.FullscreenActivity}" drawable="filmbox_stream"/>
     <!-- Filmfriend -->
     <item component="ComponentInfo{de.filmfriend/crc64a5e6c5f1927a9b79.MainActivity}" drawable="filmfriend"/>
     <!-- Filmnet TV -->
@@ -954,6 +963,9 @@
     <item component="ComponentInfo{com.hallmarkchannel.awe/tv.accedo.one.app.bootstrap.BootstrapActivity}" drawable="hallmarkchannel"/>
     <!-- Hallmark+ -->
     <item component="ComponentInfo{com.feeln.androidapp/tv.accedo.one.app.bootstrap.BootstrapActivity}" drawable="androidapp"/>
+    <!-- Haven -->
+    <item component="ComponentInfo{app.haventv/app.haventv.TvLauncher}" drawable="haven"/>
+    <item component="ComponentInfo{app.haventv/.TvLauncher}" drawable="haven"/>
     <!-- Haystack News -->
     <item component="ComponentInfo{com.haystack.android/com.haystack.android.tv.ui.activities.LoadingActivity}" drawable="haystack"/>
     <item component="ComponentInfo{com.haystack.android/.tv.ui.activities.LoadingActivity}" drawable="haystack"/>
@@ -1082,6 +1094,8 @@
     <!-- Immich TV -->
     <item component="ComponentInfo{nl.giejay.android.tv.immich/nl.giejay.android.tv.immich.MainActivity}" drawable="immich_tv"/>
     <item component="ComponentInfo{nl.giejay.android.tv.immich/.MainActivity}" drawable="immich_tv"/>
+    <item component="ComponentInfo{tv.projectivy.plugin.wallpaperprovider.immich/tv.projectivy.plugin.wallpaperprovider.immich.SettingsActivity}" drawable="immich_tv"/>
+    <item component="ComponentInfo{tv.projectivy.plugin.wallpaperprovider.immich/.SettingsActivity}" drawable="immich_tv"/>
     <!-- iMPlayer -->
     <item component="ComponentInfo{com.myiptvonline.implayer/com.myiptvonline.implayer.a}" drawable="myiptvonline"/>
     <item component="ComponentInfo{com.myiptvonline.implayer/.a}" drawable="myiptvonline"/>
@@ -1111,11 +1125,15 @@
     <!-- IPVanish -->
     <item component="ComponentInfo{com.ixolit.ipvanish/com.ixolit.ipvanish.presentation.features.launch.SplashActivity}" drawable="ipvanish"/>
     <item component="ComponentInfo{com.ixolit.ipvanish/.presentation.features.launch.SplashActivity}" drawable="ipvanish"/>
+    <!-- IPVIO Stream -->
+    <item component="ComponentInfo{com.ipvio.stream/com.ipvio.stream.MainActivity}" drawable="ipvio_stream"/>
+    <item component="ComponentInfo{com.ipvio.stream/.MainActivity}" drawable="ipvio_stream"/>
     <!-- iQIYI -->
     <item component="ComponentInfo{com.iqiyi.i18n.tv/com.iqiyi.i18n.tv.launch.LaunchActivity}" drawable="iqiyi"/>
     <item component="ComponentInfo{com.iqiyi.i18n.tv/.launch.LaunchActivity}" drawable="iqiyi"/>
     <!-- ITVX -->
     <item component="ComponentInfo{air.ITVMobilePlayer/com.itv.tenft.itvhub.MainActivity}" drawable="itvmobileplayer"/>
+    <item component="ComponentInfo{air.ITVMobilePlayer/com.itv.tenft.itvhub.ItvActivity}" drawable="itvmobileplayer"/>
     <!-- iVysílání -->
     <item component="ComponentInfo{cz.ceskatelevize.ivysilani.tvapp/cz.ceskatelevize.ivysilani.tvapp.MainActivity}" drawable="ivysiilani"/>
     <item component="ComponentInfo{cz.ceskatelevize.ivysilani.tvapp/.MainActivity}" drawable="ivysiilani"/>
@@ -1284,6 +1302,9 @@
     <!-- Ligue 1+ -->
     <item component="ComponentInfo{com.ligueunpass.app/com.ligueunpass.app.MainActivity}" drawable="ligueunpass"/>
     <item component="ComponentInfo{com.ligueunpass.app/.MainActivity}" drawable="ligueunpass"/>
+    <!-- Linkstreams -->
+    <item component="ComponentInfo{st.li.ci/st.li.ci.MainActivity}" drawable="linkstreams"/>
+    <item component="ComponentInfo{st.li.ci/.MainActivity}" drawable="linkstreams"/>
     <!-- Live Channels -->
     <item component="ComponentInfo{com.google.android.tv/com.android.tv.TvActivity}" drawable="tv"/>
     <!-- Live TV -->
@@ -1469,6 +1490,8 @@
     <!-- Mullvad VPN -->
     <item component="ComponentInfo{net.mullvad.mullvadvpn/net.mullvad.mullvadvpn.ui.MainActivity}" drawable="mullvad_vpn"/>
     <item component="ComponentInfo{net.mullvad.mullvadvpn/.ui.MainActivity}" drawable="mullvad_vpn"/>
+    <item component="ComponentInfo{net.mullvad.mullvadvpn/net.mullvad.mullvadvpn.feature.appearance.impl.obfuscation.MainActivityAltDefault}" drawable="mullvad_vpn"/>
+    <item component="ComponentInfo{net.mullvad.mullvadvpn/.feature.appearance.impl.obfuscation.MainActivityAltDefault}" drawable="mullvad_vpn"/>
     <!-- MUTV -->
     <item component="ComponentInfo{com.mutv.manutd/com.oneproduct.TvActivity}" drawable="manutd"/>
     <!-- MX Player -->
@@ -1616,6 +1639,13 @@
     <!-- NT at Home -->
     <item component="ComponentInfo{com.ntathome/tv.vhx.LauncherActivity}" drawable="ntathome"/>
     <item component="ComponentInfo{com.ntathome/tv.vhx.tv.home.TvHomeActivity}" drawable="ntathome"/>
+    <!-- Nuvio ReSeq -->
+    <item component="ComponentInfo{io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconDefault}" drawable="nuvio_reseq"/>
+    <item component="ComponentInfo{io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconArcticBlue}" drawable="nuvio_reseq"/>
+    <item component="ComponentInfo{io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconEmerald}" drawable="nuvio_reseq"/>
+    <item component="ComponentInfo{io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconRoseGold}" drawable="nuvio_reseq"/>
+    <item component="ComponentInfo{io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconCopper}" drawable="nuvio_reseq"/>
+    <item component="ComponentInfo{io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconGraphite}" drawable="nuvio_reseq"/>
     <!-- Nuvio TV -->
     <item component="ComponentInfo{com.nuvio.app/com.nuvio.tv.MainActivity}" drawable="nuvio"/>
     <item component="ComponentInfo{com.nuvio.tv/com.nuvio.tv.MainActivity}" drawable="nuvio"/>
@@ -1647,6 +1677,26 @@
     <item component="ComponentInfo{com.nuvio.livetv/com.nuvio.tv.launcher.AppIconRoseGold}" drawable="nuvio"/>
     <item component="ComponentInfo{com.nuvio.livetv/com.nuvio.tv.launcher.AppIconCopper}" drawable="nuvio"/>
     <item component="ComponentInfo{com.nuvio.livetv/com.nuvio.tv.launcher.AppIconGraphite}" drawable="nuvio"/>
+    <item component="ComponentInfo{space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_original}" drawable="nuvio"/>
+    <item component="ComponentInfo{space.nuvio.nativelegacy/.Icone_original}" drawable="nuvio"/>
+    <item component="ComponentInfo{space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_fenix}" drawable="nuvio"/>
+    <item component="ComponentInfo{space.nuvio.nativelegacy/.Icone_fenix}" drawable="nuvio"/>
+    <item component="ComponentInfo{space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_nverde}" drawable="nuvio"/>
+    <item component="ComponentInfo{space.nuvio.nativelegacy/.Icone_nverde}" drawable="nuvio"/>
+    <item component="ComponentInfo{space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_tvlaranja}" drawable="nuvio"/>
+    <item component="ComponentInfo{space.nuvio.nativelegacy/.Icone_tvlaranja}" drawable="nuvio"/>
+    <item component="ComponentInfo{space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_npixel}" drawable="nuvio"/>
+    <item component="ComponentInfo{space.nuvio.nativelegacy/.Icone_npixel}" drawable="nuvio"/>
+    <item component="ComponentInfo{space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_tricolor}" drawable="nuvio"/>
+    <item component="ComponentInfo{space.nuvio.nativelegacy/.Icone_tricolor}" drawable="nuvio"/>
+    <item component="ComponentInfo{space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_arco}" drawable="nuvio"/>
+    <item component="ComponentInfo{space.nuvio.nativelegacy/.Icone_arco}" drawable="nuvio"/>
+    <item component="ComponentInfo{space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_tvviva}" drawable="nuvio"/>
+    <item component="ComponentInfo{space.nuvio.nativelegacy/.Icone_tvviva}" drawable="nuvio"/>
+    <item component="ComponentInfo{space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_cluberetro}" drawable="nuvio"/>
+    <item component="ComponentInfo{space.nuvio.nativelegacy/.Icone_cluberetro}" drawable="nuvio"/>
+    <item component="ComponentInfo{space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_arcaden}" drawable="nuvio"/>
+    <item component="ComponentInfo{space.nuvio.nativelegacy/.Icone_arcaden}" drawable="nuvio"/>
     <!-- Nuyo Device Info -->
     <item component="ComponentInfo{com.roysolberg.android.deviceinfo/com.roysolberg.android.deviceinfo.ui.MainActivity}" drawable="nuyodeviceinfo"/>
     <item component="ComponentInfo{com.roysolberg.android.deviceinfo/.ui.MainActivity}" drawable="nuyodeviceinfo"/>
@@ -1991,6 +2041,9 @@
     <!-- Real-Debrid App -->
     <item component="ComponentInfo{com.realdebrid.realdebrid/com.realdebrid.realdebrid.MainActivity}" drawable="realdebrid_2"/>
     <item component="ComponentInfo{com.realdebrid.realdebrid/.MainActivity}" drawable="realdebrid_2"/>
+    <!-- RealJF -->
+    <item component="ComponentInfo{dev.realjf.tv/dev.realjf.tv.MainActivity}" drawable="realjf"/>
+    <item component="ComponentInfo{dev.realjf.tv/.MainActivity}" drawable="realjf"/>
     <!-- Realstream TV -->
     <item component="ComponentInfo{com.doctor.realstream_tv/com.doctor.realstream.ComposeMainActivity}" drawable="realstream_tv"/>
     <!-- REC TV -->
@@ -2271,6 +2324,9 @@
     <!-- Sstream -->
     <item component="ComponentInfo{cloud.app.sstream/cloud.app.sstream.MainActivity}" drawable="sstream"/>
     <item component="ComponentInfo{cloud.app.sstream/.MainActivity}" drawable="sstream"/>
+    <!-- ST TV -->
+    <item component="ComponentInfo{com.uniqcast.uniqtv.sattrakttv/com.uniqcast.uniqtv.sattrakttv.UniqTV}" drawable="st_tv"/>
+    <item component="ComponentInfo{com.uniqcast.uniqtv.sattrakttv/.UniqTV}" drawable="st_tv"/>
     <!-- Stadium Sync -->
     <item component="ComponentInfo{com.sync.tv/com.sync.tv.MainActivity}" drawable="sync_sports"/>
     <item component="ComponentInfo{com.sync.tv/.MainActivity}" drawable="sync_sports"/>
@@ -2921,6 +2977,8 @@
     <!-- Works with Alexa -->
     <item component="ComponentInfo{com.tcl.smartalexa/com.tcl.smartalexa.view.activity.MainActivity}" drawable="works_with_alexa"/>
     <item component="ComponentInfo{com.tcl.smartalexa/.view.activity.MainActivity}" drawable="works_with_alexa"/>
+    <item component="ComponentInfo{com.tcl.smartalexa/com.tcl.smartalexa.IconShow}" drawable="works_with_alexa"/>
+    <item component="ComponentInfo{com.tcl.smartalexa/.IconShow}" drawable="works_with_alexa"/>
     <!-- World Radios -->
     <item component="ComponentInfo{com.digitalapps.worldradios/com.digitalapps.worldradios.activities.ActivitySplash}" drawable="worldradios"/>
     <item component="ComponentInfo{com.digitalapps.worldradios/.activities.ActivitySplash}" drawable="worldradios"/>
@@ -2944,6 +3002,8 @@
     <!-- Xbox -->
     <item component="ComponentInfo{com.microsoft.xboxone.gamepass/com.microsoft.xboxone.gamepass.MainActivity}" drawable="xbox"/>
     <item component="ComponentInfo{com.microsoft.xboxone.gamepass/.MainActivity}" drawable="xbox"/>
+    <item component="ComponentInfo{gamepass.fire.tv/gamepass.fire.tv.MainActivity}" drawable="xbox"/>
+    <item component="ComponentInfo{gamepass.fire.tv/.MainActivity}" drawable="xbox"/>
     <!-- XC IPTV -->
     <item component="ComponentInfo{com.nathnetwork.xciptv/com.nathnetwork.xciptv.SplashVideoActivity}" drawable="nathnetwork_2"/>
     <item component="ComponentInfo{com.nathnetwork.xciptv/.SplashVideoActivity}" drawable="nathnetwork_2"/>

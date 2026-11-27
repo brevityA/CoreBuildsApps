@@ -29,9 +29,11 @@
     <item drawable="platform_banner" />
     <item drawable="flix_vision_banner" />
     <item drawable="flixed_banner" />
+    <item drawable="haven_banner" />
     <item drawable="androidtv_4_banner" />
     <item drawable="justwatch_banner" />
     <item drawable="androidtv_5_banner" />
+    <item drawable="linkstreams_banner" />
     <item drawable="lumera_banner" />
     <item drawable="moviehd_banner" />
     <item drawable="movieboxpro_banner" />
@@ -40,10 +42,12 @@
     <item drawable="moviesanywhere_banner" />
     <item drawable="moviesbyfawesomeandroidtv_banner" />
     <item drawable="videoplayer_banner" />
+    <item drawable="nuvio_reseq_banner" />
     <item drawable="nuvio_banner" />
     <item drawable="oldmovies_banner" />
     <item drawable="playboxtv_banner" />
     <item drawable="pureflix_banner" />
+    <item drawable="realjf_banner" />
     <item drawable="realstream_tv_banner" />
     <item drawable="rectv_banner" />
     <item drawable="battlelancer_banner" />
@@ -100,6 +104,7 @@
     <item drawable="discovery_banner" />
     <item drawable="discoveryplus_banner" />
     <item drawable="disneyplus_banner" />
+    <item drawable="filmbox_stream_banner" />
     <item drawable="max_banner" />
     <item drawable="heatvod_banner" />
     <item drawable="heatvod_ultra_banner" />
@@ -142,6 +147,7 @@
     <item drawable="iptv_pro_banner" />
     <item drawable="iptvsmarterstvbox_banner" />
     <item drawable="iptv_smarters_plus_banner" />
+    <item drawable="ipvio_stream_banner" />
     <item drawable="kemo_iptv_banner" />
     <item drawable="streamingkemo_banner" />
     <item drawable="la7_banner" />
@@ -159,6 +165,7 @@
     <item drawable="siptv_banner" />
     <item drawable="snrt_live_banner" />
     <item drawable="sparkletv_banner" />
+    <item drawable="st_tv_banner" />
     <item drawable="streamvault_banner" />
     <item drawable="strexo_banner" />
     <item drawable="stv_player_banner" />
@@ -207,6 +214,7 @@
     <item drawable="xiaomi_media_player_banner" />
     <category title="Wu Banners · Video" />
     <item drawable="dailymotion_banner" />
+    <item drawable="electric_eel_banner" />
     <item drawable="ok_video_banner" />
     <item drawable="rumble_banner" />
     <item drawable="s0undtv_banner" />

@@ -1,0 +1,40 @@
+{
+  "usage": "reference-only: brand cues and colour sampling for an original Core monoline redraw; never shipped as art",
+  "source": "https://github.com/abbaskip/Nuvio-ReSeq (branding/Nuvio-ReSeq-logo.png)",
+  "captured": "2026-11-27",
+  "references": [
+    {
+      "path": "logo-640.png",
+      "sha256": "18d63e5c2c437f38650a7e896ff59bc1ea3a1fe878e194f899d76cc7433dc06d",
+      "size": [
+        640,
+        248
+      ],
+      "note": "the project's logo lockup, mark and 'nuvio ReSeq' wordmark, downsized from 2014 px wide for evidence only"
+    }
+  ],
+  "color_samples": [
+    {
+      "part": "the blue of the arrow loop",
+      "box": [
+        116,
+        74,
+        124,
+        82
+      ],
+      "path": "logo-640.png",
+      "color": "#0169F2"
+    },
+    {
+      "part": "the violet at the triangle's foot",
+      "box": [
+        120,
+        170,
+        128,
+        178
+      ],
+      "path": "logo-640.png",
+      "color": "#9429F3"
+    }
+  ]
+}

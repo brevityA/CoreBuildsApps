@@ -1,0 +1,29 @@
+{
+  "usage": "reference-only: brand cues and colour sampling for an original Core monoline redraw; never shipped as art",
+  "source": "https://apk.linkstreams.app/ (Linkstreams 1.2.1, versionCode 121)",
+  "captured": "2026-11-27",
+  "references": [
+    {
+      "path": "launcher-icon-128.png",
+      "sha256": "a118a9eb905ca8f4f61165c37e58abad62046490ef8612a2c81059fe79f8f955",
+      "size": [
+        128,
+        128
+      ],
+      "note": "the APK's own adaptive launcher icon, its #174AE4 background colour under its foreground layer, downsized to 128 px for evidence only"
+    }
+  ],
+  "color_samples": [
+    {
+      "part": "the lime bands",
+      "box": [
+        86,
+        60,
+        96,
+        70
+      ],
+      "path": "launcher-icon-128.png",
+      "color": "#DFFF62"
+    }
+  ]
+}

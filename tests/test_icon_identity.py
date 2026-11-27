@@ -94,7 +94,9 @@ class IdentityTests(unittest.TestCase):
     def test_request_references_are_hash_pinned_and_not_runtime_art(self):
         for directory in ("sportfm-tv", "tvlok", "plezy", "streamfc", "radio-france",
                           "aurora-player", "blackout", "prism", "tvcalendar", "jellywatch",
-                          "tivideck", "xtra-tv", "bitchord", "nightjar", "vypn"):
+                          "tivideck", "xtra-tv", "bitchord", "nightjar", "vypn",
+                          "linkstreams", "ipvio-stream", "haven", "st-tv", "filmbox-stream",
+                          "realjf", "electric-eel", "nuvio-reseq"):
             root = ROOT / "tools/reference" / directory
             evidence = json.loads((root / "visual-references.json").read_text())
             self.assertTrue(evidence["usage"].startswith("reference-only"))
@@ -185,6 +187,95 @@ class IdentityTests(unittest.TestCase):
                          {"IptvIconDefault": "#358", "IptvIconGraphite": "#484"})
         for f in receipt["files"]:
             self.assertRegex(f["sha256"], r"^[0-9a-f]{64}$")
+
+    def test_late_november_requests_are_reviewed_marks(self):
+        # 2.7.1 (27 November): every accent is the colour its hashed reference
+        # really holds in the recorded box, and so is each second colour.
+        from collections import Counter
+
+        def sampled(ref, sample):
+            with Image.open(ROOT / "tools/reference" / ref / sample["path"]) as image:
+                pixels = [p for p in image.convert("RGB").crop(tuple(sample["box"])).getdata()
+                          if not min(p) > 200 and max(p) > 60]
+            return "#{:02X}{:02X}{:02X}".format(*Counter(pixels).most_common(1)[0][0])
+
+        expected = {
+            # drawable: (glyph, accent, reference, (second, parts) or None, monoline)
+            "linkstreams": ("linkstreams_bands", "#DFFF62", "linkstreams", None, True),
+            "ipvio_stream": ("ipvio_stream_wm", "#64FC17", "ipvio-stream", None, False),
+            "haven": ("haven_h", "#FA5F04", "haven", ("#015DFA", [1]), True),
+            "st_tv": ("sttv_play", "#FF0000", "st-tv", None, True),
+            "filmbox_stream": ("filmbox_stream_wm", "#C64171", "filmbox-stream", None, False),
+            "electric_eel": ("electriceel_play", "#005AFB", "electric-eel", ("#FFC70C", [1, 2]), True),
+            "nuvio_reseq": ("nuvioreseq_loop", "#0169F2", "nuvio-reseq", ("#9429F3", [2]), True),
+        }
+        for drawable, (glyph, accent, ref, second, monoline) in expected.items():
+            with self.subTest(drawable=drawable):
+                icon = BY_ID[drawable]
+                self.assertEqual(icon["glyph"], glyph)
+                # Stroke-letter wordmarks with a solid cue carry no style, as VYPN's.
+                self.assertEqual(icon.get("style"), CORE_MONOLINE if monoline else None)
+                self.assertEqual(icon["color"], accent)
+                self.assertEqual(icon["color_reviewed"], "2026-11-27")
+                self.assertIn(f"tools/reference/{ref}/", icon["glyph_source"])
+                self.assertNotIn("unverified", icon)
+                evidence = json.loads((ROOT / "tools/reference" / ref
+                                       / "visual-references.json").read_text())
+                samples = evidence["color_samples"]
+                self.assertEqual(sampled(ref, samples[0]), accent)
+                self.assertEqual(samples[0]["color"], accent)
+                if second is None:
+                    self.assertNotIn("secondary", icon)
+                else:
+                    self.assertEqual((icon["secondary"]["color"], icon["secondary"]["parts"]), second)
+                    self.assertFalse(secondary_errors(icon))
+                    self.assertEqual(sampled(ref, samples[1]), second[0])
+
+        # RealJF's art is a grey wordmark: the palette assigns its accent.
+        realjf = BY_ID["realjf"]
+        self.assertEqual(realjf["glyph"], "realjf_r")
+        self.assertEqual(realjf["color_source"], "core-builds palette (no published brand colour found)")
+        self.assertNotIn("color_samples",
+                         json.loads((ROOT / "tools/reference/realjf/visual-references.json").read_text()))
+
+        # Linkstreams and RealJF: the launcher was read off the APK itself.
+        for drawable, ref in (("linkstreams", "linkstreams"), ("realjf", "realjf")):
+            with self.subTest(receipt=ref):
+                receipt = json.loads((ROOT / "tools/reference" / ref / "receipt.json").read_text())
+                self.assertRegex(receipt["apk_sha256"], r"^[0-9a-f]{64}$")
+                self.assertEqual([l["component"] for l in receipt["launchers"]],
+                                 BY_ID[drawable]["components"])
+                self.assertIn(f"tools/reference/{ref}/receipt.json", BY_ID[drawable]["mapping_source"])
+
+        # ST TV is Sattrakt's app, not STV Player: two icons, two packages.
+        self.assertNotEqual(BY_ID["st_tv"]["components"], BY_ID["stv_player"]["components"])
+
+        # Nuvio ReSeq (#509) and Nuvio Legacy (#498): every launcher entry in
+        # each fork's own manifest maps to one icon, none flagged; the receipt
+        # holds exactly the catalog's sixteen and names both device reports.
+        # Legacy shares Nuvio TV's icon; ReSeq has a logo of its own, and so
+        # an icon of its own (2.7.1, by the owner's choice).
+        receipt = json.loads((ROOT / "tools/reference/nuvio-forks/receipt.json").read_text())
+        forks = {f["application_id"]: f for f in receipt["forks"]}
+        self.assertEqual(set(forks), {"io.github.abbaskip.nuvioreseq", "space.nuvio.nativelegacy"})
+        self.assertEqual(len(forks["io.github.abbaskip.nuvioreseq"]["launchers"]), 6)
+        self.assertEqual(len(forks["space.nuvio.nativelegacy"]["launchers"]), 10)
+        self.assertEqual({a: f["maps_to"] for a, f in forks.items()},
+                         {"io.github.abbaskip.nuvioreseq": "nuvio_reseq",
+                          "space.nuvio.nativelegacy": "nuvio"})
+        self.assertFalse([c for c in BY_ID["nuvio"]["components"]
+                          if c.startswith("io.github.abbaskip.nuvioreseq/")])
+        for app_id, fork in forks.items():
+            with self.subTest(fork=app_id):
+                icon = BY_ID[fork["maps_to"]]
+                self.assertIn("tools/reference/nuvio-forks/", icon["mapping_source"])
+                mapped = [c for c in icon["components"] if c.startswith(app_id + "/")]
+                self.assertEqual(sorted(l["component"] for l in fork["launchers"]), sorted(mapped))
+                self.assertFalse(set(mapped) & set(icon.get("unverified", [])))
+                self.assertEqual(len([l for l in fork["launchers"] if "device_reported" in l]), 1)
+                self.assertRegex(fork["commit"], r"^[0-9a-f]{40}$")
+                for f in fork["files"]:
+                    self.assertRegex(f["sha256"], r"^[0-9a-f]{64}$")
 
     def test_late_october_requests_are_reviewed_monoline_marks(self):
         expected = {

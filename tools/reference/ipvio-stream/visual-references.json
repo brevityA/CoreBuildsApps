@@ -1,0 +1,29 @@
+{
+  "usage": "reference-only: brand cues and colour sampling for an original Core monoline redraw; never shipped as art",
+  "source": "https://github.com/Emrodev/IPVIO-Stream (app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp)",
+  "captured": "2026-11-27",
+  "references": [
+    {
+      "path": "launcher-icon-128.png",
+      "sha256": "99852fdf962f11a142b4a9a4ad0315c8368ac1e12d1291744f453ee47dba58a9",
+      "size": [
+        128,
+        128
+      ],
+      "note": "the repository's launcher icon, 192 px WebP, downsized to 128 px PNG for evidence only"
+    }
+  ],
+  "color_samples": [
+    {
+      "part": "the green head of the ribbon",
+      "box": [
+        40,
+        28,
+        48,
+        36
+      ],
+      "path": "launcher-icon-128.png",
+      "color": "#64FC17"
+    }
+  ]
+}

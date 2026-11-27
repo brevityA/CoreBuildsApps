@@ -1,0 +1,20 @@
+{
+  "source_url": "https://apk.linkstreams.app/",
+  "retrieved_at": "2026-11-27",
+  "apk_sha256": "209f2525184a1b4f69dbeac6f5ff6a3bca9d76b026ed2d915e075c3cf44c9b93",
+  "apk_bytes": 56209750,
+  "app_name": "Linkstreams",
+  "package": "st.li.ci",
+  "version_name": "1.2.1",
+  "version_code": 121,
+  "verification": "Static badging only (aapt2 dump badging); not installed or device-tested. The official download page serves the APK itself.",
+  "launchers": [
+    {
+      "component": "st.li.ci/st.li.ci.MainActivity",
+      "categories": [
+        "android.intent.category.LAUNCHER",
+        "android.intent.category.LEANBACK_LAUNCHER"
+      ]
+    }
+  ]
+}

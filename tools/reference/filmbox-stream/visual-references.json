@@ -1,0 +1,29 @@
+{
+  "usage": "reference-only: brand cues and colour sampling for an original Core monoline redraw; never shipped as art",
+  "source": "https://play.google.com/store/apps/details?id=com.spiintl.filmbox",
+  "captured": "2026-11-27",
+  "references": [
+    {
+      "path": "launcher-icon-512.png",
+      "sha256": "b1237e5c7be9e61f465ed2bb552b59fea9e35b472c4e825f1c63e5df8a441bca",
+      "size": [
+        512,
+        512
+      ],
+      "note": "Google Play launcher icon (og:image) of FILMBOX+ Stream at 512 px; its letters are too thin to sample at 128 px"
+    }
+  ],
+  "color_samples": [
+    {
+      "part": "the M, mid-way along the orange-to-violet wordmark",
+      "box": [
+        158,
+        244,
+        168,
+        254
+      ],
+      "path": "launcher-icon-512.png",
+      "color": "#C64171"
+    }
+  ]
+}

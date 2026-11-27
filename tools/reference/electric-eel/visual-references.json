@@ -1,0 +1,40 @@
+{
+  "usage": "reference-only: brand cues and colour sampling for an original Core monoline redraw; never shipped as art",
+  "source": "https://github.com/cygnusx-1-org/electriceel (smarttubetv/src/ststable/res/mipmap-nodpi/app_icon.png)",
+  "captured": "2026-11-27",
+  "references": [
+    {
+      "path": "launcher-icon-320.png",
+      "sha256": "7454fb4054d69b0712e61d3256994450b68a86a7a6fe8c6efe1a6eb96e63bc98",
+      "size": [
+        320,
+        320
+      ],
+      "note": "the repository's stable-build launcher icon at its own 320 px"
+    }
+  ],
+  "color_samples": [
+    {
+      "part": "the blue play triangle",
+      "box": [
+        144,
+        110,
+        154,
+        120
+      ],
+      "path": "launcher-icon-320.png",
+      "color": "#005AFB"
+    },
+    {
+      "part": "the yellow lightning",
+      "box": [
+        182,
+        114,
+        192,
+        124
+      ],
+      "path": "launcher-icon-320.png",
+      "color": "#FFC70C"
+    }
+  ]
+}
