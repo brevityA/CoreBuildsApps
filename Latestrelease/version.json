@@ -1,16 +1,15 @@
 {
-  "versionCode": 64,
-  "versionName": "2.7.0",
-  "iconCount": 1037,
-  "componentCount": 1277,
-  "releaseDate": "2026-11-14",
+  "versionCode": 65,
+  "versionName": "2.7.1",
+  "iconCount": 1045,
+  "componentCount": 1309,
+  "releaseDate": "2026-11-27",
   "apkUrl": "https://github.com/brevityA/CoreBuildsApps/releases/download/iconpack/iconpack-release.apk",
   "releaseNotesUrl": "https://github.com/brevityA/CoreBuildsApps/releases",
   "minSdk": 21,
   "highlights": [
-    "Six new icons, and Nuvio + IPTV's twelve launcher icons mapped",
-    "Send feedback, in the Google Play build",
-    "Every icon is on the web, searchable",
-    "A Core Premium code counts without restarting the app"
+    "Eight new icons from your requests",
+    "Nuvio Legacy takes Nuvio TV's icon",
+    "Nine apps that had stopped taking their icon take it again"
   ]
 }
