@@ -1636,6 +1636,13 @@
     <!-- NT at Home -->
     <item component="ComponentInfo{com.ntathome/tv.vhx.LauncherActivity}" drawable="ntathome_banner"/>
     <item component="ComponentInfo{com.ntathome/tv.vhx.tv.home.TvHomeActivity}" drawable="ntathome_banner"/>
+    <!-- Nuvio ReSeq -->
+    <item component="ComponentInfo{io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconDefault}" drawable="nuvio_reseq_banner"/>
+    <item component="ComponentInfo{io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconArcticBlue}" drawable="nuvio_reseq_banner"/>
+    <item component="ComponentInfo{io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconEmerald}" drawable="nuvio_reseq_banner"/>
+    <item component="ComponentInfo{io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconRoseGold}" drawable="nuvio_reseq_banner"/>
+    <item component="ComponentInfo{io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconCopper}" drawable="nuvio_reseq_banner"/>
+    <item component="ComponentInfo{io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconGraphite}" drawable="nuvio_reseq_banner"/>
     <!-- Nuvio TV -->
     <item component="ComponentInfo{com.nuvio.app/com.nuvio.tv.MainActivity}" drawable="nuvio_banner"/>
     <item component="ComponentInfo{com.nuvio.tv/com.nuvio.tv.MainActivity}" drawable="nuvio_banner"/>
@@ -1667,12 +1674,6 @@
     <item component="ComponentInfo{com.nuvio.livetv/com.nuvio.tv.launcher.AppIconRoseGold}" drawable="nuvio_banner"/>
     <item component="ComponentInfo{com.nuvio.livetv/com.nuvio.tv.launcher.AppIconCopper}" drawable="nuvio_banner"/>
     <item component="ComponentInfo{com.nuvio.livetv/com.nuvio.tv.launcher.AppIconGraphite}" drawable="nuvio_banner"/>
-    <item component="ComponentInfo{io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconDefault}" drawable="nuvio_banner"/>
-    <item component="ComponentInfo{io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconArcticBlue}" drawable="nuvio_banner"/>
-    <item component="ComponentInfo{io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconEmerald}" drawable="nuvio_banner"/>
-    <item component="ComponentInfo{io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconRoseGold}" drawable="nuvio_banner"/>
-    <item component="ComponentInfo{io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconCopper}" drawable="nuvio_banner"/>
-    <item component="ComponentInfo{io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconGraphite}" drawable="nuvio_banner"/>
     <item component="ComponentInfo{space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_original}" drawable="nuvio_banner"/>
     <item component="ComponentInfo{space.nuvio.nativelegacy/.Icone_original}" drawable="nuvio_banner"/>
     <item component="ComponentInfo{space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_fenix}" drawable="nuvio_banner"/>

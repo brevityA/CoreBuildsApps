@@ -9825,6 +9825,24 @@ def electriceel_play(c):
             f'<path d="M 112 432 Q 176 392 240 432 T 368 432 T 424 408" {_s(c, 26.2)}/>')
 
 
+def nuvioreseq_loop(c):
+    """Nuvio ReSeq: three arrows chasing round a triangle, a play at the centre.
+
+    ReSeq's logo keeps Nuvio's rounded play triangle and fills it with a
+    dashed loop of three arrows running clockwise round a small play. The
+    outer triangle and inner play alone are Nuvio TV's own mark, so the
+    arrows lead and the outer outline is left out: the loop is what says
+    ReSeq (nearest at tile size, MAX Player, 0.757; Nuvio TV 0.734). Drawn
+    18% larger than the logo's inner loop so the mark spans the same share
+    of the tile as its neighbours. Primitive 2, the play, takes the logo's
+    violet through the catalog secondary.
+    """
+    return (f'<path d="M 138 110 L 374 232 M 374 291 L 162 405 M 114 369 L 114 143" {_s(c, 32)}/>'
+            '<path d="M 329 185 L 374 232 L 310 247 M 209 416 L 162 405 L 185 360 '
+            f'M 77 185 L 114 143 L 152 185" {_s(c, 26.2)}/>'
+            f'<path d="M 218 209 L 218 303 L 298 256 Z" {_s(c, 26.2)}/>')
+
+
 _WM7 = {
     "ipvio_stream": ("IPVIO", "play"),        # #508: the wordmark under its ribbon play mark
     "filmbox_stream": ("FILM/BOX+", None),    # #505: FILMBOX+ is the app's whole mark, set on two lines
@@ -9832,4 +9850,4 @@ _WM7 = {
 GLYPHS.update({f"{d}_wm": _wm_glyph(t, cue) for d, (t, cue) in _WM7.items()})
 GLYPHS.update({"linkstreams_bands": linkstreams_bands, "haven_h": haven_h,
                "sttv_play": sttv_play, "realjf_r": realjf_r,
-               "electriceel_play": electriceel_play})
+               "electriceel_play": electriceel_play, "nuvioreseq_loop": nuvioreseq_loop})

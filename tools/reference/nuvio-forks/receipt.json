@@ -80,7 +80,8 @@
             "android.intent.category.LEANBACK_LAUNCHER"
           ]
         }
-      ]
+      ],
+      "maps_to": "nuvio_reseq"
     },
     {
       "app_name": "Nuvio Legacy (Nuvio Native Legacy)",
@@ -195,7 +196,8 @@
             "android.intent.category.LEANBACK_LAUNCHER"
           ]
         }
-      ]
+      ],
+      "maps_to": "nuvio"
     }
   ]
 }

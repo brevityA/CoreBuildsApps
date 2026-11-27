@@ -306,8 +306,6 @@ class OctoberLauncherReports(unittest.TestCase):
          "tv.projectivy.plugin.wallpaperprovider.immich/"
          "tv.projectivy.plugin.wallpaperprovider.immich.SettingsActivity",
          ("nl.giejay.android.tv.immich/nl.giejay.android.tv.immich.MainActivity",)),
-        (509, "nuvio", "io.github.abbaskip.nuvioreseq/com.nuvio.tv.launcher.AppIconDefault",
-         ("com.nuvio.tv/.launcher.AppIconDefault",)),
         (498, "nuvio", "space.nuvio.nativelegacy/space.nuvio.nativelegacy.Icone_original",
          ("com.nuvio.tv/.launcher.AppIconDefault",)),
     )

@@ -8,18 +8,20 @@ All notable changes to the Core Builds Icon Pack. Format follows
 
 ### Added
 
-- **Seven new icons from your requests.** Linkstreams, IPVIO Stream, Haven,
-  ST TV, FILMBOX+ Stream, RealJF and Electric Eel (#511, #508, #507 and #499,
-  #506, #505, #494, #488), each drawn in the pack's monoline from the app's
-  own art: a play triangle cut into three bands, the IPVIO name with a play
-  cue, an H with a rising ribbon, ST with a play triangle at its foot,
-  FILMBOX+ on two lines, an R around a play triangle, and a blue play mark
-  with a spark and a wave. 1037 → 1044 icons, 1999 → 2051 components.
-  ST TV is Sattrakt's app; STV Player keeps its own icon.
-- **Nuvio ReSeq and Nuvio Legacy take Nuvio TV's icon.** Both forks let you
-  choose a launcher icon, and all of them now get Nuvio's: ReSeq's six and
-  Legacy's ten (#509, #498). One of each was reported from a TV; the rest
-  were read from each fork's own source, as Nuvio + IPTV's were.
+- **Eight new icons from your requests.** Linkstreams, IPVIO Stream, Haven,
+  ST TV, FILMBOX+ Stream, RealJF, Electric Eel and Nuvio ReSeq (#511, #508,
+  #507 and #499, #506, #505, #494, #488, #509), each drawn in the pack's
+  monoline from the app's own art: a play triangle cut into three bands, the
+  IPVIO name with a play cue, an H with a rising ribbon, ST with a play
+  triangle at its foot, FILMBOX+ on two lines, an R around a play triangle, a
+  blue play mark with a spark and a wave, and three arrows chasing round a
+  play. 1037 → 1045 icons, 1999 → 2051 components. ST TV is Sattrakt's app;
+  STV Player keeps its own icon. Nuvio ReSeq's icon covers all six of its
+  launcher icons, one reported from a TV and five read from its source.
+- **Nuvio Legacy takes Nuvio TV's icon.** The fork lets you choose one of ten
+  launcher icons, and all ten now get Nuvio's (#498). One was reported from a
+  TV; the other nine were read from the fork's own source, as Nuvio + IPTV's
+  were.
 
 ### Fixed
 

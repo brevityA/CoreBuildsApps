@@ -96,7 +96,7 @@ class IdentityTests(unittest.TestCase):
                           "aurora-player", "blackout", "prism", "tvcalendar", "jellywatch",
                           "tivideck", "xtra-tv", "bitchord", "nightjar", "vypn",
                           "linkstreams", "ipvio-stream", "haven", "st-tv", "filmbox-stream",
-                          "realjf", "electric-eel"):
+                          "realjf", "electric-eel", "nuvio-reseq"):
             root = ROOT / "tools/reference" / directory
             evidence = json.loads((root / "visual-references.json").read_text())
             self.assertTrue(evidence["usage"].startswith("reference-only"))
@@ -207,6 +207,7 @@ class IdentityTests(unittest.TestCase):
             "st_tv": ("sttv_play", "#FF0000", "st-tv", None, True),
             "filmbox_stream": ("filmbox_stream_wm", "#C64171", "filmbox-stream", None, False),
             "electric_eel": ("electriceel_play", "#005AFB", "electric-eel", ("#FFC70C", [1, 2]), True),
+            "nuvio_reseq": ("nuvioreseq_loop", "#0169F2", "nuvio-reseq", ("#9429F3", [2]), True),
         }
         for drawable, (glyph, accent, ref, second, monoline) in expected.items():
             with self.subTest(drawable=drawable):
@@ -250,20 +251,27 @@ class IdentityTests(unittest.TestCase):
         self.assertNotEqual(BY_ID["st_tv"]["components"], BY_ID["stv_player"]["components"])
 
         # Nuvio ReSeq (#509) and Nuvio Legacy (#498): every launcher entry in
-        # each fork's own manifest maps to Nuvio TV, none flagged; the receipt
+        # each fork's own manifest maps to one icon, none flagged; the receipt
         # holds exactly the catalog's sixteen and names both device reports.
-        nuvio = BY_ID["nuvio"]
+        # Legacy shares Nuvio TV's icon; ReSeq has a logo of its own, and so
+        # an icon of its own (2.7.1, by the owner's choice).
         receipt = json.loads((ROOT / "tools/reference/nuvio-forks/receipt.json").read_text())
-        self.assertIn("tools/reference/nuvio-forks/", nuvio["mapping_source"])
         forks = {f["application_id"]: f for f in receipt["forks"]}
         self.assertEqual(set(forks), {"io.github.abbaskip.nuvioreseq", "space.nuvio.nativelegacy"})
         self.assertEqual(len(forks["io.github.abbaskip.nuvioreseq"]["launchers"]), 6)
         self.assertEqual(len(forks["space.nuvio.nativelegacy"]["launchers"]), 10)
+        self.assertEqual({a: f["maps_to"] for a, f in forks.items()},
+                         {"io.github.abbaskip.nuvioreseq": "nuvio_reseq",
+                          "space.nuvio.nativelegacy": "nuvio"})
+        self.assertFalse([c for c in BY_ID["nuvio"]["components"]
+                          if c.startswith("io.github.abbaskip.nuvioreseq/")])
         for app_id, fork in forks.items():
             with self.subTest(fork=app_id):
-                mapped = [c for c in nuvio["components"] if c.startswith(app_id + "/")]
+                icon = BY_ID[fork["maps_to"]]
+                self.assertIn("tools/reference/nuvio-forks/", icon["mapping_source"])
+                mapped = [c for c in icon["components"] if c.startswith(app_id + "/")]
                 self.assertEqual(sorted(l["component"] for l in fork["launchers"]), sorted(mapped))
-                self.assertFalse(set(mapped) & set(nuvio.get("unverified", [])))
+                self.assertFalse(set(mapped) & set(icon.get("unverified", [])))
                 self.assertEqual(len([l for l in fork["launchers"] if "device_reported" in l]), 1)
                 self.assertRegex(fork["commit"], r"^[0-9a-f]{40}$")
                 for f in fork["files"]:

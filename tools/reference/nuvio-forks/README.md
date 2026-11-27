@@ -13,11 +13,13 @@ and SHA-256 and every launcher entry found in it.
 | Enabled at install | `AppIconDefault` | `Icone_original` |
 | Device-reported | `AppIconDefault` (Smart TV, Android 12) | `Icone_original` (Google TV Streamer, Android 14) |
 
-All sixteen map to Nuvio TV's icon, as Nuvio + IPTV's twelve do
-(`tools/reference/nuvio-iptv/`): the app chooses one launcher entry at a time,
-and whichever one the user picked, the pack applies Nuvio's. The fourteen no
-TV has reported rest on the fork's own manifest, the evidence the original
-Nuvio TV set rests on, so they carry no `unverified` flag.
+Each app chooses one launcher entry at a time, so every entry maps to one
+icon whichever the user picked. Legacy's ten map to Nuvio TV's icon, as Nuvio +
+IPTV's twelve do (`tools/reference/nuvio-iptv/`). ReSeq's six map to its own
+icon, Nuvio ReSeq (2.7.1), drawn from its logo (`tools/reference/nuvio-reseq/`),
+since ReSeq has a mark of its own. `maps_to` in `receipt.json` names the icon.
+The fourteen no TV has reported rest on the fork's own manifest, the evidence
+the original Nuvio TV set rests on, so they carry no `unverified` flag.
 
 What this does **not** claim: that any of the fourteen has been seen on a TV,
 or that a later version keeps these names. A renamed launcher shows up in the

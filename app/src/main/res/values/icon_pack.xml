@@ -562,6 +562,7 @@
         <item>npo_start</item>
         <item>nrk_tv</item>
         <item>ntathome</item>
+        <item>nuvio_reseq</item>
         <item>nuvio</item>
         <item>nuyodeviceinfo</item>
         <item>nuyowifianalyzer</item>
@@ -1609,6 +1610,7 @@
         <item>NPO Start</item>
         <item>NRK TV</item>
         <item>NT at Home</item>
+        <item>Nuvio ReSeq</item>
         <item>Nuvio TV</item>
         <item>Nuyo Device Info</item>
         <item>Nuyo WiFi Analyzer</item>
@@ -2656,6 +2658,7 @@
         <item>APP</item>
         <item>APP</item>
         <item>LAUNCHER</item>
+        <item>STREAM</item>
         <item>STREAM</item>
         <item>TOOL</item>
         <item>TOOL</item>
@@ -3729,6 +3732,7 @@
         <item>1</item>
         <item>1</item>
         <item>1</item>
+        <item>1</item>
         <item>0</item>
         <item>0</item>
         <item>1</item>
@@ -4189,5 +4193,5 @@
         <item>1</item>
         <item>1</item>
     </integer-array>
-    <integer name="icon_count">1044</integer>
+    <integer name="icon_count">1045</integer>
 </resources>
